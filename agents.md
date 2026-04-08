@@ -520,10 +520,6 @@ blocks that are assembled into working applications.
 - Code blocks in markdown are extracted and combined into complete applications
 - All code fragments in a demo share scope (variables declared in one block are
   available in subsequent blocks)
-- Tinydocs executable blocks can target explicit files with `file=...`, and
-  diff blocks such as `diff-js file=src/main.js` or
-  `diff-svelte file=src/App.svelte` patch those named files against the base
-  demo instead of replacing them with raw diff text
 
 ### Iteration Workflow
 
@@ -543,9 +539,6 @@ npm run testE2e               # Run E2E tests to verify demos
 - `compileForProd` builds the TinyBase libraries themselves
 - `compileDocsPagesOnly` is much faster - only rebuilds demo pages from markdown
 - You only need `compileForProd` once, unless you've changed TinyBase source
-- The docs build resolves `tinybase/*` demo imports from the generated `dist`
-  package exports, so adding a new public module requires a fresh
-  `compileForProd` or `compileForTest` before docs pages can import it
 - E2E tests use Playwright to verify demos work in a real browser
 - Individual E2E tests can be run for faster verification during iteration
 

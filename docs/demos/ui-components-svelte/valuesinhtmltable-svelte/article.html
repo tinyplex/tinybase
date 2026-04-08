@@ -1,0 +1,120 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/valuesinhtmltable-svelte/">&lt;ValuesInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/valuesinhtmltable-svelte/" data-id="&lt;VIHTS"><h1>&lt;ValuesInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+
+// demo-files:/demo/src/App.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+import { ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom&quot;;
+var root_1 = $.from_html(`&lt;!&gt; &lt;!&gt;`, 1);
+function App($$anchor, $$props) {
+  Provider($$anchor, {
+    get store() {
+      return $$props.store;
+    },
+    children: ($$anchor2, $$slotProps) =&gt; {
+      var fragment_1 = root_1();
+      var node = $.first_child(fragment_1);
+      ValuesInHtmlTable(node, {});
+      var node_1 = $.sibling(node, 2);
+      ValuesInHtmlTable(node_1, { headerRow: false, idColumn: false });
+      $.append($$anchor2, fragment_1);
+    },
+    $$slots: { default: true }
+  });
+}
+
+// ../../../../../../demo/src/main.js
+var store = createStore().setValue(&quot;username&quot;, &quot;John Appleseed&quot;).setValue(&quot;email address&quot;, &quot;john.appleseed@example.com&quot;).setValue(&quot;dark mode&quot;, true).setValue(&quot;font size&quot;, 14);
+mount(App, { target: document.body, props: { store } });&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this first demo, we set up a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> containing some sample data, and showcase the <a href="/api/ui-svelte-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a> component from the <a href="/api/ui-svelte-dom/"><code>ui-svelte-dom</code></a> module.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase, the Svelte runtime, and the ui-svelte and <a href="/api/ui-svelte-dom/"><code>ui-svelte-dom</code></a> modules:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="punctuation">{</span>
+    <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom"</span><span class="punctuation">,</span>
+      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.1"</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+</code></pre><p>The main entry point creates a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>, loads some sample values, and mounts a Svelte component:</p><pre><code><span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>mount<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'svelte'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App.svelte'</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span>
+  <span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setvalue/">setValue</a></span><span class="punctuation">(</span><span class="string">'username'</span><span class="punctuation">,</span> <span class="string">'John Appleseed'</span><span class="punctuation">)</span>
+  <span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setvalue/">setValue</a></span><span class="punctuation">(</span><span class="string">'email address'</span><span class="punctuation">,</span> <span class="string">'john.appleseed@example.com'</span><span class="punctuation">)</span>
+  <span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setvalue/">setValue</a></span><span class="punctuation">(</span><span class="string">'dark mode'</span><span class="punctuation">,</span> <span class="boolean">true</span><span class="punctuation">)</span>
+  <span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setvalue/">setValue</a></span><span class="punctuation">(</span><span class="string">'font size'</span><span class="punctuation">,</span> <span class="number">14</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+<span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><p>The Svelte component exposes the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> with a Provider and renders two HTML tables:</p><div class="preFile">src/App.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
+  <span class="keyword">import</span> <span class="punctuation">{</span>ValuesInHtmlTable<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte-dom'</span><span class="punctuation">;</span>
+
+  <span class="keyword">let</span> <span class="punctuation">{</span>store<span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+
+<span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>ValuesInHtmlTable</span> <span class="punctuation">/></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>ValuesInHtmlTable</span> <span class="attr-name">headerRow=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">false</span><span class="punctuation">}</span></span> <span class="attr-name">idColumn=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">false</span><span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
+<span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
+</code></pre><h3 id="styling">Styling</h3><p>As with the React DOM components, the rendered HTML is intentionally plain, so we add some light styling:</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
+  <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">*</span> <span class="punctuation">{</span>
+  <span class="property">box-sizing</span><span class="punctuation">:</span> border<span class="operator">-</span>box<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">align-items</span><span class="punctuation">:</span> flex<span class="operator">-</span>start<span class="punctuation">;</span>
+  <span class="property">color</span><span class="punctuation">:</span> #333<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> 0.8rem<span class="punctuation">;</span>
+  <span class="property">justify-content</span><span class="punctuation">:</span> space<span class="operator">-</span>around<span class="punctuation">;</span>
+  <span class="property">letter-spacing</span><span class="punctuation">:</span> <span class="operator">-</span>0.04rem<span class="punctuation">;</span>
+  <span class="property">line-height</span><span class="punctuation">:</span> 1.5rem<span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+  <span class="property">min-height</span><span class="punctuation">:</span> 100vh<span class="punctuation">;</span>
+  <span class="property">user-select</span><span class="punctuation">:</span> none<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">table</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+  <span class="property">border-collapse</span><span class="punctuation">:</span> collapse<span class="punctuation">;</span>
+  <span class="property">box-shadow</span><span class="punctuation">:</span> 0 0 1rem #0004<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> inherit<span class="punctuation">;</span>
+  <span class="property">line-height</span><span class="punctuation">:</span> inherit<span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 2rem<span class="punctuation">;</span>
+  <span class="property">table-layout</span><span class="punctuation">:</span> fixed<span class="punctuation">;</span>
+  <span class="selector">th,
+  td</span> <span class="punctuation">{</span>
+    <span class="property">border-color</span><span class="punctuation">:</span> #eee<span class="punctuation">;</span>
+    <span class="property">border-style</span><span class="punctuation">:</span> solid<span class="punctuation">;</span>
+    <span class="property">border-width</span><span class="punctuation">:</span> 1px 0<span class="punctuation">;</span>
+    <span class="property">overflow</span><span class="punctuation">:</span> hidden<span class="punctuation">;</span>
+    <span class="property">padding</span><span class="punctuation">:</span> 0.25rem 0.5rem<span class="punctuation">;</span>
+    <span class="property">text-align</span><span class="punctuation">:</span> left<span class="punctuation">;</span>
+    <span class="property">white-space</span><span class="punctuation">:</span> nowrap<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+  <span class="selector">thead th</span> <span class="punctuation">{</span>
+    <span class="property">border-bottom-color</span><span class="punctuation">:</span> #ccc<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+  <span class="selector">button,
+  input</span> <span class="punctuation">{</span>
+    <span class="property">border</span><span class="punctuation">:</span> 1px solid #ccc<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+</code></pre><p>And that&#x27;s it. The first table shows the default header and <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> column, and the second hides them.</p><p>Next we move on to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo.</p></section>

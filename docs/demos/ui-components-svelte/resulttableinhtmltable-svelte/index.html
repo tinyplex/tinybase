@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preload" as="image" href="/favicon.svg"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ"></script><link rel="dns-prefetch" href="https://www.googletagmanager.com/"><link href="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ" rel="preload" as="script"><link rel="preload" as="font" href="/fonts/inter.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/inconsolata.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/shantell.woff2" type="font/woff2" crossorigin="anonymous"><title>&lt;ResultTableInHtmlTable /&gt; (Svelte) | TinyBase</title><meta name="description" content="In this demo, we showcase the ResultTableInHtmlTable component, a way to display the results of a query."><meta property="og:type" content="website"><meta property="og:title" content="&lt;ResultTableInHtmlTable /&gt; (Svelte) | TinyBase"><meta property="og:description" content="In this demo, we showcase the ResultTableInHtmlTable component, a way to display the results of a query."><meta property="og:url" content="https://beta.tinybase.org/demos/ui-components-svelte/resulttableinhtmltable-svelte/"><meta property="og:image" content="https://beta.tinybase.org/favicon_pad.png"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="&lt;ResultTableInHtmlTable /&gt; (Svelte) | TinyBase"><meta name="twitter:description" content="In this demo, we showcase the ResultTableInHtmlTable component, a way to display the results of a query."><meta name="twitter:site" content="@tinybasejs"><meta name="twitter:image" content="https://beta.tinybase.org/favicon_pad.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://beta.tinybase.org/demos/ui-components-svelte/resulttableinhtmltable-svelte/"><link rel="stylesheet" href="/css/index.css"><script src="/js/app.js"></script></head><body><header><a href="/"><img src="/favicon.svg" alt="TinyBase logo"><span>TinyBase <em>β</em></span></a><nav><ul><li><a href="/guides/">Guides</a></li><li><a href="/demos/">Demos</a></li><li><a href="/api/">API</a></li><li><a href="https://github.com/tinyplex/tinybase">GitHub</a></li></ul></nav><span id="dark"></span></header><main><nav><ul><li id="root" class="parent open"><span></span><a href="/">TinyBase</a><ul><li id="G" class="parent"><span></span><a href="/guides/">Guides</a></li><li id="D2" class="parent open"><span></span><a href="/demos/">Demos</a><ul><li id="HW" class="parent"><span></span><a href="/demos/hello-world/">Hello World</a></li><li id="C2" class="parent"><span></span><a href="/demos/countries/">Countries</a></li><li id="TA" class="parent"><span></span><a href="/demos/todo-app/">Todo App</a></li><li id="D3"><span></span><a href="/demos/drawing/">Drawing</a></li><li id="CD"><span></span><a href="/demos/city-database/">City Database</a></li><li id="CA"><span></span><a href="/demos/car-analysis/">Car Analysis</a></li><li id="MD"><span></span><a href="/demos/movie-database/">Movie Database</a></li><li id="WF"><span></span><a href="/demos/word-frequencies/">Word Frequencies</a></li><li id="UICR" class="parent"><span></span><a href="/demos/ui-components-react/">UI Components (React)</a></li><li id="UICS" class="parent open"><span></span><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a><ul><li id="&lt;VIHTS"><span></span><a href="/demos/ui-components-svelte/valuesinhtmltable-svelte/">&lt;ValuesInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;TIHTS"><span></span><a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;STIHTS"><span></span><a href="/demos/ui-components-svelte/sortedtableinhtmltable-svelte/">&lt;SortedTableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;SIHTS"><span></span><a href="/demos/ui-components-svelte/sliceinhtmltable-svelte/">&lt;SliceInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;RIHTS"><span></span><a href="/demos/ui-components-svelte/relationshipinhtmltable-svelte/">&lt;RelationshipInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;RTIHTS" class="current"><span></span><a href="/demos/ui-components-svelte/resulttableinhtmltable-svelte/">&lt;ResultTableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;RSTIHTS"><span></span><a href="/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/">&lt;ResultSortedTableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;EVVS"><span></span><a href="/demos/ui-components-svelte/editablevalueview-svelte/">&lt;EditableValueView /&gt; (Svelte)</a></li><li id="&lt;ECVS"><span></span><a href="/demos/ui-components-svelte/editablecellview-svelte/">&lt;EditableCellView /&gt; (Svelte)</a></li><li id="&lt;IS"><span></span><a href="/demos/ui-components-svelte/inspector-svelte/">&lt;Inspector /&gt; (Svelte)</a></li></ul></li></ul></li><li id="api" class="parent"><span></span><a href="/api/">API</a></li></ul></li></ul></nav><article><nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/resulttableinhtmltable-svelte/">&lt;ResultTableInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/resulttableinhtmltable-svelte/" data-id="&lt;RTIHTS"><h1>&lt;ResultTableInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;a{color:inherit}@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createQueries, createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+
+// demo-files:/demo/src/App.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+import { ResultTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom&quot;;
+function App($$anchor, $$props) {
+  Provider($$anchor, {
+    get store() {
+      return $$props.store;
+    },
+    get queries() {
+      return $$props.queries;
+    },
+    children: ($$anchor2, $$slotProps) =&gt; {
+      ResultTableInHtmlTable($$anchor2, { queryId: &quot;genresStartingWithA&quot; });
+    },
+    $$slots: { default: true }
+  });
+}
+
+// ../../../../../../demo/src/main.js
+var NUMERIC = /^[\d\.]+$/;
+var loadTable = async (store, tableId) =&gt; {
+  store.startTransaction();
+  const rows = (await (await fetch(`https://tinybase.org/assets/${tableId}.tsv`)).text()).split(&quot;\n&quot;);
+  const cellIds = rows.shift().split(&quot;	&quot;);
+  rows.forEach((row) =&gt; {
+    const cells = row.split(&quot;	&quot;);
+    if (cells.length == cellIds.length) {
+      const rowId = cells.shift();
+      cells.forEach((cell, c) =&gt; {
+        if (cell != &quot;&quot;) {
+          store.setCell(
+            tableId,
+            rowId,
+            cellIds[c + 1],
+            NUMERIC.test(cell) ? parseFloat(cell) : cell
+          );
+        }
+      });
+    }
+  });
+  store.finishTransaction();
+};
+var init = async () =&gt; {
+  const store = createStore();
+  await loadTable(store, &quot;genres&quot;);
+  const queries = createQueries(store).setQueryDefinition(
+    &quot;genresStartingWithA&quot;,
+    &quot;genres&quot;,
+    ({ select, where }) =&gt; {
+      select(&quot;name&quot;);
+      select((getCell) =&gt; getCell(&quot;name&quot;).length).as(&quot;length&quot;);
+      where((getCell) =&gt; getCell(&quot;name&quot;).startsWith(&quot;A&quot;));
+    }
+  );
+  mount(App, { target: document.body, props: { store, queries } });
+};
+window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-svelte-dom/functions/queries-components/resulttableinhtmltable/"><code>ResultTableInHtmlTable</code></a> component, a way to display the results of a query.</p><p>Rather than rebuilding the whole demo from scratch, we&#x27;re going back and making changes to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo. <a href="/api/queries/type-aliases/definition/where/"><code>Where</code></a> that demo rendered a <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> from a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>, this one displays the results of a Query from a <code>[</code>Queries<code>](/api/queries/interfaces/queries/queries/)</code> object.</p><h3 id="set-up">Set Up</h3><p>We switch the imports so we can create and provide a <code>[</code>Queries<code>](/api/queries/interfaces/queries/queries/)</code> object:</p><pre><code><span class="deleted-sign"><span class="prefix">-</span><span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span><span class="keyword">import</span> <span class="punctuation">{</span>createQueries<span class="punctuation">,</span> createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+</span></code></pre><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">init</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix"> </span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>  <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="keyword">const</span> queries <span class="operator">=</span> <span class="function"><a href="/api/queries/functions/creation/createqueries/">createQueries</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/queries/interfaces/queries/queries/methods/configuration/setquerydefinition/">setQueryDefinition</a></span><span class="punctuation">(</span>
+<span class="prefix">+</span>    <span class="string">'genresStartingWithA'</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="string">'genres'</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="punctuation">(</span><span class="parameter"><span class="punctuation">{</span>select<span class="punctuation">,</span> where<span class="punctuation">}</span></span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix">+</span>      <span class="function">select</span><span class="punctuation">(</span><span class="string">'name'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>      <span class="function">select</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">getCell</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/getting-data/getcell/">getCell</a></span><span class="punctuation">(</span><span class="string">'name'</span><span class="punctuation">)</span><span class="punctuation">.</span>length<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">as</span><span class="punctuation">(</span><span class="string">'length'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>      <span class="function">where</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">getCell</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/getting-data/getcell/">getCell</a></span><span class="punctuation">(</span><span class="string">'name'</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function">startsWith</span><span class="punctuation">(</span><span class="string">'A'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>  <span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">,</span> queries<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span></code></pre><h3 id="using-the-resulttableinhtmltable-component">Using the <a href="/api/ui-svelte-dom/functions/queries-components/resulttableinhtmltable/"><code>ResultTableInHtmlTable</code></a> Component</h3><p>The app body can then render the query result directly:</p><div class="preFile">src/App.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
+  <span class="keyword">import</span> <span class="punctuation">{</span>ResultTableInHtmlTable<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte-dom'</span><span class="punctuation">;</span>
+
+  <span class="keyword">let</span> <span class="punctuation">{</span>store<span class="punctuation">,</span> queries<span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+
+<span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span> <span class="language-javascript"><span class="punctuation">{</span>queries<span class="punctuation">}</span></span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>ResultTableInHtmlTable</span> <span class="attr-name">queryId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>genresStartingWithA<span class="punctuation">"</span></span> <span class="punctuation">/></span></span>
+<span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
+</code></pre><p>And because query results can also be sorted and paginated, the next demo is <a href="/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/">&lt;ResultSortedTableInHtmlTable /&gt; (Svelte)</a>.</p></section></article><aside></aside></main><footer><nav><a id="gh" href="https://github.com/tinyplex/tinybase" target="_blank">GitHub</a><a id="bs" href="https://bsky.app/profile/tinybase.bsky.social" target="_blank">Bluesky</a><a id="tw" href="https://x.com/tinybasejs" target="_blank">X / Twitter</a><a id="dc" href="https://discord.com/invite/mGz3mevwP8" target="_blank">Discord</a></nav><nav><a href="/">TinyBase <span id="version"></span></a> © 2022-</nav></footer><script>window.dataLayer=window.dataLayer||[];function g(){dataLayer.push(arguments);}g('js',new Date());g('config','G-D1MGR8VRWJ');</script></body></html>

@@ -7,23 +7,24 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.2.0-beta.0&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
 import {
   createLocalPersister,
   createSessionPersister
-} from &quot;https://esm.sh/tinybase@8.2.0-beta.0/persisters/persister-browser&quot;;
-import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.2.0-beta.0/persisters/persister-remote&quot;;
+} from &quot;https://esm.sh/tinybase@8.2.0-beta.1/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/persisters/persister-remote&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
 import * as $3 from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { Provider, getSliceIds, getSliceRowIds as getSliceRowIds2, getValue } from &quot;https://esm.sh/tinybase@8.2.0-beta.0/ui-svelte&quot;;
+import { Provider, getSliceIds, getSliceRowIds as getSliceRowIds2, getValue } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector&quot;;
 
 // demo-files:/demo/src/Country.svelte
 import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { CellView, getCell } from &quot;https://esm.sh/tinybase@8.2.0-beta.0/ui-svelte&quot;;
+import { CellView, getCell } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
 var root = $.from_html(`&lt;div class=&quot;country&quot;&gt;&lt;div class=&quot;star&quot;&gt; &lt;/div&gt; &lt;div class=&quot;flag&quot;&gt;&lt;!&gt;&lt;/div&gt; &lt;div class=&quot;name&quot;&gt;&lt;!&gt;&lt;/div&gt;&lt;/div&gt;`);
 function Country($$anchor, $$props) {
   $.push($$props, true);
@@ -71,7 +72,7 @@ $.delegate([&quot;click&quot;]);
 // demo-files:/demo/src/Filter.svelte
 import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
 import * as $2 from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { getSliceRowIds } from &quot;https://esm.sh/tinybase@8.2.0-beta.0/ui-svelte&quot;;
+import { getSliceRowIds } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
 var root2 = $2.from_html(`&lt;div&gt;&lt;span class=&quot;label&quot;&gt; &lt;/span&gt;&lt;span class=&quot;count&quot;&gt; &lt;/span&gt;&lt;/div&gt;`);
 function Filter($$anchor, $$props) {
   $2.push($$props, true);
@@ -98,7 +99,7 @@ function Filter($$anchor, $$props) {
 $2.delegate([&quot;click&quot;]);
 
 // demo-files:/demo/src/App.svelte
-var root_1 = $3.from_html(`&lt;div id=&quot;filters&quot;&gt;&lt;!&gt; &lt;!&gt;&lt;/div&gt; &lt;div id=&quot;countries&quot;&gt;&lt;/div&gt;`, 1);
+var root_1 = $3.from_html(`&lt;div id=&quot;filters&quot;&gt;&lt;!&gt; &lt;!&gt;&lt;/div&gt; &lt;div id=&quot;countries&quot;&gt;&lt;/div&gt; &lt;!&gt;`, 1);
 function App($$anchor, $$props) {
   $3.push($$props, true);
   const STAR = &quot;\u2605&quot;;
@@ -185,6 +186,8 @@ function App($$anchor, $$props) {
           });
         });
         $3.reset(div_1);
+        var node_2 = $3.sibling(div_1, 2);
+        Inspector(node_2, {});
         $3.append($$anchor2, fragment_1);
       },
       $$slots: { default: true }
@@ -252,13 +255,14 @@ var init = async () =&gt; {
   });
 };
 window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
-    &lt;/html&gt;"></iframe><p>In this demo, we build the same app as the <a href="/demos/countries/countries-react/">Countries (React)</a> demo, but with Svelte 5 and the <a href="/api/ui-svelte/"><code>ui-svelte</code></a> module.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase, the persister modules, and Svelte:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+    &lt;/html&gt;"></iframe><p>In this demo, we build the same app as the <a href="/demos/countries/countries-react/">Countries (React)</a> demo, but with Svelte 5 and the <a href="/api/ui-svelte/"><code>ui-svelte</code></a> module.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase, the persister modules, the Svelte inspector module, and Svelte:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.0/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.0/persisters/persister-remote"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.0/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.1"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
@@ -342,6 +346,7 @@ window<span class="punctuation">.</span><span class="function">addEventListener<
     getSliceRowIds<span class="punctuation">,</span>
     getValue<span class="punctuation">,</span>
   <span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
+  <span class="keyword">import</span> <span class="punctuation">{</span>Inspector<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte-inspector'</span><span class="punctuation">;</span>
   <span class="keyword">import</span> Country <span class="keyword">from</span> <span class="string">'./Country.svelte'</span><span class="punctuation">;</span>
   <span class="keyword">import</span> Filter <span class="keyword">from</span> <span class="string">'./Filter.svelte'</span><span class="punctuation">;</span>
 
@@ -410,8 +415,9 @@ window<span class="punctuation">.</span><span class="function">addEventListener<
       <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Country</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>countries<span class="punctuation">"</span></span> <span class="language-javascript"><span class="punctuation">{</span>rowId<span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
     <span class="each"><span class="punctuation">{</span><span class="keyword">/each</span><span class="punctuation">}</span></span>
   <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Inspector</span> <span class="punctuation">/></span></span>
 <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
-</code></pre><p>Unlike the React version, there is not yet a Svelte <a href="/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component, so this version focuses on the data flow and the rendered UI itself.</p><h3 id="the-filter-component">The <code>Filter</code> Component</h3><p>Each filter needs to know which <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object, <code>indexId</code>, and <code>sliceId</code> it should switch to. It also shows the number of <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> <a href="/api/common/type-aliases/identity/ids/"><code>Ids</code></a> currently in that slice, which we can get with the <code>getSliceRowIds</code> reactive function:</p><div class="preFile">src/Filter.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+</code></pre><p>Like the React version, this Svelte version can now also include the <a href="/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component, so you can inspect the Stores and <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> that drive the UI while you interact with it.</p><h3 id="the-filter-component">The <code>Filter</code> Component</h3><p>Each filter needs to know which <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object, <code>indexId</code>, and <code>sliceId</code> it should switch to. It also shows the number of <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> <a href="/api/common/type-aliases/identity/ids/"><code>Ids</code></a> currently in that slice, which we can get with the <code>getSliceRowIds</code> reactive function:</p><div class="preFile">src/Filter.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="keyword">import</span> <span class="punctuation">{</span>getSliceRowIds<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
 
   <span class="keyword">let</span> <span class="punctuation">{</span>
