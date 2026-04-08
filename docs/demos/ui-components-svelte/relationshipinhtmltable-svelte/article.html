@@ -1,0 +1,178 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/relationshipinhtmltable-svelte/">&lt;RelationshipInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/relationshipinhtmltable-svelte/" data-id="&lt;RIHTS"><h1>&lt;RelationshipInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;a{color:inherit}@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+
+// demo-files:/demo/src/App.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $2 from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom&quot;;
+
+// demo-files:/demo/src/Popularity.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { getCell } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+var root = $.from_html(`&lt;b&gt; &lt;/b&gt;`);
+function Popularity($$anchor, $$props) {
+  $.push($$props, true);
+  const cell = getCell(() =&gt; $$props.tableId, () =&gt; $$props.rowId, () =&gt; $$props.cellId, () =&gt; $$props.store);
+  var b = root();
+  var text = $.child(b, true);
+  $.reset(b);
+  $.template_effect(() =&gt; $.set_text(text, cell.current));
+  $.append($$anchor, b);
+  $.pop();
+}
+
+// demo-files:/demo/src/App.svelte
+function App($$anchor, $$props) {
+  const customCells = {
+    &quot;genres.name&quot;: &quot;Genre&quot;,
+    &quot;metadata.popularity&quot;: { label: &quot;Popularity&quot;, component: Popularity },
+    &quot;metadata.text&quot;: &quot;Description&quot;
+  };
+  Provider($$anchor, {
+    get store() {
+      return $$props.store;
+    },
+    get relationships() {
+      return $$props.relationships;
+    },
+    children: ($$anchor2, $$slotProps) =&gt; {
+      RelationshipInHtmlTable($$anchor2, {
+        relationshipId: &quot;genresMetadata&quot;,
+        get customCells() {
+          return customCells;
+        },
+        idColumn: false
+      });
+    },
+    $$slots: { default: true }
+  });
+}
+
+// ../../../../../../demo/src/main.js
+var NUMERIC = /^[\d\.]+$/;
+var loadTable = async (store, tableId) =&gt; {
+  store.startTransaction();
+  const rows = (await (await fetch(`https://tinybase.org/assets/${tableId}.tsv`)).text()).split(&quot;\n&quot;);
+  const cellIds = rows.shift().split(&quot;	&quot;);
+  rows.forEach((row) =&gt; {
+    const cells = row.split(&quot;	&quot;);
+    if (cells.length == cellIds.length) {
+      const rowId = cells.shift();
+      cells.forEach((cell, c) =&gt; {
+        if (cell != &quot;&quot;) {
+          store.setCell(
+            tableId,
+            rowId,
+            cellIds[c + 1],
+            NUMERIC.test(cell) ? parseFloat(cell) : cell
+          );
+        }
+      });
+    }
+  });
+  store.finishTransaction();
+};
+var init = async () =&gt; {
+  const store = createStore();
+  await loadTable(store, &quot;genres&quot;);
+  store.setTable(&quot;metadata&quot;, {
+    g01_meta: { text: &quot;Dramatic movies to make you think&quot;, popularity: 6 },
+    g02_meta: { text: &quot;These ones make you laugh&quot;, popularity: 7 },
+    g03_meta: { text: &quot;Fun for all the family&quot;, popularity: 8 },
+    g04_meta: { text: &quot;For the romantics at heart&quot;, popularity: 5 },
+    g05_meta: { text: &quot;From cartoons to CGI&quot;, popularity: 5 },
+    g06_meta: { text: &quot;Escape to another world&quot;, popularity: 4 },
+    g07_meta: { text: &quot;Tales of the American West&quot;, popularity: 3 },
+    g08_meta: { text: &quot;Stay on the edge of your seat&quot;, popularity: 6 },
+    g09_meta: { text: &quot;For your inner explorer&quot;, popularity: 7 },
+    g10_meta: { text: &quot;Fast-paced action from start to finish&quot;, popularity: 8 },
+    g11_meta: { text: &quot;Jump scares to give you nightmares&quot;, popularity: 6 },
+    g12_meta: { text: &quot;Murders and mysteries&quot;, popularity: 5 },
+    g14_meta: { text: &quot;Take a step back in time&quot;, popularity: 3 },
+    g15_meta: { text: &quot;A glimpse of the future&quot;, popularity: 8 },
+    g16_meta: { text: &quot;Who did it?&quot;, popularity: 5 }
+  });
+  const relationships = createRelationships(store).setRelationshipDefinition(
+    &quot;genresMetadata&quot;,
+    &quot;genres&quot;,
+    &quot;metadata&quot;,
+    (_, rowId) =&gt; rowId + &quot;_meta&quot;
+  );
+  mount(App, { target: document.body, props: { store, relationships } });
+};
+window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-svelte-dom/functions/other-components/relationshipinhtmltable/"><code>RelationshipInHtmlTable</code></a> component, a way to display the two <a href="/api/store/type-aliases/store/tables/"><code>Tables</code></a> linked together by a <a href="/api/relationships/type-aliases/concept/relationship/"><code>Relationship</code></a>.</p><p>Rather than rebuilding the whole demo from scratch, we&#x27;re going back and making changes to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo again. <a href="/api/queries/type-aliases/definition/where/"><code>Where</code></a> that demo rendered a <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> from a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>, this one creates a <code>[</code>Relationships<code>](/api/relationships/interfaces/relationships/relationships/)</code> object and displays one defined <a href="/api/relationships/type-aliases/concept/relationship/"><code>Relationship</code></a> from it.</p><h3 id="set-up">Set Up</h3><p>We switch the imports so we can create and provide a <code>[</code>Relationships<code>](/api/relationships/interfaces/relationships/relationships/)</code> object:</p><pre><code><span class="deleted-sign"><span class="prefix">-</span><span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span><span class="keyword">import</span> <span class="punctuation">{</span>createRelationships<span class="punctuation">,</span> createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+</span></code></pre><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">init</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix"> </span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>  <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'metadata'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>    <span class="literal-property">g01_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Dramatic movies to make you think'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">6</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g02_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'These ones make you laugh'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">7</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g03_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Fun for all the family'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">8</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g04_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'For the romantics at heart'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">5</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g05_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'From cartoons to CGI'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">5</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g06_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Escape to another world'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">4</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g07_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Tales of the American West'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">3</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g08_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Stay on the edge of your seat'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">6</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g09_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'For your inner explorer'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">7</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g10_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Fast-paced action from start to finish'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">8</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g11_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Jump scares to give you nightmares'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">6</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g12_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Murders and mysteries'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">5</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g14_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Take a step back in time'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">3</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g15_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'A glimpse of the future'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">8</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="literal-property">g16_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Who did it?'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">5</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">+</span>  <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="keyword">const</span> relationships <span class="operator">=</span> <span class="function"><a href="/api/relationships/functions/creation/createrelationships/">createRelationships</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/configuration/setrelationshipdefinition/">setRelationshipDefinition</a></span><span class="punctuation">(</span>
+<span class="prefix">+</span>    <span class="string">'genresMetadata'</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="string">'genres'</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="string">'metadata'</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="punctuation">(</span><span class="parameter">_<span class="punctuation">,</span> rowId</span><span class="punctuation">)</span> <span class="operator">=></span> rowId <span class="operator">+</span> <span class="string">'_meta'</span><span class="punctuation">,</span>
+<span class="prefix">+</span>  <span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">,</span> relationships<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span></code></pre><h3 id="using-the-relationshipinhtmltable-component">Using the <a href="/api/ui-svelte-dom/functions/other-components/relationshipinhtmltable/"><code>RelationshipInHtmlTable</code></a> Component</h3><p>The app body can then replace the original table with the joined view, while also customizing the visible columns:</p><div class="preFile">src/App.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
+  <span class="keyword">import</span> <span class="punctuation">{</span>RelationshipInHtmlTable<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte-dom'</span><span class="punctuation">;</span>
+  <span class="keyword">import</span> Popularity <span class="keyword">from</span> <span class="string">'./Popularity.svelte'</span><span class="punctuation">;</span>
+
+  <span class="keyword">let</span> <span class="punctuation">{</span>store<span class="punctuation">,</span> relationships<span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">const</span> customCells <span class="operator">=</span> <span class="punctuation">{</span>
+    <span class="string-property">'genres.name'</span><span class="operator">:</span> <span class="string">'Genre'</span><span class="punctuation">,</span>
+    <span class="string-property">'metadata.popularity'</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="literal-property">label</span><span class="operator">:</span> <span class="string">'Popularity'</span><span class="punctuation">,</span>
+      <span class="literal-property">component</span><span class="operator">:</span> Popularity<span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="string-property">'metadata.text'</span><span class="operator">:</span> <span class="string">'Description'</span><span class="punctuation">,</span>
+  <span class="punctuation">}</span><span class="punctuation">;</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+
+<span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span> <span class="language-javascript"><span class="punctuation">{</span>relationships<span class="punctuation">}</span></span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>RelationshipInHtmlTable</span>
+    <span class="attr-name">relationshipId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>genresMetadata<span class="punctuation">"</span></span>
+    <span class="language-javascript"><span class="punctuation">{</span>customCells<span class="punctuation">}</span></span>
+    <span class="attr-name">idColumn=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">false</span><span class="punctuation">}</span></span>
+  <span class="punctuation">/></span></span>
+<span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
+</code></pre><p>The custom popularity <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> just wraps the current value in bold text:</p><div class="preFile">src/Popularity.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="keyword">import</span> <span class="punctuation">{</span>getCell<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
+
+  <span class="keyword">let</span> <span class="punctuation">{</span>tableId<span class="punctuation">,</span> rowId<span class="punctuation">,</span> cellId<span class="punctuation">,</span> store<span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> cell <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/getting-data/getcell/">getCell</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> tableId<span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> rowId<span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> cellId<span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> store<span class="punctuation">)</span><span class="punctuation">;</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+
+<span class="tag"><span class="tag"><span class="punctuation">&lt;</span>b</span><span class="punctuation">></span></span><span class="language-javascript"><span class="punctuation">{</span>cell<span class="punctuation">.</span>current<span class="punctuation">}</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>b</span><span class="punctuation">></span></span>
+</code></pre><p>The next step is to render a query result directly with the <a href="/demos/ui-components-svelte/resulttableinhtmltable-svelte/">&lt;ResultTableInHtmlTable /&gt; (Svelte)</a> demo.</p></section>

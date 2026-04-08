@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preload" as="image" href="/favicon.svg"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ"></script><link rel="dns-prefetch" href="https://www.googletagmanager.com/"><link href="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ" rel="preload" as="script"><link rel="preload" as="font" href="/fonts/inter.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/inconsolata.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/shantell.woff2" type="font/woff2" crossorigin="anonymous"><title>&lt;SortedTableInHtmlTable /&gt; (Svelte) | TinyBase</title><meta name="description" content="In this demo, we showcase the `SortedTableInHtmlTable` component."><meta property="og:type" content="website"><meta property="og:title" content="&lt;SortedTableInHtmlTable /&gt; (Svelte) | TinyBase"><meta property="og:description" content="In this demo, we showcase the `SortedTableInHtmlTable` component."><meta property="og:url" content="https://beta.tinybase.org/demos/ui-components-svelte/sortedtableinhtmltable-svelte/"><meta property="og:image" content="https://beta.tinybase.org/favicon_pad.png"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="&lt;SortedTableInHtmlTable /&gt; (Svelte) | TinyBase"><meta name="twitter:description" content="In this demo, we showcase the `SortedTableInHtmlTable` component."><meta name="twitter:site" content="@tinybasejs"><meta name="twitter:image" content="https://beta.tinybase.org/favicon_pad.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://beta.tinybase.org/demos/ui-components-svelte/sortedtableinhtmltable-svelte/"><link rel="stylesheet" href="/css/index.css"><script src="/js/app.js"></script></head><body><header><a href="/"><img src="/favicon.svg" alt="TinyBase logo"><span>TinyBase <em>β</em></span></a><nav><ul><li><a href="/guides/">Guides</a></li><li><a href="/demos/">Demos</a></li><li><a href="/api/">API</a></li><li><a href="https://github.com/tinyplex/tinybase">GitHub</a></li></ul></nav><span id="dark"></span></header><main><nav><ul><li id="root" class="parent open"><span></span><a href="/">TinyBase</a><ul><li id="G" class="parent"><span></span><a href="/guides/">Guides</a></li><li id="D2" class="parent open"><span></span><a href="/demos/">Demos</a><ul><li id="HW" class="parent"><span></span><a href="/demos/hello-world/">Hello World</a></li><li id="C2" class="parent"><span></span><a href="/demos/countries/">Countries</a></li><li id="TA" class="parent"><span></span><a href="/demos/todo-app/">Todo App</a></li><li id="D3"><span></span><a href="/demos/drawing/">Drawing</a></li><li id="CD"><span></span><a href="/demos/city-database/">City Database</a></li><li id="CA"><span></span><a href="/demos/car-analysis/">Car Analysis</a></li><li id="MD"><span></span><a href="/demos/movie-database/">Movie Database</a></li><li id="WF"><span></span><a href="/demos/word-frequencies/">Word Frequencies</a></li><li id="UICR" class="parent"><span></span><a href="/demos/ui-components-react/">UI Components (React)</a></li><li id="UICS" class="parent open"><span></span><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a><ul><li id="&lt;VIHTS"><span></span><a href="/demos/ui-components-svelte/valuesinhtmltable-svelte/">&lt;ValuesInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;TIHTS"><span></span><a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;STIHTS" class="current"><span></span><a href="/demos/ui-components-svelte/sortedtableinhtmltable-svelte/">&lt;SortedTableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;SIHTS"><span></span><a href="/demos/ui-components-svelte/sliceinhtmltable-svelte/">&lt;SliceInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;RIHTS"><span></span><a href="/demos/ui-components-svelte/relationshipinhtmltable-svelte/">&lt;RelationshipInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;RTIHTS"><span></span><a href="/demos/ui-components-svelte/resulttableinhtmltable-svelte/">&lt;ResultTableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;RSTIHTS"><span></span><a href="/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/">&lt;ResultSortedTableInHtmlTable /&gt; (Svelte)</a></li><li id="&lt;EVVS"><span></span><a href="/demos/ui-components-svelte/editablevalueview-svelte/">&lt;EditableValueView /&gt; (Svelte)</a></li><li id="&lt;ECVS"><span></span><a href="/demos/ui-components-svelte/editablecellview-svelte/">&lt;EditableCellView /&gt; (Svelte)</a></li><li id="&lt;IS"><span></span><a href="/demos/ui-components-svelte/inspector-svelte/">&lt;Inspector /&gt; (Svelte)</a></li></ul></li></ul></li><li id="api" class="parent"><span></span><a href="/api/">API</a></li></ul></li></ul></nav><article><nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/sortedtableinhtmltable-svelte/">&lt;SortedTableInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/sortedtableinhtmltable-svelte/" data-id="&lt;STIHTS"><h1>&lt;SortedTableInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;table thead th{width:6rem}table thead th:nth-of-type(2){width:24rem}table caption{caption-side:top;margin-bottom:1rem;text-align:left}table caption button{margin-right:.5rem}th.sorted{background:#ddd}a{color:inherit}@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+
+// demo-files:/demo/src/App.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+import { SortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom&quot;;
+function App($$anchor, $$props) {
+  const customCells = { name: &quot;Name&quot;, year: &quot;Year&quot;, rating: &quot;Rating&quot; };
+  Provider($$anchor, {
+    get store() {
+      return $$props.store;
+    },
+    children: ($$anchor2, $$slotProps) =&gt; {
+      SortedTableInHtmlTable($$anchor2, {
+        tableId: &quot;movies&quot;,
+        get customCells() {
+          return customCells;
+        },
+        cellId: &quot;rating&quot;,
+        descending: true,
+        limit: 7,
+        sortOnClick: true,
+        paginator: true
+      });
+    },
+    $$slots: { default: true }
+  });
+}
+
+// ../../../../../../demo/src/main.js
+var NUMERIC = /^[\d\.]+$/;
+var loadTable = async (store, tableId) =&gt; {
+  store.startTransaction();
+  const rows = (await (await fetch(`https://tinybase.org/assets/${tableId}.tsv`)).text()).split(&quot;\n&quot;);
+  const cellIds = rows.shift().split(&quot;	&quot;);
+  rows.forEach((row) =&gt; {
+    const cells = row.split(&quot;	&quot;);
+    if (cells.length == cellIds.length) {
+      const rowId = cells.shift();
+      cells.forEach((cell, c) =&gt; {
+        if (cell != &quot;&quot;) {
+          store.setCell(
+            tableId,
+            rowId,
+            cellIds[c + 1],
+            NUMERIC.test(cell) ? parseFloat(cell) : cell
+          );
+        }
+      });
+    }
+  });
+  store.finishTransaction();
+};
+var init = async () =&gt; {
+  const store = createStore();
+  await loadTable(store, &quot;movies&quot;);
+  mount(App, { target: document.body, props: { store } });
+};
+window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we showcase the <code>SortedTableInHtmlTable</code> component.</p><p>Rather than rebuilding the whole demo from scratch, we&#x27;re making changes to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo to support this more interactive component.</p><h3 id="set-up">Set Up</h3><p>We switch out the table component itself to use <code>SortedTableInHtmlTable</code>.</p><p>This component is best shown with a much wider data set, so we load the <code>movies</code> table instead of <code>genres</code>:</p><pre><code><span class="unchanged"><span class="prefix"> </span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'movies'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span></code></pre><h3 id="using-the-sortedtableinhtmltable-component">Using the <a href="/api/ui-svelte-dom/functions/store-components/sortedtableinhtmltable/"><code>SortedTableInHtmlTable</code></a> Component</h3><p>The app can then swap in a single sorted table, choose the visible columns, and turn on both interactive sorting and pagination:</p><div class="preFile">src/App.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
+  <span class="keyword">import</span> <span class="punctuation">{</span>SortedTableInHtmlTable<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte-dom'</span><span class="punctuation">;</span>
+
+  <span class="keyword">let</span> <span class="punctuation">{</span>store<span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">const</span> customCells <span class="operator">=</span> <span class="punctuation">{</span><span class="literal-property">name</span><span class="operator">:</span> <span class="string">'Name'</span><span class="punctuation">,</span> <span class="literal-property">year</span><span class="operator">:</span> <span class="string">'Year'</span><span class="punctuation">,</span> <span class="literal-property">rating</span><span class="operator">:</span> <span class="string">'Rating'</span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+
+<span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>SortedTableInHtmlTable</span>
+    <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>movies<span class="punctuation">"</span></span>
+    <span class="attr-name">customCells=</span><span class="language-javascript"><span class="punctuation">{</span>customCells<span class="punctuation">}</span></span>
+    <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>rating<span class="punctuation">"</span></span>
+    <span class="attr-name">descending=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">true</span><span class="punctuation">}</span></span>
+    <span class="attr-name">limit=</span><span class="language-javascript"><span class="punctuation">{</span><span class="number">7</span><span class="punctuation">}</span></span>
+    <span class="attr-name">sortOnClick=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">true</span><span class="punctuation">}</span></span>
+    <span class="attr-name">paginator=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">true</span><span class="punctuation">}</span></span>
+  <span class="punctuation">/></span></span>
+<span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
+</code></pre><p>The base styling mostly still works, so we only add the pieces needed for the sorted column and paginator:</p><pre><code><span class="inserted-sign"><span class="prefix">+</span><span class="selector">table</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>  <span class="selector">thead th</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>    <span class="property">width</span><span class="punctuation">:</span> 6rem<span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="selector">&amp;:nth-of-type(2)</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>      <span class="property">width</span><span class="punctuation">:</span> 24rem<span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="punctuation">}</span>
+<span class="prefix">+</span>  <span class="punctuation">}</span>
+<span class="prefix">+</span>  <span class="selector">caption</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>    <span class="property">caption-side</span><span class="punctuation">:</span> top<span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="property">margin-bottom</span><span class="punctuation">:</span> 1rem<span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="property">text-align</span><span class="punctuation">:</span> left<span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="selector">button</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>      <span class="property">margin-right</span><span class="punctuation">:</span> 0.5rem<span class="punctuation">;</span>
+<span class="prefix">+</span>    <span class="punctuation">}</span>
+<span class="prefix">+</span>  <span class="punctuation">}</span>
+<span class="prefix">+</span><span class="punctuation">}</span>
+<span class="prefix">+</span>
+<span class="prefix">+</span><span class="selector">th.sorted</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>  <span class="property">background</span><span class="punctuation">:</span> #ddd<span class="punctuation">;</span>
+<span class="prefix">+</span><span class="punctuation">}</span>
+</span></code></pre><p>Next, let&#x27;s use the same pattern with an <a href="/api/indexes/type-aliases/concept/index/"><code>Index</code></a> in the <a href="/demos/ui-components-svelte/sliceinhtmltable-svelte/">&lt;SliceInHtmlTable /&gt; (Svelte)</a> demo.</p></section></article><aside></aside></main><footer><nav><a id="gh" href="https://github.com/tinyplex/tinybase" target="_blank">GitHub</a><a id="bs" href="https://bsky.app/profile/tinybase.bsky.social" target="_blank">Bluesky</a><a id="tw" href="https://x.com/tinybasejs" target="_blank">X / Twitter</a><a id="dc" href="https://discord.com/invite/mGz3mevwP8" target="_blank">Discord</a></nav><nav><a href="/">TinyBase <span id="version"></span></a> © 2022-</nav></footer><script>window.dataLayer=window.dataLayer||[];function g(){dataLayer.push(arguments);}g('js',new Date());g('config','G-D1MGR8VRWJ');</script></body></html>

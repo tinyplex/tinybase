@@ -1,0 +1,166 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/inspector-svelte/">&lt;Inspector /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/inspector-svelte/" data-id="&lt;IS"><h1>&lt;Inspector /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;#info{align-self:center;background:white;box-shadow:0 0 1rem #0004;padding:1rem 1.5rem}body{align-items:center;justify-content:center}a{color:inherit}@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+
+// demo-files:/demo/src/App.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { Provider, getTableIds } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector&quot;;
+var root_1 = $.from_html(`&lt;div id=&quot;info&quot;&gt; &lt;/div&gt; &lt;!&gt;`, 1);
+function App($$anchor, $$props) {
+  $.push($$props, true);
+  const tableIds = getTableIds(() =&gt; $$props.store);
+  Provider($$anchor, {
+    get store() {
+      return $$props.store;
+    },
+    children: ($$anchor2, $$slotProps) =&gt; {
+      var fragment_1 = root_1();
+      var div = $.first_child(fragment_1);
+      var text = $.child(div);
+      $.reset(div);
+      var node = $.sibling(div, 2);
+      Inspector(node, { open: true });
+      $.template_effect(($0) =&gt; $.set_text(text, `Loaded tables: ${$0 ?? &quot;&quot;}`), [() =&gt; tableIds.current.join(&quot;, &quot;)]);
+      $.append($$anchor2, fragment_1);
+    },
+    $$slots: { default: true }
+  });
+  $.pop();
+}
+
+// ../../../../../../demo/src/main.js
+var NUMERIC = /^[\d\.]+$/;
+var loadTable = async (store, tableId) =&gt; {
+  const rows = (await (await fetch(`https://tinybase.org/assets/${tableId}.tsv`)).text()).split(&quot;\n&quot;);
+  const cellIds = rows.shift().split(&quot;	&quot;);
+  rows.forEach((row) =&gt; {
+    const cells = row.split(&quot;	&quot;);
+    if (cells.length == cellIds.length) {
+      const rowId = cells.shift();
+      cells.forEach((cell, c) =&gt; {
+        if (cell != &quot;&quot;) {
+          store.setCell(
+            tableId,
+            rowId,
+            cellIds[c + 1],
+            NUMERIC.test(cell) ? parseFloat(cell) : cell
+          );
+        }
+      });
+    }
+  });
+};
+var init = async () =&gt; {
+  const store = createStore();
+  store.startTransaction();
+  await Promise.all(
+    [&quot;movies&quot;, &quot;genres&quot;, &quot;people&quot;, &quot;cast&quot;].map(
+      (tableId) =&gt; loadTable(store, tableId)
+    )
+  );
+  store.finishTransaction();
+  mount(App, { target: document.body, props: { store } });
+};
+window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component, which allows you to view and edit the content of a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> in a debug web environment.</p><p>Let&#x27;s make changes to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo so we can start with a well-populated <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> to inspect.</p><h3 id="set-up">Set Up</h3><p>Let&#x27;s import the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
+<span class="prefix"> </span>  {
+<span class="prefix"> </span>    "imports": {
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.2.0-beta.1",
+<span class="prefix"> </span>      "tinybase/ui-svelte": "https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte",
+</span><span class="deleted-sign"><span class="prefix">-</span>      "tinybase/ui-svelte-dom": "https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom",
+</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector",
+</span><span class="unchanged"><span class="prefix"> </span>      "svelte": "https://esm.sh/svelte@^5.55.1"
+<span class="prefix"> </span>    }
+<span class="prefix"> </span>  }
+<span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+</span></code></pre><p>The inspector component is best showcased with a larger data set, so we load up all four tables of the movie database data:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">loadTable</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">store<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span>  <span class="keyword">const</span> rows <span class="operator">=</span> <span class="punctuation">(</span>
+<span class="prefix"> </span>    <span class="keyword">await</span> <span class="punctuation">(</span><span class="keyword">await</span> <span class="function">fetch</span><span class="punctuation">(</span><span class="template-string"><span class="template-punctuation">`</span><span class="string">https://tinybase.org/assets/</span><span class="interpolation"><span class="interpolation-punctuation">${</span>tableId<span class="interpolation-punctuation">}</span></span><span class="string">.tsv</span><span class="template-punctuation">`</span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function">text</span><span class="punctuation">(</span><span class="punctuation">)</span>
+<span class="prefix"> </span>  <span class="punctuation">)</span><span class="punctuation">.</span><span class="function">split</span><span class="punctuation">(</span><span class="string">'\n'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>  <span class="keyword">const</span> cellIds <span class="operator">=</span> rows<span class="punctuation">.</span><span class="function">shift</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function">split</span><span class="punctuation">(</span><span class="string">'\t'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>  rows<span class="punctuation">.</span><span class="function">forEach</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">row</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix"> </span>     <span class="keyword">const</span> cells <span class="operator">=</span> row<span class="punctuation">.</span><span class="function">split</span><span class="punctuation">(</span><span class="string">'\t'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>     <span class="keyword">if</span> <span class="punctuation">(</span>cells<span class="punctuation">.</span>length <span class="operator">==</span> cellIds<span class="punctuation">.</span>length<span class="punctuation">)</span> <span class="punctuation">{</span>
+<span class="prefix"> </span>       <span class="keyword">const</span> rowId <span class="operator">=</span> cells<span class="punctuation">.</span><span class="function">shift</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>       cells<span class="punctuation">.</span><span class="function">forEach</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">cell<span class="punctuation">,</span> c</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix"> </span>         <span class="keyword">if</span> <span class="punctuation">(</span>cell <span class="operator">!=</span> <span class="string">''</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+<span class="prefix"> </span>           store<span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setcell/">setCell</a></span><span class="punctuation">(</span>
+<span class="prefix"> </span>             tableId<span class="punctuation">,</span>
+<span class="prefix"> </span>             rowId<span class="punctuation">,</span>
+<span class="prefix"> </span>             cellIds<span class="punctuation">[</span>c <span class="operator">+</span> <span class="number">1</span><span class="punctuation">]</span><span class="punctuation">,</span>
+<span class="prefix"> </span>             <span class="constant">NUMERIC</span><span class="punctuation">.</span><span class="function">test</span><span class="punctuation">(</span>cell<span class="punctuation">)</span> <span class="operator">?</span> <span class="function">parseFloat</span><span class="punctuation">(</span>cell<span class="punctuation">)</span> <span class="operator">:</span> cell<span class="punctuation">,</span>
+<span class="prefix"> </span>           <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>         <span class="punctuation">}</span>
+<span class="prefix"> </span>       <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>     <span class="punctuation">}</span>
+<span class="prefix"> </span>   <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">-</span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span>
+</span><span class="deleted-sign"><span class="prefix">-</span><span class="keyword">const</span> <span class="function-variable">init</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix">-</span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">-</span>  <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">-</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">-</span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span><span class="keyword">const</span> <span class="function-variable">init</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+<span class="prefix">+</span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="keyword">await</span> Promise<span class="punctuation">.</span><span class="function">all</span><span class="punctuation">(</span>
+<span class="prefix">+</span>    <span class="punctuation">[</span><span class="string">'movies'</span><span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">,</span> <span class="string">'people'</span><span class="punctuation">,</span> <span class="string">'cast'</span><span class="punctuation">]</span><span class="punctuation">.</span><span class="function">map</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">tableId</span><span class="punctuation">)</span> <span class="operator">=></span>
+<span class="prefix">+</span>      <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> tableId<span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="prefix">+</span>    <span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="prefix">+</span>  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span><span class="punctuation">}</span><span class="punctuation">;</span>
+</span></code></pre><p>Let&#x27;s update the app to show some very basic data about the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>:</p><div class="preFile">src/App.svelte</div><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  import <span class="language-javascript"><span class="punctuation">{</span>Provider<span class="punctuation">}</span></span> from 'tinybase/ui-svelte';
+<span class="prefix">-</span>  import <span class="language-javascript"><span class="punctuation">{</span>TableInHtmlTable<span class="punctuation">}</span></span> from 'tinybase/ui-svelte-dom';
+<span class="prefix">-</span>  import DictionaryCell from './DictionaryCell.svelte';
+</span><span class="inserted-sign"><span class="prefix">+</span>  import <span class="language-javascript"><span class="punctuation">{</span>Provider<span class="punctuation">,</span> getTableIds<span class="punctuation">}</span></span> from 'tinybase/ui-svelte';
+<span class="prefix">+</span>  import <span class="language-javascript"><span class="punctuation">{</span>Inspector<span class="punctuation">}</span></span> from 'tinybase/ui-svelte-inspector';
+</span><span class="unchanged"><span class="prefix"> </span>
+<span class="prefix"> </span>  let <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span> = $props();
+</span><span class="deleted-sign"><span class="prefix">-</span> 
+<span class="prefix">-</span>  const customCells = <span class="language-javascript"><span class="punctuation">{</span>
+<span class="prefix">-</span>    <span class="literal-property">name</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">label</span><span class="operator">:</span> <span class="string">'Name'</span><span class="punctuation">,</span> <span class="literal-property">component</span><span class="operator">:</span> DictionaryCell<span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="prefix">-</span>  <span class="punctuation">}</span></span>;
+</span><span class="inserted-sign"><span class="prefix">+</span>  const tableIds = getTableIds(() => store);
+</span><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+<span class="prefix"> </span>
+<span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>TableInHtmlTable</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>genres<span class="punctuation">"</span></span> <span class="punctuation">/></span></span>
+<span class="prefix">-</span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>TableInHtmlTable</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>genres<span class="punctuation">"</span></span> <span class="attr-name">headerRow=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">false</span><span class="punctuation">}</span></span> <span class="attr-name">idColumn=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">false</span><span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
+<span class="prefix">-</span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>TableInHtmlTable</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>genres<span class="punctuation">"</span></span> <span class="attr-name">customCells=</span><span class="language-javascript"><span class="punctuation">{</span>customCells<span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>info<span class="punctuation">"</span></span><span class="punctuation">></span></span>
+<span class="prefix">+</span>    Loaded tables: <span class="language-javascript"><span class="punctuation">{</span>tableIds<span class="punctuation">.</span>current<span class="punctuation">.</span><span class="function">join</span><span class="punctuation">(</span><span class="string">', '</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+<span class="prefix">+</span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+</span><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
+</span></code></pre><pre><code><span class="inserted-sign"><span class="prefix">+</span><span class="selector">body</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>  <span class="property">align-items</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">justify-content</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
+<span class="prefix">+</span><span class="punctuation">}</span>
+</span></code></pre><pre><code><span class="inserted-sign"><span class="prefix">+</span><span class="selector">#info</span> <span class="punctuation">{</span>
+<span class="prefix">+</span>  <span class="property">align-self</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">background</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">box-shadow</span><span class="punctuation">:</span> 0 0 1rem #0004<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">padding</span><span class="punctuation">:</span> 1rem 1.5rem<span class="punctuation">;</span>
+<span class="prefix">+</span><span class="punctuation">}</span>
+</span></code></pre><p>OK, that&#x27;s not much of an app! But at least we can now instantiate the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component.</p><h3 id="using-the-inspector-component">Using The <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> Component</h3><p>The <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component can appear anywhere in the app&#x27;s DOM and will appear as an overlay. It is added to an app like so:</p><div class="preFile">src/App.svelte</div><pre><code><span class="unchanged"><span class="prefix"> </span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>info<span class="punctuation">"</span></span><span class="punctuation">></span></span>
+<span class="prefix"> </span>    Loaded tables: <span class="language-javascript"><span class="punctuation">{</span>tableIds<span class="punctuation">.</span>current<span class="punctuation">.</span><span class="function">join</span><span class="punctuation">(</span><span class="string">', '</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+<span class="prefix"> </span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Inspector</span> <span class="attr-name">open=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">true</span><span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
+</span><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
+</span></code></pre><p>This completes the Svelte demo set for the current UI components, including the debugging overlay.</p></section>
