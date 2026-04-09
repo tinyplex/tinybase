@@ -5,6 +5,71 @@ highlighted features.
 
 ---
 
+# v8.2
+
+## Svelte DOM Components And Inspector
+
+This release completes TinyBase's Svelte support with two new published modules:
+`ui-svelte-dom` and `ui-svelte-inspector`.
+
+The `ui-svelte-dom` module provides browser-ready Svelte components for
+rendering and editing TinyBase data as HTML tables. They mirror the React DOM
+components, but use Svelte component composition and props throughout:
+
+```svelte
+<script>
+  import {createStore} from 'tinybase';
+  import {TableInHtmlTable} from 'tinybase/ui-svelte-dom';
+
+  const store = createStore().setTable('pets', {
+    fido: {species: 'dog', color: 'brown'},
+    felix: {species: 'cat', color: 'black'},
+  });
+</script>
+
+<TableInHtmlTable tableId="pets" {store} editable />
+```
+
+Alongside the table components, the new `ui-svelte-inspector` module brings the
+TinyBase development inspector to Svelte apps too, making it easy to inspect
+and edit Stores, Indexes, Relationships, and Queries during development:
+
+```svelte
+<script>
+  import {createStore} from 'tinybase';
+  import {Provider} from 'tinybase/ui-svelte';
+  import {Inspector} from 'tinybase/ui-svelte-inspector';
+
+  const store = createStore().setTable('pets', {
+    fido: {species: 'dog'},
+  });
+</script>
+
+<Provider {store}>
+  <Inspector />
+</Provider>
+```
+
+Read more in the [Using Svelte DOM
+Components](/guides/building-uis/using-svelte-dom-components/) guide and the
+[Inspecting Data](/guides/inspecting-data/) guide, and explore the [UI
+Components (Svelte)](/demos/ui-components-svelte/) demos to see the new
+modules in action.
+
+## New Demos
+
+This release also adds a complete set of Svelte UI component demos, plus an
+Inspector demo, so you can see the new modules working across Stores, Indexes,
+Relationships, Queries, and editable views.
+
+These demos intentionally mirror the React set where possible, making it easier
+to compare implementation patterns across frameworks.
+
+There are no intended breaking changes in this release. If you spot any issues
+with the new Svelte DOM components or the Svelte inspector, please let us know!
+
+---
+
 # v8.1
 
 ## Svelte Support
@@ -1664,8 +1729,8 @@ components for tabular display of your data in a web application.
 
 The following is the list of all the components released in v4.1:
 
-| Component                    | Purpose                                                    |                                                           |
-| ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| Component                    | Purpose                                                    |                                                                       |
+| ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
 | ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components-react/valuesinhtmltable-react)            |
 | TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components-react/tableinhtmltable-react)             |
 | SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components-react/sortedtableinhtmltable-react)       |
