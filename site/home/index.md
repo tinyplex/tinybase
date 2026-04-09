@@ -342,12 +342,12 @@ root.unmount(); // !act
 > The UI modules also provides bare React and Svelte components that let you
 > build up a fully reactive user interface based on a Store.
 >
-> For React web applications in particular, the new ui-react-dom module provides
-> pre-built components for tabular display of your data, with lots of
+> For React (in the ui-react-dom module) and Svelte (in the ui-svelte-dom
+> module), these provide tabular display of your data, with lots of
 > customization and interactivity options.
 >
-> Try them out in the UI Components (React) demos, and read more about the
-> underlying ui-react module in the Building UIs guides.
+> Try them out in the UI Components (React) demos and UI Components (Svelte)
+> demos, and read more in the Building UIs guides.
 
 <img src='/ui-react-dom.webp' />
 
