@@ -9,12 +9,12 @@ highlighted features.
 
 ## Svelte DOM Components And Inspector
 
-This release completes TinyBase's Svelte support with two new published modules:
-`ui-svelte-dom` and `ui-svelte-inspector`.
+This release completes TinyBase's Svelte support with two new additions: the
+ui-svelte-dom module and the ui-svelte-inspector module.
 
-The `ui-svelte-dom` module provides browser-ready Svelte components for
-rendering and editing TinyBase data as HTML tables. They mirror the React DOM
-components, but use Svelte component composition and props throughout:
+The ui-svelte-dom module provides browser-ready Svelte components for rendering
+and editing TinyBase data as HTML tables. They mirror the React DOM components,
+but use Svelte component composition and props throughout:
 
 ```svelte
 <script>
@@ -30,9 +30,9 @@ components, but use Svelte component composition and props throughout:
 <TableInHtmlTable tableId="pets" {store} editable />
 ```
 
-Alongside the table components, the new `ui-svelte-inspector` module brings the
-TinyBase development inspector to Svelte apps too, making it easy to inspect
-and edit Stores, Indexes, Relationships, and Queries during development:
+Alongside the table components, the new ui-svelte-inspector module brings the
+TinyBase development inspector to Svelte apps too, making it easy to inspect and
+edit Stores, Indexes, Relationships, and Queries during development:
 
 ```svelte
 <script>
@@ -50,11 +50,8 @@ and edit Stores, Indexes, Relationships, and Queries during development:
 </Provider>
 ```
 
-Read more in the [Using Svelte DOM
-Components](/guides/building-uis/using-svelte-dom-components/) guide and the
-[Inspecting Data](/guides/inspecting-data/) guide, and explore the [UI
-Components (Svelte)](/demos/ui-components-svelte/) demos to see the new
-modules in action.
+Read more in the Using Svelte DOM Components guide and the Inspecting Data
+guide.
 
 ## New Demos
 
@@ -118,8 +115,8 @@ The module further includes a provider component and context helpers for sharing
 TinyBase objects across a component tree, and many built-in view components for
 assembling UIs directly from Store data.
 
-Read more in the ui-svelte module documentation and the Building UIs With
-Svelte guide.
+Read more in the ui-svelte module documentation and the Building UIs With Svelte
+guide.
 
 ## New Demos  
 
