@@ -3,9 +3,7 @@
 The reactive components in the ui-react-dom module let you declaratively display
 parts of a Store in a web browser, where the ReactDOM module is available.
 
-These are generally implementations of the components we discussed in the
-previous guide, but are specifically designed to render HTML content in a
-browser.
+These are specifically designed to render HTML content in a browser.
 
 Styling and class names are very basic, since you are expected to style them
 with CSS to fit your app's overall styling.
@@ -14,8 +12,8 @@ The easiest way to understand these components is to see them all in action in
 the UI Components (React) demos. There are table-based components for rendering
 Tables, sorted Tables, Values, and so on:
 
-| Component                    | Purpose                                                    |                                                            |
-| ---------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| Component                    | Purpose                                                    |                                                                        |
+| ---------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------- |
 | ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components-react/valuesinhtmltable-react/)            |
 | TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components-react/tableinhtmltable-react/)             |
 | SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components-react/sortedtableinhtmltable-react/)       |
@@ -26,8 +24,8 @@ Tables, sorted Tables, Values, and so on:
 
 There are also editable components for individual Cells and Values:
 
-| Component         | Purpose                                                 |                                                 |
-| ----------------- | ------------------------------------------------------- | ----------------------------------------------- |
+| Component         | Purpose                                                 |                                                             |
+| ----------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
 | EditableCellView  | Renders a Cell and lets you change its type and value.  | [demo](/demos/ui-components-react/editablecellview-react/)  |
 | EditableValueView | Renders a Value and lets you change its type and value. | [demo](/demos/ui-components-react/editablevalueview-react/) |
 

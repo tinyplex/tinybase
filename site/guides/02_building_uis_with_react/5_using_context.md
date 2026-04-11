@@ -131,5 +131,5 @@ console.log(app.innerHTML);
 We have covered the main parts of the ui-react module, including its hooks and
 components, and the way it supports context to make Store objects available.
 
-Next we talk about how a Store can have a TablesSchema and can be persisted.
-Let's move onto the Schemas guide to find out more.
+For the Svelte equivalents, proceed to the
+[Building UIs With Svelte](/guides/building-uis-with-svelte/) guides.

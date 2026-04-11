@@ -4,9 +4,7 @@ The reactive components in the ui-svelte-dom module let you declaratively
 display parts of a Store in a web browser, where Svelte's DOM runtime is
 available.
 
-These are generally implementations of the components we discussed in the
-previous guide, but are specifically designed to render HTML table content in a
-browser.
+These are specifically designed to render HTML table content in a browser.
 
 Styling and class names are intentionally basic, since you are expected to style
 them with CSS to fit your app's overall visual language.
@@ -37,5 +35,5 @@ If you also want a development overlay for inspecting and editing Stores,
 Indexes, Relationships, Queries, and other TinyBase objects, use the
 ui-svelte-inspector module and the <Inspector /> (Svelte) demo.
 
-This concludes the UI-focused guides. Next we move on to schemas and persistence
-in the Schemas guide.
+The final guide in this section shows how Provider context keeps TinyBase
+objects out of your component props. Please proceed to the Using Context guide.
