@@ -89,12 +89,12 @@
 <section id="friends">
 <h2>TinyBase works great on its own, but also plays well with friends.</h2>
 <div>
-  <a href='/guides/building-uis/getting-started-with-ui-react'>
+  <a href='/guides/building-uis-with-react/getting-started-with-ui-react'>
     <img width="48" src="/react.svg?asImg" /> React
   </a>
 </div>
 <div>
-  <a href='/guides/building-uis/building-uis-with-svelte'>
+  <a href='/guides/building-uis-with-svelte/getting-started-with-ui-svelte'>
     <img width="48" src="/svelte.svg?asImg" /> Svelte
   </a>
 </div>
