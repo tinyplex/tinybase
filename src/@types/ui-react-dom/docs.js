@@ -993,6 +993,17 @@
  * each row.
  * @param props The props for this component.
  * @returns A rendering of the Values in a <table> element.
+ * @images
+ * [
+ *   {
+ *     "src": "/shots/ui-react-dom-valuesinhtmltable-react.png",
+ *     "alt": "ValuesInHtmlTable rendering sample values.",
+ *     "title": "ValuesInHtmlTable rendering sample values.",
+ *     "path": "/demos/ui-components-react/valuesinhtmltable-react/",
+ *     "selector": "table:nth-of-type(1)",
+ *     "framed": true
+ *   }
+ * ]
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The ValuesInHtmlTable component within it then renders the Values

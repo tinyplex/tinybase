@@ -152,11 +152,29 @@ export default tsLint.config(
 
   {
     files: ['src/@types/**/*.js'],
-    settings: {jsdoc: {mode: 'typescript', contexts: ['any']}},
+    settings: {
+      jsdoc: {
+        mode: 'typescript',
+        contexts: ['any'],
+        structuredTags: {
+          images: {
+            name: false,
+            type: false,
+          },
+        },
+      },
+    },
     rules: {
       'jsdoc/check-tag-names': [
         2,
-        {definedTags: ['category', 'packageDocumentation', 'essential']},
+        {
+          definedTags: [
+            'category',
+            'packageDocumentation',
+            'essential',
+            'images',
+          ],
+        },
       ],
       'jsdoc/no-restricted-syntax': [
         2,
