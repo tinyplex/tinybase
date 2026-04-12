@@ -1,13 +1,24 @@
 import {expect, Page, test} from '@playwright/test';
 import {mkdirSync, readdirSync, readFileSync, writeFileSync} from 'fs';
 import {dirname, resolve} from 'path';
-import {getServerFunctions} from './common.ts';
+import {
+  expectedElement,
+  expectedFramedElement,
+  getServerFunctions,
+} from './common.ts';
 
 type DocShot = {
   asset: string;
   framed: boolean;
-  path: string;
+  page: string;
   selector: string;
+};
+
+type DocShotOptions = {
+  framed?: boolean;
+  page?: string;
+  selector?: string;
+  src?: string;
 };
 
 const DOC_SHOT_JSDOC_IMAGES =
@@ -30,7 +41,7 @@ const forEachDeepFile = (
     }
   });
 
-const getDocShotOptions = (tag: string): {[key: string]: any} => {
+const getDocShotOptions = (tag: string): DocShotOptions[] => {
   const parsed = JSON.parse(tag.replaceAll(/\n\s+\*\s?/g, '\n').trim());
   return Array.isArray(parsed) ? parsed : [parsed];
 };
@@ -38,13 +49,10 @@ const getDocShotOptions = (tag: string): {[key: string]: any} => {
 const getDocShot = (
   asset: string,
   framed: boolean,
-  path: string,
+  page: string,
   selector: string,
 ): DocShot => {
-  if (!asset.startsWith('shots/')) {
-    throw new Error(`Doc shot assets must live under shots/: ${asset}`);
-  }
-  return {asset, framed, path, selector};
+  return {asset, framed, page, selector};
 };
 
 const setDocShot = (shot: DocShot): void => {
@@ -63,8 +71,8 @@ const getDocShots = (): Map<string, DocShot> => {
       forEachDeepFile(dir, extension, (filePath) => {
         const file = readFileSync(filePath, 'utf-8');
         [...file.matchAll(DOC_SHOT_JSDOC_IMAGES)].forEach(([, tag = '']) =>
-          getDocShotOptions(tag).forEach(({framed, path, selector, src}) => {
-            if (src == null || path == null || selector == null) {
+          getDocShotOptions(tag).forEach(({framed, page, selector, src}) => {
+            if (src == null || page == null || selector == null) {
               return;
             }
 
@@ -72,7 +80,7 @@ const getDocShots = (): Map<string, DocShot> => {
               getDocShot(
                 src.replace(/^\//, ''),
                 framed === true,
-                path,
+                page,
                 selector,
               ),
             );
@@ -91,26 +99,25 @@ const expectDocShot = async (page: Page, asset: string): Promise<void> => {
   }
 
   expect(normalizePath(new URL(page.url()).pathname)).toEqual(
-    normalizePath(shot.path),
+    normalizePath(shot.page),
   );
 
   const locator = shot.framed
-    ? page.frameLocator('iframe').first().locator(shot.selector).first()
-    : page.locator(shot.selector).first();
-  await expect(locator).toBeVisible();
+    ? await expectedFramedElement(page, shot.selector)
+    : await expectedElement(page, shot.selector);
 
   const screenshot = await locator.screenshot({
     animations: 'disabled',
     caret: 'hide',
   });
-  const assetPath = resolve('site/extras', shot.asset);
+  const snapshotPath = test.info().snapshotPath(...shot.asset.split('/'));
 
   if (process.env.UPDATE_DOC_SHOTS == '1') {
-    mkdirSync(dirname(assetPath), {recursive: true});
-    writeFileSync(assetPath, screenshot);
+    mkdirSync(dirname(snapshotPath), {recursive: true});
+    writeFileSync(snapshotPath, screenshot);
   }
 
-  expect(screenshot).toEqual(readFileSync(assetPath));
+  expect(screenshot).toMatchSnapshot(shot.asset.split('/'));
 };
 
 const {afterAll, beforeAll, describe} = test;
@@ -123,9 +130,9 @@ beforeAll(startServer);
 afterAll(stopServer);
 
 describe('doc-shots', () => {
-  docShotEntries.forEach(([asset, {path}]) => {
+  docShotEntries.forEach(([asset, {page: shotPage}]) => {
     test(asset, async ({page}) => {
-      await expectPage(page, path);
+      await expectPage(page, shotPage);
       await expectDocShot(page, asset);
     });
   });

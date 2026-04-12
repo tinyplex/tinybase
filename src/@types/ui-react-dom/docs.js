@@ -996,10 +996,9 @@
  * @images
  * [
  *   {
- *     "src": "/shots/ui-react-dom-valuesinhtmltable-react.png",
- *     "alt": "ValuesInHtmlTable rendering sample values.",
+ *     "src": "valuesinhtmltable-react-demo.png",
  *     "title": "ValuesInHtmlTable rendering sample values.",
- *     "path": "/demos/ui-components-react/valuesinhtmltable-react/",
+ *     "page": "/demos/ui-components-react/valuesinhtmltable-react/",
  *     "selector": "table:nth-of-type(1)",
  *     "framed": true
  *   }
