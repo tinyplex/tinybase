@@ -30,7 +30,7 @@ const getDocShotRefs = (outDir: string): string[] => {
   }
   const refs: string[] = [];
   forEachDeepFile(shotDir, (filePath) => {
-    refs.push('/' + relative(shotDir, filePath).replaceAll('\\', '/'));
+    refs.push(relative(shotDir, filePath).replaceAll('\\', '/'));
   });
   return refs.sort((a, b) => b.length - a.length);
 };
@@ -40,14 +40,18 @@ const rewritePublishedDocShots = (outDir: string): void => {
   DOC_SHOT_OUTPUT_PATHS.forEach((extension) =>
     forEachDeepFile(outDir, (filePath) => {
       const file = readFileSync(filePath, UTF8);
-      const rewritten = refs.reduce(
-        (file, ref) =>
-          file.replaceAll(
-            new RegExp(`(?<!/shots)${escapeRegExp(ref)}`, 'g'),
-            `/${DOC_SHOT_DIR}${ref}`,
-          ),
-        file,
-      );
+      const rewritten = refs.reduce((file, ref) => {
+        const publishedRef = `/${DOC_SHOT_DIR}/${ref}`;
+        return file
+          .replaceAll(
+            new RegExp(`(?<!/${DOC_SHOT_DIR}/)/${escapeRegExp(ref)}`, 'g'),
+            publishedRef,
+          )
+          .replaceAll(
+            new RegExp(`(?<![/\\w-])${escapeRegExp(ref)}`, 'g'),
+            publishedRef,
+          );
+      }, file);
       if (rewritten != file) {
         writeFileSync(filePath, rewritten, UTF8);
       }
