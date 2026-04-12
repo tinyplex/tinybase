@@ -79,6 +79,8 @@ const ALL_DEFINITIONS = [
 const DIST_DIR = 'dist';
 const DOCS_DIR = 'docs';
 const TMP_DIR = 'tmp';
+const DOC_SHOT_SNAPSHOTS_DIR = 'test/e2e/doc-shots.test.ts-snapshots';
+const DOC_SHOTS_DIR = 'site/extras/shots';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
@@ -140,6 +142,16 @@ const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
       fileCallback?.(path);
     }
   });
+
+const syncDocShots = async () => {
+  try {
+    await removeDir(DOC_SHOTS_DIR);
+  } catch {}
+  if (existsSync(DOC_SHOT_SNAPSHOTS_DIR)) {
+    await ensureDir(DOC_SHOTS_DIR);
+    await promises.cp(DOC_SHOT_SNAPSHOTS_DIR, DOC_SHOTS_DIR, {recursive: true});
+  }
+};
 
 const copyWithReplace = async (src, replacements, dst = src) =>
   await promises.writeFile(
@@ -534,9 +546,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'react/jsx-runtime',
       'url',
       'yjs',
-      ...(module == 'omni'
-        ? []
-        : ['tinybase/store', '../' + uiModule]),
+      ...(module == 'omni' ? [] : ['tinybase/store', '../' + uiModule]),
       ...(module == 'ui-svelte' ||
       module == 'ui-svelte-dom' ||
       module == 'ui-svelte-inspector'
@@ -602,9 +612,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   outputFiles.push(outputFileWithSchemas);
   await copyWithReplace(
     outputFile,
-    [
-      ['../' + uiModule, '../../' + uiModule + '/with-schemas/' + index],
-    ],
+    [['../' + uiModule, '../../' + uiModule + '/with-schemas/' + index]],
     outputFileWithSchemas,
   );
 
@@ -670,6 +678,7 @@ const compileModulesForProd = async () => {
 const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
 
+  await syncDocShots();
   await makeDir(TMP_DIR);
   await esbuild.build({
     entryPoints: ['site/build.ts'],
@@ -680,8 +689,6 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     format: 'esm',
     platform: 'node',
   });
-
-  // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
   await build(esbuild, DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
