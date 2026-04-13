@@ -1,99 +1,55 @@
-import {expect, Page, test} from '@playwright/test';
-import {mkdirSync, readdirSync, readFileSync, writeFileSync} from 'fs';
-import {dirname, resolve} from 'path';
+import {expect, Locator, Page, test} from '@playwright/test';
+import {mkdirSync, writeFileSync} from 'fs';
+import {dirname} from 'path';
 import {
   expectedElement,
   expectedFramedElement,
   getServerFunctions,
 } from './common.ts';
-
-type DocShot = {
-  asset: string;
-  framed: boolean;
-  page: string;
-  selector: string;
-};
-
-type DocShotOptions = {
-  framed?: boolean;
-  page?: string;
-  selector?: string;
-  src?: string;
-};
-
-const DOC_SHOT_JSDOC_IMAGES =
-  /@images\b([\s\S]*?)(?=\n\s*\*\s*\n|\n\s*\*\s*@[a-z]|\n\s*\*\/)/g;
-const DOC_SHOT_PATHS = [['src/@types', '.js']] as const;
-
-let docShots: Map<string, DocShot> | undefined;
-
-const forEachDeepFile = (
-  dir: string,
-  extension: string,
-  callback: (filePath: string) => void,
-) =>
-  readdirSync(dir, {withFileTypes: true}).forEach((entry) => {
-    const path = resolve(dir, entry.name);
-    if (entry.isDirectory()) {
-      forEachDeepFile(path, extension, callback);
-    } else if (path.endsWith(extension)) {
-      callback(path);
-    }
-  });
-
-const getDocShotOptions = (tag: string): DocShotOptions[] => {
-  const parsed = JSON.parse(tag.replaceAll(/\n\s+\*\s?/g, '\n').trim());
-  return Array.isArray(parsed) ? parsed : [parsed];
-};
-
-const getDocShot = (
-  asset: string,
-  framed: boolean,
-  page: string,
-  selector: string,
-): DocShot => {
-  return {asset, framed, page, selector};
-};
-
-const setDocShot = (shot: DocShot): void => {
-  if (docShots!.has(shot.asset)) {
-    throw new Error(`Duplicate doc shot asset: ${shot.asset}`);
-  }
-  docShots!.set(shot.asset, shot);
-};
+import {getDocShotMap} from './doc-shots.ts';
 
 const normalizePath = (path: string): string => path.replace(/\/+$/, '') || '/';
 
-const getDocShots = (): Map<string, DocShot> => {
-  if (docShots == null) {
-    docShots = new Map();
-    DOC_SHOT_PATHS.forEach(([dir, extension]) =>
-      forEachDeepFile(dir, extension, (filePath) => {
-        const file = readFileSync(filePath, 'utf-8');
-        [...file.matchAll(DOC_SHOT_JSDOC_IMAGES)].forEach(([, tag = '']) =>
-          getDocShotOptions(tag).forEach(({framed, page, selector, src}) => {
-            if (src == null || page == null || selector == null) {
-              return;
-            }
-
-            setDocShot(
-              getDocShot(
-                src.replace(/^\//, ''),
-                framed === true,
-                page,
-                selector,
-              ),
-            );
-          }),
-        );
-      }),
-    );
+const getClip = async (
+  page: Page,
+  locator: Locator,
+  marginRem?: number,
+): Promise<{x: number; y: number; width: number; height: number}> => {
+  await locator.scrollIntoViewIfNeeded();
+  const box = await locator.boundingBox();
+  if (box == null) {
+    throw new Error('Unable to determine doc shot bounds');
   }
-  return docShots;
+  const margin =
+    (marginRem ?? 0) *
+    (await locator.evaluate((element) =>
+      parseFloat(
+        getComputedStyle(element.ownerDocument.documentElement).fontSize,
+      ),
+    ));
+  const deviceScaleFactor = await page.evaluate(() => window.devicePixelRatio);
+  const viewport = page.viewportSize();
+  const left = Math.round(Math.max(box.x - margin, 0) * deviceScaleFactor);
+  const top = Math.round(Math.max(box.y - margin, 0) * deviceScaleFactor);
+  const right = Math.round(
+    Math.min(box.x + box.width + margin, viewport?.width ?? Infinity) *
+      deviceScaleFactor,
+  );
+  const bottom = Math.round(
+    Math.min(box.y + box.height + margin, viewport?.height ?? Infinity) *
+      deviceScaleFactor,
+  );
+  return {
+    x: left / deviceScaleFactor,
+    y: top / deviceScaleFactor,
+    width: (right - left) / deviceScaleFactor,
+    height: (bottom - top) / deviceScaleFactor,
+  };
 };
+const docShots = getDocShotMap();
 
 const expectDocShot = async (page: Page, asset: string): Promise<void> => {
-  const shot = getDocShots().get(asset);
+  const shot = docShots.get(asset);
   if (shot == null) {
     throw new Error(`No doc shot metadata found for ${asset}`);
   }
@@ -106,9 +62,13 @@ const expectDocShot = async (page: Page, asset: string): Promise<void> => {
     ? await expectedFramedElement(page, shot.selector)
     : await expectedElement(page, shot.selector);
 
-  const screenshot = await locator.screenshot({
+  const screenshot = await page.screenshot({
     animations: 'disabled',
     caret: 'hide',
+    clip: await getClip(page, locator, shot.marginRem),
+    omitBackground: shot.omitBackground,
+    scale: 'device',
+    style: shot.style,
   });
   const snapshotPath = test.info().snapshotPath(...shot.asset.split('/'));
 
@@ -122,12 +82,13 @@ const expectDocShot = async (page: Page, asset: string): Promise<void> => {
 
 const {afterAll, beforeAll, describe} = test;
 const [startServer, stopServer, expectPage] = getServerFunctions(8812);
-const docShotEntries = [...getDocShots().entries()].sort(([a], [b]) =>
+const docShotEntries = [...docShots.entries()].sort(([a], [b]) =>
   a.localeCompare(b),
 );
 
 beforeAll(startServer);
 afterAll(stopServer);
+test.use({deviceScaleFactor: 2});
 
 describe('doc-shots', () => {
   docShotEntries.forEach(([asset, {page: shotPage}]) => {
