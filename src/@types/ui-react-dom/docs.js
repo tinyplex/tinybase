@@ -973,6 +973,9 @@
  *
  * See the <ValuesInHtmlTable /> (React) demo for this component in action.
  *
+ * Rendered example: ![ValuesInHtmlTable example.](
+ * valuesinhtmltable-react-demo.png "ValuesInHtmlTable example.").
+ *
  * The component's props identify which Row to render based on Table Id, Row Id,
  * and Store (which is either the default context Store, a named context Store,
  * or an explicit reference).
@@ -993,16 +996,6 @@
  * each row.
  * @param props The props for this component.
  * @returns A rendering of the Values in a <table> element.
- * @images
- * [
- *   {
- *     "src": "valuesinhtmltable-react-demo.png",
- *     "title": "ValuesInHtmlTable rendering sample values.",
- *     "page": "/demos/ui-components-react/valuesinhtmltable-react/",
- *     "selector": "table:nth-of-type(1)",
- *     "framed": true
- *   }
- * ]
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The ValuesInHtmlTable component within it then renders the Values
