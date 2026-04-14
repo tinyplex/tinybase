@@ -664,7 +664,10 @@
  * Store as an HTML <table> element, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <TableInHtmlTable /> (Svelte) demo for this component in action.
+ * See the <TableInHtmlTable /> (Svelte) demo for this component in action:
+ *
+ * ![TableInHtmlTable example](/shots/tableinhtmltable-svelte-demo.png
+ * "TableInHtmlTable example")
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -822,7 +825,11 @@
  * that any changes to that result will cause a re-render.
  *
  * See the <SortedTableInHtmlTable /> (Svelte) demo for this component in
- * action.
+ * action:
+ *
+ * ![SortedTableInHtmlTable example](
+ * /shots/sortedtableinhtmltable-svelte-demo.png
+ * "SortedTableInHtmlTable example")
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -1004,7 +1011,10 @@
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
  *
- * See the <ValuesInHtmlTable /> (Svelte) demo for this component in action.
+ * See the <ValuesInHtmlTable /> (Svelte) demo for this component in action:
+ *
+ * ![ValuesInHtmlTable example](/shots/valuesinhtmltable-svelte-demo.png
+ * "ValuesInHtmlTable example")
  *
  * The component's props identify which Row to render based on Table Id, Row Id,
  * and Store (which is either the default context Store, a named context Store,
@@ -1141,7 +1151,10 @@
  * <table> element, and registers a listener so that any changes to that result
  * will cause a re-render.
  *
- * See the <SliceInHtmlTable /> (Svelte) demo for this component in action.
+ * See the <SliceInHtmlTable /> (Svelte) demo for this component in action:
+ *
+ * ![SliceInHtmlTable example](/shots/sliceinhtmltable-svelte-demo.png
+ * "SliceInHtmlTable example")
  *
  * The component's props identify which Slice to render based on Index Id, Slice
  * Id, and Indexes object (which is either the default context Indexes object, a
@@ -1307,7 +1320,11 @@
  * so that any changes to that result will cause a re-render.
  *
  * See the <RelationshipInHtmlTable /> (Svelte) demo for this component in
- * action.
+ * action:
+ *
+ * ![RelationshipInHtmlTable example](
+ * /shots/relationshipinhtmltable-svelte-demo.png
+ * "RelationshipInHtmlTable example")
  *
  * The component's props identify which Relationship to render based on
  * Relationship Id and Relationships object (which is either the default context
@@ -1488,7 +1505,11 @@
  * listener so that any changes to that result will cause a re-render.
  *
  * See the <ResultTableInHtmlTable /> (Svelte) demo for this component in
- * action.
+ * action:
+ *
+ * ![ResultTableInHtmlTable example](
+ * /shots/resulttableinhtmltable-svelte-demo.png
+ * "ResultTableInHtmlTable example")
  *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
@@ -1651,7 +1672,11 @@
  * re-render.
  *
  * See the <ResultSortedTableInHtmlTable /> (Svelte) demo for this component in
- * action.
+ * action:
+ *
+ * ![ResultSortedTableInHtmlTable example](
+ * /shots/resultsortedtableinhtmltable-svelte-demo.png
+ * "ResultSortedTableInHtmlTable example")
  *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
@@ -1834,7 +1859,10 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <EditableCellView /> (Svelte) demo for this component in action.
+ * See the <EditableCellView /> (Svelte) demo for this component in action:
+ *
+ * ![EditableCellView example](/shots/editablecellview-svelte-demo.png
+ * "EditableCellView example")
  *
  * The component's props identify which Cell to render based on Table Id, Row
  * Id, Cell Id, and Store (which is either the default context Store, a named
@@ -1901,7 +1929,10 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <EditableValueView /> (Svelte) demo for this component in action.
+ * See the <EditableValueView /> (Svelte) demo for this component in action:
+ *
+ * ![EditableValueView example](/shots/editablevalueview-svelte-demo.png
+ * "EditableValueView example")
  *
  * The component's props identify which Value to render based on Table Id, Row
  * Id, Value Id, and Store (which is either the default context Store, a named
@@ -1967,7 +1998,10 @@
  * The SortedTablePaginator component renders a paginator for a sorted table.
  *
  * See the <SortedTableInHtmlTable /> (Svelte) demo for this component in
- * action.
+ * action:
+ *
+ * ![SortedTablePaginator example](/shots/sortedtablepaginator-svelte-demo.png
+ * "SortedTablePaginator example")
  *
  * The component displays 'previous' and 'next' buttons for paging through the
  * Table if there are more Row Ids than fit in each page. The component will
