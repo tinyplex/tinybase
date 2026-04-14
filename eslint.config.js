@@ -184,7 +184,6 @@ export default tsLint.config(
       ],
       'jsdoc/require-jsdoc': 2,
       'jsdoc/require-description': 2,
-      'jsdoc/require-description-complete-sentence': 2,
       'jsdoc/require-returns-description': 2,
       'jsdoc/no-blank-blocks': 2,
       'jsdoc/require-param-type': 0,

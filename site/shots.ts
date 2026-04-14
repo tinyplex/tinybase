@@ -72,7 +72,11 @@ const rewritePublishedDocShots = (outDir: string): void => {
         const publishedRef = `/${DOC_SHOT_DIR}/${ref}`;
         return file
           .replaceAll(
-            new RegExp(`(?<!/${DOC_SHOT_DIR}/)/${escapeRegExp(ref)}`, 'g'),
+            new RegExp(`(?<!${DOC_SHOT_DIR})/${escapeRegExp(ref)}`, 'g'),
+            publishedRef,
+          )
+          .replaceAll(
+            new RegExp(`(?<!/)${escapeRegExp(`${DOC_SHOT_DIR}/${ref}`)}`, 'g'),
             publishedRef,
           )
           .replaceAll(

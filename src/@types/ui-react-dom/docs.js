@@ -664,7 +664,10 @@
  * Store as an HTML <table> element, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <TableInHtmlTable /> (React) demo for this component in action.
+ * See the <TableInHtmlTable /> (React) demo for this component in action:
+ *
+ * ![TableInHtmlTable example](/shots/tableinhtmltable-react-demo.png
+ * "TableInHtmlTable example")
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -804,7 +807,11 @@
  * that any changes to that result will cause a re-render.
  *
  * See the <SortedTableInHtmlTable /> (React) demo for this component in
- * action.
+ * action:
+ *
+ * ![SortedTableInHtmlTable example](
+ * /shots/sortedtableinhtmltable-react-demo.png
+ * "SortedTableInHtmlTable example")
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -971,10 +978,10 @@
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
  *
- * See the <ValuesInHtmlTable /> (React) demo for this component in action.
+ * See the <ValuesInHtmlTable /> (React) demo for this component in action:
  *
- * Rendered example: ![ValuesInHtmlTable example.](
- * valuesinhtmltable-react-demo.png "ValuesInHtmlTable example.").
+ * ![ValuesInHtmlTable example](/shots/valuesinhtmltable-react-demo.png
+ * "ValuesInHtmlTable example")
  *
  * The component's props identify which Row to render based on Table Id, Row Id,
  * and Store (which is either the default context Store, a named context Store,
@@ -1099,7 +1106,10 @@
  * <table> element, and registers a listener so that any changes to that result
  * will cause a re-render.
  *
- * See the <SliceInHtmlTable /> (React) demo for this component in action.
+ * See the <SliceInHtmlTable /> (React) demo for this component in action:
+ *
+ * ![SliceInHtmlTable example](/shots/sliceinhtmltable-react-demo.png
+ * "SliceInHtmlTable example")
  *
  * The component's props identify which Slice to render based on Index Id, Slice
  * Id, and Indexes object (which is either the default context Indexes object, a
@@ -1251,7 +1261,11 @@
  * so that any changes to that result will cause a re-render.
  *
  * See the <RelationshipInHtmlTable /> (React) demo for this component in
- * action.
+ * action:
+ *
+ * ![RelationshipInHtmlTable example](
+ * /shots/relationshipinhtmltable-react-demo.png
+ * "RelationshipInHtmlTable example")
  *
  * The component's props identify which Relationship to render based on
  * Relationship Id and Relationships object (which is either the default context
@@ -1423,7 +1437,11 @@
  * listener so that any changes to that result will cause a re-render.
  *
  * See the <ResultTableInHtmlTable /> (React) demo for this component in
- * action.
+ * action:
+ *
+ * ![ResultTableInHtmlTable example](
+ * /shots/resulttableinhtmltable-react-demo.png
+ * "ResultTableInHtmlTable example")
  *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
@@ -1570,7 +1588,11 @@
  * re-render.
  *
  * See the <ResultSortedTableInHtmlTable /> (React) demo for this component in
- * action.
+ * action:
+ *
+ * ![ResultSortedTableInHtmlTable example](
+ * /shots/resultsortedtableinhtmltable-react-demo.png
+ * "ResultSortedTableInHtmlTable example")
  *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
@@ -1738,7 +1760,10 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <EditableCellView /> (React) demo for this component in action.
+ * See the <EditableCellView /> (React) demo for this component in action:
+ *
+ * ![EditableCellView example](/shots/editablecellview-react-demo.png
+ * "EditableCellView example")
  *
  * The component's props identify which Cell to render based on Table Id, Row
  * Id, Cell Id, and Store (which is either the default context Store, a named
@@ -1803,7 +1828,10 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <EditableValueView /> (React) demo for this component in action.
+ * See the <EditableValueView /> (React) demo for this component in action:
+ *
+ * ![EditableValueView example](/shots/editablevalueview-react-demo.png
+ * "EditableValueView example")
  *
  * The component's props identify which Value to render based on Table Id, Row
  * Id, Value Id, and Store (which is either the default context Store, a named
@@ -1865,7 +1893,10 @@
  * The SortedTablePaginator component renders a paginator for a sorted table.
  *
  * See the <SortedTableInHtmlTable /> (React) demo for this component in
- * action.
+ * action:
+ *
+ * ![SortedTablePaginator example](/shots/sortedtablepaginator-react-demo.png
+ * "SortedTablePaginator example")
  *
  * The component displays 'previous' and 'next' buttons for paging through the
  * Table if there are more Row Ids than fit in each page. The component will
