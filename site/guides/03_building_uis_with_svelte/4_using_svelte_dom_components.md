@@ -4,32 +4,56 @@ The reactive components in the ui-svelte-dom module let you declaratively
 display parts of a Store in a web browser, where Svelte's DOM runtime is
 available.
 
-These are specifically designed to render HTML table content in a browser.
+These are specifically designed to render HTML table content in a browser. Here
+are a few representative examples:
+
+The ValuesInHtmlTable component is the simplest way to render Store values:
+
+![ValuesInHtmlTable example](/shots/valuesinhtmltable-svelte-demo.png
+"ValuesInHtmlTable example")
+
+The RelationshipInHtmlTable component renders related local and remote rows side
+by side:
+
+![RelationshipInHtmlTable example](/shots/relationshipinhtmltable-svelte-demo.png
+"RelationshipInHtmlTable example")
 
 Styling and class names are intentionally basic, since you are expected to style
 them with CSS to fit your app's overall visual language.
 
-The easiest way to understand these components is to see them in action in the
-UI Components (Svelte) demos:
+The easiest way to understand these components is to see them all in action in
+the UI Components (Svelte) demos. There are table-based components for
+rendering Tables, sorted Tables, Values, and so on:
 
-| Component                                                                                                     | Purpose                                                    |                                                                          |
-| ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
-| [ValuesInHtmlTable](/api/ui-svelte-dom/functions/store-components/valuesinhtmltable/)                         | Renders Values.                                            | [demo](/demos/ui-components-svelte/valuesinhtmltable-svelte/)            |
-| [TableInHtmlTable](/api/ui-svelte-dom/functions/store-components/tableinhtmltable/)                           | Renders a Table.                                           | [demo](/demos/ui-components-svelte/tableinhtmltable-svelte/)             |
-| [SortedTableInHtmlTable](/api/ui-svelte-dom/functions/store-components/sortedtableinhtmltable/)               | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components-svelte/sortedtableinhtmltable-svelte/)       |
-| [SliceInHtmlTable](/api/ui-svelte-dom/functions/indexes-components/sliceinhtmltable/)                         | Renders a Slice from an Index.                             | [demo](/demos/ui-components-svelte/sliceinhtmltable-svelte/)             |
-| [RelationshipInHtmlTable](/api/ui-svelte-dom/functions/relationships-components/relationshipinhtmltable/)     | Renders the local and remote Tables of a relationship.     | [demo](/demos/ui-components-svelte/relationshipinhtmltable-svelte/)      |
-| [ResultTableInHtmlTable](/api/ui-svelte-dom/functions/queries-components/resulttableinhtmltable/)             | Renders a ResultTable.                                     | [demo](/demos/ui-components-svelte/resulttableinhtmltable-svelte/)       |
-| [ResultSortedTableInHtmlTable](/api/ui-svelte-dom/functions/queries-components/resultsortedtableinhtmltable/) | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/) |
-| [EditableValueView](/api/ui-svelte-dom/functions/store-components/editablevalueview/)                         | Renders a Value and lets you change its type/value.        | [demo](/demos/ui-components-svelte/editablevalueview-svelte/)            |
-| [EditableCellView](/api/ui-svelte-dom/functions/store-components/editablecellview/)                           | Renders a Cell and lets you change its type/value.         | [demo](/demos/ui-components-svelte/editablecellview-svelte/)             |
+| Component                    | Purpose                                                    |                                                                          |
+| ---------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components-svelte/valuesinhtmltable-svelte/)            |
+| TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components-svelte/tableinhtmltable-svelte/)             |
+| SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components-svelte/sortedtableinhtmltable-svelte/)       |
+| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components-svelte/sliceinhtmltable-svelte/)             |
+| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship.     | [demo](/demos/ui-components-svelte/relationshipinhtmltable-svelte/)      |
+| ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components-svelte/resulttableinhtmltable-svelte/)       |
+| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/) |
+
+There are also editable components for individual Cells and Values:
+
+| Component         | Purpose                                                 |                                                               |
+| ----------------- | ------------------------------------------------------- | ------------------------------------------------------------- |
+| EditableCellView  | Renders a Cell and lets you change its type and value.  | [demo](/demos/ui-components-svelte/editablecellview-svelte/)  |
+| EditableValueView | Renders a Value and lets you change its type and value. | [demo](/demos/ui-components-svelte/editablevalueview-svelte/) |
+
+The EditableValueView component shows the inline editing controls used by the
+editable components:
+
+![EditableValueView example](/shots/editablevalueview-svelte-demo.png
+"EditableValueView example")
 
 Like ui-svelte itself, the module uses Svelte components rather than React
 components, so customization is done by passing component constructors, not
 functions that return JSX.
 
-The demos intentionally mirror the React DOM set so it is easy to compare the
-framework-specific code side by side.
+Having said that, the demos intentionally mirror the React DOM set so it is easy
+to compare the framework-specific code side by side.
 
 If you also want a development overlay for inspecting and editing Stores,
 Indexes, Relationships, Queries, and other TinyBase objects, use the
