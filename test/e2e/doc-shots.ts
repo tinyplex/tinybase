@@ -1,5 +1,6 @@
 export type DocShot = {
   asset: string;
+  clicks?: string[];
   framed: boolean;
   marginRem?: number;
   omitBackground?: boolean;
@@ -13,6 +14,24 @@ const TABLE_DOC_SHOT_STYLE =
   'table{box-shadow:none!important;filter:none!important}';
 const EDIT_DOC_SHOT_STYLE =
   'body{background:#f6d8e5!important}#edit{box-shadow:none!important}';
+const INSPECTOR_DOC_SHOT_STYLE =
+  'html,body{' +
+  'background:#f6d8e5!important;margin:0!important;padding:0!important}' +
+  'aside#tinybaseInspector{' +
+  'position:static!important;display:inline-block!important;' +
+  'padding:1rem!important;background:#f6d8e5!important;box-sizing:border-box}' +
+  'aside#tinybaseInspector>img{display:none!important}' +
+  'aside#tinybaseInspector main{' +
+  'display:inline-flex!important;flex:none!important;' +
+  'overflow:visible!important;' +
+  'box-shadow:none!important;' +
+  'position:static!important;top:auto!important;right:auto!important;' +
+  'bottom:auto!important;left:auto!important;width:auto!important;' +
+  'height:auto!important;max-height:none!important}' +
+  'aside#tinybaseInspector header{' +
+  'position:static!important;width:auto!important;box-shadow:none!important}' +
+  'aside#tinybaseInspector article{' +
+  'padding-top:0!important;flex:none!important;overflow:visible!important}';
 
 export const DOC_SHOTS: readonly DocShot[] = [
   {
@@ -46,6 +65,36 @@ export const DOC_SHOTS: readonly DocShot[] = [
     page: '/demos/ui-components-svelte/editablevalueview-svelte/',
     selector: '#edit',
     style: EDIT_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'inspector-react-demo.png',
+    clicks: [
+      'aside#tinybaseInspector article > details > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > div > details:nth-of-type(2) > summary',
+    ],
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/inspector-react/',
+    selector: 'aside#tinybaseInspector',
+    style: INSPECTOR_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'inspector-svelte-demo.png',
+    clicks: [
+      'aside#tinybaseInspector article > details > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > div > details:nth-of-type(2) > summary',
+    ],
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/inspector-svelte/',
+    selector: 'aside#tinybaseInspector',
+    style: INSPECTOR_DOC_SHOT_STYLE,
   },
   {
     asset: 'relationshipinhtmltable-react-demo.png',

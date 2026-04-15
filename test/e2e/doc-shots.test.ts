@@ -1,4 +1,4 @@
-import {expect, Locator, Page, test} from '@playwright/test';
+import {expect, Frame, Locator, Page, test} from '@playwright/test';
 import {mkdirSync, writeFileSync} from 'fs';
 import {dirname} from 'path';
 import {
@@ -12,13 +12,17 @@ const normalizePath = (path: string): string => path.replace(/\/+$/, '') || '/';
 const FRAMED_DOC_SHOT_MIN_HEIGHT = 10_000;
 const DOC_SHOT_VIEWPORT = {width: 1440, height: 2400};
 
+const getFirstFrame = async (page: Page): Promise<Frame | undefined> => {
+  const handle = await page.locator('iframe').first().elementHandle();
+  return handle?.contentFrame();
+};
+
 const prepareFirstFrame = async (
   page: Page,
 ): Promise<void> => {
   const iframe = page.locator('iframe').first();
   await expect(iframe).toBeVisible();
-  const handle = await iframe.elementHandle();
-  const frame = await handle?.contentFrame();
+  const frame = await getFirstFrame(page);
   if (frame == null) {
     return;
   }
@@ -51,6 +55,34 @@ const prepareFirstFrame = async (
     height: Math.max(height, FRAMED_DOC_SHOT_MIN_HEIGHT),
     width,
   });
+};
+
+const applyDocShotStyle = async (
+  page: Page,
+  shot: {framed: boolean; style?: string},
+): Promise<void> => {
+  if (shot.style == null) {
+    return;
+  }
+  if (shot.framed) {
+    const frame = await getFirstFrame(page);
+    await frame?.addStyleTag({content: shot.style});
+  } else {
+    await page.addStyleTag({content: shot.style});
+  }
+};
+
+const performDocShotClicks = async (
+  page: Page,
+  shot: {clicks?: string[]; framed: boolean},
+): Promise<void> => {
+  for (const selector of shot.clicks ?? []) {
+    const locator = shot.framed
+      ? page.frameLocator('iframe').first().locator(selector).first()
+      : page.locator(selector).first();
+    await locator.waitFor();
+    await locator.click();
+  }
 };
 
 const getClip = async (
@@ -141,6 +173,9 @@ const expectDocShot = async (page: Page, asset: string): Promise<void> => {
   if (shot.framed) {
     await prepareFirstFrame(page);
   }
+
+  await applyDocShotStyle(page, shot);
+  await performDocShotClicks(page, shot);
 
   const locator = shot.framed
     ? await expectedFramedElement(page, shot.selector)
