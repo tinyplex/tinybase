@@ -1,5 +1,7 @@
 # Countries (React)
 
+![Countries (React) demo thumbnail](/shots/countries-react-demo.png "Thumbnail")
+
 In this demo, we build a simple app that uses React and a simple Store object
 to load and display country data.
 

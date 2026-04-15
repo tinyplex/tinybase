@@ -1,5 +1,7 @@
 # Hello World (React)
 
+![Hello World (React) demo thumbnail](/shots/hello-world-react-demo.png "Thumbnail")
+
 In this demo, we use React to render data in the Store object and then change a
 Cell to see the display update.
 

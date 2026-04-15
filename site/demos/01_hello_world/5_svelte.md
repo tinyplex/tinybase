@@ -1,5 +1,7 @@
 # Hello World (Svelte)
 
+![Hello World (Svelte) demo thumbnail](/shots/hello-world-svelte-demo.png "Thumbnail")
+
 In this demo, we use Svelte to render data in the Store object and then change
 the Cell to see the display update.
 

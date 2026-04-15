@@ -85,6 +85,25 @@ const performDocShotClicks = async (
   }
 };
 
+const waitForDocShotReady = async (
+  page: Page,
+  shot: {
+    readySelector?: string;
+    readyText?: string | RegExp;
+    readyTimeout?: number;
+  },
+): Promise<void> => {
+  if (shot.readySelector == null) {
+    return;
+  }
+  await expectedFramedElement(
+    page,
+    shot.readySelector,
+    shot.readyText,
+    shot.readyTimeout,
+  );
+};
+
 const getClip = async (
   page: Page,
   locator: Locator,
@@ -175,6 +194,7 @@ const expectDocShot = async (page: Page, asset: string): Promise<void> => {
   }
 
   await applyDocShotStyle(page, shot);
+  await waitForDocShotReady(page, shot);
   await performDocShotClicks(page, shot);
 
   const locator = shot.framed

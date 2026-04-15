@@ -1,5 +1,7 @@
 # Movie Database
 
+![Movie Database demo thumbnail](/shots/movie-database-demo.png "Thumbnail")
+
 In this demo, we build an app that showcases the relational query capabilities
 of TinyBase v2.0, joining together information about movies, directors, and
 actors.

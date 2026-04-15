@@ -1,5 +1,7 @@
 # Hello World (Vanilla)
 
+![Hello World (Vanilla) demo thumbnail](/shots/hello-world-vanilla-demo.png "Thumbnail")
+
 In this demo, we set data in, and then get data from, a Store object. We're
 using keyed values (not even tabular data!), so this is about as simple as it
 gets.
