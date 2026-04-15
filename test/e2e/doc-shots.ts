@@ -14,24 +14,19 @@ const TABLE_DOC_SHOT_STYLE =
   'table{box-shadow:none!important;filter:none!important}';
 const EDIT_DOC_SHOT_STYLE =
   'body{background:#f6d8e5!important}#edit{box-shadow:none!important}';
-const INSPECTOR_DOC_SHOT_STYLE =
-  'html,body{' +
-  'background:#f6d8e5!important;margin:0!important;padding:0!important}' +
-  'aside#tinybaseInspector{' +
-  'position:static!important;display:inline-block!important;' +
-  'padding:1rem!important;background:#f6d8e5!important;box-sizing:border-box}' +
-  'aside#tinybaseInspector>img{display:none!important}' +
-  'aside#tinybaseInspector main{' +
-  'display:inline-flex!important;flex:none!important;' +
-  'overflow:visible!important;' +
-  'box-shadow:none!important;' +
-  'position:static!important;top:auto!important;right:auto!important;' +
-  'bottom:auto!important;left:auto!important;width:auto!important;' +
-  'height:auto!important;max-height:none!important}' +
-  'aside#tinybaseInspector header{' +
-  'position:static!important;width:auto!important;box-shadow:none!important}' +
-  'aside#tinybaseInspector article{' +
-  'padding-top:0!important;flex:none!important;overflow:visible!important}';
+const INSPECTOR = 'aside#tinybaseInspector';
+const INSPECTOR_DOC_SHOT_STYLE = [
+  'html,body{background:#f6d8e5;margin:0;padding:0}',
+  `${INSPECTOR}{position:static;display:inline-block;` +
+    'padding:1rem;background:#f6d8e5}',
+  `${INSPECTOR}>img{display:none}`,
+  `${INSPECTOR} main{` +
+    'position:static!important;display:inline-flex!important;' +
+    'width:auto!important;height:auto!important;flex:none!important;' +
+    'overflow:visible!important;box-shadow:none!important}',
+  `${INSPECTOR} header{position:static;width:auto;box-shadow:none}`,
+  `${INSPECTOR} article{padding-top:0;flex:none;overflow:visible}`,
+].join('');
 
 export const DOC_SHOTS: readonly DocShot[] = [
   {
