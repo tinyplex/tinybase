@@ -1,5 +1,7 @@
 # <EditableCellView /> (React)
 
+![EditableCellView demo thumbnail](/shots/editablecellview-react-demo.png "Thumbnail: EditableCellView demo")
+
 In this demo, we showcase the EditableCellView component, which allows you to
 edit Cell values in the Store in a web environment.
 

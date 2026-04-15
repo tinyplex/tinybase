@@ -1,5 +1,7 @@
 # <SliceInHtmlTable /> (Svelte)
 
+![SliceInHtmlTable demo thumbnail](/shots/sliceinhtmltable-svelte-demo.png "Thumbnail: SliceInHtmlTable demo")
+
 In this demo, we showcase the SliceInHtmlTable component, a way to display the
 Slice portions of an Index.
 

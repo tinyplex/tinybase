@@ -14,7 +14,7 @@ const DOC_SHOT_VIEWPORT = {width: 1440, height: 2400};
 
 const getFirstFrame = async (page: Page): Promise<Frame | undefined> => {
   const handle = await page.locator('iframe').first().elementHandle();
-  return handle?.contentFrame();
+  return (await handle?.contentFrame()) ?? undefined;
 };
 
 const prepareFirstFrame = async (

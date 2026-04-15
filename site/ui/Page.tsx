@@ -6,6 +6,7 @@ import {
   usePageNode,
   useRootNode,
 } from 'tinydocs';
+import {getSummaryMarkdown} from '../thumbnail.ts';
 import {BuildContext} from './BuildContext.tsx';
 import {Footer} from './Footer.tsx';
 import {Header} from './Header.tsx';
@@ -35,7 +36,9 @@ export const Page: NoPropComponent = () => {
     (pageNode.name != 'TinyBase' ? pageNode.name + ' | ' : '') + 'TinyBase';
   const description = isHome
     ? 'A reactive data store and sync engine.'
-    : (NodeSummary({node: pageNode, asText: true}) as any);
+    : pageNode.reflection == null
+      ? getSummaryMarkdown(pageNode).replace(/\s+/g, ' ')
+      : (NodeSummary({node: pageNode, asText: true}) as unknown as string);
   const url = `${baseUrl}${pageNode.url}`;
 
   return (

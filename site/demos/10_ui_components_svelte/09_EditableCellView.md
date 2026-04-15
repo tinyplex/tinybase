@@ -1,5 +1,7 @@
 # <EditableCellView /> (Svelte)
 
+![EditableCellView demo thumbnail](/shots/editablecellview-svelte-demo.png "Thumbnail: EditableCellView demo")
+
 In this demo, we showcase the EditableCellView component, which allows you to
 edit Cell values from a Svelte-based web UI.
 

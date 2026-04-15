@@ -20,7 +20,19 @@ type ResolvedExecutables = {
   tsx: string;
 };
 
-type DemoNode = Node & {__demoDoc?: string};
+export const hasExecutables = (node: Node): boolean => {
+  const executables = node.executables;
+  if (executables == null) {
+    return false;
+  }
+  const {files = {}, html = '', less = '', tsx = ''} = executables;
+  return (
+    Object.keys(files).length > 0 ||
+    html.trim() != '' ||
+    less.trim() != '' ||
+    tsx.trim() != ''
+  );
+};
 
 const getImportMap = (html: string): {[specifier: string]: string} =>
   Object.assign(
@@ -192,13 +204,17 @@ const getDemoDoc = async (
   baseUrl: string,
 ): Promise<string> => {
   const {files, html, less, tsx} = executables;
+  const importMap = getImportMap(html);
+  const react =
+    importMap.react != null ||
+    importMap['react-dom/client'] != null ||
+    importMap['react/jsx-runtime'] != null;
   const allFiles = {
     ...files,
     ...(tsx == '' || Object.keys(files).some((path) => JS_FILE_REGEX.test(path))
       ? {}
-      : {'src/main.js': tsx}),
+      : {[react ? 'src/main.jsx' : 'src/main.js']: tsx}),
   };
-  const importMap = getImportMap(html);
   const entryFileName = getEntryFileName(allFiles);
   let extraCss = less == '' ? '' : getCss(less);
   const moduleFiles: {[path: string]: string} = {};
@@ -256,7 +272,7 @@ export const addDemoDocs = async (
 ): Promise<void> => {
   const demoDocs: Promise<void>[] = [];
   docs.forEachNode((node) => {
-    if (Object.keys(node.executables?.files ?? {}).length == 0) {
+    if (!hasExecutables(node)) {
       return;
     }
     demoDocs.push(
@@ -265,7 +281,7 @@ export const addDemoDocs = async (
         node.executables as ResolvedExecutables,
         baseUrl,
       ).then((demoDoc) => {
-        (node as DemoNode).__demoDoc = demoDoc;
+        (node as Node & {__demoDoc?: string}).__demoDoc = demoDoc;
       }),
     );
   });

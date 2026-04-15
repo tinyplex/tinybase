@@ -40,6 +40,23 @@ body > main > article {
   img[title^='Thumbnail'] {
     width: 50%;
   }
+  section.withThumbnail {
+    margin-bottom: 2.5rem;
+    > .thumbnailPanel {
+      display: grid;
+      gap: 1.5rem;
+      > img {
+        width: 100%;
+        max-height: 8rem;
+        object-fit: cover;
+        object-position: top left;
+        margin: 0;
+      }
+      > div > :first-child {
+        margin-top: 0;
+      }
+    }
+  }
   .essential {
     background-color: @accentColor;
     color: @backColor;
@@ -55,6 +72,12 @@ body > main > article {
   body > main > article {
     a#sbEdit {
       display: inline;
+    }
+    section.withThumbnail {
+      > .thumbnailPanel {
+        grid-template-columns: minmax(9rem, 12rem) 1fr;
+        align-items: start;
+      }
     }
     img[title^='Thumbnail'] {
       margin: 0 1rem 2rem 0;
