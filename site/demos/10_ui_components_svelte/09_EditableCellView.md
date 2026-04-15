@@ -25,8 +25,11 @@ other two tables with a focused editor for one specific Cell:
 <Provider {store}>
   <TableInHtmlTable tableId="genres" editable={true} />
   <div id="edit">
-    Genre g05 name:
-    <EditableCellView tableId="genres" rowId="g05" cellId="name" />
+    Genre 5 name:<EditableCellView
+      tableId="genres"
+      rowId="g05"
+      cellId="name"
+    />
   </div>
 </Provider>
 ```

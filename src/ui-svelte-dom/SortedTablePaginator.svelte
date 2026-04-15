@@ -15,6 +15,12 @@
   const limit = $derived(props.limit ?? props.total);
   const singular = $derived(props.singular ?? 'row');
   const plural = $derived(props.plural ?? singular + 's');
+  const rangeLabel = $derived(
+    `${offset + 1} to ${mathMin(props.total, offset + limit)} of `,
+  );
+  const totalLabel = $derived(
+    `${props.total} ${props.total != 1 ? plural : singular}`,
+  );
 
   $effect(() => {
     if ((props.offset ?? 0) > props.total || (props.offset ?? 0) < 0) {
@@ -28,16 +34,9 @@
     class="previous"
     disabled={offset == 0}
     onclick={() => props.onChange(offset - limit)}
-  >
-    {LEFT_ARROW}
-  </button>
-  <button
+  >{LEFT_ARROW}</button><button
     class="next"
     disabled={offset + limit >= props.total}
     onclick={() => props.onChange(offset + limit)}
-  >
-    {RIGHT_ARROW}
-  </button>{offset + 1} to {mathMin(props.total, offset + limit)} of
-{/if}
-{props.total}
-{props.total != 1 ? plural : singular}
+  >{RIGHT_ARROW}</button>{rangeLabel}
+{/if}{totalLabel}

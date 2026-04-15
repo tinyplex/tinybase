@@ -123,9 +123,7 @@
   {#if showType && hasWidget}
     <button title={thingType} class={thingType} onclick={handleTypeChange}>
       {thingType}
-    </button>
-  {/if}
-  {#if thingType == STRING}
+    </button>{/if}{#if thingType == STRING}
     <input
       value={stringThing}
       oninput={(event) =>
