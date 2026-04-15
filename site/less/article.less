@@ -32,6 +32,12 @@ body > main > article {
     display: block;
     margin: 1rem auto;
   }
+  img[src^='/shots/'],
+  img[src*='/shots/'] {
+    background: @backColor;
+    border: 1px solid @borderColor;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow);
+  }
   img[title^='Inline'] {
     height: 1rem;
     display: inline;

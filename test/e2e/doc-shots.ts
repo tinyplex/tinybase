@@ -10,15 +10,12 @@ export type DocShot = {
 };
 
 const TABLE_DOC_SHOT_STYLE =
-  'body{background:#f6d8e5!important}' +
   'table{box-shadow:none!important;filter:none!important}';
-const EDIT_DOC_SHOT_STYLE =
-  'body{background:#f6d8e5!important}#edit{box-shadow:none!important}';
+const EDIT_DOC_SHOT_STYLE = '#edit{box-shadow:none!important}';
 const INSPECTOR = 'aside#tinybaseInspector';
 const INSPECTOR_DOC_SHOT_STYLE = [
-  'html,body{background:#f6d8e5;margin:0;padding:0}',
-  `${INSPECTOR}{position:static;display:inline-block;` +
-    'padding:1rem;background:#f6d8e5}',
+  'html,body{margin:0;padding:0}',
+  `${INSPECTOR}{position:static;display:inline-block}`,
   `${INSPECTOR}>img{display:none}`,
   `${INSPECTOR} main{` +
     'position:static!important;display:inline-flex!important;' +
@@ -32,7 +29,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'editablecellview-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/editablecellview-react/',
     selector: '#edit',
     style: EDIT_DOC_SHOT_STYLE,
@@ -40,7 +37,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'editablecellview-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/editablecellview-svelte/',
     selector: '#edit',
     style: EDIT_DOC_SHOT_STYLE,
@@ -48,7 +45,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'editablevalueview-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/editablevalueview-react/',
     selector: '#edit',
     style: EDIT_DOC_SHOT_STYLE,
@@ -56,7 +53,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'editablevalueview-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/editablevalueview-svelte/',
     selector: '#edit',
     style: EDIT_DOC_SHOT_STYLE,
@@ -94,7 +91,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'relationshipinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/relationshipinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -102,7 +99,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'relationshipinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/relationshipinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -110,7 +107,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'resultsortedtableinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/resultsortedtableinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -118,7 +115,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'resultsortedtableinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -126,7 +123,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'resulttableinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/resulttableinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -134,7 +131,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'resulttableinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/resulttableinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -142,7 +139,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'sliceinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/sliceinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -150,7 +147,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'sliceinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/sliceinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -158,7 +155,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'sortedtableinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/sortedtableinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -166,7 +163,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'sortedtableinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/sortedtableinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -174,7 +171,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'sortedtablepaginator-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/sortedtableinhtmltable-react/',
     selector: 'table caption',
     style: TABLE_DOC_SHOT_STYLE,
@@ -182,7 +179,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'sortedtablepaginator-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/sortedtableinhtmltable-svelte/',
     selector: 'table caption',
     style: TABLE_DOC_SHOT_STYLE,
@@ -190,7 +187,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'tableinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/tableinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -198,7 +195,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'tableinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/tableinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -206,7 +203,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'valuesinhtmltable-react-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-react/valuesinhtmltable-react/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
@@ -214,7 +211,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
   {
     asset: 'valuesinhtmltable-svelte-demo.png',
     framed: true,
-    marginRem: 1,
+    marginRem: 0,
     page: '/demos/ui-components-svelte/valuesinhtmltable-svelte/',
     selector: 'table:nth-of-type(1)',
     style: TABLE_DOC_SHOT_STYLE,
