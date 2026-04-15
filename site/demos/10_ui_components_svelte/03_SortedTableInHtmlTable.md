@@ -58,9 +58,9 @@ sorted column and paginator:
 ```diff-less
 +table {
 +  thead th {
-+    width: 6rem;
++    width: 5rem;
 +    &:nth-of-type(2) {
-+      width: 24rem;
++      width: 28rem;
 +    }
 +  }
 +  caption {

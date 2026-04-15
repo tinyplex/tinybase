@@ -24,10 +24,7 @@ second table with a standalone editor for one Value:
 
 <Provider {store}>
   <ValuesInHtmlTable editable={true} />
-  <div id="edit">
-    Username:
-    <EditableValueView valueId="username" />
-  </div>
+  <div id="edit">Username:<EditableValueView valueId="username" /></div>
 </Provider>
 ```
 
