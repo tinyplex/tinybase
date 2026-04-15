@@ -43,7 +43,10 @@
  * The Inspector component renders a tool which allows you to view and edit the
  * content of a Store in a debug web environment.
  *
- * See the <Inspector /> (React) demo for this component in action.
+ * See the <Inspector /> (React) demo for this component in action:
+ *
+ * ![Inspector example](/shots/inspector-react-demo.png
+ * "Inspector example")
  *
  * The component displays a nub in the corner of the screen which you may then
  * click to interact with all the Store objects in the Provider component
