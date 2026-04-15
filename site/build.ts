@@ -3,6 +3,7 @@ import type {Docs} from 'tinydocs';
 import {createDocs, getSorter} from 'tinydocs';
 import {addDemoDocs, getPublishedImportUrl} from './demo.ts';
 import {rewriteAndValidatePublishedDocShots} from './shots.ts';
+import {getSummaryMarkdown} from './thumbnail.ts';
 import {ArticleInner} from './ui/ArticleInner.tsx';
 import {ExecutableProject} from './ui/ExecutableProject.tsx';
 import {MarkdownPage} from './ui/MarkdownPage.tsx';
@@ -231,7 +232,7 @@ export const build = async (
     const pagesTable: {[url: string]: {n: string; s: string}} = {};
     docs.forEachNode((node) => {
       const summary =
-        node.summary
+        (node.reflection == null ? getSummaryMarkdown(node) : node.summary)
           ?.replaceAll(/<[^>]*>/g, '')
           .replaceAll(/\s+/g, ' ')
           .trim() ?? '';

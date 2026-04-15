@@ -1,7 +1,6 @@
 import {FunctionComponent} from 'react';
 import {Markdown, type Node} from 'tinydocs';
-
-type DemoNode = Node & {__demoDoc?: string};
+import {getThumbnailMarkdown} from '../thumbnail.ts';
 
 const bumpMarkdownHeadings = (markdown: string): string => {
   let inFence = false;
@@ -22,12 +21,14 @@ const bumpMarkdownHeadings = (markdown: string): string => {
 export const DemoNodeSection: FunctionComponent<{readonly node: Node}> = ({
   node,
 }) => {
-  const {__demoDoc: demoDoc, body, id, name, summary, url} = node as DemoNode;
+  const {id, name, url} = node;
+  const {body, summary} = getThumbnailMarkdown(node);
+  const srcDoc = (node as Node & {__demoDoc?: string}).__demoDoc;
 
   return (
     <section className="s1" id={url} data-id={id}>
       <h1>{name}</h1>
-      {demoDoc == null ? null : <iframe srcDoc={demoDoc} />}
+      <iframe srcDoc={srcDoc} />
       {summary == null ? null : (
         <Markdown markdown={bumpMarkdownHeadings(summary)} />
       )}

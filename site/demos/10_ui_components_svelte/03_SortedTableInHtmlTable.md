@@ -1,5 +1,7 @@
 # <SortedTableInHtmlTable /> (Svelte)
 
+![SortedTableInHtmlTable demo thumbnail](/shots/sortedtableinhtmltable-svelte-demo.png "Thumbnail: SortedTableInHtmlTable demo")
+
 In this demo, we showcase the `SortedTableInHtmlTable` component.
 
 Rather than rebuilding the whole demo from scratch, we're making changes to the

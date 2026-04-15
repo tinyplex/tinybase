@@ -1,5 +1,7 @@
 # <SliceInHtmlTable /> (React)
 
+![SliceInHtmlTable demo thumbnail](/shots/sliceinhtmltable-react-demo.png "Thumbnail: SliceInHtmlTable demo")
+
 In this demo, we showcase the SliceInHtmlTable component, a way to display the
 Slice portions of an Index.
 

@@ -1,5 +1,7 @@
 # <ResultSortedTableInHtmlTable /> (React)
 
+![ResultSortedTableInHtmlTable demo thumbnail](/shots/resultsortedtableinhtmltable-react-demo.png "Thumbnail: ResultSortedTableInHtmlTable demo")
+
 In this demo, we showcase the ResultSortedTableInHtmlTable component, a more
 complex and interactive way to render the results of a query.
 

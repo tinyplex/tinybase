@@ -1,5 +1,7 @@
 # <SortedTableInHtmlTable /> (React)
 
+![SortedTableInHtmlTable demo thumbnail](/shots/sortedtableinhtmltable-react-demo.png "Thumbnail: SortedTableInHtmlTable demo")
+
 In this demo, we showcase the SortedTableInHtmlTable component, a more complex
 and interactive way to render a TinyBase Table.
 

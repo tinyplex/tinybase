@@ -1,9 +1,9 @@
 import {
   cpSync,
   existsSync,
-  readFileSync,
   readdirSync,
   rmSync,
+  readFileSync,
   writeFileSync,
 } from 'fs';
 import {join, relative, resolve} from 'path';
@@ -13,8 +13,6 @@ const DOC_SHOT_DIR = 'shots';
 const DOC_SHOT_SNAPSHOTS_DIR = 'test/e2e/doc-shots.test.ts-snapshots';
 const DOC_SHOT_REFS = /\/shots\/[^\s)"']+/g;
 const DOC_SHOT_OUTPUT_PATHS = ['.html', '.json', '.md'];
-const PNG = '.png';
-
 const escapeRegExp = (value: string): string =>
   value.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -52,17 +50,6 @@ const syncPublishedDocShots = (outDir: string): void => {
   }
 };
 
-const getDocShotSize = (
-  outDir: string,
-  ref: string,
-): [width: number, height: number] | undefined => {
-  if (!ref.endsWith(PNG)) {
-    return;
-  }
-  const image = readFileSync(join(outDir, DOC_SHOT_DIR, ref));
-  return [image.readUInt32BE(16) / 2, image.readUInt32BE(20) / 2];
-};
-
 const rewritePublishedDocShots = (outDir: string): void => {
   const refs = getDocShotRefs(outDir);
   DOC_SHOT_OUTPUT_PATHS.forEach((extension) =>
@@ -91,27 +78,6 @@ const rewritePublishedDocShots = (outDir: string): void => {
   );
 };
 
-const addPublishedDocShotDimensions = (outDir: string): void => {
-  const refs = getDocShotRefs(outDir);
-  forEachDeepFile(outDir, (filePath) => {
-    const file = readFileSync(filePath, UTF8);
-    const rewritten = refs.reduce((file, ref) => {
-      const size = getDocShotSize(outDir, ref);
-      if (size == null) {
-        return file;
-      }
-      const [width, height] = size;
-      return file.replaceAll(
-        `src="/${DOC_SHOT_DIR}/${ref}"`,
-        `src="/${DOC_SHOT_DIR}/${ref}" width="${width}" height="${height}"`,
-      );
-    }, file);
-    if (rewritten != file) {
-      writeFileSync(filePath, rewritten, UTF8);
-    }
-  }, '.html');
-};
-
 const getPublishedDocShotRefs = (outDir: string): Map<string, string[]> => {
   const refs = new Map<string, string[]>();
   DOC_SHOT_OUTPUT_PATHS.forEach((extension) =>
@@ -130,7 +96,6 @@ const getPublishedDocShotRefs = (outDir: string): Map<string, string[]> => {
 export const rewriteAndValidatePublishedDocShots = (outDir: string): void => {
   syncPublishedDocShots(outDir);
   rewritePublishedDocShots(outDir);
-  addPublishedDocShotDimensions(outDir);
   const missing = [...getPublishedDocShotRefs(outDir).entries()].filter(
     ([ref]) => !existsSync(join(outDir, ref)),
   );
