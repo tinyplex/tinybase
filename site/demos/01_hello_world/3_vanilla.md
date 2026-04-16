@@ -1,6 +1,6 @@
 # Hello World (Vanilla) v3
 
-![Hello World (Vanilla) v3 demo thumbnail](/shots/hello-world-vanilla-v3-demo.png "Thumbnail")
+![Hello World (Vanilla) v3](/shots/hello-world-vanilla-v3-demo.png)
 
 In this demo, we set up a listener for data in the Store object and then change
 the Cell to see the display update. We're making changes to the Hello World v2

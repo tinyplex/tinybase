@@ -1,6 +1,6 @@
 # Countries
 
-![Countries demo thumbnail](/shots/countries-react-demo.png "Thumbnail")
+![Countries](/shots/countries-react-demo.png)
 
 These demos build the same country browser in different UI frameworks. They
 show how TinyBase indexes, persistence, and reactive UI bindings work together

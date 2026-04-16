@@ -1,6 +1,6 @@
 # Word Frequencies
 
-![Word Frequencies demo thumbnail](/shots/word-frequencies-demo.png "Thumbnail")
+![Word Frequencies](/shots/word-frequencies-demo.png)
 
 In this demo, we load the list of the 10,000 most common words in English, index
 them for a fast search experience, and showcase TinyBase v2.1's ability to

@@ -1,6 +1,6 @@
 # <ValuesInHtmlTable /> (React)
 
-![ValuesInHtmlTable demo thumbnail](/shots/valuesinhtmltable-react-demo.png "Thumbnail: ValuesInHtmlTable demo")
+![ValuesInHtmlTable](/shots/valuesinhtmltable-react-demo.png)
 
 In this first demo, we set up a Store containing some sample data, and showcase
 the ValuesInHtmlTable component.

@@ -1,6 +1,6 @@
 # <RelationshipInHtmlTable /> (React)
 
-![RelationshipInHtmlTable demo thumbnail](/shots/relationshipinhtmltable-react-demo.png "Thumbnail: RelationshipInHtmlTable demo")
+![RelationshipInHtmlTable](/shots/relationshipinhtmltable-react-demo.png)
 
 In this demo, we showcase the RelationshipInHtmlTable component, a way to
 display the two Tables linked together by a Relationship.

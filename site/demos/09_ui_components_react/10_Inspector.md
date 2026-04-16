@@ -1,6 +1,6 @@
 # <Inspector /> (React)
 
-![Inspector demo thumbnail](/shots/inspector-react-demo.png "Thumbnail: Inspector demo")
+![Inspector](/shots/inspector-react-demo.png)
 
 In this demo, we showcase the Inspector component, which allows you to view and
 edit the content of a Store in a debug web environment.

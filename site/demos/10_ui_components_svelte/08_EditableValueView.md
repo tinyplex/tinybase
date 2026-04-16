@@ -1,6 +1,6 @@
 # <EditableValueView /> (Svelte)
 
-![EditableValueView demo thumbnail](/shots/editablevalueview-svelte-demo.png "Thumbnail: EditableValueView demo")
+![EditableValueView](/shots/editablevalueview-svelte-demo.png)
 
 In this demo, we showcase the EditableValueView component, which allows you to
 edit Values in a Store from a Svelte-based web UI.

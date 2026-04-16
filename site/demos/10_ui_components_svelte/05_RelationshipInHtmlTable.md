@@ -1,6 +1,6 @@
 # <RelationshipInHtmlTable /> (Svelte)
 
-![RelationshipInHtmlTable demo thumbnail](/shots/relationshipinhtmltable-svelte-demo.png "Thumbnail: RelationshipInHtmlTable demo")
+![RelationshipInHtmlTable](/shots/relationshipinhtmltable-svelte-demo.png)
 
 In this demo, we showcase the RelationshipInHtmlTable component, a way to
 display the two Tables linked together by a Relationship.

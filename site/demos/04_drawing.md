@@ -1,6 +1,6 @@
 # Drawing
 
-![Drawing demo thumbnail](/shots/drawing-demo.png "Thumbnail")
+![Drawing](/shots/drawing-demo.png)
 
 In this demo, we build a more complex drawing app, using many of the features of
 TinyBase together.

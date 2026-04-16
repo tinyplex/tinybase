@@ -1,6 +1,6 @@
 # Car Analysis
 
-![Car Analysis demo thumbnail](/shots/car-analysis-demo.png "Thumbnail")
+![Car Analysis](/shots/car-analysis-demo.png)
 
 In this demo, we build an app that showcases the query capabilities of TinyBase
 v2.0, grouping and sorting dimensional data for lightweight analytical usage.

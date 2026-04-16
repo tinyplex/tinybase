@@ -1,6 +1,6 @@
 # <TableInHtmlTable /> (React)
 
-![TableInHtmlTable demo thumbnail](/shots/tableinhtmltable-react-demo.png "Thumbnail: TableInHtmlTable demo")
+![TableInHtmlTable](/shots/tableinhtmltable-react-demo.png)
 
 In this demo, we showcase the TableInHtmlTable component.
 

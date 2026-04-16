@@ -1,6 +1,6 @@
 # Countries (Svelte)
 
-![Countries (Svelte) demo thumbnail](/shots/countries-svelte-demo.png "Thumbnail")
+![Countries (Svelte)](/shots/countries-svelte-demo.png)
 
 In this demo, we build the same app as the Countries (React) demo, but with
 Svelte 5 and the ui-svelte module.

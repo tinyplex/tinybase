@@ -22,6 +22,14 @@ const SectionLevel = createContext<{level: number}>({level: 1});
 const getReadMore = (readMore: boolean, isSingle: boolean, node: Node) =>
   readMore ? ` [Read more](${(isSingle ? '#' : '') + node.url}).` : '';
 
+const getThumbnailTitle = (thumbnail: {
+  readonly alt: string;
+  readonly title?: string;
+}): string =>
+  thumbnail.title == null || thumbnail.title == 'Thumbnail'
+    ? thumbnail.alt
+    : thumbnail.title;
+
 const SiteSection: FunctionComponent<{
   readonly children?: ReactNode;
   readonly dataId?: string;
@@ -50,11 +58,13 @@ const SiteSection: FunctionComponent<{
           </>
         ) : (
           <div className="thumbnailPanel">
-            <img
-              src={thumbnail.src}
-              alt={thumbnail.alt}
-              {...(thumbnail.title == null ? {} : {title: thumbnail.title})}
-            />
+            <a href={id}>
+              <img
+                src={thumbnail.src}
+                alt={thumbnail.alt}
+                title={getThumbnailTitle(thumbnail)}
+              />
+            </a>
             <div>
               {heading}
               {children}
