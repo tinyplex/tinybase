@@ -1,31 +1,53 @@
 <nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-svelte/">Hello World (Svelte)</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-svelte/" data-id="HWS"><h1>Hello World (Svelte)</h1><iframe srcdoc="&lt;html&gt;
       &lt;head&gt;
         
-        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{align-items:center;display:flex;font-family:Inter,sans-serif;letter-spacing:-0.04rem;height:100vh;justify-content:center;margin:0}&lt;/style&gt;
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{background:#f8f8fa;align-items:center;display:flex;font-family:Inter,sans-serif;height:100vh;justify-content:center;margin:0}#app{align-items:center;display:flex;flex-direction:column;gap:.75rem}#logos{display:flex;gap:.5rem}#logos img{height:2rem;width:2rem}#value{color:#1d1d24;font-size:1.5rem;font-weight:700;letter-spacing:-0.04rem}&lt;/style&gt;
       &lt;/head&gt;
       &lt;body&gt;
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
-import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.2&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.4&quot;;
 
 // demo-files:/demo/src/App.svelte
-import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
-import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector&quot;;
-var root_1 = $.from_html(`&lt;!&gt; &lt;!&gt;`, 1);
+import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
+import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte-inspector&quot;;
+var root_2 = $.from_html(`&lt;img/&gt;`);
+var root_1 = $.from_html(`&lt;div id=&quot;app&quot;&gt;&lt;div id=&quot;logos&quot;&gt;&lt;/div&gt; &lt;div id=&quot;value&quot;&gt;&lt;!&gt;&lt;/div&gt;&lt;/div&gt; &lt;!&gt;`, 1);
 function App($$anchor, $$props) {
+  const logos = [
+    [&quot;https://tinybase.org/favicon.svg&quot;, &quot;TinyBase logo&quot;],
+    [&quot;https://tinybase.org/svelte.svg&quot;, &quot;Svelte logo&quot;]
+  ];
   Provider($$anchor, {
     get store() {
       return $$props.store;
     },
     children: ($$anchor2, $$slotProps) =&gt; {
       var fragment_1 = root_1();
-      var node = $.first_child(fragment_1);
+      var div = $.first_child(fragment_1);
+      var div_1 = $.child(div);
+      $.each(div_1, 21, () =&gt; logos, $.index, ($$anchor3, $$item) =&gt; {
+        var $$array = $.derived(() =&gt; $.to_array($.get($$item), 2));
+        let src = () =&gt; $.get($$array)[0];
+        let alt = () =&gt; $.get($$array)[1];
+        var img = root_2();
+        $.template_effect(() =&gt; {
+          $.set_attribute(img, &quot;src&quot;, src());
+          $.set_attribute(img, &quot;alt&quot;, alt());
+        });
+        $.append($$anchor3, img);
+      });
+      $.reset(div_1);
+      var div_2 = $.sibling(div_1, 2);
+      var node = $.child(div_2);
       CellView(node, { tableId: &quot;t1&quot;, rowId: &quot;r1&quot;, cellId: &quot;c1&quot; });
-      var node_1 = $.sibling(node, 2);
+      $.reset(div_2);
+      $.reset(div);
+      var node_1 = $.sibling(div, 2);
       Inspector(node_1, {});
       $.append($$anchor2, fragment_1);
     },
@@ -44,10 +66,10 @@ setInterval(setTime, 1e3);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we use Svelte to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change the <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector"</span><span class="punctuation">,</span>
-      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.1"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.2"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.4"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
@@ -65,15 +87,28 @@ setInterval(setTime, 1e3);&lt;/script&gt;
 <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="function">setInterval</span><span class="punctuation">(</span>setTime<span class="punctuation">,</span> <span class="number">1000</span><span class="punctuation">)</span><span class="punctuation">;</span>
-</code></pre><p>The Svelte component uses the Provider and <a href="/api/ui-react/functions/store-components/cellview/"><code>CellView</code></a> components from the <a href="/api/ui-svelte/"><code>ui-svelte</code></a> module:</p><div class="preFile">src/App.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+</code></pre><p>The Svelte component uses the Provider and <a href="/api/ui-react/functions/store-components/cellview/"><code>CellView</code></a> components from the <a href="/api/ui-svelte/"><code>ui-svelte</code></a> module, and adds a compact row of TinyBase and Svelte logos above the live value:</p><div class="preFile">src/App.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="keyword">import</span> <span class="punctuation">{</span>CellView<span class="punctuation">,</span> Provider<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>
   <span class="keyword">import</span> <span class="punctuation">{</span>Inspector<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte-inspector'</span><span class="punctuation">;</span>
 
   <span class="keyword">let</span> <span class="punctuation">{</span>store<span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> logos <span class="operator">=</span> <span class="punctuation">[</span>
+    <span class="punctuation">[</span><span class="string">'https://tinybase.org/favicon.svg'</span><span class="punctuation">,</span> <span class="string">'TinyBase logo'</span><span class="punctuation">]</span><span class="punctuation">,</span>
+    <span class="punctuation">[</span><span class="string">'https://tinybase.org/svelte.svg'</span><span class="punctuation">,</span> <span class="string">'Svelte logo'</span><span class="punctuation">]</span><span class="punctuation">,</span>
+  <span class="punctuation">]</span><span class="punctuation">;</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
 
 <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span>
-  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>CellView</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>t1<span class="punctuation">"</span></span> <span class="attr-name">rowId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>r1<span class="punctuation">"</span></span> <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>c1<span class="punctuation">"</span></span> <span class="punctuation">/></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>app<span class="punctuation">"</span></span><span class="punctuation">></span></span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>logos<span class="punctuation">"</span></span><span class="punctuation">></span></span>
+      <span class="each"><span class="punctuation">{</span><span class="keyword">#each</span> <span class="language-javascript">logos </span><span class="keyword">as</span> <span class="language-javascript"><span class="punctuation">[</span>src<span class="punctuation">,</span> alt<span class="punctuation">]</span><span class="punctuation">}</span></span></span>
+        <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>img</span> <span class="language-javascript"><span class="punctuation">{</span>src<span class="punctuation">}</span></span> <span class="language-javascript"><span class="punctuation">{</span>alt<span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
+      <span class="each"><span class="punctuation">{</span><span class="keyword">/each</span><span class="punctuation">}</span></span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>value<span class="punctuation">"</span></span><span class="punctuation">></span></span>
+      <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>CellView</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>t1<span class="punctuation">"</span></span> <span class="attr-name">rowId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>r1<span class="punctuation">"</span></span> <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>c1<span class="punctuation">"</span></span> <span class="punctuation">/></span></span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
   <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Inspector</span> <span class="punctuation">/></span></span>
 <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
 </code></pre><p>Like the React version, this demo can also include the <a href="/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component so you can see how the data is structured. Simply click the TinyBase logo in the corner.</p><p>Some final CSS...</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
@@ -82,12 +117,36 @@ setInterval(setTime, 1e3);&lt;/script&gt;
 <span class="punctuation">}</span>
 
 <span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> #f8f8fa<span class="punctuation">;</span>
   <span class="property">align-items</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
   <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
   <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
-  <span class="property">letter-spacing</span><span class="punctuation">:</span> <span class="operator">-</span>0.04rem<span class="punctuation">;</span>
   <span class="property">height</span><span class="punctuation">:</span> 100vh<span class="punctuation">;</span>
   <span class="property">justify-content</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
   <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#app</span> <span class="punctuation">{</span>
+  <span class="property">align-items</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
+  <span class="property">flex-direction</span><span class="punctuation">:</span> column<span class="punctuation">;</span>
+  <span class="property">gap</span><span class="punctuation">:</span> 0.75rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#logos</span> <span class="punctuation">{</span>
+  <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
+  <span class="property">gap</span><span class="punctuation">:</span> 0.5rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#logos img</span> <span class="punctuation">{</span>
+  <span class="property">height</span><span class="punctuation">:</span> 2rem<span class="punctuation">;</span>
+  <span class="property">width</span><span class="punctuation">:</span> 2rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#value</span> <span class="punctuation">{</span>
+  <span class="property">color</span><span class="punctuation">:</span> #1d1d24<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> 1.5rem<span class="punctuation">;</span>
+  <span class="property">font-weight</span><span class="punctuation">:</span> 700<span class="punctuation">;</span>
+  <span class="property">letter-spacing</span><span class="punctuation">:</span> <span class="operator">-</span>0.04rem<span class="punctuation">;</span>
 <span class="punctuation">}</span>
 </code></pre><p>...and we&#x27;re done!</p></section>
