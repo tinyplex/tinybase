@@ -1,6 +1,6 @@
 # <ResultTableInHtmlTable /> (React)
 
-![ResultTableInHtmlTable demo thumbnail](/shots/resulttableinhtmltable-react-demo.png "Thumbnail: ResultTableInHtmlTable demo")
+![ResultTableInHtmlTable](/shots/resulttableinhtmltable-react-demo.png)
 
 In this demo, we showcase the ResultTableInHtmlTable component, a way to display
 the results of a query.

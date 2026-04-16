@@ -1,6 +1,6 @@
 # <ValuesInHtmlTable /> (Svelte)
 
-![ValuesInHtmlTable demo thumbnail](/shots/valuesinhtmltable-svelte-demo.png "Thumbnail: ValuesInHtmlTable demo")
+![ValuesInHtmlTable](/shots/valuesinhtmltable-svelte-demo.png)
 
 In this first demo, we set up a Store containing some sample data, and showcase
 the ValuesInHtmlTable component from the ui-svelte-dom module.

@@ -1,6 +1,6 @@
 # <ResultTableInHtmlTable /> (Svelte)
 
-![ResultTableInHtmlTable demo thumbnail](/shots/resulttableinhtmltable-svelte-demo.png "Thumbnail: ResultTableInHtmlTable demo")
+![ResultTableInHtmlTable](/shots/resulttableinhtmltable-svelte-demo.png)
 
 In this demo, we showcase the ResultTableInHtmlTable component, a way to
 display the results of a query.

@@ -1,6 +1,6 @@
 # <ResultSortedTableInHtmlTable /> (Svelte)
 
-![ResultSortedTableInHtmlTable demo thumbnail](/shots/resultsortedtableinhtmltable-svelte-demo.png "Thumbnail: ResultSortedTableInHtmlTable demo")
+![ResultSortedTableInHtmlTable](/shots/resultsortedtableinhtmltable-svelte-demo.png)
 
 In this demo, we showcase the ResultSortedTableInHtmlTable component, a more
 interactive way to render the results of a query.

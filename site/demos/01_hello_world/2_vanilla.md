@@ -1,6 +1,6 @@
 # Hello World (Vanilla) v2
 
-![Hello World (Vanilla) v2 demo thumbnail](/shots/hello-world-vanilla-v2-demo.png "Thumbnail")
+![Hello World (Vanilla) v2](/shots/hello-world-vanilla-v2-demo.png)
 
 In this demo, we again set data in, and then get data from, a Store object. But
 this time we're using tabular data.

@@ -1,6 +1,6 @@
 # <TableInHtmlTable /> (Svelte)
 
-![TableInHtmlTable demo thumbnail](/shots/tableinhtmltable-svelte-demo.png "Thumbnail: TableInHtmlTable demo")
+![TableInHtmlTable](/shots/tableinhtmltable-svelte-demo.png)
 
 In this demo, we showcase the TableInHtmlTable component.
 

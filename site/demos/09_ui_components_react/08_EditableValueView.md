@@ -1,6 +1,6 @@
 # <EditableValueView /> (React)
 
-![EditableValueView demo thumbnail](/shots/editablevalueview-react-demo.png "Thumbnail: EditableValueView demo")
+![EditableValueView](/shots/editablevalueview-react-demo.png)
 
 In this demo, we showcase the EditableValueView component, which allows you to
 edit Values in the Store in a web environment.

@@ -51,7 +51,11 @@ body > main > article {
     > .thumbnailPanel {
       display: grid;
       gap: 1.5rem;
-      > img {
+      > a {
+        display: block;
+        align-self: start;
+      }
+      > a > img {
         width: 100%;
         max-height: 8rem;
         object-fit: cover;

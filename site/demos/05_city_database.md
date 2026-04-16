@@ -1,6 +1,6 @@
 # City Database
 
-![City Database demo thumbnail](/shots/city-database-demo.png "Thumbnail")
+![City Database](/shots/city-database-demo.png)
 
 In this demo, we build an app that loads over 140,000 records to push the size
 and performance limits of TinyBase.
