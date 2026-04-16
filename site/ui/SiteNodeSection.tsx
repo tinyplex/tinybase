@@ -9,6 +9,7 @@ import {
   Markdown,
   NodeName,
   NodeSection,
+  NodeSummary,
   getSkippedChildren,
   useIsSingle,
   type Node,
@@ -82,7 +83,11 @@ export const SiteNodeSection: FunctionComponent<Props> = ({
 }) => {
   const isSingle = useIsSingle();
   if (node.reflection != null) {
-    return <NodeSection node={node} summary={summary} />;
+    return summary && !isSingle ? (
+      <SiteReflectionSummary node={node} />
+    ) : (
+      <NodeSection node={node} summary={summary} />
+    );
   }
 
   const children = getSkippedChildren(node);
@@ -102,6 +107,36 @@ export const SiteNodeSection: FunctionComponent<Props> = ({
         </ul>
       )}
     </SiteNodeSectionBlock>
+  );
+};
+
+const SiteReflectionSummary: FunctionComponent<{readonly node: Node}> = ({
+  node,
+}) => {
+  const children = getSkippedChildren(node);
+  const parts = [<NodeSummary node={node} key="summary" readMore={true} />];
+
+  if (children.length > 0) {
+    parts.push(
+      <ul key="children">
+        {children.map((child, key) => (
+          <SiteNodeSectionItem key={key} node={child} />
+        ))}
+      </ul>,
+    );
+  }
+  if (node.essential) {
+    parts.unshift(
+      <div className="essential" key="essential">
+        Essential
+      </div>,
+    );
+  }
+
+  return (
+    <SiteSection title={<NodeName node={node} />} id={node.url} dataId={node.id}>
+      {parts}
+    </SiteSection>
   );
 };
 
