@@ -102,6 +102,54 @@ const waitForDocShotReady = async (
   );
 };
 
+const stabilizeDocShot = async (
+  page: Page,
+  shot: {fixedText?: string; fixedTextSelector?: string},
+): Promise<void> => {
+  if (shot.fixedText == null || shot.fixedTextSelector == null) {
+    return;
+  }
+  const frame = await getFirstFrame(page);
+  await frame?.evaluate(({selector, text}) => {
+    const maxTimerId = window.setTimeout(() => {}, 0);
+    for (let id = 0; id <= maxTimerId; id++) {
+      clearInterval(id);
+      clearTimeout(id);
+    }
+    const element = document.querySelector<HTMLElement>(selector);
+    if (element != null) {
+      element.textContent = text;
+    }
+  }, {selector: shot.fixedTextSelector, text: shot.fixedText});
+};
+
+const waitForDocShotImages = async (
+  page: Page,
+  shot: {waitForImages?: string},
+): Promise<void> => {
+  if (shot.waitForImages == null) {
+    return;
+  }
+  const frame = await getFirstFrame(page);
+  await frame?.evaluate(async (selector) => {
+    const images = [
+      ...document.querySelectorAll<HTMLImageElement>(selector),
+    ].filter(({src}) => src != '');
+    await Promise.all(
+      images.map(
+        (image) =>
+          image.complete
+            ? undefined
+            : new Promise<void>((resolve) => {
+                const done = () => resolve();
+                image.addEventListener('load', done, {once: true});
+                image.addEventListener('error', done, {once: true});
+              }),
+      ),
+    );
+  }, shot.waitForImages);
+};
+
 const getClip = async (
   page: Page,
   locator: Locator,
@@ -193,7 +241,9 @@ const expectDocShot = async (page: Page, asset: string): Promise<void> => {
 
   await applyDocShotStyle(page, shot);
   await waitForDocShotReady(page, shot);
+  await waitForDocShotImages(page, shot);
   await performDocShotClicks(page, shot);
+  await stabilizeDocShot(page, shot);
 
   const locator = shot.framed
     ? await expectedFramedElement(page, shot.selector)

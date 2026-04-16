@@ -1,6 +1,8 @@
 export type DocShot = {
   asset: string;
   clicks?: string[];
+  fixedText?: string;
+  fixedTextSelector?: string;
   framed: boolean;
   marginRem?: number;
   omitBackground?: boolean;
@@ -10,6 +12,7 @@ export type DocShot = {
   readyText?: string | RegExp;
   selector: string;
   style?: string;
+  waitForImages?: string;
 };
 
 const IFRAME_DOC_SHOT_STYLE =
@@ -54,6 +57,8 @@ export const DOC_SHOTS: readonly DocShot[] = [
   },
   {
     asset: 'hello-world-vanilla-v3-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
     framed: false,
     marginRem: 0,
     page: '/demos/hello-world/hello-world-vanilla-v3/',
@@ -64,6 +69,8 @@ export const DOC_SHOTS: readonly DocShot[] = [
   },
   {
     asset: 'hello-world-react-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
     framed: false,
     marginRem: 0,
     page: '/demos/hello-world/hello-world-react/',
@@ -75,6 +82,8 @@ export const DOC_SHOTS: readonly DocShot[] = [
   },
   {
     asset: 'hello-world-svelte-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
     framed: false,
     marginRem: 0,
     page: '/demos/hello-world/hello-world-svelte/',
@@ -204,6 +213,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
     readyText: 'Rated movies',
     selector: 'iframe',
     style: IFRAME_DOC_SHOT_STYLE,
+    waitForImages: 'img',
   },
   {
     asset: 'word-frequencies-demo.png',
