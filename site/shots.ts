@@ -2,8 +2,8 @@ import {
   cpSync,
   existsSync,
   readdirSync,
-  rmSync,
   readFileSync,
+  rmSync,
   writeFileSync,
 } from 'fs';
 import {join, relative, resolve} from 'path';
@@ -53,42 +53,53 @@ const syncPublishedDocShots = (outDir: string): void => {
 const rewritePublishedDocShots = (outDir: string): void => {
   const refs = getDocShotRefs(outDir);
   DOC_SHOT_OUTPUT_PATHS.forEach((extension) =>
-    forEachDeepFile(outDir, (filePath) => {
-      const file = readFileSync(filePath, UTF8);
-      const rewritten = refs.reduce((file, ref) => {
-        const publishedRef = `/${DOC_SHOT_DIR}/${ref}`;
-        return file
-          .replaceAll(
-            new RegExp(`(?<!${DOC_SHOT_DIR})/${escapeRegExp(ref)}`, 'g'),
-            publishedRef,
-          )
-          .replaceAll(
-            new RegExp(`(?<!/)${escapeRegExp(`${DOC_SHOT_DIR}/${ref}`)}`, 'g'),
-            publishedRef,
-          )
-          .replaceAll(
-            new RegExp(`(?<![/\\w-])${escapeRegExp(ref)}`, 'g'),
-            publishedRef,
-          );
-      }, file);
-      if (rewritten != file) {
-        writeFileSync(filePath, rewritten, UTF8);
-      }
-    }, extension),
+    forEachDeepFile(
+      outDir,
+      (filePath) => {
+        const file = readFileSync(filePath, UTF8);
+        const rewritten = refs.reduce((file, ref) => {
+          const publishedRef = `/${DOC_SHOT_DIR}/${ref}`;
+          return file
+            .replaceAll(
+              new RegExp(`(?<!${DOC_SHOT_DIR})/${escapeRegExp(ref)}`, 'g'),
+              publishedRef,
+            )
+            .replaceAll(
+              new RegExp(
+                `(?<!/)${escapeRegExp(`${DOC_SHOT_DIR}/${ref}`)}`,
+                'g',
+              ),
+              publishedRef,
+            )
+            .replaceAll(
+              new RegExp(`(?<![/\\w-])${escapeRegExp(ref)}`, 'g'),
+              publishedRef,
+            );
+        }, file);
+        if (rewritten != file) {
+          writeFileSync(filePath, rewritten, UTF8);
+        }
+      },
+      extension,
+    ),
   );
 };
 
 const getPublishedDocShotRefs = (outDir: string): Map<string, string[]> => {
   const refs = new Map<string, string[]>();
   DOC_SHOT_OUTPUT_PATHS.forEach((extension) =>
-    forEachDeepFile(outDir, (filePath) => {
-      const matches = readFileSync(filePath, UTF8).match(DOC_SHOT_REFS) ?? [];
-      matches.forEach((ref) => {
-        const files = refs.get(ref) ?? [];
-        files.push(filePath);
-        refs.set(ref, files);
-      });
-    }, extension),
+    forEachDeepFile(
+      outDir,
+      (filePath) => {
+        const matches = readFileSync(filePath, UTF8).match(DOC_SHOT_REFS) ?? [];
+        matches.forEach((ref) => {
+          const files = refs.get(ref) ?? [];
+          files.push(filePath);
+          refs.set(ref, files);
+        });
+      },
+      extension,
+    ),
   );
   return refs;
 };

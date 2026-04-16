@@ -33,10 +33,10 @@
   <button
     class="previous"
     disabled={offset == 0}
-    onclick={() => props.onChange(offset - limit)}
-  >{LEFT_ARROW}</button><button
+    onclick={() => props.onChange(offset - limit)}>{LEFT_ARROW}</button
+  ><button
     class="next"
     disabled={offset + limit >= props.total}
-    onclick={() => props.onChange(offset + limit)}
-  >{RIGHT_ARROW}</button>{rangeLabel}
+    onclick={() => props.onChange(offset + limit)}>{RIGHT_ARROW}</button
+  >{rangeLabel}
 {/if}{totalLabel}
