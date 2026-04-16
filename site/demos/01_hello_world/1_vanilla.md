@@ -34,10 +34,25 @@ Value Id of `v1`:
 store.setValue('v1', 'Hello World');
 ```
 
-Finally, we get the value back out again and update the page with it:
+Finally, we get the value back out again, render it into the page, and add a
+small TinyBase logo above it:
 
 ```js
-document.body.innerHTML = store.getValue('v1');
+const renderValue = (value) => {
+  document.body.innerHTML = `
+    <div id="app">
+      <div id="logos">
+        <img
+          src="https://tinybase.org/favicon.svg"
+          alt="TinyBase logo"
+        />
+      </div>
+      <div id="value">${value}</div>
+    </div>
+  `;
+};
+
+renderValue(store.getValue('v1'));
 ```
 
 Add a little styling, and we're done!
@@ -49,13 +64,37 @@ Add a little styling, and we're done!
 }
 
 body {
+  background: #f8f8fa;
   align-items: center;
   display: flex;
   font-family: Inter, sans-serif;
-  letter-spacing: -0.04rem;
   height: 100vh;
   justify-content: center;
   margin: 0;
+}
+
+#app {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#logos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#logos img {
+  height: 2rem;
+  width: 2rem;
+}
+
+#value {
+  color: #1d1d24;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04rem;
 }
 ```
 

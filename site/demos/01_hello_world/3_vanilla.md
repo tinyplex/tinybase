@@ -20,12 +20,13 @@ current time:
 ```
 
 We also create a function that updates the DOM with the value of the Cell, and
-run it once to initialize the display:
+run it once to initialize the display while keeping the logo row from the
+previous demo:
 
 ```diff-js
--document.body.innerHTML = store.getCell('t1', 'r1', 'c1');
+-renderValue(store.getCell('t1', 'r1', 'c1'));
 +const update = () => {
-+  document.body.innerHTML = store.getCell('t1', 'r1', 'c1');
++  renderValue(store.getCell('t1', 'r1', 'c1'));
 +};
 +update();
 ```
