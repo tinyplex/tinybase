@@ -42,7 +42,8 @@ setInterval(setTime, 1000);
 ```
 
 The Svelte component uses the Provider and CellView components from the
-ui-svelte module:
+ui-svelte module, and adds a compact row of TinyBase and Svelte logos above the
+live value:
 
 ```svelte file=src/App.svelte
 <script>
@@ -50,10 +51,23 @@ ui-svelte module:
   import {Inspector} from 'tinybase/ui-svelte-inspector';
 
   let {store} = $props();
+  const logos = [
+    ['https://tinybase.org/favicon.svg', 'TinyBase logo'],
+    ['https://tinybase.org/svelte.svg', 'Svelte logo'],
+  ];
 </script>
 
 <Provider {store}>
-  <CellView tableId="t1" rowId="r1" cellId="c1" />
+  <div id="app">
+    <div id="logos">
+      {#each logos as [src, alt]}
+        <img {src} {alt} />
+      {/each}
+    </div>
+    <div id="value">
+      <CellView tableId="t1" rowId="r1" cellId="c1" />
+    </div>
+  </div>
   <Inspector />
 </Provider>
 ```
@@ -71,13 +85,37 @@ Some final CSS...
 }
 
 body {
+  background: #f8f8fa;
   align-items: center;
   display: flex;
   font-family: Inter, sans-serif;
-  letter-spacing: -0.04rem;
   height: 100vh;
   justify-content: center;
   margin: 0;
+}
+
+#app {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#logos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#logos img {
+  height: 2rem;
+  width: 2rem;
+}
+
+#value {
+  color: #1d1d24;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04rem;
 }
 ```
 

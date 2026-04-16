@@ -68,6 +68,7 @@ export const DOC_SHOTS: readonly DocShot[] = [
     marginRem: 0,
     page: '/demos/hello-world/hello-world-react/',
     readySelector: 'body',
+    readyTimeout: 15000,
     readyText: /\d{1,2}:\d{2}:\d{2}/,
     selector: 'iframe',
     style: IFRAME_DOC_SHOT_STYLE,

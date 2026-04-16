@@ -21,8 +21,8 @@ the data in a Cell called `c1`, in a Row called `r1`, in a Table called `t1`:
 We also need to update the way in which we get the value back out again:
 
 ```diff-js
--document.body.innerHTML = store.getValue('v1');
-+document.body.innerHTML = store.getCell('t1', 'r1', 'c1');
+-renderValue(store.getValue('v1'));
++renderValue(store.getCell('t1', 'r1', 'c1'));
 ```
 
 The result is the same but now hopefully you get a sense for how the keyed value
