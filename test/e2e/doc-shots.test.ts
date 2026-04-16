@@ -17,9 +17,7 @@ const getFirstFrame = async (page: Page): Promise<Frame | undefined> => {
   return (await handle?.contentFrame()) ?? undefined;
 };
 
-const prepareFirstFrame = async (
-  page: Page,
-): Promise<void> => {
+const prepareFirstFrame = async (page: Page): Promise<void> => {
   const iframe = page.locator('iframe').first();
   await expect(iframe).toBeVisible();
   const frame = await getFirstFrame(page);
@@ -42,19 +40,19 @@ const prepareFirstFrame = async (
       ),
     };
   });
-  await iframe.evaluate((element, {height, width}) => {
-    element.style.height = `${height}px`;
-    element.style.maxHeight = 'none';
-    element.style.width = `${width}px`;
-    element.style.maxWidth = 'none';
-    element.style.border = '0';
-    element.style.outline = '0';
-    element.style.boxShadow = 'none';
-    element.style.overflow = 'hidden';
-  }, {
-    height: Math.max(height, FRAMED_DOC_SHOT_MIN_HEIGHT),
-    width,
-  });
+  await iframe.evaluate(
+    (element, {height, width}) => {
+      element.style.height = `${height}px`;
+      element.style.maxHeight = 'none';
+      element.style.width = `${width}px`;
+      element.style.maxWidth = 'none';
+      element.style.border = '0';
+      element.style.outline = '0';
+      element.style.boxShadow = 'none';
+      element.style.overflow = 'hidden';
+    },
+    {height: Math.max(height, FRAMED_DOC_SHOT_MIN_HEIGHT), width},
+  );
 };
 
 const applyDocShotStyle = async (
