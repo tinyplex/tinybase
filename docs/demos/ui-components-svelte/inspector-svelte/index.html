@@ -7,14 +7,14 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
-import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.2&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.4&quot;;
 
 // demo-files:/demo/src/App.svelte
-import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
-import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { Provider, getTableIds } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector&quot;;
+import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
+import { Provider, getTableIds } from &quot;https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte-inspector&quot;;
 var root_1 = $.from_html(`&lt;div id=&quot;info&quot;&gt; &lt;/div&gt; &lt;!&gt;`, 1);
 function App($$anchor, $$props) {
   $.push($$props, true);
@@ -75,11 +75,11 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component, which allows you to view and edit the content of a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> in a debug web environment.</p><p>Let&#x27;s make changes to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo so we can start with a well-populated <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> to inspect.</p><h3 id="set-up">Set Up</h3><p>Let&#x27;s import the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
 <span class="prefix"> </span>  {
 <span class="prefix"> </span>    "imports": {
-<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.2.0-beta.1",
-<span class="prefix"> </span>      "tinybase/ui-svelte": "https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte",
-</span><span class="deleted-sign"><span class="prefix">-</span>      "tinybase/ui-svelte-dom": "https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom",
-</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-inspector",
-</span><span class="unchanged"><span class="prefix"> </span>      "svelte": "https://esm.sh/svelte@^5.55.1"
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.2.0-beta.2",
+<span class="prefix"> </span>      "tinybase/ui-svelte": "https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte",
+</span><span class="deleted-sign"><span class="prefix">-</span>      "tinybase/ui-svelte-dom": "https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte-dom",
+</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte-inspector",
+</span><span class="unchanged"><span class="prefix"> </span>      "svelte": "https://esm.sh/svelte@^5.55.4"
 <span class="prefix"> </span>    }
 <span class="prefix"> </span>  }
 <span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

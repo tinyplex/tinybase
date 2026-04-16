@@ -7,15 +7,15 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;;
-import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.2&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.4&quot;;
 
 // demo-files:/demo/src/App.svelte
-import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
-import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte&quot;;
-import { EditableValueView, ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.2.0-beta.1/ui-svelte-dom&quot;;
-var root_1 = $.from_html(`&lt;!&gt; &lt;div id=&quot;edit&quot;&gt;Username: &lt;!&gt;&lt;/div&gt;`, 1);
+import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte&quot;;
+import { EditableValueView, ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.2.0-beta.2/ui-svelte-dom&quot;;
+var root_1 = $.from_html(`&lt;!&gt; &lt;div id=&quot;edit&quot;&gt;Username:&lt;!&gt;&lt;/div&gt;`, 1);
 function App($$anchor, $$props) {
   Provider($$anchor, {
     get store() {
@@ -47,10 +47,7 @@ mount(App, { target: document.body, props: { store } });&lt;/script&gt;
 
 <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span>
   <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>ValuesInHtmlTable</span> <span class="attr-name">editable=</span><span class="language-javascript"><span class="punctuation">{</span><span class="boolean">true</span><span class="punctuation">}</span></span> <span class="punctuation">/></span></span>
-  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>edit<span class="punctuation">"</span></span><span class="punctuation">></span></span>
-    Username:
-    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>EditableValueView</span> <span class="attr-name">valueId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>username<span class="punctuation">"</span></span> <span class="punctuation">/></span></span>
-  <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>edit<span class="punctuation">"</span></span><span class="punctuation">></span></span>Username:<span class="tag"><span class="tag"><span class="punctuation">&lt;</span>EditableValueView</span> <span class="attr-name">valueId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>username<span class="punctuation">"</span></span> <span class="punctuation">/></span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
 <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
 </code></pre><p>And we add the extra CSS needed for the editor panel and invalid JSON state:</p><pre><code><span class="inserted-sign"><span class="prefix">+</span><span class="selector">#edit</span> <span class="punctuation">{</span>
 <span class="prefix">+</span>  <span class="property">background</span><span class="punctuation">:</span> white<span class="punctuation">;</span>

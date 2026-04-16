@@ -1,11 +1,33 @@
-<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-vanilla/">Hello World (Vanilla)</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-vanilla/" data-id="HWV"><h1>Hello World (Vanilla)</h1><iframe srcdoc="&lt;html&gt;&lt;head&gt;&lt;script type=&quot;importmap&quot;&gt;{
-    &quot;imports&quot;: {
-      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@8.2.0-beta.1&quot;
-    }
-  }&lt;/script&gt;&lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{align-items:center;display:flex;font-family:Inter,sans-serif;letter-spacing:-.04rem;height:100vh;justify-content:center;margin:0}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;script type=&quot;module&quot;&gt;import{createStore as o}from&quot;tinybase&quot;;const e=o();e.setValue(&quot;v1&quot;,&quot;Hello World&quot;),document.body.innerHTML=e.getValue(&quot;v1&quot;);&lt;/script&gt;&lt;/html&gt;"></iframe><p>In this demo, we set data in, and then get data from, a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object. We&#x27;re using keyed values (not even tabular data!), so this is about as simple as it gets.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-vanilla/">Hello World (Vanilla)</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-vanilla/" data-id="HWV"><h1>Hello World (Vanilla)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{background:#f8f8fa;align-items:center;display:flex;font-family:Inter,sans-serif;height:100vh;justify-content:center;margin:0}#app{align-items:center;display:flex;flex-direction:column;gap:.75rem}#logos{display:flex;gap:.5rem}#logos img{height:2rem;width:2rem}#value{color:#1d1d24;font-size:1.5rem;font-weight:700;letter-spacing:-0.04rem}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createStore } from &quot;https://esm.sh/tinybase@8.2.0-beta.2&quot;;
+var store = createStore();
+store.setValue(&quot;v1&quot;, &quot;Hello World&quot;);
+var renderValue = (value) =&gt; {
+  document.body.innerHTML = `
+    &lt;div id=&quot;app&quot;&gt;
+      &lt;div id=&quot;logos&quot;&gt;
+        &lt;img
+          src=&quot;https://tinybase.org/favicon.svg&quot;
+          alt=&quot;TinyBase logo&quot;
+        /&gt;
+      &lt;/div&gt;
+      &lt;div id=&quot;value&quot;&gt;${value}&lt;/div&gt;
+    &lt;/div&gt;
+  `;
+};
+renderValue(store.getValue(&quot;v1&quot;));&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we set data in, and then get data from, a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object. We&#x27;re using keyed values (not even tabular data!), so this is about as simple as it gets.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.1"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.2.0-beta.2"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
@@ -13,19 +35,57 @@
 
 <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre><p>We set the string &#x27;<a href="/demos/hello-world/">Hello World</a>&#x27; as a <a href="/api/store/type-aliases/store/value/"><code>Value</code></a> in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object. We give it a <a href="/api/store/type-aliases/store/value/"><code>Value</code></a> <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> of <code>v1</code>:</p><pre><code>store<span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setvalue/">setValue</a></span><span class="punctuation">(</span><span class="string">'v1'</span><span class="punctuation">,</span> <span class="string">'Hello World'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-</code></pre><p>Finally, we get the value back out again and update the page with it:</p><pre><code>document<span class="punctuation">.</span>body<span class="punctuation">.</span>innerHTML <span class="operator">=</span> store<span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/getting-data/getvalue/">getValue</a></span><span class="punctuation">(</span><span class="string">'v1'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><p>Finally, we get the value back out again, render it into the page, and add a small TinyBase logo above it:</p><pre><code><span class="keyword">const</span> <span class="function-variable">renderValue</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">value</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  document<span class="punctuation">.</span>body<span class="punctuation">.</span>innerHTML <span class="operator">=</span> <span class="template-string"><span class="template-punctuation">`</span><span class="string">
+    &lt;div id="app">
+      &lt;div id="logos">
+        &lt;img
+          src="https://tinybase.org/favicon.svg"
+          alt="TinyBase logo"
+        />
+      &lt;/div>
+      &lt;div id="value"></span><span class="interpolation"><span class="interpolation-punctuation">${</span>value<span class="interpolation-punctuation">}</span></span><span class="string">&lt;/div>
+    &lt;/div>
+  </span><span class="template-punctuation">`</span></span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+
+<span class="function">renderValue</span><span class="punctuation">(</span>store<span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/getting-data/getvalue/">getValue</a></span><span class="punctuation">(</span><span class="string">'v1'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre><p>Add a little styling, and we&#x27;re done!</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
   <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
   <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="punctuation">}</span>
 
 <span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> #f8f8fa<span class="punctuation">;</span>
   <span class="property">align-items</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
   <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
   <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
-  <span class="property">letter-spacing</span><span class="punctuation">:</span> <span class="operator">-</span>0.04rem<span class="punctuation">;</span>
   <span class="property">height</span><span class="punctuation">:</span> 100vh<span class="punctuation">;</span>
   <span class="property">justify-content</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
   <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
 <span class="punctuation">}</span>
-</code></pre><p>And we&#x27;re done! You now know the basics of setting and getting TinyBase data.</p><p>Next, we will see how we could have done that using a tabular data structure. Please continue to the Hello World (Vanilla) v2 demo.</p></section>
+
+<span class="selector">#app</span> <span class="punctuation">{</span>
+  <span class="property">align-items</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
+  <span class="property">flex-direction</span><span class="punctuation">:</span> column<span class="punctuation">;</span>
+  <span class="property">gap</span><span class="punctuation">:</span> 0.75rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#logos</span> <span class="punctuation">{</span>
+  <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
+  <span class="property">gap</span><span class="punctuation">:</span> 0.5rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#logos img</span> <span class="punctuation">{</span>
+  <span class="property">height</span><span class="punctuation">:</span> 2rem<span class="punctuation">;</span>
+  <span class="property">width</span><span class="punctuation">:</span> 2rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">#value</span> <span class="punctuation">{</span>
+  <span class="property">color</span><span class="punctuation">:</span> #1d1d24<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> 1.5rem<span class="punctuation">;</span>
+  <span class="property">font-weight</span><span class="punctuation">:</span> 700<span class="punctuation">;</span>
+  <span class="property">letter-spacing</span><span class="punctuation">:</span> <span class="operator">-</span>0.04rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+</code></pre><p>And we&#x27;re done! You now know the basics of setting and getting TinyBase data.</p><p>Next, we will see how we could have done that using a tabular data structure. Please continue to the <a href="/demos/hello-world/hello-world-vanilla-v2/">Hello World (Vanilla) v2</a> demo.</p></section>
