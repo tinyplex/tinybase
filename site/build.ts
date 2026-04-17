@@ -1,5 +1,5 @@
 import {readFileSync, writeFileSync} from 'fs';
-import type {Docs, NodeTransform} from 'tinydocs';
+import type {Docs, NodeTransform, ReflectionTransform} from 'tinydocs';
 import {createDocs, getSkippedChildren, getSorter} from 'tinydocs';
 import {addDemoDocs, getPublishedImportUrl} from './demo.ts';
 import {rewriteAndValidatePublishedDocShots} from './shots.ts';
@@ -110,7 +110,60 @@ const REFLECTIONS = [
 const SVELTE_API_PREFIX = /^\/api\/ui-svelte(?:-dom|-inspector)?\//;
 const SVELTE_PRIVATE_PROPERTY =
   /^\/api\/ui-svelte(?:-dom|-inspector)?\/.*\/properties\/other\/(?:element|z-bindings)\/$/;
+const SVELTE_REFLECTION = /^ui-svelte(?:-dom|-inspector)?\./;
+const SVELTE_INTERNAL_PARAM = /^(?:internal|internals)$/;
+const SVELTE_PRIVATE_MEMBER = /^(?:element|z_\$\$bindings)$/;
 const hasMarkdown = (markdown?: string): boolean => markdown?.trim() != '';
+
+type ReflectionComment = {
+  blockTags: {tag: string; name?: string}[];
+};
+type ReflectionGroup = {
+  title: string;
+  children: {name: string}[];
+};
+type ReflectionContainer = {
+  children?: {name: string}[];
+  groups?: ReflectionGroup[];
+};
+
+const removeSvelteInternalParam: ReflectionTransform = (reflection) => {
+  if (!SVELTE_REFLECTION.test(reflection.getFriendlyFullName())) {
+    return;
+  }
+  const comment = (reflection as {comment?: ReflectionComment}).comment;
+  if (comment != null) {
+    comment.blockTags = comment.blockTags.filter(
+      ({tag, name}) => tag != '@param' || !SVELTE_INTERNAL_PARAM.test(name ?? ''),
+    );
+  }
+  const signature = reflection as {parameters?: {name: string}[]};
+  if (signature.parameters != null) {
+    signature.parameters = signature.parameters.filter(
+      ({name}) => !SVELTE_INTERNAL_PARAM.test(name),
+    );
+  }
+  const container = reflection as ReflectionContainer;
+  if (container.groups != null) {
+    container.groups = container.groups
+      .map((group) =>
+        group.title != 'Properties'
+          ? group
+          : {
+              ...group,
+              children: group.children.filter(
+                ({name}) => !SVELTE_PRIVATE_MEMBER.test(name),
+              ),
+            },
+      )
+      .filter((group) => group.children.length > 0);
+  }
+  if (container.children != null) {
+    container.children = container.children.filter(
+      ({name}) => !SVELTE_PRIVATE_MEMBER.test(name),
+    );
+  }
+};
 
 const hidePrivateSvelteComponentChildren: NodeTransform = (node) => {
   if (SVELTE_PRIVATE_PROPERTY.test(node.url)) {
@@ -151,6 +204,7 @@ export const build = async (
   );
 
   const docs = createDocs(baseUrl, outDir, !api && !pages)
+    .addReflectionTransform(removeSvelteInternalParam)
     .addNodeTransform(extractThumbnailMarkdown)
     .addNodeTransform(hidePrivateSvelteComponentChildren)
     .addJsFile('site/js/home.ts')
