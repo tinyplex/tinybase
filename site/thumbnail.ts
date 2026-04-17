@@ -1,10 +1,11 @@
-import type {Node} from 'tinydocs';
+import type {Node, NodeTransform} from 'tinydocs';
 
 export type Thumbnail = {
   readonly alt: string;
   readonly src: string;
   readonly title?: string;
 };
+const THUMBNAIL = 'thumbnail';
 
 const removeLeadingWhitespace = (markdown: string): string =>
   markdown.replace(/^\s*\n+/, '');
@@ -40,25 +41,26 @@ const splitLeadingImage = (
       };
 };
 
-export const getThumbnailMarkdown = (
-  node: Node,
-): {thumbnail?: Thumbnail; summary: string; body: string} => {
+export const extractThumbnailMarkdown: NodeTransform = (node) => {
+  if (node.reflection != null) {
+    return;
+  }
   const summaryParts = splitLeadingImage(node.summary);
   const bodyParts = splitLeadingImage(node.body);
-  return summaryParts.thumbnail == null
-    ? {
-        thumbnail: bodyParts.thumbnail,
-        summary: summaryParts.markdown,
-        body: bodyParts.markdown,
-      }
-    : {
-        thumbnail: summaryParts.thumbnail,
-        summary: summaryParts.markdown,
-        body: node.body ?? '',
-      };
+  node.data[THUMBNAIL] = summaryParts.thumbnail ?? bodyParts.thumbnail;
+  node.summary = summaryParts.markdown;
+  node.body =
+    summaryParts.thumbnail == null ? bodyParts.markdown : (node.body ?? '');
 };
 
+export const getThumbnailMarkdown = (
+  node: Node,
+): {thumbnail?: Thumbnail; summary: string; body: string} => ({
+  thumbnail: node.data[THUMBNAIL] as Thumbnail | undefined,
+  summary: node.summary ?? '',
+  body: node.body ?? '',
+});
+
 export const getSummaryMarkdown = (node: Node): string => {
-  const {body, summary} = getThumbnailMarkdown(node);
-  return summary || getLeadParagraph(body);
+  return (node.summary ?? '') || getLeadParagraph(node.body ?? '');
 };

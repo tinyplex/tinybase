@@ -1,9 +1,9 @@
 import {readFileSync, writeFileSync} from 'fs';
-import type {Docs} from 'tinydocs';
-import {createDocs, getSorter} from 'tinydocs';
+import type {Docs, NodeTransform} from 'tinydocs';
+import {createDocs, getSkippedChildren, getSorter} from 'tinydocs';
 import {addDemoDocs, getPublishedImportUrl} from './demo.ts';
 import {rewriteAndValidatePublishedDocShots} from './shots.ts';
-import {getSummaryMarkdown} from './thumbnail.ts';
+import {extractThumbnailMarkdown, getSummaryMarkdown} from './thumbnail.ts';
 import {ArticleInner} from './ui/ArticleInner.tsx';
 import {ExecutableProject} from './ui/ExecutableProject.tsx';
 import {MarkdownPage} from './ui/MarkdownPage.tsx';
@@ -107,6 +107,29 @@ const REFLECTIONS = [
   '*',
   /^Other/,
 ];
+const SVELTE_API_PREFIX = /^\/api\/ui-svelte(?:-dom|-inspector)?\//;
+const SVELTE_PRIVATE_PROPERTY =
+  /^\/api\/ui-svelte(?:-dom|-inspector)?\/.*\/properties\/other\/(?:element|z-bindings)\/$/;
+const hasMarkdown = (markdown?: string): boolean => markdown?.trim() != '';
+
+const hidePrivateSvelteComponentChildren: NodeTransform = (node) => {
+  if (SVELTE_PRIVATE_PROPERTY.test(node.url)) {
+    node.hide = true;
+    node.publish = false;
+    return;
+  }
+  if (
+    SVELTE_API_PREFIX.test(node.url) &&
+    node.reflection == null &&
+    node.url.includes('/properties/') &&
+    !hasMarkdown(node.body) &&
+    !hasMarkdown(node.summary) &&
+    getSkippedChildren(node).length == 0
+  ) {
+    node.hide = true;
+    node.publish = false;
+  }
+};
 
 export const build = async (
   esbuild: any,
@@ -128,6 +151,8 @@ export const build = async (
   );
 
   const docs = createDocs(baseUrl, outDir, !api && !pages)
+    .addNodeTransform(extractThumbnailMarkdown)
+    .addNodeTransform(hidePrivateSvelteComponentChildren)
     .addJsFile('site/js/home.ts')
     .addJsFile('site/js/app.ts')
     .addJsFile('site/js/single.ts')
@@ -236,7 +261,7 @@ export const build = async (
           ?.replaceAll(/<[^>]*>/g, '')
           .replaceAll(/\s+/g, ' ')
           .trim() ?? '';
-      if (node?.url != '/' && summary && !summary.startsWith('->')) {
+      if (node.publish && node?.url != '/' && summary && !summary.startsWith('->')) {
         pagesTable[node.url] = {
           n: node.name,
           s: summary,
