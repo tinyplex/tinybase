@@ -112,6 +112,7 @@ const REFLECTIONS = [
 ];
 const SVELTE_API_PREFIX = /^\/api\/ui-svelte(?:-dom|-inspector)?\//;
 const SVELTE_PRIVATE_PROPERTY =
+  // eslint-disable-next-line max-len
   /^\/api\/ui-svelte(?:-dom|-inspector)?\/.*\/properties\/other\/(?:element|z-bindings)\/$/;
 const SVELTE_REFLECTION = /^ui-svelte(?:-dom|-inspector)?\./;
 const SVELTE_INTERNAL_PARAM = /^(?:internal|internals)$/;
@@ -137,7 +138,8 @@ const removeSvelteInternalParam: ReflectionTransform = (reflection) => {
   const comment = (reflection as {comment?: ReflectionComment}).comment;
   if (comment != null) {
     comment.blockTags = comment.blockTags.filter(
-      ({tag, name}) => tag != '@param' || !SVELTE_INTERNAL_PARAM.test(name ?? ''),
+      ({tag, name}) =>
+        tag != '@param' || !SVELTE_INTERNAL_PARAM.test(name ?? ''),
     );
   }
   const signature = reflection as {parameters?: {name: string}[]};
@@ -318,7 +320,12 @@ export const build = async (
           ?.replaceAll(/<[^>]*>/g, '')
           .replaceAll(/\s+/g, ' ')
           .trim() ?? '';
-      if (node.publish && node?.url != '/' && summary && !summary.startsWith('->')) {
+      if (
+        node.publish &&
+        node?.url != '/' &&
+        summary &&
+        !summary.startsWith('->')
+      ) {
         pagesTable[node.url] = {
           n: node.name,
           s: summary,

@@ -110,17 +110,20 @@ const stabilizeDocShot = async (
     return;
   }
   const frame = await getFirstFrame(page);
-  await frame?.evaluate(({selector, text}) => {
-    const maxTimerId = window.setTimeout(() => {}, 0);
-    for (let id = 0; id <= maxTimerId; id++) {
-      clearInterval(id);
-      clearTimeout(id);
-    }
-    const element = document.querySelector<HTMLElement>(selector);
-    if (element != null) {
-      element.textContent = text;
-    }
-  }, {selector: shot.fixedTextSelector, text: shot.fixedText});
+  await frame?.evaluate(
+    ({selector, text}) => {
+      const maxTimerId = window.setTimeout(() => {}, 0);
+      for (let id = 0; id <= maxTimerId; id++) {
+        clearInterval(id);
+        clearTimeout(id);
+      }
+      const element = document.querySelector<HTMLElement>(selector);
+      if (element != null) {
+        element.textContent = text;
+      }
+    },
+    {selector: shot.fixedTextSelector, text: shot.fixedText},
+  );
 };
 
 const waitForDocShotImages = async (
@@ -136,15 +139,14 @@ const waitForDocShotImages = async (
       ...document.querySelectorAll<HTMLImageElement>(selector),
     ].filter(({src}) => src != '');
     await Promise.all(
-      images.map(
-        (image) =>
-          image.complete
-            ? undefined
-            : new Promise<void>((resolve) => {
-                const done = () => resolve();
-                image.addEventListener('load', done, {once: true});
-                image.addEventListener('error', done, {once: true});
-              }),
+      images.map((image) =>
+        image.complete
+          ? undefined
+          : new Promise<void>((resolve) => {
+              const done = () => resolve();
+              image.addEventListener('load', done, {once: true});
+              image.addEventListener('error', done, {once: true});
+            }),
       ),
     );
   }, shot.waitForImages);

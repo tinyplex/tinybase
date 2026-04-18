@@ -2314,15 +2314,13 @@ join, filter, group, sort and paginate data. And of course, it's all reactive!
 The best way to see the power of this new engine is with the two new demos we've
 included this release:
 
-![Car Analysis demo screenshot](/shots/car-analysis-demo.png
-"Car Analysis demo screenshot")
+![Car Analysis demo screenshot](/shots/car-analysis-demo.png)
 
 The Car Analysis demo showcases the analytical query capabilities of TinyBase
 v2.0, grouping and sorting dimensional data for lightweight analytical usage,
 graphing, and tabular display. _[Try this demo here](/demos/car-analysis/)._
 
-![Movie Database demo screenshot](/shots/movie-database-demo.png
-"Movie Database demo screenshot")
+![Movie Database demo screenshot](/shots/movie-database-demo.png)
 
 The Movie Database demo showcases the relational query capabilities of TinyBase
 v2.0, joining together information about movies, directors, and actors from

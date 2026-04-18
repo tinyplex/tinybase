@@ -19,20 +19,14 @@ const IMAGE_MARKDOWN =
 const getThumbnailFromMatch = (match: RegExpMatchArray): Thumbnail => ({
   alt: match[1] ?? '',
   src: match[2] ?? '',
-  ...(
-    match[3] == null && match[4] == null
-      ? {}
-      : {title: match[3] ?? match[4]}
-  ),
+  ...(match[3] == null && match[4] == null
+    ? {}
+    : {title: match[3] ?? match[4]}),
 });
 
 const parseLeadingImage = (markdown: string): Thumbnail | undefined => {
-  const match = markdown.match(
-    new RegExp(`^${IMAGE_MARKDOWN.source}\\s*$`),
-  );
-  return match == null
-    ? undefined
-    : getThumbnailFromMatch(match);
+  const match = markdown.match(new RegExp(`^${IMAGE_MARKDOWN.source}\\s*$`));
+  return match == null ? undefined : getThumbnailFromMatch(match);
 };
 
 const findFirstImage = (markdown?: string): Thumbnail | undefined => {
@@ -72,13 +66,14 @@ const getCommentTexts = (
     : [text, undefined];
 };
 
-const getReflectionMarkdown = (reflection: any): string[] => [
-  ...getCommentTexts(reflection.comment),
-  ...getCommentTexts(reflection?.signatures?.[0]?.comment),
-  ...getCommentTexts(reflection?.reflectionComment?.signatures?.[0]?.comment),
-  ...getCommentTexts(reflection?.type?.declaration?.signatures?.[0]?.comment),
-  ...getCommentTexts(reflection?.type?.declaration?.comment),
-].filter((markdown): markdown is string => markdown != null);
+const getReflectionMarkdown = (reflection: any): string[] =>
+  [
+    ...getCommentTexts(reflection.comment),
+    ...getCommentTexts(reflection?.signatures?.[0]?.comment),
+    ...getCommentTexts(reflection?.reflectionComment?.signatures?.[0]?.comment),
+    ...getCommentTexts(reflection?.type?.declaration?.signatures?.[0]?.comment),
+    ...getCommentTexts(reflection?.type?.declaration?.comment),
+  ].filter((markdown): markdown is string => markdown != null);
 
 export const extractThumbnailMarkdown: NodeTransform = (node) => {
   if (node.reflection != null) {

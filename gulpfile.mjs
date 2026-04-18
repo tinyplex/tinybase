@@ -239,6 +239,10 @@ const getLabelBlocks = async () => {
 
 const copyDefinition = async (dir, module) => {
   const labelBlocks = await getLabelBlocks();
+  const {version} = JSON.parse(readFileSync('./package.json', UTF8));
+  const siteRoot = version.includes('beta')
+    ? 'https://beta.tinybase.org'
+    : 'https://tinybase.org';
   // Add easier-to-read with-schemas blocks
   const codeBlocks = new Map();
   [
@@ -257,37 +261,42 @@ const copyDefinition = async (dir, module) => {
       );
     }
   });
+  const absolutizeDocMedia = (block) =>
+    block.replace(/\]\((?:\s*\*\s*)?\/shots\//g, `](${siteRoot}/shots/`);
+
   const fileRewrite = (block, addOverrideSnippet) =>
-    block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
-      if (labelBlocks.has(label)) {
-        const codeOverride = codeBlocks.get(label);
-        let block = labelBlocks.get(label);
-        if (
-          addOverrideSnippet &&
-          codeBlocks.has(label) &&
-          code.includes('<') &&
-          code.includes('Schema') &&
-          !codeOverride.endsWith('{')
-        ) {
-          const prefix = block.match(/^\s+\*$/m)?.[0];
-          if (prefix) {
-            const line = '\n' + prefix;
-            block = block.replace(
-              /^\s+\*$/m,
-              `${prefix}${line}` +
-                ' This has schema-based typing.' +
-                ' The following is a simplified representation:' +
-                `${line}${line} \`\`\`ts override` +
-                codeOverride.trimEnd() +
-                `${line} \`\`\`${line}`,
-            );
+    absolutizeDocMedia(
+      block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
+        if (labelBlocks.has(label)) {
+          const codeOverride = codeBlocks.get(label);
+          let block = labelBlocks.get(label);
+          if (
+            addOverrideSnippet &&
+            codeBlocks.has(label) &&
+            code.includes('<') &&
+            code.includes('Schema') &&
+            !codeOverride.endsWith('{')
+          ) {
+            const prefix = block.match(/^\s+\*$/m)?.[0];
+            if (prefix) {
+              const line = '\n' + prefix;
+              block = block.replace(
+                /^\s+\*$/m,
+                `${prefix}${line}` +
+                  ' This has schema-based typing.' +
+                  ' The following is a simplified representation:' +
+                  `${line}${line} \`\`\`ts override` +
+                  codeOverride.trimEnd() +
+                  `${line} \`\`\`${line}`,
+              );
+            }
+            code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
           }
-          code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
+          return block + code;
         }
-        return block + code;
-      }
-      throw `Missing docs label ${label} in ${module}`;
-    });
+        throw `Missing docs label ${label} in ${module}`;
+      }),
+    );
 
   await allOf(['', '/with-schemas'], async (extraDir) => {
     const definitionFile = await ensureDir(

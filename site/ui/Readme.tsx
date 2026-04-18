@@ -28,6 +28,7 @@ export const useReadme = (node: Node): [string, string] => {
     getCoverageTable: () => getCoverageTable(coverage),
     getGitHubAvatar,
   }).forEach(([key, value]) => {
+    // eslint-disable-next-line react-hooks/immutability
     (globalThis as any)[key] = value;
   });
 
