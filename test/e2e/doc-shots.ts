@@ -257,6 +257,15 @@ export const DOC_SHOTS: readonly DocShot[] = [
     style: EDIT_DOC_SHOT_STYLE,
   },
   {
+    asset: 'editablevalueview-svelte-full-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/editablevalueview-svelte/',
+    readySelector: '#edit',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
     asset: 'inspector-react-demo.png',
     clicks: [
       'aside#tinybaseInspector article > details > summary',

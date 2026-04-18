@@ -40,6 +40,9 @@ const CATEGORIES = [
   'Synchronizing stores',
   'Using React',
 
+  'Store components',
+  'Queries components',
+  'Other components',
   /hooks$/,
   /components$/,
   'Definition',

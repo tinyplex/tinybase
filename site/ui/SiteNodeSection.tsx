@@ -114,6 +114,7 @@ const SiteReflectionSummary: FunctionComponent<{readonly node: Node}> = ({
   node,
 }) => {
   const children = getSkippedChildren(node);
+  const {thumbnail} = getThumbnailMarkdown(node);
   const parts = [<NodeSummary node={node} key="summary" readMore={true} />];
 
   if (children.length > 0) {
@@ -134,7 +135,12 @@ const SiteReflectionSummary: FunctionComponent<{readonly node: Node}> = ({
   }
 
   return (
-    <SiteSection title={<NodeName node={node} />} id={node.url} dataId={node.id}>
+    <SiteSection
+      title={<NodeName node={node} />}
+      id={node.url}
+      dataId={node.id}
+      thumbnail={thumbnail}
+    >
       {parts}
     </SiteSection>
   );
@@ -153,6 +159,7 @@ const SiteNodeSectionBlock: FunctionComponent<{
   if (summary ? summaryMarkdown : cleanedSummary) {
     parts.push(
       <Markdown
+        html={true}
         markdown={
           (summary ? summaryMarkdown : cleanedSummary) +
           getReadMore(summary, isSingle, node)
@@ -162,7 +169,7 @@ const SiteNodeSectionBlock: FunctionComponent<{
     );
   }
   if (!summary && body) {
-    parts.push(<Markdown markdown={body} key="body" />);
+    parts.push(<Markdown html={true} markdown={body} key="body" />);
   }
   parts.push(children);
   if (node.essential) {

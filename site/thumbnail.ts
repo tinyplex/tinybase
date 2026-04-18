@@ -13,17 +13,31 @@ const removeLeadingWhitespace = (markdown: string): string =>
 const getLeadParagraph = (markdown: string): string =>
   removeLeadingWhitespace(markdown).split('\n\n')[0] ?? '';
 
+const IMAGE_MARKDOWN =
+  /!\[([^\]]*)\]\(\s*([^) \t\r\n]+)\s*(?:(?:"([^"]*)"|'([^']*)'))?\s*\)/;
+
+const getThumbnailFromMatch = (match: RegExpMatchArray): Thumbnail => ({
+  alt: match[1] ?? '',
+  src: match[2] ?? '',
+  ...(
+    match[3] == null && match[4] == null
+      ? {}
+      : {title: match[3] ?? match[4]}
+  ),
+});
+
 const parseLeadingImage = (markdown: string): Thumbnail | undefined => {
   const match = markdown.match(
-    /^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)\s*$/,
+    new RegExp(`^${IMAGE_MARKDOWN.source}\\s*$`),
   );
   return match == null
     ? undefined
-    : {
-        alt: match[1] ?? '',
-        src: match[2] ?? '',
-        ...(match[3] == null ? {} : {title: match[3]}),
-      };
+    : getThumbnailFromMatch(match);
+};
+
+const findFirstImage = (markdown?: string): Thumbnail | undefined => {
+  const match = markdown?.match(IMAGE_MARKDOWN);
+  return match == null ? undefined : getThumbnailFromMatch(match);
 };
 
 const splitLeadingImage = (
@@ -41,8 +55,36 @@ const splitLeadingImage = (
       };
 };
 
+const getCommentText = (
+  parts: {text: string}[] | undefined,
+): string | undefined => parts?.map(({text}) => text).join('');
+
+const getCommentTexts = (
+  comment: {summary?: {text: string}[]} | undefined,
+): [string, string | undefined] | [undefined, undefined] => {
+  const text = getCommentText(comment?.summary);
+  if (!text) {
+    return [undefined, undefined];
+  }
+  const lineBreak = text.indexOf('\n\n');
+  return lineBreak > -1
+    ? [text.slice(0, lineBreak), text.slice(lineBreak)]
+    : [text, undefined];
+};
+
+const getReflectionMarkdown = (reflection: any): string[] => [
+  ...getCommentTexts(reflection.comment),
+  ...getCommentTexts(reflection?.signatures?.[0]?.comment),
+  ...getCommentTexts(reflection?.reflectionComment?.signatures?.[0]?.comment),
+  ...getCommentTexts(reflection?.type?.declaration?.signatures?.[0]?.comment),
+  ...getCommentTexts(reflection?.type?.declaration?.comment),
+].filter((markdown): markdown is string => markdown != null);
+
 export const extractThumbnailMarkdown: NodeTransform = (node) => {
   if (node.reflection != null) {
+    node.data[THUMBNAIL] = getReflectionMarkdown(node.reflection)
+      .map((markdown) => findFirstImage(markdown))
+      .find((thumbnail) => thumbnail != null);
     return;
   }
   const summaryParts = splitLeadingImage(node.summary);

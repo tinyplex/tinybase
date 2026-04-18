@@ -43,9 +43,6 @@ body > main > article {
     display: inline;
     margin: 0;
   }
-  img[title^='Thumbnail'] {
-    width: 50%;
-  }
   section.withThumbnail {
     margin-bottom: 2.5rem;
     > .thumbnailPanel {
@@ -66,6 +63,9 @@ body > main > article {
         margin-top: 0;
       }
     }
+  }
+  > section.s1 > h1 + section.withThumbnail {
+    margin-top: 3rem;
   }
   .essential {
     background-color: @accentColor;
@@ -88,10 +88,6 @@ body > main > article {
         grid-template-columns: minmax(9rem, 12rem) 1fr;
         align-items: start;
       }
-    }
-    img[title^='Thumbnail'] {
-      margin: 0 1rem 2rem 0;
-      float: left;
     }
   }
 }

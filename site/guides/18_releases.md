@@ -16,6 +16,9 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
+'SortedTableInHtmlTable (Svelte)')
+
 ```svelte
 <script>
   import {createStore} from 'tinybase';
@@ -33,6 +36,8 @@ but use Svelte component composition and props throughout:
 Alongside the table components, the new ui-svelte-inspector module brings the
 TinyBase development inspector to Svelte apps too, making it easy to inspect and
 edit Stores, Indexes, Relationships, and Queries during development:
+
+![Inspector (Svelte)](/shots/inspector-svelte-demo.png 'Inspector (Svelte)')
 
 ```svelte
 <script>
@@ -58,6 +63,9 @@ guide.
 This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
+
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
+'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -655,7 +663,7 @@ FileSystemObserverAPI, so please let us know how that works!
 This release improves the Inspector tool, making it easier to debug, inspect,
 and mutate your TinyBase stores.
 
-![Inspector](/inspector.webp 'Inspector')
+![Inspector](/shots/inspector-react-demo.png 'Inspector')
 
 As well as a modernized UI, new in this release is the ability to create,
 duplicate, or delete tables, rows, values and cells directly within the
@@ -1720,7 +1728,8 @@ on the tools module. Please report any issues!
 This release introduces the new ui-react-dom module. This provides pre-built
 components for tabular display of your data in a web application.
 
-![A TinyBase DOM Component](/ui-react-dom.webp 'A TinyBase DOM Component')
+![A TinyBase DOM Component](/shots/sortedtableinhtmltable-react-demo.png 'A
+TinyBase DOM Component')
 
 ## New DOM Components
 
@@ -1785,7 +1794,7 @@ table component.
 
 ## The new Inspector
 
-![Inspector](/store-inspector.webp 'Inspector')
+![Inspector](/shots/inspector-react-demo.png 'Inspector')
 
 The new Inspector component allows you to view, understand, and edit the content
 of a Store in a debug web environment. Try it out in most of the demos on the
@@ -2305,15 +2314,19 @@ join, filter, group, sort and paginate data. And of course, it's all reactive!
 The best way to see the power of this new engine is with the two new demos we've
 included this release:
 
-![Thumbnail of demo](/car-analysis.webp 'Thumbnail of demo') The Car Analysis
-demo showcases the analytical query capabilities of TinyBase v2.0, grouping and
-sorting dimensional data for lightweight analytical usage, graphing, and tabular
-display. _[Try this demo here](/demos/car-analysis/)._
+![Car Analysis demo screenshot](/shots/car-analysis-demo.png
+"Car Analysis demo screenshot")
 
-![Thumbnail of demo](/movie-database.webp 'Thumbnail of demo') The Movie
-Database demo showcases the relational query capabilities of TinyBase v2.0,
-joining together information about movies, directors, and actors from across
-multiple source tables. _[Try this demo here](/demos/movie-database/)._
+The Car Analysis demo showcases the analytical query capabilities of TinyBase
+v2.0, grouping and sorting dimensional data for lightweight analytical usage,
+graphing, and tabular display. _[Try this demo here](/demos/car-analysis/)._
+
+![Movie Database demo screenshot](/shots/movie-database-demo.png
+"Movie Database demo screenshot")
+
+The Movie Database demo showcases the relational query capabilities of TinyBase
+v2.0, joining together information about movies, directors, and actors from
+across multiple source tables. _[Try this demo here](/demos/movie-database/)._
 
 ## Sorting and Pagination
 
