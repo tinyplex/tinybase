@@ -73,7 +73,7 @@ const delCells = (tableId: Id = 't1') => {
   }
 };
 
-describe('Sets', () => {
+describe('Queries tables', () => {
   describe('Selects', () => {
     test('root table column by id', () => {
       setCells();
@@ -843,6 +843,102 @@ describe('Sets', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(1);
       queries.delQueryDefinition('q1');
       expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+  });
+});
+
+describe('Queries queries', () => {
+  beforeEach(() => {
+    setCells('t1', '', '', 'r');
+    setCells('t2', '', '.j');
+    queries.setQueryDefinition('Q1', 't1', ({select}) => {
+      select('c1');
+      select('c2');
+      select('c3');
+    });
+    queries.setQueryDefinition('Q2', 't2', ({select}) => {
+      select('c1');
+      select('c2');
+      select('c3');
+      select((_getTableCell, rowId) => rowId).as('r');
+    });
+  });
+
+  describe('Selects', () => {
+    test('query by id, select by id', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one'},
+        r2: {c1: 'two'},
+        r3: {c1: 'three'},
+        r4: {c1: 'four'},
+      });
+
+      store.setCell('t1', 'r4', 'c1', 'four!!');
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one'},
+        r2: {c1: 'two'},
+        r3: {c1: 'three'},
+        r4: {c1: 'four!!'},
+      });
+    });
+  });
+
+  describe('Joins', () => {
+    test('query can join query result with asQuery flag', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+        select('c1').as('Q1.c1');
+        select(true, 'Q2', 'c1').as('Q2.c1');
+        join(true, 'Q2', 'c3');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {'Q1.c1': 'one', 'Q2.c1': 'one.j'},
+        r2: {'Q1.c1': 'two', 'Q2.c1': 'two.j'},
+        r3: {'Q1.c1': 'three', 'Q2.c1': 'three.j'},
+        r4: {'Q1.c1': 'four', 'Q2.c1': 'four.j'},
+      });
+    });
+  });
+
+  describe('Wheres', () => {
+    test('query by id can filter rows', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select, where}) => {
+        select('c1');
+        where('c2', 'even');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'two'},
+        r4: {c1: 'four'},
+      });
+    });
+  });
+
+  describe('Groups', () => {
+    test('query by id can group rows', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'count').as('count');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'odd', count: 2},
+        1: {c2: 'even', count: 2},
+      });
+    });
+  });
+
+  describe('Havings', () => {
+    test('query by id can apply having clauses', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'count').as('count');
+        having('count', 2);
+        having('c2', 'even');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'even', count: 2},
+      });
     });
   });
 });
