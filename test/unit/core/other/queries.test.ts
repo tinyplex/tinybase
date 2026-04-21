@@ -882,6 +882,13 @@ describe('Queries queries', () => {
         r4: {c1: 'four!!'},
       });
     });
+
+    test('query by id, select by missing joined query id', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select}) => {
+        select(true, 'Q3', 'c1').as('Q3.c1');
+      });
+      expect(queries.getResultTable('q1')).toEqual({});
+    });
   });
 
   describe('Joins', () => {
@@ -898,6 +905,22 @@ describe('Queries queries', () => {
         r4: {'Q1.c1': 'four', 'Q2.c1': 'four.j'},
       });
     });
+
+    test('query can join query result from aliased query result', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+        select('c1').as('Q1.c1');
+        select(true, 'Q2a', 'c1').as('Q2a.c1');
+        select(true, 'Q2b', 'c1').as('Q2b.c1');
+        join(true, 'Q2', 'c3').as('Q2a');
+        join(true, 'Q2', 'Q2a', 'r').as('Q2b');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {'Q1.c1': 'one', 'Q2a.c1': 'one.j', 'Q2b.c1': 'one.j'},
+        r2: {'Q1.c1': 'two', 'Q2a.c1': 'two.j', 'Q2b.c1': 'two.j'},
+        r3: {'Q1.c1': 'three', 'Q2a.c1': 'three.j', 'Q2b.c1': 'three.j'},
+        r4: {'Q1.c1': 'four', 'Q2a.c1': 'four.j', 'Q2b.c1': 'four.j'},
+      });
+    });
   });
 
   describe('Wheres', () => {
@@ -905,6 +928,18 @@ describe('Queries queries', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, where}) => {
         select('c1');
         where('c2', 'even');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'two'},
+        r4: {c1: 'four'},
+      });
+    });
+
+    test('query by joined query id can filter rows', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select, join, where}) => {
+        select('c1');
+        join(true, 'Q2', 'c3');
+        where(true, 'Q2', 'c2', 'even.j');
       });
       expect(queries.getResultTable('q1')).toEqual({
         r2: {c1: 'two'},
@@ -921,8 +956,8 @@ describe('Queries queries', () => {
         group('c3', 'count').as('count');
       });
       expect(queries.getResultTable('q1')).toEqual({
-        0: {c2: 'odd', count: 2},
-        1: {c2: 'even', count: 2},
+        0: {c2: 'even', count: 2},
+        1: {c2: 'odd', count: 2},
       });
     });
   });
@@ -939,6 +974,29 @@ describe('Queries queries', () => {
       expect(queries.getResultTable('q1')).toEqual({
         0: {c2: 'even', count: 2},
       });
+    });
+  });
+
+  describe('Dependencies', () => {
+    test('query is reset when source query is deleted', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one'},
+        r2: {c1: 'two'},
+        r3: {c1: 'three'},
+        r4: {c1: 'four'},
+      });
+      queries.delQueryDefinition('Q1');
+      expect(queries.getResultTable('q1')).toEqual({});
+    });
+
+    test('query cycles do not recurse infinitely', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('Q1', 'q1', ({select}) => select('c1'));
+      expect(queries.getResultRowCount('Q1')).toBeGreaterThan(0);
+      expect(queries.getResultRowCount('q1')).toBeGreaterThan(0);
+      expect(queries.getResultCell('Q1', 'r2', 'c1')).toEqual('two');
+      expect(queries.getResultCell('q1', 'r2', 'c1')).toEqual('two');
     });
   });
 });
