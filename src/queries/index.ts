@@ -1,4 +1,4 @@
-import type {Id, Ids} from '../@types/common/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import type {
   Aggregate,
   AggregateAdd,
@@ -45,8 +45,6 @@ import {
   collHas,
   collIsEmpty,
   collSize,
-  collSize2,
-  collSize3,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {
@@ -57,16 +55,14 @@ import {
   mapGet,
   mapNew,
   mapSet,
-  mapToObj,
   visitTree,
 } from '../common/map.ts';
 import {
   objFreeze,
   objGet,
-  objIds,
+  objIsEmpty,
   objIsEqual,
   objMap,
-  objToMap,
 } from '../common/obj.ts';
 import {
   getUndefined,
@@ -76,7 +72,7 @@ import {
   size,
   slice,
 } from '../common/other.ts';
-import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
+import {IdSet, setAdd, setNew} from '../common/set.ts';
 import {
   ADD,
   CELL,
@@ -92,6 +88,9 @@ import {
   TABLE,
 } from '../common/strings.ts';
 import {ProtectedStore} from '../index.ts';
+
+const PARAMS_TABLE = '_';
+const PARAM_LISTENER_PREFIX = 'p';
 
 type Build = (builders: {
   select: Select;
@@ -124,10 +123,9 @@ type Aggregators = [
 export const createQueries = getCreateFunction((store: Store): Queries => {
   const createStore = (store as ProtectedStore)._[0];
   const preStore = createStore();
+  const paramStore = createStore();
   const resultStore = createStore();
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
-  const paramValuesListeners: IdSet2 = mapNew();
-  const paramValueListeners: IdSet3 = mapNew();
 
   const {
     _: [, addListener, callListeners],
@@ -148,7 +146,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     destroy,
     addStoreListeners,
     delStoreListeners,
-  ] = getDefinableFunctions<[Build, IdMap<ParamValue>], undefined>(
+  ] = getDefinableFunctions<[Build], undefined>(
     store,
     () => [] as any,
     getUndefined,
@@ -210,15 +208,23 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     tableId: Id,
     build: Build,
     paramValues: ParamValues = {},
+  ): Queries => setQueryDefinitionImpl(queryId, tableId, build, paramValues);
+
+  const setQueryDefinitionImpl = (
+    queryId: Id,
+    tableId: Id,
+    build: Build,
+    paramValues: ParamValues = {},
   ): Queries => {
-    const oldParamValues = getParamValues(queryId);
-
     setDefinition(queryId, tableId);
-    setQueryArgs(queryId, [build, objToMap(paramValues)]);
-    callParamListeners(queryId, oldParamValues, paramValues);
+    setQueryArgs(queryId, [build]);
     resetPreStores(queryId);
+    (objIsEmpty(paramValues) ? paramStore.delRow : paramStore.setRow)(
+      PARAMS_TABLE,
+      queryId,
+      {...paramValues},
+    );
 
-    const [, paramsMap] = getQueryArgs(queryId)!;
     const selectEntries: [Id, SelectClause][] = [];
     const joinEntries: [Id | undefined, JoinClause][] = [
       [undefined, [tableId, undefined, undefined, [], mapNew()]],
@@ -227,7 +233,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     const groupEntries: [Id, GroupClause][] = [];
     const havings: HavingClause[] = [];
 
-    const param = (paramId: Id) => mapGet(paramsMap, paramId);
+    const param = (paramId: Id) => objGet(paramValues, paramId);
 
     const select = (
       arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -595,34 +601,10 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
-  const callParamListeners = (
-    queryId: Id,
-    oldParamValues: ParamValues,
-    newParamValues: ParamValues,
-  ) => {
-    const allParamIds = setNew<Id>([
-      ...objIds(oldParamValues),
-      ...objIds(newParamValues),
-    ]);
-
-    let changed = 0;
-    collForEach(allParamIds, (paramId) => {
-      const newParamValue = objGet(newParamValues, paramId);
-      if (!arrayOrValueEqual(objGet(oldParamValues, paramId), newParamValue)) {
-        changed = 1;
-        callListeners(paramValueListeners, [queryId, paramId], newParamValue);
-      }
-    });
-    if (changed) {
-      callListeners(paramValuesListeners, [queryId], newParamValues);
-    }
-  };
-
   const delQueryDefinition = (queryId: Id): Queries => {
-    const oldParamValues = getParamValues(queryId);
+    paramStore.delRow(PARAMS_TABLE, queryId);
     resetPreStores(queryId);
     delDefinition(queryId);
-    callParamListeners(queryId, oldParamValues, {});
     return queries;
   };
 
@@ -631,13 +613,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     paramValues: ParamValues,
     force: 0 | 1 = 0,
   ): Queries => {
-    ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
+    ifNotUndefined(getQueryArgs(queryId), ([definition]) => {
       if (
         force ||
-        !objIsEqual(mapToObj(oldParamValues), paramValues, arrayOrValueEqual)
+        !objIsEqual(getParamValues(queryId), paramValues, arrayOrValueEqual)
       ) {
         resultStore.transaction(() =>
-          setQueryDefinition(
+          setQueryDefinitionImpl(
             queryId,
             getTableId(queryId),
             definition,
@@ -665,39 +647,48 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   };
 
   const getParamValues = (queryId: Id): ParamValues =>
-    mapToObj(getQueryArgs(queryId)?.[1]);
+    paramStore.getRow(PARAMS_TABLE, queryId) as ParamValues;
 
   const getParamValue = (queryId: Id, paramId: Id): ParamValue | undefined =>
-    mapGet(getQueryArgs(queryId)?.[1], paramId);
+    paramStore.getCell(PARAMS_TABLE, queryId, paramId) as
+      | ParamValue
+      | undefined;
 
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
 
   const addParamValuesListener = (
-    queryId: Id,
+    queryId: IdOrNull,
     listener: ParamValuesListener,
   ): Id =>
-    addListener(
-      (_: any, queryId: Id, paramValues: ParamValues) =>
-        listener(queries, queryId, paramValues),
-      paramValuesListeners,
-      [queryId],
+    PARAM_LISTENER_PREFIX +
+    paramStore.addRowListener(
+      PARAMS_TABLE,
+      queryId,
+      (_store, _tableId, queryId) =>
+        listener(queries, queryId, getParamValues(queryId)),
     );
 
   const addParamValueListener = (
-    queryId: Id,
-    paramId: Id,
+    queryId: IdOrNull,
+    paramId: IdOrNull,
     listener: ParamValueListener,
   ): Id =>
-    addListener(
-      (_: any, queryId: Id, paramId: Id, paramValue: ParamValue) =>
-        listener(queries, queryId, paramId, paramValue),
-      paramValueListeners,
-      [queryId, paramId],
+    PARAM_LISTENER_PREFIX +
+    paramStore.addCellListener(
+      PARAMS_TABLE,
+      queryId,
+      paramId,
+      (_store, _tableId, queryId, paramId, paramValue) =>
+        listener(queries, queryId, paramId, paramValue as ParamValue),
     );
 
   const delListener = (listenerId: Id): Queries => {
-    delListenerImpl(listenerId);
+    if (listenerId[0] == PARAM_LISTENER_PREFIX) {
+      paramStore.delListener(slice(listenerId, 1));
+    } else {
+      delListenerImpl(listenerId);
+    }
     return queries;
   };
 
@@ -710,8 +701,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     } = resultStore.getListenerStats();
     return {
       ...stats,
-      paramValues: collSize2(paramValuesListeners),
-      paramValue: collSize3(paramValueListeners),
+      paramValues: paramStore.getListenerStats().row,
+      paramValue: paramStore.getListenerStats().cell,
     };
   };
 
