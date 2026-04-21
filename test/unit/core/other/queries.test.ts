@@ -865,7 +865,7 @@ describe('Queries queries', () => {
   });
 
   describe('Selects', () => {
-    test('query by id, select by id', () => {
+    test('by id', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
@@ -873,7 +873,10 @@ describe('Queries queries', () => {
         r3: {c1: 'three'},
         r4: {c1: 'four'},
       });
+    });
 
+    test('by id, updates', () => {
+      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
       store.setCell('t1', 'r4', 'c1', 'four!!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
@@ -883,7 +886,7 @@ describe('Queries queries', () => {
       });
     });
 
-    test('query by id, select by missing joined query id', () => {
+    test('missing joined query', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select}) => {
         select(true, 'Q3', 'c1').as('Q3.c1');
       });
@@ -892,7 +895,7 @@ describe('Queries queries', () => {
   });
 
   describe('Joins', () => {
-    test('query can join query result with asQuery flag', () => {
+    test('by id', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select(true, 'Q2', 'c1').as('Q2.c1');
@@ -906,7 +909,7 @@ describe('Queries queries', () => {
       });
     });
 
-    test('query can join query result from aliased query result', () => {
+    test('aliased', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select(true, 'Q2a', 'c1').as('Q2a.c1');
@@ -924,7 +927,7 @@ describe('Queries queries', () => {
   });
 
   describe('Wheres', () => {
-    test('query by id can filter rows', () => {
+    test('by id', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, where}) => {
         select('c1');
         where('c2', 'even');
@@ -935,7 +938,7 @@ describe('Queries queries', () => {
       });
     });
 
-    test('query by joined query id can filter rows', () => {
+    test('by joined id', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, join, where}) => {
         select('c1');
         join(true, 'Q2', 'c3');
@@ -949,7 +952,7 @@ describe('Queries queries', () => {
   });
 
   describe('Groups', () => {
-    test('query by id can group rows', () => {
+    test('by id', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, group}) => {
         select('c2');
         select('c3');
@@ -963,7 +966,7 @@ describe('Queries queries', () => {
   });
 
   describe('Havings', () => {
-    test('query by id can apply having clauses', () => {
+    test('by id', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select, group, having}) => {
         select('c2');
         select('c3');
@@ -978,7 +981,7 @@ describe('Queries queries', () => {
   });
 
   describe('Dependencies', () => {
-    test('query is reset when source query is deleted', () => {
+    test('deletion', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
@@ -990,7 +993,7 @@ describe('Queries queries', () => {
       expect(queries.getResultTable('q1')).toEqual({});
     });
 
-    test('query cycles do not recurse infinitely', () => {
+    test('cycles', () => {
       queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
       queries.setQueryDefinition('Q1', 'q1', ({select}) => select('c1'));
       expect(queries.getResultRowCount('Q1')).toBeGreaterThan(0);
