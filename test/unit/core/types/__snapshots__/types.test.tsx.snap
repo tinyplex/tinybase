@@ -1142,6 +1142,8 @@ exports[`Types in queries.ts > 46:12 1`] = `"Argument of type '"c2"' is not assi
 
 exports[`Types in queries.ts > 49:2 1`] = `"No overload matches this call."`;
 
+exports[`Types in queries.ts > 49:33 1`] = `"No overload matches this call."`;
+
 exports[`Types in queries.ts > 52:14 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number'."`;
 
 exports[`Types in queries.ts > 53:8 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
