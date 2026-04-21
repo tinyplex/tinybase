@@ -1140,8 +1140,6 @@ exports[`Types in queries.ts > 45:4 1`] = `"Conversion of type 'DefaultedCellFro
 
 exports[`Types in queries.ts > 46:12 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c0"'."`;
 
-exports[`Types in queries.ts > 49:2 1`] = `"No overload matches this call."`;
-
 exports[`Types in queries.ts > 49:33 1`] = `"No overload matches this call."`;
 
 exports[`Types in queries.ts > 52:14 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number'."`;
