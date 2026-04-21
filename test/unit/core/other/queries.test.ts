@@ -4954,6 +4954,13 @@ describe('Parameterized', () => {
   });
 
   describe('setParamValue', () => {
+    test('ignores missing query', () => {
+      queries.setParamValue('q0', 'p1', 'a');
+
+      expect(queries.hasQuery('q0')).toEqual(false);
+      expect(queries.getParamValues('q0')).toEqual({});
+    });
+
     test('updates single param and re-evaluates query', () => {
       queries.setQueryDefinition(
         'q1',
@@ -5167,6 +5174,13 @@ describe('Parameterized', () => {
   });
 
   describe('setParamValues', () => {
+    test('ignores missing query', () => {
+      queries.setParamValues('q0', {p1: 'a'});
+
+      expect(queries.hasQuery('q0')).toEqual(false);
+      expect(queries.getParamValues('q0')).toEqual({});
+    });
+
     test('updates multiple params and re-evaluates query', () => {
       queries.setQueryDefinition(
         'q1',
