@@ -204,6 +204,8 @@ export type GetTableCell = {
   (cellId: Id): CellOrUndefined;
   /// GetTableCell.2
   (joinedTableId: Id, joinedCellId: Id): CellOrUndefined;
+  /// GetTableCell.3
+  (asQuery: true, joinedQueryId: Id, joinedCellId: Id): CellOrUndefined;
 };
 
 /// Param
@@ -216,6 +218,8 @@ export type Select = {
   /// Select.2
   (joinedTableId: Id, joinedCellId: Id): SelectedAs;
   /// Select.3
+  (asQuery: true, joinedQueryId: Id, joinedCellId: Id): SelectedAs;
+  /// Select.4
   (
     getCell: (getTableCell: GetTableCell, rowId: Id) => ResultCellOrUndefined,
   ): SelectedAs;
@@ -232,15 +236,40 @@ export type Join = {
   /// Join.1
   (joinedTableId: Id, on: Id): JoinedAs;
   /// Join.2
+  (asQuery: true, joinedQueryId: Id, on: Id): JoinedAs;
+  /// Join.3
   (
     joinedTableId: Id,
     on: (getCell: GetCell, rowId: Id) => Id | undefined,
   ): JoinedAs;
-  /// Join.3
-  (joinedTableId: Id, fromIntermediateJoinedTableId: Id, on: Id): JoinedAs;
   /// Join.4
   (
+    asQuery: true,
+    joinedQueryId: Id,
+    on: (getCell: GetCell, rowId: Id) => Id | undefined,
+  ): JoinedAs;
+  /// Join.5
+  (joinedTableId: Id, fromIntermediateJoinedTableId: Id, on: Id): JoinedAs;
+  /// Join.6
+  (
+    asQuery: true,
+    joinedQueryId: Id,
+    fromIntermediateJoinedTableId: Id,
+    on: Id,
+  ): JoinedAs;
+  /// Join.7
+  (
     joinedTableId: Id,
+    fromIntermediateJoinedTableId: Id,
+    on: (
+      getIntermediateJoinedCell: GetCell,
+      intermediateJoinedRowId: Id,
+    ) => Id | undefined,
+  ): JoinedAs;
+  /// Join.8
+  (
+    asQuery: true,
+    joinedQueryId: Id,
     fromIntermediateJoinedTableId: Id,
     on: (
       getIntermediateJoinedCell: GetCell,
@@ -262,6 +291,8 @@ export type Where = {
   /// Where.2
   (joinedTableId: Id, joinedCellId: Id, equals: Cell): void;
   /// Where.3
+  (asQuery: true, joinedQueryId: Id, joinedCellId: Id, equals: Cell): void;
+  /// Where.4
   (condition: (getTableCell: GetTableCell) => boolean): void;
 };
 
