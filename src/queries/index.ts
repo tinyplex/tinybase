@@ -235,10 +235,17 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         mapGet(dependentQueryIds, sourceQueryId),
         (sourceDependentQueryIds) => {
           collDel(sourceDependentQueryIds, queryId);
+          if (collIsEmpty(sourceDependentQueryIds)) {
+            mapSet(dependentQueryIds, sourceQueryId);
+          }
         },
       ),
     );
-    mapSet(querySourceQueryIds, queryId, sourceQueryIds);
+    mapSet(
+      querySourceQueryIds,
+      queryId,
+      collIsEmpty(sourceQueryIds) ? undefined : sourceQueryIds,
+    );
     collForEach(sourceQueryIds, (sourceQueryId, _none) =>
       setAdd(mapEnsure(dependentQueryIds, sourceQueryId, setNew), queryId),
     );
