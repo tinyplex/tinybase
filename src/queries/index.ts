@@ -44,6 +44,7 @@ import {
   collHas,
   collIsEmpty,
   collSize,
+  collValues,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {
@@ -62,7 +63,6 @@ import {
   ifNotUndefined,
   isFunction,
   isUndefined,
-  noop,
   size,
   slice,
 } from '../common/other.ts';
@@ -101,7 +101,7 @@ type JoinClause = [
   fromJoinAlias: Id | undefined,
   on: ((getCell: GetCell, rowId: Id) => Id) | undefined,
   nextTableIds: Ids,
-  remoteIdPairs: IdMap<[Id, Store, Id?]>,
+  remoteIdPairs: IdMap<[Id, Store, Id]>,
   sourceStore: Store,
 ];
 type WhereClause = (getTableCell: GetTableCell) => boolean;
@@ -120,7 +120,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const preStore = createStore();
   const paramStore = createStore();
   const resultStore = createStore();
-  const rebuildingQueryIds: IdSet = setNew();
+  const resultStores: IdMap<Store> = mapNew();
+  const redefiningQueryIds: IdSet = setNew();
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
   const sourceStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
 
@@ -149,6 +150,26 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     callListeners,
   );
 
+  const getResultStore = (queryId: Id): Store =>
+    mapEnsure(resultStores, queryId, () => {
+      const queryResultStore = createStore();
+      queryResultStore.addStartTransactionListener(
+        resultStore.startTransaction,
+      );
+      queryResultStore.addDidFinishTransactionListener(() =>
+        resultStore.finishTransaction(),
+      );
+      queryResultStore.addTableListener(queryId, () =>
+        queryResultStore.hasTable(queryId)
+          ? resultStore.setTable(
+              queryId,
+              queryResultStore.getTable(queryId) as any,
+            )
+          : resultStore.delTable(queryId),
+      );
+      return queryResultStore;
+    });
+
   const addPreStoreListener = (
     preStore: Store,
     queryId: Id,
@@ -170,6 +191,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     );
 
   const resetPreStores = (queryId: Id) => {
+    const queryResultStore = getResultStore(queryId);
     ifNotUndefined(
       mapGet(preStoreListenerIds, queryId),
       (queryPreStoreListenerIds) => {
@@ -181,12 +203,15 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         collClear(queryPreStoreListenerIds);
       },
     );
-    arrayForEach([resultStore, preStore], (store) => store.delTable(queryId));
+    arrayForEach([queryResultStore, preStore], (store) =>
+      store.delTable(queryId),
+    );
   };
 
   const addSourceStoreListeners = (
     sourceStore: Store,
     queryId: Id,
+    andCall: 0 | 1,
     ...listenerIds: Ids
   ): Ids => {
     const listenerIdSet = mapEnsure(
@@ -196,22 +221,33 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     );
     arrayForEach(listenerIds, (listenerId) => {
       setAdd(listenerIdSet, listenerId);
+      if (andCall) {
+        sourceStore.callListener(listenerId);
+      }
     });
     return listenerIds;
   };
 
   const delSourceStoreListeners = (
     queryId: Id,
-    sourceStore: Store,
+    sourceStore?: Store,
     ...listenerIds: Ids
   ): void =>
     ifNotUndefined(
-      mapGet(mapGet(sourceStoreListenerIds, queryId), sourceStore),
+      sourceStore
+        ? mapGet(mapGet(sourceStoreListenerIds, queryId), sourceStore)
+        : undefined,
       (allListenerIds) => {
-        arrayForEach(listenerIds, (listenerId) => {
-          sourceStore.delListener(listenerId);
-          collDel(allListenerIds, listenerId);
-        });
+        arrayForEach(
+          arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
+          (listenerId) => {
+            sourceStore!.delListener(listenerId);
+            collDel(allListenerIds, listenerId);
+          },
+        );
+        if (collIsEmpty(allListenerIds)) {
+          mapSet(mapGet(sourceStoreListenerIds, queryId), sourceStore);
+        }
       },
     );
 
@@ -265,16 +301,16 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
-  const setQueryDefinitionImpl = (queryId: Id): Queries => {
-    if (collHas(rebuildingQueryIds, queryId)) {
-      return queries;
-    }
-    setAdd(rebuildingQueryIds, queryId);
+  const setQueryDefinitionImpl = (queryId: Id): Queries =>
     ifNotUndefined(getQueryArgs(queryId), ([build]) => {
       const tableId = getTableId(queryId);
+      const rootSourceStore = hasQuery(tableId)
+        ? getResultStore(tableId)
+        : store;
+      const queryResultStore = getResultStore(queryId);
       const paramValues = getParamValues(queryId);
-      const rootSourceStore = hasQuery(tableId) ? resultStore : store;
 
+      setAdd(redefiningQueryIds, queryId);
       resetPreStores(queryId);
       resetSourceStores(queryId);
 
@@ -299,16 +335,19 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         arg2?: Id,
         arg3?: Id,
       ) => {
+        const joinedTableId = arg1 === true ? arg2 : arg1;
+        const joinedCellId = arg1 === true ? arg3 : arg2;
         const selectEntry: [Id, SelectClause] = isFunction(arg1)
           ? [size(selectEntries) + EMPTY_STRING, arg1]
-          : arg1 === true
-            ? [
-                arg3 as Id,
-                (getTableCell) => getTableCell(true, arg2 as Id, arg3 as Id),
-              ]
-            : isUndefined(arg2)
-              ? [arg1, (getTableCell) => getTableCell(arg1)]
-              : [arg2, (getTableCell) => getTableCell(arg1, arg2)];
+          : isUndefined(joinedCellId)
+            ? [arg1 as Id, (getTableCell) => getTableCell(arg1 as Id)]
+            : [
+                joinedCellId,
+                (getTableCell) =>
+                  arg1 === true
+                    ? getTableCell(true, joinedTableId as Id, joinedCellId)
+                    : getTableCell(joinedTableId as Id, joinedCellId),
+              ];
         arrayPush(selectEntries, selectEntry);
         return {as: (selectedCellId: Id) => (selectEntry[0] = selectedCellId)};
       };
@@ -336,7 +375,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             isFunction(onArg) ? onArg : (getCell) => getCell(onArg as Id),
             [],
             mapNew(),
-            arg1 === true ? resultStore : store,
+            arg1 === true ? getResultStore(joinedTableId) : store,
           ] as JoinClause,
         ];
         arrayPush(joinEntries, joinEntry);
@@ -400,7 +439,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
       const selects: IdMap<SelectClause> = mapNew(selectEntries);
       if (collIsEmpty(selects)) {
-        return;
+        collDel(redefiningQueryIds, queryId);
+        return queries;
       }
       const joins: Map<Id | undefined, JoinClause> = mapNew(joinEntries);
       mapForEach(joins, (joinAlias, [, fromJoinAlias]) =>
@@ -409,16 +449,21 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         ),
       );
       const groups: IdMap<GroupClause> = mapNew(groupEntries);
+      const hasGroupsOrHavings = !collIsEmpty(groups) || !arrayIsEmpty(havings);
 
       let selectJoinWhereStore = preStore;
-      let rebuildGroupRows: () => void = noop;
+      let rebuildGroupRows = () => {};
 
       // GROUP & HAVING
 
-      if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-        selectJoinWhereStore = resultStore;
+      if (!hasGroupsOrHavings) {
+        selectJoinWhereStore = queryResultStore;
       } else {
-        synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
+        synchronizeTransactions(
+          queryId,
+          selectJoinWhereStore,
+          queryResultStore,
+        );
 
         const groupedSelectedCellIds: IdMap<Set<[Id, Aggregators]>> = mapNew();
         mapForEach(groups, (groupedCellId, [selectedCellId, aggregators]) =>
@@ -435,208 +480,248 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             : setAdd(groupBySelectedCellIds, selectedCellId),
         );
 
-        let tree = mapNew<Cell, any>();
+        const tree = mapNew<Cell, any>();
 
-        const writeGroupRow = (
-          leaf: [IdMap2<Cell>, IdSet, Id, Row],
-          changedGroupedSelectedCells: IdMap<[Cell]>,
-          selectedRowId: Id,
-          forceRemove?: 1,
-        ) =>
-          ifNotUndefined(
-            leaf,
-            ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
-              mapForEach(
-                changedGroupedSelectedCells,
-                (selectedCellId, [newCell]) => {
-                  const selectedCell = mapEnsure(
-                    selectedCells,
-                    selectedCellId,
-                    mapNew,
-                  );
-                  const oldLeafCell = mapGet(selectedCell, selectedRowId);
-                  const newLeafCell = forceRemove ? undefined : newCell;
-                  if (oldLeafCell !== newLeafCell) {
-                    const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
-                    const oldLength = collSize(selectedCell);
-                    mapSet(selectedCell, selectedRowId, newLeafCell);
-                    collForEach(
-                      mapGet(groupedSelectedCellIds, selectedCellId),
-                      ([groupedCellId, aggregators]) => {
-                        const aggregateValue = getAggregateValue(
-                          groupRow[groupedCellId],
-                          oldLength,
-                          selectedCell as IdMap<Cell>,
-                          oldNewSet as Set<ChangedCell>,
-                          aggregators,
-                        );
-                        groupRow[groupedCellId] = (
-                          isUndefined(getCellOrValueType(aggregateValue))
-                            ? undefined
-                            : aggregateValue
-                        ) as Cell;
-                      },
+        if (rootSourceStore == store) {
+          const writeGroupRow = (
+            leaf: [IdMap2<Cell>, IdSet, Id, Row],
+            changedGroupedSelectedCells: IdMap<[Cell]>,
+            selectedRowId: Id,
+            forceRemove?: 1,
+          ) =>
+            ifNotUndefined(
+              leaf,
+              ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
+                mapForEach(
+                  changedGroupedSelectedCells,
+                  (selectedCellId, [newCell]) => {
+                    const selectedCell = mapEnsure(
+                      selectedCells,
+                      selectedCellId,
+                      mapNew,
                     );
-                  }
-                },
-              );
-              if (
-                collIsEmpty(selectedRowIds) ||
-                !arrayEvery(havings, (having) =>
-                  having((cellId) => groupRow[cellId] as any),
-                )
-              ) {
-                resultStore.delRow(queryId, groupRowId);
-              } else if (isUndefined(groupRowId)) {
-                leaf[2] = resultStore.addRow(queryId, groupRow) as Id;
-              } else {
-                resultStore.setRow(queryId, groupRowId, groupRow);
-              }
-            },
-          );
-
-        rebuildGroupRows = () => {
-          tree = mapNew();
-          resultStore.delTable(queryId);
-          arrayForEach(
-            selectJoinWhereStore.getRowIds(queryId),
-            (selectedRowId) => {
-              const newPath: CellOrUndefined[] = [];
-              const changedGroupedSelectedCells: IdMap<[Cell]> = mapNew();
-              collForEach(groupBySelectedCellIds, (selectedCellId) =>
-                arrayPush(
-                  newPath,
-                  selectJoinWhereStore.getCell(
-                    queryId,
-                    selectedRowId,
-                    selectedCellId,
-                  ) as CellOrUndefined,
-                ),
-              );
-              mapForEach(groupedSelectedCellIds, (selectedCellId) =>
-                mapSet(changedGroupedSelectedCells, selectedCellId, [
-                  selectJoinWhereStore.getCell(
-                    queryId,
-                    selectedRowId,
-                    selectedCellId,
-                  ) as Cell,
-                ]),
-              );
-              writeGroupRow(
-                visitTree(
-                  tree,
-                  newPath,
-                  () => {
-                    const groupRow: Row = {};
-                    collForEach(
-                      groupBySelectedCellIds,
-                      (selectedCellId) =>
-                        (groupRow[selectedCellId] =
-                          selectJoinWhereStore.getCell(
-                            queryId,
-                            selectedRowId,
-                            selectedCellId,
-                          ) as Cell),
-                    );
-                    return [mapNew(), setNew(), undefined, groupRow];
+                    const oldLeafCell = mapGet(selectedCell, selectedRowId);
+                    const newLeafCell = forceRemove ? undefined : newCell;
+                    if (oldLeafCell !== newLeafCell) {
+                      const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
+                      const oldLength = collSize(selectedCell);
+                      mapSet(selectedCell, selectedRowId, newLeafCell);
+                      collForEach(
+                        mapGet(groupedSelectedCellIds, selectedCellId),
+                        ([groupedCellId, aggregators]) => {
+                          const aggregateValue = getAggregateValue(
+                            groupRow[groupedCellId],
+                            oldLength,
+                            selectedCell as IdMap<Cell>,
+                            oldNewSet as Set<ChangedCell>,
+                            aggregators,
+                          );
+                          groupRow[groupedCellId] = (
+                            isUndefined(getCellOrValueType(aggregateValue))
+                              ? undefined
+                              : aggregateValue
+                          ) as Cell;
+                        },
+                      );
+                    }
                   },
-                  ([, selectedRowIds]) => {
-                    setAdd(selectedRowIds, selectedRowId);
-                  },
-                ),
-                changedGroupedSelectedCells,
-                selectedRowId,
-              );
-            },
-          );
-        };
+                );
+                if (
+                  collIsEmpty(selectedRowIds) ||
+                  !arrayEvery(havings, (having) =>
+                    having((cellId) => groupRow[cellId] as any),
+                  )
+                ) {
+                  queryResultStore.delRow(queryId, groupRowId);
+                } else if (isUndefined(groupRowId)) {
+                  leaf[2] = queryResultStore.addRow(queryId, groupRow) as Id;
+                } else {
+                  queryResultStore.setRow(queryId, groupRowId, groupRow);
+                }
+              },
+            );
 
-        addPreStoreListener(
-          selectJoinWhereStore,
-          queryId,
-          selectJoinWhereStore.addRowListener(
+          addPreStoreListener(
+            selectJoinWhereStore,
             queryId,
-            null,
-            (_store, _tableId, selectedRowId, getCellChange) => {
-              const oldPath: CellOrUndefined[] = [];
-              const newPath: CellOrUndefined[] = [];
-              const changedGroupedSelectedCells: IdMap<[Cell]> = mapNew();
-              const rowExists = selectJoinWhereStore.hasRow(
-                queryId,
-                selectedRowId,
-              );
-              let changedLeaf = !rowExists;
-
-              collForEach(groupBySelectedCellIds, (selectedCellId) => {
-                const [changed, oldCell, newCell] = (
-                  getCellChange as GetCellChange
-                )(queryId, selectedRowId, selectedCellId);
-                arrayPush(oldPath, oldCell);
-                arrayPush(newPath, newCell);
-                changedLeaf ||= changed;
-              });
-              mapForEach(groupedSelectedCellIds, (selectedCellId) => {
-                const [changed, , newCell] = (getCellChange as GetCellChange)(
+            selectJoinWhereStore.addRowListener(
+              queryId,
+              null,
+              (_store, _tableId, selectedRowId, getCellChange) => {
+                const oldPath: CellOrUndefined[] = [];
+                const newPath: CellOrUndefined[] = [];
+                const changedGroupedSelectedCells: IdMap<[Cell]> = mapNew();
+                const rowExists = selectJoinWhereStore.hasRow(
                   queryId,
                   selectedRowId,
-                  selectedCellId,
                 );
-                if (changedLeaf || changed) {
-                  mapSet(changedGroupedSelectedCells, selectedCellId, [
-                    newCell,
-                  ]);
+                let changedLeaf = !rowExists;
+
+                collForEach(groupBySelectedCellIds, (selectedCellId) => {
+                  const [changed, oldCell, newCell] = (
+                    getCellChange as GetCellChange
+                  )(queryId, selectedRowId, selectedCellId);
+                  arrayPush(oldPath, oldCell);
+                  arrayPush(newPath, newCell);
+                  changedLeaf ||= changed;
+                });
+                mapForEach(groupedSelectedCellIds, (selectedCellId) => {
+                  const [changed, , newCell] = (getCellChange as GetCellChange)(
+                    queryId,
+                    selectedRowId,
+                    selectedCellId,
+                  );
+                  if (changedLeaf || changed) {
+                    mapSet(changedGroupedSelectedCells, selectedCellId, [
+                      newCell,
+                    ]);
+                  }
+                });
+
+                if (changedLeaf) {
+                  writeGroupRow(
+                    visitTree(
+                      tree,
+                      oldPath,
+                      undefined,
+                      ([, selectedRowIds]) => {
+                        collDel(selectedRowIds, selectedRowId);
+                        return collIsEmpty(selectedRowIds) as any;
+                      },
+                    ),
+                    changedGroupedSelectedCells,
+                    selectedRowId,
+                    1,
+                  );
                 }
-              });
 
-              if (changedLeaf) {
-                writeGroupRow(
-                  visitTree(tree, oldPath, undefined, ([, selectedRowIds]) => {
-                    collDel(selectedRowIds, selectedRowId);
-                    return collIsEmpty(selectedRowIds) as any;
-                  }),
-                  changedGroupedSelectedCells,
-                  selectedRowId,
-                  1,
+                if (rowExists) {
+                  writeGroupRow(
+                    visitTree(
+                      tree,
+                      newPath,
+                      () => {
+                        const groupRow: Row = {};
+                        collForEach(
+                          groupBySelectedCellIds,
+                          (selectedCellId) =>
+                            (groupRow[selectedCellId] =
+                              selectJoinWhereStore.getCell(
+                                queryId,
+                                selectedRowId,
+                                selectedCellId,
+                              ) as Cell),
+                        );
+                        return [mapNew(), setNew(), undefined, groupRow];
+                      },
+                      ([, selectedRowIds]) => {
+                        setAdd(selectedRowIds, selectedRowId);
+                      },
+                    ),
+                    changedGroupedSelectedCells,
+                    selectedRowId,
+                  );
+                }
+              },
+            ),
+          );
+        } else {
+          rebuildGroupRows = () => {
+            const groupRows: IdMap<Row> = mapNew();
+            const groupedCells: IdMap<IdMap2<Cell>> = mapNew();
+            const groupIds: Ids = [];
+
+            arrayForEach(
+              selectJoinWhereStore.getRowIds(queryId),
+              (selectedRowId) => {
+                const groupPath: CellOrUndefined[] = [];
+                collForEach(groupBySelectedCellIds, (selectedCellId) =>
+                  arrayPush(
+                    groupPath,
+                    selectJoinWhereStore.getCell(
+                      queryId,
+                      selectedRowId,
+                      selectedCellId,
+                    ) as CellOrUndefined,
+                  ),
                 );
-              }
+                const groupId = JSON.stringify(groupPath);
+                mapEnsure(groupRows, groupId, () => {
+                  arrayPush(groupIds, groupId);
+                  const newGroupRow: Row = {};
+                  collForEach(
+                    groupBySelectedCellIds,
+                    (selectedCellId) =>
+                      (newGroupRow[selectedCellId] =
+                        selectJoinWhereStore.getCell(
+                          queryId,
+                          selectedRowId,
+                          selectedCellId,
+                        ) as Cell),
+                  );
+                  return newGroupRow;
+                });
+                const groupSelectedCells = mapEnsure(
+                  groupedCells,
+                  groupId,
+                  mapNew,
+                );
+                mapForEach(groupedSelectedCellIds, (selectedCellId) =>
+                  mapSet(
+                    mapEnsure(groupSelectedCells, selectedCellId, mapNew),
+                    selectedRowId,
+                    selectJoinWhereStore.getCell(
+                      queryId,
+                      selectedRowId,
+                      selectedCellId,
+                    ) as Cell,
+                  ),
+                );
+              },
+            );
 
-              if (rowExists) {
-                writeGroupRow(
-                  visitTree(
-                    tree,
-                    newPath,
-                    () => {
-                      const groupRow: Row = {};
-                      collForEach(
-                        groupBySelectedCellIds,
-                        (selectedCellId) =>
-                          (groupRow[selectedCellId] =
-                            selectJoinWhereStore.getCell(
-                              queryId,
-                              selectedRowId,
-                              selectedCellId,
-                            ) as Cell),
+            queryResultStore.transaction(() => {
+              queryResultStore.delTable(queryId);
+              arrayForEach(groupIds, (groupId, groupRowId) => {
+                const groupRow = mapGet(groupRows, groupId) as Row;
+                mapForEach(groupedSelectedCellIds, (selectedCellId) =>
+                  collForEach(
+                    mapGet(groupedSelectedCellIds, selectedCellId),
+                    ([groupedCellId, [aggregate]]) => {
+                      const selectedCell = mapGet(
+                        mapGet(groupedCells, groupId),
+                        selectedCellId,
+                      ) as IdMap<Cell>;
+                      const aggregateValue = aggregate(
+                        selectedCell,
+                        collSize(selectedCell),
                       );
-                      return [mapNew(), setNew(), undefined, groupRow];
-                    },
-                    ([, selectedRowIds]) => {
-                      setAdd(selectedRowIds, selectedRowId);
+                      if (!isUndefined(getCellOrValueType(aggregateValue))) {
+                        groupRow[groupedCellId] = aggregateValue as Cell;
+                      }
                     },
                   ),
-                  changedGroupedSelectedCells,
-                  selectedRowId,
                 );
-              }
-            },
-          ),
-        );
+                if (
+                  arrayEvery(havings, (having) =>
+                    having((cellId) => groupRow[cellId] as any),
+                  )
+                ) {
+                  queryResultStore.setRow(
+                    queryId,
+                    groupRowId + EMPTY_STRING,
+                    groupRow,
+                  );
+                }
+              });
+            });
+          };
+        }
       }
 
       // SELECT & JOIN & WHERE
 
-      if (rootSourceStore == store) {
-        synchronizeTransactions(queryId, store, selectJoinWhereStore);
-      }
+      synchronizeTransactions(queryId, rootSourceStore, selectJoinWhereStore);
 
       const writeSelectRow = (rootRowId: Id) => {
         const getJoinCell = (arg1: Id | true, arg2?: Id, arg3?: Id) => {
@@ -669,12 +754,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
               )
             : selectJoinWhereStore.delRow(queryId, rootRowId),
         );
-        if (
-          rootSourceStore == resultStore &&
-          selectJoinWhereStore == preStore
-        ) {
-          rebuildGroupRows();
-        }
+        rebuildGroupRows();
       };
 
       const listenToTable = (
@@ -684,6 +764,12 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         rowId: Id,
         toJoinAliases: Ids,
       ) => {
+        if (
+          sourceStore == getResultStore(tableId) &&
+          collHas(redefiningQueryIds, tableId)
+        ) {
+          return;
+        }
         const getCell = (cellId: Id) =>
           sourceStore.getCell(tableId, rowId, cellId);
         arrayForEach(toJoinAliases, (joinAlias) => {
@@ -696,56 +782,45 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             remoteSourceStore,
           ] = mapGet(joins, joinAlias) as JoinClause;
           const remoteRowId = on?.(getCell as any, rootRowId);
-          const previousRemote = mapGet(remoteIdPairs, rootRowId);
-          const previousRemoteRowId = previousRemote?.[0];
+          const [
+            previousRemoteRowId,
+            previousRemoteSourceStore,
+            previousRemoteListenerId,
+          ] = mapGet(remoteIdPairs, rootRowId) ?? [];
           if (remoteRowId != previousRemoteRowId) {
-            ifNotUndefined(
-              previousRemote,
-              ([, previousRemoteSourceStore, listenerId]) =>
-                ifNotUndefined(listenerId, (listenerId) =>
-                  delSourceStoreListeners(
-                    queryId,
-                    previousRemoteSourceStore,
-                    listenerId,
-                  ),
-                ),
-            );
+            if (!isUndefined(previousRemoteListenerId)) {
+              delSourceStoreListeners(
+                queryId,
+                previousRemoteSourceStore,
+                previousRemoteListenerId,
+              );
+            }
             mapSet(
               remoteIdPairs,
               rootRowId,
               isUndefined(remoteRowId)
                 ? undefined
-                : (() => {
-                    const listenerId = remoteSourceStore.addRowListener(
-                      realJoinedTableId,
-                      remoteRowId,
-                      () =>
-                        collHas(rebuildingQueryIds, realJoinedTableId)
-                          ? 0
-                          : listenToTable(
-                              rootRowId,
-                              remoteSourceStore,
-                              realJoinedTableId,
-                              remoteRowId,
-                              nextJoinAliases,
-                            ),
-                      remoteSourceStore == resultStore &&
-                        selectJoinWhereStore == resultStore,
-                    );
-                    addSourceStoreListeners(
+                : [
+                    remoteRowId,
+                    remoteSourceStore,
+                    ...addSourceStoreListeners(
                       remoteSourceStore,
                       queryId,
-                      listenerId,
-                    );
-                    if (!arrayIsEmpty(nextJoinAliases)) {
-                      remoteSourceStore.callListener(listenerId);
-                    }
-                    return [remoteRowId, remoteSourceStore, listenerId] as [
-                      Id,
-                      Store,
-                      Id,
-                    ];
-                  })(),
+                      1,
+                      remoteSourceStore.addRowListener(
+                        realJoinedTableId,
+                        remoteRowId,
+                        () =>
+                          listenToTable(
+                            rootRowId,
+                            remoteSourceStore,
+                            realJoinedTableId,
+                            remoteRowId,
+                            nextJoinAliases,
+                          ),
+                      ),
+                    ),
+                  ],
             );
           }
         });
@@ -753,62 +828,70 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       };
 
       const {3: toJoinAliases} = mapGet(joins, undefined) as JoinClause;
-      selectJoinWhereStore.transaction(() =>
+      const rootRowChanged = (
+        sourceStore: Store,
+        _tableId: Id,
+        rootRowId: Id,
+      ) => {
+        if (
+          sourceStore == getResultStore(tableId) &&
+          collHas(redefiningQueryIds, tableId)
+        ) {
+          return;
+        }
+        if (rootSourceStore.hasRow(tableId, rootRowId)) {
+          listenToTable(
+            rootRowId,
+            rootSourceStore,
+            tableId,
+            rootRowId,
+            toJoinAliases,
+          );
+        } else {
+          selectJoinWhereStore.delRow(queryId, rootRowId);
+          collForEach(joins, ({4: idsByRootRowId}) =>
+            ifNotUndefined(
+              mapGet(idsByRootRowId, rootRowId),
+              ([, sourceStore, listenerId]) => {
+                delSourceStoreListeners(queryId, sourceStore, listenerId);
+                mapSet(idsByRootRowId, rootRowId);
+              },
+            ),
+          );
+          rebuildGroupRows();
+        }
+      };
+
+      if (rootSourceStore != store) {
+        arrayForEach(rootSourceStore.getRowIds(tableId), (rootRowId) =>
+          rootRowChanged(rootSourceStore, tableId, rootRowId),
+        );
         addSourceStoreListeners(
           rootSourceStore,
           queryId,
-          rootSourceStore.addRowListener(
-            tableId,
-            null,
-            (_store: Store, _tableId: Id, rootRowId: Id) => {
-              if (collHas(rebuildingQueryIds, tableId)) {
-                return;
-              }
-              if (rootSourceStore.hasRow(tableId, rootRowId)) {
-                listenToTable(
-                  rootRowId,
-                  rootSourceStore,
-                  tableId,
-                  rootRowId,
-                  toJoinAliases,
-                );
-              } else {
-                selectJoinWhereStore.delRow(queryId, rootRowId);
-                collForEach(joins, ({4: idsByRootRowId}) =>
-                  ifNotUndefined(
-                    mapGet(idsByRootRowId, rootRowId),
-                    ([, sourceStore, listenerId]) => {
-                      ifNotUndefined(listenerId, (listenerId) =>
-                        delSourceStoreListeners(
-                          queryId,
-                          sourceStore,
-                          listenerId,
-                        ),
-                      );
-                      mapSet(idsByRootRowId, rootRowId);
-                    },
-                  ),
-                );
-              }
-            },
-            rootSourceStore == resultStore &&
-              selectJoinWhereStore == resultStore,
+          0,
+          rootSourceStore.addRowListener(tableId, null, rootRowChanged),
+        );
+      } else {
+        selectJoinWhereStore.transaction(() =>
+          addSourceStoreListeners(
+            rootSourceStore,
+            queryId,
+            1,
+            rootSourceStore.addRowListener(tableId, null, rootRowChanged),
           ),
-        ),
+        );
+      }
+
+      collDel(redefiningQueryIds, queryId);
+      (queryResultStore.hasTable(queryId)
+        ? resultStore.setTable
+        : resultStore.delTable)(
+        queryId,
+        queryResultStore.getTable(queryId) as any,
       );
-      arrayForEach(rootSourceStore.getRowIds(tableId), (rootRowId) =>
-        listenToTable(
-          rootRowId,
-          rootSourceStore,
-          tableId,
-          rootRowId,
-          toJoinAliases,
-        ),
-      );
-    });
-    collDel(rebuildingQueryIds, queryId);
-    return queries;
-  };
+      return queries;
+    }) as Queries;
 
   const delQueryDefinition = (queryId: Id): Queries => {
     paramStore.delListener(getQueryArgs(queryId)?.[1] as Id);
