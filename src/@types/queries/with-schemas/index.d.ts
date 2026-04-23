@@ -255,11 +255,7 @@ export type Select<
     joinedCellId: JoinedCellIdOrId<Schema, JoinedTableId>,
   ): SelectedAs;
   /// Select.3
-  (
-    asQuery: true,
-    joinedQueryId: Id,
-    joinedCellId: Id,
-  ): SelectedAs;
+  (asQuery: true, joinedQueryId: Id, joinedCellId: Id): SelectedAs;
   /// Select.4
   (
     getCell: (

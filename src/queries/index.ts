@@ -715,33 +715,39 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             mapSet(
               remoteIdPairs,
               rootRowId,
-              isUndefined(remoteRowId) ? undefined : (() => {
-                const listenerId = remoteSourceStore.addRowListener(
-                  realJoinedTableId,
-                  remoteRowId,
-                  () =>
-                    collHas(rebuildingQueryIds, realJoinedTableId)
-                      ? 0
-                      : listenToTable(
-                          rootRowId,
-                          remoteSourceStore,
-                          realJoinedTableId,
-                          remoteRowId,
-                          nextJoinAliases,
-                        ),
-                  remoteSourceStore == resultStore &&
-                    selectJoinWhereStore == resultStore,
-                );
-                addSourceStoreListeners(remoteSourceStore, queryId, listenerId);
-                if (!arrayIsEmpty(nextJoinAliases)) {
-                  remoteSourceStore.callListener(listenerId);
-                }
-                return [remoteRowId, remoteSourceStore, listenerId] as [
-                  Id,
-                  Store,
-                  Id,
-                ];
-              })(),
+              isUndefined(remoteRowId)
+                ? undefined
+                : (() => {
+                    const listenerId = remoteSourceStore.addRowListener(
+                      realJoinedTableId,
+                      remoteRowId,
+                      () =>
+                        collHas(rebuildingQueryIds, realJoinedTableId)
+                          ? 0
+                          : listenToTable(
+                              rootRowId,
+                              remoteSourceStore,
+                              realJoinedTableId,
+                              remoteRowId,
+                              nextJoinAliases,
+                            ),
+                      remoteSourceStore == resultStore &&
+                        selectJoinWhereStore == resultStore,
+                    );
+                    addSourceStoreListeners(
+                      remoteSourceStore,
+                      queryId,
+                      listenerId,
+                    );
+                    if (!arrayIsEmpty(nextJoinAliases)) {
+                      remoteSourceStore.callListener(listenerId);
+                    }
+                    return [remoteRowId, remoteSourceStore, listenerId] as [
+                      Id,
+                      Store,
+                      Id,
+                    ];
+                  })(),
             );
           }
         });
