@@ -1954,42 +1954,42 @@ describe('Listens to Queries when sets', () => {
         expectChanges(
           listener,
           listenerId,
-          {q1: {r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'}}},
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'}}},
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
               r4: {'t1.c1': 'four', 't2.c2': 'undefined.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
             },
           },
-          {q1: {r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'}}},
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'}}},
           {q1: {}},
         ),
       );
