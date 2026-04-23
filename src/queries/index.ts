@@ -57,7 +57,7 @@ import {
   mapSet,
   visitTree,
 } from '../common/map.ts';
-import {objFreeze, objGet, objIsEmpty, objMap} from '../common/obj.ts';
+import {objFreeze, objGet, objIsEmpty} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -66,21 +66,8 @@ import {
   size,
   slice,
 } from '../common/other.ts';
-import {IdSet, setAdd, setNew} from '../common/set.ts';
-import {
-  ADD,
-  CELL,
-  CELL_IDS,
-  EMPTY_STRING,
-  GET,
-  LISTENER,
-  RESULT,
-  ROW,
-  ROW_COUNT,
-  ROW_IDS,
-  SORTED_ROW_IDS,
-  TABLE,
-} from '../common/strings.ts';
+import {IdSet, IdSet2, setAdd, setNew} from '../common/set.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
 import {ProtectedStore} from '../index.ts';
 
 const PARAMS_TABLE = '_';
@@ -115,6 +102,18 @@ type Aggregators = [
   AggregateReplace?,
 ];
 
+type ResultListenerStat =
+  | 'table'
+  | 'tableCellIds'
+  | 'rowCount'
+  | 'rowIds'
+  | 'sortedRowIds'
+  | 'row'
+  | 'cellIds'
+  | 'cell';
+
+type RoutedResultListener = [ResultListenerStat, IdMap<[Store, Id]>, Id?];
+
 export const createQueries = getCreateFunction((store: Store): Queries => {
   const createStore = (store as ProtectedStore)._[0];
   const preStore = createStore();
@@ -122,6 +121,18 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const resultStore = createStore();
   const resultStores: IdMap<Store> = mapNew();
   const redefiningQueryIds: IdSet = setNew();
+  const routedResultListeners: Map<Id, RoutedResultListener> = mapNew();
+  const routedResultListenerIds: IdSet2 = mapNew();
+  const resultListenerStats: {[stat in ResultListenerStat]: number} = {
+    table: 0,
+    tableCellIds: 0,
+    rowCount: 0,
+    rowIds: 0,
+    sortedRowIds: 0,
+    row: 0,
+    cellIds: 0,
+    cell: 0,
+  };
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
   const sourceStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
 
@@ -151,24 +162,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   );
 
   const getResultStore = (queryId: Id): Store =>
-    mapEnsure(resultStores, queryId, () => {
-      const queryResultStore = createStore();
-      queryResultStore.addStartTransactionListener(
-        resultStore.startTransaction,
-      );
-      queryResultStore.addDidFinishTransactionListener(() =>
-        resultStore.finishTransaction(),
-      );
-      queryResultStore.addTableListener(queryId, () =>
-        queryResultStore.hasTable(queryId)
-          ? resultStore.setTable(
-              queryId,
-              queryResultStore.getTable(queryId) as any,
-            )
-          : resultStore.delTable(queryId),
-      );
-      return queryResultStore;
-    });
+    mapEnsure(resultStores, queryId, createStore);
 
   const addPreStoreListener = (
     preStore: Store,
@@ -282,6 +276,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       {...paramValues},
     );
 
+  const rebuildQueryDefinition = (queryId: Id): Queries =>
+    getResultStore(queryId).transaction(() => setQueryDefinitionImpl(queryId));
+
   const setQueryDefinition = (
     queryId: Id,
     tableId: Id,
@@ -293,7 +290,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     setQueryArgs(queryId, [
       build,
       paramStore.addRowListener(PARAMS_TABLE, queryId, () =>
-        resultStore.transaction(() => setQueryDefinitionImpl(queryId)),
+        rebuildQueryDefinition(queryId),
       ),
     ]);
     setOrDelParamValues(queryId, paramValues);
@@ -665,7 +662,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                   groupedCells,
                   groupId,
                   mapNew,
-                );
+                ) as IdMap<IdMap<Cell>>;
                 mapForEach(groupedSelectedCellIds, (selectedCellId) =>
                   mapSet(
                     mapEnsure(groupSelectedCells, selectedCellId, mapNew),
@@ -693,7 +690,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                         selectedCellId,
                       ) as IdMap<Cell>;
                       const aggregateValue = aggregate(
-                        selectedCell,
+                        collValues(selectedCell),
                         collSize(selectedCell),
                       );
                       if (!isUndefined(getCellOrValueType(aggregateValue))) {
@@ -884,12 +881,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       }
 
       collDel(redefiningQueryIds, queryId);
-      (queryResultStore.hasTable(queryId)
-        ? resultStore.setTable
-        : resultStore.delTable)(
-        queryId,
-        queryResultStore.getTable(queryId) as any,
-      );
       return queries;
     }) as Queries;
 
@@ -931,6 +922,258 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
 
+  const getResultTable = (queryId: Id) =>
+    getResultStore(queryId).getTable(queryId) as any;
+
+  const getResultTableCellIds = (queryId: Id) =>
+    getResultStore(queryId).getTableCellIds(queryId);
+
+  const getResultRowCount = (queryId: Id) =>
+    getResultStore(queryId).getRowCount(queryId);
+
+  const getResultRowIds = (queryId: Id) =>
+    getResultStore(queryId).getRowIds(queryId);
+
+  const getResultSortedRowIds = (
+    queryId: Id,
+    cellId?: Id,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+  ) =>
+    getResultStore(queryId).getSortedRowIds(
+      queryId,
+      cellId,
+      descending,
+      offset,
+      limit,
+    );
+
+  const getResultRow = (queryId: Id, rowId: Id) =>
+    getResultStore(queryId).getRow(queryId, rowId) as any;
+
+  const getResultCellIds = (queryId: Id, rowId: Id) =>
+    getResultStore(queryId).getCellIds(queryId, rowId);
+
+  const getResultCell = (queryId: Id, rowId: Id, cellId: Id) =>
+    getResultStore(queryId).getCell(queryId, rowId, cellId) as any;
+
+  const hasResultTable = (queryId: Id) =>
+    getResultStore(queryId).hasTable(queryId);
+
+  const hasResultRow = (queryId: Id, rowId: Id) =>
+    getResultStore(queryId).hasRow(queryId, rowId);
+
+  const hasResultCell = (queryId: Id, rowId: Id, cellId: Id) =>
+    getResultStore(queryId).hasCell(queryId, rowId, cellId);
+
+  const forEachResultCell = (
+    queryId: Id,
+    rowId: Id,
+    cellCallback: (cellId: Id, cell: Cell) => void,
+  ) => getResultStore(queryId).forEachCell(queryId, rowId, cellCallback);
+
+  const forEachResultRow = (
+    queryId: Id,
+    rowCallback: (
+      rowId: Id,
+      forEachCell: (cellCallback: (cellId: Id, cell: Cell) => void) => void,
+    ) => void,
+  ) =>
+    getResultStore(queryId).forEachRow(queryId, (rowId) =>
+      rowCallback(rowId, (cellCallback) =>
+        forEachResultCell(queryId, rowId, cellCallback),
+      ),
+    );
+
+  const forEachResultTable = (
+    tableCallback: (
+      queryId: Id,
+      forEachRow: (
+        rowCallback: (
+          rowId: Id,
+          forEachCell: (cellCallback: (cellId: Id, cell: Cell) => void) => void,
+        ) => void,
+      ) => void,
+    ) => void,
+  ) =>
+    forEachQuery((queryId) =>
+      hasResultTable(queryId)
+        ? tableCallback(queryId, (rowCallback) =>
+            forEachResultRow(queryId, rowCallback),
+          )
+        : 0,
+    );
+
+  const addRoutedResultListener = (
+    stat: ResultListenerStat,
+    queryId: IdOrNull,
+    addStoreListener: (store: Store, queryId: Id) => Id,
+  ): Id => {
+    const listenerId = addListener(
+      getUndefined as any,
+      routedResultListenerIds,
+    );
+    const storeListenerIds: IdMap<[Store, Id]> = mapNew();
+    const syncStoreListeners = () => {
+      const queryIds = queryId == null ? getQueryIds() : [queryId];
+      arrayForEach(queryIds, (queryId) =>
+        collHas(storeListenerIds, queryId)
+          ? 0
+          : mapSet(storeListenerIds, queryId, [
+              getResultStore(queryId),
+              addStoreListener(getResultStore(queryId), queryId),
+            ]),
+      );
+      mapForEach(storeListenerIds, (storeQueryId, [store, storeListenerId]) =>
+        (queryId == null && hasQuery(storeQueryId)) || storeQueryId == queryId
+          ? 0
+          : (() => {
+              store.delListener(storeListenerId);
+              mapSet(storeListenerIds, storeQueryId);
+            })(),
+      );
+    };
+    syncStoreListeners();
+    mapSet(routedResultListeners, listenerId, [
+      stat,
+      storeListenerIds,
+      queryId == null
+        ? (addQueryIdsListenerImpl(syncStoreListeners) as unknown as Id)
+        : undefined,
+    ]);
+    resultListenerStats[stat]++;
+    return listenerId;
+  };
+
+  const addResultTableListener = (
+    queryId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('table', queryId, (store, queryId) =>
+      store.addTableListener(queryId, (_store, _tableId, getCellChange) =>
+        listener(queries, queryId, getCellChange),
+      ),
+    );
+
+  const addResultTableCellIdsListener = (
+    queryId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('tableCellIds', queryId, (store, queryId) =>
+      store.addTableCellIdsListener(queryId, (_store, _tableId, getIdChanges) =>
+        listener(queries, queryId, getIdChanges),
+      ),
+    );
+
+  const addResultRowCountListener = (
+    queryId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('rowCount', queryId, (store, queryId) =>
+      store.addRowCountListener(queryId, (_store, _tableId, rowCount) =>
+        listener(queries, queryId, rowCount),
+      ),
+    );
+
+  const addResultRowIdsListener = (
+    queryId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('rowIds', queryId, (store, queryId) =>
+      store.addRowIdsListener(queryId, (_store, _tableId, getIdChanges) =>
+        listener(queries, queryId, getIdChanges),
+      ),
+    );
+
+  const addResultSortedRowIdsListener = (
+    queryId: IdOrNull,
+    cellId: IdOrNull,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('sortedRowIds', queryId, (store, queryId) =>
+      store.addSortedRowIdsListener(
+        queryId,
+        cellId ?? undefined,
+        descending,
+        offset,
+        limit,
+        (
+          _store,
+          _tableId,
+          _cellId,
+          _descending,
+          _offset,
+          _limit,
+          sortedRowIds,
+        ) =>
+          listener(
+            queries,
+            queryId,
+            cellId,
+            descending,
+            offset,
+            limit,
+            sortedRowIds,
+          ),
+      ),
+    );
+
+  const addResultRowListener = (
+    queryId: IdOrNull,
+    rowId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('row', queryId, (store, queryId) =>
+      store.addRowListener(
+        queryId,
+        rowId,
+        (_store, _tableId, rowId, getCellChange) =>
+          listener(queries, queryId, rowId, getCellChange),
+      ),
+    );
+
+  const addResultCellIdsListener = (
+    queryId: IdOrNull,
+    rowId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('cellIds', queryId, (store, queryId) =>
+      store.addCellIdsListener(
+        queryId,
+        rowId,
+        (_store, _tableId, rowId, getIdChanges) =>
+          listener(queries, queryId, rowId, getIdChanges),
+      ),
+    );
+
+  const addResultCellListener = (
+    queryId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: (queries: Queries, queryId: Id, ...args: any[]) => void,
+  ): Id =>
+    addRoutedResultListener('cell', queryId, (store, queryId) =>
+      store.addCellListener(
+        queryId,
+        rowId,
+        cellId,
+        (_store, _tableId, rowId, cellId, newCell, oldCell, getCellChange) =>
+          listener(
+            queries,
+            queryId,
+            rowId,
+            cellId,
+            newCell,
+            oldCell,
+            getCellChange,
+          ),
+      ),
+    );
+
   const addParamValuesListener = (
     queryId: IdOrNull,
     listener: ParamValuesListener,
@@ -958,27 +1201,29 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     );
 
   const delListener = (listenerId: Id): Queries => {
+    const routedResultListener = mapGet(routedResultListeners, listenerId);
     if (listenerId[0] == PARAM_LISTENER_PREFIX) {
       paramStore.delListener(slice(listenerId, 1));
+    } else if (!isUndefined(routedResultListener)) {
+      const [stat, storeListenerIds, queryIdsListenerId] = routedResultListener;
+      mapForEach(storeListenerIds, (_queryId, [store, storeListenerId]) =>
+        store.delListener(storeListenerId),
+      );
+      ifNotUndefined(queryIdsListenerId, delListenerImpl);
+      mapSet(routedResultListeners, listenerId);
+      delListenerImpl(listenerId);
+      resultListenerStats[stat]--;
     } else {
       delListenerImpl(listenerId);
     }
     return queries;
   };
 
-  const getListenerStats = (): QueriesListenerStats => {
-    const {
-      tables: _1,
-      tableIds: _2,
-      transaction: _3,
-      ...stats
-    } = resultStore.getListenerStats();
-    return {
-      ...stats,
-      paramValues: paramStore.getListenerStats().row - size(getQueryIds()),
-      paramValue: paramStore.getListenerStats().cell,
-    };
-  };
+  const getListenerStats = (): QueriesListenerStats => ({
+    ...resultListenerStats,
+    paramValues: paramStore.getListenerStats().row - size(getQueryIds()),
+    paramValue: paramStore.getListenerStats().cell,
+  });
 
   const destroy = (): void => {
     arrayForEach(getQueryIds(), delQueryDefinition);
@@ -998,43 +1243,37 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     forEachQuery,
     hasQuery,
     getTableId,
+    getResultTable,
+    getResultTableCellIds,
+    getResultRowCount,
+    getResultRowIds,
+    getResultSortedRowIds,
+    getResultRow,
+    getResultCellIds,
+    getResultCell,
+    hasResultTable,
+    hasResultRow,
+    hasResultCell,
+    forEachResultTable,
+    forEachResultRow,
+    forEachResultCell,
 
     addQueryIdsListener,
     addParamValuesListener,
     addParamValueListener,
+    addResultTableListener,
+    addResultTableCellIdsListener,
+    addResultRowCountListener,
+    addResultRowIdsListener,
+    addResultSortedRowIdsListener,
+    addResultRowListener,
+    addResultCellIdsListener,
+    addResultCellListener,
     delListener,
 
     destroy,
     getListenerStats,
   };
-
-  objMap(
-    {
-      [TABLE]: [1, 1],
-      [TABLE + CELL_IDS]: [0, 1],
-      [ROW_COUNT]: [0, 1],
-      [ROW_IDS]: [0, 1],
-      [SORTED_ROW_IDS]: [0, 5],
-      [ROW]: [1, 2],
-      [CELL_IDS]: [0, 2],
-      [CELL]: [1, 3],
-    },
-    ([hasAndForEach, argumentCount], gettable) => {
-      arrayForEach(
-        hasAndForEach ? [GET, 'has', 'forEach'] : [GET],
-        (prefix) =>
-          (queries[prefix + RESULT + gettable] = (...args: any[]) =>
-            (resultStore as any)[prefix + gettable](...args)),
-      );
-      queries[ADD + RESULT + gettable + LISTENER] = (...args: any[]): Id =>
-        (resultStore as any)[ADD + gettable + LISTENER](
-          ...slice(args, 0, argumentCount),
-          (_store: Store, ...listenerArgs: any[]) =>
-            (args[argumentCount] as any)(queries, ...listenerArgs),
-          true,
-        );
-    },
-  );
 
   return objFreeze(queries as Queries);
 }) as typeof createQueriesDecl;
