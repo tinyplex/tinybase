@@ -141,8 +141,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     delDefinition,
     addQueryIdsListenerImpl,
     destroyImpl,
-    ,
-    ,
   ] = getDefinableFunctions<[Build, Id], undefined>(
     store,
     () => [] as any,

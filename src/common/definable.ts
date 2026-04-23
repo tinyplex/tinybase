@@ -64,8 +64,6 @@ export const getDefinableFunctions = <Thing, RowValue>(
   delDefinition: (id: Id) => void,
   addThingIdsListener: (listener: () => void) => void,
   destroy: () => void,
-  addStoreListeners: (id: Id, andCall: 0 | 1, ...listenerIds: Ids) => Ids,
-  delStoreListeners: (id: Id, ...listenerIds: Ids) => void,
 ] => {
   const hasRow = store.hasRow;
   const tableIds: IdMap<Id> = mapNew();
@@ -91,18 +89,12 @@ export const getDefinableFunctions = <Thing, RowValue>(
   const setThing = (id: Id, thing: Thing | undefined): IdMap<Thing> =>
     mapSet(things, id, thing) as IdMap<Thing>;
 
-  const addStoreListeners = (
-    id: Id,
-    andCall: 0 | 1,
-    ...listenerIds: Ids
-  ): Ids => {
+  const addStoreListeners = (id: Id, ...listenerIds: Ids): void => {
     const set = mapEnsure(storeListenerIds, id, setNew);
     arrayForEach(
       listenerIds,
-      (listenerId) =>
-        setAdd(set, listenerId) && andCall && store.callListener(listenerId),
+      (listenerId) => setAdd(set, listenerId),
     );
-    return listenerIds;
   };
 
   const delStoreListeners = (id: Id, ...listenerIds: Ids): void =>
@@ -206,7 +198,6 @@ export const getDefinableFunctions = <Thing, RowValue>(
     delStoreListeners(id);
     addStoreListeners(
       id,
-      0,
       store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
         processRow(rowId),
       ),
@@ -241,8 +232,6 @@ export const getDefinableFunctions = <Thing, RowValue>(
     delDefinition,
     addThingIdsListener,
     destroy,
-    addStoreListeners,
-    delStoreListeners,
   ];
 };
 
