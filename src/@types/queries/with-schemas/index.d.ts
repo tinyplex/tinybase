@@ -447,6 +447,20 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
     }) => void,
     paramValues?: ParamValues,
   ): Queries<Schemas>;
+  setQueryDefinition(
+    queryId: Id,
+    asQuery: true,
+    rootQueryId: Id,
+    query: (keywords: {
+      select: Select<any, any>;
+      join: Join<any, any>;
+      where: Where<any, any>;
+      group: Group;
+      having: Having;
+      param: Param;
+    }) => void,
+    paramValues?: ParamValues,
+  ): Queries<Schemas>;
 
   /// Queries.delQueryDefinition
   delQueryDefinition(queryId: Id): Queries<Schemas>;

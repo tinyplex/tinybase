@@ -2,7 +2,11 @@ import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 import type {Cell, Id, Queries, Store} from 'tinybase';
 import {createQueries, createStore} from 'tinybase';
-import {expectChanges, expectNoChanges} from '../../common/expect.ts';
+import {
+  expectChanges,
+  expectChangesNoJson,
+  expectNoChanges,
+} from '../../common/expect.ts';
 import {createQueriesListener} from '../../common/listeners.ts';
 import {noop} from '../../common/other.ts';
 import {QueriesListener} from '../../common/types.ts';
@@ -866,7 +870,9 @@ describe('Queries queries', () => {
 
   describe('Selects', () => {
     test('by id', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) =>
+        select('c1'),
+      );
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
         r2: {c1: 'two'},
@@ -876,7 +882,9 @@ describe('Queries queries', () => {
     });
 
     test('by id, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) =>
+        select('c1'),
+      );
       store.setCell('t1', 'r4', 'c1', 'four!!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
@@ -887,7 +895,7 @@ describe('Queries queries', () => {
     });
 
     test('missing joined query', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => {
         select(true, 'Q3', 'c1').as('Q3.c1');
       });
       expect(queries.getResultTable('q1')).toEqual({});
@@ -896,7 +904,7 @@ describe('Queries queries', () => {
 
   describe('Joins', () => {
     test('by id', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select(true, 'Q2', 'c1').as('Q2.c1');
         join(true, 'Q2', 'c3');
@@ -910,7 +918,7 @@ describe('Queries queries', () => {
     });
 
     test('by id, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select(true, 'Q2', 'c1').as('Q2.c1');
         join(true, 'Q2', 'c3');
@@ -925,7 +933,7 @@ describe('Queries queries', () => {
     });
 
     test('aliased', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select(true, 'Q2a', 'c1').as('Q2a.c1');
         select(true, 'Q2b', 'c1').as('Q2b.c1');
@@ -941,7 +949,7 @@ describe('Queries queries', () => {
     });
 
     test('aliased, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select(true, 'Q2a', 'c1').as('Q2a.c1');
         select(true, 'Q2b', 'c1').as('Q2b.c1');
@@ -960,7 +968,7 @@ describe('Queries queries', () => {
 
   describe('Wheres', () => {
     test('by id', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, where}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, where}) => {
         select('c1');
         where('c2', 'even');
       });
@@ -971,7 +979,7 @@ describe('Queries queries', () => {
     });
 
     test('by id, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, where}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, where}) => {
         select('c1');
         where('c2', 'even');
       });
@@ -984,7 +992,7 @@ describe('Queries queries', () => {
     });
 
     test('by joined id', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join, where}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join, where}) => {
         select('c1');
         join(true, 'Q2', 'c3');
         where(true, 'Q2', 'c2', 'even.j');
@@ -996,7 +1004,7 @@ describe('Queries queries', () => {
     });
 
     test('by joined id, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join, where}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join, where}) => {
         select('c1');
         join(true, 'Q2', 'c3');
         where(true, 'Q2', 'c2', 'even.j');
@@ -1012,7 +1020,7 @@ describe('Queries queries', () => {
 
   describe('Groups', () => {
     test('by id', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, group}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, group}) => {
         select('c2');
         select('c3');
         group('c3', 'count').as('count');
@@ -1024,7 +1032,7 @@ describe('Queries queries', () => {
     });
 
     test('by id, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, group}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, group}) => {
         select('c2');
         select('c3');
         group('c3', 'count').as('count');
@@ -1039,26 +1047,36 @@ describe('Queries queries', () => {
 
   describe('Havings', () => {
     test('by id', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, group, having}) => {
-        select('c2');
-        select('c3');
-        group('c3', 'count').as('count');
-        having('count', 2);
-        having('c2', 'even');
-      });
+      queries.setQueryDefinition(
+        'q1',
+        true,
+        'Q1',
+        ({select, group, having}) => {
+          select('c2');
+          select('c3');
+          group('c3', 'count').as('count');
+          having('count', 2);
+          having('c2', 'even');
+        },
+      );
       expect(queries.getResultTable('q1')).toEqual({
         0: {c2: 'even', count: 2},
       });
     });
 
     test('by id, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, group, having}) => {
-        select('c2');
-        select('c3');
-        group('c3', 'count').as('count');
-        having('count', 2);
-        having('c2', 'even');
-      });
+      queries.setQueryDefinition(
+        'q1',
+        true,
+        'Q1',
+        ({select, group, having}) => {
+          select('c2');
+          select('c3');
+          group('c3', 'count').as('count');
+          having('count', 2);
+          having('c2', 'even');
+        },
+      );
       store.setCell('t1', 'r2', 'c2', 'odd');
       expect(queries.getResultTable('q1')).toEqual({});
     });
@@ -1066,7 +1084,9 @@ describe('Queries queries', () => {
 
   describe('Dependencies', () => {
     test('deletion', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) =>
+        select('c1'),
+      );
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
         r2: {c1: 'two'},
@@ -1078,8 +1098,12 @@ describe('Queries queries', () => {
     });
 
     test('cycles', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select}) => select('c1'));
-      queries.setQueryDefinition('Q1', 'q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) =>
+        select('c1'),
+      );
+      queries.setQueryDefinition('Q1', true, 'q1', ({select}) =>
+        select('c1'),
+      );
       expect(queries.getResultRowCount('Q1')).toBeGreaterThan(0);
       expect(queries.getResultRowCount('q1')).toBeGreaterThan(0);
       expect(queries.getResultCell('Q1', 'r2', 'c1')).toEqual('two');
@@ -1132,7 +1156,7 @@ describe('Queries queries', () => {
     });
 
     test('query to table', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select('t2', 'c1').as('t2.c1');
         join('t2', 'c3');
@@ -1146,7 +1170,7 @@ describe('Queries queries', () => {
     });
 
     test('query to table, updates', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select('t2', 'c1').as('t2.c1');
         join('t2', 'c3');
@@ -1161,7 +1185,7 @@ describe('Queries queries', () => {
     });
 
     test('query to missing table', () => {
-      queries.setQueryDefinition('q1', 'Q1', ({select, join}) => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
         select('t3', 'c1').as('t3.c1');
         join('t3', 'c3');
@@ -2123,7 +2147,7 @@ describe('Listens to Queries when sets', () => {
       delCells();
       delCells('t2');
       ['/q1', '/q*'].forEach((listenerId) =>
-        expectChanges(
+        expectChangesNoJson(
           listener,
           listenerId,
           {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'}}},

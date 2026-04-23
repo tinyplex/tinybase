@@ -153,7 +153,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     delDefinition,
     addQueryIdsListenerImpl,
     destroyImpl,
-  ] = getDefinableFunctions<[Build, Id], undefined>(
+  ] = getDefinableFunctions<[Build, Id, 0 | 1], undefined>(
     store,
     () => [] as any,
     getUndefined,
@@ -281,10 +281,25 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
   const setQueryDefinition = (
     queryId: Id,
-    tableId: Id,
-    build: Build,
+    tableIdOrAsQuery: Id | true,
+    tableIdOrBuild: Id | Build,
+    buildOrParamValues?: Build | ParamValues,
     paramValues: ParamValues = {},
   ): Queries => {
+    const [tableId, build, sourceIsQuery, actualParamValues] =
+      tableIdOrAsQuery === true
+        ? [
+            tableIdOrBuild as Id,
+            buildOrParamValues as Build,
+            1 as const,
+            paramValues,
+          ]
+        : [
+            tableIdOrAsQuery,
+            tableIdOrBuild as Build,
+            0 as const,
+            (buildOrParamValues as ParamValues | undefined) ?? {},
+          ];
     paramStore.delListener(getQueryArgs(queryId)?.[1] as Id);
     setDefinition(queryId, tableId);
     setQueryArgs(queryId, [
@@ -292,18 +307,17 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       paramStore.addRowListener(PARAMS_TABLE, queryId, () =>
         rebuildQueryDefinition(queryId),
       ),
+      sourceIsQuery,
     ]);
-    setOrDelParamValues(queryId, paramValues);
+    setOrDelParamValues(queryId, actualParamValues);
     setQueryDefinitionImpl(queryId);
     return queries;
   };
 
   const setQueryDefinitionImpl = (queryId: Id): Queries =>
-    ifNotUndefined(getQueryArgs(queryId), ([build]) => {
+    ifNotUndefined(getQueryArgs(queryId), ([build, , sourceIsQuery]) => {
       const tableId = getTableId(queryId);
-      const rootSourceStore = hasQuery(tableId)
-        ? getResultStore(tableId)
-        : store;
+      const rootSourceStore = sourceIsQuery ? getResultStore(tableId) : store;
       const queryResultStore = getResultStore(queryId);
       const paramValues = getParamValues(queryId);
 

@@ -336,6 +336,20 @@ export interface Queries {
     }) => void,
     paramValues?: ParamValues,
   ): Queries;
+  setQueryDefinition(
+    queryId: Id,
+    asQuery: true,
+    rootQueryId: Id,
+    query: (keywords: {
+      select: Select;
+      join: Join;
+      where: Where;
+      group: Group;
+      having: Having;
+      param: Param;
+    }) => void,
+    paramValues?: ParamValues,
+  ): Queries;
 
   /// Queries.delQueryDefinition
   delQueryDefinition(queryId: Id): Queries;
