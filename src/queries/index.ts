@@ -16,6 +16,7 @@ import type {
   Queries,
   QueriesListenerStats,
   QueryIdsListener,
+  ResultTableCallback,
   Select,
   Where,
   createQueries as createQueriesDecl,
@@ -62,6 +63,7 @@ import {
   getUndefined,
   ifNotUndefined,
   isFunction,
+  isTrue,
   isUndefined,
   size,
   slice,
@@ -293,6 +295,49 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       {...paramValues},
     );
 
+  const addRoutedResultListener = (
+    stat: ResultListenerStat,
+    queryId: IdOrNull,
+    addStoreListener: (store: Store, queryId: Id) => Id,
+    callListener?: (queryId: Id) => void,
+  ): Id => {
+    const listenerId = addListener(
+      getUndefined as any,
+      routedResultListenerIds,
+    );
+    const storeListenerIds: IdMap<[Store, Id]> = mapNew();
+    const syncStoreListeners = () => {
+      const queryIds = queryId == null ? getQueryIds() : [queryId];
+      arrayForEach(queryIds, (queryId) =>
+        collHas(storeListenerIds, queryId)
+          ? 0
+          : mapSet(storeListenerIds, queryId, [
+              getResultStore(queryId),
+              addStoreListener(getResultStore(queryId), queryId),
+            ]),
+      );
+      mapForEach(storeListenerIds, (storeQueryId, [store, storeListenerId]) =>
+        (queryId == null && hasQuery(storeQueryId)) || storeQueryId == queryId
+          ? 0
+          : (() => {
+              store.delListener(storeListenerId);
+              mapSet(storeListenerIds, storeQueryId);
+            })(),
+      );
+    };
+    syncStoreListeners();
+    mapSet(routedResultListeners, listenerId, [
+      stat,
+      storeListenerIds,
+      callListener,
+      queryId == null
+        ? (addQueryIdsListenerImpl(syncStoreListeners) as unknown as Id)
+        : undefined,
+    ]);
+    resultListenerStats[stat]++;
+    return listenerId;
+  };
+
   const callRoutedResultListeners = (
     queryId: Id,
     ...stats: ResultListenerStat[]
@@ -314,21 +359,24 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     paramValuesIfSourceIsQuery: ParamValues = {},
   ): Queries => {
     const hadQuery = hasQuery(queryId);
-    const [tableId, build, sourceIsQuery, paramValues] =
-      tableIdOrAsQuery === true
-        ? [
-            tableIdOrBuild as Id,
-            buildOrParamValues as Build,
-            1 as const,
-            paramValuesIfSourceIsQuery,
-          ]
-        : [
-            tableIdOrAsQuery,
-            tableIdOrBuild as Build,
-            0 as const,
-            (buildOrParamValues as ParamValues | undefined) ?? {},
-          ];
-    paramStore.delListener(getQueryArgs(queryId)?.[1] as Id);
+    const [tableId, build, sourceIsQuery, paramValues] = isTrue(
+      tableIdOrAsQuery,
+    )
+      ? [
+          tableIdOrBuild as Id,
+          buildOrParamValues as Build,
+          1 as const,
+          paramValuesIfSourceIsQuery,
+        ]
+      : [
+          tableIdOrAsQuery,
+          tableIdOrBuild as Build,
+          0 as const,
+          (buildOrParamValues as ParamValues | undefined) ?? {},
+        ];
+    ifNotUndefined(getQueryArgs(queryId), ([, listenerId]) =>
+      paramStore.delListener(listenerId),
+    );
     setDefinition(queryId, tableId);
     setQueryArgs(queryId, [
       build,
@@ -379,8 +427,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             arg2?: Id,
             arg3?: Id,
           ) => {
-            const joinedTableId = arg1 === true ? arg2 : arg1;
-            const joinedCellId = arg1 === true ? arg3 : arg2;
+            const joinedTableId = isTrue(arg1) ? arg2 : arg1;
+            const joinedCellId = isTrue(arg1) ? arg3 : arg2;
             const selectEntry: [Id, SelectClause] = isFunction(arg1)
               ? [size(selectEntries) + EMPTY_STRING, arg1]
               : isUndefined(joinedCellId)
@@ -388,7 +436,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 : [
                     joinedCellId,
                     (getTableCell) =>
-                      arg1 === true
+                      isTrue(arg1)
                         ? getTableCell(true, joinedTableId as Id, joinedCellId)
                         : getTableCell(joinedTableId as Id, joinedCellId),
                   ];
@@ -404,15 +452,14 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             arg3?: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
             arg4?: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
           ) => {
-            const joinedTableId = (arg1 === true ? arg2 : arg1) as Id;
-            const [fromJoinAlias, onArg] =
-              arg1 === true
-                ? isUndefined(arg4) || isFunction(arg3)
-                  ? [undefined, arg3]
-                  : [arg3, arg4]
-                : isUndefined(arg3) || isFunction(arg2)
-                  ? [undefined, arg2]
-                  : [arg2, arg3];
+            const joinedTableId = (isTrue(arg1) ? arg2 : arg1) as Id;
+            const [fromJoinAlias, onArg] = isTrue(arg1)
+              ? isUndefined(arg4) || isFunction(arg3)
+                ? [undefined, arg3]
+                : [arg3, arg4]
+              : isUndefined(arg3) || isFunction(arg2)
+                ? [undefined, arg2]
+                : [arg2, arg3];
             const joinEntry: [Id, JoinClause] = [
               joinedTableId,
               [
@@ -421,7 +468,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 isFunction(onArg) ? onArg : (getCell) => getCell(onArg as Id),
                 [],
                 mapNew(),
-                arg1 === true ? getResultStore(joinedTableId) : store,
+                isTrue(arg1) ? getResultStore(joinedTableId) : store,
               ] as JoinClause,
             ];
             arrayPush(joinEntries, joinEntry);
@@ -438,7 +485,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
               wheres,
               isFunction(arg1)
                 ? arg1
-                : arg1 === true
+                : isTrue(arg1)
                   ? (getTableCell) =>
                       getTableCell(true, arg2 as Id, arg3 as Id) === arg4
                   : isUndefined(arg3)
@@ -675,12 +722,12 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
           const writeSelectRow = (rootRowId: Id) => {
             const getJoinCell = (arg1: Id | true, arg2?: Id, arg3?: Id) => {
-              const joinedTableId = arg1 === true ? arg2 : arg1;
-              const joinedCellId = arg1 === true ? arg3 : arg2;
+              const joinedTableId = isTrue(arg1) ? arg2 : arg1;
+              const joinedCellId = isTrue(arg1) ? arg3 : arg2;
               if (isUndefined(joinedCellId)) {
                 return rootStore.getCell(tableId, rootRowId, arg1 as Id);
               }
-              if (joinedTableId === tableId && arg1 !== true) {
+              if (joinedTableId === tableId && !isTrue(arg1)) {
                 return rootStore.getCell(tableId, rootRowId, joinedCellId);
               }
               const join = mapGet(joins, joinedTableId as Id) as JoinClause;
@@ -816,7 +863,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     );
 
   const delQueryDefinition = (queryId: Id): Queries => {
-    paramStore.delListener(getQueryArgs(queryId)?.[1] as Id);
+    ifNotUndefined(getQueryArgs(queryId), ([, listenerId]) =>
+      paramStore.delListener(listenerId),
+    );
     paramStore.delRow(PARAMS_TABLE, queryId);
     resetPreStores(queryId);
     resetSourceStores(queryId);
@@ -853,86 +902,14 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
 
-  const forEachResultCell = (
-    queryId: Id,
-    rowId: Id,
-    cellCallback: (cellId: Id, cell: Cell) => void,
-  ) => getResultStore(queryId).forEachCell(queryId, rowId, cellCallback);
-
-  const forEachResultRow = (
-    queryId: Id,
-    rowCallback: (
-      rowId: Id,
-      forEachCell: (cellCallback: (cellId: Id, cell: Cell) => void) => void,
-    ) => void,
-  ) =>
-    getResultStore(queryId).forEachRow(queryId, (rowId) =>
-      rowCallback(rowId, (cellCallback) =>
-        forEachResultCell(queryId, rowId, cellCallback),
-      ),
-    );
-
-  const forEachResultTable = (
-    tableCallback: (
-      queryId: Id,
-      forEachRow: (
-        rowCallback: (
-          rowId: Id,
-          forEachCell: (cellCallback: (cellId: Id, cell: Cell) => void) => void,
-        ) => void,
-      ) => void,
-    ) => void,
-  ) =>
+  const forEachResultTable = (tableCallback: ResultTableCallback) =>
     forEachQuery((queryId) =>
       getResultStore(queryId).hasTable(queryId)
         ? tableCallback(queryId, (rowCallback) =>
-            forEachResultRow(queryId, rowCallback),
+            queries.forEachResultRow(queryId, rowCallback),
           )
         : 0,
     );
-
-  const addRoutedResultListener = (
-    stat: ResultListenerStat,
-    queryId: IdOrNull,
-    addStoreListener: (store: Store, queryId: Id) => Id,
-    callListener?: (queryId: Id) => void,
-  ): Id => {
-    const listenerId = addListener(
-      getUndefined as any,
-      routedResultListenerIds,
-    );
-    const storeListenerIds: IdMap<[Store, Id]> = mapNew();
-    const syncStoreListeners = () => {
-      const queryIds = queryId == null ? getQueryIds() : [queryId];
-      arrayForEach(queryIds, (queryId) =>
-        collHas(storeListenerIds, queryId)
-          ? 0
-          : mapSet(storeListenerIds, queryId, [
-              getResultStore(queryId),
-              addStoreListener(getResultStore(queryId), queryId),
-            ]),
-      );
-      mapForEach(storeListenerIds, (storeQueryId, [store, storeListenerId]) =>
-        (queryId == null && hasQuery(storeQueryId)) || storeQueryId == queryId
-          ? 0
-          : (() => {
-              store.delListener(storeListenerId);
-              mapSet(storeListenerIds, storeQueryId);
-            })(),
-      );
-    };
-    syncStoreListeners();
-    mapSet(routedResultListeners, listenerId, [
-      stat,
-      storeListenerIds,
-      callListener,
-      queryId == null
-        ? (addQueryIdsListenerImpl(syncStoreListeners) as unknown as Id)
-        : undefined,
-    ]);
-    resultListenerStats[stat]++;
-    return listenerId;
-  };
 
   const addParamValuesListener = (
     queryId: IdOrNull,
@@ -1005,8 +982,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     hasQuery,
     getTableId,
     forEachResultTable,
-    forEachResultRow,
-    forEachResultCell,
 
     addQueryIdsListener,
     addParamValuesListener,
@@ -1016,6 +991,30 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     destroy,
     getListenerStats,
   };
+
+  objMap(
+    {
+      [ROW]: (
+        queryId: Id,
+        rowCallback: (
+          rowId: Id,
+          forEachCell: (cellCallback: (cellId: Id, cell: Cell) => void) => void,
+        ) => void,
+      ) =>
+        getResultStore(queryId).forEachRow(queryId, (rowId) =>
+          rowCallback(rowId, (cellCallback) =>
+            queries.forEachResultCell(queryId, rowId, cellCallback),
+          ),
+        ),
+      [CELL]: (
+        queryId: Id,
+        rowId: Id,
+        cellCallback: (cellId: Id, cell: Cell) => void,
+      ) => getResultStore(queryId).forEachCell(queryId, rowId, cellCallback),
+    } as const,
+    (forEachResult, gettable) =>
+      (queries['forEach' + RESULT + gettable] = forEachResult),
+  );
 
   objMap(
     {
@@ -1143,7 +1142,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             : gettable == CELL_IDS
               ? (queryId) =>
                   isUndefined(args[1])
-                    ? forEachResultRow(queryId, (rowId) =>
+                    ? queries.forEachResultRow(queryId, (rowId) =>
                         args[argumentCount](queries, queryId, rowId, undefined),
                       )
                     : args[argumentCount](queries, queryId, args[1], undefined)
