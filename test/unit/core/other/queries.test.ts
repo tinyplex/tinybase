@@ -877,12 +877,12 @@ describe('Queries queries', () => {
 
     test('by id, updates', () => {
       queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
-      store.setCell('t1', 'r4', 'c1', 'four!!');
+      store.setCell('t1', 'r4', 'c1', 'four!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {c1: 'one'},
         r2: {c1: 'two'},
         r3: {c1: 'three'},
-        r4: {c1: 'four!!'},
+        r4: {c1: 'four!'},
       });
     });
 
@@ -915,12 +915,12 @@ describe('Queries queries', () => {
         select(true, 'Q2', 'c1').as('Q2.c1');
         join(true, 'Q2', 'c3');
       });
-      store.setCell('t2', 'r4', 'c1', 'four.j!!');
+      store.setCell('t2', 'r4', 'c1', 'four.j!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {'Q1.c1': 'one', 'Q2.c1': 'one.j'},
         r2: {'Q1.c1': 'two', 'Q2.c1': 'two.j'},
         r3: {'Q1.c1': 'three', 'Q2.c1': 'three.j'},
-        r4: {'Q1.c1': 'four', 'Q2.c1': 'four.j!!'},
+        r4: {'Q1.c1': 'four', 'Q2.c1': 'four.j!'},
       });
     });
 
@@ -948,12 +948,12 @@ describe('Queries queries', () => {
         join(true, 'Q2', 'c3').as('Q2a');
         join(true, 'Q2', 'Q2a', 'r').as('Q2b');
       });
-      store.setCell('t2', 'r4', 'c1', 'four.j!!');
+      store.setCell('t2', 'r4', 'c1', 'four.j!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {'Q1.c1': 'one', 'Q2a.c1': 'one.j', 'Q2b.c1': 'one.j'},
         r2: {'Q1.c1': 'two', 'Q2a.c1': 'two.j', 'Q2b.c1': 'two.j'},
         r3: {'Q1.c1': 'three', 'Q2a.c1': 'three.j', 'Q2b.c1': 'three.j'},
-        r4: {'Q1.c1': 'four', 'Q2a.c1': 'four.j!!', 'Q2b.c1': 'four.j!!'},
+        r4: {'Q1.c1': 'four', 'Q2a.c1': 'four.j!', 'Q2b.c1': 'four.j!'},
       });
     });
   });
@@ -1120,13 +1120,41 @@ describe('Queries queries', () => {
     test('three layer chain', () => {
       queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
       queries.setQueryDefinition('q2', true, 'q1', ({select}) => select('c1'));
-      store.setCell('t1', 'r4', 'c1', 'four!!');
+      store.setCell('t1', 'r4', 'c1', 'four!');
       expect(queries.getResultTable('q2')).toEqual({
         r1: {c1: 'one'},
         r2: {c1: 'two'},
         r3: {c1: 'three'},
-        r4: {c1: 'four!!'},
+        r4: {c1: 'four!'},
       });
+    });
+
+    test('source-kind redefinition', () => {
+      queries.setQueryDefinition('Q0', 't1', ({select}) => select('c1'));
+      queries.setQueryDefinition('Q1', true, 'Q0', ({select}) => select('c1'));
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one'},
+        r2: {c1: 'two'},
+        r3: {c1: 'three'},
+        r4: {c1: 'four'},
+      });
+
+      queries.setQueryDefinition('Q1', 't2', ({select}) => select('c1'));
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one.j'},
+        r2: {c1: 'two.j'},
+        r3: {c1: 'three.j'},
+        r4: {c1: 'four.j'},
+      });
+
+      store.setCell('t1', 'r4', 'c1', 'four!');
+      expect(queries.getResultCell('q1', 'r4', 'c1')).toEqual('four.j');
+
+      store.setCell('t2', 'r4', 'c1', 'four.j!');
+      expect(queries.getResultCell('q1', 'r4', 'c1')).toEqual('four.j!');
     });
   });
 
@@ -1151,12 +1179,12 @@ describe('Queries queries', () => {
         select(true, 'Q2', 'c1').as('Q2.c1');
         join(true, 'Q2', 'c3');
       });
-      store.setCell('t2', 'r4', 'c1', 'four.j!!');
+      store.setCell('t2', 'r4', 'c1', 'four.j!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {'t1.c1': 'one', 'Q2.c1': 'one.j'},
         r2: {'t1.c1': 'two', 'Q2.c1': 'two.j'},
         r3: {'t1.c1': 'three', 'Q2.c1': 'three.j'},
-        r4: {'t1.c1': 'four', 'Q2.c1': 'four.j!!'},
+        r4: {'t1.c1': 'four', 'Q2.c1': 'four.j!'},
       });
     });
 
@@ -1194,12 +1222,12 @@ describe('Queries queries', () => {
         select('t2', 'c1').as('t2.c1');
         join('t2', 'c3');
       });
-      store.setCell('t1', 'r4', 'c1', 'four!!');
+      store.setCell('t1', 'r4', 'c1', 'four!');
       expect(queries.getResultTable('q1')).toEqual({
         r1: {'Q1.c1': 'one', 't2.c1': 'one.j'},
         r2: {'Q1.c1': 'two', 't2.c1': 'two.j'},
         r3: {'Q1.c1': 'three', 't2.c1': 'three.j'},
-        r4: {'Q1.c1': 'four!!', 't2.c1': 'four.j'},
+        r4: {'Q1.c1': 'four!', 't2.c1': 'four.j'},
       });
     });
 
@@ -1459,7 +1487,7 @@ describe('Queries queries', () => {
       const listenerId = listener.listenToResultTable('/q1', 'q1');
       expect(queries.getListenerStats().table).toEqual(1);
       queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
-      store.setCell('t1', 'r4', 'c1', 'four!!');
+      store.setCell('t1', 'r4', 'c1', 'four!');
       expectChanges(
         listener,
         '/q1',
@@ -1476,7 +1504,7 @@ describe('Queries queries', () => {
             r2: {c1: 'two'},
             r3: {c1: 'three'},
             r1: {c1: 'one'},
-            r4: {c1: 'four!!'},
+            r4: {c1: 'four!'},
           },
         },
       );
@@ -1518,7 +1546,7 @@ describe('Queries queries', () => {
       queries.addResultTableListener(null, listener);
       queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
       queries.setQueryDefinition('q2', true, 'Q2', ({select}) => select('c1'));
-      store.setCell('t1', 'r4', 'c1', 'four!!');
+      store.setCell('t1', 'r4', 'c1', 'four!');
       expect(listener.mock.calls.map(([, queryId]) => queryId)).toEqual([
         'q1',
         'q2',
