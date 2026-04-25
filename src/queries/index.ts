@@ -127,12 +127,7 @@ type ResultListenerStat =
   | 'cellIds'
   | 'cell';
 
-type RoutedResultListener = [
-  ResultListenerStat,
-  IdMap<[Store, Id]>,
-  ((queryId: Id) => void)?,
-  Id?,
-];
+type RoutedResultListener = [ResultListenerStat, IdMap<[Store, Id]>, Id?];
 
 export const createQueries = getCreateFunction((store: Store): Queries => {
   const createStore = (store as ProtectedStore)._[0];
@@ -299,7 +294,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     stat: ResultListenerStat,
     queryId: IdOrNull,
     addStoreListener: (store: Store, queryId: Id) => Id,
-    callListener?: (queryId: Id) => void,
   ): Id => {
     const listenerId = addListener(
       getUndefined as any,
@@ -329,7 +323,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     mapSet(routedResultListeners, listenerId, [
       stat,
       storeListenerIds,
-      callListener,
       queryId == null
         ? (addQueryIdsListenerImpl(syncStoreListeners) as unknown as Id)
         : undefined,
@@ -338,19 +331,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return listenerId;
   };
 
-  const callRoutedResultListeners = (
-    queryId: Id,
-    ...stats: ResultListenerStat[]
-  ): void =>
-    mapForEach(
-      routedResultListeners,
-      (_listenerId, [stat, storeListenerIds, call]) =>
-        !arrayEvery(stats, (expectedStat) => expectedStat != stat) &&
-        collHas(storeListenerIds, queryId)
-          ? call?.(queryId)
-          : 0,
-    );
-
   const setQueryDefinition = (
     queryId: Id,
     tableIdOrAsQuery: Id | true,
@@ -358,7 +338,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     buildOrParamValues?: Build | ParamValues,
     paramValuesIfSourceIsQuery: ParamValues = {},
   ): Queries => {
-    const hadQuery = hasQuery(queryId);
     const [tableId, build, sourceIsQuery, paramValues] = isTrue(
       tableIdOrAsQuery,
     )
@@ -387,9 +366,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     ]);
     setOrDelParamValues(queryId, paramValues);
     setQueryDefinitionImpl(queryId);
-    if (hadQuery) {
-      callRoutedResultListeners(queryId, 'tableCellIds', 'cellIds');
-    }
     return queries;
   };
 
@@ -942,8 +918,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     if (listenerId[0] == PARAM_LISTENER_PREFIX) {
       paramStore.delListener(slice(listenerId, 1));
     } else if (!isUndefined(routedResultListener)) {
-      const [stat, storeListenerIds, _callListener, queryIdsListenerId] =
-        routedResultListener;
+      const [stat, storeListenerIds, queryIdsListenerId] = routedResultListener;
       mapForEach(storeListenerIds, (_queryId, [store, storeListenerId]) =>
         store.delListener(storeListenerId),
       );
@@ -1016,6 +991,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       (queries['forEach' + RESULT + gettable] = forEachResult),
   );
 
+  const getListenerArgs = (args: any[], argumentCount: number) =>
+    argumentCount == 5
+      ? [args[0], args[1] ?? undefined, args[2], args[3], args[4]]
+      : slice(args, 0, argumentCount);
+
   objMap(
     {
       [TABLE]: [1, 1, 'table'],
@@ -1034,119 +1014,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           (queries[prefix + RESULT + gettable] = (...args: any[]) =>
             (getResultStore(args[0]) as any)[prefix + gettable](...args)),
       );
-
       queries[ADD + RESULT + gettable + LISTENER] = (...args: any[]): Id =>
-        addRoutedResultListener(
-          stat,
-          args[0],
-          (store, queryId) =>
-            gettable == TABLE
-              ? store.addTableListener(
-                  queryId,
-                  (_store, _tableId, getCellChange) =>
-                    args[argumentCount](queries, queryId, getCellChange),
-                )
-              : gettable == TABLE + CELL_IDS
-                ? store.addTableCellIdsListener(
-                    queryId,
-                    (_store, _tableId, getIdChanges) =>
-                      args[argumentCount](queries, queryId, getIdChanges),
-                  )
-                : gettable == ROW_COUNT
-                  ? store.addRowCountListener(
-                      queryId,
-                      (_store, _tableId, rowCount) =>
-                        args[argumentCount](queries, queryId, rowCount),
-                    )
-                  : gettable == ROW_IDS
-                    ? store.addRowIdsListener(
-                        queryId,
-                        (_store, _tableId, getIdChanges) =>
-                          args[argumentCount](queries, queryId, getIdChanges),
-                      )
-                    : gettable == SORTED_ROW_IDS
-                      ? store.addSortedRowIdsListener(
-                          queryId,
-                          args[1] ?? undefined,
-                          args[2],
-                          args[3],
-                          args[4],
-                          (
-                            _store,
-                            _tableId,
-                            _cellId,
-                            _descending,
-                            _offset,
-                            _limit,
-                            sortedRowIds,
-                          ) =>
-                            args[argumentCount](
-                              queries,
-                              queryId,
-                              args[1],
-                              args[2],
-                              args[3],
-                              args[4],
-                              sortedRowIds,
-                            ),
-                        )
-                      : gettable == ROW
-                        ? store.addRowListener(
-                            queryId,
-                            args[1],
-                            (_store, _tableId, rowId, getCellChange) =>
-                              args[argumentCount](
-                                queries,
-                                queryId,
-                                rowId,
-                                getCellChange,
-                              ),
-                          )
-                        : gettable == CELL_IDS
-                          ? store.addCellIdsListener(
-                              queryId,
-                              args[1],
-                              (_store, _tableId, rowId, getIdChanges) =>
-                                args[argumentCount](
-                                  queries,
-                                  queryId,
-                                  rowId,
-                                  getIdChanges,
-                                ),
-                            )
-                          : store.addCellListener(
-                              queryId,
-                              args[1],
-                              args[2],
-                              (
-                                _store,
-                                _tableId,
-                                rowId,
-                                cellId,
-                                newCell,
-                                oldCell,
-                                getCellChange,
-                              ) =>
-                                args[argumentCount](
-                                  queries,
-                                  queryId,
-                                  rowId,
-                                  cellId,
-                                  newCell,
-                                  oldCell,
-                                  getCellChange,
-                                ),
-                            ),
-          gettable == TABLE + CELL_IDS
-            ? (queryId) => args[argumentCount](queries, queryId, undefined)
-            : gettable == CELL_IDS
-              ? (queryId) =>
-                  isUndefined(args[1])
-                    ? queries.forEachResultRow(queryId, (rowId) =>
-                        args[argumentCount](queries, queryId, rowId, undefined),
-                      )
-                    : args[argumentCount](queries, queryId, args[1], undefined)
-              : undefined,
+        addRoutedResultListener(stat, args[0], (store) =>
+          (store as any)[ADD + gettable + LISTENER](
+            ...getListenerArgs(args, argumentCount),
+            (_store: Store, ...listenerArgs: any[]) =>
+              args[argumentCount](queries, ...listenerArgs),
+          ),
         );
     },
   );
