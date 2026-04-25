@@ -1108,6 +1108,15 @@ describe('Queries queries', () => {
       });
     });
 
+    test('redefinition to empty', () => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('Q1', 't1', ({select, where}) => {
+        select('c1');
+        where('c2', 'never');
+      });
+      expect(queries.getResultTable('q1')).toEqual({});
+    });
+
     test('three layer chain', () => {
       queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
       queries.setQueryDefinition('q2', true, 'q1', ({select}) => select('c1'));
@@ -1220,6 +1229,21 @@ describe('Queries queries', () => {
         r2: {'Q1.c1': 'two', 't3.c1': 'two.k'},
         r3: {'Q1.c1': 'three', 't3.c1': 'three.k'},
         r4: {'Q1.c1': 'four', 't3.c1': 'four.k'},
+      });
+    });
+
+    test('query to joined query, deleted later', () => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
+        select('c1').as('Q1.c1');
+        select(true, 'Q2', 'c1').as('Q2.c1');
+        join(true, 'Q2', 'c3');
+      });
+      queries.delQueryDefinition('Q2');
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {'Q1.c1': 'one'},
+        r2: {'Q1.c1': 'two'},
+        r3: {'Q1.c1': 'three'},
+        r4: {'Q1.c1': 'four'},
       });
     });
   });
@@ -1382,6 +1406,53 @@ describe('Queries queries', () => {
     });
   });
 
+  describe('Params', () => {
+    test('query root', () => {
+      queries.setQueryDefinition(
+        'q1',
+        true,
+        'Q1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c2', param('p') as string);
+        },
+        {p: 'even'},
+      );
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'two'},
+        r4: {c1: 'four'},
+      });
+      queries.setParamValue('q1', 'p', 'odd');
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one'},
+        r3: {c1: 'three'},
+      });
+    });
+
+    test('query join', () => {
+      queries.setQueryDefinition(
+        'q1',
+        true,
+        'Q1',
+        ({select, join, where, param}) => {
+          select('c1');
+          join(true, 'Q2', 'c3');
+          where(true, 'Q2', 'c2', param('p') as string);
+        },
+        {p: 'even.j'},
+      );
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'two'},
+        r4: {c1: 'four'},
+      });
+      queries.setParamValue('q1', 'p', 'odd.j');
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one'},
+        r3: {c1: 'three'},
+      });
+    });
+  });
+
   describe('Listeners and stats', () => {
     test('result listener and stats', () => {
       listener = createQueriesListener(queries);
@@ -1412,6 +1483,48 @@ describe('Queries queries', () => {
       queries.delListener(listenerId);
       expect(queries.getListenerStats().table).toEqual(0);
       expectNoChanges(listener);
+    });
+
+    test('listener on dependent query after source deletion', () => {
+      listener = createQueriesListener(queries);
+      listener.listenToResultTable('/q1', 'q1');
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
+      queries.delQueryDefinition('Q1');
+      expectChanges(
+        listener,
+        '/q1',
+        {
+          q1: {
+            r2: {c1: 'two'},
+            r3: {c1: 'three'},
+            r1: {c1: 'one'},
+            r4: {c1: 'four'},
+          },
+        },
+        {q1: {}},
+      );
+    });
+
+    test('remove listener and stats', () => {
+      const listenerId = queries.addResultTableListener('q1', noop);
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
+      expect(queries.getListenerStats().table).toEqual(1);
+      queries.delListener(listenerId);
+      expect(queries.getListenerStats().table).toEqual(0);
+    });
+
+    test('wildcard listener tracks query-backed updates', () => {
+      const listener = vi.fn();
+      queries.addResultTableListener(null, listener);
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
+      queries.setQueryDefinition('q2', true, 'Q2', ({select}) => select('c1'));
+      store.setCell('t1', 'r4', 'c1', 'four!!');
+      expect(listener.mock.calls.map(([, queryId]) => queryId)).toEqual([
+        'q1',
+        'q2',
+        'Q1',
+        'q1',
+      ]);
     });
   });
 });
