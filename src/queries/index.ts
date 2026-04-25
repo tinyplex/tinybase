@@ -967,60 +967,42 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     getListenerStats,
   };
 
-  objMap(
-    {
-      [ROW]: (
-        queryId: Id,
-        rowCallback: (
-          rowId: Id,
-          forEachCell: (cellCallback: (cellId: Id, cell: Cell) => void) => void,
-        ) => void,
-      ) =>
-        getResultStore(queryId).forEachRow(queryId, (rowId) =>
-          rowCallback(rowId, (cellCallback) =>
-            queries.forEachResultCell(queryId, rowId, cellCallback),
-          ),
-        ),
-      [CELL]: (
-        queryId: Id,
-        rowId: Id,
-        cellCallback: (cellId: Id, cell: Cell) => void,
-      ) => getResultStore(queryId).forEachCell(queryId, rowId, cellCallback),
-    } as const,
-    (forEachResult, gettable) =>
-      (queries['forEach' + RESULT + gettable] = forEachResult),
-  );
-
   const getListenerArgs = (args: any[], argumentCount: number) =>
     argumentCount == 5
       ? [args[0], args[1] ?? undefined, args[2], args[3], args[4]]
       : slice(args, 0, argumentCount);
+  const getResultListenerStat = (gettable: string): ResultListenerStat =>
+    (gettable[0].toLowerCase() + slice(gettable, 1)) as ResultListenerStat;
 
   objMap(
     {
-      [TABLE]: [1, 1, 'table'],
-      [TABLE + CELL_IDS]: [0, 1, 'tableCellIds'],
-      [ROW_COUNT]: [0, 1, 'rowCount'],
-      [ROW_IDS]: [0, 1, 'rowIds'],
-      [SORTED_ROW_IDS]: [0, 5, 'sortedRowIds'],
-      [ROW]: [1, 2, 'row'],
-      [CELL_IDS]: [0, 2, 'cellIds'],
-      [CELL]: [1, 3, 'cell'],
+      [TABLE]: [2, 1],
+      [TABLE + CELL_IDS]: [1, 1],
+      [ROW_COUNT]: [1, 1],
+      [ROW_IDS]: [1, 1],
+      [SORTED_ROW_IDS]: [1, 5],
+      [ROW]: [3, 2],
+      [CELL_IDS]: [1, 2],
+      [CELL]: [3, 3],
     } as const,
-    ([hasGetter, argumentCount, stat], gettable) => {
+    ([prefixCount, argumentCount], gettable) => {
       arrayForEach(
-        hasGetter ? [GET, 'has'] : [GET],
+        slice([GET, 'has', 'forEach'], 0, prefixCount),
         (prefix) =>
           (queries[prefix + RESULT + gettable] = (...args: any[]) =>
             (getResultStore(args[0]) as any)[prefix + gettable](...args)),
       );
       queries[ADD + RESULT + gettable + LISTENER] = (...args: any[]): Id =>
-        addRoutedResultListener(stat, args[0], (store) =>
-          (store as any)[ADD + gettable + LISTENER](
-            ...getListenerArgs(args, argumentCount),
-            (_store: Store, ...listenerArgs: any[]) =>
-              args[argumentCount](queries, ...listenerArgs),
-          ),
+        addRoutedResultListener(
+          getResultListenerStat(gettable),
+          args[0],
+          (store) =>
+            (store as any)[ADD + gettable + LISTENER](
+              ...getListenerArgs(args, argumentCount),
+              (_store: Store, ...listenerArgs: any[]) =>
+                args[argumentCount](queries, ...listenerArgs),
+              true,
+            ),
         );
     },
   );
