@@ -3054,13 +3054,13 @@ describe('Read Hooks', () => {
         where('c1', 3);
       }),
     );
-    expect(container.textContent).toEqual(JSON.stringify(['c3', 'c2', 'c1']));
+    expect(container.textContent).toEqual(JSON.stringify(['c1', 'c2', 'c3']));
 
     act(() => store.delTable('t1'));
     expect(container.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
-    expect(didRender).toHaveBeenCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(5);
 
     unmount();
   });
