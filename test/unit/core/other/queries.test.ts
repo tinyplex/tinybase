@@ -1394,17 +1394,17 @@ describe('Queries queries', () => {
         '/q1',
         {
           q1: {
-            r1: {c1: 'one'},
             r2: {c1: 'two'},
             r3: {c1: 'three'},
+            r1: {c1: 'one'},
             r4: {c1: 'four'},
           },
         },
         {
           q1: {
-            r1: {c1: 'one'},
             r2: {c1: 'two'},
             r3: {c1: 'three'},
+            r1: {c1: 'one'},
             r4: {c1: 'four!!'},
           },
         },
