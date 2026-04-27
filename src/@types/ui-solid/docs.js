@@ -1,6 +1,17 @@
 /**
- * The ui-solid module of the TinyBase project provides hooks and components for
- * using TinyBase in Solid applications.
+ * The ui-solid module of the TinyBase project provides primitives and
+ * components for using TinyBase in Solid applications.
+ *
+ * The primitives in this module provide access to the data and structures
+ * exposed by other modules in the project. They return Solid Accessor functions
+ * and register listeners so components using those primitives update when data
+ * changes.
+ *
+ * Unlike the ui-react module, the primitive signatures do not include
+ * dependency-list parameters. Solid tracks reactive reads automatically, and
+ * the primitives update when their Store data or accessor arguments change.
+ * Prefer passing reactive values as accessor functions, such as
+ * `() => props.tableId`.
  * @category Module
  * @packageDocumentation
  * @module ui-solid

@@ -119,7 +119,7 @@ import {
   isFunction,
   isUndefined,
 } from '../common/other.ts';
-import type {DependencyList, MaybeAccessor} from '../common/solid.ts';
+import type {MaybeAccessor} from '../common/solid.ts';
 import {
   ADD,
   CELL,
@@ -231,7 +231,6 @@ const EMPTY_LISTENER_ARG_GETTERS: ListenerArgGetters = [];
 const useCreate = <Thing extends {destroy?: () => void}>(
   store: MaybeAccessor<Store | undefined>,
   create: (store: Store) => Thing,
-  _createDeps: DependencyList = EMPTY_ARRAY,
 ): Accessor<Thing | undefined> => {
   const [thing, setThing] = createSignal<Thing>();
   createEffect(() => {
@@ -288,7 +287,6 @@ const useListener = (
   listenable: string,
   thing: MaybeAccessor<any>,
   listener: (...args: any[]) => void,
-  _listenerDeps: DependencyList = EMPTY_ARRAY,
   preListenerArgGetters: ListenerArgGetters = EMPTY_LISTENER_ARG_GETTERS,
   ...postListenerArgGetters: MaybeAccessor<ListenerArgument>[]
 ): void =>
@@ -308,9 +306,7 @@ const useSetCallback =
     storeOrQueries: MaybeAccessor<StoreOrQueries | undefined>,
     settable: string,
     get: (parameter: Parameter, obj: StoreOrQueries) => Thing,
-    _getDeps: DependencyList = EMPTY_ARRAY,
     then: (obj: StoreOrQueries, thing: Thing) => void = getUndefined,
-    _thenDeps: DependencyList = EMPTY_ARRAY,
     methodPrefix?: string,
     ...args: (MaybeAccessor<Id> | GetId<Parameter>)[]
   ): ParameterizedCallback<Parameter> =>
@@ -335,18 +331,14 @@ const useStoreSetCallback = <Parameter, Thing>(
   storeOrStoreId: MaybeAccessor<StoreOrStoreId | undefined>,
   settable: string,
   get: (parameter: Parameter, store: Store) => Thing,
-  getDeps?: DependencyList,
   then?: (store: Store, thing: Thing) => void,
-  thenDeps?: DependencyList,
   ...args: (MaybeAccessor<Id> | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     useStoreOrStoreById(storeOrStoreId),
     settable,
     get,
-    getDeps,
     then,
-    thenDeps,
     SET,
     ...args,
   );
@@ -355,18 +347,14 @@ const useQueriesSetCallback = <Parameter, Thing>(
   queriesOrQueriesId: MaybeAccessor<QueriesOrQueriesId | undefined>,
   settable: string,
   get: (parameter: Parameter, queries: Queries) => Thing,
-  getDeps?: DependencyList,
   then?: (queries: Queries, thing: Thing) => void,
-  thenDeps?: DependencyList,
   ...args: (MaybeAccessor<Id> | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     useQueriesOrQueriesById(queriesOrQueriesId),
     settable,
     get,
-    getDeps,
     then,
-    thenDeps,
     EMPTY_STRING,
     ...args,
   );
@@ -394,7 +382,6 @@ const useDel = <Parameter>(
   storeOrStoreId: MaybeAccessor<StoreOrStoreId | undefined>,
   deletable: string,
   then: (store: Store) => void = getUndefined,
-  _thenDeps: DependencyList = EMPTY_ARRAY,
   ...args: (
     | MaybeAccessor<Id>
     | GetId<Parameter>
@@ -452,7 +439,6 @@ export const useSortedRowIdsListenerImpl = (
   offset: MaybeAccessor<number>,
   limit: MaybeAccessor<number | undefined>,
   listener: SortedRowIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -460,17 +446,13 @@ export const useSortedRowIdsListenerImpl = (
     SORTED_ROW_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, cellId, descending, offset, limit],
     mutator,
   );
 
 // ---
 
-export const useCreateStore = (
-  create: () => Store,
-  _createDeps: DependencyList = EMPTY_ARRAY,
-): Accessor<Store> => {
+export const useCreateStore = (create: () => Store): Accessor<Store> => {
   const store = createMemo(create);
   return store;
 };
@@ -493,7 +475,6 @@ export const useProvideStore = (storeId: Id, store: Store): void =>
 
 export const useCreateMergeableStore = (
   create: () => MergeableStore,
-  _createDeps: DependencyList = EMPTY_ARRAY,
 ): Accessor<MergeableStore> => {
   const mergeableStore = createMemo(create);
   return mergeableStore;
@@ -518,7 +499,7 @@ export const useTablesState = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): [Accessor<Tables>, (tables: Tables) => void] => [
   useTables(storeOrStoreId),
-  useSetTablesCallback(getArg, [], storeOrStoreId),
+  useSetTablesCallback(getArg, storeOrStoreId),
 ];
 
 export const useTableIds = (
@@ -553,7 +534,7 @@ export const useTableState = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): [Accessor<Table>, (table: Table) => void] => [
   useTable(tableId, storeOrStoreId),
-  useSetTableCallback(tableId, getArg, [], storeOrStoreId),
+  useSetTableCallback(tableId, getArg, storeOrStoreId),
 ];
 
 export const useTableCellIds = (
@@ -653,7 +634,7 @@ export const useRowState = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): [Accessor<Row>, (row: Row) => void] => [
   useRow(tableId, rowId, storeOrStoreId),
-  useSetRowCallback(tableId, rowId, getArg, [], storeOrStoreId),
+  useSetRowCallback(tableId, rowId, getArg, storeOrStoreId),
 ];
 
 export const useCellIds = (
@@ -700,7 +681,7 @@ export const useCellState = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): [Accessor<CellOrUndefined>, (cell: Cell) => void] => [
   useCell(tableId, rowId, cellId, storeOrStoreId),
-  useSetCellCallback(tableId, rowId, cellId, getArg, [], storeOrStoreId),
+  useSetCellCallback(tableId, rowId, cellId, getArg, storeOrStoreId),
 ];
 
 export const useHasValues = (
@@ -722,7 +703,7 @@ export const useValuesState = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): [Accessor<Values>, (values: Values) => void] => [
   useValues(storeOrStoreId),
-  useSetValuesCallback(getArg, [], storeOrStoreId),
+  useSetValuesCallback(getArg, storeOrStoreId),
 ];
 
 export const useValueIds = (
@@ -761,74 +742,42 @@ export const useValueState = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): [Accessor<ValueOrUndefined>, (value: Value) => void] => [
   useValue(valueId, storeOrStoreId),
-  useSetValueCallback(valueId, getArg, [], storeOrStoreId),
+  useSetValueCallback(valueId, getArg, storeOrStoreId),
 ];
 
 export const useSetTablesCallback = <Parameter>(
   getTables: (parameter: Parameter, store: Store) => Tables,
-  getTablesDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, tables: Tables) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useStoreSetCallback(
-    storeOrStoreId,
-    TABLES,
-    getTables,
-    getTablesDeps,
-    then,
-    thenDeps,
-  );
+  useStoreSetCallback(storeOrStoreId, TABLES, getTables, then);
 
 export const useSetTableCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
   getTable: (parameter: Parameter, store: Store) => Table,
-  getTableDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, table: Table) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useStoreSetCallback(
-    storeOrStoreId,
-    TABLE,
-    getTable,
-    getTableDeps,
-    then,
-    thenDeps,
-    tableId,
-  );
+  useStoreSetCallback(storeOrStoreId, TABLE, getTable, then, tableId);
 
 export const useSetRowCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
   rowId: MaybeAccessor<Id> | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, row: Row) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useStoreSetCallback(
-    storeOrStoreId,
-    ROW,
-    getRow,
-    getRowDeps,
-    then,
-    thenDeps,
-    tableId,
-    rowId,
-  );
+  useStoreSetCallback(storeOrStoreId, ROW, getRow, then, tableId, rowId);
 
 export const useAddRowCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  _getRowDeps: DependencyList = EMPTY_ARRAY,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then: (
     rowId: MaybeAccessor<Id> | undefined,
     store: Store,
     row: Row,
   ) => void = getUndefined,
-  _thenDeps: DependencyList = EMPTY_ARRAY,
   reuseRowIds = true,
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreById(storeOrStoreId);
@@ -856,18 +805,14 @@ export const useSetPartialRowCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
   rowId: MaybeAccessor<Id> | GetId<Parameter>,
   getPartialRow: (parameter: Parameter, store: Store) => Row,
-  getPartialRowDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, partialRow: Row) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useStoreSetCallback(
     storeOrStoreId,
     PARTIAL + ROW,
     getPartialRow,
-    getPartialRowDeps,
     then,
-    thenDeps,
     tableId,
     rowId,
   );
@@ -877,18 +822,14 @@ export const useSetCellCallback = <Parameter>(
   rowId: MaybeAccessor<Id> | GetId<Parameter>,
   cellId: MaybeAccessor<Id> | GetId<Parameter>,
   getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
-  getCellDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, cell: Cell | MapCell) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useStoreSetCallback(
     storeOrStoreId,
     CELL,
     getCell,
-    getCellDeps,
     then,
-    thenDeps,
     tableId,
     rowId,
     cellId,
@@ -896,76 +837,45 @@ export const useSetCellCallback = <Parameter>(
 
 export const useSetValuesCallback = <Parameter>(
   getValues: (parameter: Parameter, store: Store) => Values,
-  getValuesDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, values: Values) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useStoreSetCallback(
-    storeOrStoreId,
-    VALUES,
-    getValues,
-    getValuesDeps,
-    then,
-    thenDeps,
-  );
+  useStoreSetCallback(storeOrStoreId, VALUES, getValues, then);
 
 export const useSetPartialValuesCallback = <Parameter>(
   getPartialValues: (parameter: Parameter, store: Store) => Values,
-  getPartialValuesDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, partialValues: Values) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useStoreSetCallback(
-    storeOrStoreId,
-    PARTIAL + VALUES,
-    getPartialValues,
-    getPartialValuesDeps,
-    then,
-    thenDeps,
-  );
+  useStoreSetCallback(storeOrStoreId, PARTIAL + VALUES, getPartialValues, then);
 
 export const useSetValueCallback = <Parameter>(
   valueId: MaybeAccessor<Id> | GetId<Parameter>,
   getValue: (parameter: Parameter, store: Store) => Value | MapValue,
-  getValueDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store, value: Value | MapValue) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useStoreSetCallback(
-    storeOrStoreId,
-    VALUE,
-    getValue,
-    getValueDeps,
-    then,
-    thenDeps,
-    valueId,
-  );
+  useStoreSetCallback(storeOrStoreId, VALUE, getValue, then, valueId);
 
 export const useDelTablesCallback = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
-): Callback => useDel(storeOrStoreId, TABLES, then, thenDeps);
+): Callback => useDel(storeOrStoreId, TABLES, then);
 
 export const useDelTableCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useDel(storeOrStoreId, TABLE, then, thenDeps, tableId);
+  useDel(storeOrStoreId, TABLE, then, tableId);
 
 export const useDelRowCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
   rowId: MaybeAccessor<Id> | GetId<Parameter>,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useDel(storeOrStoreId, ROW, then, thenDeps, tableId, rowId);
+  useDel(storeOrStoreId, ROW, then, tableId, rowId);
 
 export const useDelCellCallback = <Parameter>(
   tableId: MaybeAccessor<Id> | GetId<Parameter>,
@@ -974,36 +884,23 @@ export const useDelCellCallback = <Parameter>(
   forceDel?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useDel(
-    storeOrStoreId,
-    CELL,
-    then,
-    thenDeps,
-    tableId,
-    rowId,
-    cellId,
-    forceDel,
-  );
+  useDel(storeOrStoreId, CELL, then, tableId, rowId, cellId, forceDel);
 
 export const useDelValuesCallback = (
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
-): Callback => useDel(storeOrStoreId, VALUES, then, thenDeps);
+): Callback => useDel(storeOrStoreId, VALUES, then);
 
 export const useDelValueCallback = <Parameter>(
   valueId: MaybeAccessor<Id> | GetId<Parameter>,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
+  useDel(storeOrStoreId, VALUE, then, valueId);
 
 export const useHasTablesListener = (
   listener: HasTablesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1011,14 +908,12 @@ export const useHasTablesListener = (
     HAS + TABLES,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [],
     mutator,
   );
 
 export const useTablesListener = (
   listener: TablesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1026,14 +921,12 @@ export const useTablesListener = (
     TABLES,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     EMPTY_LISTENER_ARG_GETTERS,
     mutator,
   );
 
 export const useTableIdsListener = (
   listener: TableIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1041,7 +934,6 @@ export const useTableIdsListener = (
     TABLE_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     EMPTY_LISTENER_ARG_GETTERS,
     mutator,
   );
@@ -1049,7 +941,6 @@ export const useTableIdsListener = (
 export const useHasTableListener = (
   tableId: MaybeAccessor<IdOrNull>,
   listener: HasTableListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1057,7 +948,6 @@ export const useHasTableListener = (
     HAS + TABLE,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId],
     mutator,
   );
@@ -1065,7 +955,6 @@ export const useHasTableListener = (
 export const useTableListener = (
   tableId: MaybeAccessor<IdOrNull>,
   listener: TableListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1073,7 +962,6 @@ export const useTableListener = (
     TABLE,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId],
     mutator,
   );
@@ -1081,7 +969,6 @@ export const useTableListener = (
 export const useTableCellIdsListener = (
   tableId: MaybeAccessor<IdOrNull>,
   listener: TableCellIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1089,7 +976,6 @@ export const useTableCellIdsListener = (
     TABLE + CELL_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId],
     mutator,
   );
@@ -1098,7 +984,6 @@ export const useHasTableCellListener = (
   tableId: MaybeAccessor<IdOrNull>,
   cellId: MaybeAccessor<IdOrNull>,
   listener: HasTableCellListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1106,7 +991,6 @@ export const useHasTableCellListener = (
     HAS + TABLE + CELL,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, cellId],
     mutator,
   );
@@ -1114,7 +998,6 @@ export const useHasTableCellListener = (
 export const useRowCountListener = (
   tableId: MaybeAccessor<IdOrNull>,
   listener: RowCountListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1122,7 +1005,6 @@ export const useRowCountListener = (
     ROW_COUNT,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId],
     mutator,
   );
@@ -1130,7 +1012,6 @@ export const useRowCountListener = (
 export const useRowIdsListener = (
   tableId: MaybeAccessor<IdOrNull>,
   listener: RowIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1138,7 +1019,6 @@ export const useRowIdsListener = (
     ROW_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId],
     mutator,
   );
@@ -1146,11 +1026,10 @@ export const useRowIdsListener = (
 export const useSortedRowIdsListener = (
   tableIdOrArgs: Id | SortedRowIdsArgs,
   cellIdOrListener: Id | undefined | SortedRowIdsListener,
-  descendingOrListenerDeps: boolean | DependencyList | undefined,
-  offsetOrMutator: number | boolean | undefined,
-  limitOrStoreOrStoreId: number | undefined | StoreOrStoreId,
+  descendingOrMutator: boolean | undefined,
+  offsetOrStoreOrStoreId: number | undefined | StoreOrStoreId,
+  limit?: number | undefined,
   listener?: SortedRowIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1162,18 +1041,16 @@ export const useSortedRowIdsListener = (
         tableIdOrArgs.offset ?? 0,
         tableIdOrArgs.limit,
         cellIdOrListener as SortedRowIdsListener,
-        descendingOrListenerDeps as DependencyList | undefined,
-        offsetOrMutator as boolean | undefined,
-        limitOrStoreOrStoreId as MaybeAccessor<StoreOrStoreId | undefined>,
+        descendingOrMutator,
+        offsetOrStoreOrStoreId as MaybeAccessor<StoreOrStoreId | undefined>,
       )
     : useSortedRowIdsListenerImpl(
         tableIdOrArgs,
         cellIdOrListener as MaybeAccessor<Id | undefined>,
-        (descendingOrListenerDeps ?? false) as MaybeAccessor<boolean>,
-        (offsetOrMutator ?? 0) as MaybeAccessor<number>,
-        limitOrStoreOrStoreId as MaybeAccessor<number | undefined>,
+        (descendingOrMutator ?? false) as MaybeAccessor<boolean>,
+        (offsetOrStoreOrStoreId ?? 0) as MaybeAccessor<number>,
+        limit as MaybeAccessor<number | undefined>,
         listener as SortedRowIdsListener,
-        listenerDeps,
         mutator,
         storeOrStoreId,
       );
@@ -1182,7 +1059,6 @@ export const useHasRowListener = (
   tableId: MaybeAccessor<IdOrNull>,
   rowId: MaybeAccessor<IdOrNull>,
   listener: HasRowListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1190,7 +1066,6 @@ export const useHasRowListener = (
     HAS + ROW,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, rowId],
     mutator,
   );
@@ -1199,7 +1074,6 @@ export const useRowListener = (
   tableId: MaybeAccessor<IdOrNull>,
   rowId: MaybeAccessor<IdOrNull>,
   listener: RowListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1207,7 +1081,6 @@ export const useRowListener = (
     ROW,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, rowId],
     mutator,
   );
@@ -1216,7 +1089,6 @@ export const useCellIdsListener = (
   tableId: MaybeAccessor<IdOrNull>,
   rowId: MaybeAccessor<IdOrNull>,
   listener: CellIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1224,7 +1096,6 @@ export const useCellIdsListener = (
     CELL_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, rowId],
     mutator,
   );
@@ -1234,7 +1105,6 @@ export const useHasCellListener = (
   rowId: MaybeAccessor<IdOrNull>,
   cellId: MaybeAccessor<IdOrNull>,
   listener: HasCellListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1242,7 +1112,6 @@ export const useHasCellListener = (
     HAS + CELL,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, rowId, cellId],
     mutator,
   );
@@ -1252,7 +1121,6 @@ export const useCellListener = (
   rowId: MaybeAccessor<IdOrNull>,
   cellId: MaybeAccessor<IdOrNull>,
   listener: CellListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1260,14 +1128,12 @@ export const useCellListener = (
     CELL,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [tableId, rowId, cellId],
     mutator,
   );
 
 export const useHasValuesListener = (
   listener: HasValuesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1275,14 +1141,12 @@ export const useHasValuesListener = (
     HAS + VALUES,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [],
     mutator,
   );
 
 export const useValuesListener = (
   listener: ValuesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1290,14 +1154,12 @@ export const useValuesListener = (
     VALUES,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     EMPTY_LISTENER_ARG_GETTERS,
     mutator,
   );
 
 export const useValueIdsListener = (
   listener: ValueIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1305,7 +1167,6 @@ export const useValueIdsListener = (
     VALUE_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     EMPTY_LISTENER_ARG_GETTERS,
     mutator,
   );
@@ -1313,7 +1174,6 @@ export const useValueIdsListener = (
 export const useHasValueListener = (
   valueId: MaybeAccessor<IdOrNull>,
   listener: HasValueListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1321,7 +1181,6 @@ export const useHasValueListener = (
     HAS + VALUE,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [valueId],
     mutator,
   );
@@ -1329,7 +1188,6 @@ export const useHasValueListener = (
 export const useValueListener = (
   valueId: MaybeAccessor<IdOrNull>,
   listener: ValueListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
@@ -1337,52 +1195,44 @@ export const useValueListener = (
     VALUE,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
     [valueId],
     mutator,
   );
 
 export const useStartTransactionListener = (
   listener: TransactionListener,
-  listenerDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
   useListener(
     'Start' + TRANSACTION,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
   );
 
 export const useWillFinishTransactionListener = (
   listener: TransactionListener,
-  listenerDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
   useListener(
     'Will' + FINISH + TRANSACTION,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
   );
 
 export const useDidFinishTransactionListener = (
   listener: TransactionListener,
-  listenerDeps?: DependencyList,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): void =>
   useListener(
     'Did' + FINISH + TRANSACTION,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    listenerDeps,
   );
 
 export const useCreateMetrics = (
   store: Store | undefined,
   create: (store: Store) => Metrics,
-  createDeps?: DependencyList,
-): Accessor<Metrics | undefined> => useCreate(store, create, createDeps);
+): Accessor<Metrics | undefined> => useCreate(store, create);
 
 export const useMetricsIds = () => useThingIds(OFFSET_METRICS);
 
@@ -1421,22 +1271,16 @@ export const useMetric = (
 export const useMetricListener = (
   metricId: MaybeAccessor<IdOrNull>,
   listener: MetricListener,
-  listenerDeps?: DependencyList,
   metricsOrMetricsId?: MaybeAccessor<MetricsOrMetricsId | undefined>,
 ): void =>
-  useListener(
-    METRIC,
-    useMetricsOrMetricsById(metricsOrMetricsId),
-    listener,
-    listenerDeps,
-    [metricId],
-  );
+  useListener(METRIC, useMetricsOrMetricsById(metricsOrMetricsId), listener, [
+    metricId,
+  ]);
 
 export const useCreateIndexes = (
   store: Store | undefined,
   create: (store: Store) => Indexes,
-  createDeps?: DependencyList,
-): Accessor<Indexes | undefined> => useCreate(store, create, createDeps);
+): Accessor<Indexes | undefined> => useCreate(store, create);
 
 export const useIndexesIds = () => useThingIds(OFFSET_INDEXES);
 
@@ -1487,14 +1331,12 @@ export const useSliceRowIds = (
 export const useSliceIdsListener = (
   indexId: MaybeAccessor<IdOrNull>,
   listener: SliceIdsListener,
-  listenerDeps?: DependencyList,
   indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
 ): void =>
   useListener(
     SLICE + IDS,
     useIndexesOrIndexesById(indexesOrIndexesId),
     listener,
-    listenerDeps,
     [indexId],
   );
 
@@ -1502,22 +1344,19 @@ export const useSliceRowIdsListener = (
   indexId: MaybeAccessor<IdOrNull>,
   sliceId: MaybeAccessor<IdOrNull>,
   listener: SliceRowIdsListener,
-  listenerDeps?: DependencyList,
   indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
 ): void =>
   useListener(
     SLICE + ROW_IDS,
     useIndexesOrIndexesById(indexesOrIndexesId),
     listener,
-    listenerDeps,
     [indexId, sliceId],
   );
 
 export const useCreateRelationships = (
   store: Store | undefined,
   create: (store: Store) => Relationships,
-  createDeps?: DependencyList,
-): Accessor<Relationships | undefined> => useCreate(store, create, createDeps);
+): Accessor<Relationships | undefined> => useCreate(store, create);
 
 export const useRelationshipsIds = () => useThingIds(OFFSET_RELATIONSHIPS);
 
@@ -1585,14 +1424,12 @@ export const useRemoteRowIdListener = (
   relationshipId: MaybeAccessor<IdOrNull>,
   localRowId: MaybeAccessor<IdOrNull>,
   listener: RemoteRowIdListener,
-  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): void =>
   useListener(
     REMOTE_ROW_ID,
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     listener,
-    listenerDeps,
     [relationshipId, localRowId],
   );
 
@@ -1600,14 +1437,12 @@ export const useLocalRowIdsListener = (
   relationshipId: MaybeAccessor<IdOrNull>,
   remoteRowId: MaybeAccessor<IdOrNull>,
   listener: LocalRowIdsListener,
-  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): void =>
   useListener(
     LOCAL + ROW_IDS,
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     listener,
-    listenerDeps,
     [relationshipId, remoteRowId],
   );
 
@@ -1615,22 +1450,19 @@ export const useLinkedRowIdsListener = (
   relationshipId: MaybeAccessor<Id>,
   firstRowId: MaybeAccessor<Id>,
   listener: LinkedRowIdsListener,
-  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): void =>
   useListener(
     LINKED + ROW_IDS,
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     listener,
-    listenerDeps,
     [relationshipId, firstRowId],
   );
 
 export const useCreateQueries = (
   store: Store | undefined,
   create: (store: Store) => Queries,
-  createDeps?: DependencyList,
-): Accessor<Queries | undefined> => useCreate(store, create, createDeps);
+): Accessor<Queries | undefined> => useCreate(store, create);
 
 export const useQueriesIds = () => useThingIds(OFFSET_QUERIES);
 
@@ -1754,56 +1586,48 @@ export const useResultCell = (
 export const useResultTableListener = (
   queryId: MaybeAccessor<IdOrNull>,
   listener: ResultTableListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + TABLE,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId],
   );
 
 export const useResultTableCellIdsListener = (
   queryId: MaybeAccessor<IdOrNull>,
   listener: ResultTableCellIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + TABLE + CELL_IDS,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId],
   );
 
 export const useResultRowCountListener = (
   queryId: MaybeAccessor<IdOrNull>,
   listener: ResultRowCountListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + ROW_COUNT,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId],
   );
 
 export const useResultRowIdsListener = (
   queryId: MaybeAccessor<IdOrNull>,
   listener: ResultRowIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + ROW_IDS,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId],
   );
 
@@ -1814,14 +1638,12 @@ export const useResultSortedRowIdsListener = (
   offset: number,
   limit: number | undefined,
   listener: ResultSortedRowIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + SORTED_ROW_IDS,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId, cellId, descending, offset, limit],
   );
 
@@ -1829,14 +1651,12 @@ export const useResultRowListener = (
   queryId: MaybeAccessor<IdOrNull>,
   rowId: MaybeAccessor<IdOrNull>,
   listener: ResultRowListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + ROW,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId, rowId],
   );
 
@@ -1844,14 +1664,12 @@ export const useResultCellIdsListener = (
   queryId: MaybeAccessor<IdOrNull>,
   rowId: MaybeAccessor<IdOrNull>,
   listener: ResultCellIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + CELL_IDS,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId, rowId],
   );
 
@@ -1860,14 +1678,12 @@ export const useResultCellListener = (
   rowId: MaybeAccessor<IdOrNull>,
   cellId: MaybeAccessor<IdOrNull>,
   listener: ResultCellListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     RESULT + CELL,
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId, rowId, cellId],
   );
 
@@ -1887,7 +1703,7 @@ export const useParamValuesState = (
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): [Accessor<ParamValues>, (paramValues: ParamValues) => void] => [
   useParamValues(queryId, queriesOrQueriesId),
-  useSetParamValuesCallback(queryId, getArg, [], queriesOrQueriesId),
+  useSetParamValuesCallback(queryId, getArg, queriesOrQueriesId),
 ];
 
 export const useParamValue = (
@@ -1908,20 +1724,18 @@ export const useParamValueState = (
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): [Accessor<ParamValue | undefined>, (paramValue: ParamValue) => void] => [
   useParamValue(queryId, paramId, queriesOrQueriesId),
-  useSetParamValueCallback(queryId, paramId, getArg, [], queriesOrQueriesId),
+  useSetParamValueCallback(queryId, paramId, getArg, queriesOrQueriesId),
 ];
 
 export const useParamValuesListener = (
   queryId: MaybeAccessor<IdOrNull>,
   listener: ParamValuesListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     'ParamValues',
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId],
   );
 
@@ -1929,14 +1743,12 @@ export const useParamValueListener = (
   queryId: MaybeAccessor<IdOrNull>,
   paramId: MaybeAccessor<IdOrNull>,
   listener: ParamValueListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): void =>
   useListener(
     'ParamValue',
     useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
-    listenerDeps,
     [queryId, paramId],
   );
 
@@ -1944,18 +1756,14 @@ export const useSetParamValueCallback = <Parameter>(
   queryId: MaybeAccessor<Id> | GetId<Parameter>,
   paramId: MaybeAccessor<Id> | GetId<Parameter>,
   getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
-  getParamValueDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
   then?: (queries: Queries, paramValue: ParamValue) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useQueriesSetCallback(
     queriesOrQueriesId,
     'setParamValue',
     getParamValue,
-    getParamValueDeps,
     then,
-    thenDeps,
     queryId,
     paramId,
   );
@@ -1963,26 +1771,21 @@ export const useSetParamValueCallback = <Parameter>(
 export const useSetParamValuesCallback = <Parameter>(
   queryId: MaybeAccessor<Id> | GetId<Parameter>,
   getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
-  getParamValuesDeps?: DependencyList,
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
   then?: (queries: Queries, paramValues: ParamValues) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useQueriesSetCallback(
     queriesOrQueriesId,
     'setParamValues',
     getParamValues,
-    getParamValuesDeps,
     then,
-    thenDeps,
     queryId,
   );
 
 export const useCreateCheckpoints = (
   store: Store | undefined,
   create: (store: Store) => Checkpoints,
-  createDeps?: DependencyList,
-): Accessor<Checkpoints | undefined> => useCreate(store, create, createDeps);
+): Accessor<Checkpoints | undefined> => useCreate(store, create);
 
 export const useCheckpointsIds = () => useThingIds(OFFSET_CHECKPOINTS);
 
@@ -2022,14 +1825,12 @@ export const useCheckpoint = (
 
 export const useSetCheckpointCallback = <Parameter>(
   getCheckpoint: (parameter: Parameter) => string | undefined = getUndefined,
-  _getCheckpointDeps: DependencyList = EMPTY_ARRAY,
   checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
   then: (
     checkpointId: MaybeAccessor<Id>,
     checkpoints: Checkpoints,
     label?: string,
   ) => void = getUndefined,
-  _thenDeps: DependencyList = EMPTY_ARRAY,
 ): ParameterizedCallback<Parameter> => {
   const checkpoints = useCheckpointsOrCheckpointsById(
     checkpointsOrCheckpointsId,
@@ -2055,10 +1856,8 @@ export const useGoForwardCallback = (
 
 export const useGoToCallback = <Parameter>(
   getCheckpointId: (parameter: Parameter) => Id,
-  _getCheckpointIdDeps: DependencyList = EMPTY_ARRAY,
   checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
   then: (checkpoints: Checkpoints, checkpointId: Id) => void = getUndefined,
-  _thenDeps: DependencyList = EMPTY_ARRAY,
 ): ParameterizedCallback<Parameter> => {
   const checkpoints = useCheckpointsOrCheckpointsById(
     checkpointsOrCheckpointsId,
@@ -2109,27 +1908,23 @@ export const useRedoInformation = (
 
 export const useCheckpointIdsListener = (
   listener: CheckpointIdsListener,
-  listenerDeps?: DependencyList,
   checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): void =>
   useListener(
     CHECKPOINT + IDS,
     useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     listener,
-    listenerDeps,
   );
 
 export const useCheckpointListener = (
   checkpointId: MaybeAccessor<IdOrNull>,
   listener: CheckpointListener,
-  listenerDeps?: DependencyList,
   checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): void =>
   useListener(
     CHECKPOINT,
     useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     listener,
-    listenerDeps,
     [checkpointId],
   );
 
@@ -2141,11 +1936,8 @@ export const useCreatePersister = <
   create: (
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
-  _createDeps: DependencyList = EMPTY_ARRAY,
   then?: (persister: Persister<Persist>) => Promise<void>,
-  _thenDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (persister: Persister<Persist>) => void,
-  _destroyDeps: DependencyList = EMPTY_ARRAY,
 ): Accessor<PersisterOrUndefined | undefined> => {
   const [persister, setPersister] = createSignal<PersisterOrUndefined>();
   createEffect(() => {
@@ -2197,14 +1989,12 @@ export const usePersisterStatus = (
 
 export const usePersisterStatusListener = (
   listener: StatusListener,
-  listenerDeps?: DependencyList,
   persisterOrPersisterId?: MaybeAccessor<PersisterOrPersisterId | undefined>,
 ): void =>
   useListener(
     STATUS,
     usePersisterOrPersisterById(persisterOrPersisterId),
     listener,
-    listenerDeps,
     [],
   );
 
@@ -2213,9 +2003,7 @@ export const useCreateSynchronizer = <
 >(
   store: MergeableStore | undefined,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
-  _createDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (synchronizer: Synchronizer) => void,
-  _destroyDeps: DependencyList = EMPTY_ARRAY,
 ): Accessor<SynchronizerOrUndefined | undefined> => {
   const [synchronizer, setSynchronizer] =
     createSignal<SynchronizerOrUndefined>();
@@ -2265,13 +2053,11 @@ export const useSynchronizerStatus = (
 
 export const useSynchronizerStatusListener = (
   listener: StatusListener,
-  listenerDeps?: DependencyList,
   synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId,
 ): void =>
   useListener(
     STATUS,
     useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
     listener,
-    listenerDeps,
     [],
   );

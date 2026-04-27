@@ -86,8 +86,6 @@ import type {
 } from '../store/index.d.ts';
 import type {Synchronizer} from '../synchronizers/index.d.ts';
 
-type DependencyList = ReadonlyArray<unknown>;
-
 export type StoreOrStoreId = Store | Id;
 
 export type MetricsOrMetricsId = Metrics | Id;
@@ -108,14 +106,10 @@ export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
 export type GetId<Parameter> = (parameter: Parameter, store: Store) => Id;
 
-export function useCreateStore(
-  create: () => Store,
-  createDeps?: DependencyList,
-): Accessor<Store>;
+export function useCreateStore(create: () => Store): Accessor<Store>;
 
 export function useCreateMergeableStore(
   create: () => MergeableStore,
-  createDeps?: DependencyList,
 ): Accessor<MergeableStore>;
 
 export function useStoreIds(): Accessor<Ids>;
@@ -266,38 +260,30 @@ export function useValueState(
 
 export function useSetTablesCallback<Parameter>(
   getTables: (parameter: Parameter, store: Store) => Tables,
-  getTablesDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, tables: Tables) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetTableCallback<Parameter>(
   tableId: Id | GetId<Parameter>,
   getTable: (parameter: Parameter, store: Store) => Table,
-  getTableDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, table: Table) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetRowCallback<Parameter>(
   tableId: Id | GetId<Parameter>,
   rowId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, row: Row) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useAddRowCallback<Parameter>(
   tableId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (rowId: Id | undefined, store: Store, row: Row) => void,
-  thenDeps?: DependencyList,
   reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter>;
 
@@ -305,10 +291,8 @@ export function useSetPartialRowCallback<Parameter>(
   tableId: Id | GetId<Parameter>,
   rowId: Id | GetId<Parameter>,
   getPartialRow: (parameter: Parameter, store: Store) => Row,
-  getPartialRowDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, partialRow: Row) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetCellCallback<Parameter>(
@@ -316,48 +300,38 @@ export function useSetCellCallback<Parameter>(
   rowId: Id | GetId<Parameter>,
   cellId: Id | GetId<Parameter>,
   getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
-  getCellDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, cell: Cell | MapCell) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetValuesCallback<Parameter>(
   getValues: (parameter: Parameter, store: Store) => Values,
-  getValuesDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, values: Values) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetPartialValuesCallback<Parameter>(
   getPartialValues: (parameter: Parameter, store: Store) => Values,
-  getPartialValuesDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, partialValues: Values) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetValueCallback<Parameter>(
   valueId: Id | GetId<Parameter>,
   getValue: (parameter: Parameter, store: Store) => Value | MapValue,
-  getValueDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, value: Value | MapValue) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useDelTablesCallback(
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): Callback;
 
 export function useDelTableCallback<Parameter>(
   tableId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useDelRowCallback<Parameter>(
@@ -365,7 +339,6 @@ export function useDelRowCallback<Parameter>(
   rowId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useDelCellCallback<Parameter>(
@@ -375,39 +348,33 @@ export function useDelCellCallback<Parameter>(
   forceDel?: boolean,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useDelValuesCallback(
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): Callback;
 
 export function useDelValueCallback<Parameter>(
   valueId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useHasTablesListener(
   listener: HasTablesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useTablesListener(
   listener: TablesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useTableIdsListener(
   listener: TableIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -415,7 +382,6 @@ export function useTableIdsListener(
 export function useHasTableListener(
   tableId: IdOrNull,
   listener: HasTableListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -423,7 +389,6 @@ export function useHasTableListener(
 export function useTableListener(
   tableId: IdOrNull,
   listener: TableListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -431,7 +396,6 @@ export function useTableListener(
 export function useTableCellIdsListener(
   tableId: IdOrNull,
   listener: TableCellIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -440,7 +404,6 @@ export function useHasTableCellListener(
   tableId: IdOrNull,
   cellId: IdOrNull,
   listener: HasTableCellListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -448,7 +411,6 @@ export function useHasTableCellListener(
 export function useRowCountListener(
   tableId: IdOrNull,
   listener: RowCountListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -456,7 +418,6 @@ export function useRowCountListener(
 export function useRowIdsListener(
   tableId: IdOrNull,
   listener: RowIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -468,7 +429,6 @@ export function useSortedRowIdsListener(
   offset: number,
   limit: number | undefined,
   listener: SortedRowIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -476,7 +436,6 @@ export function useSortedRowIdsListener(
 export function useSortedRowIdsListener(
   args: SortedRowIdsArgs,
   listener: SortedRowIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -485,7 +444,6 @@ export function useHasRowListener(
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: HasRowListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -494,7 +452,6 @@ export function useRowListener(
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: RowListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -503,7 +460,6 @@ export function useCellIdsListener(
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: CellIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -513,7 +469,6 @@ export function useHasCellListener(
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: HasCellListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -523,28 +478,24 @@ export function useCellListener(
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: CellListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useHasValuesListener(
   listener: HasValuesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useValuesListener(
   listener: ValuesListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useValueIdsListener(
   listener: ValueIdsListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -552,7 +503,6 @@ export function useValueIdsListener(
 export function useHasValueListener(
   valueId: IdOrNull,
   listener: HasValueListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -560,33 +510,28 @@ export function useHasValueListener(
 export function useValueListener(
   valueId: IdOrNull,
   listener: ValueListener,
-  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useStartTransactionListener(
   listener: TransactionListener,
-  listenerDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useWillFinishTransactionListener(
   listener: TransactionListener,
-  listenerDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useDidFinishTransactionListener(
   listener: TransactionListener,
-  listenerDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
 export function useCreateMetrics(
   store: Store | undefined,
   create: (store: Store) => Metrics,
-  createDeps?: DependencyList,
 ): Accessor<Metrics | undefined>;
 
 export function useMetricsIds(): Accessor<Ids>;
@@ -611,14 +556,12 @@ export function useMetric(
 export function useMetricListener(
   metricId: IdOrNull,
   listener: MetricListener,
-  listenerDeps?: DependencyList,
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): void;
 
 export function useCreateIndexes(
   store: Store | undefined,
   create: (store: Store) => Indexes,
-  createDeps?: DependencyList,
 ): Accessor<Indexes | undefined>;
 
 export function useIndexesIds(): Accessor<Ids>;
@@ -649,7 +592,6 @@ export function useSliceRowIds(
 export function useSliceIdsListener(
   indexId: IdOrNull,
   listener: SliceIdsListener,
-  listenerDeps?: DependencyList,
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): void;
 
@@ -657,14 +599,12 @@ export function useSliceRowIdsListener(
   indexId: IdOrNull,
   sliceId: IdOrNull,
   listener: SliceRowIdsListener,
-  listenerDeps?: DependencyList,
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): void;
 
 export function useCreateRelationships(
   store: Store | undefined,
   create: (store: Store) => Relationships,
-  createDeps?: DependencyList,
 ): Accessor<Relationships | undefined>;
 
 export function useRelationshipsIds(): Accessor<Ids>;
@@ -706,7 +646,6 @@ export function useRemoteRowIdListener(
   relationshipId: IdOrNull,
   localRowId: IdOrNull,
   listener: RemoteRowIdListener,
-  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void;
 
@@ -714,7 +653,6 @@ export function useLocalRowIdsListener(
   relationshipId: IdOrNull,
   remoteRowId: IdOrNull,
   listener: LocalRowIdsListener,
-  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void;
 
@@ -722,14 +660,12 @@ export function useLinkedRowIdsListener(
   relationshipId: Id,
   firstRowId: Id,
   listener: LinkedRowIdsListener,
-  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void;
 
 export function useCreateQueries(
   store: Store | undefined,
   create: (store: Store) => Queries,
-  createDeps?: DependencyList,
 ): Accessor<Queries | undefined>;
 
 export function useQueriesIds(): Accessor<Ids>;
@@ -797,28 +733,24 @@ export function useResultCell(
 export function useResultTableListener(
   queryId: IdOrNull,
   listener: ResultTableListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
 export function useResultTableCellIdsListener(
   queryId: IdOrNull,
   listener: ResultTableCellIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
 export function useResultRowCountListener(
   queryId: IdOrNull,
   listener: ResultRowCountListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
 export function useResultRowIdsListener(
   queryId: IdOrNull,
   listener: ResultRowIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -829,7 +761,6 @@ export function useResultSortedRowIdsListener(
   offset: number,
   limit: number | undefined,
   listener: ResultSortedRowIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -837,7 +768,6 @@ export function useResultRowListener(
   queryId: IdOrNull,
   rowId: IdOrNull,
   listener: ResultRowListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -845,7 +775,6 @@ export function useResultCellIdsListener(
   queryId: IdOrNull,
   rowId: IdOrNull,
   listener: ResultCellIdsListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -854,7 +783,6 @@ export function useResultCellListener(
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: ResultCellListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -883,7 +811,6 @@ export function useParamValueState(
 export function useParamValuesListener(
   queryId: IdOrNull,
   listener: ParamValuesListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -891,7 +818,6 @@ export function useParamValueListener(
   queryId: IdOrNull,
   paramId: IdOrNull,
   listener: ParamValueListener,
-  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -899,25 +825,20 @@ export function useSetParamValueCallback<Parameter>(
   queryId: Id | GetId<Parameter>,
   paramId: Id | GetId<Parameter>,
   getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
-  getParamValueDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
   then?: (queries: Queries, paramValue: ParamValue) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useSetParamValuesCallback<Parameter>(
   queryId: Id | GetId<Parameter>,
   getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
-  getParamValuesDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
   then?: (queries: Queries, paramValues: ParamValues) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useCreateCheckpoints(
   store: Store | undefined,
   create: (store: Store) => Checkpoints,
-  createDeps?: DependencyList,
 ): Accessor<Checkpoints | undefined>;
 
 export function useCheckpointsIds(): Accessor<Ids>;
@@ -944,10 +865,8 @@ export function useCheckpoint(
 
 export function useSetCheckpointCallback<Parameter>(
   getCheckpoint?: (parameter: Parameter) => string,
-  getCheckpointDeps?: DependencyList,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
   then?: (checkpointId: Id, checkpoints: Checkpoints, label?: string) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useGoBackwardCallback(
@@ -960,10 +879,8 @@ export function useGoForwardCallback(
 
 export function useGoToCallback<Parameter>(
   getCheckpointId: (parameter: Parameter) => Id,
-  getCheckpointIdDeps?: DependencyList,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
   then?: (checkpoints: Checkpoints, checkpointId: Id) => void,
-  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter>;
 
 export function useUndoInformation(
@@ -976,14 +893,12 @@ export function useRedoInformation(
 
 export function useCheckpointIdsListener(
   listener: CheckpointIdsListener,
-  listenerDeps?: DependencyList,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): void;
 
 export function useCheckpointListener(
   checkpointId: IdOrNull,
   listener: CheckpointListener,
-  listenerDeps?: DependencyList,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): void;
 
@@ -995,11 +910,8 @@ export function useCreatePersister<
   create: (
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
-  createDeps?: DependencyList,
   then?: (persister: Persister<Persist>) => Promise<any>,
-  thenDeps?: DependencyList,
   destroy?: (persister: Persister<Persist>) => void,
-  destroyDeps?: DependencyList,
 ): Accessor<PersisterOrUndefined>;
 
 export function usePersisterIds(): Accessor<Ids>;
@@ -1021,7 +933,6 @@ export function usePersisterStatus(
 
 export function usePersisterStatusListener(
   listener: StatusListener,
-  listenerDeps?: DependencyList,
   persisterOrPersisterId?: PersisterOrPersisterId,
 ): void;
 
@@ -1030,9 +941,7 @@ export function useCreateSynchronizer<
 >(
   store: MergeableStore | undefined,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
-  createDeps?: DependencyList,
   destroy?: (synchronizer: Synchronizer) => void,
-  destroyDeps?: DependencyList,
 ): Accessor<SynchronizerOrUndefined>;
 
 export function useSynchronizerIds(): Accessor<Ids>;
@@ -1054,7 +963,6 @@ export function useSynchronizerStatus(
 
 export function useSynchronizerStatusListener(
   listener: StatusListener,
-  listenerDeps?: DependencyList,
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
 ): void;
 
