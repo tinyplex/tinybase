@@ -19,47 +19,25 @@ import type {
   TableIdFromSchema,
   ValueIdFromSchema,
 } from '../../store/with-schemas/index.d.ts';
+import type {
+  CheckpointsOrCheckpointsId,
+  IndexesOrIndexesId,
+  MetricsOrMetricsId,
+  QueriesOrQueriesId,
+  RelationshipsOrRelationshipsId,
+  StoreOrStoreId,
+} from '../../ui/with-schemas/index.d.ts';
 
-type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
+export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
-type MetricsOrMetricsId<Schemas extends OptionalSchemas> =
-  | Metrics<Schemas>
-  | Id;
-
-type IndexesOrIndexesId<Schemas extends OptionalSchemas> =
-  | Indexes<Schemas>
-  | Id;
-
-type RelationshipsOrRelationshipsId<Schemas extends OptionalSchemas> =
-  | Relationships<Schemas>
-  | Id;
-
-type QueriesOrQueriesId<Schemas extends OptionalSchemas> =
-  | Queries<Schemas>
-  | Id;
-
-type CheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
-  | Checkpoints<Schemas>
-  | Id;
-
-type PersisterOrPersisterId<Schemas extends OptionalSchemas> =
-  | Persister<Schemas, Persists.StoreOrMergeableStore>
-  | Id;
-
-type SynchronizerOrSynchronizerId<Schemas extends OptionalSchemas> =
-  | Synchronizer<Schemas>
-  | Id;
-
-type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
-
-type GetId<Schemas extends OptionalSchemas, Parameter, Id> = (
+export type GetId<Schemas extends OptionalSchemas, Parameter, Id> = (
   parameter: Parameter,
   store: Store<Schemas>,
 ) => Id;
 
-type ExtraProps = {[propName: string]: any};
+export type ExtraProps = {[propName: string]: any};
 
-type TablesProps<Schemas extends OptionalSchemas> = {
+export type TablesProps<Schemas extends OptionalSchemas> = {
   /// ui-solid.TablesProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// ui-solid.TablesProps.tableComponent

@@ -130,7 +130,9 @@ export function useStoreOrStoreById(
 
 export function useProvideStore(storeId: Id, store: Store): void;
 
-export function useHasTables(storeOrStoreId?: StoreOrStoreId): Accessor<boolean>;
+export function useHasTables(
+  storeOrStoreId?: StoreOrStoreId,
+): Accessor<boolean>;
 
 export function useTables(storeOrStoreId?: StoreOrStoreId): Accessor<Tables>;
 
@@ -145,7 +147,10 @@ export function useHasTable(
   storeOrStoreId?: StoreOrStoreId,
 ): Accessor<boolean>;
 
-export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Accessor<Table>;
+export function useTable(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): Accessor<Table>;
 
 export function useTableState(
   tableId: Id,
@@ -168,7 +173,10 @@ export function useRowCount(
   storeOrStoreId?: StoreOrStoreId,
 ): Accessor<number>;
 
-export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Accessor<Ids>;
+export function useRowIds(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): Accessor<Ids>;
 
 export function useSortedRowIds(
   tableId: Id,
@@ -229,7 +237,9 @@ export function useCellState(
   storeOrStoreId?: StoreOrStoreId,
 ): [Accessor<CellOrUndefined>, (cell: Cell) => void];
 
-export function useHasValues(storeOrStoreId?: StoreOrStoreId): Accessor<boolean>;
+export function useHasValues(
+  storeOrStoreId?: StoreOrStoreId,
+): Accessor<boolean>;
 
 export function useValues(storeOrStoreId?: StoreOrStoreId): Accessor<Values>;
 
@@ -589,7 +599,9 @@ export function useMetricsOrMetricsById(
 
 export function useProvideMetrics(metricsId: Id, metrics: Metrics): void;
 
-export function useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId): Accessor<Ids>;
+export function useMetricIds(
+  metricsOrMetricsId?: MetricsOrMetricsId,
+): Accessor<Ids>;
 
 export function useMetric(
   metricId: Id,
@@ -619,7 +631,9 @@ export function useIndexesOrIndexesById(
 
 export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 
-export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Accessor<Ids>;
+export function useIndexIds(
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): Accessor<Ids>;
 
 export function useSliceIds(
   indexId: Id,
@@ -728,7 +742,9 @@ export function useQueriesOrQueriesById(
 
 export function useProvideQueries(queriesId: Id, queries: Queries): void;
 
-export function useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId): Accessor<Ids>;
+export function useQueryIds(
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Accessor<Ids>;
 
 export function useResultTable(
   queryId: Id,
