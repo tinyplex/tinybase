@@ -137,8 +137,12 @@ import type {
   ValuesListener,
 } from '../../store/with-schemas/index.d.ts';
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
+import type {MaybeAccessor} from '../index.d.ts';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
+  /// ui-solid.MaybeAccessor
+  MaybeAccessor: <Thing>(thing: Thing) => MaybeAccessor<Thing>;
+
   /// ui-solid.StoreOrStoreId
   StoreOrStoreId: StoreOrStoreId<Schemas>;
 
@@ -217,7 +221,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useTable
   useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
+    tableId: MaybeAccessor<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Accessor<Table<Schemas[0], TableId>>;
 

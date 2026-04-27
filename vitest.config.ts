@@ -41,6 +41,7 @@ export default defineConfig({
           name: 'unit',
           include: ['test/unit/**/*.test.ts', 'test/unit/**/*.test.tsx'],
           exclude: [
+            'test/unit/core/ui-solid/**',
             'test/unit/core/ui-svelte/**',
             'test/unit/synchronizers/synchronizer-ws-server.test.ts',
             'test/unit/core/types/types.test.tsx',
@@ -80,6 +81,14 @@ export default defineConfig({
           include: ['test/unit/persisters/**/*.test.ts'],
           sequence: {groupOrder: 4},
           maxWorkers: 2,
+        },
+      },
+      {
+        extends: true,
+        resolve: {conditions: ['browser', 'development']},
+        test: {
+          name: 'solid',
+          include: ['test/unit/core/ui-solid/**/*.test.ts'],
         },
       },
       {

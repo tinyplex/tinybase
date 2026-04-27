@@ -878,6 +878,12 @@
  */
 /// ui-solid.ProviderProps.synchronizersById
 /**
+ * Documentation for MaybeAccessor in the ui-solid module.
+ * @category Identity
+ * @since v8.3.0
+ */
+/// ui-solid.MaybeAccessor
+/**
  * Documentation for StoreOrStoreId in the ui-solid module.
  * @category Identity
  * @since v8.3.0

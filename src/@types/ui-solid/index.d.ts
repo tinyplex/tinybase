@@ -86,6 +86,9 @@ import type {
 } from '../store/index.d.ts';
 import type {Synchronizer} from '../synchronizers/index.d.ts';
 
+/// ui-solid.MaybeAccessor
+export type MaybeAccessor<Thing> = Thing | Accessor<Thing>;
+
 export type StoreOrStoreId = Store | Id;
 
 export type MetricsOrMetricsId = Metrics | Id;
@@ -142,7 +145,7 @@ export function useHasTable(
 ): Accessor<boolean>;
 
 export function useTable(
-  tableId: Id,
+  tableId: MaybeAccessor<Id>,
   storeOrStoreId?: StoreOrStoreId,
 ): Accessor<Table>;
 
