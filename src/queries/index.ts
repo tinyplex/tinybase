@@ -45,7 +45,6 @@ import {
   collHas,
   collIsEmpty,
   collSize,
-  collValues,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {
