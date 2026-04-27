@@ -6,4 +6,7 @@ import {tableView} from './common/index.tsx';
 import {useRowIds} from './hooks.ts';
 
 export const TableView = (props: TableProps): any =>
-  tableView(props, useRowIds(props.tableId, props.store));
+  tableView(
+    props,
+    useRowIds((() => props.tableId) as any, (() => props.store) as any),
+  );

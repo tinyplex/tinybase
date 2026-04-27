@@ -7,4 +7,5 @@ import {useLinkedRowIds} from './hooks.ts';
 
 export const LinkedRowsView = (
   props: LinkedRowsProps,
-): any => useComponentPerRow(props as any, useLinkedRowIds as any, props.firstRowId);
+): any =>
+  useComponentPerRow(props as any, useLinkedRowIds as any, () => props.firstRowId);

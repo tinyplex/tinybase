@@ -7,19 +7,18 @@ import {EMPTY_STRING} from '../common/strings.ts';
 import {wrap} from './common/wrap.tsx';
 import {useCell} from './hooks.ts';
 
-export const CellView = ({
-  tableId,
-  rowId,
-  cellId,
-  store,
-  debugIds,
-}: CellProps): any => {
-  const cell = useCell(tableId, rowId, cellId, store) as any;
+export const CellView = (props: CellProps): any => {
+  const cell = useCell(
+    (() => props.tableId) as any,
+    (() => props.rowId) as any,
+    (() => props.cellId) as any,
+    (() => props.store) as any,
+  ) as any;
   return () =>
     wrap(
       EMPTY_STRING + ((getValue(cell) as any) ?? EMPTY_STRING),
       undefined,
-      debugIds,
-      cellId,
+      props.debugIds,
+      props.cellId,
     );
 };

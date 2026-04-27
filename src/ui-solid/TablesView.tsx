@@ -9,24 +9,20 @@ import {wrap} from './common/wrap.tsx';
 import {useTableIds} from './hooks.ts';
 import {TableView} from './TableView.tsx';
 
-export const TablesView = ({
-  store,
-  tableComponent: Table = TableView,
-  getTableComponentProps,
-  separator,
-  debugIds,
-}: TablesProps): any => {
-  const tableIds = useTableIds(store) as any;
-  return () =>
-    wrap(
+export const TablesView = (props: TablesProps): any => {
+  const tableIds = useTableIds((() => props.store) as any) as any;
+  return () => {
+    const Table = props.tableComponent ?? TableView;
+    return wrap(
       arrayMap(getValue(tableIds) as Id[], (tableId: Id) => (
         <Table
-          {...getProps(getTableComponentProps, tableId)}
+          {...getProps(props.getTableComponentProps, tableId)}
           tableId={tableId}
-          store={store}
-          debugIds={debugIds}
+          store={props.store}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
+      props.separator,
     );
+  };
 };

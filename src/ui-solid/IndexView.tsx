@@ -9,28 +9,26 @@ import {wrap} from './common/wrap.tsx';
 import {useSliceIds} from './hooks.ts';
 import {SliceView} from './SliceView.tsx';
 
-export const IndexView = ({
-  indexId,
-  indexes,
-  sliceComponent: Slice = SliceView,
-  getSliceComponentProps,
-  separator,
-  debugIds,
-}: IndexProps): any => {
-  const sliceIds = useSliceIds(indexId, indexes) as any;
-  return () =>
-    wrap(
+export const IndexView = (props: IndexProps): any => {
+  const sliceIds = useSliceIds(
+    (() => props.indexId) as any,
+    (() => props.indexes) as any,
+  ) as any;
+  return () => {
+    const Slice = props.sliceComponent ?? SliceView;
+    return wrap(
       arrayMap(getValue(sliceIds) as Id[], (sliceId: Id) => (
         <Slice
-          {...getProps(getSliceComponentProps, sliceId)}
-          indexId={indexId}
+          {...getProps(props.getSliceComponentProps, sliceId)}
+          indexId={props.indexId}
           sliceId={sliceId}
-          indexes={indexes}
-          debugIds={debugIds}
+          indexes={props.indexes}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
-      debugIds,
-      indexId,
+      props.separator,
+      props.debugIds,
+      props.indexId,
     );
+  };
 };

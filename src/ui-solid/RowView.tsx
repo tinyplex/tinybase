@@ -9,36 +9,29 @@ import {CellView} from './CellView.tsx';
 import {useCustomOrDefaultCellIds} from './common/hooks.tsx';
 import {wrap} from './common/wrap.tsx';
 
-export const RowView = ({
-  tableId,
-  rowId,
-  store,
-  cellComponent: Cell = CellView,
-  getCellComponentProps,
-  customCellIds,
-  separator,
-  debugIds,
-}: RowProps): any => {
+export const RowView = (props: RowProps): any => {
   const cellIds = useCustomOrDefaultCellIds(
-    customCellIds,
-    tableId,
-    rowId,
-    store,
+    () => props.customCellIds,
+    () => props.tableId,
+    () => props.rowId,
+    () => props.store,
   ) as any;
-  return () =>
-    wrap(
+  return () => {
+    const Cell = props.cellComponent ?? CellView;
+    return wrap(
       arrayMap(getValue(cellIds) as Id[], (cellId: Id) => (
         <Cell
-          {...getProps(getCellComponentProps, cellId)}
-          tableId={tableId}
-          rowId={rowId}
+          {...getProps(props.getCellComponentProps, cellId)}
+          tableId={props.tableId}
+          rowId={props.rowId}
           cellId={cellId}
-          store={store}
-          debugIds={debugIds}
+          store={props.store}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
-      debugIds,
-      rowId,
+      props.separator,
+      props.debugIds,
+      props.rowId,
     );
+  };
 };

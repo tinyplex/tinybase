@@ -35,139 +35,118 @@ export type ThingsById<ThingsByOffset> = {
 };
 export type ExtraThingsById = ThingsById<ThingsByOffset>;
 
-export const tableView = (
-  {
-    tableId,
-    store,
-    rowComponent: Row = RowView,
-    getRowComponentProps,
-    customCellIds,
-    separator,
-    debugIds,
-  }: TableProps,
-  rowIds: Ids,
-): any =>
-  () =>
-    wrap(
+export const tableView = (props: TableProps, rowIds: Ids): any =>
+  () => {
+    const Row = props.rowComponent ?? RowView;
+    return wrap(
       arrayMap(getValue(rowIds as any) as Ids, (rowId) => (
         <Row
-          {...getProps(getRowComponentProps, rowId)}
-          tableId={tableId}
+          {...getProps(props.getRowComponentProps, rowId)}
+          tableId={props.tableId}
           rowId={rowId}
-          customCellIds={customCellIds}
-          store={store}
-          debugIds={debugIds}
+          customCellIds={props.customCellIds}
+          store={props.store}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
-      debugIds,
-      tableId,
+      props.separator,
+      props.debugIds,
+      props.tableId,
     );
+  };
 
-export const resultTableView = (
-  {
-    queryId,
-    queries,
-    resultRowComponent: ResultRow = ResultRowView,
-    getResultRowComponentProps,
-    separator,
-    debugIds,
-  }: ResultTableProps,
-  rowIds: Ids,
-): any =>
-  () =>
-    wrap(
+export const resultTableView = (props: ResultTableProps, rowIds: Ids): any =>
+  () => {
+    const ResultRow = props.resultRowComponent ?? ResultRowView;
+    return wrap(
       arrayMap(getValue(rowIds as any) as Ids, (rowId) => (
         <ResultRow
-          {...getProps(getResultRowComponentProps, rowId)}
-          queryId={queryId}
+          {...getProps(props.getResultRowComponentProps, rowId)}
+          queryId={props.queryId}
           rowId={rowId}
-          queries={queries}
-          debugIds={debugIds}
+          queries={props.queries}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
-      debugIds,
-      queryId,
+      props.separator,
+      props.debugIds,
+      props.queryId,
     );
+  };
 
 export const useComponentPerRow = (
-  {
-    relationshipId,
-    relationships,
-    rowComponent: Row = RowView,
-    getRowComponentProps,
-    separator,
-    debugIds,
-  }: (RemoteRowProps | LocalRowsProps | LinkedRowsProps) & {
+  props: (RemoteRowProps | LocalRowsProps | LinkedRowsProps) & {
     separator?: JSXElement | string;
   },
   getRowIdsHook: (
-    relationshipId: Id,
-    rowId: Id,
+    relationshipId: Id | (() => Id),
+    rowId: Id | (() => Id),
     relationships: RelationshipsOrRelationshipsId | undefined,
   ) => Ids,
-  rowId: Id,
+  rowId: Id | (() => Id),
 ) => {
   const resolvedRelationships =
-    useRelationshipsOrRelationshipsById(relationships);
+    useRelationshipsOrRelationshipsById((() => props.relationships) as any);
   const rowIds = getRowIdsHook(
-    relationshipId,
+    (() => props.relationshipId) as any,
     rowId,
     resolvedRelationships as any,
   ) as any;
   return () => {
+    const Row = props.rowComponent ?? RowView;
     const [_relationship, store, localTableId] = getRelationshipsStoreTableIds(
       getValue(resolvedRelationships as any),
-      relationshipId,
+      props.relationshipId,
     );
     return wrap(
       arrayMap(getValue(rowIds) as Ids, (localRowId) => (
         <Row
-          {...getProps(getRowComponentProps, localRowId)}
+          {...getProps(props.getRowComponentProps, localRowId)}
           tableId={localTableId as Id}
           rowId={localRowId}
           store={store}
-          debugIds={debugIds}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
-      debugIds,
-      rowId,
+      props.separator,
+      props.debugIds,
+      getValue(rowId),
     );
   };
 };
 
 export const getUseCheckpointView =
   (getCheckpoints: (checkpointIds: CheckpointIds) => Ids) =>
-  ({
-    checkpoints,
-    checkpointComponent: Checkpoint = CheckpointView,
-    getCheckpointComponentProps,
-    separator,
-    debugIds,
-  }: (
+  (
+    props: (
     | BackwardCheckpointsProps
     | CurrentCheckpointProps
     | ForwardCheckpointsProps
   ) & {
     separator?: JSXElement | string;
   }): any => {
-    const resolvedCheckpoints = useCheckpointsOrCheckpointsById(checkpoints);
+    const resolvedCheckpoints = useCheckpointsOrCheckpointsById(
+      (() => props.checkpoints) as any,
+    );
     const checkpointIds = useCheckpointIds(resolvedCheckpoints) as any;
-    return () =>
-      wrap(
+    return () => {
+      const Checkpoint = props.checkpointComponent ?? CheckpointView;
+      return wrap(
         arrayMap(
           getCheckpoints(getValue(checkpointIds) as CheckpointIds),
           (checkpointId: Id) => (
             <Checkpoint
-              {...getProps(getCheckpointComponentProps, checkpointId as Id)}
+              {...getProps(
+                props.getCheckpointComponentProps,
+                checkpointId as Id,
+              )}
               checkpoints={resolvedCheckpoints}
               checkpointId={checkpointId}
-              debugIds={debugIds}
+              debugIds={props.debugIds}
             />
           ),
         ),
-        separator,
+        props.separator,
       );
+    };
   };

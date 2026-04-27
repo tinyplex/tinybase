@@ -9,30 +9,28 @@ import {wrap} from './common/wrap.tsx';
 import {useResultCellIds} from './hooks.ts';
 import {ResultCellView} from './ResultCellView.tsx';
 
-export const ResultRowView = ({
-  queryId,
-  rowId,
-  queries,
-  resultCellComponent: ResultCell = ResultCellView,
-  getResultCellComponentProps,
-  separator,
-  debugIds,
-}: ResultRowProps): any => {
-  const resultCellIds = useResultCellIds(queryId, rowId, queries) as any;
-  return () =>
-    wrap(
+export const ResultRowView = (props: ResultRowProps): any => {
+  const resultCellIds = useResultCellIds(
+    (() => props.queryId) as any,
+    (() => props.rowId) as any,
+    (() => props.queries) as any,
+  ) as any;
+  return () => {
+    const ResultCell = props.resultCellComponent ?? ResultCellView;
+    return wrap(
       arrayMap(getValue(resultCellIds) as Id[], (cellId: Id) => (
         <ResultCell
-          {...getProps(getResultCellComponentProps, cellId)}
-          queryId={queryId}
-          rowId={rowId}
+          {...getProps(props.getResultCellComponentProps, cellId)}
+          queryId={props.queryId}
+          rowId={props.rowId}
           cellId={cellId}
-          queries={queries}
-          debugIds={debugIds}
+          queries={props.queries}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
-      debugIds,
-      rowId,
+      props.separator,
+      props.debugIds,
+      props.rowId,
     );
+  };
 };

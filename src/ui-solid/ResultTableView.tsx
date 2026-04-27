@@ -7,4 +7,11 @@ import {useResultRowIds} from './hooks.ts';
 
 export const ResultTableView = (
   props: ResultTableProps,
-): any => resultTableView(props, useResultRowIds(props.queryId, props.queries));
+): any =>
+  resultTableView(
+    props,
+    useResultRowIds(
+      (() => props.queryId) as any,
+      (() => props.queries) as any,
+    ),
+  );

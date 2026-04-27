@@ -7,17 +7,16 @@ import {EMPTY_STRING} from '../common/strings.ts';
 import {wrap} from './common/wrap.tsx';
 import {useValue} from './hooks.ts';
 
-export const ValueView = ({
-  valueId,
-  store,
-  debugIds,
-}: ValueProps): any => {
-  const value = useValue(valueId, store) as any;
+export const ValueView = (props: ValueProps): any => {
+  const value = useValue(
+    (() => props.valueId) as any,
+    (() => props.store) as any,
+  ) as any;
   return () =>
     wrap(
       EMPTY_STRING + ((getValue(value) as any) ?? EMPTY_STRING),
       undefined,
-      debugIds,
-      valueId,
+      props.debugIds,
+      props.valueId,
     );
 };

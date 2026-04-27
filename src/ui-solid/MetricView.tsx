@@ -7,17 +7,16 @@ import {EMPTY_STRING} from '../common/strings.ts';
 import {wrap} from './common/wrap.tsx';
 import {useMetric} from './hooks.ts';
 
-export const MetricView = ({
-  metricId,
-  metrics,
-  debugIds,
-}: MetricProps): any => {
-  const metric = useMetric(metricId, metrics) as any;
+export const MetricView = (props: MetricProps): any => {
+  const metric = useMetric(
+    (() => props.metricId) as any,
+    (() => props.metrics) as any,
+  ) as any;
   return () =>
     wrap(
       (getValue(metric) as any) ?? EMPTY_STRING,
       undefined,
-      debugIds,
-      metricId,
+      props.debugIds,
+      props.metricId,
     );
 };

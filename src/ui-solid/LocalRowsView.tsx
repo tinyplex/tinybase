@@ -7,4 +7,5 @@ import {useLocalRowIds} from './hooks.ts';
 
 export const LocalRowsView = (
   props: LocalRowsProps,
-): any => useComponentPerRow(props as any, useLocalRowIds as any, props.remoteRowId);
+): any =>
+  useComponentPerRow(props as any, useLocalRowIds as any, () => props.remoteRowId);

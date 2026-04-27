@@ -9,24 +9,20 @@ import {wrap} from './common/wrap.tsx';
 import {useValueIds} from './hooks.ts';
 import {ValueView} from './ValueView.tsx';
 
-export const ValuesView = ({
-  store,
-  valueComponent: Value = ValueView,
-  getValueComponentProps,
-  separator,
-  debugIds,
-}: ValuesProps): any => {
-  const valueIds = useValueIds(store) as any;
-  return () =>
-    wrap(
+export const ValuesView = (props: ValuesProps): any => {
+  const valueIds = useValueIds((() => props.store) as any) as any;
+  return () => {
+    const Value = props.valueComponent ?? ValueView;
+    return wrap(
       arrayMap(getValue(valueIds) as Id[], (valueId: Id) => (
         <Value
-          {...getProps(getValueComponentProps, valueId)}
+          {...getProps(props.getValueComponentProps, valueId)}
           valueId={valueId}
-          store={store}
-          debugIds={debugIds}
+          store={props.store}
+          debugIds={props.debugIds}
         />
       )),
-      separator,
+      props.separator,
     );
+  };
 };

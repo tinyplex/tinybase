@@ -242,13 +242,15 @@ const useListenable = (
   listenable: string,
   thing: MaybeAccessor<any>,
   returnType: ReturnType,
-  args: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
+  args: Readonly<MaybeAccessor<ListenerArgument>[]> = EMPTY_ARRAY,
 ): any => {
   const [result, setResult] = createSignal(DEFAULTS[returnType] as any);
+  const getArgs = () =>
+    arrayMap(args as MaybeAccessor<ListenerArgument>[], getThing);
   const getResult = () =>
     getThing(thing)?.[
       (returnType == ReturnType.Boolean ? _HAS : GET) + listenable
-    ]?.(...args) ?? DEFAULTS[returnType];
+    ]?.(...getArgs()) ?? DEFAULTS[returnType];
   const updateResult = () => {
     const nextResult = getResult();
     const prevResult = untrack(result);
@@ -260,11 +262,12 @@ const useListenable = (
   };
   createRenderEffect(() => {
     const resolvedThing = getThing(thing);
+    const resolvedArgs = getArgs();
     updateResult();
     const cleanup = addAndDelListener(
       resolvedThing,
       (returnType == ReturnType.Boolean ? HAS : EMPTY_STRING) + listenable,
-      ...args,
+      ...resolvedArgs,
       updateResult,
     );
     onCleanup(cleanup);
@@ -277,16 +280,19 @@ const useListener = (
   thing: MaybeAccessor<any>,
   listener: (...args: any[]) => void,
   _listenerDeps: DependencyList = EMPTY_ARRAY,
-  preArgs: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
-  ...postArgs: ListenerArgument[]
+  preArgs: Readonly<MaybeAccessor<ListenerArgument>[]> = EMPTY_ARRAY,
+  ...postArgs: MaybeAccessor<ListenerArgument>[]
 ): void =>
   createRenderEffect(() => {
     const cleanup = addAndDelListener(
       getThing(thing),
       listenable,
-      ...preArgs,
+      ...arrayMap(
+        preArgs as MaybeAccessor<ListenerArgument>[],
+        getThing,
+      ),
       listener,
-      ...postArgs,
+      ...arrayMap(postArgs, getThing),
     );
     onCleanup(cleanup);
   });

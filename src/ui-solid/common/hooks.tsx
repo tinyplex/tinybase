@@ -5,11 +5,13 @@ import {getValue} from '../../common/solid.ts';
 import {useCellIds} from '../hooks.ts';
 
 export const useCustomOrDefaultCellIds = (
-  customCellIds: Ids | undefined,
-  tableId: Id,
-  rowId: Id,
-  store?: StoreOrStoreId,
+  customCellIds: (() => Ids | undefined) | Ids | undefined,
+  tableId: (() => Id) | Id,
+  rowId: (() => Id) | Id,
+  store?: (() => StoreOrStoreId | undefined) | StoreOrStoreId,
 ): Ids => {
-  const defaultCellIds = useCellIds(tableId, rowId, store);
-  return customCellIds ?? ((() => getValue(defaultCellIds as any)) as any);
+  const defaultCellIds = useCellIds(tableId as any, rowId as any, store as any);
+  return (
+    (() => getValue(customCellIds) ?? getValue(defaultCellIds as any)) as any
+  );
 };

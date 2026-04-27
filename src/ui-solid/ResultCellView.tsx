@@ -7,19 +7,18 @@ import {EMPTY_STRING} from '../common/strings.ts';
 import {wrap} from './common/wrap.tsx';
 import {useResultCell} from './hooks.ts';
 
-export const ResultCellView = ({
-  queryId,
-  rowId,
-  cellId,
-  queries,
-  debugIds,
-}: ResultCellProps): any => {
-  const resultCell = useResultCell(queryId, rowId, cellId, queries) as any;
+export const ResultCellView = (props: ResultCellProps): any => {
+  const resultCell = useResultCell(
+    (() => props.queryId) as any,
+    (() => props.rowId) as any,
+    (() => props.cellId) as any,
+    (() => props.queries) as any,
+  ) as any;
   return () =>
     wrap(
       EMPTY_STRING + ((getValue(resultCell) as any) ?? EMPTY_STRING),
       undefined,
-      debugIds,
-      cellId,
+      props.debugIds,
+      props.cellId,
     );
 };
