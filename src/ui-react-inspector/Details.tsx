@@ -1,9 +1,9 @@
 import type {ReactNode, SyntheticEvent} from 'react';
 import type {Id} from '../@types/common/index.d.ts';
+import {OPEN_CELL, STATE_TABLE} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {CURRENT_TARGET} from '../common/strings.ts';
 import {useCell, useSetCellCallback} from '../ui-react/index.ts';
-import {OPEN_CELL, STATE_TABLE} from './common.ts';
-import type {StoreProp} from './types.ts';
 
 export const Details = ({
   uniqueId,

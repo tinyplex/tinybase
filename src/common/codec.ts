@@ -20,9 +20,10 @@ export const decode = (str: string, pos: number): number =>
 
 // Fallback is not cryptographically secure but tolerable for ReactNative UUIDs.
 export const getRandomValues = GLOBAL.crypto
-  ? (array: Uint8Array): Uint8Array => GLOBAL.crypto.getRandomValues(array)
+  ? <Array extends Uint8Array>(array: Array): Array =>
+      GLOBAL.crypto.getRandomValues(array as any) as Array
   : /*! istanbul ignore next */
-    (array: Uint8Array): Uint8Array =>
+    <Array extends Uint8Array>(array: Array): Array =>
       arrayMap(array as any, () => mathFloor(math.random() * 256)) as any;
 
 export const getUniqueId: typeof getUniqueIdDecl = (length = 16): Id =>

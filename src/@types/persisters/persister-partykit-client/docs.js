@@ -42,7 +42,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the PartySocket back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {PartySocket} from 'partysocket';
    * import {createStore} from 'tinybase';
    * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
@@ -161,7 +161,7 @@
  * This example creates a PartyKitPersister object and persists the Store to the
  * browser's IndexedDB storage.
  *
- * ```js yolo
+ * ```js ignore
  * import {PartySocket} from 'partysocket';
  * import {createStore} from 'tinybase';
  * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';

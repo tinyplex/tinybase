@@ -1217,373 +1217,373 @@ export type ExtraProps = {[propName: string]: any};
 
 /// TablesProps
 export type TablesProps = {
-  /// TablesProps.store
+  /// ui-react.TablesProps.store
   readonly store?: StoreOrStoreId;
-  /// TablesProps.tableComponent
+  /// ui-react.TablesProps.tableComponent
   readonly tableComponent?: ComponentType<TableProps>;
-  /// TablesProps.getTableComponentProps
+  /// ui-react.TablesProps.getTableComponentProps
   readonly getTableComponentProps?: (tableId: Id) => ExtraProps;
-  /// TablesProps.separator
+  /// ui-react.TablesProps.separator
   readonly separator?: ReactElement | string;
-  /// TablesProps.debugIds
+  /// ui-react.TablesProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// TableProps
 export type TableProps = {
-  /// TableProps.tableId
+  /// ui-react.TableProps.tableId
   readonly tableId: Id;
-  /// TableProps.store
+  /// ui-react.TableProps.store
   readonly store?: StoreOrStoreId;
-  /// TableProps.rowComponent
+  /// ui-react.TableProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps>;
-  /// TableProps.getRowComponentProps
+  /// ui-react.TableProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// TableProps.customCellIds
+  /// ui-react.TableProps.customCellIds
   readonly customCellIds?: Ids;
-  /// TableProps.separator
+  /// ui-react.TableProps.separator
   readonly separator?: ReactElement | string;
-  /// TableProps.debugIds
+  /// ui-react.TableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// SortedTableProps
 export type SortedTableProps = {
-  /// SortedTableProps.tableId
+  /// ui-react.SortedTableProps.tableId
   readonly tableId: Id;
-  /// SortedTableProps.cellId
+  /// ui-react.SortedTableProps.cellId
   readonly cellId?: Id;
-  /// SortedTableProps.descending
+  /// ui-react.SortedTableProps.descending
   readonly descending?: boolean;
-  /// SortedTableProps.offset
+  /// ui-react.SortedTableProps.offset
   readonly offset?: number;
-  /// SortedTableProps.limit
+  /// ui-react.SortedTableProps.limit
   readonly limit?: number;
-  /// SortedTableProps.store
+  /// ui-react.SortedTableProps.store
   readonly store?: StoreOrStoreId;
-  /// SortedTableProps.rowComponent
+  /// ui-react.SortedTableProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps>;
-  /// SortedTableProps.getRowComponentProps
+  /// ui-react.SortedTableProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SortedTableProps.customCellIds
+  /// ui-react.SortedTableProps.customCellIds
   readonly customCellIds?: Ids;
-  /// SortedTableProps.separator
+  /// ui-react.SortedTableProps.separator
   readonly separator?: ReactElement | string;
-  /// SortedTableProps.debugIds
+  /// ui-react.SortedTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// RowProps
 export type RowProps = {
-  /// RowProps.tableId
+  /// ui-react.RowProps.tableId
   readonly tableId: Id;
-  /// RowProps.rowId
+  /// ui-react.RowProps.rowId
   readonly rowId: Id;
-  /// RowProps.store
+  /// ui-react.RowProps.store
   readonly store?: StoreOrStoreId;
-  /// RowProps.cellComponent
+  /// ui-react.RowProps.cellComponent
   readonly cellComponent?: ComponentType<CellProps>;
-  /// RowProps.getCellComponentProps
+  /// ui-react.RowProps.getCellComponentProps
   readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// RowProps.customCellIds
+  /// ui-react.RowProps.customCellIds
   readonly customCellIds?: Ids;
-  /// RowProps.separator
+  /// ui-react.RowProps.separator
   readonly separator?: ReactElement | string;
-  /// RowProps.debugIds
+  /// ui-react.RowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// CellProps
 export type CellProps = {
-  /// CellProps.tableId
+  /// ui-react.CellProps.tableId
   readonly tableId: Id;
-  /// CellProps.rowId
+  /// ui-react.CellProps.rowId
   readonly rowId: Id;
-  /// CellProps.cellId
+  /// ui-react.CellProps.cellId
   readonly cellId: Id;
-  /// CellProps.store
+  /// ui-react.CellProps.store
   readonly store?: StoreOrStoreId;
-  /// CellProps.debugIds
+  /// ui-react.CellProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ValuesProps
 export type ValuesProps = {
-  /// ValuesProps.store
+  /// ui-react.ValuesProps.store
   readonly store?: StoreOrStoreId;
-  /// ValuesProps.valueComponent
+  /// ui-react.ValuesProps.valueComponent
   readonly valueComponent?: ComponentType<ValueProps>;
-  /// ValuesProps.getValueComponentProps
+  /// ui-react.ValuesProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
-  /// ValuesProps.separator
+  /// ui-react.ValuesProps.separator
   readonly separator?: ReactElement | string;
-  /// ValuesProps.debugIds
+  /// ui-react.ValuesProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ValueProps
 export type ValueProps = {
-  /// ValueProps.valueId
+  /// ui-react.ValueProps.valueId
   readonly valueId: Id;
-  /// ValueProps.store
+  /// ui-react.ValueProps.store
   readonly store?: StoreOrStoreId;
-  /// ValueProps.debugIds
+  /// ui-react.ValueProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// MetricProps
 export type MetricProps = {
-  /// MetricProps.metricId
+  /// ui-react.MetricProps.metricId
   readonly metricId: Id;
-  /// MetricProps.metrics
+  /// ui-react.MetricProps.metrics
   readonly metrics?: MetricsOrMetricsId;
-  /// MetricProps.debugIds
+  /// ui-react.MetricProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// IndexProps
 export type IndexProps = {
-  /// IndexProps.indexId
+  /// ui-react.IndexProps.indexId
   readonly indexId: Id;
-  /// IndexProps.indexes
+  /// ui-react.IndexProps.indexes
   readonly indexes?: IndexesOrIndexesId;
-  /// IndexProps.sliceComponent
+  /// ui-react.IndexProps.sliceComponent
   readonly sliceComponent?: ComponentType<SliceProps>;
-  /// IndexProps.getSliceComponentProps
+  /// ui-react.IndexProps.getSliceComponentProps
   readonly getSliceComponentProps?: (sliceId: Id) => ExtraProps;
-  /// IndexProps.separator
+  /// ui-react.IndexProps.separator
   readonly separator?: ReactElement | string;
-  /// IndexProps.debugIds
+  /// ui-react.IndexProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// SliceProps
 export type SliceProps = {
-  /// SliceProps.indexId
+  /// ui-react.SliceProps.indexId
   readonly indexId: Id;
-  /// SliceProps.sliceId
+  /// ui-react.SliceProps.sliceId
   readonly sliceId: Id;
-  /// SliceProps.indexes
+  /// ui-react.SliceProps.indexes
   readonly indexes?: IndexesOrIndexesId;
-  /// SliceProps.rowComponent
+  /// ui-react.SliceProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps>;
-  /// SliceProps.getRowComponentProps
+  /// ui-react.SliceProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SliceProps.separator
+  /// ui-react.SliceProps.separator
   readonly separator?: ReactElement | string;
-  /// SliceProps.debugIds
+  /// ui-react.SliceProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// RemoteRowProps
 export type RemoteRowProps = {
-  /// RemoteRowProps.relationshipId
+  /// ui-react.RemoteRowProps.relationshipId
   readonly relationshipId: Id;
-  /// RemoteRowProps.localRowId
+  /// ui-react.RemoteRowProps.localRowId
   readonly localRowId: Id;
-  /// RemoteRowProps.relationships
+  /// ui-react.RemoteRowProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId;
-  /// RemoteRowProps.rowComponent
+  /// ui-react.RemoteRowProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps>;
-  /// RemoteRowProps.getRowComponentProps
+  /// ui-react.RemoteRowProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// RemoteRowProps.debugIds
+  /// ui-react.RemoteRowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// LocalRowsProps
 export type LocalRowsProps = {
-  /// LocalRowsProps.relationshipId
+  /// ui-react.LocalRowsProps.relationshipId
   readonly relationshipId: Id;
-  /// LocalRowsProps.remoteRowId
+  /// ui-react.LocalRowsProps.remoteRowId
   readonly remoteRowId: Id;
-  /// LocalRowsProps.relationships
+  /// ui-react.LocalRowsProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId;
-  /// LocalRowsProps.rowComponent
+  /// ui-react.LocalRowsProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps>;
-  /// LocalRowsProps.getRowComponentProps
+  /// ui-react.LocalRowsProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LocalRowsProps.separator
+  /// ui-react.LocalRowsProps.separator
   readonly separator?: ReactElement | string;
-  /// LocalRowsProps.debugIds
+  /// ui-react.LocalRowsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// LinkedRowsProps
 export type LinkedRowsProps = {
-  /// LinkedRowsProps.relationshipId
+  /// ui-react.LinkedRowsProps.relationshipId
   readonly relationshipId: Id;
-  /// LinkedRowsProps.firstRowId
+  /// ui-react.LinkedRowsProps.firstRowId
   readonly firstRowId: Id;
-  /// LinkedRowsProps.relationships
+  /// ui-react.LinkedRowsProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId;
-  /// LinkedRowsProps.rowComponent
+  /// ui-react.LinkedRowsProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps>;
-  /// LinkedRowsProps.getRowComponentProps
+  /// ui-react.LinkedRowsProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LinkedRowsProps.separator
+  /// ui-react.LinkedRowsProps.separator
   readonly separator?: ReactElement | string;
-  /// LinkedRowsProps.debugIds
+  /// ui-react.LinkedRowsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ResultTableProps
 export type ResultTableProps = {
-  /// ResultTableProps.queryId
+  /// ui-react.ResultTableProps.queryId
   readonly queryId: Id;
-  /// ResultTableProps.queries
+  /// ui-react.ResultTableProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ResultTableProps.resultRowComponent
+  /// ui-react.ResultTableProps.resultRowComponent
   readonly resultRowComponent?: ComponentType<ResultRowProps>;
-  /// ResultTableProps.getResultRowComponentProps
+  /// ui-react.ResultTableProps.getResultRowComponentProps
   readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultTableProps.separator
+  /// ui-react.ResultTableProps.separator
   readonly separator?: ReactElement | string;
-  /// ResultTableProps.debugIds
+  /// ui-react.ResultTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ResultSortedTableProps
 export type ResultSortedTableProps = {
-  /// ResultSortedTableProps.queryId
+  /// ui-react.ResultSortedTableProps.queryId
   readonly queryId: Id;
-  /// ResultSortedTableProps.cellId
+  /// ui-react.ResultSortedTableProps.cellId
   readonly cellId?: Id;
-  /// ResultSortedTableProps.descending
+  /// ui-react.ResultSortedTableProps.descending
   readonly descending?: boolean;
-  /// ResultSortedTableProps.offset
+  /// ui-react.ResultSortedTableProps.offset
   readonly offset?: number;
-  /// ResultSortedTableProps.limit
+  /// ui-react.ResultSortedTableProps.limit
   readonly limit?: number;
-  /// ResultSortedTableProps.queries
+  /// ui-react.ResultSortedTableProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ResultSortedTableProps.resultRowComponent
+  /// ui-react.ResultSortedTableProps.resultRowComponent
   readonly resultRowComponent?: ComponentType<ResultRowProps>;
-  /// ResultSortedTableProps.getResultRowComponentProps
+  /// ui-react.ResultSortedTableProps.getResultRowComponentProps
   readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultSortedTableProps.separator
+  /// ui-react.ResultSortedTableProps.separator
   readonly separator?: ReactElement | string;
-  /// ResultSortedTableProps.debugIds
+  /// ui-react.ResultSortedTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ResultRowProps
 export type ResultRowProps = {
-  /// ResultRowProps.queryId
+  /// ui-react.ResultRowProps.queryId
   readonly queryId: Id;
-  /// ResultRowProps.rowId
+  /// ui-react.ResultRowProps.rowId
   readonly rowId: Id;
-  /// ResultRowProps.queries
+  /// ui-react.ResultRowProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ResultRowProps.resultCellComponent
+  /// ui-react.ResultRowProps.resultCellComponent
   readonly resultCellComponent?: ComponentType<ResultCellProps>;
-  /// ResultRowProps.getResultCellComponentProps
+  /// ui-react.ResultRowProps.getResultCellComponentProps
   readonly getResultCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// ResultRowProps.separator
+  /// ui-react.ResultRowProps.separator
   readonly separator?: ReactElement | string;
-  /// ResultRowProps.debugIds
+  /// ui-react.ResultRowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ResultCellProps
 export type ResultCellProps = {
-  /// ResultCellProps.queryId
+  /// ui-react.ResultCellProps.queryId
   readonly queryId: Id;
-  /// ResultCellProps.rowId
+  /// ui-react.ResultCellProps.rowId
   readonly rowId: Id;
-  /// ResultCellProps.cellId
+  /// ui-react.ResultCellProps.cellId
   readonly cellId: Id;
-  /// ResultCellProps.queries
+  /// ui-react.ResultCellProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ResultCellProps.debugIds
+  /// ui-react.ResultCellProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// CheckpointProps
 export type CheckpointProps = {
-  /// CheckpointProps.checkpointId
+  /// ui-react.CheckpointProps.checkpointId
   readonly checkpointId: Id;
-  /// CheckpointProps.checkpoints
+  /// ui-react.CheckpointProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// CheckpointProps.debugIds
+  /// ui-react.CheckpointProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// BackwardCheckpointsProps
 export type BackwardCheckpointsProps = {
-  /// BackwardCheckpointsProps.checkpoints
+  /// ui-react.BackwardCheckpointsProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// BackwardCheckpointsProps.checkpointComponent
+  /// ui-react.BackwardCheckpointsProps.checkpointComponent
   readonly checkpointComponent?: ComponentType<CheckpointProps>;
-  /// BackwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-react.BackwardCheckpointsProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// BackwardCheckpointsProps.separator
+  /// ui-react.BackwardCheckpointsProps.separator
   readonly separator?: ReactElement | string;
-  /// BackwardCheckpointsProps.debugIds
+  /// ui-react.BackwardCheckpointsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// CurrentCheckpointProps
 export type CurrentCheckpointProps = {
-  /// CurrentCheckpointProps.checkpoints
+  /// ui-react.CurrentCheckpointProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// CurrentCheckpointProps.checkpointComponent
+  /// ui-react.CurrentCheckpointProps.checkpointComponent
   readonly checkpointComponent?: ComponentType<CheckpointProps>;
-  /// CurrentCheckpointProps.getCheckpointComponentProps
+  /// ui-react.CurrentCheckpointProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// CurrentCheckpointProps.debugIds
+  /// ui-react.CurrentCheckpointProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ForwardCheckpointsProps
 export type ForwardCheckpointsProps = {
-  /// ForwardCheckpointsProps.checkpoints
+  /// ui-react.ForwardCheckpointsProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// ForwardCheckpointsProps.checkpointComponent
+  /// ui-react.ForwardCheckpointsProps.checkpointComponent
   readonly checkpointComponent?: ComponentType<CheckpointProps>;
-  /// ForwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-react.ForwardCheckpointsProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// ForwardCheckpointsProps.separator
+  /// ui-react.ForwardCheckpointsProps.separator
   readonly separator?: ReactElement | string;
-  /// ForwardCheckpointsProps.debugIds
+  /// ui-react.ForwardCheckpointsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ProviderProps
 export type ProviderProps = {
-  /// ProviderProps.store
+  /// ui-react.ProviderProps.store
   readonly store?: Store;
-  /// ProviderProps.storesById
+  /// ui-react.ProviderProps.storesById
   readonly storesById?: {[storeId: Id]: Store};
-  /// ProviderProps.metrics
+  /// ui-react.ProviderProps.metrics
   readonly metrics?: Metrics;
-  /// ProviderProps.metricsById
+  /// ui-react.ProviderProps.metricsById
   readonly metricsById?: {[metricsId: Id]: Metrics};
-  /// ProviderProps.indexes
+  /// ui-react.ProviderProps.indexes
   readonly indexes?: Indexes;
-  /// ProviderProps.indexesById
+  /// ui-react.ProviderProps.indexesById
   readonly indexesById?: {[indexesId: Id]: Indexes};
-  /// ProviderProps.relationships
+  /// ui-react.ProviderProps.relationships
   readonly relationships?: Relationships;
-  /// ProviderProps.relationshipsById
+  /// ui-react.ProviderProps.relationshipsById
   readonly relationshipsById?: {[relationshipsId: Id]: Relationships};
-  /// ProviderProps.queries
+  /// ui-react.ProviderProps.queries
   readonly queries?: Queries;
-  /// ProviderProps.queriesById
+  /// ui-react.ProviderProps.queriesById
   readonly queriesById?: {[queriesId: Id]: Queries};
-  /// ProviderProps.checkpoints
+  /// ui-react.ProviderProps.checkpoints
   readonly checkpoints?: Checkpoints;
-  /// ProviderProps.checkpointsById
+  /// ui-react.ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints};
-  /// ProviderProps.persister
+  /// ui-react.ProviderProps.persister
   readonly persister?: AnyPersister;
-  /// ProviderProps.persistersById
+  /// ui-react.ProviderProps.persistersById
   readonly persistersById?: {
     [persisterId: Id]: AnyPersister;
   };
-  /// ProviderProps.synchronizer
+  /// ui-react.ProviderProps.synchronizer
   readonly synchronizer?: Synchronizer;
-  /// ProviderProps.synchronizersById
+  /// ui-react.ProviderProps.synchronizersById
   readonly synchronizersById?: {[synchronizerId: Id]: Synchronizer};
 };
 

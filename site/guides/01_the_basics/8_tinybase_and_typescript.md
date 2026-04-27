@@ -10,7 +10,7 @@ for example, setting and getting tabular and key-value data will obey the
 system's constraints. A Cell or a Value can be a number, string, boolean,
 `null`, or a plain JavaScript object or array, for example:
 
-```ts yolo
+```ts ignore
 import {createStore} from 'tinybase';
 
 const store = createStore();
@@ -33,7 +33,7 @@ contain.
 Since v3.1, TinyBase can provide typing that adapts according to the schema when
 you import the `with-schemas` version of the library. For example:
 
-```ts yolo
+```ts ignore
 import {createStore} from 'tinybase/with-schemas';
 
 // NB the 'with-schemas'

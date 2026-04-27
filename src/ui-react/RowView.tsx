@@ -6,7 +6,7 @@ import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
 import {CellView} from './CellView.tsx';
 import {useCustomOrDefaultCellIds} from './common/hooks.tsx';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 
 export const RowView: typeof RowViewDecl = ({
   tableId,
@@ -17,9 +17,9 @@ export const RowView: typeof RowViewDecl = ({
   customCellIds,
   separator,
   debugIds,
-}: RowProps): any =>
-  wrap(
-    arrayMap(
+}: RowProps): any => (
+  <Wrap separator={separator} debugIds={debugIds} id={rowId}>
+    {arrayMap(
       useCustomOrDefaultCellIds(customCellIds, tableId, rowId, store),
       (cellId) => (
         <Cell
@@ -32,8 +32,6 @@ export const RowView: typeof RowViewDecl = ({
           debugIds={debugIds}
         />
       ),
-    ),
-    separator,
-    debugIds,
-    rowId,
-  );
+    )}
+  </Wrap>
+);

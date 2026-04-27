@@ -640,6 +640,20 @@
    * @since v2.0.0
    */
   /// GetTableCell.2
+  /**
+   * Calling this function with three parameters (where the first is `true`)
+   * will return the value of the specified Cell from a query result that has
+   * been joined in the query, for the Row being selected or filtered.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the query result to fetch the value from. If
+   * the underlying query result was joined 'as' a different Id, that should
+   * instead be used.
+   * @param joinedCellId The Id of the Cell to fetch the value for.
+   * @returns A Cell value or `undefined`.
+   * @category Callback
+   * @since v8.3.0
+   */
+  /// GetTableCell.3
 }
 /**
  * The Param type describes a function that takes a param Id and returns its
@@ -848,6 +862,21 @@
    */
   /// Select.2
   /**
+   * Calling this function with three parameters (where the first is `true`)
+   * will indicate that the query should select the value of the specified Cell
+   * from a query result that has been joined in the query.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the query result to fetch the value from. If
+   * the underlying query result was joined 'as' a different Id, that should
+   * instead be used.
+   * @param joinedCellId The Id of the Cell to fetch the value for.
+   * @returns A SelectedAs object so that the selected Cell Id can be optionally
+   * aliased.
+   * @category Definition
+   * @since v8.3.0
+   */
+  /// Select.3
+  /**
    * Calling this function with one callback parameter will indicate that the
    * query should select a calculated value, based on one or more Cell values in
    * the root Table or a joined Table, or on the root Table's Row Id.
@@ -859,7 +888,7 @@
    * @category Definition
    * @since v2.0.0
    */
-  /// Select.3
+  /// Select.4
 }
 /**
  * The SelectedAs type describes an object returned from calling a Select
@@ -1107,6 +1136,20 @@
    */
   /// Join.1
   /**
+   * Calling this function with three parameters (where the first is `true`)
+   * will indicate that the join to a Row in an adjacent query result is made
+   * by finding its Id in a Cell of the query's root Table.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the query result to join to.
+   * @param on The Id of the Cell in the root Table that contains the joined
+   * query result's Row Id.
+   * @returns A JoinedAs object so that the joined Table Id can be optionally
+   * aliased.
+   * @category Definition
+   * @since v8.3.0
+   */
+  /// Join.2
+  /**
    * Calling this function with two parameters (where the second is a function)
    * will indicate that the join to a Row in an adjacent Table is made by
    * calculating its Id from the Cells and the Row Id of the query's root Table.
@@ -1119,7 +1162,23 @@
    * @category Definition
    * @since v2.0.0
    */
-  /// Join.2
+  /// Join.3
+  /**
+   * Calling this function with three parameters (where the first is `true` and
+   * the third is a function) will indicate that the join to a Row in an
+   * adjacent query result is made by calculating its Id from the Cells and the
+   * Row Id of the query's root Table.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the query result to join to.
+   * @param on A callback that takes a GetCell function and the root Table's Row
+   * Id. These can be used to programmatically calculate the joined query
+   * result's Row Id.
+   * @returns A JoinedAs object so that the joined Table Id can be optionally
+   * aliased.
+   * @category Definition
+   * @since v8.3.0
+   */
+  /// Join.4
   /**
    * Calling this function with three Id parameters will indicate that the join
    * to a Row in distant Table is made by finding its Id in a Cell of an
@@ -1135,7 +1194,24 @@
    * @category Definition
    * @since v2.0.0
    */
-  /// Join.3
+  /// Join.5
+  /**
+   * Calling this function with four parameters (where the first is `true`)
+   * will indicate that the join to a Row in a distant query result is made by
+   * finding its Id in a Cell of an intermediately joined Table.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the distant query result to join to.
+   * @param fromIntermediateJoinedTableId The Id of an intermediate Table (which
+   * should have been in turn joined to the main query table via other Join
+   * clauses).
+   * @param on The Id of the Cell in the intermediate Table that contains the
+   * joined query result's Row Id.
+   * @returns A JoinedAs object so that the joined Table Id can be optionally
+   * aliased.
+   * @category Definition
+   * @since v8.3.0
+   */
+  /// Join.6
   /**
    * Calling this function with three parameters (where the third is a function)
    * will indicate that the join to a Row in distant Table is made by
@@ -1153,7 +1229,26 @@
    * @category Definition
    * @since v2.0.0
    */
-  /// Join.4
+  /// Join.7
+  /**
+   * Calling this function with four parameters (where the first is `true` and
+   * the fourth is a function) will indicate that the join to a Row in a
+   * distant query result is made by calculating its Id from the Cells and the
+   * Row Id of an intermediately joined Table.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the query result to join to.
+   * @param fromIntermediateJoinedTableId The Id of an intermediate Table (which
+   * should have been in turn joined to the main query table via other Join
+   * clauses).
+   * @param on A callback that takes a GetCell function and the intermediate
+   * Table's Row Id. These can be used to programmatically calculate the joined
+   * query result's Row Id.
+   * @returns A JoinedAs object so that the joined Table Id can be optionally
+   * aliased.
+   * @category Definition
+   * @since v8.3.0
+   */
+  /// Join.8
 }
 /**
  * The JoinedAs type describes an object returned from calling a Join function
@@ -1359,6 +1454,21 @@
    */
   /// Where.2
   /**
+   * Calling this function with four parameters (where the first is `true`) is
+   * used to include only those Rows for which a specified Cell in a joined
+   * query result has a specified value.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the joined query result to test a value in.
+   * If the underlying query result was joined 'as' a different Id, that should
+   * instead be used.
+   * @param joinedCellId The Id of the Cell in the joined query result to test.
+   * @param equals The value that the Cell has to have for the Row to be
+   * included in the result.
+   * @category Definition
+   * @since v8.3.0
+   */
+  /// Where.3
+  /**
    * Calling this function with one callback parameter is used to include only
    * those Rows which meet a calculated boolean condition, based on values in
    * the main and (optionally) joined Tables.
@@ -1367,7 +1477,7 @@
    * @category Definition
    * @since v2.0.0
    */
-  /// Where.3
+  /// Where.4
 }
 /**
  * The Group type describes a function that lets you specify that the values of

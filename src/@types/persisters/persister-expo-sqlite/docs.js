@@ -38,7 +38,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the database instance back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {openDatabaseSync} from 'expo-sqlite';
    * import {createStore} from 'tinybase';
    * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
@@ -105,7 +105,7 @@
  * table. It makes a change to the database directly and then reloads it back
  * into the Store.
  *
- * ```js yolo
+ * ```js ignore
  * import {openDatabaseSync} from 'expo-sqlite';
  * import {createStore} from 'tinybase';
  * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
@@ -142,7 +142,7 @@
  * This example creates a ExpoSqlitePersister object and persists the Store
  * to a local SQLite database with tabular mapping.
  *
- * ```js yolo
+ * ```js ignore
  * import {openDatabaseSync} from 'expo-sqlite';
  * import {createStore} from 'tinybase';
  * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';

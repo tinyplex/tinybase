@@ -3932,3 +3932,19 @@ exports[`getTransactionMergeableChanges > Outside transaction 1`] = `
   1,
 ]
 `;
+
+exports[`getTransactionMergeableChanges > With hashes 1`] = `
+[
+  [
+    {},
+    "",
+    1771939739,
+  ],
+  [
+    {},
+    "",
+    3877632732,
+  ],
+  1,
+]
+`;

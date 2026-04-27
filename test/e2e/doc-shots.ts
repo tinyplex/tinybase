@@ -1,0 +1,437 @@
+export type DocShot = {
+  asset: string;
+  clicks?: string[];
+  fixedText?: string;
+  fixedTextSelector?: string;
+  framed: boolean;
+  marginRem?: number;
+  omitBackground?: boolean;
+  page: string;
+  readySelector?: string;
+  readyTimeout?: number;
+  readyText?: string | RegExp;
+  selector: string;
+  style?: string;
+  waitForImages?: string;
+};
+
+const IFRAME_DOC_SHOT_STYLE =
+  'iframe{border:0!important;box-shadow:none!important;' +
+  'background:transparent!important}';
+const TABLE_DOC_SHOT_STYLE =
+  'table{box-shadow:none!important;filter:none!important}';
+const EDIT_DOC_SHOT_STYLE = '#edit{box-shadow:none!important}';
+const INSPECTOR = 'aside#tinybaseInspector';
+const INSPECTOR_DOC_SHOT_STYLE = [
+  'html,body{margin:0;padding:0}',
+  `${INSPECTOR}{position:static;display:inline-block}`,
+  `${INSPECTOR}>img{display:none}`,
+  `${INSPECTOR} main{` +
+    'position:static!important;display:inline-flex!important;' +
+    'width:auto!important;height:auto!important;flex:none!important;' +
+    'overflow:visible!important;box-shadow:none!important}',
+  `${INSPECTOR} header{position:static;width:auto;box-shadow:none}`,
+  `${INSPECTOR} article{padding-top:0;flex:none;overflow:visible}`,
+].join('');
+
+export const DOC_SHOTS: readonly DocShot[] = [
+  {
+    asset: 'hello-world-vanilla-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/hello-world/hello-world-vanilla/',
+    readySelector: 'body',
+    readyText: 'Hello World',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'hello-world-vanilla-v2-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/hello-world/hello-world-vanilla-v2/',
+    readySelector: 'body',
+    readyText: 'Hello World',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'hello-world-vanilla-v3-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/hello-world/hello-world-vanilla-v3/',
+    readySelector: 'body',
+    readyText: /\d{1,2}:\d{2}:\d{2}/,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'hello-world-react-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/hello-world/hello-world-react/',
+    readySelector: 'body',
+    readyTimeout: 15000,
+    readyText: /\d{1,2}:\d{2}:\d{2}/,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'hello-world-svelte-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/hello-world/hello-world-svelte/',
+    readySelector: 'body',
+    readyText: /\d{1,2}:\d{2}:\d{2}/,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'countries-react-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/countries/countries-react/',
+    readySelector: '#countries .country',
+    readyTimeout: 30000,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'countries-svelte-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/countries/countries-svelte/',
+    readySelector: '#countries .country',
+    readyTimeout: 30000,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'todo-app-v1-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/todo-app/todo-app-v1-the-basics/',
+    readySelector: '.todo .text',
+    readyText: 'Clean the floor',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'todo-app-v2-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/todo-app/todo-app-v2-indexes/',
+    readySelector: '.todo .text',
+    readyText: 'Clean the floor',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'todo-app-v3-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/todo-app/todo-app-v3-persistence/',
+    readySelector: '.todo .text',
+    readyText: 'Clean the floor',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'todo-app-v4-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/todo-app/todo-app-v4-metrics/',
+    readySelector: '.todo .text',
+    readyText: 'Clean the floor',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'todo-app-v5-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/todo-app/todo-app-v5-checkpoints/',
+    readySelector: '.todo .text',
+    readyText: 'Clean the floor',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'todo-app-v6-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/todo-app/todo-app-v6-collaboration/',
+    readySelector: '.todo .text',
+    readyText: 'Clean the floor',
+    readyTimeout: 15000,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'drawing-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/drawing/',
+    readySelector: '#toolbar',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'city-database-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/city-database/',
+    readySelector: 'main',
+    readyTimeout: 120000,
+    readyText: '140804 rows',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'car-analysis-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/car-analysis/',
+    readySelector: 'aside',
+    readyTimeout: 15000,
+    readyText: 'Dimensions',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'movie-database-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/movie-database/',
+    readySelector: 'h1',
+    readyText: 'Rated movies',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+    waitForImages: 'img',
+  },
+  {
+    asset: 'word-frequencies-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/word-frequencies/',
+    readySelector: 'input',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'editablecellview-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/editablecellview-react/',
+    selector: '#edit',
+    style: EDIT_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'editablecellview-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/editablecellview-svelte/',
+    selector: '#edit',
+    style: EDIT_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'editablevalueview-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/editablevalueview-react/',
+    selector: '#edit',
+    style: EDIT_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'editablevalueview-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/editablevalueview-svelte/',
+    selector: '#edit',
+    style: EDIT_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'editablevalueview-svelte-full-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/editablevalueview-svelte/',
+    readySelector: '#edit',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'inspector-react-demo.png',
+    clicks: [
+      'aside#tinybaseInspector article > details > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > div > details:nth-of-type(2) > summary',
+    ],
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/inspector-react/',
+    selector: 'aside#tinybaseInspector',
+    style: INSPECTOR_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'inspector-svelte-demo.png',
+    clicks: [
+      'aside#tinybaseInspector article > details > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > summary',
+      'aside#tinybaseInspector article > details > div > ' +
+        'details:nth-of-type(2) > div > details:nth-of-type(2) > summary',
+    ],
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/inspector-svelte/',
+    selector: 'aside#tinybaseInspector',
+    style: INSPECTOR_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'relationshipinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/relationshipinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'relationshipinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/relationshipinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'resultsortedtableinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/resultsortedtableinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'resultsortedtableinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'resulttableinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/resulttableinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'resulttableinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/resulttableinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'sliceinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/sliceinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'sliceinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/sliceinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'sortedtableinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/sortedtableinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'sortedtableinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/sortedtableinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'sortedtablepaginator-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/sortedtableinhtmltable-react/',
+    selector: 'table caption',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'sortedtablepaginator-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/sortedtableinhtmltable-svelte/',
+    selector: 'table caption',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'tableinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/tableinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'tableinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/tableinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'valuesinhtmltable-react-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-react/valuesinhtmltable-react/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+  {
+    asset: 'valuesinhtmltable-svelte-demo.png',
+    framed: true,
+    marginRem: 0,
+    page: '/demos/ui-components-svelte/valuesinhtmltable-svelte/',
+    selector: 'table:nth-of-type(1)',
+    style: TABLE_DOC_SHOT_STYLE,
+  },
+];
+
+export const getDocShotMap = (): Map<string, DocShot> => {
+  const shots = new Map<string, DocShot>();
+  DOC_SHOTS.forEach((shot) => {
+    if (shots.has(shot.asset)) {
+      throw new Error(`Duplicate doc shot asset: ${shot.asset}`);
+    }
+    shots.set(shot.asset, shot);
+  });
+  return shots;
+};

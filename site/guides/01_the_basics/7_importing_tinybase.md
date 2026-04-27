@@ -49,7 +49,7 @@ However, for a very minimal set of submodules, you may save size by including
 them piecemeal. If you only wanted a Store and a Metrics object, for example,
 you could import them alone like this:
 
-```js yolo
+```js ignore
 import {createMetrics} from 'tinybase/metrics';
 import {createStore} from 'tinybase/store';
 
@@ -74,7 +74,7 @@ component. This is useful for applications that want to use multiple facets of
 the overall TinyBase ecosystem and also benefit from the fact they share a lot
 of code internally.
 
-```js yolo
+```js ignore
 import {createStore, createSqliteBunPersister} from 'tinybase/omni';
 ```
 
@@ -93,7 +93,7 @@ However, both non-minified and minified versions are available: the default is
 non-minified code, but minified versions are available in the top-level `min`
 folder:
 
-```js yolo
+```js ignore
 import {createStore} from 'tinybase'; // non-minified
 // or
 import {createStore} from 'tinybase/min'; // minified
@@ -105,7 +105,7 @@ As we will see in more details in the following TinyBase And TypeScript guide,
 it is possible to use schema-aware type definitions by appending `with-schemas`
 to the very end of the path like this:
 
-```js yolo
+```js ignore
 import {createStore} from 'tinybase/with-schemas';
 
 // NB the 'with-schemas'
@@ -117,7 +117,7 @@ As long as you put the optional parts of the path in the right order, you can
 access all the valid combinations of minification, sub-module and schema
 support. The syntax for the import (split onto different lines for clarity) is:
 
-```sh yolo
+```sh ignore
 tinybase
   [ /min ]
     [ /store | /metrics | /queries | ... ]
@@ -145,7 +145,7 @@ If you are using [React Native](https://reactnative.dev/) - for example with
 module resolution very well. You may have to add in the exact file path to be
 explicit about your imports:
 
-```js yolo
+```js ignore
 import {createStore} from 'tinybase/index.js';
 import {useCell} from 'tinybase/ui-react/index.js';
 ```

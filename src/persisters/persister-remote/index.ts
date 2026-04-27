@@ -5,10 +5,12 @@ import type {
 } from '../../@types/persisters/persister-remote/index.d.ts';
 import type {Content, Store} from '../../@types/store/index.d.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
-import {isNull, startInterval, stopInterval} from '../../common/other.ts';
+import {startInterval, stopInterval} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
-const getETag = (response: Response) => response.headers.get('ETag');
+const getETag = (response: Response) => response.headers.get('ETag') ?? '';
+const getIfNoneMatchHeaders = (lastEtag: string): HeadersInit | undefined =>
+  lastEtag == '' ? undefined : {'If-None-Match': lastEtag};
 
 export const createRemotePersister = ((
   store: Store,
@@ -17,10 +19,12 @@ export const createRemotePersister = ((
   autoLoadIntervalSeconds = 5,
   onIgnoredError?: (error: any) => void,
 ): RemotePersister => {
-  let lastEtag: string | null;
+  let lastEtag: string = '';
 
   const getPersisted = async (): Promise<Content> => {
-    const response = await fetch(loadUrl);
+    const response = await fetch(loadUrl, {
+      headers: getIfNoneMatchHeaders(lastEtag),
+    });
     lastEtag = getETag(response);
     return jsonParse(await response.text());
   };
@@ -36,13 +40,12 @@ export const createRemotePersister = ((
     listener: PersisterListener,
   ): number | NodeJS.Timeout =>
     startInterval(async () => {
-      const response = await fetch(loadUrl, {method: 'HEAD'});
+      const response = await fetch(loadUrl, {
+        method: 'HEAD',
+        headers: getIfNoneMatchHeaders(lastEtag),
+      });
       const currentEtag = getETag(response);
-      if (
-        !isNull(lastEtag) &&
-        !isNull(currentEtag) &&
-        currentEtag != lastEtag
-      ) {
+      if (currentEtag != lastEtag) {
         lastEtag = currentEtag;
         listener();
       }

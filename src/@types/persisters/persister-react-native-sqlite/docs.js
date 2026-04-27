@@ -33,7 +33,7 @@
  * This example creates a Persister object against a newly-created Store and
  * then gets the database instance back out again.
  *
- * ```js yolo
+ * ```js ignore
  * import {enablePromise, openDatabase} from 'react-native-sqlite-storage';
  * import {createStore} from 'tinybase';
  * import {createReactNativeSqlitePersister} from 'tinybase/persisters/persister-react-native-sqlite';
@@ -106,7 +106,7 @@
  * `my_tinybase` table. It makes a change to the database directly and then
  * reloads it back into the Store.
  *
- * ```js yolo
+ * ```js ignore
  * import {enablePromise, openDatabase} from 'react-native-sqlite-storage';
  * import {createStore} from 'tinybase';
  * import {createReactNativeSqlitePersister} from 'tinybase/persisters/persister-react-native-sqlite';
@@ -142,7 +142,7 @@
  * This example creates a ReactNativeSqlitePersister object and persists the
  * Store to a local SQLite database with tabular mapping.
  *
- * ```js yolo
+ * ```js ignore
  * import {enablePromise, openDatabase} from 'react-native-sqlite-storage';
  * import {createStore} from 'tinybase';
  * import {createReactNativeSqlitePersister} from 'tinybase/persisters/persister-react-native-sqlite';

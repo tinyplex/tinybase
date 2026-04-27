@@ -31,7 +31,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the database client back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {createClient} from '@libsql/client';
    * import {createStore} from 'tinybase';
    * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
@@ -93,7 +93,7 @@
  * It makes a change to the database directly and then reloads it back into the
  * Store.
  *
- * ```js yolo
+ * ```js ignore
  * import {createClient} from '@libsql/client';
  * import {createStore} from 'tinybase';
  * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
@@ -122,7 +122,7 @@
  * This example creates a LibSqlPersister object and persists the Store to a
  * local SQLite database with tabular mapping.
  *
- * ```js yolo
+ * ```js ignore
  * import {createClient} from '@libsql/client';
  * import {createStore} from 'tinybase';
  * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';

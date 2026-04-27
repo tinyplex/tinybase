@@ -91,7 +91,7 @@ npm install tinybase
 
 Create a file in this directory called `index.mjs`:
 
-```js yolo
+```js ignore
 import {createStore} from 'tinybase';
 
 const store = createStore();

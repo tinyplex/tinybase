@@ -1,4 +1,4 @@
-import {test} from '@playwright/test';
+import {type Page, test} from '@playwright/test';
 import {
   expectNoFramedElement,
   expectProperty,
@@ -13,9 +13,7 @@ const [startServer, stopServer, expectPage] = getServerFunctions(8803);
 beforeAll(startServer);
 afterAll(stopServer);
 
-test('countries', async ({page}) => {
-  await expectPage(page, `/demos/countries`);
-  await expectedElement(page, 'h1', 'Countries');
+const exerciseCountriesDemo = async (page: Page): Promise<void> => {
   await (await expectedFramedElement(page, '.filter', '★8')).click();
   await expectedFramedElement(page, '#countries .country', 'United Kingdom');
   await expectNoFramedElement(page, '#countries .country', 'Bahamas');
@@ -36,4 +34,25 @@ test('countries', async ({page}) => {
   await expectedFramedElement(page, '#countries .country', 'Bahamas');
   await page.reload();
   await expectedFramedElement(page, '#countries .country', 'Bahamas');
+};
+
+test('countries-react', async ({page}) => {
+  await expectPage(page, `/demos/countries/countries-react/`);
+  await expectedElement(page, 'h1', 'Countries (React)');
+  await exerciseCountriesDemo(page);
+});
+
+test('countries-svelte', async ({page}) => {
+  await expectPage(page, `/demos/countries/countries-svelte/`);
+  await expectedElement(page, 'h1', 'Countries (Svelte)');
+  await test
+    .expect(
+      page
+        .locator('iframe')
+        .first()
+        .contentFrame()
+        .locator('aside#tinybaseInspector'),
+    )
+    .toHaveCount(1);
+  await exerciseCountriesDemo(page);
 });

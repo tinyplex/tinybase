@@ -412,16 +412,19 @@ const useListenable = (
   returnType: ReturnType,
   args: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
 ): any => {
-  const lastResult = useRef(DEFAULTS[returnType]);
+  const lastResultRef = useRef(DEFAULTS[returnType]);
   const getResult = useCallback(
     () => {
       const nextResult =
         thing?.[(returnType == ReturnType.Boolean ? _HAS : GET) + listenable]?.(
           ...args,
         ) ?? DEFAULTS[returnType];
-      return !(IS_EQUALS[returnType] ?? isEqual)(nextResult, lastResult.current)
-        ? (lastResult.current = nextResult)
-        : lastResult.current;
+      return !(IS_EQUALS[returnType] ?? isEqual)(
+        nextResult,
+        lastResultRef.current,
+      )
+        ? (lastResultRef.current = nextResult)
+        : lastResultRef.current;
     },
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, returnType, listenable, ...args],

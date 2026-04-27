@@ -1,0 +1,33 @@
+# Hello World (Vanilla) v2
+
+![Hello World (Vanilla) v2](/shots/hello-world-vanilla-v2-demo.png)
+
+In this demo, we again set data in, and then get data from, a Store object. But
+this time we're using tabular data.
+
+[base]: # 'Hello World (Vanilla)'
+
+It's just a few changes to do so. Firstly we use the setCell method instead of
+the setValue method:
+
+```diff-js
+-store.setValue('v1', 'Hello World');
++store.setCell('t1', 'r1', 'c1', 'Hello World');
+```
+
+As you can see, instead of setting the keyed Value called `v1`, we're putting
+the data in a Cell called `c1`, in a Row called `r1`, in a Table called `t1`:
+
+We also need to update the way in which we get the value back out again:
+
+```diff-js
+-renderValue(store.getValue('v1'));
++renderValue(store.getCell('t1', 'r1', 'c1'));
+```
+
+The result is the same but now hopefully you get a sense for how the keyed value
+and tabular APIs to the Store are going to work.
+
+Next, we will set up a listener for data in the Store object and then change the
+Cell to see the display update. Please continue to the Hello World (Vanilla) v3
+demo.

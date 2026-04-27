@@ -227,7 +227,6 @@
  * metrics.destroy();
  * ```
  * @see Using Metrics guides
- * @see Rolling Dice demos
  * @see Country demo
  * @see Todo App demos
  * @category Metrics

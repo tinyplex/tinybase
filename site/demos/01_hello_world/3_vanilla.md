@@ -1,0 +1,49 @@
+# Hello World (Vanilla) v3
+
+![Hello World (Vanilla) v3](/shots/hello-world-vanilla-v3-demo.png)
+
+In this demo, we set up a listener for data in the Store object and then change
+the Cell to see the display update. We're making changes to the Hello World v2
+demo.
+
+[base]: # 'Hello World (Vanilla) v2'
+
+Instead of populating the Store object with a static Cell value, we use the
+current time:
+
+```diff-js
+-store.setCell('t1', 'r1', 'c1', 'Hello World');
++const setTime = () => {
++  store.setCell('t1', 'r1', 'c1', new Date().toLocaleTimeString());
++};
++setTime();
+```
+
+We also create a function that updates the DOM with the value of the Cell, and
+run it once to initialize the display while keeping the logo row from the
+previous demo:
+
+```diff-js
+-renderValue(store.getCell('t1', 'r1', 'c1'));
++const update = () => {
++  renderValue(store.getCell('t1', 'r1', 'c1'));
++};
++update();
+```
+
+We then add that `update` function as a CellListener so that every change to the
+Cell causes it to be called:
+
+```js
+store.addCellListener('t1', 'r1', 'c1', update);
+```
+
+To stimulate the CellListener, we update the time every second:
+
+```js
+setInterval(setTime, 1000);
+```
+
+Next, we will use React to render data in the Store object and then change a
+Cell to see the display update. Please continue to the Hello World (React)
+demo.

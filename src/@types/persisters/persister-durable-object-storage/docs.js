@@ -34,7 +34,7 @@
    * (within the createPersister method of a WsServerDurableObject instance) and
    * then gets the storage reference back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {createMergeableStore} from 'tinybase';
    * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -92,7 +92,7 @@
  * MergeableStore (within the createPersister method of a WsServerDurableObject
  * instance) and then gets the storage reference back out again.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMergeableStore} from 'tinybase';
  * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
  * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';

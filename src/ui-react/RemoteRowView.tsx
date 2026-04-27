@@ -5,7 +5,7 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {isUndefined} from '../common/other.ts';
 import {getProps, getRelationshipsStoreTableIds} from '../common/react.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useRelationshipsOrRelationshipsById, useRemoteRowId} from './hooks.ts';
 import {RowView} from './RowView.tsx';
 
@@ -27,19 +27,18 @@ export const RemoteRowView: typeof RemoteRowViewDecl = ({
     localRowId,
     resolvedRelationships,
   );
-  return wrap(
-    isUndefined(remoteTableId) || isUndefined(rowId) ? null : (
-      <Row
-        key={rowId}
-        {...getProps(getRowComponentProps, rowId as Id)}
-        tableId={remoteTableId}
-        rowId={rowId}
-        store={store}
-        debugIds={debugIds}
-      />
-    ),
-    undefined,
-    debugIds,
-    localRowId,
+  return (
+    <Wrap debugIds={debugIds} id={localRowId}>
+      {isUndefined(remoteTableId) || isUndefined(rowId) ? null : (
+        <Row
+          key={rowId}
+          {...getProps(getRowComponentProps, rowId as Id)}
+          tableId={remoteTableId}
+          rowId={rowId}
+          store={store}
+          debugIds={debugIds}
+        />
+      )}
+    </Wrap>
   );
 };

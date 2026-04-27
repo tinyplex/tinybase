@@ -16,18 +16,19 @@ type Coverage = {
   functions: CoverageStats;
   branches: CoverageStats;
 };
-type Metadata = {
+export type PackageData = {
   package: string;
   version: string;
   repository: string;
   license: string;
+  devDependencies: {[dependency: string]: string};
 };
 export type ModulesSizes = Map<string, Map<string, number>>;
 
 type Build = {
   coverage: Coverage;
-  metadata: Metadata;
   modulesSizes: ModulesSizes;
+  packageData: PackageData;
 };
 
 const build = ((): Build => {
@@ -50,17 +51,22 @@ const build = ((): Build => {
     modulesSizes.set(module, moduleSizes);
   });
 
-  const {name, version, repository, license} = JSON.parse(
-    readFileSync('./package.json', 'utf-8'),
-  );
-  const metadata = {
+  const {
+    name,
+    version,
+    repository,
+    license,
+    devDependencies = {},
+  } = JSON.parse(readFileSync('./package.json', 'utf-8'));
+  const packageData = {
     package: `https://www.npmjs.com/package/${name}/v/${version}`,
     version,
     repository: repository.replace(/^github:/, 'https://github.com/'),
     license,
+    devDependencies,
   };
 
-  return {coverage, metadata, modulesSizes};
+  return {coverage, modulesSizes, packageData};
 })();
 
 const Context = createContext<Build>(build);
@@ -72,6 +78,7 @@ export const BuildContext: FunctionComponent<Props> = ({
 }: Props): any => children;
 
 export const useCoverage = (): Coverage => useContext(Context).coverage;
-export const useMetadata = (): Metadata => useContext(Context).metadata;
 export const useModulesSizes = (): ModulesSizes =>
   useContext(Context).modulesSizes;
+export const usePackageData = (): PackageData =>
+  useContext(Context).packageData;

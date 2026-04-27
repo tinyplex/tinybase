@@ -6,15 +6,8 @@ import type {Middleware} from '../@types/middleware/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
-import {arrayForEach, arrayIsEmpty, arrayIsEqual} from './array.ts';
-import {
-  collClear,
-  collDel,
-  collForEach,
-  collHas,
-  collIsEmpty,
-  collValues,
-} from './coll.ts';
+import {arrayForEach, arrayIsEqual} from './array.ts';
+import {collClear, collDel, collForEach, collHas, collValues} from './coll.ts';
 import {AddListener, CallListeners} from './listeners.ts';
 import {
   IdMap,
@@ -64,8 +57,6 @@ export const getDefinableFunctions = <Thing, RowValue>(
   delDefinition: (id: Id) => void,
   addThingIdsListener: (listener: () => void) => void,
   destroy: () => void,
-  addStoreListeners: (id: Id, andCall: 0 | 1, ...listenerIds: Ids) => Ids,
-  delStoreListeners: (id: Id, ...listenerIds: Ids) => void,
 ] => {
   const hasRow = store.hasRow;
   const tableIds: IdMap<Id> = mapNew();
@@ -91,32 +82,18 @@ export const getDefinableFunctions = <Thing, RowValue>(
   const setThing = (id: Id, thing: Thing | undefined): IdMap<Thing> =>
     mapSet(things, id, thing) as IdMap<Thing>;
 
-  const addStoreListeners = (
-    id: Id,
-    andCall: 0 | 1,
-    ...listenerIds: Ids
-  ): Ids => {
+  const addStoreListeners = (id: Id, ...listenerIds: Ids): void => {
     const set = mapEnsure(storeListenerIds, id, setNew);
-    arrayForEach(
-      listenerIds,
-      (listenerId) =>
-        setAdd(set, listenerId) && andCall && store.callListener(listenerId),
-    );
-    return listenerIds;
+    arrayForEach(listenerIds, (listenerId) => setAdd(set, listenerId));
   };
 
-  const delStoreListeners = (id: Id, ...listenerIds: Ids): void =>
+  const delStoreListeners = (id: Id): void =>
     ifNotUndefined(mapGet(storeListenerIds, id), (allListenerIds) => {
-      arrayForEach(
-        arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
-        (listenerId: Id) => {
-          store.delListener(listenerId);
-          collDel(allListenerIds, listenerId);
-        },
-      );
-      if (collIsEmpty(allListenerIds)) {
-        mapSet(storeListenerIds, id);
-      }
+      arrayForEach(collValues(allListenerIds), (listenerId: Id) => {
+        store.delListener(listenerId);
+        collDel(allListenerIds, listenerId);
+      });
+      mapSet(storeListenerIds, id);
     });
 
   const setDefinition = (id: Id, tableId: Id): void => {
@@ -206,7 +183,6 @@ export const getDefinableFunctions = <Thing, RowValue>(
     delStoreListeners(id);
     addStoreListeners(
       id,
-      0,
       store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
         processRow(rowId),
       ),
@@ -241,8 +217,6 @@ export const getDefinableFunctions = <Thing, RowValue>(
     delDefinition,
     addThingIdsListener,
     destroy,
-    addStoreListeners,
-    delStoreListeners,
   ];
 };
 

@@ -1,0 +1,858 @@
+import {expect, test} from '@playwright/test';
+import {
+  expectNoFramedElement,
+  expectedElement,
+  expectedFramedElement,
+  getServerFunctions,
+} from '../common.ts';
+
+const {beforeAll, afterAll, describe} = test;
+const [startServer, stopServer, expectPage] = getServerFunctions(8811);
+
+beforeAll(startServer);
+afterAll(stopServer);
+
+describe('ui-components-svelte', () => {
+  test('ValuesInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/valuesinhtmltable-svelte`,
+    );
+    await expectedElement(page, 'h1', '<ValuesInHtmlTable /> (Svelte)');
+    await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) th',
+      'username',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td',
+      'John Appleseed',
+    );
+    await expectNoFramedElement(page, 'table:nth-of-type(2) thead th', 'Id');
+    await expectNoFramedElement(
+      page,
+      'table:nth-of-type(2) tbody tr:nth-of-type(1) th',
+      'username',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(2) tbody tr:nth-of-type(1) td',
+      'John Appleseed',
+    );
+  });
+
+  test('TableInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/tableinhtmltable-svelte`,
+    );
+    await expectedElement(page, 'h1', '<TableInHtmlTable /> (Svelte)');
+    await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) th',
+      'g01',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td',
+      'Drama',
+    );
+    await expectNoFramedElement(page, 'table:nth-of-type(2) thead th', 'Id');
+    await expectNoFramedElement(
+      page,
+      'table:nth-of-type(2) tbody tr:nth-of-type(1) th',
+      'g01',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(2) tbody tr:nth-of-type(1) td',
+      'Drama',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(3) tbody tr:nth-of-type(1) td a',
+      'Drama',
+    );
+  });
+
+  test('SortedTableInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/sortedtableinhtmltable-svelte`,
+    );
+    await expectedElement(page, 'h1', '<SortedTableInHtmlTable /> (Svelte)');
+    await expectedFramedElement(page, 'table thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm003',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'The Godfather',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '1972',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.7',
+    );
+    await (
+      await expectedFramedElement(page, 'table thead th', 'Rating')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm177',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Double Indemnity',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '1944',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.1',
+    );
+    await (
+      await expectedFramedElement(page, 'table thead th', 'Rating')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm003',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'The Godfather',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '1972',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.7',
+    );
+    await (await expectedFramedElement(page, 'table thead th', 'Year')).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm124',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'The Kid',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '1921',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.2',
+    );
+    await (await expectedFramedElement(page, 'table thead th', 'Id')).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm001',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'The Shawshank Redemption',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '1994',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.7',
+    );
+
+    await expectedFramedElement(page, 'table caption', '1 to 7 of 250 rows');
+    await (
+      await expectedFramedElement(
+        page,
+        'table caption button:nth-of-type(1)[disabled]',
+        '←',
+      )
+    ).click({force: true});
+    await expectedFramedElement(page, 'table caption', '1 to 7 of 250 rows');
+    await (
+      await expectedFramedElement(
+        page,
+        'table caption button:nth-of-type(2)',
+        '→',
+      )
+    ).click();
+    await expectedFramedElement(page, 'table caption', '8 to 14 of 250 rows');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm008',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Spirited Away',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2001',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.5',
+    );
+    await (
+      await expectedFramedElement(
+        page,
+        'table caption button:nth-of-type(1)',
+        '←',
+      )
+    ).click();
+    await expectedFramedElement(page, 'table caption', '1 to 7 of 250 rows');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm001',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'The Shawshank Redemption',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '1994',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.7',
+    );
+  });
+
+  test('SliceInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/sliceinhtmltable-svelte`,
+    );
+    await expectedElement(page, 'h1', '<SliceInHtmlTable /> (Svelte)');
+    await expectedFramedElement(page, 'table thead th:nth-of-type(1)', 'Id');
+    await expectedFramedElement(page, 'table thead th:nth-of-type(2)', 'name');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'g02',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Comedy',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(2) th',
+      'g03',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(2) td',
+      'Family',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(3) th',
+      'g10',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(3) td',
+      'Action',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(4) th',
+      'g11',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(4) td',
+      'Horror',
+    );
+  });
+
+  test('RelationshipInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/relationshipinhtmltable-svelte`,
+    );
+    await expectedElement(page, 'h1', '<RelationshipInHtmlTable /> (Svelte)');
+    await expectedFramedElement(page, 'table thead th:nth-of-type(1)', 'Genre');
+    await expectedFramedElement(
+      page,
+      'table thead th:nth-of-type(2)',
+      'Popularity',
+    );
+    await expectedFramedElement(
+      page,
+      'table thead th:nth-of-type(3)',
+      'Description',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td:nth-of-type(1)',
+      'Drama',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td:nth-of-type(2) b',
+      '6',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td:nth-of-type(3)',
+      'Dramatic movies to make you think',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(2) td:nth-of-type(1)',
+      'Comedy',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(2) td:nth-of-type(2) b',
+      '7',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(2) td:nth-of-type(3)',
+      'These ones make you laugh',
+    );
+  });
+
+  test('ResultTableInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/resulttableinhtmltable-svelte`,
+    );
+    await expectedElement(page, 'h1', '<ResultTableInHtmlTable /> (Svelte)');
+    await expectedFramedElement(page, 'table thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'g05',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Animation',
+    );
+    await expectedFramedElement(page, 'table tbody tr:nth-of-type(1) td', '9');
+    await expectNoFramedElement(page, 'table tbody tr:nth-of-type(4)');
+  });
+
+  test('ResultSortedTableInHtmlTable', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte`,
+    );
+    await expectedElement(
+      page,
+      'h1',
+      '<ResultSortedTableInHtmlTable /> (Svelte)',
+    );
+    await expectedFramedElement(page, 'table thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm006',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Impossible Things',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2021',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.6',
+    );
+    await (
+      await expectedFramedElement(page, 'table thead th', 'Rating')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm182',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      `Me Against You: Mr. S's Vendetta`,
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2020',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.1',
+    );
+    await (
+      await expectedFramedElement(page, 'table thead th', 'Rating')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm006',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Impossible Things',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2021',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.6',
+    );
+    await (await expectedFramedElement(page, 'table thead th', 'Year')).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm035',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Spider-Man: Into the Spider-Verse',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2018',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.4',
+    );
+    await (await expectedFramedElement(page, 'table thead th', 'Id')).click();
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm006',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Impossible Things',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2021',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.6',
+    );
+    await expectedFramedElement(page, 'table caption', '1 to 7 of 69 rows');
+    await (
+      await expectedFramedElement(
+        page,
+        'table caption button:nth-of-type(1)[disabled]',
+        '←',
+      )
+    ).click({force: true});
+    await expectedFramedElement(page, 'table caption', '1 to 7 of 69 rows');
+    await (
+      await expectedFramedElement(
+        page,
+        'table caption button:nth-of-type(2)',
+        '→',
+      )
+    ).click();
+    await expectedFramedElement(page, 'table caption', '8 to 14 of 69 rows');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm031',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Josee, the Tiger and the Fish',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2020',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.4',
+    );
+    await (
+      await expectedFramedElement(
+        page,
+        'table caption button:nth-of-type(1)',
+        '←',
+      )
+    ).click();
+    await expectedFramedElement(page, 'table caption', '1 to 7 of 69 rows');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'm006',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      'Impossible Things',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '2021',
+    );
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) td',
+      '8.6',
+    );
+  });
+
+  test('EditableValueView', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/editablevalueview-svelte`,
+    );
+    await expectedElement(page, 'h1', '<EditableValueView /> (Svelte)');
+    await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) th',
+      'username',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'string',
+    );
+    const input1 = await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td input',
+    );
+    await expect(input1).toHaveValue('John Appleseed');
+    await expectedFramedElement(page, '#edit button', 'string');
+    const input2 = await expectedFramedElement(page, `#edit input`);
+    await expect(input2).toHaveValue('John Appleseed');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'string',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'number',
+    );
+    await expect(input1).toHaveValue('0');
+    await expectedFramedElement(page, '#edit button', 'number');
+    await expect(input2).toHaveValue('0');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'number',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'boolean',
+    );
+    const check1 = await expectedFramedElement(
+      page,
+      `table:nth-of-type(1) tbody tr:nth-of-type(1) td input[type='checkbox']`,
+    );
+    await expect(check1).toBeChecked();
+    await expectedFramedElement(page, '#edit button', 'boolean');
+    const check2 = await expectedFramedElement(
+      page,
+      `#edit input[type='checkbox']`,
+    );
+    await expect(check2).toBeChecked();
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'boolean',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'object',
+    );
+    await expectedFramedElement(page, '#edit button', 'object');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'object',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'array',
+    );
+    await expectedFramedElement(page, '#edit button', 'array');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'array',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'string',
+    );
+    await expect(input1).toHaveValue('John Appleseed');
+    await expectedFramedElement(page, '#edit button', 'string');
+    await expect(input2).toHaveValue('John Appleseed');
+
+    await input1.fill('John Appleseed!');
+    await expect(input2).toHaveValue('John Appleseed!');
+
+    await input2.fill('John Appleseed!?');
+    await expect(input1).toHaveValue('John Appleseed!?');
+  });
+
+  test('EditableCellView', async ({page}) => {
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/editablecellview-svelte`,
+    );
+    await expectedElement(page, 'h1', '<EditableCellView /> (Svelte)');
+    await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) th',
+      'g05',
+    );
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'string',
+    );
+    const input1 = await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td input',
+    );
+    await expect(input1).toHaveValue('Animation');
+    await expectedFramedElement(page, '#edit button', 'string');
+    const input2 = await expectedFramedElement(page, `#edit input`);
+    await expect(input2).toHaveValue('Animation');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'string',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'number',
+    );
+    await expect(input1).toHaveValue('0');
+    await expectedFramedElement(page, '#edit button', 'number');
+    await expect(input2).toHaveValue('0');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'number',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'boolean',
+    );
+    const check1 = await expectedFramedElement(
+      page,
+      `table:nth-of-type(1) tbody tr:nth-of-type(5) td input[type='checkbox']`,
+    );
+    await expect(check1).toBeChecked();
+    await expectedFramedElement(page, '#edit button', 'boolean');
+    const check2 = await expectedFramedElement(
+      page,
+      `#edit input[type='checkbox']`,
+    );
+    await expect(check2).toBeChecked();
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'boolean',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'object',
+    );
+    await expectedFramedElement(page, '#edit button', 'object');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'object',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'array',
+    );
+    await expectedFramedElement(page, '#edit button', 'array');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'array',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'string',
+    );
+    await expect(input1).toHaveValue('Animation');
+    await expectedFramedElement(page, '#edit button', 'string');
+    await expect(input2).toHaveValue('Animation');
+
+    await input1.fill('Animation!');
+    await expect(input2).toHaveValue('Animation!');
+
+    await input2.fill('Animation!?');
+    await expect(input1).toHaveValue('Animation!?');
+  });
+
+  test('Inspector', async ({page}) => {
+    await expectPage(page, `/demos/ui-components-svelte/inspector-svelte`);
+    await expectedElement(page, 'h1', '<Inspector /> (Svelte)');
+    await expectedFramedElement(page, '#info', 'Loaded tables:');
+    await expectedFramedElement(page, 'aside#tinybaseInspector', undefined, {
+      state: 'attached',
+    });
+    await expectedFramedElement(
+      page,
+      'aside#tinybaseInspector main[data-position="3"]',
+    );
+    await expectedFramedElement(page, 'main', 'Store: default');
+    await expectedFramedElement(page, 'main', 'Tables');
+    await expectedFramedElement(page, 'main', 'Table: genres');
+
+    await (
+      await expectedFramedElement(page, 'img[title="Dock to left"]')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'aside#tinybaseInspector main[data-position="0"]',
+    );
+
+    const frame = page.frameLocator('iframe').first();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Store: default'})
+      .first()
+      .click();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Tables'})
+      .first()
+      .click();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Table: genres'})
+      .first()
+      .click();
+
+    const genresDetails = frame.locator(
+      'details:has(> summary span:has-text("Table: genres"))',
+    );
+    await genresDetails.locator('summary img[title="Edit"]').click();
+
+    const genreInput = genresDetails
+      .locator('tbody tr:nth-of-type(1) td input')
+      .first();
+    await expect(genreInput).toHaveValue('Drama');
+    await genreInput.fill('Drama!');
+
+    await genresDetails.locator('summary img[title="Done editing"]').click();
+    await expectedFramedElement(page, 'details td', 'Drama!');
+  });
+});

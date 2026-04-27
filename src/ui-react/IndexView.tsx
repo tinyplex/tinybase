@@ -4,7 +4,7 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useSliceIds} from './hooks.ts';
 import {SliceView} from './SliceView.tsx';
 
@@ -15,9 +15,9 @@ export const IndexView: typeof IndexViewDecl = ({
   getSliceComponentProps,
   separator,
   debugIds,
-}: IndexProps): any =>
-  wrap(
-    arrayMap(useSliceIds(indexId, indexes), (sliceId) => (
+}: IndexProps): any => (
+  <Wrap separator={separator} debugIds={debugIds} id={indexId}>
+    {arrayMap(useSliceIds(indexId, indexes), (sliceId) => (
       <Slice
         key={sliceId}
         {...getProps(getSliceComponentProps, sliceId)}
@@ -26,8 +26,6 @@ export const IndexView: typeof IndexViewDecl = ({
         indexes={indexes}
         debugIds={debugIds}
       />
-    )),
-    separator,
-    debugIds,
-    indexId,
-  );
+    ))}
+  </Wrap>
+);

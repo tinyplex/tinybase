@@ -65,7 +65,7 @@
  * This example creates a FilePersister object and persists the Store to a local
  * file.
  *
- * ```js yolo
+ * ```js ignore
  * import {createStore} from 'tinybase';
  * import {createFilePersister} from 'tinybase/persisters/persister-file';
  *

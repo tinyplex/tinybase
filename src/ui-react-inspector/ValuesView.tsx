@@ -1,13 +1,14 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {ValuesProps} from '../@types/ui-react/index.d.ts';
 import {arrayIsEmpty} from '../common/array.ts';
+import {getUniqueId} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {VALUES} from '../common/strings.ts';
 import {ValuesInHtmlTable} from '../ui-react-dom/index.tsx';
 import {useValueIds} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {ValueActions, ValuesActions} from './actions/values.tsx';
-import {getUniqueId, useEditable} from './common.ts';
-import type {StoreProp} from './types.ts';
+import {useEditable} from './editable.ts';
 
 const valueActions = [{label: '', component: ValueActions}];
 

@@ -18,7 +18,7 @@ body > main > article {
   form {
     display: none;
   }
-  a#penEdit {
+  a#sbEdit {
     padding: 0 0.25rem;
     margin: 25rem 0 -26rem 0px;
     height: 1rem;
@@ -32,13 +32,40 @@ body > main > article {
     display: block;
     margin: 1rem auto;
   }
+  img[src^='/shots/'],
+  img[src*='/shots/'] {
+    background: @backColor;
+    border: 1px solid @borderColor;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow);
+  }
   img[title^='Inline'] {
     height: 1rem;
     display: inline;
     margin: 0;
   }
-  img[title^='Thumbnail'] {
-    width: 50%;
+  section.withThumbnail {
+    margin-bottom: 2.5rem;
+    > .thumbnailPanel {
+      display: grid;
+      gap: 1.5rem;
+      > a {
+        display: block;
+        align-self: start;
+      }
+      > a > img {
+        width: 100%;
+        max-height: 8rem;
+        object-fit: cover;
+        object-position: top left;
+        margin: 0;
+      }
+      > div > :first-child {
+        margin-top: 0;
+      }
+    }
+  }
+  > section.s1 > h1 + section.withThumbnail {
+    margin-top: 3rem;
   }
   .essential {
     background-color: @accentColor;
@@ -53,12 +80,14 @@ body > main > article {
 
 @media (min-width: 38rem) {
   body > main > article {
-    a#penEdit {
+    a#sbEdit {
       display: inline;
     }
-    img[title^='Thumbnail'] {
-      margin: 0 1rem 2rem 0;
-      float: left;
+    section.withThumbnail {
+      > .thumbnailPanel {
+        grid-template-columns: minmax(9rem, 12rem) 1fr;
+        align-items: start;
+      }
     }
   }
 }

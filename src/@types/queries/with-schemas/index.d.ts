@@ -229,6 +229,12 @@ export type GetTableCell<
         ? Cell<Schema, JoinedTableId, JoinedCellId>
         : Cell<any, any, any>)
     | undefined;
+  /// GetTableCell.3
+  (
+    asQuery: true,
+    joinedQueryId: Id,
+    joinedCellId: Id,
+  ): Cell<any, any, any> | undefined;
 };
 
 /// Param
@@ -249,6 +255,8 @@ export type Select<
     joinedCellId: JoinedCellIdOrId<Schema, JoinedTableId>,
   ): SelectedAs;
   /// Select.3
+  (asQuery: true, joinedQueryId: Id, joinedCellId: Id): SelectedAs;
+  /// Select.4
   (
     getCell: (
       getTableCell: GetTableCell<Schema, RootTableId>,
@@ -275,10 +283,22 @@ export type Join<
   ): JoinedAs;
   /// Join.2
   (
+    asQuery: true,
+    joinedQueryId: Id,
+    on: CellIdFromSchema<Schema, RootTableId>,
+  ): JoinedAs;
+  /// Join.3
+  (
     joinedTableId: TableIdFromSchema<Schema>,
     on: (getCell: GetCell<Schema, RootTableId>, rowId: Id) => Id | undefined,
   ): JoinedAs;
-  /// Join.3
+  /// Join.4
+  (
+    asQuery: true,
+    joinedQueryId: Id,
+    on: (getCell: GetCell<Schema, RootTableId>, rowId: Id) => Id | undefined,
+  ): JoinedAs;
+  /// Join.5
   <
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
       | TableIdFromSchema<Schema>
@@ -292,7 +312,22 @@ export type Join<
     fromIntermediateJoinedTableId: IntermediateJoinedTableId,
     on: IntermediateJoinedCellId,
   ): JoinedAs;
-  /// Join.4
+  /// Join.6
+  <
+    IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+    IntermediateJoinedCellId extends JoinedCellIdOrId<
+      Schema,
+      IntermediateJoinedTableId
+    > = JoinedCellIdOrId<Schema, IntermediateJoinedTableId>,
+  >(
+    asQuery: true,
+    joinedQueryId: Id,
+    fromIntermediateJoinedTableId: IntermediateJoinedTableId,
+    on: IntermediateJoinedCellId,
+  ): JoinedAs;
+  /// Join.7
   <
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
       | TableIdFromSchema<Schema>
@@ -303,6 +338,24 @@ export type Join<
     on: (
       // prettier-ignore
       getIntermediateJoinedCell: 
+        IntermediateJoinedTableId extends TableIdFromSchema<Schema>
+          ? GetCell<Schema, IntermediateJoinedTableId>
+          : GetCell<NoTablesSchema, Id>,
+      intermediateJoinedRowId: Id,
+    ) => Id | undefined,
+  ): JoinedAs;
+  /// Join.8
+  <
+    IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+  >(
+    asQuery: true,
+    joinedQueryId: Id,
+    fromIntermediateJoinedTableId: IntermediateJoinedTableId,
+    on: (
+      // prettier-ignore
+      getIntermediateJoinedCell:
         IntermediateJoinedTableId extends TableIdFromSchema<Schema>
           ? GetCell<Schema, IntermediateJoinedTableId>
           : GetCell<NoTablesSchema, Id>,
@@ -344,6 +397,13 @@ export type Where<
   ): void;
   /// Where.3
   (
+    asQuery: true,
+    joinedQueryId: Id,
+    joinedCellId: Id,
+    equals: Cell<any, any, any>,
+  ): void;
+  /// Where.4
+  (
     condition: (getTableCell: GetTableCell<Schema, RootTableId>) => boolean,
   ): void;
 };
@@ -381,6 +441,20 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
       select: Select<Schemas[0], RootTableId>;
       join: Join<Schemas[0], RootTableId>;
       where: Where<Schemas[0], RootTableId>;
+      group: Group;
+      having: Having;
+      param: Param;
+    }) => void,
+    paramValues?: ParamValues,
+  ): Queries<Schemas>;
+  setQueryDefinition(
+    queryId: Id,
+    asQuery: true,
+    rootQueryId: Id,
+    query: (keywords: {
+      select: Select<any, any>;
+      join: Join<any, any>;
+      where: Where<any, any>;
       group: Group;
       having: Having;
       param: Param;

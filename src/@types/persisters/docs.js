@@ -1482,7 +1482,7 @@
    * Store and then sequences two tasks in order to update its data on a
    * hypothetical remote system.
    *
-   * ```js yolo
+   * ```js ignore
    * import {
    *   checkRemoteSystemIsReady,
    *   getDataFromRemoteSystem,

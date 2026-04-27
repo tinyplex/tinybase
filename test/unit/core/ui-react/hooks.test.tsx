@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/immutability */
 import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
@@ -94,7 +93,17 @@ import {
   useParamValues,
   useParamValuesListener,
   useParamValuesState,
+  usePersisterIds,
+  usePersisterStatus,
+  usePersisterStatusListener,
+  useProvideCheckpoints,
+  useProvideIndexes,
+  useProvideMetrics,
+  useProvidePersister,
+  useProvideQueries,
+  useProvideRelationships,
   useProvideStore,
+  useProvideSynchronizer,
   useQueries,
   useQueriesIds,
   useQueryIds,
@@ -148,6 +157,9 @@ import {
   useStore,
   useStoreIds,
   useStores,
+  useSynchronizerIds,
+  useSynchronizerStatus,
+  useSynchronizerStatusListener,
   useTable,
   useTableCellIds,
   useTableCellIdsListener,
@@ -1008,6 +1020,191 @@ describe('Context Hooks', () => {
     unmount();
   });
 
+  test('usePersisterIds', () => {
+    const Test = () => didRender(JSON.stringify(usePersisterIds()));
+    const persister1 = createFilePersister(createStore(), tmp.fileSync().name);
+    const persister2 = createFilePersister(createStore(), tmp.fileSync().name);
+    const {container, unmount} = render(
+      <Provider persistersById={{persister1, persister2}}>
+        <Test />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('["persister1","persister2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  test('useSynchronizerIds', () => {
+    const Test = () => didRender(JSON.stringify(useSynchronizerIds()));
+    const synchronizer1 = createLocalSynchronizer(createMergeableStore());
+    const synchronizer2 = createLocalSynchronizer(createMergeableStore());
+    const {container, unmount} = render(
+      <Provider synchronizersById={{synchronizer1, synchronizer2}}>
+        <Test />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('["synchronizer1","synchronizer2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  test('useProvideMetrics', () => {
+    const Test = () =>
+      didRender(JSON.stringify(useMetrics('m')?.getMetric('m1')));
+    const metrics = createMetrics(store).setMetricDefinition('m1', 't1');
+    const ProvideMetrics = () => {
+      useProvideMetrics('m', metrics);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvideMetrics />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('1');
+    expect(didRender).toHaveBeenCalledTimes(2);
+    unmount();
+  });
+
+  test('useProvideIndexes', () => {
+    const Test = () =>
+      didRender(JSON.stringify(useIndexes('i')?.getSliceRowIds('i1', '1')));
+    const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
+    const ProvideIndexes = () => {
+      useProvideIndexes('i', indexes);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvideIndexes />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual(JSON.stringify(['r1']));
+    expect(didRender).toHaveBeenCalledTimes(2);
+    unmount();
+  });
+
+  test('useProvideRelationships', () => {
+    store.setTables({
+      t1: {r1: {c1: 'R1'}},
+      T1: {R1: {C1: 1}},
+    });
+    const Test = () =>
+      didRender(
+        JSON.stringify(useRelationships('rel')?.getRemoteRowId('r1', 'r1')),
+      );
+    const relationships = createRelationships(store).setRelationshipDefinition(
+      'r1',
+      't1',
+      'T1',
+      'c1',
+    );
+    const ProvideRelationships = () => {
+      useProvideRelationships('rel', relationships);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvideRelationships />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual(JSON.stringify('R1'));
+    expect(didRender).toHaveBeenCalledTimes(2);
+    unmount();
+  });
+
+  test('useProvideQueries', () => {
+    const Test = () =>
+      didRender(JSON.stringify(useQueries('q')?.getResultTable('q1')));
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const ProvideQueries = () => {
+      useProvideQueries('q', queries);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvideQueries />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual(JSON.stringify({r1: {c1: 1}}));
+    expect(didRender).toHaveBeenCalledTimes(2);
+    unmount();
+  });
+
+  test('useProvideCheckpoints', () => {
+    const Test = () =>
+      didRender(JSON.stringify(useCheckpoints('cp')?.getCheckpointIds()));
+    const checkpoints = createCheckpoints(store);
+    store.setTables({t1: {r1: {c1: 2}}});
+    checkpoints.addCheckpoint();
+    const ProvideCheckpoints = () => {
+      useProvideCheckpoints('cp', checkpoints);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvideCheckpoints />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual(JSON.stringify([['0'], '1', []]));
+    expect(didRender).toHaveBeenCalledTimes(2);
+    unmount();
+  });
+
+  test('useProvidePersister', async () => {
+    tmp.setGracefulCleanup();
+    const tmpFile = tmp.fileSync();
+    const persister = createFilePersister(store, tmpFile.name);
+    const Test = () => didRender(JSON.stringify(usePersisterStatus(persister)));
+    const ProvidePersister = () => {
+      useProvidePersister('p', persister);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvidePersister />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('0');
+    expect(didRender).toHaveBeenCalledTimes(2);
+    await persister.stopAutoLoad();
+    await persister.stopAutoSave();
+    unmount();
+  });
+
+  test('useProvideSynchronizer', async () => {
+    const mergeableStore = createMergeableStore('s1');
+    const synchronizer = createLocalSynchronizer(mergeableStore);
+    const Test = () =>
+      didRender(JSON.stringify(useSynchronizerStatus(synchronizer)));
+    const ProvideSynchronizer = () => {
+      useProvideSynchronizer('syn', synchronizer);
+      return null;
+    };
+    const {container, unmount} = render(
+      <Provider>
+        <Test />
+        <ProvideSynchronizer />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('0');
+    expect(didRender).toHaveBeenCalledTimes(2);
+    await synchronizer.destroy();
+    unmount();
+  });
+
   test('No context', () => {
     const Test = () =>
       didRender(
@@ -1580,6 +1777,22 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(6);
 
+    unmount();
+  });
+
+  test('useSortedRowIds, object arg, default descending and offset', () => {
+    const Test = () =>
+      didRender(
+        <>
+          {JSON.stringify(
+            useSortedRowIds({tableId: 't1', cellId: 'c1'}, store),
+          )}
+        </>,
+      );
+    store.setTables({t1: {r1: {c1: 1}, r2: {c1: 2}}});
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual(JSON.stringify(['r1', 'r2']));
+    expect(didRender).toHaveBeenCalledTimes(1);
     unmount();
   });
 
@@ -2841,13 +3054,13 @@ describe('Read Hooks', () => {
         where('c1', 3);
       }),
     );
-    expect(container.textContent).toEqual(JSON.stringify(['c3', 'c2', 'c1']));
+    expect(container.textContent).toEqual(JSON.stringify(['c1', 'c2', 'c3']));
 
     act(() => store.delTable('t1'));
     expect(container.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
-    expect(didRender).toHaveBeenCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(5);
 
     unmount();
   });
@@ -5762,6 +5975,36 @@ describe('Listener Hooks', () => {
 
     expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
 
+    unmount();
+  });
+
+  test('usePersisterStatusListener', async () => {
+    tmp.setGracefulCleanup();
+    const tmpFile = tmp.fileSync();
+    const persister = createFilePersister(store, tmpFile.name);
+    const listener = vi.fn();
+    const Test = () => {
+      usePersisterStatusListener(listener, [listener], persister);
+      return didRender(null);
+    };
+    const {unmount} = render(<Test />);
+    expect(didRender).toHaveBeenCalledTimes(1);
+    await persister.stopAutoLoad();
+    await persister.stopAutoSave();
+    unmount();
+  });
+
+  test('useSynchronizerStatusListener', async () => {
+    const mergeableStore = createMergeableStore('s1');
+    const synchronizer = createLocalSynchronizer(mergeableStore);
+    const listener = vi.fn();
+    const Test = () => {
+      useSynchronizerStatusListener(listener, [listener], synchronizer);
+      return didRender(null);
+    };
+    const {unmount} = render(<Test />);
+    expect(didRender).toHaveBeenCalledTimes(1);
+    await synchronizer.destroy();
     unmount();
   });
 });

@@ -3,8 +3,10 @@ import importLint from 'eslint-plugin-import';
 import jsdocLint from 'eslint-plugin-jsdoc';
 import reactLint from 'eslint-plugin-react';
 import hooksLint from 'eslint-plugin-react-hooks';
+import svelteLint from 'eslint-plugin-svelte';
 import {globalIgnores} from 'eslint/config';
 import globals from 'globals';
+import * as svelteParser from 'svelte-eslint-parser';
 import tsLint from 'typescript-eslint';
 
 export default tsLint.config(
@@ -16,6 +18,8 @@ export default tsLint.config(
     'site/extras/*',
     '**/node_modules/**/*',
   ]),
+
+  ...svelteLint.configs['flat/recommended'],
 
   jsLint.configs.recommended,
   importLint.flatConfigs.recommended,
@@ -29,7 +33,7 @@ export default tsLint.config(
     settings: {
       react: {version: 'detect'},
       'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
-      'import/core-modules': ['expo-sqlite'],
+      'import/core-modules': ['expo-sqlite', 'svelte'],
     },
 
     languageOptions: {globals: {...globals.node, ...globals.browser}},
@@ -52,7 +56,7 @@ export default tsLint.config(
         {
           code: 80,
           ignorePattern:
-            '^(\\s+\\* )?(imports?|exports?|\\} from|(.+ as .+))\\W.*',
+            '^\\s*(\\* )?(imports?|exports?|\\} from|(.+ as .+))\\W.*',
           ignoreUrls: true,
         },
       ],
@@ -74,6 +78,9 @@ export default tsLint.config(
             '^custom-remote-handlers$',
             '^electric-sql/(client/model|notifiers|wa-sqlite)$',
             '^cloudflare:workers$',
+            '^svelte/reactivity$',
+            '@sveltejs/vite-plugin-svelte',
+            '@testing-library/svelte/vite',
             'eslint/config',
             'typescript-eslint',
             'bun:sqlite',
@@ -149,7 +156,9 @@ export default tsLint.config(
     rules: {
       'jsdoc/check-tag-names': [
         2,
-        {definedTags: ['category', 'packageDocumentation', 'essential']},
+        {
+          definedTags: ['category', 'packageDocumentation', 'essential'],
+        },
       ],
       'jsdoc/no-restricted-syntax': [
         2,
@@ -175,7 +184,6 @@ export default tsLint.config(
       ],
       'jsdoc/require-jsdoc': 2,
       'jsdoc/require-description': 2,
-      'jsdoc/require-description-complete-sentence': 2,
       'jsdoc/require-returns-description': 2,
       'jsdoc/no-blank-blocks': 2,
       'jsdoc/require-param-type': 0,
@@ -187,5 +195,35 @@ export default tsLint.config(
   {
     files: ['eslint.config.js'],
     extends: [tsLint.configs.disableTypeChecked],
+  },
+
+  {
+    files: ['**/*.svelte'],
+    languageOptions: {
+      parser: svelteParser,
+      parserOptions: {parser: tsLint.parser},
+    },
+    rules: {
+      'react/prop-types': 0,
+      'react/react-in-jsx-scope': 0,
+      'react/no-multi-comp': 0,
+      'react-hooks/exhaustive-deps': 0,
+      'react-hooks/rules-of-hooks': 0,
+      'jsdoc/require-jsdoc': 0,
+      'svelte/no-useless-mustaches': 0,
+      'svelte/prefer-writable-derived': 0,
+      'import/namespace': 0,
+      'import/named': 0,
+      'import/default': 0,
+      'import/no-named-as-default': 0,
+      'import/no-named-as-default-member': 0,
+    },
+  },
+
+  {
+    files: ['**/*.svelte.ts'],
+    rules: {
+      'svelte/prefer-writable-derived': 0,
+    },
   },
 );

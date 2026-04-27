@@ -65,11 +65,15 @@ const ALL_MODULES = [
   'ui-react-inspector',
   'ui-react',
   'ui-solid',
+  'ui-svelte-dom',
+  'ui-svelte-inspector',
+  'ui-svelte',
 ];
 const ALL_DEFINITIONS = [
   ...ALL_MODULES,
   '_internal/store',
   '_internal/queries',
+  '_internal/ui',
   '_internal/ui-react',
   '_internal/ui-solid',
 ];
@@ -139,10 +143,15 @@ const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
     }
   });
 
-const copyWithReplace = async (src, [from, to], dst = src) => {
-  const file = await promises.readFile(src, UTF8);
-  await promises.writeFile(dst, file.replace(from, to), UTF8);
-};
+const copyWithReplace = async (src, replacements, dst = src) =>
+  await promises.writeFile(
+    dst,
+    replacements.reduce(
+      (file, [from, to]) => file.replaceAll(from, to),
+      await promises.readFile(src, UTF8),
+    ),
+    UTF8,
+  );
 
 const gzipFile = async (fileName) =>
   await promises.writeFile(
@@ -206,7 +215,7 @@ const copyPackageFiles = async (forProd = false) => {
   await promises.copyFile('LICENSE', join(DIST_DIR, 'LICENSE'));
   await promises.copyFile('readme.md', join(DIST_DIR, 'readme.md'));
   await promises.copyFile('releases.md', join(DIST_DIR, 'releases.md'));
-  await promises.copyFile('site/guides/16_agents.md', 'agents.md');
+  await promises.copyFile('site/guides/17_agents.md', 'agents.md');
   await promises.copyFile('agents.md', join(DIST_DIR, 'agents.md'));
 };
 
@@ -232,6 +241,10 @@ const getLabelBlocks = async () => {
 
 const copyDefinition = async (dir, module) => {
   const labelBlocks = await getLabelBlocks();
+  const {version} = JSON.parse(readFileSync('./package.json', UTF8));
+  const siteRoot = version.includes('beta')
+    ? 'https://beta.tinybase.org'
+    : 'https://tinybase.org';
   // Add easier-to-read with-schemas blocks
   const codeBlocks = new Map();
   [
@@ -250,37 +263,42 @@ const copyDefinition = async (dir, module) => {
       );
     }
   });
+  const absolutizeDocMedia = (block) =>
+    block.replace(/\]\((?:\s*\*\s*)?\/shots\//g, `](${siteRoot}/shots/`);
+
   const fileRewrite = (block, addOverrideSnippet) =>
-    block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
-      if (labelBlocks.has(label)) {
-        const codeOverride = codeBlocks.get(label);
-        let block = labelBlocks.get(label);
-        if (
-          addOverrideSnippet &&
-          codeBlocks.has(label) &&
-          code.includes('<') &&
-          code.includes('Schema') &&
-          !codeOverride.endsWith('{')
-        ) {
-          const prefix = block.match(/^\s+\*$/m)?.[0];
-          if (prefix) {
-            const line = '\n' + prefix;
-            block = block.replace(
-              /^\s+\*$/m,
-              `${prefix}${line}` +
-                ' This has schema-based typing.' +
-                ' The following is a simplified representation:' +
-                `${line}${line} \`\`\`ts override` +
-                codeOverride.trimEnd() +
-                `${line} \`\`\`${line}`,
-            );
+    absolutizeDocMedia(
+      block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
+        if (labelBlocks.has(label)) {
+          const codeOverride = codeBlocks.get(label);
+          let block = labelBlocks.get(label);
+          if (
+            addOverrideSnippet &&
+            codeBlocks.has(label) &&
+            code.includes('<') &&
+            code.includes('Schema') &&
+            !codeOverride.endsWith('{')
+          ) {
+            const prefix = block.match(/^\s+\*$/m)?.[0];
+            if (prefix) {
+              const line = '\n' + prefix;
+              block = block.replace(
+                /^\s+\*$/m,
+                `${prefix}${line}` +
+                  ' This has schema-based typing.' +
+                  ' The following is a simplified representation:' +
+                  `${line}${line} \`\`\`ts override` +
+                  codeOverride.trimEnd() +
+                  `${line} \`\`\`${line}`,
+              );
+            }
+            code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
           }
-          code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
+          return block + code;
         }
-        return block + code;
-      }
-      throw `Missing docs label ${label} in ${module}`;
-    });
+        throw `Missing docs label ${label} in ${module}`;
+      }),
+    );
 
   await allOf(['', '/with-schemas'], async (extraDir) => {
     const definitionFile = await ensureDir(
@@ -333,22 +351,16 @@ const lintCheckFiles = async (dir) => {
   const prettierConfig = await getPrettierConfig();
 
   const filePaths = [];
-  ['.ts', '.tsx', '.js', '.d.ts'].forEach((extension) =>
+  ['.ts', '.tsx', '.js', '.d.ts', '.svelte'].forEach((extension) =>
     forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
   );
   await allOf(filePaths, async (filePath) => {
+    const fileConfig = filePath.endsWith('.svelte')
+      ? {...prettierConfig, filepath: filePath, parser: undefined}
+      : {...prettierConfig, filepath: filePath};
     const code = await promises.readFile(filePath, UTF8);
-    if (
-      !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
-    ) {
-      writeFileSync(
-        filePath,
-        await prettier.format(
-          code,
-          {...prettierConfig, filepath: filePath},
-          UTF8,
-        ),
-      );
+    if (!(await prettier.check(code, fileConfig))) {
+      writeFileSync(filePath, await prettier.format(code, fileConfig), UTF8);
     }
   });
 
@@ -374,6 +386,7 @@ const lintCheckDocs = async (dir) => {
   const esLint = new ESLint({
     overrideConfig: {
       rules: {
+        'import/no-unresolved': 0,
         'no-console': 0,
         'react/prop-types': 0,
         'react-hooks/rules-of-hooks': 0,
@@ -501,6 +514,16 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
   const {default: image} = await import('@rollup/plugin-image');
   const {default: terser} = await import('@rollup/plugin-terser');
+  const sveltePlugin =
+    module == 'ui-svelte' ||
+    module == 'ui-svelte-dom' ||
+    module == 'ui-svelte-inspector'
+      ? (await import('rollup-plugin-svelte')).default
+      : null;
+  const uiModule =
+    module == 'ui-svelte-dom' || module == 'ui-svelte-inspector'
+      ? 'ui-svelte'
+      : 'ui-react';
 
   let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
@@ -524,9 +547,12 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'solid-js/jsx-runtime',
       'url',
       'yjs',
-      ...(module == 'omni'
-        ? []
-        : ['tinybase/store', '../ui-react', '../ui-solid']),
+      ...(module == 'omni' ? [] : ['tinybase/store', '../' + uiModule]),
+      ...(module == 'ui-svelte' ||
+      module == 'ui-svelte-dom' ||
+      module == 'ui-svelte-inspector'
+        ? [/^svelte/]
+        : []),
     ],
     input: inputFile,
     plugins: [
@@ -551,6 +577,14 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       min
         ? [terser({toplevel: true, compress: {unsafe: true, passes: 3}})]
         : prettierPlugin(await getPrettierConfig()),
+      ...(sveltePlugin
+        ? [
+            sveltePlugin({
+              extensions: ['.svelte', '.svelte.ts'],
+              compilerOptions: {runes: true},
+            }),
+          ]
+        : []),
     ],
     onwarn: (warning, warn) => {
       if (warning.code !== 'MISSING_NODE_BUILTINS') {
@@ -582,7 +616,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   outputFiles.push(outputFileWithSchemas);
   await copyWithReplace(
     outputFile,
-    ['../ui-react', '../../ui-react/with-schemas/' + index],
+    [['../' + uiModule, '../../' + uiModule + '/with-schemas/' + index]],
     outputFileWithSchemas,
   );
   await copyWithReplace(
@@ -593,7 +627,11 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
 
   await copyWithReplace(
     outputFile,
-    ['../ui-react', '../ui-react/' + index],
+    [
+      ['../ui-react', '../ui-react/' + index],
+      ['../ui-svelte', '../ui-svelte/' + index],
+      [/(\w+) = \$\.noop/g, '/* istanbul ignore next */ $1 = $.noop'],
+    ],
     outputFile,
   );
   await copyWithReplace(
@@ -654,6 +692,9 @@ const compileModulesForProd = async () => {
 const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
 
+  if (api) {
+    await copyDefinitions(DIST_DIR);
+  }
   await makeDir(TMP_DIR);
   await esbuild.build({
     entryPoints: ['site/build.ts'],
@@ -664,8 +705,6 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     format: 'esm',
     platform: 'node',
   });
-
-  // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
   await build(esbuild, DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
@@ -713,6 +752,14 @@ export const ts = async () => {
   await tsCheck('src');
   await tsCheck('test');
   await tsCheck('site');
+  await execute(
+    'npx svelte-check --workspace src/ui-svelte ' +
+      '--tsconfig svelte.tsconfig.json',
+  );
+  await execute(
+    'npx svelte-check --workspace test/unit/core/ui-svelte ' +
+      '--tsconfig svelte.tsconfig.json',
+  );
 };
 
 export const compileForProd = () => compileModulesForProd();
