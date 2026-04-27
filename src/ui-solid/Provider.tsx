@@ -66,9 +66,7 @@ export const Provider = (
       ) == thing
         ? extraThingsById
         : (arrayWith(extraThingsById, thingOffset, {
-            ...(extraThingsById[thingOffset] as IdObj<
-              ThingsByOffset[Offset]
-            >),
+            ...(extraThingsById[thingOffset] as IdObj<ThingsByOffset[Offset]>),
             [id]: thing,
           } as ThingsById<ThingsByOffset>[Offset]) as ExtraThingsById),
     );

@@ -1,4 +1,4 @@
-export * from './hooks.ts';
+export * from './primitives.ts';
 
 export * from './BackwardCheckpointsView.tsx';
 export * from './CellView.tsx';

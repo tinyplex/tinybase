@@ -1,13 +1,11 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
-import type {
-  ResultRowProps,
-} from '../@types/ui-solid/index.d.ts';
 import type {Id} from '../@types/index.d.ts';
+import type {ResultRowProps} from '../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
 import {renderView, wrap} from './common/wrap.tsx';
-import {useResultCellIds} from './hooks.ts';
+import {useResultCellIds} from './primitives.ts';
 import {ResultCellView} from './ResultCellView.tsx';
 
 export const ResultRowView = (props: ResultRowProps): JSXElement => {

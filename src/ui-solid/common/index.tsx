@@ -14,19 +14,19 @@ import type {
   TableProps,
 } from '../../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
+import type {MaybeAccessor} from '../../common/solid.ts';
 import {
   getProps,
   getRelationshipsStoreTableIds,
   getValue,
 } from '../../common/solid.ts';
-import type {MaybeAccessor} from '../../common/solid.ts';
 import {CheckpointView} from '../CheckpointView.tsx';
 import {ThingsByOffset} from '../context.ts';
 import {
   useCheckpointIds,
   useCheckpointsOrCheckpointsById,
   useRelationshipsOrRelationshipsById,
-} from '../hooks.ts';
+} from '../primitives.ts';
 import {ResultRowView} from '../ResultRowView.tsx';
 import {RowView} from '../RowView.tsx';
 import {renderView, wrap} from './wrap.tsx';
@@ -92,8 +92,9 @@ export const useComponentPerRow = (
   ) => () => Ids,
   rowId: Id | (() => Id),
 ) => {
-  const resolvedRelationships =
-    useRelationshipsOrRelationshipsById(() => props.relationships);
+  const resolvedRelationships = useRelationshipsOrRelationshipsById(
+    () => props.relationships,
+  );
   const rowIds = getRowIdsHook(
     () => props.relationshipId,
     rowId,
@@ -126,12 +127,13 @@ export const getUseCheckpointView =
   (getCheckpoints: (checkpointIds: CheckpointIds) => Ids) =>
   (
     props: (
-    | BackwardCheckpointsProps
-    | CurrentCheckpointProps
-    | ForwardCheckpointsProps
-  ) & {
-    separator?: JSXElement | string;
-  }): JSXElement => {
+      | BackwardCheckpointsProps
+      | CurrentCheckpointProps
+      | ForwardCheckpointsProps
+    ) & {
+      separator?: JSXElement | string;
+    },
+  ): JSXElement => {
     const resolvedCheckpoints = useCheckpointsOrCheckpointsById(
       () => props.checkpoints,
     );

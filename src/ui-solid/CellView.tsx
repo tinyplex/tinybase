@@ -1,12 +1,10 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
-import type {
-  CellProps,
-} from '../@types/ui-solid/index.d.ts';
+import type {CellProps} from '../@types/ui-solid/index.d.ts';
 import {getValue} from '../common/solid.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {renderView, wrap} from './common/wrap.tsx';
-import {useCell} from './hooks.ts';
+import {useCell} from './primitives.ts';
 
 export const CellView = (props: CellProps): JSXElement => {
   const cell = useCell(

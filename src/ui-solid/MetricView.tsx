@@ -1,12 +1,10 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
-import type {
-  MetricProps,
-} from '../@types/ui-solid/index.d.ts';
+import type {MetricProps} from '../@types/ui-solid/index.d.ts';
 import {getValue} from '../common/solid.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {renderView, wrap} from './common/wrap.tsx';
-import {useMetric} from './hooks.ts';
+import {useMetric} from './primitives.ts';
 
 export const MetricView = (props: MetricProps): JSXElement => {
   const metric = useMetric(

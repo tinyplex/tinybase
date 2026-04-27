@@ -1,9 +1,7 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
 import type {Id} from '../@types/index.d.ts';
-import type {
-  RemoteRowProps,
-} from '../@types/ui-solid/index.d.ts';
+import type {RemoteRowProps} from '../@types/ui-solid/index.d.ts';
 import {isUndefined} from '../common/other.ts';
 import {
   getProps,
@@ -11,12 +9,16 @@ import {
   getValue,
 } from '../common/solid.ts';
 import {renderView, wrap} from './common/wrap.tsx';
-import {useRelationshipsOrRelationshipsById, useRemoteRowId} from './hooks.ts';
+import {
+  useRelationshipsOrRelationshipsById,
+  useRemoteRowId,
+} from './primitives.ts';
 import {RowView} from './RowView.tsx';
 
 export const RemoteRowView = (props: RemoteRowProps): JSXElement => {
-  const resolvedRelationships =
-    useRelationshipsOrRelationshipsById(() => props.relationships);
+  const resolvedRelationships = useRelationshipsOrRelationshipsById(
+    () => props.relationships,
+  );
   const rowId = useRemoteRowId(
     () => props.relationshipId,
     () => props.localRowId,

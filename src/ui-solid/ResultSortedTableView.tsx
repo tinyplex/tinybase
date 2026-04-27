@@ -1,10 +1,8 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
-import type {
-  ResultSortedTableProps,
-} from '../@types/ui-solid/index.d.ts';
+import type {ResultSortedTableProps} from '../@types/ui-solid/index.d.ts';
 import {resultTableView} from './common/index.tsx';
-import {useResultSortedRowIds} from './hooks.ts';
+import {useResultSortedRowIds} from './primitives.ts';
 
 export const ResultSortedTableView = (
   props: ResultSortedTableProps,

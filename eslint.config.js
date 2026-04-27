@@ -3,6 +3,7 @@ import importLint from 'eslint-plugin-import';
 import jsdocLint from 'eslint-plugin-jsdoc';
 import reactLint from 'eslint-plugin-react';
 import hooksLint from 'eslint-plugin-react-hooks';
+import solidLint from 'eslint-plugin-solid';
 import svelteLint from 'eslint-plugin-svelte';
 import {globalIgnores} from 'eslint/config';
 import globals from 'globals';
@@ -147,6 +148,27 @@ export default tsLint.config(
 
       'react-hooks/exhaustive-deps': 2,
       'react-hooks/rules-of-hooks': 2,
+    },
+  },
+
+  {
+    files: ['src/ui-solid/**/*.{ts,tsx}'],
+    plugins: solidLint.configs['flat/typescript'].plugins,
+    rules: {
+      ...solidLint.configs['flat/typescript'].rules,
+      'solid/reactivity': [
+        1,
+        {customReactiveFunctions: ['renderView']},
+      ],
+      ...Object.fromEntries(
+        Object.keys(reactLint.rules).map((rule) => [`react/${rule}`, 0]),
+      ),
+      ...Object.fromEntries(
+        Object.keys(hooksLint.rules).map((rule) => [
+          `react-hooks/${rule}`,
+          0,
+        ]),
+      ),
     },
   },
 

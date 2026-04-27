@@ -143,6 +143,5 @@ export const useProvideThing = <Offset extends Offsets>(
 
 export const useThingIds = (offset: Offsets): Accessor<Ids> => {
   const contextValue = useContext(Context) ?? EMPTY_CONTEXT;
-  return () =>
-    objIds((contextValue()[offset * 2 + 1] ?? {}) as IdObj<unknown>);
+  return () => objIds((contextValue()[offset * 2 + 1] ?? {}) as IdObj<unknown>);
 };
