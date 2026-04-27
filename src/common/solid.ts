@@ -6,7 +6,9 @@ import {isFunction, isUndefined} from './other.ts';
 
 export type DependencyList = ReadonlyArray<unknown>;
 
-export const getValue = <Value>(value: Value | (() => Value)): Value =>
+export type MaybeAccessor<Value> = Value | (() => Value);
+
+export const getValue = <Value>(value: MaybeAccessor<Value>): Value =>
   (isFunction(value) ? (value as () => Value)() : value) as Value;
 
 export const getProps = <Props extends {[key: string]: any}>(

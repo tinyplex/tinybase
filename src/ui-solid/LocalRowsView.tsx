@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {
   LocalRowsProps,
 } from '../@types/ui-solid/index.d.ts';
@@ -7,5 +8,5 @@ import {useLocalRowIds} from './hooks.ts';
 
 export const LocalRowsView = (
   props: LocalRowsProps,
-): any =>
-  useComponentPerRow(props as any, useLocalRowIds as any, () => props.remoteRowId);
+): JSXElement =>
+  useComponentPerRow(props, useLocalRowIds, () => props.remoteRowId);

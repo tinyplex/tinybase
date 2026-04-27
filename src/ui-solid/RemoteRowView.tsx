@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {Id} from '../@types/index.d.ts';
 import type {
   RemoteRowProps,
@@ -9,23 +10,23 @@ import {
   getRelationshipsStoreTableIds,
   getValue,
 } from '../common/solid.ts';
-import {wrap} from './common/wrap.tsx';
+import {renderView, wrap} from './common/wrap.tsx';
 import {useRelationshipsOrRelationshipsById, useRemoteRowId} from './hooks.ts';
 import {RowView} from './RowView.tsx';
 
-export const RemoteRowView = (props: RemoteRowProps): any => {
+export const RemoteRowView = (props: RemoteRowProps): JSXElement => {
   const resolvedRelationships =
-    useRelationshipsOrRelationshipsById((() => props.relationships) as any);
+    useRelationshipsOrRelationshipsById(() => props.relationships);
   const rowId = useRemoteRowId(
-    (() => props.relationshipId) as any,
-    (() => props.localRowId) as any,
-    resolvedRelationships as any,
-  ) as any;
-  return () => {
+    () => props.relationshipId,
+    () => props.localRowId,
+    resolvedRelationships,
+  );
+  return renderView(() => {
     const Row = props.rowComponent ?? RowView;
     const [_relationshipsValue, store, , remoteTableId] =
       getRelationshipsStoreTableIds(
-        getValue(resolvedRelationships as any),
+        getValue(resolvedRelationships),
         props.relationshipId,
       );
     const remoteRowId = getValue(rowId) as Id | undefined;
@@ -43,5 +44,5 @@ export const RemoteRowView = (props: RemoteRowProps): any => {
       props.debugIds,
       props.localRowId,
     );
-  };
+  });
 };

@@ -10,7 +10,9 @@ import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
 import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import {IdObj, objGet, objIds} from '../common/obj.ts';
-import {GLOBAL, isFunction, isString, isUndefined} from '../common/other.ts';
+import {GLOBAL, isString, isUndefined} from '../common/other.ts';
+import type {MaybeAccessor} from '../common/solid.ts';
+import {getValue} from '../common/solid.ts';
 import {TINYBASE} from '../common/strings.ts';
 import type {Offsets} from './Provider.tsx';
 
@@ -62,29 +64,35 @@ export type ContextValue = [
 
 const TINYBASE_CONTEXT = TINYBASE + '_uisc';
 const EMPTY_CONTEXT = () => [] as ContextValue;
+const GLOBAL_CONTEXT = GLOBAL as typeof GLOBAL &
+  Record<
+    string,
+    ReturnType<typeof createContext<Accessor<ContextValue>>> | undefined
+  >;
 
 export const Context: ReturnType<typeof createContext<Accessor<ContextValue>>> =
-  (GLOBAL as any)[TINYBASE_CONTEXT]
-    ? /*! istanbul ignore next */ (GLOBAL as any)[TINYBASE_CONTEXT]
-    : ((GLOBAL as any)[TINYBASE_CONTEXT] =
+  GLOBAL_CONTEXT[TINYBASE_CONTEXT]
+    ? /*! istanbul ignore next */ GLOBAL_CONTEXT[TINYBASE_CONTEXT]
+    : (GLOBAL_CONTEXT[TINYBASE_CONTEXT] =
         createContext<Accessor<ContextValue>>(EMPTY_CONTEXT));
 
 export const useThing = <UsedThing extends Thing>(
-  id: Id | undefined,
+  id: MaybeAccessor<Id | undefined>,
   offset: Offsets,
 ): Accessor<UsedThing | undefined> => {
   const contextValue = useContext(Context) ?? EMPTY_CONTEXT;
   return () => {
     const resolvedContextValue = contextValue();
+    const resolvedId = getValue(id);
     return (
-      isUndefined(id)
+      isUndefined(resolvedId)
         ? resolvedContextValue[offset * 2]
-        : isString(id)
+        : isString(resolvedId)
           ? objGet(
               resolvedContextValue[offset * 2 + 1] as IdObj<UsedThing>,
-              id,
+              resolvedId,
             )
-          : id
+          : resolvedId
     ) as UsedThing;
   };
 };
@@ -107,16 +115,17 @@ export const useThingOrThingById = <
     | AnyPersister
     | Synchronizer,
 >(
-  thingOrThingId: UsedThing | Id | undefined,
+  thingOrThingId: MaybeAccessor<UsedThing | Id | undefined>,
   offset: Offsets,
 ): Accessor<UsedThing | undefined> => {
-  const thing = useThing(thingOrThingId as Id, offset);
-  return () =>
-    isUndefined(thingOrThingId) || isString(thingOrThingId)
+  const thing = useThing(thingOrThingId as MaybeAccessor<Id>, offset);
+  return () => {
+    const resolvedThingOrThingId = getValue(thingOrThingId);
+    return isUndefined(resolvedThingOrThingId) ||
+      isString(resolvedThingOrThingId)
       ? (thing() as UsedThing | undefined)
-      : isFunction(thingOrThingId)
-        ? (thingOrThingId() as UsedThing)
-        : (thingOrThingId as UsedThing);
+      : (resolvedThingOrThingId as UsedThing);
+  };
 };
 
 export const useProvideThing = <Offset extends Offsets>(

@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {
   RowProps,
 } from '../@types/ui-solid/index.d.ts';
@@ -7,16 +8,16 @@ import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
 import {CellView} from './CellView.tsx';
 import {useCustomOrDefaultCellIds} from './common/hooks.tsx';
-import {wrap} from './common/wrap.tsx';
+import {renderView, wrap} from './common/wrap.tsx';
 
-export const RowView = (props: RowProps): any => {
+export const RowView = (props: RowProps): JSXElement => {
   const cellIds = useCustomOrDefaultCellIds(
     () => props.customCellIds,
     () => props.tableId,
     () => props.rowId,
     () => props.store,
-  ) as any;
-  return () => {
+  );
+  return renderView(() => {
     const Cell = props.cellComponent ?? CellView;
     return wrap(
       arrayMap(getValue(cellIds) as Id[], (cellId: Id) => (
@@ -33,5 +34,5 @@ export const RowView = (props: RowProps): any => {
       props.debugIds,
       props.rowId,
     );
-  };
+  });
 };

@@ -1,21 +1,22 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {
   ResultRowProps,
 } from '../@types/ui-solid/index.d.ts';
 import type {Id} from '../@types/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
-import {wrap} from './common/wrap.tsx';
+import {renderView, wrap} from './common/wrap.tsx';
 import {useResultCellIds} from './hooks.ts';
 import {ResultCellView} from './ResultCellView.tsx';
 
-export const ResultRowView = (props: ResultRowProps): any => {
+export const ResultRowView = (props: ResultRowProps): JSXElement => {
   const resultCellIds = useResultCellIds(
-    (() => props.queryId) as any,
-    (() => props.rowId) as any,
-    (() => props.queries) as any,
-  ) as any;
-  return () => {
+    () => props.queryId,
+    () => props.rowId,
+    () => props.queries,
+  );
+  return renderView(() => {
     const ResultCell = props.resultCellComponent ?? ResultCellView;
     return wrap(
       arrayMap(getValue(resultCellIds) as Id[], (cellId: Id) => (
@@ -32,5 +33,5 @@ export const ResultRowView = (props: ResultRowProps): any => {
       props.debugIds,
       props.rowId,
     );
-  };
+  });
 };

@@ -1,27 +1,28 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {Id} from '../@types/index.d.ts';
 import type {
   SliceProps,
 } from '../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getIndexStoreTableId, getProps, getValue} from '../common/solid.ts';
-import {wrap} from './common/wrap.tsx';
+import {renderView, wrap} from './common/wrap.tsx';
 import {useIndexesOrIndexesById, useSliceRowIds} from './hooks.ts';
 import {RowView} from './RowView.tsx';
 
-export const SliceView = (props: SliceProps): any => {
+export const SliceView = (props: SliceProps): JSXElement => {
   const resolvedIndexes = useIndexesOrIndexesById(
-    (() => props.indexes) as any,
+    () => props.indexes,
   );
   const rowIds = useSliceRowIds(
-    (() => props.indexId) as any,
-    (() => props.sliceId) as any,
-    resolvedIndexes as any,
-  ) as any;
-  return () => {
+    () => props.indexId,
+    () => props.sliceId,
+    resolvedIndexes,
+  );
+  return renderView(() => {
     const Row = props.rowComponent ?? RowView;
     const [_indexesValue, store, tableId] = getIndexStoreTableId(
-      getValue(resolvedIndexes as any),
+      getValue(resolvedIndexes),
       props.indexId,
     );
     return wrap(
@@ -38,5 +39,5 @@ export const SliceView = (props: SliceProps): any => {
       props.debugIds,
       props.sliceId,
     );
-  };
+  });
 };

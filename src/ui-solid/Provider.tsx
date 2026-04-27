@@ -4,7 +4,7 @@ import {createMemo, createSignal, useContext} from 'solid-js';
 import type {Id} from '../@types/index.d.ts';
 import type {ProviderProps} from '../@types/ui-solid/index.d.ts';
 import {arrayNew, arrayWith} from '../common/array.ts';
-import {objDel, objGet, objHas} from '../common/obj.ts';
+import {IdObj, objDel, objGet, objHas} from '../common/obj.ts';
 import {ExtraThingsById, ThingsById} from './common/index.tsx';
 import {Context, ContextValue, ThingsByOffset} from './context.ts';
 
@@ -47,7 +47,7 @@ const EMPTY_CONTEXT = () => [] as ContextValue;
 
 export const Provider = (
   props: ProviderProps & {readonly children: JSXElement},
-): any => {
+): JSXElement => {
   const parentValue =
     useContext(Context) ?? (EMPTY_CONTEXT as Accessor<ContextValue>);
   const [extraThingsById, setExtraThingsById] = createSignal<ExtraThingsById>(
@@ -60,12 +60,17 @@ export const Provider = (
     thing: ThingsByOffset[Offset],
   ): void => {
     setExtraThingsById((extraThingsById) =>
-      objGet(extraThingsById[thingOffset] as any, id) == thing
+      objGet(
+        extraThingsById[thingOffset] as IdObj<ThingsByOffset[Offset]>,
+        id,
+      ) == thing
         ? extraThingsById
         : (arrayWith(extraThingsById, thingOffset, {
-            ...extraThingsById[thingOffset],
+            ...(extraThingsById[thingOffset] as IdObj<
+              ThingsByOffset[Offset]
+            >),
             [id]: thing,
-          } as any) as ExtraThingsById),
+          } as ThingsById<ThingsByOffset>[Offset]) as ExtraThingsById),
     );
   };
 
@@ -76,7 +81,12 @@ export const Provider = (
         : (arrayWith(
             extraThingsById,
             thingOffset,
-            objDel(extraThingsById[thingOffset] as any, id),
+            objDel(
+              extraThingsById[thingOffset] as IdObj<
+                ThingsByOffset[typeof thingOffset]
+              >,
+              id,
+            ),
           ) as ExtraThingsById),
     );
   };

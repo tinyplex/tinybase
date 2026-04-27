@@ -1,20 +1,21 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {
   IndexProps,
 } from '../@types/ui-solid/index.d.ts';
 import type {Id} from '../@types/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
-import {wrap} from './common/wrap.tsx';
+import {renderView, wrap} from './common/wrap.tsx';
 import {useSliceIds} from './hooks.ts';
 import {SliceView} from './SliceView.tsx';
 
-export const IndexView = (props: IndexProps): any => {
+export const IndexView = (props: IndexProps): JSXElement => {
   const sliceIds = useSliceIds(
-    (() => props.indexId) as any,
-    (() => props.indexes) as any,
-  ) as any;
-  return () => {
+    () => props.indexId,
+    () => props.indexes,
+  );
+  return renderView(() => {
     const Slice = props.sliceComponent ?? SliceView;
     return wrap(
       arrayMap(getValue(sliceIds) as Id[], (sliceId: Id) => (
@@ -30,5 +31,5 @@ export const IndexView = (props: IndexProps): any => {
       props.debugIds,
       props.indexId,
     );
-  };
+  });
 };

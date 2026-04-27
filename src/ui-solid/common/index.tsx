@@ -19,6 +19,7 @@ import {
   getRelationshipsStoreTableIds,
   getValue,
 } from '../../common/solid.ts';
+import type {MaybeAccessor} from '../../common/solid.ts';
 import {CheckpointView} from '../CheckpointView.tsx';
 import {ThingsByOffset} from '../context.ts';
 import {
@@ -28,18 +29,21 @@ import {
 } from '../hooks.ts';
 import {ResultRowView} from '../ResultRowView.tsx';
 import {RowView} from '../RowView.tsx';
-import {wrap} from './wrap.tsx';
+import {renderView, wrap} from './wrap.tsx';
 
 export type ThingsById<ThingsByOffset> = {
   [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
 };
 export type ExtraThingsById = ThingsById<ThingsByOffset>;
 
-export const tableView = (props: TableProps, rowIds: Ids): any =>
-  () => {
+export const tableView = (
+  props: TableProps,
+  rowIds: MaybeAccessor<Ids>,
+): JSXElement =>
+  renderView(() => {
     const Row = props.rowComponent ?? RowView;
     return wrap(
-      arrayMap(getValue(rowIds as any) as Ids, (rowId) => (
+      arrayMap(getValue(rowIds), (rowId) => (
         <Row
           {...getProps(props.getRowComponentProps, rowId)}
           tableId={props.tableId}
@@ -53,13 +57,16 @@ export const tableView = (props: TableProps, rowIds: Ids): any =>
       props.debugIds,
       props.tableId,
     );
-  };
+  });
 
-export const resultTableView = (props: ResultTableProps, rowIds: Ids): any =>
-  () => {
+export const resultTableView = (
+  props: ResultTableProps,
+  rowIds: MaybeAccessor<Ids>,
+): JSXElement =>
+  renderView(() => {
     const ResultRow = props.resultRowComponent ?? ResultRowView;
     return wrap(
-      arrayMap(getValue(rowIds as any) as Ids, (rowId) => (
+      arrayMap(getValue(rowIds), (rowId) => (
         <ResultRow
           {...getProps(props.getResultRowComponentProps, rowId)}
           queryId={props.queryId}
@@ -72,7 +79,7 @@ export const resultTableView = (props: ResultTableProps, rowIds: Ids): any =>
       props.debugIds,
       props.queryId,
     );
-  };
+  });
 
 export const useComponentPerRow = (
   props: (RemoteRowProps | LocalRowsProps | LinkedRowsProps) & {
@@ -81,21 +88,21 @@ export const useComponentPerRow = (
   getRowIdsHook: (
     relationshipId: Id | (() => Id),
     rowId: Id | (() => Id),
-    relationships: RelationshipsOrRelationshipsId | undefined,
-  ) => Ids,
+    relationships: MaybeAccessor<RelationshipsOrRelationshipsId | undefined>,
+  ) => () => Ids,
   rowId: Id | (() => Id),
 ) => {
   const resolvedRelationships =
-    useRelationshipsOrRelationshipsById((() => props.relationships) as any);
+    useRelationshipsOrRelationshipsById(() => props.relationships);
   const rowIds = getRowIdsHook(
-    (() => props.relationshipId) as any,
+    () => props.relationshipId,
     rowId,
-    resolvedRelationships as any,
-  ) as any;
-  return () => {
+    resolvedRelationships,
+  );
+  return renderView(() => {
     const Row = props.rowComponent ?? RowView;
     const [_relationship, store, localTableId] = getRelationshipsStoreTableIds(
-      getValue(resolvedRelationships as any),
+      getValue(resolvedRelationships),
       props.relationshipId,
     );
     return wrap(
@@ -112,7 +119,7 @@ export const useComponentPerRow = (
       props.debugIds,
       getValue(rowId),
     );
-  };
+  });
 };
 
 export const getUseCheckpointView =
@@ -124,12 +131,12 @@ export const getUseCheckpointView =
     | ForwardCheckpointsProps
   ) & {
     separator?: JSXElement | string;
-  }): any => {
+  }): JSXElement => {
     const resolvedCheckpoints = useCheckpointsOrCheckpointsById(
-      (() => props.checkpoints) as any,
+      () => props.checkpoints,
     );
-    const checkpointIds = useCheckpointIds(resolvedCheckpoints) as any;
-    return () => {
+    const checkpointIds = useCheckpointIds(resolvedCheckpoints);
+    return renderView(() => {
       const Checkpoint = props.checkpointComponent ?? CheckpointView;
       return wrap(
         arrayMap(
@@ -140,7 +147,7 @@ export const getUseCheckpointView =
                 props.getCheckpointComponentProps,
                 checkpointId as Id,
               )}
-              checkpoints={resolvedCheckpoints}
+              checkpoints={getValue(resolvedCheckpoints)}
               checkpointId={checkpointId}
               debugIds={props.debugIds}
             />
@@ -148,5 +155,5 @@ export const getUseCheckpointView =
         ),
         props.separator,
       );
-    };
+    });
   };

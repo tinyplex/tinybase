@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+import type {JSXElement} from 'solid-js';
 import type {
   ResultTableProps,
 } from '../@types/ui-solid/index.d.ts';
@@ -7,11 +8,11 @@ import {useResultRowIds} from './hooks.ts';
 
 export const ResultTableView = (
   props: ResultTableProps,
-): any =>
+): JSXElement =>
   resultTableView(
     props,
     useResultRowIds(
-      (() => props.queryId) as any,
-      (() => props.queries) as any,
+      () => props.queryId,
+      () => props.queries,
     ),
   );
