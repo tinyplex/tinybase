@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import type {Cell, Id, Queries, Store} from 'tinybase';
+import type {Cell, Id, Ids, Queries, Store} from 'tinybase';
 import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createQueriesListener} from '../../common/listeners.ts';
@@ -892,6 +892,13 @@ describe('Queries queries', () => {
       });
       expect(queries.getResultTable('q1')).toEqual({});
     });
+
+    test('forEach skips missing results', () => {
+      const queryIds: Ids = [];
+      queries.setQueryDefinition('q1', true, 'Q3', ({select}) => select('c1'));
+      queries.forEachResultTable((queryId) => queryIds.push(queryId));
+      expect(queryIds).toEqual(['Q1', 'Q2']);
+    });
   });
 
   describe('Joins', () => {
@@ -1274,6 +1281,24 @@ describe('Queries queries', () => {
         r4: {'Q1.c1': 'four'},
       });
     });
+
+    test('query to joined query, root deleted later', () => {
+      queries.setQueryDefinition('Q3', 't1', ({select, where}) => {
+        select('c1');
+        select('c3');
+        where('c3', 'r4');
+      });
+      queries.setQueryDefinition('q1', true, 'Q3', ({select, join}) => {
+        select('c1').as('Q3.c1');
+        select(true, 'Q2', 'c1').as('Q2.c1');
+        join(true, 'Q2', 'c3');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r4: {'Q3.c1': 'four', 'Q2.c1': 'four.j'},
+      });
+      store.delRow('t1', 'r4');
+      expect(queries.getResultTable('q1')).toEqual({});
+    });
   });
 
   describe('Late appearance', () => {
@@ -1553,6 +1578,19 @@ describe('Queries queries', () => {
         'Q1',
         'q1',
       ]);
+    });
+
+    test('wildcard listener cleans up deleted query stores', () => {
+      const listener = vi.fn();
+      const listenerId = queries.addResultTableListener(null, listener);
+      queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
+      queries.delQueryDefinition('q1');
+      listener.mockClear();
+      queries.setQueryDefinition('q2', true, 'Q2', ({select}) => select('c1'));
+      expect(listener.mock.calls.map(([, queryId]) => queryId)).toEqual([
+        'q2',
+      ]);
+      queries.delListener(listenerId);
     });
   });
 });

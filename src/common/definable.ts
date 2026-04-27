@@ -6,13 +6,12 @@ import type {Middleware} from '../@types/middleware/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
-import {arrayForEach, arrayIsEmpty, arrayIsEqual} from './array.ts';
+import {arrayForEach, arrayIsEqual} from './array.ts';
 import {
   collClear,
   collDel,
   collForEach,
   collHas,
-  collIsEmpty,
   collValues,
 } from './coll.ts';
 import {AddListener, CallListeners} from './listeners.ts';
@@ -97,18 +96,16 @@ export const getDefinableFunctions = <Thing, RowValue>(
     );
   };
 
-  const delStoreListeners = (id: Id, ...listenerIds: Ids): void =>
+  const delStoreListeners = (id: Id): void =>
     ifNotUndefined(mapGet(storeListenerIds, id), (allListenerIds) => {
       arrayForEach(
-        arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
+        collValues(allListenerIds),
         (listenerId: Id) => {
           store.delListener(listenerId);
           collDel(allListenerIds, listenerId);
         },
       );
-      if (collIsEmpty(allListenerIds)) {
-        mapSet(storeListenerIds, id);
-      }
+      mapSet(storeListenerIds, id);
     });
 
   const setDefinition = (id: Id, tableId: Id): void => {

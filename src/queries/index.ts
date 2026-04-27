@@ -238,21 +238,14 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
   const delSourceStoreListeners = (
     queryId: Id,
-    sourceStore?: Store,
-    ...listenerIds: Ids
+    sourceStore: Store,
+    listenerId: Id,
   ): void =>
     ifNotUndefined(
-      sourceStore
-        ? mapGet(mapGet(sourceStoreListenerIds, queryId), sourceStore)
-        : undefined,
+      mapGet(mapGet(sourceStoreListenerIds, queryId), sourceStore),
       (allListenerIds) => {
-        arrayForEach(
-          arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
-          (listenerId) => {
-            sourceStore!.delListener(listenerId);
-            collDel(allListenerIds, listenerId);
-          },
-        );
+        sourceStore.delListener(listenerId);
+        collDel(allListenerIds, listenerId);
         if (collIsEmpty(allListenerIds)) {
           mapSet(mapGet(sourceStoreListenerIds, queryId), sourceStore);
         }
@@ -748,19 +741,18 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 remoteSourceStore,
               ] = mapGet(joins, joinAlias) as JoinClause;
               const remoteRowId = on?.(getCell as any, rootRowId);
-              const [
-                previousRemoteRowId,
-                previousRemoteSourceStore,
-                previousRemoteListenerId,
-              ] = mapGet(remoteIdPairs, rootRowId) ?? [];
+              const previousRemote = mapGet(remoteIdPairs, rootRowId);
+              const previousRemoteRowId = previousRemote?.[0];
               if (remoteRowId != previousRemoteRowId) {
-                if (!isUndefined(previousRemoteListenerId)) {
-                  delSourceStoreListeners(
-                    queryId,
-                    previousRemoteSourceStore,
-                    previousRemoteListenerId,
-                  );
-                }
+                ifNotUndefined(
+                  previousRemote,
+                  ([, previousRemoteSourceStore, previousRemoteListenerId]) =>
+                    delSourceStoreListeners(
+                      queryId,
+                      previousRemoteSourceStore,
+                      previousRemoteListenerId,
+                    ),
+                );
                 mapSet(
                   remoteIdPairs,
                   rootRowId,
