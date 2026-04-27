@@ -11,8 +11,8 @@ import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
 import { useCallback, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createIndexes, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
-import { createLocalPersister, createSessionPersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/persisters/persister-browser&quot;;
+import { createIndexes, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createLocalPersister, createSessionPersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/persisters/persister-browser&quot;;
 import {
   CellView,
   Provider,
@@ -24,8 +24,8 @@ import {
   useCreateStore,
   useValue,
   useValueState
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector&quot;;
 var TYPES = [&quot;Home&quot;, &quot;Work&quot;, &quot;Archived&quot;];
 var SCHEMA = {
   todos: {
@@ -142,10 +142,10 @@ var TodoType = ({ tableId, rowId }) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build a yet more complex &#x27;Todo&#x27; app, complete with persistence and a schema.</p><p>In the <a href="/demos/todo-app/todo-app-v1-the-basics/">Todo App v1 (the basics)</a> demo and the <a href="/demos/todo-app/todo-app-v2-indexes/">Todo App v2 (indexes)</a> demo, refreshing the page reset all the todos, which didn&#x27;t make it very useful. In this version, we demonstrate the basics of how to persist data from a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</p><p>When data is persisted, it also valuable to have a schema for it, so in this demo we also add a simple schema for the todos.</p><p>We&#x27;re making changes to the <a href="/demos/todo-app/todo-app-v2-indexes/">Todo App v2 (indexes)</a> demo.</p><h3 id="additional-initialization">Additional Initialization</h3><p>We will call the <a href="/api/the-essentials/persisting-stores/createlocalpersister/"><code>createLocalPersister</code></a> function to create a <a href="/api/the-essentials/persisting-stores/persister/"><code>Persister</code></a> object that persists the the main <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object in the browser&#x27;s local store. Similarly, the <a href="/api/the-essentials/persisting-stores/createsessionpersister/"><code>createSessionPersister</code></a> function will create a <a href="/api/the-essentials/persisting-stores/persister/"><code>Persister</code></a> object that persists the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object containing the user&#x27;s current view:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
 <span class="prefix"> </span>  {
 <span class="prefix"> </span>    "imports": {
-<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.3.0-beta.0",
-</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/persisters/persister-browser": "https://esm.sh/tinybase@8.3.0-beta.0/persisters/persister-browser",
-</span><span class="unchanged"><span class="prefix"> </span>      "tinybase/ui-react": "https://esm.sh/tinybase@8.3.0-beta.0/ui-react",
-<span class="prefix"> </span>      "tinybase/ui-react-inspector": "https://esm.sh/tinybase@8.3.0-beta.0/ui-react-inspector",
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.3.0-beta.1",
+</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/persisters/persister-browser": "https://esm.sh/tinybase@8.3.0-beta.1/persisters/persister-browser",
+</span><span class="unchanged"><span class="prefix"> </span>      "tinybase/ui-react": "https://esm.sh/tinybase@8.3.0-beta.1/ui-react",
+<span class="prefix"> </span>      "tinybase/ui-react-inspector": "https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector",
 <span class="prefix"> </span>      "react": "https://esm.sh/react@^19.2.5",
 <span class="prefix"> </span>      "react/jsx-runtime": "https://esm.sh/react@^19.2.5/jsx-runtime",
 <span class="prefix"> </span>      "react-dom/client": "https://esm.sh/react-dom@^19.2.5/client"

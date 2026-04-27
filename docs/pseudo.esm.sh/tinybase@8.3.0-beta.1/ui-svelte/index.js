@@ -1,8 +1,8 @@
 // dist/ui-svelte/index.js
-import { getContext, setContext, untrack } from "https://esm.sh/svelte@^5.55.4";
-import * as $ from "https://esm.sh/svelte@^5.55.4/internal/client";
-import "https://esm.sh/svelte@^5.55.4/internal/disclose-version";
-import { createSubscriber } from "https://esm.sh/svelte@^5.55.4/reactivity";
+import { getContext, setContext, untrack } from "https://esm.sh/svelte@^5.55.5";
+import * as $ from "https://esm.sh/svelte@^5.55.5/internal/client";
+import "https://esm.sh/svelte@^5.55.5/internal/disclose-version";
+import { createSubscriber } from "https://esm.sh/svelte@^5.55.5/reactivity";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";

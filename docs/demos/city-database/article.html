@@ -11,10 +11,10 @@ import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
 import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createQueries, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
-import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react&quot;;
-import { SortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react-dom&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react-inspector&quot;;
+import { createQueries, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
+import { SortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector&quot;;
 var App = () =&gt; {
   const store = useCreateStore(createStore);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,10 +73,10 @@ var CityTable = () =&gt; jsx(
     &lt;/html&gt;"></iframe><p>In this demo, we build an app that loads over 140,000 records to push the size and performance limits of TinyBase.</p><p>We use <a href="https://public.opendatasoft.com/explore/dataset/geonames-all-cities-with-a-population-1000">Opendatasoft GeoNames</a> as the source of the information in this app. Thank you for a great data set to demonstrate TinyBase!</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react-dom"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>

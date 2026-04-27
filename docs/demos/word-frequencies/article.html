@@ -11,14 +11,14 @@ import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runti
 import { useCallback, useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createIndexes, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
+import { createIndexes, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
 import {
   Provider,
   useCreateIndexes,
   useCreateStore,
   useRow,
   useSliceRowIds
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
 var loadWords = async (store) =&gt; {
   const words = (await (await fetch(`https://tinybase.org/assets/words.tsv`)).text()).split(&quot;\n&quot;);
   store.transaction(
@@ -112,8 +112,8 @@ var Loading = () =&gt; jsx(&quot;div&quot;, { id: &quot;loading&quot; });&lt;/sc
     &lt;/html&gt;"></iframe><p>In this demo, we load the list of the 10,000 most common words in English, index them for a fast search experience, and showcase TinyBase v2.1&#x27;s ability to register a <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> in multiple <a href="/api/indexes/type-aliases/concept/slice/"><code>Slice</code></a> arrays of an <a href="/api/indexes/type-aliases/concept/index/"><code>Index</code></a>.</p><p>We use the <a href="http://www.newgeneralservicelist.org/">New General Service List</a> by Browne, C., Culligan, B., and Phillips, J. as the source of these words and frequencies, and the derivative words.tsv is shared under CC BY-SA 4.0. Thank you!</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>

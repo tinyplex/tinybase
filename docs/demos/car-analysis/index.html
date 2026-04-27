@@ -11,7 +11,7 @@ import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runti
 import { useCallback, useEffect, useMemo, useRef, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createQueries, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
+import { createQueries, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
 import {
   Provider,
   useCreateQueries,
@@ -21,9 +21,9 @@ import {
   useResultCell,
   useResultSortedRowIds,
   useResultTable
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react&quot;;
-import { ResultSortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react-dom&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
+import { ResultSortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector&quot;;
 var DIMENSION_CELL_IDS = [&quot;Manufacturer&quot;, &quot;Name&quot;, &quot;Year&quot;, &quot;Region&quot;];
 var MEASURE_CELL_IDS = [
   &quot;MPG&quot;,
@@ -303,10 +303,10 @@ var Select = ({ options, selected, onOptionsChange, multiple = true }) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build an app that showcases the query capabilities of TinyBase v2.0, grouping and sorting dimensional data for lightweight analytical usage.</p><p>We&#x27;ve also updated it to use parameterized queries to take advantage of TinyBase v7.2.</p><p>The data from this demo is derived from <code>cars.json</code> in the <a href="https://github.com/vega/vega-datasets">Vega datasets</a> - thank you <a href="https://idl.cs.washington.edu/">UW Interactive Data Lab</a>!</p><h3 id="an-overview-of-the-data">An Overview Of The Data</h3><p>Before looking at code, let&#x27;s familiarize ourselves with the data used in this application.</p><p>The raw data is loaded from a TSV file into one single <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> object: <code>cars</code>, and comprises almost 400 records of cars made in the 1970s and 1980s.</p><p>For each, the data includes the manufacturer, the car name, year, and region. These <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> values are &#x27;dimensions&#x27; with which the data can be grouped.</p><p>Each record also includes a number of quantitative fields, including the car&#x27;s miles-per-gallon (MPG), the number of cylinders, their displacement, its horsepower, weight, and acceleration. These <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> values are &#x27;measures&#x27; which can be aggregated together - in this basic app, to find their average, maximum, or minimum.</p><p>The app is oriented around one single query. As the user picks different dimensions or measures in the app&#x27;s sidebar, that query is re-run and the results (either in graphical or tabular form) reactively update immediately.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react-dom"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>

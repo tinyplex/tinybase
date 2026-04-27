@@ -80,7 +80,6 @@ var tryCatch = async (action, then1, then2) => {
 var arrayHas = (array, value) => array.includes(value);
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
-var arrayOrValueEqual = (value1, value2) => isArray(value1) && isArray(value2) ? arrayIsEqual(value1, value2) : value1 === value2;
 var arrayIsSorted = (array, sorter) => arrayEvery(
   array,
   (value, index) => index == 0 || sorter(array[index - 1], value) <= 0
@@ -126,7 +125,6 @@ var objDel = (obj, id2) => {
   delete obj[id2];
   return obj;
 };
-var objToMap = (obj) => new Map(objEntries(obj));
 var objForEach = (obj, cb) => arrayForEach(objEntries(obj), ([id2, value]) => cb(value, id2));
 var objToArray = (obj, cb) => arrayMap(objEntries(obj), ([id2, value]) => cb(value, id2));
 var objMap = (obj, cb) => objNew(objToArray(obj, (value, id2) => [id2, cb(value, id2)]));
@@ -250,25 +248,16 @@ var getDefinableFunctions = (store, getDefaultThing, validateRowValue, addListen
   const getTableId = (id2) => mapGet(tableIds, id2);
   const getThing = (id2) => mapGet(things, id2);
   const setThing = (id2, thing) => mapSet(things, id2, thing);
-  const addStoreListeners = (id2, andCall, ...listenerIds) => {
+  const addStoreListeners = (id2, ...listenerIds) => {
     const set = mapEnsure(storeListenerIds, id2, setNew);
-    arrayForEach(
-      listenerIds,
-      (listenerId) => setAdd(set, listenerId) && andCall && store.callListener(listenerId)
-    );
-    return listenerIds;
+    arrayForEach(listenerIds, (listenerId) => setAdd(set, listenerId));
   };
-  const delStoreListeners = (id2, ...listenerIds) => ifNotUndefined(mapGet(storeListenerIds, id2), (allListenerIds) => {
-    arrayForEach(
-      arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
-      (listenerId) => {
-        store.delListener(listenerId);
-        collDel(allListenerIds, listenerId);
-      }
-    );
-    if (collIsEmpty(allListenerIds)) {
-      mapSet(storeListenerIds, id2);
-    }
+  const delStoreListeners = (id2) => ifNotUndefined(mapGet(storeListenerIds, id2), (allListenerIds) => {
+    arrayForEach(collValues(allListenerIds), (listenerId) => {
+      store.delListener(listenerId);
+      collDel(allListenerIds, listenerId);
+    });
+    mapSet(storeListenerIds, id2);
   });
   const setDefinition = (id2, tableId) => {
     mapSet(tableIds, id2, tableId);
@@ -333,7 +322,6 @@ var getDefinableFunctions = (store, getDefaultThing, validateRowValue, addListen
     delStoreListeners(id2);
     addStoreListeners(
       id2,
-      0,
       store.addRowListener(
         tableId,
         null,
@@ -364,9 +352,7 @@ var getDefinableFunctions = (store, getDefaultThing, validateRowValue, addListen
     setDefinitionAndListen,
     delDefinition,
     addThingIdsListener,
-    destroy,
-    addStoreListeners,
-    delStoreListeners
+    destroy
   ];
 };
 var getRowCellFunction = (getRowCell, defaultCellValue) => isString(getRowCell) ? (getCell) => getCell(getRowCell) : getRowCell ?? (() => defaultCellValue ?? EMPTY_STRING);
@@ -3182,13 +3168,29 @@ var createMiddleware = getCreateFunction((store) => {
   );
   return middleware;
 });
+var PARAMS_TABLE = "_";
+var PARAM_LISTENER_PREFIX = "p";
 var createQueries = getCreateFunction((store) => {
   const createStore2 = store._[0];
   const preStore = createStore2();
+  const paramStore = createStore2();
   const resultStore = createStore2();
+  const resultStores = mapNew();
+  const redefiningQueryIds = setNew();
+  const routedResultListeners = mapNew();
+  const routedResultListenerIds = mapNew();
+  const resultListenerStats = {
+    table: 0,
+    tableCellIds: 0,
+    rowCount: 0,
+    rowIds: 0,
+    sortedRowIds: 0,
+    row: 0,
+    cellIds: 0,
+    cell: 0
+  };
   const preStoreListenerIds = mapNew();
-  const paramValuesListeners = mapNew();
-  const paramValueListeners = mapNew();
+  const sourceStoreListenerIds = mapNew();
   const {
     _: [, addListener, callListeners],
     delListener: delListenerImpl
@@ -3205,9 +3207,7 @@ var createQueries = getCreateFunction((store) => {
     ,
     delDefinition,
     addQueryIdsListenerImpl,
-    destroy,
-    addStoreListeners,
-    delStoreListeners
+    destroyImpl
   ] = getDefinableFunctions(
     store,
     () => [],
@@ -3215,6 +3215,7 @@ var createQueries = getCreateFunction((store) => {
     addListener,
     callListeners
   );
+  const getResultStore = (queryId) => mapEnsure(resultStores, queryId, createStore2);
   const addPreStoreListener = (preStore2, queryId, ...listenerIds) => arrayForEach(
     listenerIds,
     (listenerId) => setAdd(
@@ -3240,8 +3241,45 @@ var createQueries = getCreateFunction((store) => {
         collClear(queryPreStoreListenerIds);
       }
     );
-    arrayForEach([resultStore, preStore], (store2) => store2.delTable(queryId));
+    arrayForEach(
+      [getResultStore(queryId), preStore],
+      (store2) => store2.delTable(queryId)
+    );
   };
+  const addSourceStoreListeners = (sourceStore, queryId, andCall, ...listenerIds) => {
+    const listenerIdSet = mapEnsure(
+      mapEnsure(sourceStoreListenerIds, queryId, mapNew),
+      sourceStore,
+      setNew
+    );
+    arrayForEach(listenerIds, (listenerId) => {
+      setAdd(listenerIdSet, listenerId);
+      if (andCall) {
+        sourceStore.callListener(listenerId);
+      }
+    });
+    return listenerIds;
+  };
+  const delSourceStoreListeners = (queryId, sourceStore, listenerId) => ifNotUndefined(
+    mapGet(mapGet(sourceStoreListenerIds, queryId), sourceStore),
+    (allListenerIds) => {
+      sourceStore.delListener(listenerId);
+      collDel(allListenerIds, listenerId);
+      if (collIsEmpty(allListenerIds)) {
+        mapSet(mapGet(sourceStoreListenerIds, queryId), sourceStore);
+      }
+    }
+  );
+  const resetSourceStores = (queryId) => ifNotUndefined(mapGet(sourceStoreListenerIds, queryId), (queryStoreIds) => {
+    mapForEach(
+      queryStoreIds,
+      (sourceStore, listenerIds) => collForEach(
+        listenerIds,
+        (listenerId) => sourceStore.delListener(listenerId)
+      )
+    );
+    collClear(queryStoreIds);
+  });
   const synchronizeTransactions = (queryId, fromStore, toStore) => addPreStoreListener(
     fromStore,
     queryId,
@@ -3250,379 +3288,478 @@ var createQueries = getCreateFunction((store) => {
       () => toStore.finishTransaction()
     )
   );
-  const setQueryDefinition = (queryId, tableId, build, paramValues = {}) => {
-    const oldParamValues = getParamValues(queryId);
-    setDefinition(queryId, tableId);
-    setQueryArgs(queryId, [build, objToMap(paramValues)]);
-    callParamListeners(queryId, oldParamValues, paramValues);
-    resetPreStores(queryId);
-    const [, paramsMap] = getQueryArgs(queryId);
-    const selectEntries = [];
-    const joinEntries = [[void 0, [tableId, void 0, void 0, [], mapNew()]]];
-    const wheres = [];
-    const groupEntries = [];
-    const havings = [];
-    const param = (paramId) => mapGet(paramsMap, paramId);
-    const select = (arg1, arg2) => {
-      const selectEntry = isFunction(arg1) ? [size(selectEntries) + EMPTY_STRING, arg1] : [
-        isUndefined(arg2) ? arg1 : arg2,
-        (getTableCell) => getTableCell(arg1, arg2)
-      ];
-      arrayPush(selectEntries, selectEntry);
-      return { as: (selectedCellId) => selectEntry[0] = selectedCellId };
-    };
-    const join = (joinedTableId, arg1, arg2) => {
-      const fromIntermediateJoinedTableId = isUndefined(arg2) || isFunction(arg1) ? void 0 : arg1;
-      const onArg = isUndefined(fromIntermediateJoinedTableId) ? arg1 : arg2;
-      const joinEntry = [
-        joinedTableId,
-        [
-          joinedTableId,
-          fromIntermediateJoinedTableId,
-          isFunction(onArg) ? onArg : (getCell) => getCell(onArg),
-          [],
-          mapNew()
-        ]
-      ];
-      arrayPush(joinEntries, joinEntry);
-      return { as: (joinedTableId2) => joinEntry[0] = joinedTableId2 };
-    };
-    const where = (arg1, arg2, arg3) => arrayPush(
-      wheres,
-      isFunction(arg1) ? arg1 : isUndefined(arg3) ? (getTableCell) => getTableCell(arg1) === arg2 : (getTableCell) => getTableCell(arg1, arg2) === arg3
-    );
-    const group = (selectedCellId, aggregate, aggregateAdd, aggregateRemove, aggregateReplace) => {
-      const groupEntry = [
-        selectedCellId,
-        [
-          selectedCellId,
-          isFunction(aggregate) ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] : mapGet(numericAggregators, aggregate) ?? [
-            (_cells, length) => length
-          ]
-        ]
-      ];
-      arrayPush(groupEntries, groupEntry);
-      return { as: (groupedCellId) => groupEntry[0] = groupedCellId };
-    };
-    const having = (arg1, arg2) => arrayPush(
-      havings,
-      isFunction(arg1) ? arg1 : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) === arg2
-    );
-    build({ select, join, where, group, having, param });
-    const selects = mapNew(selectEntries);
-    if (collIsEmpty(selects)) {
-      return queries;
-    }
-    const joins = mapNew(joinEntries);
-    mapForEach(
-      joins,
-      (asTableId, [, fromAsTableId]) => ifNotUndefined(
-        mapGet(joins, fromAsTableId),
-        ({ 3: toAsTableIds }) => isUndefined(asTableId) ? 0 : arrayPush(toAsTableIds, asTableId)
-      )
-    );
-    const groups = mapNew(groupEntries);
-    let selectJoinWhereStore = preStore;
-    if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-      selectJoinWhereStore = resultStore;
-    } else {
-      synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
-      const groupedSelectedCellIds = mapNew();
-      mapForEach(
-        groups,
-        (groupedCellId, [selectedCellId, aggregators]) => setAdd(mapEnsure(groupedSelectedCellIds, selectedCellId, setNew), [
-          groupedCellId,
-          aggregators
+  const setOrDelParamValues = (queryId, paramValues) => (objIsEmpty(paramValues) ? paramStore.delRow : paramStore.setRow)(
+    PARAMS_TABLE,
+    queryId,
+    { ...paramValues }
+  );
+  const addRoutedResultListener = (stat, queryId, addStoreListener) => {
+    const listenerId = addListener(getUndefined, routedResultListenerIds);
+    const storeListenerIds = mapNew();
+    const syncStoreListeners = () => {
+      const queryIds = queryId == null ? getQueryIds() : [queryId];
+      arrayForEach(
+        queryIds,
+        (queryId2) => collHas(storeListenerIds, queryId2) ? 0 : mapSet(storeListenerIds, queryId2, [
+          getResultStore(queryId2),
+          addStoreListener(getResultStore(queryId2), queryId2)
         ])
       );
-      const groupBySelectedCellIds = setNew();
       mapForEach(
-        selects,
-        (selectedCellId) => collHas(groupedSelectedCellIds, selectedCellId) ? 0 : setAdd(groupBySelectedCellIds, selectedCellId)
+        storeListenerIds,
+        (storeQueryId, [store2, storeListenerId]) => queryId == null && hasQuery(storeQueryId) || storeQueryId == queryId ? 0 : (() => {
+          store2.delListener(storeListenerId);
+          mapSet(storeListenerIds, storeQueryId);
+        })()
       );
-      const tree = mapNew();
-      const writeGroupRow = (leaf, changedGroupedSelectedCells, selectedRowId, forceRemove) => ifNotUndefined(
-        leaf,
-        ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
-          mapForEach(
-            changedGroupedSelectedCells,
-            (selectedCellId, [newCell]) => {
-              const selectedCell = mapEnsure(
-                selectedCells,
-                selectedCellId,
-                mapNew
+    };
+    syncStoreListeners();
+    mapSet(routedResultListeners, listenerId, [
+      stat,
+      storeListenerIds,
+      queryId == null ? addQueryIdsListenerImpl(syncStoreListeners) : void 0
+    ]);
+    resultListenerStats[stat]++;
+    return listenerId;
+  };
+  const setQueryDefinition = (queryId, tableIdOrAsQuery, tableIdOrBuild, buildOrParamValues, paramValuesIfSourceIsQuery = {}) => {
+    const [tableId, build, sourceIsQuery, paramValues] = isTrue(
+      tableIdOrAsQuery
+    ) ? [tableIdOrBuild, buildOrParamValues, 1, paramValuesIfSourceIsQuery] : [tableIdOrAsQuery, tableIdOrBuild, 0, buildOrParamValues ?? {}];
+    ifNotUndefined(
+      getQueryArgs(queryId),
+      ([, listenerId]) => paramStore.delListener(listenerId)
+    );
+    setDefinition(queryId, tableId);
+    setQueryArgs(queryId, [
+      build,
+      paramStore.addRowListener(
+        PARAMS_TABLE,
+        queryId,
+        () => setQueryDefinitionImpl(queryId)
+      ),
+      sourceIsQuery
+    ]);
+    setOrDelParamValues(queryId, paramValues);
+    setQueryDefinitionImpl(queryId);
+    return queries;
+  };
+  const setQueryDefinitionImpl = (queryId) => getResultStore(queryId).transaction(
+    () => ifNotUndefined(getQueryArgs(queryId), ([build, , sourceIsQuery]) => {
+      const tableId = getTableId(queryId);
+      const rootStore = sourceIsQuery ? getResultStore(tableId) : store;
+      const resultStore2 = getResultStore(queryId);
+      const paramValues = getParamValues(queryId);
+      setAdd(redefiningQueryIds, queryId);
+      resetPreStores(queryId);
+      resetSourceStores(queryId);
+      const selectEntries = [];
+      const joinEntries = [
+        [void 0, [tableId, void 0, void 0, [], mapNew(), rootStore]]
+      ];
+      const wheres = [];
+      const groupEntries = [];
+      const havings = [];
+      const param = (paramId) => objGet(paramValues, paramId);
+      const select = (arg1, arg2, arg3) => {
+        const joinedTableId = isTrue(arg1) ? arg2 : arg1;
+        const joinedCellId = isTrue(arg1) ? arg3 : arg2;
+        const selectEntry = isFunction(arg1) ? [size(selectEntries) + EMPTY_STRING, arg1] : isUndefined(joinedCellId) ? [arg1, (getTableCell) => getTableCell(arg1)] : [
+          joinedCellId,
+          (getTableCell) => isTrue(arg1) ? getTableCell(true, joinedTableId, joinedCellId) : getTableCell(joinedTableId, joinedCellId)
+        ];
+        arrayPush(selectEntries, selectEntry);
+        return {
+          as: (selectedCellId) => selectEntry[0] = selectedCellId
+        };
+      };
+      const join = (arg1, arg2, arg3, arg4) => {
+        const joinedTableId = isTrue(arg1) ? arg2 : arg1;
+        const [fromJoinAlias, onArg] = isTrue(arg1) ? isUndefined(arg4) || isFunction(arg3) ? [void 0, arg3] : [arg3, arg4] : isUndefined(arg3) || isFunction(arg2) ? [void 0, arg2] : [arg2, arg3];
+        const joinEntry = [
+          joinedTableId,
+          [
+            joinedTableId,
+            fromJoinAlias,
+            isFunction(onArg) ? onArg : (getCell) => getCell(onArg),
+            [],
+            mapNew(),
+            isTrue(arg1) ? getResultStore(joinedTableId) : store
+          ]
+        ];
+        arrayPush(joinEntries, joinEntry);
+        return { as: (joinedTableId2) => joinEntry[0] = joinedTableId2 };
+      };
+      const where = (arg1, arg2, arg3, arg4) => arrayPush(
+        wheres,
+        isFunction(arg1) ? arg1 : isTrue(arg1) ? (getTableCell) => getTableCell(true, arg2, arg3) === arg4 : isUndefined(arg3) ? (getTableCell) => getTableCell(arg1) === arg2 : (getTableCell) => getTableCell(arg1, arg2) === arg3
+      );
+      const group = (selectedCellId, aggregate, aggregateAdd, aggregateRemove, aggregateReplace) => {
+        const groupEntry = [
+          selectedCellId,
+          [
+            selectedCellId,
+            isFunction(aggregate) ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] : mapGet(numericAggregators, aggregate) ?? [
+              (_cells, length) => length
+            ]
+          ]
+        ];
+        arrayPush(groupEntries, groupEntry);
+        return { as: (groupedCellId) => groupEntry[0] = groupedCellId };
+      };
+      const having = (arg1, arg2) => arrayPush(
+        havings,
+        isFunction(arg1) ? arg1 : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) === arg2
+      );
+      build({ select, join, where, group, having, param });
+      const selects = mapNew(selectEntries);
+      if (collIsEmpty(selects)) {
+        collDel(redefiningQueryIds, queryId);
+        return queries;
+      }
+      const joins = mapNew(joinEntries);
+      mapForEach(
+        joins,
+        (joinAlias, [, fromJoinAlias]) => ifNotUndefined(
+          mapGet(joins, fromJoinAlias),
+          ({ 3: toJoinAliases2 }) => isUndefined(joinAlias) ? 0 : arrayPush(toJoinAliases2, joinAlias)
+        )
+      );
+      const groups = mapNew(groupEntries);
+      let selectJoinWhereStore = preStore;
+      if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
+        selectJoinWhereStore = resultStore2;
+      } else {
+        synchronizeTransactions(queryId, selectJoinWhereStore, resultStore2);
+        const groupedSelectedCellIds = mapNew();
+        mapForEach(
+          groups,
+          (groupedCellId, [selectedCellId, aggregators]) => setAdd(mapEnsure(groupedSelectedCellIds, selectedCellId, setNew), [
+            groupedCellId,
+            aggregators
+          ])
+        );
+        const groupBySelectedCellIds = setNew();
+        mapForEach(
+          selects,
+          (selectedCellId) => collHas(groupedSelectedCellIds, selectedCellId) ? 0 : setAdd(groupBySelectedCellIds, selectedCellId)
+        );
+        const tree = mapNew();
+        const writeGroupRow = (leaf, changedGroupedSelectedCells, selectedRowId, forceRemove) => ifNotUndefined(
+          leaf,
+          ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
+            mapForEach(
+              changedGroupedSelectedCells,
+              (selectedCellId, [newCell]) => {
+                const selectedCell = mapEnsure(
+                  selectedCells,
+                  selectedCellId,
+                  mapNew
+                );
+                const oldLeafCell = mapGet(selectedCell, selectedRowId);
+                const newLeafCell = forceRemove ? void 0 : newCell;
+                if (oldLeafCell !== newLeafCell) {
+                  const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
+                  const oldLength = collSize(selectedCell);
+                  mapSet(selectedCell, selectedRowId, newLeafCell);
+                  collForEach(
+                    mapGet(groupedSelectedCellIds, selectedCellId),
+                    ([groupedCellId, aggregators]) => {
+                      const aggregateValue = getAggregateValue(
+                        groupRow[groupedCellId],
+                        oldLength,
+                        selectedCell,
+                        oldNewSet,
+                        aggregators
+                      );
+                      groupRow[groupedCellId] = isUndefined(
+                        getCellOrValueType(aggregateValue)
+                      ) ? void 0 : aggregateValue;
+                    }
+                  );
+                }
+              }
+            );
+            if (collIsEmpty(selectedRowIds) || !arrayEvery(
+              havings,
+              (having2) => having2((cellId) => groupRow[cellId])
+            )) {
+              resultStore2.delRow(queryId, groupRowId);
+            } else if (isUndefined(groupRowId)) {
+              leaf[2] = resultStore2.addRow(queryId, groupRow);
+            } else {
+              resultStore2.setRow(queryId, groupRowId, groupRow);
+            }
+          }
+        );
+        addPreStoreListener(
+          selectJoinWhereStore,
+          queryId,
+          selectJoinWhereStore.addRowListener(
+            queryId,
+            null,
+            (_store, _tableId, selectedRowId, getCellChange) => {
+              const oldPath = [];
+              const newPath = [];
+              const changedGroupedSelectedCells = mapNew();
+              const rowExists = selectJoinWhereStore.hasRow(
+                queryId,
+                selectedRowId
               );
-              const oldLeafCell = mapGet(selectedCell, selectedRowId);
-              const newLeafCell = forceRemove ? void 0 : newCell;
-              if (oldLeafCell !== newLeafCell) {
-                const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
-                const oldLength = collSize(selectedCell);
-                mapSet(selectedCell, selectedRowId, newLeafCell);
-                collForEach(
-                  mapGet(groupedSelectedCellIds, selectedCellId),
-                  ([groupedCellId, aggregators]) => {
-                    const aggregateValue = getAggregateValue(
-                      groupRow[groupedCellId],
-                      oldLength,
-                      selectedCell,
-                      oldNewSet,
-                      aggregators
-                    );
-                    groupRow[groupedCellId] = isUndefined(
-                      getCellOrValueType(aggregateValue)
-                    ) ? void 0 : aggregateValue;
-                  }
+              let changedLeaf = !rowExists;
+              collForEach(groupBySelectedCellIds, (selectedCellId) => {
+                const [changed, oldCell, newCell] = getCellChange(
+                  queryId,
+                  selectedRowId,
+                  selectedCellId
+                );
+                arrayPush(oldPath, oldCell);
+                arrayPush(newPath, newCell);
+                changedLeaf ||= changed;
+              });
+              mapForEach(groupedSelectedCellIds, (selectedCellId) => {
+                const [changed, , newCell] = getCellChange(
+                  queryId,
+                  selectedRowId,
+                  selectedCellId
+                );
+                if (changedLeaf || changed) {
+                  mapSet(changedGroupedSelectedCells, selectedCellId, [
+                    newCell
+                  ]);
+                }
+              });
+              if (changedLeaf) {
+                writeGroupRow(
+                  visitTree(tree, oldPath, void 0, ([, selectedRowIds]) => {
+                    collDel(selectedRowIds, selectedRowId);
+                    return collIsEmpty(selectedRowIds);
+                  }),
+                  changedGroupedSelectedCells,
+                  selectedRowId,
+                  1
+                );
+              }
+              if (rowExists) {
+                writeGroupRow(
+                  visitTree(
+                    tree,
+                    newPath,
+                    () => {
+                      const groupRow = {};
+                      collForEach(
+                        groupBySelectedCellIds,
+                        (selectedCellId) => groupRow[selectedCellId] = selectJoinWhereStore.getCell(
+                          queryId,
+                          selectedRowId,
+                          selectedCellId
+                        )
+                      );
+                      return [mapNew(), setNew(), void 0, groupRow];
+                    },
+                    ([, selectedRowIds]) => {
+                      setAdd(selectedRowIds, selectedRowId);
+                    }
+                  ),
+                  changedGroupedSelectedCells,
+                  selectedRowId
                 );
               }
             }
-          );
-          if (collIsEmpty(selectedRowIds) || !arrayEvery(
-            havings,
-            (having2) => having2((cellId) => groupRow[cellId])
-          )) {
-            resultStore.delRow(queryId, groupRowId);
-          } else if (isUndefined(groupRowId)) {
-            leaf[2] = resultStore.addRow(queryId, groupRow);
-          } else {
-            resultStore.setRow(queryId, groupRowId, groupRow);
-          }
-        }
-      );
-      addPreStoreListener(
-        selectJoinWhereStore,
-        queryId,
-        selectJoinWhereStore.addRowListener(
-          queryId,
-          null,
-          (_store, _tableId, selectedRowId, getCellChange) => {
-            const oldPath = [];
-            const newPath = [];
-            const changedGroupedSelectedCells = mapNew();
-            const rowExists = selectJoinWhereStore.hasRow(
-              queryId,
-              selectedRowId
-            );
-            let changedLeaf = !rowExists;
-            collForEach(groupBySelectedCellIds, (selectedCellId) => {
-              const [changed, oldCell, newCell] = getCellChange(
-                queryId,
-                selectedRowId,
-                selectedCellId
-              );
-              arrayPush(oldPath, oldCell);
-              arrayPush(newPath, newCell);
-              changedLeaf ||= changed;
-            });
-            mapForEach(groupedSelectedCellIds, (selectedCellId) => {
-              const [changed, , newCell] = getCellChange(
-                queryId,
-                selectedRowId,
-                selectedCellId
-              );
-              if (changedLeaf || changed) {
-                mapSet(changedGroupedSelectedCells, selectedCellId, [newCell]);
-              }
-            });
-            if (changedLeaf) {
-              writeGroupRow(
-                visitTree(tree, oldPath, void 0, ([, selectedRowIds]) => {
-                  collDel(selectedRowIds, selectedRowId);
-                  return collIsEmpty(selectedRowIds);
-                }),
-                changedGroupedSelectedCells,
-                selectedRowId,
-                1
-              );
-            }
-            if (rowExists) {
-              writeGroupRow(
-                visitTree(
-                  tree,
-                  newPath,
-                  () => {
-                    const groupRow = {};
-                    collForEach(
-                      groupBySelectedCellIds,
-                      (selectedCellId) => groupRow[selectedCellId] = selectJoinWhereStore.getCell(
-                        queryId,
-                        selectedRowId,
-                        selectedCellId
-                      )
-                    );
-                    return [mapNew(), setNew(), void 0, groupRow];
-                  },
-                  ([, selectedRowIds]) => {
-                    setAdd(selectedRowIds, selectedRowId);
-                  }
-                ),
-                changedGroupedSelectedCells,
-                selectedRowId
-              );
-            }
-          }
-        )
-      );
-    }
-    synchronizeTransactions(queryId, store, selectJoinWhereStore);
-    const writeSelectRow = (rootRowId) => {
-      const getTableCell = (arg1, arg2) => store.getCell(
-        ...isUndefined(arg2) ? [tableId, rootRowId, arg1] : arg1 === tableId ? [tableId, rootRowId, arg2] : [
-          mapGet(joins, arg1)?.[0],
-          mapGet(mapGet(joins, arg1)?.[4], rootRowId)?.[0],
-          arg2
-        ]
-      );
-      selectJoinWhereStore.transaction(
-        () => arrayEvery(wheres, (where2) => where2(getTableCell)) ? mapForEach(
-          selects,
-          (asCellId, tableCellGetter) => selectJoinWhereStore._[5](
-            queryId,
-            rootRowId,
-            asCellId,
-            tableCellGetter(getTableCell, rootRowId)
-          )
-        ) : selectJoinWhereStore.delRow(queryId, rootRowId)
-      );
-    };
-    const listenToTable = (rootRowId, tableId2, rowId, joinedTableIds2) => {
-      const getCell = (cellId) => store.getCell(tableId2, rowId, cellId);
-      arrayForEach(joinedTableIds2, (remoteAsTableId) => {
-        const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPairs] = mapGet(joins, remoteAsTableId);
-        const remoteRowId = on?.(getCell, rootRowId);
-        const [previousRemoteRowId, previousRemoteListenerId] = mapGet(remoteIdPairs, rootRowId) ?? [];
-        if (remoteRowId != previousRemoteRowId) {
-          if (!isUndefined(previousRemoteListenerId)) {
-            delStoreListeners(queryId, previousRemoteListenerId);
-          }
-          mapSet(
-            remoteIdPairs,
-            rootRowId,
-            isUndefined(remoteRowId) ? void 0 : [
-              remoteRowId,
-              ...addStoreListeners(
-                queryId,
-                1,
-                store.addRowListener(
-                  realJoinedTableId,
-                  remoteRowId,
-                  () => listenToTable(
-                    rootRowId,
-                    realJoinedTableId,
-                    remoteRowId,
-                    nextJoinedTableIds
-                  )
-                )
-              )
-            ]
-          );
-        }
-      });
-      writeSelectRow(rootRowId);
-    };
-    const { 3: joinedTableIds } = mapGet(joins, void 0);
-    selectJoinWhereStore.transaction(
-      () => addStoreListeners(
-        queryId,
-        1,
-        store.addRowListener(tableId, null, (_store, _tableId, rootRowId) => {
-          if (store.hasRow(tableId, rootRowId)) {
-            listenToTable(rootRowId, tableId, rootRowId, joinedTableIds);
-          } else {
-            selectJoinWhereStore.delRow(queryId, rootRowId);
-            collForEach(
-              joins,
-              ({ 4: idsByRootRowId }) => ifNotUndefined(
-                mapGet(idsByRootRowId, rootRowId),
-                ([, listenerId]) => {
-                  delStoreListeners(queryId, listenerId);
-                  mapSet(idsByRootRowId, rootRowId);
-                }
-              )
-            );
-          }
-        })
-      )
-    );
-    return queries;
-  };
-  const callParamListeners = (queryId, oldParamValues, newParamValues) => {
-    const allParamIds = setNew([
-      ...objIds(oldParamValues),
-      ...objIds(newParamValues)
-    ]);
-    let changed = 0;
-    collForEach(allParamIds, (paramId) => {
-      const newParamValue = objGet(newParamValues, paramId);
-      if (!arrayOrValueEqual(objGet(oldParamValues, paramId), newParamValue)) {
-        changed = 1;
-        callListeners(paramValueListeners, [queryId, paramId], newParamValue);
-      }
-    });
-    if (changed) {
-      callListeners(paramValuesListeners, [queryId], newParamValues);
-    }
-  };
-  const delQueryDefinition = (queryId) => {
-    const oldParamValues = getParamValues(queryId);
-    resetPreStores(queryId);
-    delDefinition(queryId);
-    callParamListeners(queryId, oldParamValues, {});
-    return queries;
-  };
-  const setParamValues = (queryId, paramValues, force = 0) => {
-    ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
-      if (force || !objIsEqual(mapToObj(oldParamValues), paramValues, arrayOrValueEqual)) {
-        resultStore.transaction(
-          () => setQueryDefinition(
-            queryId,
-            getTableId(queryId),
-            definition,
-            paramValues
           )
         );
       }
-    });
+      synchronizeTransactions(queryId, rootStore, selectJoinWhereStore);
+      const writeSelectRow = (rootRowId) => {
+        const getJoinCell = (arg1, arg2, arg3) => {
+          const joinedTableId = isTrue(arg1) ? arg2 : arg1;
+          const joinedCellId = isTrue(arg1) ? arg3 : arg2;
+          if (isUndefined(joinedCellId)) {
+            return rootStore.getCell(tableId, rootRowId, arg1);
+          }
+          if (joinedTableId === tableId && !isTrue(arg1)) {
+            return rootStore.getCell(tableId, rootRowId, joinedCellId);
+          }
+          const join2 = mapGet(joins, joinedTableId);
+          return isUndefined(join2) ? void 0 : join2[5].getCell(
+            join2[0],
+            mapGet(join2[4], rootRowId)?.[0],
+            joinedCellId
+          );
+        };
+        selectJoinWhereStore.transaction(
+          () => arrayEvery(wheres, (where2) => where2(getJoinCell)) ? mapForEach(
+            selects,
+            (asCellId, tableCellGetter) => selectJoinWhereStore._[5](
+              queryId,
+              rootRowId,
+              asCellId,
+              tableCellGetter(getJoinCell, rootRowId)
+            )
+          ) : selectJoinWhereStore.delRow(queryId, rootRowId)
+        );
+      };
+      const listenToTable = (rootRowId, sourceStore, tableId2, rowId, toJoinAliases2) => {
+        const getCell = (cellId) => sourceStore.getCell(tableId2, rowId, cellId);
+        arrayForEach(toJoinAliases2, (joinAlias) => {
+          const [
+            realJoinedTableId,
+            ,
+            on,
+            nextJoinAliases,
+            remoteIdPairs,
+            remoteSourceStore
+          ] = mapGet(joins, joinAlias);
+          const remoteRowId = on?.(getCell, rootRowId);
+          const previousRemote = mapGet(remoteIdPairs, rootRowId);
+          const previousRemoteRowId = previousRemote?.[0];
+          if (remoteRowId != previousRemoteRowId) {
+            ifNotUndefined(
+              previousRemote,
+              ([, previousRemoteSourceStore, previousRemoteListenerId]) => delSourceStoreListeners(
+                queryId,
+                previousRemoteSourceStore,
+                previousRemoteListenerId
+              )
+            );
+            mapSet(
+              remoteIdPairs,
+              rootRowId,
+              isUndefined(remoteRowId) ? void 0 : [
+                remoteRowId,
+                remoteSourceStore,
+                ...addSourceStoreListeners(
+                  remoteSourceStore,
+                  queryId,
+                  1,
+                  remoteSourceStore.addRowListener(
+                    realJoinedTableId,
+                    remoteRowId,
+                    () => listenToTable(
+                      rootRowId,
+                      remoteSourceStore,
+                      realJoinedTableId,
+                      remoteRowId,
+                      nextJoinAliases
+                    )
+                  )
+                )
+              ]
+            );
+          }
+        });
+        writeSelectRow(rootRowId);
+      };
+      const { 3: toJoinAliases } = mapGet(joins, void 0);
+      const rootRowChanged = (sourceStore, _tableId, rootRowId) => {
+        if (rootStore.hasRow(tableId, rootRowId)) {
+          listenToTable(
+            rootRowId,
+            rootStore,
+            tableId,
+            rootRowId,
+            toJoinAliases
+          );
+        } else {
+          selectJoinWhereStore.delRow(queryId, rootRowId);
+          collForEach(
+            joins,
+            ({ 4: idsByRootRowId }) => ifNotUndefined(
+              mapGet(idsByRootRowId, rootRowId),
+              ([, sourceStore2, listenerId]) => {
+                delSourceStoreListeners(queryId, sourceStore2, listenerId);
+                mapSet(idsByRootRowId, rootRowId);
+              }
+            )
+          );
+        }
+      };
+      selectJoinWhereStore.transaction(() => {
+        arrayForEach(
+          rootStore.getRowIds(tableId),
+          (rootRowId) => rootRowChanged(rootStore, tableId, rootRowId)
+        );
+        addSourceStoreListeners(
+          rootStore,
+          queryId,
+          0,
+          rootStore.addRowListener(tableId, null, rootRowChanged)
+        );
+      });
+      collDel(redefiningQueryIds, queryId);
+      return queries;
+    })
+  );
+  const delQueryDefinition = (queryId) => {
+    ifNotUndefined(
+      getQueryArgs(queryId),
+      ([, listenerId]) => paramStore.delListener(listenerId)
+    );
+    paramStore.delRow(PARAMS_TABLE, queryId);
+    resetPreStores(queryId);
+    resetSourceStores(queryId);
+    delDefinition(queryId);
     return queries;
   };
-  const setParamValue = (queryId, paramId, value) => {
-    if (!arrayOrValueEqual(getParamValue(queryId, paramId), value)) {
-      setParamValues(
-        queryId,
-        { ...getParamValues(queryId), [paramId]: value },
-        1
-      );
+  const setParamValues = (queryId, paramValues) => {
+    if (hasQuery(queryId)) {
+      setOrDelParamValues(queryId, paramValues);
     }
     return queries;
   };
-  const getParamValues = (queryId) => mapToObj(getQueryArgs(queryId)?.[1]);
-  const getParamValue = (queryId, paramId) => mapGet(getQueryArgs(queryId)?.[1], paramId);
-  const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
-  const addParamValuesListener = (queryId, listener) => addListener(
-    (_, queryId2, paramValues) => listener(queries, queryId2, paramValues),
-    paramValuesListeners,
-    [queryId]
-  );
-  const addParamValueListener = (queryId, paramId, listener) => addListener(
-    (_, queryId2, paramId2, paramValue) => listener(queries, queryId2, paramId2, paramValue),
-    paramValueListeners,
-    [queryId, paramId]
-  );
-  const delListener = (listenerId) => {
-    delListenerImpl(listenerId);
+  const setParamValue = (queryId, paramId, value) => {
+    if (hasQuery(queryId)) {
+      paramStore.setCell(PARAMS_TABLE, queryId, paramId, value);
+    }
     return queries;
   };
-  const getListenerStats = () => {
-    const {
-      tables: _1,
-      tableIds: _2,
-      transaction: _3,
-      ...stats
-    } = resultStore.getListenerStats();
-    return {
-      ...stats,
-      paramValues: collSize2(paramValuesListeners),
-      paramValue: collSize3(paramValueListeners)
-    };
+  const getParamValues = (queryId) => paramStore.getRow(PARAMS_TABLE, queryId);
+  const getParamValue = (queryId, paramId) => paramStore.getCell(PARAMS_TABLE, queryId, paramId);
+  const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
+  const forEachResultTable = (tableCallback) => forEachQuery(
+    (queryId) => getResultStore(queryId).hasTable(queryId) ? tableCallback(
+      queryId,
+      (rowCallback) => queries.forEachResultRow(queryId, rowCallback)
+    ) : 0
+  );
+  const addParamValuesListener = (queryId, listener) => PARAM_LISTENER_PREFIX + paramStore.addRowListener(
+    PARAMS_TABLE,
+    queryId,
+    (_store, _tableId, queryId2) => listener(queries, queryId2, getParamValues(queryId2))
+  );
+  const addParamValueListener = (queryId, paramId, listener) => PARAM_LISTENER_PREFIX + paramStore.addCellListener(
+    PARAMS_TABLE,
+    queryId,
+    paramId,
+    (_store, _tableId, queryId2, paramId2, paramValue) => listener(queries, queryId2, paramId2, paramValue)
+  );
+  const delListener = (listenerId) => {
+    const routedResultListener = mapGet(routedResultListeners, listenerId);
+    if (listenerId[0] == PARAM_LISTENER_PREFIX) {
+      paramStore.delListener(slice(listenerId, 1));
+    } else if (!isUndefined(routedResultListener)) {
+      const [stat, storeListenerIds, queryIdsListenerId] = routedResultListener;
+      mapForEach(
+        storeListenerIds,
+        (_queryId, [store2, storeListenerId]) => store2.delListener(storeListenerId)
+      );
+      ifNotUndefined(queryIdsListenerId, delListenerImpl);
+      mapSet(routedResultListeners, listenerId);
+      delListenerImpl(listenerId);
+      resultListenerStats[stat]--;
+    } else {
+      delListenerImpl(listenerId);
+    }
+    return queries;
+  };
+  const getListenerStats = () => ({
+    ...resultListenerStats,
+    paramValues: paramStore.getListenerStats().row - size(getQueryIds()),
+    paramValue: paramStore.getListenerStats().cell
+  });
+  const destroy = () => {
+    arrayForEach(getQueryIds(), delQueryDefinition);
+    destroyImpl();
   };
   const queries = {
     setQueryDefinition,
@@ -3636,6 +3773,7 @@ var createQueries = getCreateFunction((store) => {
     forEachQuery,
     hasQuery,
     getTableId,
+    forEachResultTable,
     addQueryIdsListener,
     addParamValuesListener,
     addParamValueListener,
@@ -3643,26 +3781,32 @@ var createQueries = getCreateFunction((store) => {
     destroy,
     getListenerStats
   };
+  const getListenerArgs = (args, argumentCount) => argumentCount == 5 ? [args[0], args[1] ?? void 0, args[2], args[3], args[4]] : slice(args, 0, argumentCount);
+  const getResultListenerStat = (gettable) => gettable[0].toLowerCase() + slice(gettable, 1);
   objMap(
     {
-      [TABLE]: [1, 1],
-      [TABLE + CELL_IDS]: [0, 1],
-      [ROW_COUNT]: [0, 1],
-      [ROW_IDS]: [0, 1],
-      [SORTED_ROW_IDS]: [0, 5],
-      [ROW]: [1, 2],
-      [CELL_IDS]: [0, 2],
-      [CELL]: [1, 3]
+      [TABLE]: [2, 1],
+      [TABLE + CELL_IDS]: [1, 1],
+      [ROW_COUNT]: [1, 1],
+      [ROW_IDS]: [1, 1],
+      [SORTED_ROW_IDS]: [1, 5],
+      [ROW]: [3, 2],
+      [CELL_IDS]: [1, 2],
+      [CELL]: [3, 3]
     },
-    ([hasAndForEach, argumentCount], gettable) => {
+    ([prefixCount, argumentCount], gettable) => {
       arrayForEach(
-        hasAndForEach ? [GET, "has", "forEach"] : [GET],
-        (prefix) => queries[prefix + RESULT + gettable] = (...args) => resultStore[prefix + gettable](...args)
+        slice([GET, "has", "forEach"], 0, prefixCount),
+        (prefix) => queries[prefix + RESULT + gettable] = (...args) => getResultStore(args[0])[prefix + gettable](...args)
       );
-      queries[ADD + RESULT + gettable + LISTENER] = (...args) => resultStore[ADD + gettable + LISTENER](
-        ...slice(args, 0, argumentCount),
-        (_store, ...listenerArgs) => args[argumentCount](queries, ...listenerArgs),
-        true
+      queries[ADD + RESULT + gettable + LISTENER] = (...args) => addRoutedResultListener(
+        getResultListenerStat(gettable),
+        args[0],
+        (store2) => store2[ADD + gettable + LISTENER](
+          ...getListenerArgs(args, argumentCount),
+          (_store, ...listenerArgs) => args[argumentCount](queries, ...listenerArgs),
+          true
+        )
       );
     }
   );

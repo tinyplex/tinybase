@@ -7,13 +7,7 @@ import type {Queries} from '../@types/queries/index.d.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
 import {arrayForEach, arrayIsEqual} from './array.ts';
-import {
-  collClear,
-  collDel,
-  collForEach,
-  collHas,
-  collValues,
-} from './coll.ts';
+import {collClear, collDel, collForEach, collHas, collValues} from './coll.ts';
 import {AddListener, CallListeners} from './listeners.ts';
 import {
   IdMap,
@@ -90,21 +84,15 @@ export const getDefinableFunctions = <Thing, RowValue>(
 
   const addStoreListeners = (id: Id, ...listenerIds: Ids): void => {
     const set = mapEnsure(storeListenerIds, id, setNew);
-    arrayForEach(
-      listenerIds,
-      (listenerId) => setAdd(set, listenerId),
-    );
+    arrayForEach(listenerIds, (listenerId) => setAdd(set, listenerId));
   };
 
   const delStoreListeners = (id: Id): void =>
     ifNotUndefined(mapGet(storeListenerIds, id), (allListenerIds) => {
-      arrayForEach(
-        collValues(allListenerIds),
-        (listenerId: Id) => {
-          store.delListener(listenerId);
-          collDel(allListenerIds, listenerId);
-        },
-      );
+      arrayForEach(collValues(allListenerIds), (listenerId: Id) => {
+        store.delListener(listenerId);
+        collDel(allListenerIds, listenerId);
+      });
       mapSet(storeListenerIds, id);
     });
 

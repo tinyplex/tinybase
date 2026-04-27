@@ -7,7 +7,7 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
 var store = createStore();
 store.setValue(&quot;v1&quot;, &quot;Hello World&quot;);
 var renderValue = (value) =&gt; {
@@ -27,7 +27,7 @@ renderValue(store.getValue(&quot;v1&quot;));&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we set data in, and then get data from, a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object. We&#x27;re using keyed values (not even tabular data!), so this is about as simple as it gets.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

@@ -1587,9 +1587,7 @@ describe('Queries queries', () => {
       queries.delQueryDefinition('q1');
       listener.mockClear();
       queries.setQueryDefinition('q2', true, 'Q2', ({select}) => select('c1'));
-      expect(listener.mock.calls.map(([, queryId]) => queryId)).toEqual([
-        'q2',
-      ]);
+      expect(listener.mock.calls.map(([, queryId]) => queryId)).toEqual(['q2']);
       queries.delListener(listenerId);
     });
   });

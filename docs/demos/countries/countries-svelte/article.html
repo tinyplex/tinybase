@@ -7,24 +7,24 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
 import {
   createLocalPersister,
   createSessionPersister
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.0/persisters/persister-browser&quot;;
-import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/persisters/persister-remote&quot;;
-import { mount } from &quot;https://esm.sh/svelte@^5.55.4&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/persisters/persister-remote&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
-import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
-import * as $3 from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
-import { Provider, getSliceIds, getSliceRowIds as getSliceRowIds2, getValue } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte-inspector&quot;;
+import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
+import * as $3 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
+import { Provider, getSliceIds, getSliceRowIds as getSliceRowIds2, getValue } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-inspector&quot;;
 
 // demo-files:/demo/src/Country.svelte
-import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
-import * as $ from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
-import { CellView, getCell } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte&quot;;
+import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
+import { CellView, getCell } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
 var root = $.from_html(`&lt;div class=&quot;country&quot;&gt;&lt;div class=&quot;star&quot;&gt; &lt;/div&gt; &lt;div class=&quot;flag&quot;&gt;&lt;!&gt;&lt;/div&gt; &lt;div class=&quot;name&quot;&gt;&lt;!&gt;&lt;/div&gt;&lt;/div&gt;`);
 function Country($$anchor, $$props) {
   $.push($$props, true);
@@ -70,9 +70,9 @@ function Country($$anchor, $$props) {
 $.delegate([&quot;click&quot;]);
 
 // demo-files:/demo/src/Filter.svelte
-import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
-import * as $2 from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
-import { getSliceRowIds } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte&quot;;
+import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
+import * as $2 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
+import { getSliceRowIds } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
 var root2 = $2.from_html(`&lt;div&gt;&lt;span class=&quot;label&quot;&gt; &lt;/span&gt;&lt;span class=&quot;count&quot;&gt; &lt;/span&gt;&lt;/div&gt;`);
 function Filter($$anchor, $$props) {
   $2.push($$props, true);
@@ -258,12 +258,12 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we build the same app as the <a href="/demos/countries/countries-react/">Countries (React)</a> demo, but with Svelte 5 and the <a href="/api/ui-svelte/"><code>ui-svelte</code></a> module.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase, the persister modules, the Svelte inspector module, and Svelte:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/persisters/persister-remote"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte-inspector"</span><span class="punctuation">,</span>
-      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.4"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.5"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

@@ -7,14 +7,14 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.0&quot;;
-import { mount } from &quot;https://esm.sh/svelte@^5.55.4&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
-import &quot;https://esm.sh/svelte@^5.55.4/internal/disclose-version&quot;;
-import * as $ from &quot;https://esm.sh/svelte@^5.55.4/internal/client&quot;;
-import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte-inspector&quot;;
+import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
+import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-inspector&quot;;
 var root_2 = $.from_html(`&lt;img/&gt;`);
 var root_1 = $.from_html(`&lt;div id=&quot;app&quot;&gt;&lt;div id=&quot;logos&quot;&gt;&lt;/div&gt; &lt;div id=&quot;value&quot;&gt;&lt;!&gt;&lt;/div&gt;&lt;/div&gt; &lt;!&gt;`, 1);
 function App($$anchor, $$props) {
@@ -66,10 +66,10 @@ setInterval(setTime, 1e3);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we use Svelte to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change the <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.0/ui-svelte-inspector"</span><span class="punctuation">,</span>
-      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.4"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.5"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
