@@ -5,11 +5,11 @@ import {arrayMap} from '../../common/array.ts';
 import {isArray, isUndefined} from '../../common/other.ts';
 
 export const wrap = (
-  children: any,
-  separator?: any,
+  children: JSXElement,
+  separator?: JSXElement | string,
   encloseWithId?: boolean,
   id?: Id,
-) => {
+): JSXElement => {
   const separated =
     isUndefined(separator) || !isArray(children)
       ? children
