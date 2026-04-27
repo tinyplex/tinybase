@@ -523,7 +523,9 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const uiModule =
     module == 'ui-svelte-dom' || module == 'ui-svelte-inspector'
       ? 'ui-svelte'
-      : 'ui-react';
+      : module == 'ui-solid'
+        ? 'ui-solid'
+        : 'ui-react';
 
   let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
@@ -547,7 +549,9 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'solid-js/jsx-runtime',
       'url',
       'yjs',
-      ...(module == 'omni' ? [] : ['tinybase/store', '../' + uiModule]),
+      ...(module == 'omni'
+        ? []
+        : ['tinybase/store', '../ui-react', '../ui-solid', '../' + uiModule]),
       ...(module == 'ui-svelte' ||
       module == 'ui-svelte-dom' ||
       module == 'ui-svelte-inspector'
@@ -567,7 +571,11 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         preventAssignment: true,
         ...(module == 'omni'
           ? {}
-          : {['../' + uiModule + '/index.ts']: '../' + uiModule}),
+          : {
+              ['../' + uiModule + '/index.ts']: '../' + uiModule,
+              '../ui-react/index.ts': '../ui-react',
+              '../ui-solid/index.ts': '../ui-solid',
+            }),
       }),
       shebang(),
       image(),
@@ -616,24 +624,15 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
     [['../' + uiModule, '../../' + uiModule + '/with-schemas/' + index]],
     outputFileWithSchemas,
   );
-  await copyWithReplace(
-    outputFileWithSchemas,
-    ['../ui-solid', '../../ui-solid/with-schemas/' + index],
-    outputFileWithSchemas,
-  );
 
   await copyWithReplace(
     outputFile,
     [
       ['../ui-react', '../ui-react/' + index],
+      ['../ui-solid', '../ui-solid/' + index],
       ['../ui-svelte', '../ui-svelte/' + index],
       [/(\w+) = \$\.noop/g, '/* istanbul ignore next */ $1 = $.noop'],
     ],
-    outputFile,
-  );
-  await copyWithReplace(
-    outputFile,
-    ['../ui-solid', '../ui-solid/' + index],
     outputFile,
   );
 
