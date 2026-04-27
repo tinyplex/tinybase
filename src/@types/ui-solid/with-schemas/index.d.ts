@@ -1,3 +1,4 @@
+/// ui-solid
 import type {JSXElement} from 'solid-js';
 import type {
   AllCellIdFromSchema,
@@ -138,91 +139,91 @@ import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
 type DependencyList = ReadonlyArray<unknown>;
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
-  /// StoreOrStoreId
+  /// ui-solid.StoreOrStoreId
   StoreOrStoreId: StoreOrStoreId<Schemas>;
 
-  /// MetricsOrMetricsId
+  /// ui-solid.MetricsOrMetricsId
   MetricsOrMetricsId: MetricsOrMetricsId<Schemas>;
 
-  /// IndexesOrIndexesId
+  /// ui-solid.IndexesOrIndexesId
   IndexesOrIndexesId: IndexesOrIndexesId<Schemas>;
 
-  /// RelationshipsOrRelationshipsId
+  /// ui-solid.RelationshipsOrRelationshipsId
   RelationshipsOrRelationshipsId: RelationshipsOrRelationshipsId<Schemas>;
 
-  /// QueriesOrQueriesId
+  /// ui-solid.QueriesOrQueriesId
   QueriesOrQueriesId: QueriesOrQueriesId<Schemas>;
 
-  /// CheckpointsOrCheckpointsId
+  /// ui-solid.CheckpointsOrCheckpointsId
   CheckpointsOrCheckpointsId: CheckpointsOrCheckpointsId<Schemas>;
 
-  /// PersisterOrPersisterId
+  /// ui-solid.PersisterOrPersisterId
   PersisterOrPersisterId: PersisterOrPersisterId<Schemas>;
 
-  /// SynchronizerOrSynchronizerId
+  /// ui-solid.SynchronizerOrSynchronizerId
   SynchronizerOrSynchronizerId: SynchronizerOrSynchronizerId<Schemas>;
 
-  /// UndoOrRedoInformation
+  /// ui-solid.UndoOrRedoInformation
   UndoOrRedoInformation: UndoOrRedoInformation;
 
-  /// useCreateStore
+  /// ui-solid.useCreateStore
   useCreateStore: (
     create: () => Store<Schemas>,
     createDeps?: DependencyList,
   ) => Store<Schemas>;
 
-  /// useCreateMergeableStore
+  /// ui-solid.useCreateMergeableStore
   useCreateMergeableStore: (
     create: () => MergeableStore<Schemas>,
     createDeps?: DependencyList,
   ) => MergeableStore<Schemas>;
 
-  /// useStoreIds
+  /// ui-solid.useStoreIds
   useStoreIds: () => Ids;
 
-  /// useStore
+  /// ui-solid.useStore
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
-  /// useStores
+  /// ui-solid.useStores
   useStores: () => {[storeId: Id]: Store<OptionalSchemas>};
 
-  /// useStoreOrStoreById
+  /// ui-solid.useStoreOrStoreById
   useStoreOrStoreById: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Store<Schemas> | undefined;
 
-  /// useProvideStore
+  /// ui-solid.useProvideStore
   useProvideStore: (storeId: Id, store: Store<Schemas>) => void;
 
-  /// useHasTables
+  /// ui-solid.useHasTables
   useHasTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => boolean;
 
-  /// useTables
+  /// ui-solid.useTables
   useTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Tables<Schemas[0]>;
 
-  /// useTablesState
+  /// ui-solid.useTablesState
   useTablesState: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => [Tables<Schemas[0]>, (tables: Tables<Schemas[0]>) => void];
 
-  /// useTableIds
+  /// ui-solid.useTableIds
   useTableIds: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => TableIdFromSchema<Schemas[0]>[];
 
-  /// useHasTable
+  /// ui-solid.useHasTable
   useHasTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => boolean;
 
-  /// useTable
+  /// ui-solid.useTable
   useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Table<Schemas[0], TableId>;
 
-  /// useTableState
+  /// ui-solid.useTableState
   useTableState: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -231,33 +232,33 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     (table: Table<Schemas[0], TableId>) => void,
   ];
 
-  /// useTableCellIds
+  /// ui-solid.useTableCellIds
   useTableCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => CellIdFromSchema<Schemas[0], TableId>[];
 
-  /// useHasTableCell
+  /// ui-solid.useHasTableCell
   useHasTableCell: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     cellId: CellIdFromSchema<Schemas[0], TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => boolean;
 
-  /// useRowCount
+  /// ui-solid.useRowCount
   useRowCount: (
     tableId: TableIdFromSchema<Schemas[0]>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => number;
 
-  /// useRowIds
+  /// ui-solid.useRowIds
   useRowIds: (
     tableId: TableIdFromSchema<Schemas[0]>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Ids;
 
   useSortedRowIds: {
-    /// useSortedRowIds
+    /// ui-solid.useSortedRowIds
     <
       TableId extends TableIdFromSchema<Schemas[0]>,
       CellId extends CellIdFromSchema<Schemas[0], TableId>,
@@ -270,42 +271,42 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       storeOrStoreId?: StoreOrStoreId<Schemas>,
     ): Ids;
 
-    /// useSortedRowIds.2
+    /// ui-solid.useSortedRowIds.2
     <TableId extends TableIdFromSchema<Schemas[0]>>(
       args: SortedRowIdsArgs<Schemas[0], TableId>,
       storeOrStoreId?: StoreOrStoreId<Schemas>,
     ): Ids;
   };
 
-  /// useHasRow
+  /// ui-solid.useHasRow
   useHasRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => boolean;
 
-  /// useRow
+  /// ui-solid.useRow
   useRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Row<Schemas[0], TableId>;
 
-  /// useRowState
+  /// ui-solid.useRowState
   useRowState: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => [Row<Schemas[0], TableId>, (row: Row<Schemas[0], TableId>) => void];
 
-  /// useCellIds
+  /// ui-solid.useCellIds
   useCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => CellIdFromSchema<Schemas[0], TableId>[];
 
-  /// useHasCell
+  /// ui-solid.useHasCell
   useHasCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
@@ -316,7 +317,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => boolean;
 
-  /// useCell
+  /// ui-solid.useCell
   useCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
@@ -327,7 +328,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
 
-  /// useCellState
+  /// ui-solid.useCellState
   useCellState: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
@@ -341,35 +342,35 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     (cell: Cell<Schemas[0], TableId, CellId>) => void,
   ];
 
-  /// useHasValues
+  /// ui-solid.useHasValues
   useHasValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => boolean;
 
-  /// useValues
+  /// ui-solid.useValues
   useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values<Schemas[1]>;
 
-  /// useValuesState
+  /// ui-solid.useValuesState
   useValuesState: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => [Values<Schemas[1]>, (values: Values<Schemas[1]>) => void];
 
-  /// useValueIds
+  /// ui-solid.useValueIds
   useValueIds: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => ValueIdFromSchema<Schemas[1]>[];
 
-  /// useHasValue
+  /// ui-solid.useHasValue
   useHasValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => boolean;
 
-  /// useValue
+  /// ui-solid.useValue
   useValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => DefaultedValueFromSchema<Schemas[1], ValueId>;
 
-  /// useValueState
+  /// ui-solid.useValueState
   useValueState: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -378,7 +379,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     setValue: (value: Value<Schemas[1], ValueId>) => void,
   ];
 
-  /// useSetTablesCallback
+  /// ui-solid.useSetTablesCallback
   useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
     getTables: (
       parameter: Parameter,
@@ -390,7 +391,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetTableCallback
+  /// ui-solid.useSetTableCallback
   useSetTableCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -407,7 +408,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetRowCallback
+  /// ui-solid.useSetRowCallback
   useSetRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -422,7 +423,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useAddRowCallback
+  /// ui-solid.useAddRowCallback
   useAddRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -437,7 +438,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     reuseRowIds?: boolean,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetPartialRowCallback
+  /// ui-solid.useSetPartialRowCallback
   useSetPartialRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -455,7 +456,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetCellCallback
+  /// ui-solid.useSetCellCallback
   useSetCellCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -477,7 +478,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetValuesCallback
+  /// ui-solid.useSetValuesCallback
   useSetValuesCallback: <Parameter, SetValues = Values<Schemas[1], true>>(
     getValues: (
       parameter: Parameter,
@@ -489,7 +490,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetPartialValuesCallback
+  /// ui-solid.useSetPartialValuesCallback
   useSetPartialValuesCallback: <
     Parameter,
     SetPartialValues = Values<Schemas[1], true>,
@@ -504,7 +505,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetValueCallback
+  /// ui-solid.useSetValueCallback
   useSetValueCallback: <
     Parameter,
     ValueId extends ValueIdFromSchema<Schemas[1]>,
@@ -521,14 +522,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useDelTablesCallback
+  /// ui-solid.useDelTablesCallback
   useDelTablesCallback: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
     thenDeps?: DependencyList,
   ) => Callback;
 
-  /// useDelTableCallback
+  /// ui-solid.useDelTableCallback
   useDelTableCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -539,7 +540,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useDelRowCallback
+  /// ui-solid.useDelRowCallback
   useDelRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId | GetId<Schemas, Parameter, TableId>,
     rowId: Id | GetId<Schemas, Parameter, Id>,
@@ -548,7 +549,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useDelCellCallback
+  /// ui-solid.useDelCellCallback
   useDelCellCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -563,14 +564,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useDelValuesCallback
+  /// ui-solid.useDelValuesCallback
   useDelValuesCallback: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
     thenDeps?: DependencyList,
   ) => Callback;
 
-  /// useDelValueCallback
+  /// ui-solid.useDelValueCallback
   useDelValueCallback: <
     Parameter,
     ValueId extends ValueIdFromSchema<Schemas[1]>,
@@ -581,7 +582,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useHasTablesListener
+  /// ui-solid.useHasTablesListener
   useHasTablesListener: (
     listener: HasTablesListener<Schemas>,
     listenerDeps?: DependencyList,
@@ -589,7 +590,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useTablesListener
+  /// ui-solid.useTablesListener
   useTablesListener: (
     listener: TablesListener<Schemas>,
     listenerDeps?: DependencyList,
@@ -597,7 +598,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useTableIdsListener
+  /// ui-solid.useTableIdsListener
   useTableIdsListener: (
     listener: TableIdsListener<Schemas>,
     listenerDeps?: DependencyList,
@@ -605,7 +606,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useHasTableListener
+  /// ui-solid.useHasTableListener
   useHasTableListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
@@ -616,7 +617,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useTableListener
+  /// ui-solid.useTableListener
   useTableListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
@@ -627,7 +628,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useTableCellIdsListener
+  /// ui-solid.useTableCellIdsListener
   useTableCellIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
@@ -638,7 +639,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useHasTableCellListener
+  /// ui-solid.useHasTableCellListener
   useHasTableCellListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     CellIdOrNull extends
@@ -655,7 +656,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useRowCountListener
+  /// ui-solid.useRowCountListener
   useRowCountListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
@@ -666,7 +667,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useRowIdsListener
+  /// ui-solid.useRowIdsListener
   useRowIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
@@ -678,7 +679,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   useSortedRowIdsListener: {
-    /// useSortedRowIdsListener
+    /// ui-solid.useSortedRowIdsListener
     <
       TableId extends TableIdFromSchema<Schemas[0]>,
       CellIdOrUndefined extends
@@ -696,7 +697,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       storeOrStoreId?: StoreOrStoreId<Schemas>,
     ): void;
 
-    /// useSortedRowIdsListener.2
+    /// ui-solid.useSortedRowIdsListener.2
     <
       TableId extends TableIdFromSchema<Schemas[0]>,
       CellIdOrUndefined extends
@@ -711,7 +712,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     ): void;
   };
 
-  /// useHasRowListener
+  /// ui-solid.useHasRowListener
   useHasRowListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
@@ -724,7 +725,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useRowListener
+  /// ui-solid.useRowListener
   useRowListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
@@ -737,7 +738,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useCellIdsListener
+  /// ui-solid.useCellIdsListener
   useCellIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
@@ -750,7 +751,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useHasCellListener
+  /// ui-solid.useHasCellListener
   useHasCellListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
@@ -774,7 +775,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useCellListener
+  /// ui-solid.useCellListener
   useCellListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
@@ -793,7 +794,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useHasValuesListener
+  /// ui-solid.useHasValuesListener
   useHasValuesListener: (
     listener: HasValuesListener<Schemas>,
     listenerDeps?: DependencyList,
@@ -801,7 +802,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useValuesListener
+  /// ui-solid.useValuesListener
   useValuesListener: (
     listener: ValuesListener<Schemas>,
     listenerDeps?: DependencyList,
@@ -809,7 +810,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useValueIdsListener
+  /// ui-solid.useValueIdsListener
   useValueIdsListener: (
     listener: ValueIdsListener<Schemas>,
     listenerDeps?: DependencyList,
@@ -817,7 +818,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useHasValueListener
+  /// ui-solid.useHasValueListener
   useHasValueListener: <
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
   >(
@@ -828,7 +829,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useValueListener
+  /// ui-solid.useValueListener
   useValueListener: <
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
   >(
@@ -839,41 +840,41 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useStartTransactionListener
+  /// ui-solid.useStartTransactionListener
   useStartTransactionListener: (
     listener: TransactionListener<Schemas>,
     listenerDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useWillFinishTransactionListener
+  /// ui-solid.useWillFinishTransactionListener
   useWillFinishTransactionListener: (
     listener: TransactionListener<Schemas>,
     listenerDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useDidFinishTransactionListener
+  /// ui-solid.useDidFinishTransactionListener
   useDidFinishTransactionListener: (
     listener: TransactionListener<Schemas>,
     listenerDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useCreateMetrics
+  /// ui-solid.useCreateMetrics
   useCreateMetrics: (
     store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Metrics<Schemas>,
     createDeps?: DependencyList,
   ) => Metrics<Schemas> | undefined;
 
-  /// useMetricsIds
+  /// ui-solid.useMetricsIds
   useMetricsIds: () => Ids;
 
-  /// useMetrics
+  /// ui-solid.useMetrics
   useMetrics: (id?: Id) => Metrics<Schemas> | undefined;
 
-  /// useMetricsOrMetricsById
+  /// ui-solid.useMetricsOrMetricsById
   useMetricsOrMetricsById: (
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => Metrics<Schemas> | undefined;
@@ -881,16 +882,16 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   // useProvideMetrics
   useProvideMetrics: (metricsId: Id, metrics: Metrics<Schemas>) => void;
 
-  /// useMetricIds
+  /// ui-solid.useMetricIds
   useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId<Schemas>): Ids;
 
-  /// useMetric
+  /// ui-solid.useMetric
   useMetric: (
     metricId: Id,
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => number | undefined;
 
-  /// useMetricListener
+  /// ui-solid.useMetricListener
   useMetricListener: (
     metricId: IdOrNull,
     listener: MetricListener<Schemas>,
@@ -898,20 +899,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => void;
 
-  /// useCreateIndexes
+  /// ui-solid.useCreateIndexes
   useCreateIndexes: (
     store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Indexes<Schemas>,
     createDeps?: DependencyList,
   ) => Indexes<Schemas> | undefined;
 
-  /// useIndexesIds
+  /// ui-solid.useIndexesIds
   useIndexesIds: () => Ids;
 
-  /// useIndexes
+  /// ui-solid.useIndexes
   useIndexes: (id?: Id) => Indexes<Schemas> | undefined;
 
-  /// useIndexesOrIndexesById
+  /// ui-solid.useIndexesOrIndexesById
   useIndexesOrIndexesById: (
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Indexes<Schemas> | undefined;
@@ -919,23 +920,23 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   // useProvideIndexes
   useProvideIndexes: (indexesId: Id, indexes: Indexes<Schemas>) => void;
 
-  /// useIndexIds
+  /// ui-solid.useIndexIds
   useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId<Schemas>): Ids;
 
-  /// useSliceIds
+  /// ui-solid.useSliceIds
   useSliceIds: (
     indexId: Id,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Ids;
 
-  /// useSliceRowIds
+  /// ui-solid.useSliceRowIds
   useSliceRowIds: (
     indexId: Id,
     sliceId: Id,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Ids;
 
-  /// useSliceIdsListener
+  /// ui-solid.useSliceIdsListener
   useSliceIdsListener: (
     indexId: IdOrNull,
     listener: SliceIdsListener<Schemas>,
@@ -943,7 +944,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
-  /// useSliceRowIdsListener
+  /// ui-solid.useSliceRowIdsListener
   useSliceRowIdsListener: (
     indexId: IdOrNull,
     sliceId: IdOrNull,
@@ -952,20 +953,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
-  /// useCreateRelationships
+  /// ui-solid.useCreateRelationships
   useCreateRelationships: (
     store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Relationships<Schemas>,
     createDeps?: DependencyList,
   ) => Relationships<Schemas> | undefined;
 
-  /// useRelationshipsIds
+  /// ui-solid.useRelationshipsIds
   useRelationshipsIds: () => Ids;
 
-  /// useRelationships
+  /// ui-solid.useRelationships
   useRelationships: (id?: Id) => Relationships<Schemas> | undefined;
 
-  /// useRelationshipsOrRelationshipsById
+  /// ui-solid.useRelationshipsOrRelationshipsById
   useRelationshipsOrRelationshipsById: (
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Relationships<Schemas> | undefined;
@@ -976,33 +977,33 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     relationships: Relationships<Schemas>,
   ) => void;
 
-  /// useRelationshipIds
+  /// ui-solid.useRelationshipIds
   useRelationshipIds(
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ): Ids;
 
-  /// useRemoteRowId
+  /// ui-solid.useRemoteRowId
   useRemoteRowId: (
     relationshipId: Id,
     localRowId: Id,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Id | undefined;
 
-  /// useLocalRowIds
+  /// ui-solid.useLocalRowIds
   useLocalRowIds: (
     relationshipId: Id,
     remoteRowId: Id,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Ids;
 
-  /// useLinkedRowIds
+  /// ui-solid.useLinkedRowIds
   useLinkedRowIds: (
     relationshipId: Id,
     firstRowId: Id,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Ids;
 
-  /// useRemoteRowIdListener
+  /// ui-solid.useRemoteRowIdListener
   useRemoteRowIdListener: (
     relationshipId: IdOrNull,
     localRowId: IdOrNull,
@@ -1011,7 +1012,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
-  /// useLocalRowIdsListener
+  /// ui-solid.useLocalRowIdsListener
   useLocalRowIdsListener: (
     relationshipId: IdOrNull,
     remoteRowId: IdOrNull,
@@ -1020,7 +1021,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
-  /// useLinkedRowIdsListener
+  /// ui-solid.useLinkedRowIdsListener
   useLinkedRowIdsListener: (
     relationshipId: Id,
     firstRowId: Id,
@@ -1029,20 +1030,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
-  /// useCreateQueries
+  /// ui-solid.useCreateQueries
   useCreateQueries: (
     store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Queries<Schemas>,
     createDeps?: DependencyList,
   ) => Queries<Schemas> | undefined;
 
-  /// useQueriesIds
+  /// ui-solid.useQueriesIds
   useQueriesIds: () => Ids;
 
-  /// useQueries
+  /// ui-solid.useQueries
   useQueries: (id?: Id) => Queries<Schemas> | undefined;
 
-  /// useQueriesOrQueriesById
+  /// ui-solid.useQueriesOrQueriesById
   useQueriesOrQueriesById: (
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Queries<Schemas> | undefined;
@@ -1050,34 +1051,34 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   // useProvideQueries
   useProvideQueries: (queriesId: Id, queries: Queries<Schemas>) => void;
 
-  /// useQueryIds
+  /// ui-solid.useQueryIds
   useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId<Schemas>): Ids;
 
-  /// useResultTable
+  /// ui-solid.useResultTable
   useResultTable: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => ResultTable;
 
-  /// useResultTableCellIds
+  /// ui-solid.useResultTableCellIds
   useResultTableCellIds: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Ids;
 
-  /// useResultRowCount
+  /// ui-solid.useResultRowCount
   useResultRowCount: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => number;
 
-  /// useResultRowIds
+  /// ui-solid.useResultRowIds
   useResultRowIds: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Ids;
 
-  /// useResultSortedRowIds
+  /// ui-solid.useResultSortedRowIds
   useResultSortedRowIds: (
     queryId: Id,
     cellId?: Id,
@@ -1087,21 +1088,21 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Ids;
 
-  /// useResultRow
+  /// ui-solid.useResultRow
   useResultRow: (
     queryId: Id,
     rowId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => ResultRow;
 
-  /// useResultCellIds
+  /// ui-solid.useResultCellIds
   useResultCellIds: (
     queryId: Id,
     rowId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Ids;
 
-  /// useResultCell
+  /// ui-solid.useResultCell
   useResultCell: (
     queryId: Id,
     rowId: Id,
@@ -1109,7 +1110,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => ResultCell | undefined;
 
-  /// useResultTableListener
+  /// ui-solid.useResultTableListener
   useResultTableListener: (
     queryId: IdOrNull,
     listener: ResultTableListener<Schemas>,
@@ -1117,7 +1118,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultTableCellIdsListener
+  /// ui-solid.useResultTableCellIdsListener
   useResultTableCellIdsListener: (
     queryId: IdOrNull,
     listener: ResultTableCellIdsListener<Schemas>,
@@ -1125,7 +1126,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultRowCountListener
+  /// ui-solid.useResultRowCountListener
   useResultRowCountListener: (
     queryId: IdOrNull,
     listener: ResultRowCountListener<Schemas>,
@@ -1133,7 +1134,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultRowIdsListener
+  /// ui-solid.useResultRowIdsListener
   useResultRowIdsListener: (
     queryId: IdOrNull,
     listener: ResultRowIdsListener<Schemas>,
@@ -1141,7 +1142,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultSortedRowIdsListener
+  /// ui-solid.useResultSortedRowIdsListener
   useResultSortedRowIdsListener: (
     queryId: Id,
     cellId: Id | undefined,
@@ -1153,7 +1154,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultRowListener
+  /// ui-solid.useResultRowListener
   useResultRowListener: (
     queryId: IdOrNull,
     rowId: IdOrNull,
@@ -1162,7 +1163,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultCellIdsListener
+  /// ui-solid.useResultCellIdsListener
   useResultCellIdsListener: (
     queryId: IdOrNull,
     rowId: IdOrNull,
@@ -1171,7 +1172,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useResultCellListener
+  /// ui-solid.useResultCellListener
   useResultCellListener: (
     queryId: IdOrNull,
     rowId: IdOrNull,
@@ -1181,33 +1182,33 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useParamValues
+  /// ui-solid.useParamValues
   useParamValues: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => ParamValues;
 
-  /// useParamValuesState
+  /// ui-solid.useParamValuesState
   useParamValuesState: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => [ParamValues, (paramValues: ParamValues) => void];
 
-  /// useParamValue
+  /// ui-solid.useParamValue
   useParamValue: (
     queryId: Id,
     paramId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => ParamValue | undefined;
 
-  /// useParamValueState
+  /// ui-solid.useParamValueState
   useParamValueState: (
     queryId: Id,
     paramId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => [ParamValue | undefined, (paramValue: ParamValue) => void];
 
-  /// useParamValuesListener
+  /// ui-solid.useParamValuesListener
   useParamValuesListener: (
     queryId: IdOrNull,
     listener: ParamValuesListener<Schemas>,
@@ -1215,7 +1216,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useParamValueListener
+  /// ui-solid.useParamValueListener
   useParamValueListener: (
     queryId: IdOrNull,
     paramId: IdOrNull,
@@ -1224,7 +1225,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useSetParamValueCallback
+  /// ui-solid.useSetParamValueCallback
   useSetParamValueCallback: <Parameter>(
     queryId: Id | GetId<Schemas, Parameter, Id>,
     paramId: Id | GetId<Schemas, Parameter, Id>,
@@ -1238,7 +1239,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetParamValuesCallback
+  /// ui-solid.useSetParamValuesCallback
   useSetParamValuesCallback: <Parameter>(
     queryId: Id | GetId<Schemas, Parameter, Id>,
     getParamValues: (
@@ -1251,20 +1252,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useCreateCheckpoints
+  /// ui-solid.useCreateCheckpoints
   useCreateCheckpoints: (
     store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Checkpoints<Schemas>,
     createDeps?: DependencyList,
   ) => Checkpoints<Schemas> | undefined;
 
-  /// useCheckpointsIds
+  /// ui-solid.useCheckpointsIds
   useCheckpointsIds: () => Ids;
 
-  /// useCheckpoints
+  /// ui-solid.useCheckpoints
   useCheckpoints: (id?: Id) => Checkpoints<Schemas> | undefined;
 
-  /// useCheckpointsOrCheckpointsById
+  /// ui-solid.useCheckpointsOrCheckpointsById
   useCheckpointsOrCheckpointsById: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => Checkpoints<Schemas> | undefined;
@@ -1275,18 +1276,18 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     checkpoints: Checkpoints<Schemas>,
   ) => void;
 
-  /// useCheckpointIds
+  /// ui-solid.useCheckpointIds
   useCheckpointIds: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => CheckpointIds;
 
-  /// useCheckpoint
+  /// ui-solid.useCheckpoint
   useCheckpoint: (
     checkpointId: Id,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => string | undefined;
 
-  /// useSetCheckpointCallback
+  /// ui-solid.useSetCheckpointCallback
   useSetCheckpointCallback: <Parameter>(
     getCheckpoint?: (parameter: Parameter) => string,
     getCheckpointDeps?: DependencyList,
@@ -1299,17 +1300,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useGoBackwardCallback
+  /// ui-solid.useGoBackwardCallback
   useGoBackwardCallback: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => Callback;
 
-  /// useGoForwardCallback
+  /// ui-solid.useGoForwardCallback
   useGoForwardCallback: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => Callback;
 
-  /// useGoToCallback
+  /// ui-solid.useGoToCallback
   useGoToCallback: <Parameter>(
     getCheckpointId: (parameter: Parameter) => Id,
     getCheckpointIdDeps?: DependencyList,
@@ -1318,24 +1319,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useUndoInformation
+  /// ui-solid.useUndoInformation
   useUndoInformation: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => UndoOrRedoInformation;
 
-  /// useRedoInformation
+  /// ui-solid.useRedoInformation
   useRedoInformation: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => UndoOrRedoInformation;
 
-  /// useCheckpointIdsListener
+  /// ui-solid.useCheckpointIdsListener
   useCheckpointIdsListener: (
     listener: CheckpointIdsListener<Schemas>,
     listenerDeps?: DependencyList,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;
 
-  /// useCheckpointListener
+  /// ui-solid.useCheckpointListener
   useCheckpointListener: (
     checkpointId: IdOrNull,
     listener: CheckpointListener<Schemas>,
@@ -1343,7 +1344,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;
 
-  /// useCreatePersister
+  /// ui-solid.useCreatePersister
   useCreatePersister: <
     Persist extends Persists,
     PersisterOrUndefined extends Persister<Schemas, Persist> | undefined,
@@ -1359,15 +1360,15 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     destroyDeps?: DependencyList,
   ) => PersisterOrUndefined;
 
-  /// usePersisterIds
+  /// ui-solid.usePersisterIds
   usePersisterIds: () => Ids;
 
-  /// usePersister
+  /// ui-solid.usePersister
   usePersister: (
     id?: Id,
   ) => Persister<Schemas, Persists.StoreOrMergeableStore> | undefined;
 
-  /// usePersisterOrPersisterById
+  /// ui-solid.usePersisterOrPersisterById
   usePersisterOrPersisterById: (
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
   ) => Persister<Schemas, Persists.StoreOrMergeableStore> | undefined;
@@ -1378,19 +1379,19 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     persister: AnyPersister<Schemas> | undefined,
   ) => void;
 
-  /// usePersisterStatus
+  /// ui-solid.usePersisterStatus
   usePersisterStatus: (
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
   ) => Status;
 
-  /// usePersisterStatusListener
+  /// ui-solid.usePersisterStatusListener
   usePersisterStatusListener: (
     listener: StatusListener<Schemas>,
     listenerDeps?: DependencyList,
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
   ) => void;
 
-  /// useCreateSynchronizer
+  /// ui-solid.useCreateSynchronizer
   useCreateSynchronizer: <
     SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
   >(
@@ -1403,13 +1404,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     destroyDeps?: DependencyList,
   ) => SynchronizerOrUndefined;
 
-  /// useSynchronizerIds
+  /// ui-solid.useSynchronizerIds
   useSynchronizerIds: () => Ids;
 
-  /// useSynchronizer
+  /// ui-solid.useSynchronizer
   useSynchronizer: (id?: Id) => Synchronizer<Schemas> | undefined;
 
-  /// useSynchronizerOrSynchronizerById
+  /// ui-solid.useSynchronizerOrSynchronizerById
   useSynchronizerOrSynchronizerById: (
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => Synchronizer<Schemas> | undefined;
@@ -1420,162 +1421,162 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     synchronizer: Synchronizer<Schemas> | undefined,
   ) => void;
 
-  /// useSynchronizerStatus
+  /// ui-solid.useSynchronizerStatus
   useSynchronizerStatus: (
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => Status;
 
-  /// useSynchronizerStatusListener
+  /// ui-solid.useSynchronizerStatusListener
   useSynchronizerStatusListener: (
     listener: StatusListener<Schemas>,
     listenerDeps?: DependencyList,
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => void;
 
-  /// ExtraProps
+  /// ui-solid.ExtraProps
   ExtraProps: ExtraProps;
 
-  /// TablesProps
+  /// ui-solid.TablesProps
   TablesProps: TablesProps<Schemas>;
 
-  /// TableProps
+  /// ui-solid.TableProps
   TableProps: TableProps<Schemas>;
 
-  /// SortedTableProps
+  /// ui-solid.SortedTableProps
   SortedTableProps: SortedTableProps<Schemas>;
 
-  /// RowProps
+  /// ui-solid.RowProps
   RowProps: RowProps<Schemas>;
 
-  /// CellProps
+  /// ui-solid.CellProps
   CellProps: CellProps<Schemas>;
 
-  /// ValuesProps
+  /// ui-solid.ValuesProps
   ValuesProps: ValuesProps<Schemas>;
 
-  /// ValueProps
+  /// ui-solid.ValueProps
   ValueProps: ValueProps<Schemas>;
 
-  /// MetricProps
+  /// ui-solid.MetricProps
   MetricProps: MetricProps<Schemas>;
 
-  /// IndexProps
+  /// ui-solid.IndexProps
   IndexProps: IndexProps<Schemas>;
 
-  /// SliceProps
+  /// ui-solid.SliceProps
   SliceProps: SliceProps<Schemas>;
 
-  /// RemoteRowProps
+  /// ui-solid.RemoteRowProps
   RemoteRowProps: RemoteRowProps<Schemas>;
 
-  /// LocalRowsProps
+  /// ui-solid.LocalRowsProps
   LocalRowsProps: LocalRowsProps<Schemas>;
 
-  /// LinkedRowsProps
+  /// ui-solid.LinkedRowsProps
   LinkedRowsProps: LinkedRowsProps<Schemas>;
 
-  /// ResultTableProps
+  /// ui-solid.ResultTableProps
   ResultTableProps: ResultTableProps<Schemas>;
 
-  /// ResultSortedTableProps
+  /// ui-solid.ResultSortedTableProps
   ResultSortedTableProps: ResultSortedTableProps<Schemas>;
 
-  /// ResultRowProps
+  /// ui-solid.ResultRowProps
   ResultRowProps: ResultRowProps<Schemas>;
 
-  /// ResultCellProps
+  /// ui-solid.ResultCellProps
   ResultCellProps: ResultCellProps<Schemas>;
 
-  /// CheckpointProps
+  /// ui-solid.CheckpointProps
   CheckpointProps: CheckpointProps<Schemas>;
 
-  /// BackwardCheckpointsProps
+  /// ui-solid.BackwardCheckpointsProps
   BackwardCheckpointsProps: BackwardCheckpointsProps<Schemas>;
 
-  /// CurrentCheckpointProps
+  /// ui-solid.CurrentCheckpointProps
   CurrentCheckpointProps: CurrentCheckpointProps<Schemas>;
 
-  /// ForwardCheckpointsProps
+  /// ui-solid.ForwardCheckpointsProps
   ForwardCheckpointsProps: ForwardCheckpointsProps<Schemas>;
 
-  /// ProviderProps
+  /// ui-solid.ProviderProps
   ProviderProps: ProviderProps<Schemas>;
 
-  /// ComponentReturnType
+  /// ui-solid.ComponentReturnType
   ComponentReturnType: ComponentReturnType;
 
-  /// Provider
+  /// ui-solid.Provider
   Provider: (
     props: ProviderProps<Schemas> & {children: JSXElement},
   ) => ComponentReturnType;
 
-  /// CellView
+  /// ui-solid.CellView
   CellView: (props: CellProps<Schemas>) => ComponentReturnType;
 
-  /// RowView
+  /// ui-solid.RowView
   RowView: (props: RowProps<Schemas>) => ComponentReturnType;
 
-  /// SortedTableView
+  /// ui-solid.SortedTableView
   SortedTableView: (props: SortedTableProps<Schemas>) => ComponentReturnType;
 
-  /// TableView
+  /// ui-solid.TableView
   TableView: (props: TableProps<Schemas>) => ComponentReturnType;
 
-  /// TablesView
+  /// ui-solid.TablesView
   TablesView: (props: TablesProps<Schemas>) => ComponentReturnType;
 
-  /// ValueView
+  /// ui-solid.ValueView
   ValueView: (props: ValueProps<Schemas>) => ComponentReturnType;
 
-  /// ValuesView
+  /// ui-solid.ValuesView
   ValuesView: (props: ValuesProps<Schemas>) => ComponentReturnType;
 
-  /// MetricView
+  /// ui-solid.MetricView
   MetricView: (props: MetricProps<Schemas>) => ComponentReturnType;
 
-  /// SliceView
+  /// ui-solid.SliceView
   SliceView: (props: SliceProps<Schemas>) => ComponentReturnType;
 
-  /// IndexView
+  /// ui-solid.IndexView
   IndexView: (props: IndexProps<Schemas>) => ComponentReturnType;
 
-  /// RemoteRowView
+  /// ui-solid.RemoteRowView
   RemoteRowView: (props: RemoteRowProps<Schemas>) => ComponentReturnType;
 
-  /// LocalRowsView
+  /// ui-solid.LocalRowsView
   LocalRowsView: (props: LocalRowsProps<Schemas>) => ComponentReturnType;
 
-  /// LinkedRowsView
+  /// ui-solid.LinkedRowsView
   LinkedRowsView: (props: LinkedRowsProps<Schemas>) => ComponentReturnType;
 
-  /// ResultCellView
+  /// ui-solid.ResultCellView
   ResultCellView: (props: ResultCellProps<Schemas>) => ComponentReturnType;
 
-  /// ResultRowView
+  /// ui-solid.ResultRowView
   ResultRowView: (props: ResultRowProps<Schemas>) => ComponentReturnType;
 
-  /// ResultSortedTableView
+  /// ui-solid.ResultSortedTableView
   ResultSortedTableView: (
     props: ResultSortedTableProps<Schemas>,
   ) => ComponentReturnType;
 
-  /// ResultTableView
+  /// ui-solid.ResultTableView
   ResultTableView: (props: ResultTableProps<Schemas>) => ComponentReturnType;
 
-  /// CheckpointView
+  /// ui-solid.CheckpointView
   CheckpointView: (props: CheckpointProps<Schemas>) => ComponentReturnType;
 
-  /// BackwardCheckpointsView
+  /// ui-solid.BackwardCheckpointsView
   BackwardCheckpointsView: (
     props: BackwardCheckpointsProps<Schemas>,
   ) => ComponentReturnType;
 
-  /// CurrentCheckpointView
+  /// ui-solid.CurrentCheckpointView
   CurrentCheckpointView: (
     props: CurrentCheckpointProps<Schemas>,
   ) => ComponentReturnType;
 
-  /// ForwardCheckpointsView
+  /// ui-solid.ForwardCheckpointsView
   ForwardCheckpointsView: (
     props: ForwardCheckpointsProps<Schemas>,
   ) => ComponentReturnType;

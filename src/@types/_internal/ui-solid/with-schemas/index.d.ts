@@ -60,15 +60,15 @@ type GetId<Schemas extends OptionalSchemas, Parameter, Id> = (
 type ExtraProps = {[propName: string]: any};
 
 type TablesProps<Schemas extends OptionalSchemas> = {
-  /// TablesProps.store
+  /// ui-solid.TablesProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// TablesProps.tableComponent
+  /// ui-solid.TablesProps.tableComponent
   readonly tableComponent?: Component<TableProps<Schemas>>;
-  /// TablesProps.getTableComponentProps
+  /// ui-solid.TablesProps.getTableComponentProps
   readonly getTableComponentProps?: (tableId: Id) => ExtraProps;
-  /// TablesProps.separator
+  /// ui-solid.TablesProps.separator
   readonly separator?: JSXElement | string;
-  /// TablesProps.debugIds
+  /// ui-solid.TablesProps.debugIds
   readonly debugIds?: boolean;
 };
 
@@ -80,19 +80,19 @@ export type TableProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// TableProps.tableId
+        /// ui-solid.TableProps.tableId
         readonly tableId: TableId;
-        /// TableProps.store
+        /// ui-solid.TableProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// TableProps.rowComponent
+        /// ui-solid.TableProps.rowComponent
         readonly rowComponent?: Component<RowProps<Schemas, TableId>>;
-        /// TableProps.getRowComponentProps
+        /// ui-solid.TableProps.getRowComponentProps
         readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-        /// TableProps.customCellIds
+        /// ui-solid.TableProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
-        /// TableProps.separator
+        /// ui-solid.TableProps.separator
         readonly separator?: JSXElement | string;
-        /// TableProps.debugIds
+        /// ui-solid.TableProps.debugIds
         readonly debugIds?: boolean;
       }
     : never
@@ -106,27 +106,27 @@ export type SortedTableProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// SortedTableProps.tableId
+        /// ui-solid.SortedTableProps.tableId
         readonly tableId: TableId;
-        /// SortedTableProps.cellId
+        /// ui-solid.SortedTableProps.cellId
         readonly cellId?: CellIdFromSchema<Schemas[0], TableId>;
-        /// SortedTableProps.descending
+        /// ui-solid.SortedTableProps.descending
         readonly descending?: boolean;
-        /// SortedTableProps.offset
+        /// ui-solid.SortedTableProps.offset
         readonly offset?: number;
-        /// SortedTableProps.limit
+        /// ui-solid.SortedTableProps.limit
         readonly limit?: number;
-        /// SortedTableProps.store
+        /// ui-solid.SortedTableProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// SortedTableProps.rowComponent
+        /// ui-solid.SortedTableProps.rowComponent
         readonly rowComponent?: Component<RowProps<Schemas, TableId>>;
-        /// SortedTableProps.getRowComponentProps
+        /// ui-solid.SortedTableProps.getRowComponentProps
         readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-        /// SortedTableProps.customCellIds
+        /// ui-solid.SortedTableProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
-        /// SortedTableProps.separator
+        /// ui-solid.SortedTableProps.separator
         readonly separator?: JSXElement | string;
-        /// SortedTableProps.debugIds
+        /// ui-solid.SortedTableProps.debugIds
         readonly debugIds?: boolean;
       }
     : never
@@ -140,21 +140,21 @@ export type RowProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// RowProps.tableId
+        /// ui-solid.RowProps.tableId
         readonly tableId: TableId;
-        /// RowProps.rowId
+        /// ui-solid.RowProps.rowId
         readonly rowId: Id;
-        /// RowProps.store
+        /// ui-solid.RowProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// RowProps.cellComponent
+        /// ui-solid.RowProps.cellComponent
         readonly cellComponent?: Component<CellProps<Schemas, TableId>>;
-        /// RowProps.getCellComponentProps
+        /// ui-solid.RowProps.getCellComponentProps
         readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
-        /// RowProps.customCellIds
+        /// ui-solid.RowProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
-        /// RowProps.separator
+        /// ui-solid.RowProps.separator
         readonly separator?: JSXElement | string;
-        /// RowProps.debugIds
+        /// ui-solid.RowProps.debugIds
         readonly debugIds?: boolean;
       }
     : never
@@ -180,278 +180,278 @@ export type CellPropsForTableIdAndCellId<
   TableId extends TableIdFromSchema<Schemas[0]>,
   CellId extends CellIdFromSchema<Schemas[0], TableId>,
 > = {
-  /// CellProps.tableId
+  /// ui-solid.CellProps.tableId
   readonly tableId: TableId;
-  /// CellProps.rowId
+  /// ui-solid.CellProps.rowId
   readonly rowId: Id;
-  /// CellProps.cellId
+  /// ui-solid.CellProps.cellId
   readonly cellId: CellId;
-  /// CellProps.store
+  /// ui-solid.CellProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// CellProps.debugIds
+  /// ui-solid.CellProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ValuesProps<Schemas extends OptionalSchemas> = {
-  /// ValuesProps.store
+  /// ui-solid.ValuesProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// ValuesProps.valueComponent
+  /// ui-solid.ValuesProps.valueComponent
   readonly valueComponent?: Component<ValueProps<Schemas>>;
-  /// ValuesProps.getValueComponentProps
+  /// ui-solid.ValuesProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
-  /// ValuesProps.separator
+  /// ui-solid.ValuesProps.separator
   readonly separator?: JSXElement | string;
-  /// ValuesProps.debugIds
+  /// ui-solid.ValuesProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ValueProps<Schemas extends OptionalSchemas> = {
-  /// ValueProps.valueId
+  /// ui-solid.ValueProps.valueId
   readonly valueId: ValueIdFromSchema<Schemas[1]>;
-  /// ValueProps.store
+  /// ui-solid.ValueProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// ValueProps.debugIds
+  /// ui-solid.ValueProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type MetricProps<Schemas extends OptionalSchemas> = {
-  /// MetricProps.metricId
+  /// ui-solid.MetricProps.metricId
   readonly metricId: Id;
-  /// MetricProps.metrics
+  /// ui-solid.MetricProps.metrics
   readonly metrics?: MetricsOrMetricsId<Schemas>;
-  /// MetricProps.debugIds
+  /// ui-solid.MetricProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type IndexProps<Schemas extends OptionalSchemas> = {
-  /// IndexProps.indexId
+  /// ui-solid.IndexProps.indexId
   readonly indexId: Id;
-  /// IndexProps.indexes
+  /// ui-solid.IndexProps.indexes
   readonly indexes?: IndexesOrIndexesId<Schemas>;
-  /// IndexProps.sliceComponent
+  /// ui-solid.IndexProps.sliceComponent
   readonly sliceComponent?: Component<SliceProps<Schemas>>;
-  /// IndexProps.getSliceComponentProps
+  /// ui-solid.IndexProps.getSliceComponentProps
   readonly getSliceComponentProps?: (sliceId: Id) => ExtraProps;
-  /// IndexProps.separator
+  /// ui-solid.IndexProps.separator
   readonly separator?: JSXElement | string;
-  /// IndexProps.debugIds
+  /// ui-solid.IndexProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type SliceProps<Schemas extends OptionalSchemas> = {
-  /// SliceProps.indexId
+  /// ui-solid.SliceProps.indexId
   readonly indexId: Id;
-  /// SliceProps.sliceId
+  /// ui-solid.SliceProps.sliceId
   readonly sliceId: Id;
-  /// SliceProps.indexes
+  /// ui-solid.SliceProps.indexes
   readonly indexes?: IndexesOrIndexesId<Schemas>;
-  /// SliceProps.rowComponent
+  /// ui-solid.SliceProps.rowComponent
   readonly rowComponent?: Component<RowProps<Schemas>>;
-  /// SliceProps.getRowComponentProps
+  /// ui-solid.SliceProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SliceProps.separator
+  /// ui-solid.SliceProps.separator
   readonly separator?: JSXElement | string;
-  /// SliceProps.debugIds
+  /// ui-solid.SliceProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type RemoteRowProps<Schemas extends OptionalSchemas> = {
-  /// RemoteRowProps.relationshipId
+  /// ui-solid.RemoteRowProps.relationshipId
   readonly relationshipId: Id;
-  /// RemoteRowProps.localRowId
+  /// ui-solid.RemoteRowProps.localRowId
   readonly localRowId: Id;
-  /// RemoteRowProps.relationships
+  /// ui-solid.RemoteRowProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-  /// RemoteRowProps.rowComponent
+  /// ui-solid.RemoteRowProps.rowComponent
   readonly rowComponent?: Component<RowProps<Schemas>>;
-  /// RemoteRowProps.getRowComponentProps
+  /// ui-solid.RemoteRowProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// RemoteRowProps.debugIds
+  /// ui-solid.RemoteRowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type LocalRowsProps<Schemas extends OptionalSchemas> = {
-  /// LocalRowsProps.relationshipId
+  /// ui-solid.LocalRowsProps.relationshipId
   readonly relationshipId: Id;
-  /// LocalRowsProps.remoteRowId
+  /// ui-solid.LocalRowsProps.remoteRowId
   readonly remoteRowId: Id;
-  /// LocalRowsProps.relationships
+  /// ui-solid.LocalRowsProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-  /// LocalRowsProps.rowComponent
+  /// ui-solid.LocalRowsProps.rowComponent
   readonly rowComponent?: Component<RowProps<Schemas>>;
-  /// LocalRowsProps.getRowComponentProps
+  /// ui-solid.LocalRowsProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LocalRowsProps.separator
+  /// ui-solid.LocalRowsProps.separator
   readonly separator?: JSXElement | string;
-  /// LocalRowsProps.debugIds
+  /// ui-solid.LocalRowsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type LinkedRowsProps<Schemas extends OptionalSchemas> = {
-  /// LinkedRowsProps.relationshipId
+  /// ui-solid.LinkedRowsProps.relationshipId
   readonly relationshipId: Id;
-  /// LinkedRowsProps.firstRowId
+  /// ui-solid.LinkedRowsProps.firstRowId
   readonly firstRowId: Id;
-  /// LinkedRowsProps.relationships
+  /// ui-solid.LinkedRowsProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-  /// LinkedRowsProps.rowComponent
+  /// ui-solid.LinkedRowsProps.rowComponent
   readonly rowComponent?: Component<RowProps<Schemas>>;
-  /// LinkedRowsProps.getRowComponentProps
+  /// ui-solid.LinkedRowsProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LinkedRowsProps.separator
+  /// ui-solid.LinkedRowsProps.separator
   readonly separator?: JSXElement | string;
-  /// LinkedRowsProps.debugIds
+  /// ui-solid.LinkedRowsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultTableProps<Schemas extends OptionalSchemas> = {
-  /// ResultTableProps.queryId
+  /// ui-solid.ResultTableProps.queryId
   readonly queryId: Id;
-  /// ResultTableProps.queries
+  /// ui-solid.ResultTableProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultTableProps.resultRowComponent
+  /// ui-solid.ResultTableProps.resultRowComponent
   readonly resultRowComponent?: Component<ResultRowProps<Schemas>>;
-  /// ResultTableProps.getResultRowComponentProps
+  /// ui-solid.ResultTableProps.getResultRowComponentProps
   readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultTableProps.separator
+  /// ui-solid.ResultTableProps.separator
   readonly separator?: JSXElement | string;
-  /// ResultTableProps.debugIds
+  /// ui-solid.ResultTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultSortedTableProps<Schemas extends OptionalSchemas> = {
-  /// ResultSortedTableProps.queryId
+  /// ui-solid.ResultSortedTableProps.queryId
   readonly queryId: Id;
-  /// ResultSortedTableProps.cellId
+  /// ui-solid.ResultSortedTableProps.cellId
   readonly cellId?: Id;
-  /// ResultSortedTableProps.descending
+  /// ui-solid.ResultSortedTableProps.descending
   readonly descending?: boolean;
-  /// ResultSortedTableProps.offset
+  /// ui-solid.ResultSortedTableProps.offset
   readonly offset?: number;
-  /// ResultSortedTableProps.limit
+  /// ui-solid.ResultSortedTableProps.limit
   readonly limit?: number;
-  /// ResultSortedTableProps.queries
+  /// ui-solid.ResultSortedTableProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultSortedTableProps.resultRowComponent
+  /// ui-solid.ResultSortedTableProps.resultRowComponent
   readonly resultRowComponent?: Component<ResultRowProps<Schemas>>;
-  /// ResultSortedTableProps.getResultRowComponentProps
+  /// ui-solid.ResultSortedTableProps.getResultRowComponentProps
   readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultSortedTableProps.separator
+  /// ui-solid.ResultSortedTableProps.separator
   readonly separator?: JSXElement | string;
-  /// ResultSortedTableProps.debugIds
+  /// ui-solid.ResultSortedTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultRowProps<Schemas extends OptionalSchemas> = {
-  /// ResultRowProps.queryId
+  /// ui-solid.ResultRowProps.queryId
   readonly queryId: Id;
-  /// ResultRowProps.rowId
+  /// ui-solid.ResultRowProps.rowId
   readonly rowId: Id;
-  /// ResultRowProps.queries
+  /// ui-solid.ResultRowProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultRowProps.resultCellComponent
+  /// ui-solid.ResultRowProps.resultCellComponent
   readonly resultCellComponent?: Component<ResultCellProps<Schemas>>;
-  /// ResultRowProps.getResultCellComponentProps
+  /// ui-solid.ResultRowProps.getResultCellComponentProps
   readonly getResultCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// ResultRowProps.separator
+  /// ui-solid.ResultRowProps.separator
   readonly separator?: JSXElement | string;
-  /// ResultRowProps.debugIds
+  /// ui-solid.ResultRowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultCellProps<Schemas extends OptionalSchemas> = {
-  /// ResultCellProps.queryId
+  /// ui-solid.ResultCellProps.queryId
   readonly queryId: Id;
-  /// ResultCellProps.rowId
+  /// ui-solid.ResultCellProps.rowId
   readonly rowId: Id;
-  /// ResultCellProps.cellId
+  /// ui-solid.ResultCellProps.cellId
   readonly cellId: Id;
-  /// ResultCellProps.queries
+  /// ui-solid.ResultCellProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultCellProps.debugIds
+  /// ui-solid.ResultCellProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type CheckpointProps<Schemas extends OptionalSchemas> = {
-  /// CheckpointProps.checkpointId
+  /// ui-solid.CheckpointProps.checkpointId
   readonly checkpointId: Id;
-  /// CheckpointProps.checkpoints
+  /// ui-solid.CheckpointProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// CheckpointProps.debugIds
+  /// ui-solid.CheckpointProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type BackwardCheckpointsProps<Schemas extends OptionalSchemas> = {
-  /// BackwardCheckpointsProps.checkpoints
+  /// ui-solid.BackwardCheckpointsProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// BackwardCheckpointsProps.checkpointComponent
+  /// ui-solid.BackwardCheckpointsProps.checkpointComponent
   readonly checkpointComponent?: Component<CheckpointProps<Schemas>>;
-  /// BackwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-solid.BackwardCheckpointsProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// BackwardCheckpointsProps.separator
+  /// ui-solid.BackwardCheckpointsProps.separator
   readonly separator?: JSXElement | string;
-  /// BackwardCheckpointsProps.debugIds
+  /// ui-solid.BackwardCheckpointsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type CurrentCheckpointProps<Schemas extends OptionalSchemas> = {
-  /// CurrentCheckpointProps.checkpoints
+  /// ui-solid.CurrentCheckpointProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// CurrentCheckpointProps.checkpointComponent
+  /// ui-solid.CurrentCheckpointProps.checkpointComponent
   readonly checkpointComponent?: Component<CheckpointProps<Schemas>>;
-  /// CurrentCheckpointProps.getCheckpointComponentProps
+  /// ui-solid.CurrentCheckpointProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// CurrentCheckpointProps.debugIds
+  /// ui-solid.CurrentCheckpointProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ForwardCheckpointsProps<Schemas extends OptionalSchemas> = {
-  /// ForwardCheckpointsProps.checkpoints
+  /// ui-solid.ForwardCheckpointsProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// ForwardCheckpointsProps.checkpointComponent
+  /// ui-solid.ForwardCheckpointsProps.checkpointComponent
   readonly checkpointComponent?: Component<CheckpointProps<Schemas>>;
-  /// ForwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-solid.ForwardCheckpointsProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// ForwardCheckpointsProps.separator
+  /// ui-solid.ForwardCheckpointsProps.separator
   readonly separator?: JSXElement | string;
-  /// ForwardCheckpointsProps.debugIds
+  /// ui-solid.ForwardCheckpointsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ProviderProps<Schemas extends OptionalSchemas> = {
-  /// ProviderProps.store
+  /// ui-solid.ProviderProps.store
   readonly store?: Store<Schemas>;
-  /// ProviderProps.storesById
+  /// ui-solid.ProviderProps.storesById
   readonly storesById?: {[storeId: Id]: Store<Schemas>};
-  /// ProviderProps.metrics
+  /// ui-solid.ProviderProps.metrics
   readonly metrics?: Metrics<Schemas>;
-  /// ProviderProps.metricsById
+  /// ui-solid.ProviderProps.metricsById
   readonly metricsById?: {[metricsId: Id]: Metrics<Schemas>};
-  /// ProviderProps.indexes
+  /// ui-solid.ProviderProps.indexes
   readonly indexes?: Indexes<Schemas>;
-  /// ProviderProps.indexesById
+  /// ui-solid.ProviderProps.indexesById
   readonly indexesById?: {[indexesId: Id]: Indexes<Schemas>};
-  /// ProviderProps.relationships
+  /// ui-solid.ProviderProps.relationships
   readonly relationships?: Relationships<Schemas>;
-  /// ProviderProps.relationshipsById
+  /// ui-solid.ProviderProps.relationshipsById
   readonly relationshipsById?: {[relationshipsId: Id]: Relationships<Schemas>};
-  /// ProviderProps.queries
+  /// ui-solid.ProviderProps.queries
   readonly queries?: Queries<Schemas>;
-  /// ProviderProps.queriesById
+  /// ui-solid.ProviderProps.queriesById
   readonly queriesById?: {[queriesId: Id]: Queries<Schemas>};
-  /// ProviderProps.checkpoints
+  /// ui-solid.ProviderProps.checkpoints
   readonly checkpoints?: Checkpoints<Schemas>;
-  /// ProviderProps.checkpointsById
+  /// ui-solid.ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints<Schemas>};
-  /// ProviderProps.persister
+  /// ui-solid.ProviderProps.persister
   readonly persister?: Persister<Schemas, Persists.StoreOrMergeableStore>;
-  /// ProviderProps.persistersById
+  /// ui-solid.ProviderProps.persistersById
   readonly persistersById?: {
     [persisterId: Id]: Persister<Schemas, Persists.StoreOrMergeableStore>;
   };
-  /// ProviderProps.synchronizer
+  /// ui-solid.ProviderProps.synchronizer
   readonly synchronizer?: Synchronizer<Schemas>;
-  /// ProviderProps.synchronizersById
+  /// ui-solid.ProviderProps.synchronizersById
   readonly synchronizersById?: {[synchronizerId: Id]: Synchronizer<Schemas>};
 };
 
