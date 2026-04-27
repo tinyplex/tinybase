@@ -1273,13 +1273,16 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     Persist extends Persists,
     PersisterOrUndefined extends Persister<Schemas, Persist> | undefined,
   >(
-    store: PersistedStore<Schemas, Persist> | undefined,
+    store:
+      | PersistedStore<Schemas, Persist>
+      | Accessor<PersistedStore<Schemas, Persist> | undefined>
+      | undefined,
     create: (
       store: PersistedStore<Schemas, Persist>,
     ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
     then?: (persister: Persister<Schemas, Persist>) => Promise<any>,
     destroy?: (persister: Persister<Schemas, Persist>) => void,
-  ) => Accessor<PersisterOrUndefined>;
+  ) => Accessor<PersisterOrUndefined | undefined>;
 
   /// ui-solid.usePersisterIds
   usePersisterIds: () => Accessor<Ids>;
@@ -1315,12 +1318,15 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCreateSynchronizer: <
     SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
   >(
-    store: MergeableStore<Schemas> | undefined,
+    store:
+      | MergeableStore<Schemas>
+      | Accessor<MergeableStore<Schemas> | undefined>
+      | undefined,
     create: (
       store: MergeableStore<Schemas>,
     ) => Promise<SynchronizerOrUndefined>,
     destroy?: (synchronizer: Synchronizer<Schemas>) => void,
-  ) => Accessor<SynchronizerOrUndefined>;
+  ) => Accessor<SynchronizerOrUndefined | undefined>;
 
   /// ui-solid.useSynchronizerIds
   useSynchronizerIds: () => Accessor<Ids>;

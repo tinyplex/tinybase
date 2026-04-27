@@ -1932,7 +1932,7 @@ export const useCreatePersister = <
   Persist extends Persists,
   PersisterOrUndefined extends Persister<Persist> | undefined,
 >(
-  store: PersistedStore<Persist> | undefined,
+  store: MaybeAccessor<PersistedStore<Persist> | undefined>,
   create: (
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
@@ -1941,23 +1941,36 @@ export const useCreatePersister = <
 ): Accessor<PersisterOrUndefined | undefined> => {
   const [persister, setPersister] = createSignal<PersisterOrUndefined>();
   createEffect(() => {
+    let current = true;
+    let createdPersister: PersisterOrUndefined | undefined;
+    const destroyPersister = (persister: Persister<Persist>) => {
+      persister.destroy();
+      destroy?.(persister);
+    };
     (async () => {
-      const createdPersister = store ? await create(store) : undefined;
+      const resolvedStore = getThing(store);
+      createdPersister = resolvedStore
+        ? await create(resolvedStore)
+        : undefined;
+      if (!current) {
+        if (createdPersister) {
+          destroyPersister(createdPersister);
+        }
+        return;
+      }
       setPersister(() => createdPersister);
       if (createdPersister && then) {
         await then(createdPersister);
       }
     })();
-  });
-  createEffect(() =>
     onCleanup(() => {
-      const resolvedPersister = getThing(persister);
-      if (resolvedPersister) {
-        resolvedPersister.destroy();
-        destroy?.(resolvedPersister);
+      current = false;
+      setPersister(() => undefined);
+      if (createdPersister) {
+        destroyPersister(createdPersister);
       }
-    }),
-  );
+    });
+  });
   return persister;
 };
 
@@ -2001,27 +2014,40 @@ export const usePersisterStatusListener = (
 export const useCreateSynchronizer = <
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
-  store: MergeableStore | undefined,
+  store: MaybeAccessor<MergeableStore | undefined>,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   destroy?: (synchronizer: Synchronizer) => void,
 ): Accessor<SynchronizerOrUndefined | undefined> => {
   const [synchronizer, setSynchronizer] =
     createSignal<SynchronizerOrUndefined>();
   createEffect(() => {
+    let current = true;
+    let createdSynchronizer: SynchronizerOrUndefined | undefined;
+    const destroySynchronizer = (synchronizer: Synchronizer) => {
+      synchronizer.destroy();
+      destroy?.(synchronizer);
+    };
     (async () => {
-      const createdSynchronizer = store ? await create(store) : undefined;
+      const resolvedStore = getThing(store);
+      createdSynchronizer = resolvedStore
+        ? await create(resolvedStore)
+        : undefined;
+      if (!current) {
+        if (createdSynchronizer) {
+          destroySynchronizer(createdSynchronizer);
+        }
+        return;
+      }
       setSynchronizer(() => createdSynchronizer);
     })();
-  });
-  createEffect(() =>
     onCleanup(() => {
-      const resolvedSynchronizer = getThing(synchronizer);
-      if (resolvedSynchronizer) {
-        resolvedSynchronizer.destroy();
-        destroy?.(resolvedSynchronizer);
+      current = false;
+      setSynchronizer(() => undefined);
+      if (createdSynchronizer) {
+        destroySynchronizer(createdSynchronizer);
       }
-    }),
-  );
+    });
+  });
   return synchronizer;
 };
 

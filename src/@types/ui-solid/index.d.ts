@@ -906,13 +906,16 @@ export function useCreatePersister<
   Persist extends Persists,
   PersisterOrUndefined extends Persister<Persist> | undefined,
 >(
-  store: PersistedStore<Persist> | undefined,
+  store:
+    | PersistedStore<Persist>
+    | Accessor<PersistedStore<Persist> | undefined>
+    | undefined,
   create: (
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
   then?: (persister: Persister<Persist>) => Promise<any>,
   destroy?: (persister: Persister<Persist>) => void,
-): Accessor<PersisterOrUndefined>;
+): Accessor<PersisterOrUndefined | undefined>;
 
 export function usePersisterIds(): Accessor<Ids>;
 
@@ -939,10 +942,10 @@ export function usePersisterStatusListener(
 export function useCreateSynchronizer<
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
-  store: MergeableStore | undefined,
+  store: MergeableStore | Accessor<MergeableStore | undefined> | undefined,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   destroy?: (synchronizer: Synchronizer) => void,
-): Accessor<SynchronizerOrUndefined>;
+): Accessor<SynchronizerOrUndefined | undefined>;
 
 export function useSynchronizerIds(): Accessor<Ids>;
 
