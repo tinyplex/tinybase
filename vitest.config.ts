@@ -127,6 +127,7 @@ export default defineConfig({
         test: {
           name: 'solid',
           alias: {
+            'tinybase/ui-solid/with-schemas': resolve('src/ui-solid/index.ts'),
             'tinybase/ui-solid': resolve('src/ui-solid/index.ts'),
           },
           server: {deps: {inline: [/solid-js/]}},

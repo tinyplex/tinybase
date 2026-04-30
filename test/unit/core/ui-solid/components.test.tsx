@@ -1,7 +1,15 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
 import {render} from 'solid-js/web';
-import type {Checkpoints, Id, Store} from 'tinybase';
+import type {
+  Checkpoints,
+  Id,
+  Indexes,
+  Metrics,
+  Queries,
+  Relationships,
+  Store,
+} from 'tinybase';
 import {
   createCheckpoints,
   createIndexes,
@@ -10,6 +18,8 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import type {AnyPersister} from 'tinybase/persisters';
+import type {Synchronizer} from 'tinybase/synchronizers';
 import type {
   BackwardCheckpointsProps,
   CellProps,
@@ -40,6 +50,7 @@ import {
   LinkedRowsView,
   LocalRowsView,
   MetricView,
+  Provider,
   RemoteRowView,
   ResultCellView,
   ResultRowView,
@@ -50,13 +61,39 @@ import {
   SortedTableView,
   TablesView,
   TableView,
+  useCheckpoints,
+  useIndexes,
+  useMetrics,
+  usePersister,
+  useProvideCheckpoints,
+  useProvideIndexes,
+  useProvideMetrics,
+  useProvidePersister,
+  useProvideQueries,
+  useProvideRelationships,
+  useProvideStore,
+  useProvideSynchronizer,
+  useQueries,
+  useRelationships,
+  useStore,
+  useStoreIds,
+  useSynchronizer,
   ValuesView,
   ValueView,
 } from 'tinybase/ui-solid';
+import * as UiSolid from 'tinybase/ui-solid/with-schemas';
+import type {NoSchemas} from 'tinybase/with-schemas';
+import {createStore as createStore2} from 'tinybase/with-schemas';
 import {beforeEach, describe, expect, test} from 'vitest';
 import {pause} from '../../common/other.ts';
 
+const {Provider: Provider2, useStore: useStore2} =
+  UiSolid as UiSolid.WithSchemas<NoSchemas>;
+
 let store: Store;
+
+const createTestPersister = () => ({}) as unknown as AnyPersister;
+const createTestSynchronizer = () => ({}) as unknown as Synchronizer;
 
 const renderSolid = (view: () => JSXElement) => {
   const container = document.createElement('div');
@@ -469,6 +506,18 @@ describe('ui-solid views', () => {
       rendered.unmount();
     });
 
+    test('renders slice rows with falsy table IDs', async () => {
+      store.setTables({'': {r1: {c1: 1}}});
+      const indexes = createIndexes(store).setIndexDefinition('i1', '', 'c1');
+      const rendered = renderSolid(() => (
+        <SliceView indexes={indexes} indexId="i1" sliceId="1" />
+      ));
+
+      await expectText(rendered.container, '1');
+
+      rendered.unmount();
+    });
+
     test('renders relationship views', async () => {
       store.setTables({
         t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}, r3: {c1: 'R0'}},
@@ -536,6 +585,45 @@ describe('ui-solid views', () => {
         rendered.container,
         'r1:{}||b/c/d/|r2:|R1:|a:a:next:bb:next:cc:next:dd:',
       );
+
+      rendered.unmount();
+    });
+
+    test('renders local rows with falsy local table IDs', async () => {
+      store.setTables({
+        '': {r1: {c1: 'R1'}, r2: {c1: 'R1'}},
+        T1: {R1: {C1: 1}},
+      });
+      const relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', '', 'T1', 'c1');
+      const rendered = renderSolid(() => (
+        <LocalRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          remoteRowId="R1"
+        />
+      ));
+
+      await expectText(rendered.container, 'R1R1');
+
+      rendered.unmount();
+    });
+
+    test('renders linked rows with falsy local table IDs', async () => {
+      store.setTables({'': {a: {next: 'b'}, b: {next: 'c'}, c: {next: 'd'}}});
+      const relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', '', '', 'next');
+      const rendered = renderSolid(() => (
+        <LinkedRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          firstRowId="a"
+        />
+      ));
+
+      await expectText(rendered.container, 'bcd');
 
       rendered.unmount();
     });
@@ -631,6 +719,198 @@ describe('ui-solid views', () => {
         rendered.container,
         '|c1|/c2/c3||0:{c1}|1:{}2:{c2}3:{c3}|:{}|',
       );
+
+      rendered.unmount();
+    });
+
+    test('renders custom checkpoint components', async () => {
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      checkpoints.setCheckpoint('0', 'c1');
+      store.setCell('t1', 'r1', 'c1', 2);
+      checkpoints.addCheckpoint('c2');
+      const TestCheckpointView = ({
+        checkpointId,
+      }: {
+        readonly checkpointId: Id;
+      }) => <>#{checkpointId}</>;
+      const rendered = renderSolid(() => (
+        <BackwardCheckpointsView
+          checkpoints={checkpoints}
+          checkpointComponent={TestCheckpointView}
+        />
+      ));
+
+      await expectText(rendered.container, '#0');
+
+      rendered.unmount();
+    });
+  });
+
+  describe('context provider', () => {
+    test('merges nested stores from the same provider', async () => {
+      const store1 = createStore();
+      const store2 = createStore();
+      const Test = () => {
+        const storeIds = useStoreIds();
+        const storeA = useStore('a');
+        const storeB = useStore('b');
+        return (
+          <>
+            {JSON.stringify(storeIds())}
+            {storeA() == store1 ? 1 : 0}
+            {storeA() == store2 ? 1 : 0}
+            {storeB() == store1 ? 1 : 0}
+            {storeB() == store2 ? 1 : 0}
+          </>
+        );
+      };
+      const rendered = renderSolid(() => (
+        <Provider storesById={{a: store1}}>
+          <Provider storesById={{b: store2}}>
+            <Test />
+          </Provider>
+        </Provider>
+      ));
+
+      await expectText(rendered.container, '["a","b"]1001');
+
+      rendered.unmount();
+    });
+
+    test('merges nested stores from different providers', async () => {
+      const store1 = createStore();
+      const store2 = createStore2();
+      const Test = () => {
+        const storeIds = useStoreIds();
+        const storeA = useStore('a');
+        const store2A = useStore2('a');
+        const storeB = useStore('b');
+        const store2B = useStore2('b');
+        return (
+          <>
+            {JSON.stringify(storeIds())}
+            {storeA() == store1 ? 1 : 0}
+            {store2A() == store2 ? 1 : 0}
+            {storeB() == store1 ? 1 : 0}
+            {store2B() == store2 ? 1 : 0}
+          </>
+        );
+      };
+      const rendered = renderSolid(() => (
+        <Provider storesById={{a: store1}}>
+          <Provider2 storesById={{b: store2}}>
+            <Test />
+          </Provider2>
+        </Provider>
+      ));
+
+      await expectText(rendered.container, '["a","b"]1001');
+
+      rendered.unmount();
+    });
+
+    test('supports provideXxx primitives', async () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister = createTestPersister();
+      const synchronizer = createTestSynchronizer();
+
+      const ProvidedThings = () => {
+        const providedStore = useStore('store1');
+        const providedMetrics = useMetrics('metrics1');
+        const providedIndexes = useIndexes('indexes1');
+        const providedRelationships = useRelationships('relationships1');
+        const providedQueries = useQueries('queries1');
+        const providedCheckpoints = useCheckpoints('checkpoints1');
+        const providedPersister = usePersister('persister1');
+        const providedSynchronizer = useSynchronizer('synchronizer1');
+        return (
+          <>
+            {providedStore() == store ? 's' : ''}
+            {providedMetrics() == metrics ? 'm' : ''}
+            {providedIndexes() == indexes ? 'i' : ''}
+            {providedRelationships() == relationships ? 'r' : ''}
+            {providedQueries() == queries ? 'q' : ''}
+            {providedCheckpoints() == checkpoints ? 'c' : ''}
+            {providedPersister() == persister ? 'p' : ''}
+            {providedSynchronizer() == synchronizer ? 'z' : ''}
+          </>
+        );
+      };
+      const ProvideThings = () => {
+        useProvideStore('store1', store);
+        useProvideMetrics('metrics1', metrics);
+        useProvideIndexes('indexes1', indexes);
+        useProvideRelationships('relationships1', relationships);
+        useProvideQueries('queries1', queries);
+        useProvideCheckpoints('checkpoints1', checkpoints);
+        useProvidePersister('persister1', persister);
+        useProvideSynchronizer('synchronizer1', synchronizer);
+        return <ProvidedThings />;
+      };
+      const rendered = renderSolid(() => (
+        <Provider>
+          <ProvideThings />
+        </Provider>
+      ));
+
+      await expectText(rendered.container, 'smirqcpz');
+
+      rendered.unmount();
+    });
+
+    test('uses parent context fallbacks for nested defaults', async () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister = createTestPersister();
+      const synchronizer = createTestSynchronizer();
+
+      const Test = () => {
+        const providedStore = useStore();
+        const providedMetrics = useMetrics();
+        const providedIndexes = useIndexes();
+        const providedRelationships = useRelationships();
+        const providedQueries = useQueries();
+        const providedCheckpoints = useCheckpoints();
+        const providedPersister = usePersister();
+        const providedSynchronizer = useSynchronizer();
+        return (
+          <>
+            {providedStore() == store ? 's' : ''}
+            {providedMetrics() == metrics ? 'm' : ''}
+            {providedIndexes() == indexes ? 'i' : ''}
+            {providedRelationships() == relationships ? 'r' : ''}
+            {providedQueries() == queries ? 'q' : ''}
+            {providedCheckpoints() == checkpoints ? 'c' : ''}
+            {providedPersister() == persister ? 'p' : ''}
+            {providedSynchronizer() == synchronizer ? 'z' : ''}
+          </>
+        );
+      };
+      const rendered = renderSolid(() => (
+        <Provider
+          store={store}
+          metrics={metrics}
+          indexes={indexes}
+          relationships={relationships}
+          queries={queries}
+          checkpoints={checkpoints}
+          persister={persister}
+          synchronizer={synchronizer}
+        >
+          <Provider>
+            <Test />
+          </Provider>
+        </Provider>
+      ));
+
+      await expectText(rendered.container, 'smirqcpz');
 
       rendered.unmount();
     });

@@ -1,5 +1,11 @@
 import type {Accessor} from 'solid-js';
-import {createContext, createEffect, onCleanup, useContext} from 'solid-js';
+import {
+  createContext,
+  createRenderEffect,
+  onCleanup,
+  untrack,
+  useContext,
+} from 'solid-js';
 import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import type {Indexes} from '../@types/indexes/index.d.ts';
@@ -61,26 +67,28 @@ export type ContextValue = [
   ) => void,
   delExtraThingById?: (offset: Offsets, id: string) => void,
 ];
+export type ContextValueAccessor = {value: Accessor<ContextValue>};
 
 const TINYBASE_CONTEXT = TINYBASE + '_uisc';
 const EMPTY_CONTEXT = () => [] as ContextValue;
+const EMPTY_CONTEXT_VALUE = {value: EMPTY_CONTEXT};
 const GLOBAL_CONTEXT = GLOBAL as typeof GLOBAL &
   Record<
     string,
-    ReturnType<typeof createContext<Accessor<ContextValue>>> | undefined
+    ReturnType<typeof createContext<ContextValueAccessor>> | undefined
   >;
 
-export const Context: ReturnType<typeof createContext<Accessor<ContextValue>>> =
+export const Context: ReturnType<typeof createContext<ContextValueAccessor>> =
   GLOBAL_CONTEXT[TINYBASE_CONTEXT]
     ? /*! istanbul ignore next */ GLOBAL_CONTEXT[TINYBASE_CONTEXT]
     : (GLOBAL_CONTEXT[TINYBASE_CONTEXT] =
-        createContext<Accessor<ContextValue>>(EMPTY_CONTEXT));
+        createContext<ContextValueAccessor>(EMPTY_CONTEXT_VALUE));
 
 export const useThing = <UsedThing extends Thing>(
   id: MaybeAccessor<Id | undefined>,
   offset: Offsets,
 ): Accessor<UsedThing | undefined> => {
-  const contextValue = useContext(Context) ?? EMPTY_CONTEXT;
+  const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT;
   return () => {
     const resolvedContextValue = contextValue();
     const resolvedId = getValue(id);
@@ -100,7 +108,7 @@ export const useThing = <UsedThing extends Thing>(
 export const useThings = <UsedThing extends Thing>(
   offset: Offsets,
 ): Accessor<IdObj<UsedThing>> => {
-  const contextValue = useContext(Context) ?? EMPTY_CONTEXT;
+  const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT;
   return () => ({...contextValue()[offset * 2 + 1]}) as IdObj<UsedThing>;
 };
 
@@ -133,15 +141,16 @@ export const useProvideThing = <Offset extends Offsets>(
   thing: ThingsByOffset[Offset],
   offset: Offset,
 ): void => {
-  const contextValue = useContext(Context) ?? EMPTY_CONTEXT;
-  createEffect(() => {
-    const {16: addExtraThingById, 17: delExtraThingById} = contextValue();
+  const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT;
+  createRenderEffect(() => {
+    const {16: addExtraThingById, 17: delExtraThingById} =
+      untrack(contextValue);
     addExtraThingById?.(offset, thingId, thing);
     onCleanup(() => delExtraThingById?.(offset, thingId));
   });
 };
 
 export const useThingIds = (offset: Offsets): Accessor<Ids> => {
-  const contextValue = useContext(Context) ?? EMPTY_CONTEXT;
+  const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT;
   return () => objIds((contextValue()[offset * 2 + 1] ?? {}) as IdObj<unknown>);
 };

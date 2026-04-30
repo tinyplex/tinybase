@@ -49,7 +49,7 @@ export const Provider = (
   props: ProviderProps & {readonly children: JSXElement},
 ): JSXElement => {
   const parentValue =
-    useContext(Context) ?? (EMPTY_CONTEXT as Accessor<ContextValue>);
+    useContext(Context)?.value ?? (EMPTY_CONTEXT as Accessor<ContextValue>);
   const [extraThingsById, setExtraThingsById] = createSignal<ExtraThingsById>(
     arrayNew(8, () => ({})) as ExtraThingsById,
   );
@@ -151,6 +151,8 @@ export const Provider = (
   ]);
 
   return (
-    <Context.Provider value={contextValue}>{props.children}</Context.Provider>
+    <Context.Provider value={{value: contextValue}}>
+      {(() => props.children) as unknown as JSXElement}
+    </Context.Provider>
   );
 };
