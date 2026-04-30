@@ -1,5 +1,6 @@
 <script lang="ts">
   import type {LocalRowsViewProps} from '../@types/ui-svelte/index.d.ts';
+  import {isUndefined} from '../common/other.ts';
   import {
     getLocalRowIds,
     getRelationshipsStoreTableIds,
@@ -29,11 +30,8 @@
 
 <Wrap ids={rowIds.current} {separator} {debugIds} id={remoteRowId} custom={row}>
   {#snippet children(rowId)}
-    {#if localTableId}<RowView
-        tableId={localTableId}
-        {rowId}
-        {store}
-        {debugIds}
-      />{/if}
+    {#if !isUndefined(localTableId)}
+      <RowView tableId={localTableId} {rowId} {store} {debugIds} />
+    {/if}
   {/snippet}
 </Wrap>

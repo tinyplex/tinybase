@@ -20,7 +20,9 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import type {AnyPersister} from 'tinybase/persisters';
 import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+import type {Synchronizer} from 'tinybase/synchronizers';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import type {
   BackwardCheckpointsProps,
@@ -67,14 +69,27 @@ import {
   ValuesView,
   useCell,
   useCheckpointIds,
+  useCheckpoints,
   useDelCellCallback,
   useDelRowCallback,
   useDelTableCallback,
   useDelTablesCallback,
+  useIndexes,
   useLinkedRowIds,
   useLocalRowIds,
   useMetric,
+  useMetrics,
   usePersister,
+  useProvideCheckpoints,
+  useProvideIndexes,
+  useProvideMetrics,
+  useProvidePersister,
+  useProvideQueries,
+  useProvideRelationships,
+  useProvideStore,
+  useProvideSynchronizer,
+  useQueries,
+  useRelationships,
   useRemoteRowId,
   useResultCell,
   useResultCellIds,
@@ -435,6 +450,15 @@ describe('Read Components', () => {
       expect(container.textContent).toEqual(
         't2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
       );
+
+      unmount();
+    });
+
+    test('Debug Ids with null tableId', () => {
+      const {container, unmount} = render(
+        <TableView store={store} tableId={null as any} debugIds={true} />,
+      );
+      expect(container.textContent).toEqual(':{}');
 
       unmount();
     });
@@ -917,6 +941,17 @@ describe('Read Components', () => {
       unmount();
     });
 
+    test('Falsy tableId renders rows', () => {
+      store.setTable('', {r1: {c1: 1}});
+      indexes.setIndexDefinition('i0', '' as any, 'c1');
+      const {container, unmount} = render(
+        <SliceView indexes={indexes} indexId="i0" sliceId="1" />,
+      );
+      expect(container.textContent).toEqual('1');
+
+      unmount();
+    });
+
     test('Custom', () => {
       const Test = ({
         indexId,
@@ -993,6 +1028,39 @@ describe('Read Components', () => {
         />,
       );
       expect(container.textContent).toEqual('r1:{R1:{C1:{1}}}');
+
+      unmount();
+    });
+
+    test('Debug Ids with null localRowId', () => {
+      const {container, unmount} = render(
+        <RemoteRowView
+          relationships={relationships}
+          relationshipId="r1"
+          localRowId={null as any}
+          debugIds={true}
+        />,
+      );
+      expect(container.textContent).toEqual(':{}');
+
+      unmount();
+    });
+
+    test('Missing remote table skips row rendering', () => {
+      relationships.setRelationshipDefinition(
+        'r3',
+        't1',
+        undefined as any,
+        'c1',
+      );
+      const {container, unmount} = render(
+        <RemoteRowView
+          relationships={relationships}
+          relationshipId="r3"
+          localRowId="r1"
+        />,
+      );
+      expect(container.textContent).toEqual('');
 
       unmount();
     });
@@ -1088,6 +1156,21 @@ describe('Read Components', () => {
       unmount();
     });
 
+    test('Falsy localTableId renders rows', () => {
+      store.setTable('', {r1: {c1: 'R1'}, r2: {c1: 'R1'}});
+      relationships.setRelationshipDefinition('r0', '' as any, 'T1', 'c1');
+      const {container, unmount} = render(
+        <LocalRowsView
+          relationships={relationships}
+          relationshipId="r0"
+          remoteRowId="R1"
+        />,
+      );
+      expect(container.textContent).toEqual('R1R1');
+
+      unmount();
+    });
+
     test('Custom', () => {
       const Test = ({
         relationshipId,
@@ -1176,6 +1259,25 @@ describe('Read Components', () => {
       expect(container.textContent).toEqual(
         'r1:{r1:{c1:{r2}}r2:{c1:{r3}}r3:{c1:{r4}}r4:{}}',
       );
+
+      unmount();
+    });
+
+    test('Falsy localTableId renders rows', () => {
+      store.setTable('', {
+        r1: {c1: 'r2'},
+        r2: {c1: 'r3'},
+        r3: {c1: 'r4'},
+      });
+      relationships.setRelationshipDefinition('r0', '' as any, '' as any, 'c1');
+      const {container, unmount} = render(
+        <LinkedRowsView
+          relationships={relationships}
+          relationshipId="r0"
+          firstRowId="r1"
+        />,
+      );
+      expect(container.textContent).toEqual('r2r3r4');
 
       unmount();
     });
@@ -1647,6 +1749,26 @@ describe('Read Components', () => {
 
       act(() => checkpoints.goTo('0'));
       expect(container.textContent).toEqual('|c1|c2||');
+
+      unmount();
+    });
+
+    test('Custom checkpoint component', () => {
+      const Test = () => (
+        <CurrentCheckpointView
+          checkpoints={checkpoints}
+          checkpointComponent={({checkpointId}) => <>current:{checkpointId}</>}
+        />
+      );
+
+      const {container, unmount} = render(<Test />);
+      expect(container.textContent).toContain('current:');
+
+      act(() => checkpoints.clear());
+      expect(container.textContent).toContain('current:0');
+
+      act(() => store.setTables({t1: {r1: {c1: 2}}}));
+      expect(container.textContent).toEqual('');
 
       unmount();
     });
@@ -2325,6 +2447,101 @@ describe('Context Provider', () => {
       expect(container.textContent).toEqual('["a","b"]1001');
 
       unmount();
+    });
+  });
+
+  describe('provide', () => {
+    test('provideXxx hooks', () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister: AnyPersister = createLocalPersister(store, 'pt');
+      const synchronizer: Synchronizer = createLocalSynchronizer(
+        createMergeableStore(),
+      );
+
+      const ProvideThings = () => {
+        useProvideStore('store1', store);
+        useProvideMetrics('metrics1', metrics);
+        useProvideIndexes('indexes1', indexes);
+        useProvideRelationships('relationships1', relationships);
+        useProvideQueries('queries1', queries);
+        useProvideCheckpoints('checkpoints1', checkpoints);
+        useProvidePersister('persister1', persister);
+        useProvideSynchronizer('synchronizer1', synchronizer);
+        return <ProvidedThings />;
+      };
+      const ProvidedThings = () => (
+        <>
+          {useStore('store1') == store ? 's' : ''}
+          {useMetrics('metrics1') == metrics ? 'm' : ''}
+          {useIndexes('indexes1') == indexes ? 'i' : ''}
+          {useRelationships('relationships1') == relationships ? 'r' : ''}
+          {useQueries('queries1') == queries ? 'q' : ''}
+          {useCheckpoints('checkpoints1') == checkpoints ? 'c' : ''}
+          {usePersister('persister1') == persister ? 'p' : ''}
+          {useSynchronizer('synchronizer1') == synchronizer ? 'z' : ''}
+        </>
+      );
+
+      const {container, unmount} = render(
+        <Provider>
+          <ProvideThings />
+        </Provider>,
+      );
+      expect(container.textContent).toEqual('smirqcpz');
+
+      unmount();
+      synchronizer.destroy();
+    });
+  });
+
+  describe('nested defaults', () => {
+    test('parentCtx fallbacks', () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister: AnyPersister = createLocalPersister(store, 'nd');
+      const synchronizer: Synchronizer = createLocalSynchronizer(
+        createMergeableStore(),
+      );
+      const Test = () => (
+        <>
+          {useStore() == store ? 's' : ''}
+          {useMetrics() == metrics ? 'm' : ''}
+          {useIndexes() == indexes ? 'i' : ''}
+          {useRelationships() == relationships ? 'r' : ''}
+          {useQueries() == queries ? 'q' : ''}
+          {useCheckpoints() == checkpoints ? 'c' : ''}
+          {usePersister() == persister ? 'p' : ''}
+          {useSynchronizer() == synchronizer ? 'z' : ''}
+        </>
+      );
+
+      const {container, unmount} = render(
+        <Provider
+          store={store}
+          metrics={metrics}
+          indexes={indexes}
+          relationships={relationships}
+          queries={queries}
+          checkpoints={checkpoints}
+          persister={persister}
+          synchronizer={synchronizer}
+        >
+          <Provider>
+            <Test />
+          </Provider>
+        </Provider>,
+      );
+      expect(container.textContent).toEqual('smirqcpz');
+
+      unmount();
+      synchronizer.destroy();
     });
   });
 });

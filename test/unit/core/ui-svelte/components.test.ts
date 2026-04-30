@@ -41,6 +41,7 @@ import {
   ValueView,
   ValuesView,
 } from 'tinybase/ui-svelte';
+import {createStore as createStore2} from 'tinybase/with-schemas';
 import {beforeEach, describe, expect, test} from 'vitest';
 
 import TestAllCheckpointsView from './components/TestAllCheckpointsView.svelte';
@@ -67,6 +68,7 @@ import ContextIndexes from './components/ContextIndexes.svelte';
 import ContextMetrics from './components/ContextMetrics.svelte';
 import ContextNested from './components/ContextNested.svelte';
 import ContextNestedDefaults from './components/ContextNestedDefaults.svelte';
+import ContextNestedDifferent from './components/ContextNestedDifferent.svelte';
 import ContextPersister from './components/ContextPersister.svelte';
 import ContextQueries from './components/ContextQueries.svelte';
 import ContextRelationships from './components/ContextRelationships.svelte';
@@ -575,13 +577,13 @@ describe('Read Components', () => {
       unmount();
     });
 
-    test('Falsy tableId skips row rendering', () => {
+    test('Falsy tableId renders rows', () => {
       store.setTable('', {r1: {c1: 1}});
       indexes.setIndexDefinition('i0', '' as any, 'c1');
       const {container, unmount} = render(SliceView, {
         props: {indexes, indexId: 'i0', sliceId: '1'},
       });
-      expect(container.textContent).toEqual('');
+      expect(container.textContent).toEqual('1');
       unmount();
     });
 
@@ -746,13 +748,13 @@ describe('Read Components', () => {
       unmount();
     });
 
-    test('Falsy localTableId skips row rendering', () => {
+    test('Falsy localTableId renders rows', () => {
       store.setTable('', {r1: {c1: 'R1'}, r2: {c1: 'R1'}});
       relationships.setRelationshipDefinition('r0', '' as any, 'T1', 'c1');
       const {container, unmount} = render(LocalRowsView, {
         props: {relationships, relationshipId: 'r0', remoteRowId: 'R1'},
       });
-      expect(container.textContent).toEqual('');
+      expect(container.textContent).toEqual('R1R1');
       unmount();
     });
 
@@ -831,7 +833,7 @@ describe('Read Components', () => {
       unmount();
     });
 
-    test('Falsy localTableId skips row rendering', () => {
+    test('Falsy localTableId renders rows', () => {
       store.setTable('', {
         r1: {c1: 'r2'},
         r2: {c1: 'r3'},
@@ -841,7 +843,7 @@ describe('Read Components', () => {
       const {container, unmount} = render(LinkedRowsView, {
         props: {relationships, relationshipId: 'r0', firstRowId: 'r1'},
       });
-      expect(container.textContent).toEqual('');
+      expect(container.textContent).toEqual('r2r3r4');
       unmount();
     });
 
@@ -1542,6 +1544,16 @@ describe('Context Provider', () => {
           outerStores: {a: store1, b: store1},
           innerStores: {b: store2},
         },
+      });
+      expect(container.textContent).toEqual('["a","b"]1001');
+      unmount();
+    });
+
+    test('different provider', () => {
+      const store1 = createStore();
+      const store2 = createStore2();
+      const {container, unmount} = render(ContextNestedDifferent, {
+        props: {store1, store2},
       });
       expect(container.textContent).toEqual('["a","b"]1001');
       unmount();

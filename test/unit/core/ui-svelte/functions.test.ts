@@ -121,6 +121,7 @@ import FunctionValues from './components/FunctionValues.svelte';
 import FunctionWindowlessCoverage from './components/FunctionWindowlessCoverage.svelte';
 import FunctionWritableCell from './components/FunctionWritableCell.svelte';
 import FunctionWritableValue from './components/FunctionWritableValue.svelte';
+import ProvideThings from './components/ProvideThings.svelte';
 
 let store: Store;
 
@@ -141,6 +142,38 @@ test('windowless ui-svelte functions skip effects', () => {
   } finally {
     vi.unstubAllGlobals();
   }
+});
+
+describe('Context Functions', () => {
+  test('provideXxx functions', () => {
+    const metrics: Metrics = createMetrics(store);
+    const indexes: Indexes = createIndexes(store);
+    const relationships: Relationships = createRelationships(store);
+    const queries: Queries = createQueries(store);
+    const checkpoints: Checkpoints = createCheckpoints(store);
+    const persister: AnyPersister = createSessionPersister(store, 'pt');
+    const synchronizer: Synchronizer = createLocalSynchronizer(
+      createMergeableStore(),
+    );
+
+    const {container, unmount} = render(ProvideThings, {
+      props: {
+        store,
+        metrics,
+        indexes,
+        relationships,
+        queries,
+        checkpoints,
+        persister,
+        synchronizer,
+      },
+    });
+    expect(container.textContent).toContain('provided');
+
+    unmount();
+    persister.destroy();
+    synchronizer.destroy();
+  });
 });
 
 describe('Read Functions', () => {
