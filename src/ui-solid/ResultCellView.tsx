@@ -3,7 +3,7 @@ import type {JSXElement} from 'solid-js';
 import type {ResultCellProps} from '../@types/ui-solid/index.d.ts';
 import {getValue} from '../common/solid.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {renderView, wrap} from './common/wrap.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useResultCell} from './primitives.ts';
 
 export const ResultCellView = (props: ResultCellProps): JSXElement => {
@@ -13,12 +13,12 @@ export const ResultCellView = (props: ResultCellProps): JSXElement => {
     () => props.cellId,
     () => props.queries,
   );
-  return renderView(() =>
+  // eslint-disable-next-line solid/reactivity
+  return (() =>
     wrap(
       EMPTY_STRING + (getValue(resultCell) ?? EMPTY_STRING),
       undefined,
       props.debugIds,
       props.cellId,
-    ),
-  );
+    )) as unknown as JSXElement;
 };

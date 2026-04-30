@@ -8,7 +8,7 @@ import {
   getRelationshipsStoreTableIds,
   getValue,
 } from '../common/solid.ts';
-import {renderView, wrap} from './common/wrap.tsx';
+import {wrap} from './common/wrap.tsx';
 import {
   useRelationshipsOrRelationshipsById,
   useRemoteRowId,
@@ -24,7 +24,8 @@ export const RemoteRowView = (props: RemoteRowProps): JSXElement => {
     () => props.localRowId,
     resolvedRelationships,
   );
-  return renderView(() => {
+  // eslint-disable-next-line solid/reactivity
+  return (() => {
     const Row = props.rowComponent ?? RowView;
     const [_relationshipsValue, store, , remoteTableId] =
       getRelationshipsStoreTableIds(
@@ -46,5 +47,5 @@ export const RemoteRowView = (props: RemoteRowProps): JSXElement => {
       props.debugIds,
       props.localRowId,
     );
-  });
+  }) as unknown as JSXElement;
 };

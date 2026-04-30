@@ -6,7 +6,7 @@ import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
 import {CellView} from './CellView.tsx';
 import {useCustomOrDefaultCellIds} from './common/primitives.tsx';
-import {renderView, wrap} from './common/wrap.tsx';
+import {wrap} from './common/wrap.tsx';
 
 export const RowView = (props: RowProps): JSXElement => {
   const cellIds = useCustomOrDefaultCellIds(
@@ -15,7 +15,8 @@ export const RowView = (props: RowProps): JSXElement => {
     () => props.rowId,
     () => props.store,
   );
-  return renderView(() => {
+  // eslint-disable-next-line solid/reactivity
+  return (() => {
     const Cell = props.cellComponent ?? CellView;
     return wrap(
       arrayMap(getValue(cellIds) as Id[], (cellId: Id) => (
@@ -32,5 +33,5 @@ export const RowView = (props: RowProps): JSXElement => {
       props.debugIds,
       props.rowId,
     );
-  });
+  }) as unknown as JSXElement;
 };

@@ -4,7 +4,7 @@ import type {Id} from '../@types/index.d.ts';
 import type {SliceProps} from '../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getIndexStoreTableId, getProps, getValue} from '../common/solid.ts';
-import {renderView, wrap} from './common/wrap.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useIndexesOrIndexesById, useSliceRowIds} from './primitives.ts';
 import {RowView} from './RowView.tsx';
 
@@ -15,7 +15,8 @@ export const SliceView = (props: SliceProps): JSXElement => {
     () => props.sliceId,
     resolvedIndexes,
   );
-  return renderView(() => {
+  // eslint-disable-next-line solid/reactivity
+  return (() => {
     const Row = props.rowComponent ?? RowView;
     const [_indexesValue, store, tableId] = getIndexStoreTableId(
       getValue(resolvedIndexes),
@@ -35,5 +36,5 @@ export const SliceView = (props: SliceProps): JSXElement => {
       props.debugIds,
       props.sliceId,
     );
-  });
+  }) as unknown as JSXElement;
 };

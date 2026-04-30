@@ -4,7 +4,7 @@ import type {Id} from '../@types/index.d.ts';
 import type {ResultRowProps} from '../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
-import {renderView, wrap} from './common/wrap.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useResultCellIds} from './primitives.ts';
 import {ResultCellView} from './ResultCellView.tsx';
 
@@ -14,7 +14,8 @@ export const ResultRowView = (props: ResultRowProps): JSXElement => {
     () => props.rowId,
     () => props.queries,
   );
-  return renderView(() => {
+  // eslint-disable-next-line solid/reactivity
+  return (() => {
     const ResultCell = props.resultCellComponent ?? ResultCellView;
     return wrap(
       arrayMap(getValue(resultCellIds) as Id[], (cellId: Id) => (
@@ -31,5 +32,5 @@ export const ResultRowView = (props: ResultRowProps): JSXElement => {
       props.debugIds,
       props.rowId,
     );
-  });
+  }) as unknown as JSXElement;
 };

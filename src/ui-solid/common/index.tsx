@@ -29,7 +29,7 @@ import {
 } from '../primitives.ts';
 import {ResultRowView} from '../ResultRowView.tsx';
 import {RowView} from '../RowView.tsx';
-import {renderView, wrap} from './wrap.tsx';
+import {wrap} from './wrap.tsx';
 
 export type ThingsById<ThingsByOffset> = {
   [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
@@ -39,8 +39,8 @@ export type ExtraThingsById = ThingsById<ThingsByOffset>;
 export const tableView = (
   props: TableProps,
   rowIds: MaybeAccessor<Ids>,
-): JSXElement =>
-  renderView(() => {
+): JSXElement => {
+  return (() => {
     const Row = props.rowComponent ?? RowView;
     return wrap(
       arrayMap(getValue(rowIds), (rowId) => (
@@ -57,13 +57,14 @@ export const tableView = (
       props.debugIds,
       props.tableId,
     );
-  });
+  }) as unknown as JSXElement;
+};
 
 export const resultTableView = (
   props: ResultTableProps,
   rowIds: MaybeAccessor<Ids>,
-): JSXElement =>
-  renderView(() => {
+): JSXElement => {
+  return (() => {
     const ResultRow = props.resultRowComponent ?? ResultRowView;
     return wrap(
       arrayMap(getValue(rowIds), (rowId) => (
@@ -79,7 +80,8 @@ export const resultTableView = (
       props.debugIds,
       props.queryId,
     );
-  });
+  }) as unknown as JSXElement;
+};
 
 export const useComponentPerRow = (
   props: (RemoteRowProps | LocalRowsProps | LinkedRowsProps) & {
@@ -100,7 +102,7 @@ export const useComponentPerRow = (
     rowId,
     resolvedRelationships,
   );
-  return renderView(() => {
+  return (() => {
     const Row = props.rowComponent ?? RowView;
     const [_relationship, store, localTableId] = getRelationshipsStoreTableIds(
       getValue(resolvedRelationships),
@@ -120,7 +122,7 @@ export const useComponentPerRow = (
       props.debugIds,
       getValue(rowId),
     );
-  });
+  }) as unknown as JSXElement;
 };
 
 export const getUseCheckpointView =
@@ -138,7 +140,8 @@ export const getUseCheckpointView =
       () => props.checkpoints,
     );
     const checkpointIds = useCheckpointIds(resolvedCheckpoints);
-    return renderView(() => {
+    // eslint-disable-next-line solid/reactivity
+    return (() => {
       const Checkpoint = props.checkpointComponent ?? CheckpointView;
       return wrap(
         arrayMap(
@@ -157,5 +160,5 @@ export const getUseCheckpointView =
         ),
         props.separator,
       );
-    });
+    }) as unknown as JSXElement;
   };

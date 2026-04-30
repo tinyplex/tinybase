@@ -4,7 +4,7 @@ import type {Id} from '../@types/index.d.ts';
 import type {IndexProps} from '../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps, getValue} from '../common/solid.ts';
-import {renderView, wrap} from './common/wrap.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useSliceIds} from './primitives.ts';
 import {SliceView} from './SliceView.tsx';
 
@@ -13,7 +13,8 @@ export const IndexView = (props: IndexProps): JSXElement => {
     () => props.indexId,
     () => props.indexes,
   );
-  return renderView(() => {
+  // eslint-disable-next-line solid/reactivity
+  return (() => {
     const Slice = props.sliceComponent ?? SliceView;
     return wrap(
       arrayMap(getValue(sliceIds) as Id[], (sliceId: Id) => (
@@ -29,5 +30,5 @@ export const IndexView = (props: IndexProps): JSXElement => {
       props.debugIds,
       props.indexId,
     );
-  });
+  }) as unknown as JSXElement;
 };
