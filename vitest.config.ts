@@ -4,6 +4,19 @@ import {tmpdir} from 'os';
 import {resolve} from 'path';
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
+const solidJsxHPlugin = () => ({
+  name: 'solid-jsx-h',
+  enforce: 'pre' as const,
+  transform: (code: string, id: string) => {
+    const path = id.split('?')[0];
+    return path.endsWith('.tsx') &&
+      (path.includes('/src/ui-solid/') ||
+        path.includes('/test/unit/core/ui-solid/'))
+      ? {code: `import h from 'solid-js/h';\n` + code, map: null}
+      : null;
+  },
+});
+
 export default defineConfig({
   test: {
     environment: 'happy-dom',
@@ -85,10 +98,42 @@ export default defineConfig({
       },
       {
         extends: true,
-        resolve: {conditions: ['browser', 'development']},
+        // Vite 8 defaults to Oxc, which ignores the Solid JSX esbuild config.
+        oxc: false,
+        plugins: [solidJsxHPlugin()],
+        esbuild: {
+          logOverride: {'unsupported-jsx-comment': 'silent'},
+          jsx: 'transform',
+          jsxFactory: 'h',
+          jsxFragment: 'h.Fragment',
+        },
+        resolve: {
+          alias: [
+            {
+              find: /^solid-js\/web$/,
+              replacement: resolve('node_modules/solid-js/web/dist/dev.js'),
+            },
+            {
+              find: /^solid-js\/h$/,
+              replacement: resolve('node_modules/solid-js/h/dist/h.js'),
+            },
+            {
+              find: /^solid-js$/,
+              replacement: resolve('node_modules/solid-js/dist/dev.js'),
+            },
+          ],
+          conditions: ['browser', 'development'],
+        },
         test: {
           name: 'solid',
-          include: ['test/unit/core/ui-solid/**/*.test.ts'],
+          alias: {
+            'tinybase/ui-solid': resolve('src/ui-solid/index.ts'),
+          },
+          server: {deps: {inline: [/solid-js/]}},
+          include: [
+            'test/unit/core/ui-solid/**/*.test.ts',
+            'test/unit/core/ui-solid/**/*.test.tsx',
+          ],
         },
       },
       {

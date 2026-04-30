@@ -17,6 +17,5 @@ export const wrap = (
   return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
-export const renderView = (view: Accessor<JSXElement>): JSXElement => (
-  <>{view}</>
-);
+export const renderView = (view: Accessor<JSXElement>): JSXElement =>
+  view as unknown as JSXElement;

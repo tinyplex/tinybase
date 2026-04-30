@@ -84,6 +84,7 @@ const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
+const SOLID_JSX_H_IMPORT = "import h from 'solid-js/h';\n";
 
 const getGlobalName = (module) =>
   'TinyBase' +
@@ -546,6 +547,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'react-dom',
       'react/jsx-runtime',
       'solid-js',
+      'solid-js/h',
       'solid-js/jsx-runtime',
       'url',
       'yjs',
@@ -560,10 +562,23 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
     ],
     input: inputFile,
     plugins: [
+      module == 'ui-solid'
+        ? {
+            name: 'solid-jsx-h',
+            transform: (code, id) =>
+              id.endsWith('.tsx')
+                ? {code: SOLID_JSX_H_IMPORT + code, map: null}
+                : null,
+          }
+        : null,
       esbuild({
         target: 'esnext',
         legalComments: 'inline',
-        jsx: 'automatic',
+        logOverride: {'unsupported-jsx-comment': 'silent'},
+        tsconfig: module == 'ui-solid' ? false : undefined,
+        jsx: module == 'ui-solid' ? 'transform' : 'automatic',
+        jsxFactory: 'h',
+        jsxFragment: 'h.Fragment',
       }),
       replace({
         '/*!': '\n/*',

@@ -1,19 +1,69 @@
 import type {Accessor, Setter} from 'solid-js';
 import {createRoot, createSignal} from 'solid-js';
 import type {MergeableStore, Store, Table} from 'tinybase';
-import {createStore} from 'tinybase';
+import {
+  createCheckpoints,
+  createIndexes,
+  createMetrics,
+  createQueries,
+  createRelationships,
+  createStore,
+} from 'tinybase';
 import {createMergeableStore} from 'tinybase/mergeable-store';
 import type {Persister, Persists} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import {
+  useAddRowCallback,
   useCell,
   useCellListener,
+  useCheckpoint,
+  useCheckpointIds,
   useCreatePersister,
   useCreateSynchronizer,
+  useDelCellCallback,
+  useHasCell,
+  useHasRow,
+  useHasTable,
+  useHasTables,
+  useHasValue,
+  useHasValues,
+  useIndexIds,
+  useLinkedRowIds,
+  useLocalRowIds,
+  useMetric,
+  useMetricIds,
+  useParamValue,
+  useParamValues,
+  useQueryIds,
+  useRelationshipIds,
+  useRemoteRowId,
+  useResultCell,
+  useResultCellIds,
+  useResultRow,
+  useResultRowCount,
+  useResultRowIds,
+  useResultSortedRowIds,
+  useResultTable,
+  useResultTableCellIds,
+  useRow,
+  useRowCount,
+  useRowIds,
   useSetCellCallback,
+  useSetCheckpointCallback,
+  useSetParamValueCallback,
+  useSetRowCallback,
+  useSliceIds,
+  useSliceRowIds,
+  useSortedRowIds,
   useTable,
+  useTableCellIds,
+  useTableIds,
   useTables,
   useTablesListener,
+  useValue,
+  useValueIds,
+  useValues,
+  useValuesState,
 } from 'tinybase/ui-solid';
 import {describe, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
@@ -36,6 +86,90 @@ const renderPrimitive = (primitive: () => void) => {
 };
 
 describe('ui-solid primitives', () => {
+  test('reads core store primitives', async () => {
+    const store = createStore()
+      .setTables({t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3}}})
+      .setValues({v1: 4});
+    let values: {
+      hasTables: Accessor<boolean>;
+      tables: Accessor<ReturnType<Store['getTables']>>;
+      tableIds: Accessor<string[]>;
+      hasTable: Accessor<boolean>;
+      table: Accessor<Table>;
+      tableCellIds: Accessor<string[]>;
+      rowCount: Accessor<number>;
+      rowIds: Accessor<string[]>;
+      sortedRowIds: Accessor<string[]>;
+      hasRow: Accessor<boolean>;
+      row: Accessor<ReturnType<Store['getRow']>>;
+      hasCell: Accessor<boolean>;
+      cell: Accessor<ReturnType<Store['getCell']>>;
+      hasValues: Accessor<boolean>;
+      storeValues: Accessor<ReturnType<Store['getValues']>>;
+      valueIds: Accessor<string[]>;
+      hasValue: Accessor<boolean>;
+      value: Accessor<ReturnType<Store['getValue']>>;
+    };
+
+    const dispose = renderPrimitive(() => {
+      values = {
+        hasTables: useHasTables(store),
+        tables: useTables(store),
+        tableIds: useTableIds(store),
+        hasTable: useHasTable('t1', store),
+        table: useTable('t1', store),
+        tableCellIds: useTableCellIds('t1', store),
+        rowCount: useRowCount('t1', store),
+        rowIds: useRowIds('t1', store),
+        sortedRowIds: useSortedRowIds('t2', 'c1', true, 0, undefined, store),
+        hasRow: useHasRow('t1', 'r1', store),
+        row: useRow('t1', 'r1', store),
+        hasCell: useHasCell('t1', 'r1', 'c1', store),
+        cell: useCell('t1', 'r1', 'c1', store),
+        hasValues: useHasValues(store),
+        storeValues: useValues(store),
+        valueIds: useValueIds(store),
+        hasValue: useHasValue('v1', store),
+        value: useValue('v1', store),
+      };
+    });
+
+    expect(values!.hasTables()).toBe(true);
+    expect(values!.tables()).toEqual({
+      t1: {r1: {c1: 1}},
+      t2: {r1: {c1: 2}, r2: {c1: 3}},
+    });
+    expect(values!.tableIds()).toEqual(['t1', 't2']);
+    expect(values!.hasTable()).toBe(true);
+    expect(values!.table()).toEqual({r1: {c1: 1}});
+    expect(values!.tableCellIds()).toEqual(['c1']);
+    expect(values!.rowCount()).toBe(1);
+    expect(values!.rowIds()).toEqual(['r1']);
+    expect(values!.sortedRowIds()).toEqual(['r2', 'r1']);
+    expect(values!.hasRow()).toBe(true);
+    expect(values!.row()).toEqual({c1: 1});
+    expect(values!.hasCell()).toBe(true);
+    expect(values!.cell()).toBe(1);
+    expect(values!.hasValues()).toBe(true);
+    expect(values!.storeValues()).toEqual({v1: 4});
+    expect(values!.valueIds()).toEqual(['v1']);
+    expect(values!.hasValue()).toBe(true);
+    expect(values!.value()).toBe(4);
+
+    store.setCell('t1', 'r2', 'c1', 5).setValue('v1', 6);
+    await pause();
+
+    expect(values!.tables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c1: 5}},
+      t2: {r1: {c1: 2}, r2: {c1: 3}},
+    });
+    expect(values!.rowCount()).toBe(2);
+    expect(values!.rowIds()).toEqual(['r1', 'r2']);
+    expect(values!.value()).toBe(6);
+
+    dispose();
+  });
+
   test('reads and updates tables', async () => {
     const store = createStore().setTables({t1: {r1: {c1: 1}}});
     let tables: Accessor<ReturnType<Store['getTables']>>;
@@ -49,6 +183,122 @@ describe('ui-solid primitives', () => {
     store.setCell('t1', 'r1', 'c1', 2);
     await pause();
     expect(tables!()).toEqual({t1: {r1: {c1: 2}}});
+
+    dispose();
+  });
+
+  test('reads derived primitives', async () => {
+    const store = createStore()
+      .setTables({
+        t1: {r1: {c1: 1}, r2: {c1: 1}},
+        t2: {R1: {C1: 3}},
+        t3: {a: {c1: 'b'}, b: {c1: 'c'}, c: {c1: 'd'}},
+      })
+      .setValues({v1: 1});
+    const metrics = createMetrics(store).setMetricDefinition('m1', 't1');
+    const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
+    const relationships = createRelationships(store)
+      .setRelationshipDefinition('r1', 't1', 't2', 'c1')
+      .setRelationshipDefinition('r2', 't3', 't3', 'c1');
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const checkpoints = createCheckpoints(store);
+    let values: {
+      metricIds: Accessor<string[]>;
+      metric: Accessor<number | undefined>;
+      indexIds: Accessor<string[]>;
+      sliceIds: Accessor<string[]>;
+      sliceRowIds: Accessor<string[]>;
+      relationshipIds: Accessor<string[]>;
+      remoteRowId: Accessor<string | undefined>;
+      localRowIds: Accessor<string[]>;
+      linkedRowIds: Accessor<string[]>;
+      queryIds: Accessor<string[]>;
+      resultTable: Accessor<Table>;
+      resultTableCellIds: Accessor<string[]>;
+      resultRowCount: Accessor<number>;
+      resultRowIds: Accessor<string[]>;
+      resultSortedRowIds: Accessor<string[]>;
+      resultRow: Accessor<ReturnType<Store['getRow']>>;
+      resultCellIds: Accessor<string[]>;
+      resultCell: Accessor<ReturnType<Store['getCell']>>;
+      paramValues: Accessor<Record<string, unknown>>;
+      paramValue: Accessor<unknown>;
+      checkpointIds: Accessor<ReturnType<typeof checkpoints.getCheckpointIds>>;
+      checkpoint: Accessor<string | undefined>;
+    };
+
+    checkpoints.setCheckpoint('0', 'start');
+
+    const dispose = renderPrimitive(() => {
+      values = {
+        metricIds: useMetricIds(metrics),
+        metric: useMetric('m1', metrics),
+        indexIds: useIndexIds(indexes),
+        sliceIds: useSliceIds('i1', indexes),
+        sliceRowIds: useSliceRowIds('i1', '1', indexes),
+        relationshipIds: useRelationshipIds(relationships),
+        remoteRowId: useRemoteRowId('r1', 'r1', relationships),
+        localRowIds: useLocalRowIds('r1', '1', relationships),
+        linkedRowIds: useLinkedRowIds('r2', 'a', relationships),
+        queryIds: useQueryIds(queries),
+        resultTable: useResultTable('q1', queries),
+        resultTableCellIds: useResultTableCellIds('q1', queries),
+        resultRowCount: useResultRowCount('q1', queries),
+        resultRowIds: useResultRowIds('q1', queries),
+        resultSortedRowIds: useResultSortedRowIds(
+          'q1',
+          'c1',
+          true,
+          0,
+          undefined,
+          queries,
+        ),
+        resultRow: useResultRow('q1', 'r1', queries),
+        resultCellIds: useResultCellIds('q1', 'r1', queries),
+        resultCell: useResultCell('q1', 'r1', 'c1', queries),
+        paramValues: useParamValues('q1', queries),
+        paramValue: useParamValue('q1', 'p1', queries),
+        checkpointIds: useCheckpointIds(checkpoints),
+        checkpoint: useCheckpoint('0', checkpoints),
+      };
+    });
+
+    expect(values!.metricIds()).toEqual(['m1']);
+    expect(values!.metric()).toBe(2);
+    expect(values!.indexIds()).toEqual(['i1']);
+    expect(values!.sliceIds()).toEqual(['1']);
+    expect(values!.sliceRowIds()).toEqual(['r1', 'r2']);
+    expect(values!.relationshipIds()).toEqual(['r1', 'r2']);
+    expect(values!.remoteRowId()).toBe('1');
+    expect(values!.localRowIds()).toEqual(['r1', 'r2']);
+    expect(values!.linkedRowIds()).toEqual(['a', 'b', 'c', 'd']);
+    expect(values!.queryIds()).toEqual(['q1']);
+    expect(values!.resultTable()).toEqual({r1: {c1: 1}, r2: {c1: 1}});
+    expect(values!.resultTableCellIds()).toEqual(['c1']);
+    expect(values!.resultRowCount()).toBe(2);
+    expect(values!.resultRowIds()).toEqual(['r1', 'r2']);
+    expect(values!.resultSortedRowIds()).toEqual(['r2', 'r1']);
+    expect(values!.resultRow()).toEqual({c1: 1});
+    expect(values!.resultCellIds()).toEqual(['c1']);
+    expect(values!.resultCell()).toBe(1);
+    expect(values!.paramValues()).toEqual({});
+    expect(values!.paramValue()).toBeUndefined();
+    expect(values!.checkpointIds()).toEqual([[], '0', []]);
+    expect(values!.checkpoint()).toBe('start');
+
+    store.setCell('t1', 'r3', 'c1', 2);
+    queries.setParamValue('q1', 'p1', 'p1');
+    await pause();
+
+    expect(values!.metric()).toBe(3);
+    expect(values!.sliceIds()).toEqual(['1', '2']);
+    expect(values!.resultRowCount()).toBe(3);
+    expect(values!.resultSortedRowIds()).toEqual(['r3', 'r2', 'r1']);
+    expect(values!.paramValue()).toBe('p1');
 
     dispose();
   });
@@ -72,6 +322,76 @@ describe('ui-solid primitives', () => {
     setTableId!('t2');
     await pause();
     expect(table!()).toEqual({r1: {c1: 2}});
+
+    dispose();
+  });
+
+  test('sets and deletes data with callbacks', async () => {
+    const store = createStore().setTables({t1: {r1: {c1: 1}}});
+    const checkpoints = createCheckpoints(store);
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    let row: Accessor<ReturnType<Store['getRow']>>;
+    let values: Accessor<ReturnType<Store['getValues']>>;
+    let resultCell: Accessor<ReturnType<Store['getCell']>>;
+    let setRow: (row: {c1: number}) => void;
+    let addRow: (row: {c1: number}) => void;
+    let delCell: () => void;
+    let setValues: (values: {v1: number}) => void;
+    let setParamValue: (value: string) => void;
+    let addCheckpoint: (label: string) => void;
+    const rowThen = vi.fn();
+    const checkpointThen = vi.fn();
+
+    const dispose = renderPrimitive(() => {
+      row = useRow('t1', 'r1', store);
+      [values, setValues] = useValuesState(store);
+      resultCell = useResultCell('q1', 'r1', 'c1', queries);
+      setRow = useSetRowCallback(
+        't1',
+        'r1',
+        (row: {c1: number}) => row,
+        store,
+        rowThen,
+      );
+      addRow = useAddRowCallback('t1', (row: {c1: number}) => row, store);
+      delCell = useDelCellCallback('t1', 'r1', 'c1', true, store);
+      setParamValue = useSetParamValueCallback(
+        'q1',
+        'p1',
+        (value: string) => value,
+        queries,
+      );
+      addCheckpoint = useSetCheckpointCallback(
+        (label: string) => label,
+        checkpoints,
+        checkpointThen,
+      );
+    });
+
+    setRow!({c1: 2});
+    await pause();
+    expect(row!()).toEqual({c1: 2});
+    expect(rowThen).toHaveBeenCalledTimes(1);
+
+    addRow!({c1: 3});
+    await pause();
+    expect(store.getRowIds('t1')).toEqual(['r1', '0']);
+
+    delCell!();
+    setValues!({v1: 4});
+    setParamValue!('value');
+    addCheckpoint!('label');
+    await pause();
+
+    expect(resultCell!()).toBeUndefined();
+    expect(values!()).toEqual({v1: 4});
+    expect(queries.getParamValue('q1', 'p1')).toBe('value');
+    expect(checkpoints.getCheckpoint('1')).toBe('label');
+    expect(checkpointThen).toHaveBeenCalledTimes(1);
 
     dispose();
   });
