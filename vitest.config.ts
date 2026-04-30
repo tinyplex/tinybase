@@ -98,7 +98,6 @@ export default defineConfig({
       },
       {
         extends: true,
-        // Vite 8 defaults to Oxc, which ignores the Solid JSX esbuild config.
         oxc: false,
         plugins: [solidJsxHPlugin()],
         esbuild: {
@@ -107,29 +106,9 @@ export default defineConfig({
           jsxFactory: 'h',
           jsxFragment: 'h.Fragment',
         },
-        resolve: {
-          alias: [
-            {
-              find: /^solid-js\/web$/,
-              replacement: resolve('node_modules/solid-js/web/dist/dev.js'),
-            },
-            {
-              find: /^solid-js\/h$/,
-              replacement: resolve('node_modules/solid-js/h/dist/h.js'),
-            },
-            {
-              find: /^solid-js$/,
-              replacement: resolve('node_modules/solid-js/dist/dev.js'),
-            },
-          ],
-          conditions: ['browser', 'development'],
-        },
+        resolve: {conditions: ['browser', 'development']},
         test: {
           name: 'solid',
-          alias: {
-            'tinybase/ui-solid/with-schemas': resolve('src/ui-solid/index.ts'),
-            'tinybase/ui-solid': resolve('src/ui-solid/index.ts'),
-          },
           server: {deps: {inline: [/solid-js/]}},
           include: [
             'test/unit/core/ui-solid/**/*.test.ts',
