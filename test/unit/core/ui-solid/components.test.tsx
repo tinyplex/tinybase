@@ -410,7 +410,7 @@ testCustomCheckpointComponents('ui-solid', componentHarness, {
   CheckpointsView: TestAllCheckpointsView,
 });
 
-describe('Specific', () => {
+describe('Solid-specific', () => {
   beforeEach(() => {
     store = createStore()
       .setTables({

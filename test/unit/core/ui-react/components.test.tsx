@@ -391,6 +391,33 @@ const TestMetricView = (props: MetricProps) => (
   </>
 );
 
+const customComponents = {
+  CellView: TestCellView,
+  IndexView: TestIndexView,
+  LinkedRowsView: TestLinkedRowsView,
+  LocalRowsView: TestLocalRowsView,
+  MetricView: TestMetricView,
+  RemoteRowView: TestRemoteRowView,
+  ResultCellView: TestResultCellView,
+  ResultRowView: TestResultRowView,
+  ResultSortedTableView: TestResultSortedTableView,
+  ResultTableView: TestResultTableView,
+  RowView: TestRowView,
+  SliceView: TestSliceView,
+  SortedTableView: TestSortedTableView,
+  TableView: TestTableView,
+  TablesView: TestTablesView,
+  ValueView: TestValueView,
+  ValuesView: TestValuesView,
+};
+
+const TestCurrentCheckpointView = (props: BackwardCheckpointsProps) => (
+  <CurrentCheckpointView
+    {...props}
+    checkpointComponent={({checkpointId}) => <>current:{checkpointId}</>}
+  />
+);
+
 testComponents('ui-react', componentHarness, {
   BackwardCheckpointsView,
   CellView,
@@ -412,39 +439,14 @@ testComponents('ui-react', componentHarness, {
   ValuesView,
 });
 
-testCustomComponents('ui-react', componentHarness, {
-  CellView: TestCellView,
-  IndexView: TestIndexView,
-  LinkedRowsView: TestLinkedRowsView,
-  LocalRowsView: TestLocalRowsView,
-  MetricView: TestMetricView,
-  RemoteRowView: TestRemoteRowView,
-  ResultCellView: TestResultCellView,
-  ResultRowView: TestResultRowView,
-  ResultSortedTableView: TestResultSortedTableView,
-  ResultTableView: TestResultTableView,
-  RowView: TestRowView,
-  SliceView: TestSliceView,
-  SortedTableView: TestSortedTableView,
-  TableView: TestTableView,
-  TablesView: TestTablesView,
-  ValueView: TestValueView,
-  ValuesView: TestValuesView,
-});
-
-const TestCurrentCheckpointView = (props: BackwardCheckpointsProps) => (
-  <CurrentCheckpointView
-    {...props}
-    checkpointComponent={({checkpointId}) => <>current:{checkpointId}</>}
-  />
-);
+testCustomComponents('ui-react', componentHarness, customComponents);
 
 testCustomCheckpointComponents('ui-react', componentHarness, {
   CheckpointsView: TestAllCheckpointsView,
   CurrentCheckpointView: TestCurrentCheckpointView,
 });
 
-describe('Specific', () => {
+describe('React-specific', () => {
   beforeEach(() => {
     store = createStore()
       .setTables({

@@ -154,7 +154,7 @@ testCustomCheckpointComponents('ui-svelte', componentHarness, {
   CurrentCheckpointView: TestCurrentCheckpointViewSnippet,
 });
 
-describe('Specific', () => {
+describe('Svelte-specific', () => {
   beforeEach(() => {
     store = createStore()
       .setTables({
