@@ -125,6 +125,26 @@ testComponents('ui-svelte', componentHarness, {
   ValuesView,
 });
 
+testCustomComponents('ui-svelte', componentHarness, {
+  CellView: TestCellView,
+  IndexView: TestIndexView,
+  LinkedRowsView: TestLinkedRowsView,
+  LocalRowsView: TestLocalRowsView,
+  MetricView: TestMetricView,
+  RemoteRowView: TestRemoteRowView,
+  ResultCellView: TestResultCellView,
+  ResultRowView: TestResultRowView,
+  ResultSortedTableView: TestResultSortedTableView,
+  ResultTableView: TestResultTableView,
+  RowView: TestRowView,
+  SliceView: TestSliceView,
+  SortedTableView: TestSortedTableView,
+  TableView: TestTableView,
+  TablesView: TestTablesView,
+  ValueView: TestValueView,
+  ValuesView: TestValuesView,
+});
+
 describe('Specific', () => {
   beforeEach(() => {
     store = createStore()
@@ -135,27 +155,7 @@ describe('Specific', () => {
       .setValues({v1: 3, v2: 4});
   });
 
-  describe('Read Components', () => {
-    testCustomComponents('ui-svelte', componentHarness, {
-      CellView: TestCellView,
-      IndexView: TestIndexView,
-      LinkedRowsView: TestLinkedRowsView,
-      LocalRowsView: TestLocalRowsView,
-      MetricView: TestMetricView,
-      RemoteRowView: TestRemoteRowView,
-      ResultCellView: TestResultCellView,
-      ResultRowView: TestResultRowView,
-      ResultSortedTableView: TestResultSortedTableView,
-      ResultTableView: TestResultTableView,
-      RowView: TestRowView,
-      SliceView: TestSliceView,
-      SortedTableView: TestSortedTableView,
-      TableView: TestTableView,
-      TablesView: TestTablesView,
-      ValueView: TestValueView,
-      ValuesView: TestValuesView,
-    });
-
+  describe('Checkpoint Components', () => {
     describe('CheckpointsViews', () => {
       let checkpoints: Checkpoints;
 

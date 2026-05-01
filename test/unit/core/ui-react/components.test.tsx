@@ -146,6 +146,247 @@ const componentHarness = {
   },
 };
 
+const TestIndexView = (props: IndexProps & {readonly cellPrefix?: string}) => (
+  <>
+    {props.indexId}:
+    <IndexView
+      {...props}
+      sliceComponent={TestSliceView}
+      getSliceComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestSliceView = (props: SliceProps & {readonly cellPrefix?: string}) => (
+  <>
+    {props.sliceId}:
+    <SliceView
+      {...props}
+      rowComponent={TestRowView}
+      getRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestRemoteRowView = (
+  props: RemoteRowProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.localRowId}:
+    <RemoteRowView
+      {...props}
+      rowComponent={TestRowView}
+      getRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestLocalRowsView = (
+  props: LocalRowsProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.remoteRowId}:
+    <LocalRowsView
+      {...props}
+      rowComponent={TestRowView}
+      getRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestLinkedRowsView = (
+  props: LinkedRowsProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.firstRowId}:
+    <LinkedRowsView
+      {...props}
+      rowComponent={TestRowView}
+      getRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestResultTableView = (
+  props: ResultTableProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.queryId}:
+    <ResultTableView
+      {...props}
+      resultRowComponent={TestResultRowView}
+      getResultRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestResultSortedTableView = (
+  props: ResultSortedTableProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.queryId},{props.cellId}:
+    <ResultSortedTableView
+      {...props}
+      resultRowComponent={TestResultRowView}
+      getResultRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestResultRowView = (
+  props: ResultRowProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.rowId}:
+    <ResultRowView
+      {...props}
+      resultCellComponent={TestResultCellView}
+      getResultCellComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestResultCellView = (
+  props: ResultCellProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.cellId}
+    {props.cellPrefix}
+    <ResultCellView {...props} />
+  </>
+);
+
+const TestAllCheckpointsView = (props: BackwardCheckpointsProps) => (
+  <>
+    <BackwardCheckpointsView {...props} />
+    |
+    <CurrentCheckpointView {...props} />
+    |
+    <ForwardCheckpointsView {...props} />
+    |
+    <CheckpointView {...props} checkpointId="" />|
+    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+    {/* @ts-ignore */}
+    <CheckpointView {...props} />
+  </>
+);
+
+const TestTablesView = (
+  props: TablesProps & {readonly cellPrefix?: string},
+) => (
+  <TablesView
+    {...props}
+    tableComponent={TestTableView}
+    getTableComponentProps={useCallback(
+      () => ({cellPrefix: props.cellPrefix}),
+      [props.cellPrefix],
+    )}
+  />
+);
+
+const TestTableView = (props: TableProps & {readonly cellPrefix?: string}) => (
+  <>
+    {props.tableId}:
+    <TableView
+      {...props}
+      rowComponent={TestRowView}
+      getRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestSortedTableView = (
+  props: SortedTableProps & {readonly cellPrefix?: string},
+) => (
+  <>
+    {props.tableId},{props.cellId}:
+    <SortedTableView
+      {...props}
+      rowComponent={TestRowView}
+      getRowComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestRowView = (props: RowProps & {readonly cellPrefix?: string}) => (
+  <>
+    {props.rowId}:
+    <RowView
+      {...props}
+      cellComponent={TestCellView}
+      getCellComponentProps={useCallback(
+        () => ({cellPrefix: props.cellPrefix}),
+        [props.cellPrefix],
+      )}
+    />
+  </>
+);
+
+const TestCellView = (props: CellProps & {readonly cellPrefix?: string}) => (
+  <>
+    {props.cellId}
+    {props.cellPrefix}
+    <CellView {...props} />
+  </>
+);
+
+const TestValuesView = (
+  props: ValuesProps & {readonly valuePrefix?: string},
+) => (
+  <ValuesView
+    {...props}
+    valueComponent={TestValueView}
+    getValueComponentProps={useCallback(
+      () => ({valuePrefix: props.valuePrefix}),
+      [props.valuePrefix],
+    )}
+  />
+);
+
+const TestValueView = (props: ValueProps & {readonly valuePrefix?: string}) => (
+  <>
+    {props.valueId}
+    {props.valuePrefix}
+    <ValueView {...props} />
+  </>
+);
+
+const TestMetricView = (props: MetricProps) => (
+  <>
+    {props.metricId}:<MetricView {...props} />
+  </>
+);
+
 testComponents('ui-react', componentHarness, {
   BackwardCheckpointsView,
   CellView,
@@ -167,6 +408,26 @@ testComponents('ui-react', componentHarness, {
   ValuesView,
 });
 
+testCustomComponents('ui-react', componentHarness, {
+  CellView: TestCellView,
+  IndexView: TestIndexView,
+  LinkedRowsView: TestLinkedRowsView,
+  LocalRowsView: TestLocalRowsView,
+  MetricView: TestMetricView,
+  RemoteRowView: TestRemoteRowView,
+  ResultCellView: TestResultCellView,
+  ResultRowView: TestResultRowView,
+  ResultSortedTableView: TestResultSortedTableView,
+  ResultTableView: TestResultTableView,
+  RowView: TestRowView,
+  SliceView: TestSliceView,
+  SortedTableView: TestSortedTableView,
+  TableView: TestTableView,
+  TablesView: TestTablesView,
+  ValueView: TestValueView,
+  ValuesView: TestValuesView,
+});
+
 describe('Specific', () => {
   beforeEach(() => {
     store = createStore()
@@ -177,278 +438,7 @@ describe('Specific', () => {
       .setValues({v1: 3, v2: 4});
   });
 
-  describe('Read Components', () => {
-    const TestIndexView = (
-      props: IndexProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.indexId}:
-        <IndexView
-          {...props}
-          sliceComponent={TestSliceView}
-          getSliceComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestSliceView = (
-      props: SliceProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.sliceId}:
-        <SliceView
-          {...props}
-          rowComponent={TestRowView}
-          getRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestRemoteRowView = (
-      props: RemoteRowProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.localRowId}:
-        <RemoteRowView
-          {...props}
-          rowComponent={TestRowView}
-          getRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestLocalRowsView = (
-      props: LocalRowsProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.remoteRowId}:
-        <LocalRowsView
-          {...props}
-          rowComponent={TestRowView}
-          getRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestLinkedRowsView = (
-      props: LinkedRowsProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.firstRowId}:
-        <LinkedRowsView
-          {...props}
-          rowComponent={TestRowView}
-          getRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestResultTableView = (
-      props: ResultTableProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.queryId}:
-        <ResultTableView
-          {...props}
-          resultRowComponent={TestResultRowView}
-          getResultRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestResultSortedTableView = (
-      props: ResultSortedTableProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.queryId},{props.cellId}:
-        <ResultSortedTableView
-          {...props}
-          resultRowComponent={TestResultRowView}
-          getResultRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestResultRowView = (
-      props: ResultRowProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.rowId}:
-        <ResultRowView
-          {...props}
-          resultCellComponent={TestResultCellView}
-          getResultCellComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestResultCellView = (
-      props: ResultCellProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.cellId}
-        {props.cellPrefix}
-        <ResultCellView {...props} />
-      </>
-    );
-
-    const TestAllCheckpointsView = (props: BackwardCheckpointsProps) => (
-      <>
-        <BackwardCheckpointsView {...props} />
-        |
-        <CurrentCheckpointView {...props} />
-        |
-        <ForwardCheckpointsView {...props} />
-        |
-        <CheckpointView {...props} checkpointId="" />|
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
-        <CheckpointView {...props} />
-      </>
-    );
-
-    const TestTablesView = (
-      props: TablesProps & {readonly cellPrefix?: string},
-    ) => (
-      <TablesView
-        {...props}
-        tableComponent={TestTableView}
-        getTableComponentProps={useCallback(
-          () => ({cellPrefix: props.cellPrefix}),
-          [props.cellPrefix],
-        )}
-      />
-    );
-
-    const TestTableView = (
-      props: TableProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.tableId}:
-        <TableView
-          {...props}
-          rowComponent={TestRowView}
-          getRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestSortedTableView = (
-      props: SortedTableProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.tableId},{props.cellId}:
-        <SortedTableView
-          {...props}
-          rowComponent={TestRowView}
-          getRowComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestRowView = (props: RowProps & {readonly cellPrefix?: string}) => (
-      <>
-        {props.rowId}:
-        <RowView
-          {...props}
-          cellComponent={TestCellView}
-          getCellComponentProps={useCallback(
-            () => ({cellPrefix: props.cellPrefix}),
-            [props.cellPrefix],
-          )}
-        />
-      </>
-    );
-
-    const TestCellView = (
-      props: CellProps & {readonly cellPrefix?: string},
-    ) => (
-      <>
-        {props.cellId}
-        {props.cellPrefix}
-        <CellView {...props} />
-      </>
-    );
-
-    const TestValuesView = (
-      props: ValuesProps & {readonly valuePrefix?: string},
-    ) => (
-      <ValuesView
-        {...props}
-        valueComponent={TestValueView}
-        getValueComponentProps={useCallback(
-          () => ({valuePrefix: props.valuePrefix}),
-          [props.valuePrefix],
-        )}
-      />
-    );
-
-    const TestValueView = (
-      props: ValueProps & {readonly valuePrefix?: string},
-    ) => (
-      <>
-        {props.valueId}
-        {props.valuePrefix}
-        <ValueView {...props} />
-      </>
-    );
-
-    const TestMetricView = (props: MetricProps) => (
-      <>
-        {props.metricId}:<MetricView {...props} />
-      </>
-    );
-
-    testCustomComponents('ui-react', componentHarness, {
-      CellView: TestCellView,
-      IndexView: TestIndexView,
-      LinkedRowsView: TestLinkedRowsView,
-      LocalRowsView: TestLocalRowsView,
-      MetricView: TestMetricView,
-      RemoteRowView: TestRemoteRowView,
-      ResultCellView: TestResultCellView,
-      ResultRowView: TestResultRowView,
-      ResultSortedTableView: TestResultSortedTableView,
-      ResultTableView: TestResultTableView,
-      RowView: TestRowView,
-      SliceView: TestSliceView,
-      SortedTableView: TestSortedTableView,
-      TableView: TestTableView,
-      TablesView: TestTablesView,
-      ValueView: TestValueView,
-      ValuesView: TestValuesView,
-    });
-
+  describe('Checkpoint Components', () => {
     describe('CheckpointsViews', () => {
       let checkpoints: Checkpoints;
 
