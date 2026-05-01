@@ -3726,6 +3726,23 @@ describe('Write Hooks', () => {
     unmount();
   });
 
+  test('useSetTablesCallback without get deps', () => {
+    const Test = () => {
+      const handler = useSetTablesCallback<MouseEvent<HTMLButtonElement>>(
+        (e) => ({t1: {r1: {c1: e.screenX}}}),
+        undefined,
+        store,
+      );
+      return <button onClick={handler} />;
+    };
+    const {getByRole, unmount} = render(<Test />);
+
+    fireEvent.click(getByRole('button'), {screenX: 2});
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+
+    unmount();
+  });
+
   test('useSetTableCallback (including handler memo)', () => {
     const then = vi.fn((_store?: Store, _table?: Table) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];

@@ -1132,16 +1132,36 @@ export const testComponents = (
         rendered.unmount();
       });
 
-      test('SliceView renders falsy table ids', () => {
+      test('SliceView renders falsy and missing table ids', () => {
         store.setTable('', {r1: {c1: 1}});
         indexes.setIndexDefinition('i0', '', 'c1');
-        const {container, unmount} = harness.render(components.SliceView, {
+        let rendered = harness.render(components.SliceView, {
           indexes,
           indexId: 'i0',
           sliceId: '1',
         });
-        expect(container.textContent).toEqual('1');
-        unmount();
+        expect(rendered.container.textContent).toEqual('1');
+        rendered.unmount();
+
+        rendered = harness.render(components.SliceView, {
+          indexes,
+          indexId: 'missing',
+          sliceId: '1',
+        });
+        expect(rendered.container.textContent).toEqual('');
+        rendered.unmount();
+
+        rendered = harness.render(components.SliceView, {
+          indexes: {
+            getStore: () => store,
+            getTableId: () => undefined,
+            getSliceRowIds: () => ['r1'],
+          } as unknown as Indexes,
+          indexId: 'i0',
+          sliceId: '1',
+        });
+        expect(rendered.container.textContent).toEqual('');
+        rendered.unmount();
       });
     });
 
@@ -1278,6 +1298,48 @@ export const testComponents = (
         });
         expect(rendered.container.textContent).toEqual('r2r3r4');
         rendered.unmount();
+
+        rendered = harness.render(components.LocalRowsView, {
+          relationships,
+          relationshipId: 'missing',
+          remoteRowId: 'R1',
+        });
+        expect(rendered.container.textContent).toEqual('');
+        rendered.unmount();
+
+        rendered = harness.render(components.LinkedRowsView, {
+          relationships,
+          relationshipId: 'missing',
+          firstRowId: 'r1',
+        });
+        expect(rendered.container.textContent).toEqual('');
+        rendered.unmount();
+
+        rendered = harness.render(components.LocalRowsView, {
+          relationships: {
+            getStore: () => store,
+            getLocalTableId: () => undefined,
+            getRemoteTableId: () => undefined,
+            getLocalRowIds: () => ['r1'],
+          } as unknown as Relationships,
+          relationshipId: 'r0',
+          remoteRowId: 'R1',
+        });
+        expect(rendered.container.textContent).toEqual('');
+        rendered.unmount();
+
+        rendered = harness.render(components.LinkedRowsView, {
+          relationships: {
+            getStore: () => store,
+            getLocalTableId: () => undefined,
+            getRemoteTableId: () => undefined,
+            getLinkedRowIds: () => ['r2'],
+          } as unknown as Relationships,
+          relationshipId: 'r3',
+          firstRowId: 'r1',
+        });
+        expect(rendered.container.textContent).toEqual('');
+        rendered.unmount();
       });
     });
 
@@ -1322,6 +1384,25 @@ export const testComponents = (
           descending: true,
         });
         expect(rendered.container.textContent).toEqual('342');
+        rendered.unmount();
+
+        rendered = harness.render(components.ResultSortedTableView, {
+          queries,
+          queryId: 'q2',
+          cellId: 'c1',
+        });
+        expect(rendered.container.textContent).toEqual('234');
+        rendered.unmount();
+
+        rendered = harness.render(components.ResultSortedTableView, {
+          queries,
+          queryId: 'q2',
+          cellId: 'c1',
+          debugIds: true,
+        });
+        expect(rendered.container.textContent).toEqual(
+          'q2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
+        );
         rendered.unmount();
 
         rendered = harness.render(components.ResultRowView, {

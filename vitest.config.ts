@@ -38,6 +38,7 @@ export default defineConfig({
       include: [
         'dist/index.js',
         'dist/ui-react/index.js',
+        'dist/ui-solid/index.js',
         'dist/ui-svelte/index.js',
       ],
       reportsDirectory: './tmp/coverage',
