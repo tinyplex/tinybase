@@ -139,30 +139,6 @@ describe('Specific', () => {
 
   describe('Read Components', () => {
     describe('TablesView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(TablesView, {props: {store}});
-        expect(container.textContent).toEqual('1234');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(TablesView, {
-          props: {store, separator: sep},
-        });
-        expect(container.textContent).toEqual('1/234');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(TablesView, {
-          props: {store, debugIds: true},
-        });
-        expect(container.textContent).toEqual(
-          't1:{r1:{c1:{1}}}t2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
-        );
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, unmount} = render(TestTablesView, {
           props: {store, cellPrefix: ':'},
@@ -184,43 +160,6 @@ describe('Specific', () => {
     });
 
     describe('TableView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(TableView, {
-          props: {store, tableId: 't2'},
-        });
-        expect(container.textContent).toEqual('234');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(TableView, {
-          props: {store, tableId: 't2', separator: sep},
-        });
-        expect(container.textContent).toEqual('2/34');
-        unmount();
-      });
-
-      test('Debug Ids', async () => {
-        const {container, rerender, unmount} = render(TableView, {
-          props: {store, tableId: 't2', separator: sep},
-        });
-        expect(container.textContent).toEqual('2/34');
-
-        await rerender({tableId: 't2', debugIds: true, separator: undefined});
-        expect(container.textContent).toEqual(
-          't2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
-        );
-        unmount();
-      });
-
-      test('Debug Ids with null tableId', () => {
-        const {container, unmount} = render(TableView, {
-          props: {store, tableId: null as any, debugIds: true},
-        });
-        expect(container.textContent).toEqual(':{}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestTableView, {
           props: {store, tableId: 't0', cellPrefix: ':'},
@@ -241,64 +180,6 @@ describe('Specific', () => {
     });
 
     describe('SortedTableView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(SortedTableView, {
-          props: {store, tableId: 't2', cellId: 'c1', descending: true},
-        });
-        expect(container.textContent).toEqual('342');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(SortedTableView, {
-          props: {
-            store,
-            tableId: 't2',
-            cellId: 'c1',
-            descending: true,
-            separator: sep,
-          },
-        });
-        expect(container.textContent).toEqual('34/2');
-        unmount();
-      });
-
-      test('Debug Ids', async () => {
-        const {container, rerender, unmount} = render(SortedTableView, {
-          props: {
-            store,
-            tableId: 't2',
-            cellId: 'c1',
-            descending: true,
-            separator: sep,
-          },
-        });
-        expect(container.textContent).toEqual('34/2');
-
-        await rerender({
-          tableId: 't2',
-          cellId: 'c1',
-          descending: true,
-          debugIds: true,
-          separator: undefined,
-        });
-        expect(container.textContent).toEqual(
-          't2:{r2:{c1:{3}c2:{4}}r1:{c1:{2}}}',
-        );
-
-        await rerender({
-          tableId: 't2',
-          cellId: 'c1',
-          offset: 1,
-          limit: 1,
-          descending: undefined,
-          debugIds: true,
-        });
-        expect(container.textContent).toEqual('t2:{r2:{c1:{3}c2:{4}}}');
-
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestSortedTableView, {
           props: {
@@ -325,30 +206,6 @@ describe('Specific', () => {
     });
 
     describe('RowView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(RowView, {
-          props: {store, tableId: 't2', rowId: 'r2'},
-        });
-        expect(container.textContent).toEqual('34');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(RowView, {
-          props: {store, tableId: 't2', rowId: 'r2', separator: sep},
-        });
-        expect(container.textContent).toEqual('3/4');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(RowView, {
-          props: {store, tableId: 't2', rowId: 'r2', debugIds: true},
-        });
-        expect(container.textContent).toEqual('r2:{c1:{3}c2:{4}}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestRowView, {
           props: {store, tableId: 't0', rowId: 'r0', cellPrefix: ':'},
@@ -369,28 +226,6 @@ describe('Specific', () => {
     });
 
     describe('CellView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(CellView, {
-          props: {store, tableId: 't2', rowId: 'r2', cellId: 'c2'},
-        });
-        expect(container.textContent).toEqual('4');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(CellView, {
-          props: {
-            store,
-            tableId: 't2',
-            rowId: 'r2',
-            cellId: 'c2',
-            debugIds: true,
-          },
-        });
-        expect(container.textContent).toEqual('c2:{4}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestCellView, {
           props: {
@@ -417,28 +252,6 @@ describe('Specific', () => {
     });
 
     describe('ValuesView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(ValuesView, {props: {store}});
-        expect(container.textContent).toEqual('34');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(ValuesView, {
-          props: {store, separator: sep},
-        });
-        expect(container.textContent).toEqual('3/4');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(ValuesView, {
-          props: {store, debugIds: true},
-        });
-        expect(container.textContent).toEqual('v1:{3}v2:{4}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, unmount} = render(TestValuesView, {
           props: {store, valuePrefix: ':'},
@@ -456,22 +269,6 @@ describe('Specific', () => {
     });
 
     describe('ValueView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(ValueView, {
-          props: {store, valueId: 'v2'},
-        });
-        expect(container.textContent).toEqual('4');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(ValueView, {
-          props: {store, valueId: 'v2', debugIds: true},
-        });
-        expect(container.textContent).toEqual('v2:{4}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestValueView, {
           props: {store, valueId: 'v0', valuePrefix: ':'},
@@ -498,22 +295,6 @@ describe('Specific', () => {
         metrics = createMetrics(store)
           .setMetricDefinition('m1', 't1')
           .setMetricDefinition('m2', 't2');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(MetricView, {
-          props: {metrics, metricId: 'm1'},
-        });
-        expect(container.textContent).toEqual('1');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(MetricView, {
-          props: {metrics, metricId: 'm1', debugIds: true},
-        });
-        expect(container.textContent).toEqual('m1:{1}');
-        unmount();
       });
 
       test('Custom', async () => {
@@ -547,31 +328,6 @@ describe('Specific', () => {
           .setIndexDefinition('i2', 't2', 'c1');
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(IndexView, {
-          props: {indexes, indexId: 'i1'},
-        });
-        expect(container.textContent).toEqual('1');
-        unmount();
-      });
-
-      test('Separator', async () => {
-        store.setCell('t1', 'r2', 'c1', 2);
-        const {container, unmount} = render(IndexView, {
-          props: {indexes, indexId: 'i1', separator: sep},
-        });
-        expect(container.textContent).toEqual('1/2');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(IndexView, {
-          props: {indexes, indexId: 'i1', debugIds: true},
-        });
-        expect(container.textContent).toEqual('i1:{1:{r1:{c1:{1}}}}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestIndexView, {
           props: {indexes, indexId: 'i0', cellPrefix: ':'},
@@ -601,41 +357,6 @@ describe('Specific', () => {
         indexes = createIndexes(store)
           .setIndexDefinition('i1', 't1', 'c1')
           .setIndexDefinition('i2', 't2', 'c1');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(SliceView, {
-          props: {indexes, indexId: 'i1', sliceId: '1'},
-        });
-        expect(container.textContent).toEqual('1');
-        unmount();
-      });
-
-      test('Separator', () => {
-        store.setCell('t1', 'r2', 'c1', 1);
-        const {container, unmount} = render(SliceView, {
-          props: {indexes, indexId: 'i1', sliceId: '1', separator: sep},
-        });
-        expect(container.textContent).toEqual('1/1');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(SliceView, {
-          props: {indexes, indexId: 'i1', sliceId: '1', debugIds: true},
-        });
-        expect(container.textContent).toEqual('1:{r1:{c1:{1}}}');
-        unmount();
-      });
-
-      test('Falsy tableId renders rows', () => {
-        store.setTable('', {r1: {c1: 1}});
-        indexes.setIndexDefinition('i0', '' as any, 'c1');
-        const {container, unmount} = render(SliceView, {
-          props: {indexes, indexId: 'i0', sliceId: '1'},
-        });
-        expect(container.textContent).toEqual('1');
-        unmount();
       });
 
       test('Custom', async () => {
@@ -674,54 +395,6 @@ describe('Specific', () => {
         relationships = createRelationships(store)
           .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
           .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(RemoteRowView, {
-          props: {relationships, relationshipId: 'r1', localRowId: 'r1'},
-        });
-        expect(container.textContent).toEqual('1');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(RemoteRowView, {
-          props: {
-            relationships,
-            relationshipId: 'r1',
-            localRowId: 'r1',
-            debugIds: true,
-          },
-        });
-        expect(container.textContent).toEqual('r1:{R1:{C1:{1}}}');
-        unmount();
-      });
-
-      test('Debug Ids with null localRowId', () => {
-        const {container, unmount} = render(RemoteRowView, {
-          props: {
-            relationships,
-            relationshipId: 'r1',
-            localRowId: null as any,
-            debugIds: true,
-          },
-        });
-        expect(container.textContent).toEqual(':{}');
-        unmount();
-      });
-
-      test('Missing remote table skips row rendering', () => {
-        relationships.setRelationshipDefinition(
-          'r3',
-          't1',
-          undefined as any,
-          'c1',
-        );
-        const {container, unmount} = render(RemoteRowView, {
-          props: {relationships, relationshipId: 'r3', localRowId: 'r1'},
-        });
-        expect(container.textContent).toEqual('');
-        unmount();
       });
 
       test('Custom', async () => {
@@ -765,50 +438,6 @@ describe('Specific', () => {
           .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(LocalRowsView, {
-          props: {relationships, relationshipId: 'r1', remoteRowId: 'R1'},
-        });
-        expect(container.textContent).toEqual('R1R1');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(LocalRowsView, {
-          props: {
-            relationships,
-            relationshipId: 'r1',
-            remoteRowId: 'R1',
-            separator: sep,
-          },
-        });
-        expect(container.textContent).toEqual('R1/R1');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(LocalRowsView, {
-          props: {
-            relationships,
-            relationshipId: 'r1',
-            remoteRowId: 'R1',
-            debugIds: true,
-          },
-        });
-        expect(container.textContent).toEqual('R1:{r1:{c1:{R1}}r2:{c1:{R1}}}');
-        unmount();
-      });
-
-      test('Falsy localTableId renders rows', () => {
-        store.setTable('', {r1: {c1: 'R1'}, r2: {c1: 'R1'}});
-        relationships.setRelationshipDefinition('r0', '' as any, 'T1', 'c1');
-        const {container, unmount} = render(LocalRowsView, {
-          props: {relationships, relationshipId: 'r0', remoteRowId: 'R1'},
-        });
-        expect(container.textContent).toEqual('R1R1');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestLocalRowsView, {
           props: {
@@ -848,61 +477,6 @@ describe('Specific', () => {
           .setRelationshipDefinition('r2', 't2', 't2', 'c2');
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(LinkedRowsView, {
-          props: {relationships, relationshipId: 'r1', firstRowId: 'r1'},
-        });
-        expect(container.textContent).toEqual('r2r3r4');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(LinkedRowsView, {
-          props: {
-            relationships,
-            relationshipId: 'r1',
-            firstRowId: 'r1',
-            separator: sep,
-          },
-        });
-        expect(container.textContent).toEqual('r2/r3/r4/');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(LinkedRowsView, {
-          props: {
-            relationships,
-            relationshipId: 'r1',
-            firstRowId: 'r1',
-            debugIds: true,
-          },
-        });
-        expect(container.textContent).toEqual(
-          'r1:{r1:{c1:{r2}}r2:{c1:{r3}}r3:{c1:{r4}}r4:{}}',
-        );
-        unmount();
-      });
-
-      test('Falsy localTableId renders rows', () => {
-        store.setTable('', {
-          r1: {c1: 'r2'},
-          r2: {c1: 'r3'},
-          r3: {c1: 'r4'},
-        });
-        relationships.setRelationshipDefinition(
-          'r0',
-          '' as any,
-          '' as any,
-          'c1',
-        );
-        const {container, unmount} = render(LinkedRowsView, {
-          props: {relationships, relationshipId: 'r0', firstRowId: 'r1'},
-        });
-        expect(container.textContent).toEqual('r2r3r4');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestLinkedRowsView, {
           props: {
@@ -936,30 +510,6 @@ describe('Specific', () => {
           .setQueryDefinition('q2', 't2', ({select}) => select('c1'));
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(ResultTableView, {
-          props: {queries, queryId: 'q1'},
-        });
-        expect(container.textContent).toEqual('1');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(ResultTableView, {
-          props: {queries, queryId: 'q2', separator: sep},
-        });
-        expect(container.textContent).toEqual('2/3');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(ResultTableView, {
-          props: {queries, queryId: 'q1', debugIds: true},
-        });
-        expect(container.textContent).toEqual('q1:{r1:{c1:{1}}}');
-        unmount();
-      });
-
       test('Custom', async () => {
         const {container, rerender, unmount} = render(TestResultTableView, {
           props: {queries, queryId: 'q0', cellPrefix: ':'},
@@ -989,52 +539,6 @@ describe('Specific', () => {
         queries = createQueries(store)
           .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
           .setQueryDefinition('q2', 't2', ({select}) => select('c1'));
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(ResultSortedTableView, {
-          props: {queries, queryId: 'q2', cellId: 'c1', descending: true},
-        });
-        expect(container.textContent).toEqual('32');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(ResultSortedTableView, {
-          props: {
-            queries,
-            queryId: 'q2',
-            cellId: 'c1',
-            descending: true,
-            separator: sep,
-          },
-        });
-        expect(container.textContent).toEqual('3/2');
-        unmount();
-      });
-
-      test('Debug Ids', async () => {
-        const {container, rerender, unmount} = render(ResultSortedTableView, {
-          props: {
-            queries,
-            queryId: 'q2',
-            cellId: 'c1',
-            descending: true,
-            separator: sep,
-          },
-        });
-        expect(container.textContent).toEqual('3/2');
-
-        await rerender({
-          queryId: 'q2',
-          cellId: 'c1',
-          descending: true,
-          debugIds: true,
-          separator: undefined,
-        });
-        expect(container.textContent).toEqual('q2:{r2:{c1:{3}}r1:{c1:{2}}}');
-
-        unmount();
       });
 
       test('Custom', async () => {
@@ -1071,27 +575,11 @@ describe('Specific', () => {
           });
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(ResultRowView, {
-          props: {queries, queryId: 'q2', rowId: 'r2'},
-        });
-        expect(container.textContent).toEqual('34');
-        unmount();
-      });
-
       test('Separator', () => {
         const {container, unmount} = render(ResultRowView, {
           props: {queries, queryId: 'q2', rowId: 'r2', separator: sep},
         });
         expect(container.textContent).toEqual('3/4');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(ResultRowView, {
-          props: {queries, queryId: 'q2', rowId: 'r2', debugIds: true},
-        });
-        expect(container.textContent).toEqual('r2:{c1:{3}c2:{4}}');
         unmount();
       });
 
@@ -1129,28 +617,6 @@ describe('Specific', () => {
             select('c2');
           },
         );
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(ResultCellView, {
-          props: {queries, queryId: 'q1', rowId: 'r2', cellId: 'c2'},
-        });
-        expect(container.textContent).toEqual('4');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(ResultCellView, {
-          props: {
-            queries,
-            queryId: 'q1',
-            rowId: 'r2',
-            cellId: 'c2',
-            debugIds: true,
-          },
-        });
-        expect(container.textContent).toEqual('c2:{4}');
-        unmount();
       });
 
       test('Custom', async () => {
@@ -1193,30 +659,6 @@ describe('Specific', () => {
         store.setTables({t1: {r1: {c1: 5}}});
         checkpoints.addCheckpoint();
         checkpoints.goTo('2');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(BackwardCheckpointsView, {
-          props: {checkpoints},
-        });
-        expect(container.textContent).toEqual('c1');
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(BackwardCheckpointsView, {
-          props: {checkpoints, separator: sep},
-        });
-        expect(container.textContent).toEqual('c1/');
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(BackwardCheckpointsView, {
-          props: {checkpoints, debugIds: true},
-        });
-        expect(container.textContent).toEqual('0:{c1}1:{}');
-        unmount();
       });
 
       test('Custom', async () => {

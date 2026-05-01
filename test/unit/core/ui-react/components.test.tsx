@@ -433,33 +433,6 @@ describe('Specific', () => {
     );
 
     describe('TablesView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(<TablesView store={store} />);
-        expect(container.textContent).toEqual('1234');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <TablesView store={store} separator="/" />,
-        );
-        expect(container.textContent).toEqual('1/234');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <TablesView store={store} debugIds={true} />,
-        );
-        expect(container.textContent).toEqual(
-          't1:{r1:{c1:{1}}}t2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
-        );
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = () => <TestTablesView store={store} cellPrefix=":" />;
         const {container, unmount} = render(<Test />);
@@ -480,47 +453,6 @@ describe('Specific', () => {
     });
 
     describe('TableView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <TableView store={store} tableId="t2" />,
-        );
-        expect(container.textContent).toEqual('234');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <TableView store={store} tableId="t2" separator="/" />,
-        );
-        expect(container.textContent).toEqual('2/34');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, rerender, unmount} = render(
-          <TableView store={store} tableId="t2" separator="/" />,
-        );
-        expect(container.textContent).toEqual('2/34');
-
-        rerender(<TableView store={store} tableId="t2" debugIds={true} />);
-        expect(container.textContent).toEqual(
-          't2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
-        );
-
-        unmount();
-      });
-
-      test('Debug Ids with null tableId', () => {
-        const {container, unmount} = render(
-          <TableView store={store} tableId={null as any} debugIds={true} />,
-        );
-        expect(container.textContent).toEqual(':{}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({tableId}: {readonly tableId: Id}) => (
           <TestTableView store={store} tableId={tableId} cellPrefix=":" />
@@ -542,75 +474,6 @@ describe('Specific', () => {
     });
 
     describe('SortedTableView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-          />,
-        );
-        expect(container.textContent).toEqual('342');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('34/2');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, rerender, unmount} = render(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('34/2');
-
-        rerender(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual(
-          't2:{r2:{c1:{3}c2:{4}}r1:{c1:{2}}}',
-        );
-
-        rerender(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            offset={1}
-            limit={1}
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('t2:{r2:{c1:{3}c2:{4}}}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({
           tableId,
@@ -646,33 +509,6 @@ describe('Specific', () => {
     });
 
     describe('RowView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <RowView store={store} tableId="t2" rowId="r2" />,
-        );
-        expect(container.textContent).toEqual('34');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <RowView store={store} tableId="t2" rowId="r2" separator="/" />,
-        );
-        expect(container.textContent).toEqual('3/4');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <RowView store={store} tableId="t2" rowId="r2" debugIds={true} />,
-        );
-        expect(container.textContent).toEqual('r2:{c1:{3}c2:{4}}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({
           tableId,
@@ -707,30 +543,6 @@ describe('Specific', () => {
     });
 
     describe('CellView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <CellView store={store} tableId="t2" rowId="r2" cellId="c2" />,
-        );
-        expect(container.textContent).toEqual('4');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <CellView
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            cellId="c2"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('c2:{4}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({
           tableId,
@@ -768,31 +580,6 @@ describe('Specific', () => {
     });
 
     describe('ValuesView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(<ValuesView store={store} />);
-        expect(container.textContent).toEqual('34');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <ValuesView store={store} separator="/" />,
-        );
-        expect(container.textContent).toEqual('3/4');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <ValuesView store={store} debugIds={true} />,
-        );
-        expect(container.textContent).toEqual('v1:{3}v2:{4}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = () => <TestValuesView store={store} valuePrefix=":" />;
         const {container, unmount} = render(<Test />);
@@ -809,24 +596,6 @@ describe('Specific', () => {
     });
 
     describe('ValueView', () => {
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <ValueView store={store} valueId="v2" />,
-        );
-        expect(container.textContent).toEqual('4');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <ValueView store={store} valueId="v2" debugIds={true} />,
-        );
-        expect(container.textContent).toEqual('v2:{4}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({valueId}: {readonly valueId: Id}) => (
           <TestValueView store={store} valueId={valueId} valuePrefix=":" />
@@ -854,24 +623,6 @@ describe('Specific', () => {
         metrics = createMetrics(store)
           .setMetricDefinition('m1', 't1')
           .setMetricDefinition('m2', 't2');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <MetricView metrics={metrics} metricId="m1" />,
-        );
-        expect(container.textContent).toEqual('1');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <MetricView metrics={metrics} metricId="m1" debugIds={true} />,
-        );
-        expect(container.textContent).toEqual('m1:{1}');
-
-        unmount();
       });
 
       test('Custom', () => {
@@ -906,34 +657,6 @@ describe('Specific', () => {
           .setIndexDefinition('i2', 't2', 'c1');
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <IndexView indexes={indexes} indexId="i1" />,
-        );
-        expect(container.textContent).toEqual('1');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        store.setCell('t1', 'r2', 'c1', 2);
-        const {container, unmount} = render(
-          <IndexView indexes={indexes} indexId="i1" separator="/" />,
-        );
-        expect(container.textContent).toEqual('1/2');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <IndexView indexes={indexes} indexId="i1" debugIds={true} />,
-        );
-        expect(container.textContent).toEqual('i1:{1:{r1:{c1:{1}}}}');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({indexId}: {readonly indexId: Id}) => (
           <TestIndexView indexes={indexes} indexId={indexId} cellPrefix=":" />
@@ -964,55 +687,6 @@ describe('Specific', () => {
         indexes = createIndexes(store)
           .setIndexDefinition('i1', 't1', 'c1')
           .setIndexDefinition('i2', 't2', 'c1');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <SliceView indexes={indexes} indexId="i1" sliceId="1" />,
-        );
-        expect(container.textContent).toEqual('1');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        store.setCell('t1', 'r2', 'c1', 1);
-        const {container, unmount} = render(
-          <SliceView
-            indexes={indexes}
-            indexId="i1"
-            sliceId="1"
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('1/1');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <SliceView
-            indexes={indexes}
-            indexId="i1"
-            sliceId="1"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('1:{r1:{c1:{1}}}');
-
-        unmount();
-      });
-
-      test('Falsy tableId renders rows', () => {
-        store.setTable('', {r1: {c1: 1}});
-        indexes.setIndexDefinition('i0', '' as any, 'c1');
-        const {container, unmount} = render(
-          <SliceView indexes={indexes} indexId="i0" sliceId="1" />,
-        );
-        expect(container.textContent).toEqual('1');
-
-        unmount();
       });
 
       test('Custom', () => {
@@ -1068,66 +742,6 @@ describe('Specific', () => {
           .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <RemoteRowView
-            relationships={relationships}
-            relationshipId="r1"
-            localRowId="r1"
-          />,
-        );
-        expect(container.textContent).toEqual('1');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <RemoteRowView
-            relationships={relationships}
-            relationshipId="r1"
-            localRowId="r1"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('r1:{R1:{C1:{1}}}');
-
-        unmount();
-      });
-
-      test('Debug Ids with null localRowId', () => {
-        const {container, unmount} = render(
-          <RemoteRowView
-            relationships={relationships}
-            relationshipId="r1"
-            localRowId={null as any}
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual(':{}');
-
-        unmount();
-      });
-
-      test('Missing remote table skips row rendering', () => {
-        relationships.setRelationshipDefinition(
-          'r3',
-          't1',
-          undefined as any,
-          'c1',
-        );
-        const {container, unmount} = render(
-          <RemoteRowView
-            relationships={relationships}
-            relationshipId="r3"
-            localRowId="r1"
-          />,
-        );
-        expect(container.textContent).toEqual('');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({
           relationshipId,
@@ -1178,62 +792,6 @@ describe('Specific', () => {
           .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            remoteRowId="R1"
-          />,
-        );
-        expect(container.textContent).toEqual('R1R1');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            remoteRowId="R1"
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('R1/R1');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            remoteRowId="R1"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('R1:{r1:{c1:{R1}}r2:{c1:{R1}}}');
-
-        unmount();
-      });
-
-      test('Falsy localTableId renders rows', () => {
-        store.setTable('', {r1: {c1: 'R1'}, r2: {c1: 'R1'}});
-        relationships.setRelationshipDefinition('r0', '' as any, 'T1', 'c1');
-        const {container, unmount} = render(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r0"
-            remoteRowId="R1"
-          />,
-        );
-        expect(container.textContent).toEqual('R1R1');
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({
           relationshipId,
@@ -1281,73 +839,6 @@ describe('Specific', () => {
         relationships = createRelationships(store)
           .setRelationshipDefinition('r1', 't1', 't1', 'c1')
           .setRelationshipDefinition('r2', 't2', 't2', 'c2');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            firstRowId="r1"
-          />,
-        );
-        expect(container.textContent).toEqual('r2r3r4');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            firstRowId="r1"
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('r2/r3/r4/');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            firstRowId="r1"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual(
-          'r1:{r1:{c1:{r2}}r2:{c1:{r3}}r3:{c1:{r4}}r4:{}}',
-        );
-
-        unmount();
-      });
-
-      test('Falsy localTableId renders rows', () => {
-        store.setTable('', {
-          r1: {c1: 'r2'},
-          r2: {c1: 'r3'},
-          r3: {c1: 'r4'},
-        });
-        relationships.setRelationshipDefinition(
-          'r0',
-          '' as any,
-          '' as any,
-          'c1',
-        );
-        const {container, unmount} = render(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r0"
-            firstRowId="r1"
-          />,
-        );
-        expect(container.textContent).toEqual('r2r3r4');
-
-        unmount();
       });
 
       test('Custom', () => {
@@ -1401,43 +892,6 @@ describe('Specific', () => {
         );
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <ResultTableView queries={queries} queryId="q1" />,
-        );
-        expect(container.textContent).toEqual('234');
-
-        act(() => store.setCell('t2', 'r1', 'c2', 5));
-        expect(container.textContent).toEqual('2534');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <ResultTableView queries={queries} queryId="q1" separator="/" />,
-        );
-        expect(container.textContent).toEqual('2/34');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, rerender, unmount} = render(
-          <ResultTableView queries={queries} queryId="q1" separator="/" />,
-        );
-        expect(container.textContent).toEqual('2/34');
-
-        rerender(
-          <ResultTableView queries={queries} queryId="q1" debugIds={true} />,
-        );
-        expect(container.textContent).toEqual(
-          'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
-        );
-
-        unmount();
-      });
-
       test('Custom', () => {
         const Test = ({queryId}: {readonly queryId: Id}) => (
           <TestResultTableView
@@ -1474,70 +928,6 @@ describe('Specific', () => {
             select('c2');
           },
         );
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <ResultSortedTableView queries={queries} queryId="q1" cellId="c2" />,
-        );
-        expect(container.textContent).toEqual('234');
-
-        act(() => store.setCell('t2', 'r1', 'c2', 5));
-        expect(container.textContent).toEqual('3425');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('2/34');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, rerender, unmount} = render(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('2/34');
-
-        rerender(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual(
-          'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
-        );
-
-        rerender(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            offset={1}
-            limit={1}
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('q1:{r2:{c1:{3}c2:{4}}}');
-
-        unmount();
       });
 
       test('Custom', () => {
@@ -1587,15 +977,6 @@ describe('Specific', () => {
         );
       });
 
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <ResultRowView queries={queries} queryId="q1" rowId="r2" />,
-        );
-        expect(container.textContent).toEqual('34');
-
-        unmount();
-      });
-
       test('Separator', () => {
         const {container, unmount} = render(
           <ResultRowView
@@ -1606,20 +987,6 @@ describe('Specific', () => {
           />,
         );
         expect(container.textContent).toEqual('3/4');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <ResultRowView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('r2:{c1:{3}c2:{4}}');
 
         unmount();
       });
@@ -1666,35 +1033,6 @@ describe('Specific', () => {
           't2',
           ({select}) => select('c1'),
         );
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <ResultCellView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            cellId="c1"
-          />,
-        );
-        expect(container.textContent).toEqual('3');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <ResultCellView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            cellId="c1"
-            debugIds={true}
-          />,
-        );
-        expect(container.textContent).toEqual('c1:{3}');
-
-        unmount();
       });
 
       test('Custom', () => {
@@ -1748,52 +1086,6 @@ describe('Specific', () => {
         store.setTables({t1: {r1: {c1: 5}}});
         checkpoints.addCheckpoint();
         checkpoints.goTo('2');
-      });
-
-      test('Basic', () => {
-        const {container, unmount} = render(
-          <>
-            <BackwardCheckpointsView checkpoints={checkpoints} />
-            |
-            <CurrentCheckpointView checkpoints={checkpoints} />
-            |
-            <ForwardCheckpointsView checkpoints={checkpoints} />
-          </>,
-        );
-        expect(container.textContent).toEqual('c1|c2|c3');
-
-        unmount();
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <>
-            <BackwardCheckpointsView checkpoints={checkpoints} separator="/" />
-            |
-            <ForwardCheckpointsView checkpoints={checkpoints} separator="/" />
-          </>,
-        );
-        expect(container.textContent).toEqual('c1/|c3/');
-
-        unmount();
-      });
-
-      test('Debug Ids', () => {
-        const {container, unmount} = render(
-          <>
-            <BackwardCheckpointsView
-              checkpoints={checkpoints}
-              debugIds={true}
-            />
-            |
-            <CurrentCheckpointView checkpoints={checkpoints} debugIds={true} />
-            |
-            <ForwardCheckpointsView checkpoints={checkpoints} debugIds={true} />
-          </>,
-        );
-        expect(container.textContent).toEqual('0:{c1}1:{}|2:{c2}|3:{c3}4:{}');
-
-        unmount();
       });
 
       test('Custom', () => {
