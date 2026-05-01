@@ -43,7 +43,11 @@ import {
 } from 'tinybase/ui-svelte';
 import {createStore as createStore2} from 'tinybase/with-schemas';
 import {beforeEach, describe, expect, test} from 'vitest';
-import {testComponents, testCustomComponents} from '../ui-common/components.ts';
+import {
+  testComponents,
+  testCustomCheckpointComponents,
+  testCustomComponents,
+} from '../ui-common/components.ts';
 
 import TestAllCheckpointsView from './components/TestAllCheckpointsView.svelte';
 import TestCellView from './components/TestCellView.svelte';
@@ -145,6 +149,11 @@ testCustomComponents('ui-svelte', componentHarness, {
   ValuesView: TestValuesView,
 });
 
+testCustomCheckpointComponents('ui-svelte', componentHarness, {
+  CheckpointsView: TestAllCheckpointsView,
+  CurrentCheckpointView: TestCurrentCheckpointViewSnippet,
+});
+
 describe('Specific', () => {
   beforeEach(() => {
     store = createStore()
@@ -153,69 +162,6 @@ describe('Specific', () => {
         t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
       })
       .setValues({v1: 3, v2: 4});
-  });
-
-  describe('Checkpoint Components', () => {
-    describe('CheckpointsViews', () => {
-      let checkpoints: Checkpoints;
-
-      beforeEach(() => {
-        checkpoints = createCheckpoints(store);
-        checkpoints.setCheckpoint('0', 'c1');
-        store.setTables({t1: {r1: {c1: 2}}});
-        checkpoints.addCheckpoint();
-        store.setTables({t1: {r1: {c1: 3}}});
-        checkpoints.addCheckpoint('c2');
-        store.setTables({t1: {r1: {c1: 4}}});
-        checkpoints.addCheckpoint('c3');
-        store.setTables({t1: {r1: {c1: 5}}});
-        checkpoints.addCheckpoint();
-        checkpoints.goTo('2');
-      });
-
-      test('Custom', async () => {
-        const {container, unmount} = render(TestAllCheckpointsView, {
-          props: {checkpoints},
-        });
-        await act(() => checkpoints.clear());
-        expect(container.textContent).toEqual('||||');
-
-        await act(() => checkpoints.setCheckpoint('0', 'c1'));
-        expect(container.textContent).toEqual('|c1|||');
-
-        await act(() => store.setTables({t1: {r1: {c1: 2}}}));
-        expect(container.textContent).toEqual('c1||||');
-
-        await act(() => checkpoints.addCheckpoint());
-        expect(container.textContent).toEqual('c1||||');
-
-        await act(() => store.setTables({t1: {r1: {c1: 3}}}));
-        expect(container.textContent).toEqual('c1||||');
-
-        await act(() => checkpoints.addCheckpoint('c2'));
-        expect(container.textContent).toEqual('c1|c2|||');
-
-        await act(() => checkpoints.goTo('0'));
-        expect(container.textContent).toEqual('|c1|c2||');
-
-        unmount();
-      });
-
-      test('Custom checkpoint snippet', async () => {
-        const {container, unmount} = render(TestCurrentCheckpointViewSnippet, {
-          props: {checkpoints},
-        });
-        expect(container.textContent).toContain('current:');
-
-        await act(() => checkpoints.clear());
-        expect(container.textContent).toContain('current:0');
-
-        await act(() => store.setTables({t1: {r1: {c1: 2}}}));
-        expect(container.textContent).toEqual('');
-
-        unmount();
-      });
-    });
   });
 
   describe('Context Provider', () => {

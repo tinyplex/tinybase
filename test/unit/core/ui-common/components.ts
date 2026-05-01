@@ -54,6 +54,11 @@ export type Components = {
 
 export type CustomComponents = Omit<Components, 'BackwardCheckpointsView'>;
 
+export type CustomCheckpointComponents = {
+  readonly CheckpointsView: unknown;
+  readonly CurrentCheckpointView?: unknown;
+};
+
 const createTestStore = (): Store =>
   createStore()
     .setTables({
@@ -424,6 +429,78 @@ export const testCustomComponents = (
       expect(rendered.container.textContent).toEqual('c2:');
       rendered.unmount();
     });
+  });
+};
+
+export const testCustomCheckpointComponents = (
+  framework: string,
+  harness: ComponentHarness,
+  components: CustomCheckpointComponents,
+): void => {
+  let store: Store;
+  let checkpoints: Checkpoints;
+
+  beforeEach(() => {
+    store = createTestStore();
+    checkpoints = createCheckpoints(store);
+    checkpoints.setCheckpoint('0', 'c1');
+    store.setTables({t1: {r1: {c1: 2}}});
+    checkpoints.addCheckpoint();
+    store.setTables({t1: {r1: {c1: 3}}});
+    checkpoints.addCheckpoint('c2');
+    store.setTables({t1: {r1: {c1: 4}}});
+    checkpoints.addCheckpoint('c3');
+    store.setTables({t1: {r1: {c1: 5}}});
+    checkpoints.addCheckpoint();
+    checkpoints.goTo('2');
+  });
+
+  describe(`${framework} custom checkpoint component scenarios`, () => {
+    test('all checkpoint views', async () => {
+      const {container, unmount} = harness.render(components.CheckpointsView, {
+        checkpoints,
+      });
+      await harness.act(() => checkpoints.clear());
+      expect(container.textContent).toEqual('||||');
+
+      await harness.act(() => checkpoints.setCheckpoint('0', 'c1'));
+      expect(container.textContent).toEqual('|c1|||');
+
+      await harness.act(() => store.setTables({t1: {r1: {c1: 2}}}));
+      expect(container.textContent).toEqual('c1||||');
+
+      await harness.act(() => checkpoints.addCheckpoint());
+      expect(container.textContent).toEqual('c1||||');
+
+      await harness.act(() => store.setTables({t1: {r1: {c1: 3}}}));
+      expect(container.textContent).toEqual('c1||||');
+
+      await harness.act(() => checkpoints.addCheckpoint('c2'));
+      expect(container.textContent).toEqual('c1|c2|||');
+
+      await harness.act(() => checkpoints.goTo('0'));
+      expect(container.textContent).toEqual('|c1|c2||');
+
+      unmount();
+    });
+
+    if (components.CurrentCheckpointView != null) {
+      test('current checkpoint custom renderer', async () => {
+        const {container, unmount} = harness.render(
+          components.CurrentCheckpointView,
+          {checkpoints},
+        );
+        expect(container.textContent).toContain('current:');
+
+        await harness.act(() => checkpoints.clear());
+        expect(container.textContent).toContain('current:0');
+
+        await harness.act(() => store.setTables({t1: {r1: {c1: 2}}}));
+        expect(container.textContent).toEqual('');
+
+        unmount();
+      });
+    }
   });
 };
 

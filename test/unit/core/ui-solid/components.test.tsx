@@ -86,7 +86,11 @@ import type {NoSchemas} from 'tinybase/with-schemas';
 import {createStore as createStore2} from 'tinybase/with-schemas';
 import {beforeEach, describe, expect, test} from 'vitest';
 import {pause} from '../../common/other.ts';
-import {testComponents, testCustomComponents} from '../ui-common/components.ts';
+import {
+  testComponents,
+  testCustomCheckpointComponents,
+  testCustomComponents,
+} from '../ui-common/components.ts';
 
 const {Provider: Provider2, useStore: useStore2} =
   UiSolid as UiSolid.WithSchemas<NoSchemas>;
@@ -102,29 +106,6 @@ const renderSolid = (view: () => JSXElement) => {
   const container = document.createElement('div');
   const unmount = solidRender(view, container);
   return {container, unmount};
-};
-
-const render = <Props extends object>(
-  Component: (props: Props) => JSXElement,
-  options: {props: Props},
-) => {
-  let props = options.props;
-  const container = document.createElement('div');
-  let unmount = solidRender(() => <Component {...props} />, container);
-  const rerender = async (
-    nextProps: Partial<Props> & {[key: string]: unknown},
-  ) => {
-    unmount();
-    props = {...props, ...nextProps};
-    unmount = solidRender(() => <Component {...props} />, container);
-    await pause();
-  };
-  return {container, rerender, unmount: () => unmount()};
-};
-
-const act = async (cb: () => unknown) => {
-  cb();
-  await pause();
 };
 
 const expectText = async (
@@ -425,6 +406,10 @@ testCustomComponents('ui-solid', componentHarness, {
   ValuesView: TestValuesView,
 });
 
+testCustomCheckpointComponents('ui-solid', componentHarness, {
+  CheckpointsView: TestAllCheckpointsView,
+});
+
 describe('Specific', () => {
   beforeEach(() => {
     store = createStore()
@@ -435,220 +420,173 @@ describe('Specific', () => {
       .setValues({v1: 3, v2: 4});
   });
 
-  describe('Checkpoint Components', () => {
-    describe('CheckpointsViews', () => {
-      let checkpoints: Checkpoints;
+  describe('context provider', () => {
+    test('merges nested stores from the same provider', async () => {
+      const store1 = createStore();
+      const store2 = createStore();
+      const Test = () => {
+        const storeIds = useStoreIds();
+        const storeA = useStore('a');
+        const storeB = useStore('b');
+        return (
+          <>
+            {JSON.stringify(storeIds())}
+            {storeA() == store1 ? 1 : 0}
+            {storeA() == store2 ? 1 : 0}
+            {storeB() == store1 ? 1 : 0}
+            {storeB() == store2 ? 1 : 0}
+          </>
+        );
+      };
+      const rendered = renderSolid(() => (
+        <Provider storesById={{a: store1}}>
+          <Provider storesById={{b: store2}}>
+            <Test />
+          </Provider>
+        </Provider>
+      ));
 
-      beforeEach(() => {
-        checkpoints = createCheckpoints(store);
-        checkpoints.setCheckpoint('0', 'c1');
-        store.setTables({t1: {r1: {c1: 2}}});
-        checkpoints.addCheckpoint();
-        store.setTables({t1: {r1: {c1: 3}}});
-        checkpoints.addCheckpoint('c2');
-        store.setTables({t1: {r1: {c1: 4}}});
-        checkpoints.addCheckpoint('c3');
-        store.setTables({t1: {r1: {c1: 5}}});
-        checkpoints.addCheckpoint();
-        checkpoints.goTo('2');
-      });
+      await expectText(rendered.container, '["a","b"]1001');
 
-      test('Custom', async () => {
-        const {container, unmount} = render(TestAllCheckpointsView, {
-          props: {checkpoints},
-        });
-        await act(() => checkpoints.clear());
-        expect(container.textContent).toEqual('||||');
-
-        await act(() => checkpoints.setCheckpoint('0', 'c1'));
-        expect(container.textContent).toEqual('|c1|||');
-
-        await act(() => store.setTables({t1: {r1: {c1: 2}}}));
-        expect(container.textContent).toEqual('c1||||');
-
-        await act(() => checkpoints.addCheckpoint());
-        expect(container.textContent).toEqual('c1||||');
-
-        await act(() => store.setTables({t1: {r1: {c1: 3}}}));
-        expect(container.textContent).toEqual('c1||||');
-
-        await act(() => checkpoints.addCheckpoint('c2'));
-        expect(container.textContent).toEqual('c1|c2|||');
-
-        await act(() => checkpoints.goTo('0'));
-        expect(container.textContent).toEqual('|c1|c2||');
-
-        unmount();
-      });
+      rendered.unmount();
     });
-    describe('context provider', () => {
-      test('merges nested stores from the same provider', async () => {
-        const store1 = createStore();
-        const store2 = createStore();
-        const Test = () => {
-          const storeIds = useStoreIds();
-          const storeA = useStore('a');
-          const storeB = useStore('b');
-          return (
-            <>
-              {JSON.stringify(storeIds())}
-              {storeA() == store1 ? 1 : 0}
-              {storeA() == store2 ? 1 : 0}
-              {storeB() == store1 ? 1 : 0}
-              {storeB() == store2 ? 1 : 0}
-            </>
-          );
-        };
-        const rendered = renderSolid(() => (
-          <Provider storesById={{a: store1}}>
-            <Provider storesById={{b: store2}}>
-              <Test />
-            </Provider>
-          </Provider>
-        ));
 
-        await expectText(rendered.container, '["a","b"]1001');
+    test('merges nested stores from different providers', async () => {
+      const store1 = createStore();
+      const store2 = createStore2();
+      const Test = () => {
+        const storeIds = useStoreIds();
+        const storeA = useStore('a');
+        const store2A = useStore2('a');
+        const storeB = useStore('b');
+        const store2B = useStore2('b');
+        return (
+          <>
+            {JSON.stringify(storeIds())}
+            {storeA() == store1 ? 1 : 0}
+            {store2A() == store2 ? 1 : 0}
+            {storeB() == store1 ? 1 : 0}
+            {store2B() == store2 ? 1 : 0}
+          </>
+        );
+      };
+      const rendered = renderSolid(() => (
+        <Provider storesById={{a: store1}}>
+          <Provider2 storesById={{b: store2}}>
+            <Test />
+          </Provider2>
+        </Provider>
+      ));
 
-        rendered.unmount();
-      });
+      await expectText(rendered.container, '["a","b"]1001');
 
-      test('merges nested stores from different providers', async () => {
-        const store1 = createStore();
-        const store2 = createStore2();
-        const Test = () => {
-          const storeIds = useStoreIds();
-          const storeA = useStore('a');
-          const store2A = useStore2('a');
-          const storeB = useStore('b');
-          const store2B = useStore2('b');
-          return (
-            <>
-              {JSON.stringify(storeIds())}
-              {storeA() == store1 ? 1 : 0}
-              {store2A() == store2 ? 1 : 0}
-              {storeB() == store1 ? 1 : 0}
-              {store2B() == store2 ? 1 : 0}
-            </>
-          );
-        };
-        const rendered = renderSolid(() => (
-          <Provider storesById={{a: store1}}>
-            <Provider2 storesById={{b: store2}}>
-              <Test />
-            </Provider2>
-          </Provider>
-        ));
+      rendered.unmount();
+    });
 
-        await expectText(rendered.container, '["a","b"]1001');
+    test('supports provideXxx primitives', async () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister = createTestPersister();
+      const synchronizer = createTestSynchronizer();
 
-        rendered.unmount();
-      });
+      const ProvidedThings = () => {
+        const providedStore = useStore('store1');
+        const providedMetrics = useMetrics('metrics1');
+        const providedIndexes = useIndexes('indexes1');
+        const providedRelationships = useRelationships('relationships1');
+        const providedQueries = useQueries('queries1');
+        const providedCheckpoints = useCheckpoints('checkpoints1');
+        const providedPersister = usePersister('persister1');
+        const providedSynchronizer = useSynchronizer('synchronizer1');
+        return (
+          <>
+            {providedStore() == store ? 's' : ''}
+            {providedMetrics() == metrics ? 'm' : ''}
+            {providedIndexes() == indexes ? 'i' : ''}
+            {providedRelationships() == relationships ? 'r' : ''}
+            {providedQueries() == queries ? 'q' : ''}
+            {providedCheckpoints() == checkpoints ? 'c' : ''}
+            {providedPersister() == persister ? 'p' : ''}
+            {providedSynchronizer() == synchronizer ? 'z' : ''}
+          </>
+        );
+      };
+      const ProvideThings = () => {
+        useProvideStore('store1', store);
+        useProvideMetrics('metrics1', metrics);
+        useProvideIndexes('indexes1', indexes);
+        useProvideRelationships('relationships1', relationships);
+        useProvideQueries('queries1', queries);
+        useProvideCheckpoints('checkpoints1', checkpoints);
+        useProvidePersister('persister1', persister);
+        useProvideSynchronizer('synchronizer1', synchronizer);
+        return <ProvidedThings />;
+      };
+      const rendered = renderSolid(() => (
+        <Provider>
+          <ProvideThings />
+        </Provider>
+      ));
 
-      test('supports provideXxx primitives', async () => {
-        const metrics: Metrics = createMetrics(store);
-        const indexes: Indexes = createIndexes(store);
-        const relationships: Relationships = createRelationships(store);
-        const queries: Queries = createQueries(store);
-        const checkpoints: Checkpoints = createCheckpoints(store);
-        const persister = createTestPersister();
-        const synchronizer = createTestSynchronizer();
+      await expectText(rendered.container, 'smirqcpz');
 
-        const ProvidedThings = () => {
-          const providedStore = useStore('store1');
-          const providedMetrics = useMetrics('metrics1');
-          const providedIndexes = useIndexes('indexes1');
-          const providedRelationships = useRelationships('relationships1');
-          const providedQueries = useQueries('queries1');
-          const providedCheckpoints = useCheckpoints('checkpoints1');
-          const providedPersister = usePersister('persister1');
-          const providedSynchronizer = useSynchronizer('synchronizer1');
-          return (
-            <>
-              {providedStore() == store ? 's' : ''}
-              {providedMetrics() == metrics ? 'm' : ''}
-              {providedIndexes() == indexes ? 'i' : ''}
-              {providedRelationships() == relationships ? 'r' : ''}
-              {providedQueries() == queries ? 'q' : ''}
-              {providedCheckpoints() == checkpoints ? 'c' : ''}
-              {providedPersister() == persister ? 'p' : ''}
-              {providedSynchronizer() == synchronizer ? 'z' : ''}
-            </>
-          );
-        };
-        const ProvideThings = () => {
-          useProvideStore('store1', store);
-          useProvideMetrics('metrics1', metrics);
-          useProvideIndexes('indexes1', indexes);
-          useProvideRelationships('relationships1', relationships);
-          useProvideQueries('queries1', queries);
-          useProvideCheckpoints('checkpoints1', checkpoints);
-          useProvidePersister('persister1', persister);
-          useProvideSynchronizer('synchronizer1', synchronizer);
-          return <ProvidedThings />;
-        };
-        const rendered = renderSolid(() => (
+      rendered.unmount();
+    });
+
+    test('uses parent context fallbacks for nested defaults', async () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister = createTestPersister();
+      const synchronizer = createTestSynchronizer();
+
+      const Test = () => {
+        const providedStore = useStore();
+        const providedMetrics = useMetrics();
+        const providedIndexes = useIndexes();
+        const providedRelationships = useRelationships();
+        const providedQueries = useQueries();
+        const providedCheckpoints = useCheckpoints();
+        const providedPersister = usePersister();
+        const providedSynchronizer = useSynchronizer();
+        return (
+          <>
+            {providedStore() == store ? 's' : ''}
+            {providedMetrics() == metrics ? 'm' : ''}
+            {providedIndexes() == indexes ? 'i' : ''}
+            {providedRelationships() == relationships ? 'r' : ''}
+            {providedQueries() == queries ? 'q' : ''}
+            {providedCheckpoints() == checkpoints ? 'c' : ''}
+            {providedPersister() == persister ? 'p' : ''}
+            {providedSynchronizer() == synchronizer ? 'z' : ''}
+          </>
+        );
+      };
+      const rendered = renderSolid(() => (
+        <Provider
+          store={store}
+          metrics={metrics}
+          indexes={indexes}
+          relationships={relationships}
+          queries={queries}
+          checkpoints={checkpoints}
+          persister={persister}
+          synchronizer={synchronizer}
+        >
           <Provider>
-            <ProvideThings />
+            <Test />
           </Provider>
-        ));
+        </Provider>
+      ));
 
-        await expectText(rendered.container, 'smirqcpz');
+      await expectText(rendered.container, 'smirqcpz');
 
-        rendered.unmount();
-      });
-
-      test('uses parent context fallbacks for nested defaults', async () => {
-        const metrics: Metrics = createMetrics(store);
-        const indexes: Indexes = createIndexes(store);
-        const relationships: Relationships = createRelationships(store);
-        const queries: Queries = createQueries(store);
-        const checkpoints: Checkpoints = createCheckpoints(store);
-        const persister = createTestPersister();
-        const synchronizer = createTestSynchronizer();
-
-        const Test = () => {
-          const providedStore = useStore();
-          const providedMetrics = useMetrics();
-          const providedIndexes = useIndexes();
-          const providedRelationships = useRelationships();
-          const providedQueries = useQueries();
-          const providedCheckpoints = useCheckpoints();
-          const providedPersister = usePersister();
-          const providedSynchronizer = useSynchronizer();
-          return (
-            <>
-              {providedStore() == store ? 's' : ''}
-              {providedMetrics() == metrics ? 'm' : ''}
-              {providedIndexes() == indexes ? 'i' : ''}
-              {providedRelationships() == relationships ? 'r' : ''}
-              {providedQueries() == queries ? 'q' : ''}
-              {providedCheckpoints() == checkpoints ? 'c' : ''}
-              {providedPersister() == persister ? 'p' : ''}
-              {providedSynchronizer() == synchronizer ? 'z' : ''}
-            </>
-          );
-        };
-        const rendered = renderSolid(() => (
-          <Provider
-            store={store}
-            metrics={metrics}
-            indexes={indexes}
-            relationships={relationships}
-            queries={queries}
-            checkpoints={checkpoints}
-            persister={persister}
-            synchronizer={synchronizer}
-          >
-            <Provider>
-              <Test />
-            </Provider>
-          </Provider>
-        ));
-
-        await expectText(rendered.container, 'smirqcpz');
-
-        rendered.unmount();
-      });
+      rendered.unmount();
     });
   });
 });
