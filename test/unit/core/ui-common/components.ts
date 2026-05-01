@@ -52,6 +52,381 @@ export type Components = {
   readonly ValuesView: unknown;
 };
 
+export type CustomComponents = Omit<Components, 'BackwardCheckpointsView'>;
+
+const createTestStore = (): Store =>
+  createStore()
+    .setTables({
+      t1: {r1: {c1: 1}},
+      t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
+    })
+    .setValues({v1: 3, v2: 4});
+
+export const testCustomComponents = (
+  framework: string,
+  harness: ComponentHarness,
+  components: CustomComponents,
+): void => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createTestStore();
+  });
+
+  describe(`${framework} custom component scenarios`, () => {
+    test('tables, rows, and cells', async () => {
+      let rendered = harness.render(components.TablesView, {
+        store,
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual(
+        't1:r1:c1:1t2:r1:c1:2r2:c1:3c2:4',
+      );
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(rendered.container.textContent).toEqual(
+        't1:r1:c1:2t2:r1:c1:2r2:c1:3c2:4',
+      );
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('');
+      rendered.unmount();
+
+      store = createTestStore();
+      rendered = harness.render(components.TableView, {
+        store,
+        tableId: 't0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('t0:');
+      await rendered.rerender({tableId: 't2'});
+      expect(rendered.container.textContent).toEqual('t2:r1:c1:2r2:c1:3c2:4');
+      await harness.act(() => store.setCell('t2', 'r1', 'c1', 3));
+      expect(rendered.container.textContent).toEqual('t2:r1:c1:3r2:c1:3c2:4');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('t2:');
+      rendered.unmount();
+
+      store = createTestStore();
+      rendered = harness.render(components.SortedTableView, {
+        store,
+        tableId: 't0',
+        cellId: 'c0',
+        descending: true,
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('t0,c0:');
+      await rendered.rerender({tableId: 't2', cellId: 'c1'});
+      expect(rendered.container.textContent).toEqual(
+        't2,c1:r2:c1:3c2:4r1:c1:2',
+      );
+      await harness.act(() => store.setCell('t2', 'r1', 'c1', 3));
+      expect(rendered.container.textContent).toEqual(
+        't2,c1:r2:c1:3c2:4r1:c1:3',
+      );
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('t2,c1:');
+      rendered.unmount();
+
+      store = createTestStore();
+      rendered = harness.render(components.RowView, {
+        store,
+        tableId: 't0',
+        rowId: 'r0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('r0:');
+      await rendered.rerender({tableId: 't2', rowId: 'r2'});
+      expect(rendered.container.textContent).toEqual('r2:c1:3c2:4');
+      await harness.act(() => store.setCell('t2', 'r2', 'c1', 4));
+      expect(rendered.container.textContent).toEqual('r2:c1:4c2:4');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('r2:');
+      rendered.unmount();
+
+      store = createTestStore();
+      rendered = harness.render(components.CellView, {
+        store,
+        tableId: 't0',
+        rowId: 'r0',
+        cellId: 'c0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('c0:');
+      await rendered.rerender({tableId: 't2', rowId: 'r2', cellId: 'c2'});
+      expect(rendered.container.textContent).toEqual('c2:4');
+      await harness.act(() => store.setCell('t2', 'r2', 'c2', 5));
+      expect(rendered.container.textContent).toEqual('c2:5');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('c2:');
+      rendered.unmount();
+    });
+
+    test('values', async () => {
+      let rendered = harness.render(components.ValuesView, {
+        store,
+        valuePrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('v1:3v2:4');
+      await harness.act(() => store.setValue('v1', 4));
+      expect(rendered.container.textContent).toEqual('v1:4v2:4');
+      await harness.act(() => store.delValues());
+      expect(rendered.container.textContent).toEqual('');
+      rendered.unmount();
+
+      store = createTestStore();
+      rendered = harness.render(components.ValueView, {
+        store,
+        valueId: 'v0',
+        valuePrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('v0:');
+      await rendered.rerender({valueId: 'v2'});
+      expect(rendered.container.textContent).toEqual('v2:4');
+      await harness.act(() => store.setValue('v2', 5));
+      expect(rendered.container.textContent).toEqual('v2:5');
+      await harness.act(() => store.delValues());
+      expect(rendered.container.textContent).toEqual('v2:');
+      rendered.unmount();
+    });
+
+    test('metrics and indexes', async () => {
+      const metrics = createMetrics(store)
+        .setMetricDefinition('m1', 't1')
+        .setMetricDefinition('m2', 't2');
+      let rendered = harness.render(components.MetricView, {
+        metrics,
+        metricId: 'm0',
+      });
+      expect(rendered.container.textContent).toEqual('m0:');
+      await rendered.rerender({metricId: 'm1'});
+      expect(rendered.container.textContent).toEqual('m1:1');
+      await harness.act(() => store.setCell('t1', 'r2', 'c1', 2));
+      expect(rendered.container.textContent).toEqual('m1:2');
+      await rendered.rerender({metricId: 'm2'});
+      expect(rendered.container.textContent).toEqual('m2:2');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('m2:');
+      rendered.unmount();
+
+      store = createTestStore();
+      let indexes = createIndexes(store)
+        .setIndexDefinition('i1', 't1', 'c1')
+        .setIndexDefinition('i2', 't2', 'c1');
+      rendered = harness.render(components.IndexView, {
+        indexes,
+        indexId: 'i0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('i0:');
+      await rendered.rerender({indexId: 'i1'});
+      expect(rendered.container.textContent).toEqual('i1:1:r1:c1:1');
+      await harness.act(() => store.setCell('t1', 'r2', 'c1', 1));
+      expect(rendered.container.textContent).toEqual('i1:1:r1:c1:1r2:c1:1');
+      await rendered.rerender({indexId: 'i2'});
+      expect(rendered.container.textContent).toEqual(
+        'i2:2:r1:c1:23:r2:c1:3c2:4',
+      );
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('i2:');
+      rendered.unmount();
+
+      store = createTestStore();
+      indexes = createIndexes(store)
+        .setIndexDefinition('i1', 't1', 'c1')
+        .setIndexDefinition('i2', 't2', 'c1');
+      rendered = harness.render(components.SliceView, {
+        indexes,
+        indexId: 'i0',
+        sliceId: '0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('0:');
+      await rendered.rerender({indexId: 'i1', sliceId: '0'});
+      expect(rendered.container.textContent).toEqual('0:');
+      await rendered.rerender({indexId: 'i1', sliceId: '1'});
+      expect(rendered.container.textContent).toEqual('1:r1:c1:1');
+      await harness.act(() => store.setCell('t1', 'r2', 'c1', 1));
+      expect(rendered.container.textContent).toEqual('1:r1:c1:1r2:c1:1');
+      await rendered.rerender({indexId: 'i2', sliceId: '2'});
+      expect(rendered.container.textContent).toEqual('2:r1:c1:2');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('2:');
+      rendered.unmount();
+    });
+
+    test('relationships', async () => {
+      store.setTables({
+        t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}, r3: {c1: 'R0'}},
+        T1: {R1: {C1: 1}, R2: {C1: 2}},
+      });
+      let relationships = createRelationships(store)
+        .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
+        .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
+      let rendered = harness.render(components.RemoteRowView, {
+        relationships,
+        relationshipId: 'r0',
+        localRowId: 'r0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('r0:');
+      await rendered.rerender({relationshipId: 'r1', localRowId: 'r1'});
+      expect(rendered.container.textContent).toEqual('r1:R1:C1:1');
+      await rendered.rerender({relationshipId: 'r1', localRowId: 'r2'});
+      expect(rendered.container.textContent).toEqual('r2:R1:C1:1');
+      await rendered.rerender({relationshipId: 'r1', localRowId: 'r1'});
+      await harness.act(() => store.delTable('t1'));
+      expect(rendered.container.textContent).toEqual('r1:');
+      await rendered.rerender({relationshipId: 'r2', localRowId: 'r2'});
+      expect(rendered.container.textContent).toEqual('r2:');
+      rendered.unmount();
+
+      store = createTestStore().setTables({
+        t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}},
+        T1: {R1: {C1: 1}, R2: {C1: 2}},
+      });
+      relationships = createRelationships(store)
+        .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
+        .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
+      rendered = harness.render(components.LocalRowsView, {
+        relationships,
+        relationshipId: 'r0',
+        remoteRowId: 'R0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('R0:');
+      await rendered.rerender({relationshipId: 'r1', remoteRowId: 'R1'});
+      expect(rendered.container.textContent).toEqual('R1:r1:c1:R1r2:c1:R1');
+      await rendered.rerender({relationshipId: 'r1', remoteRowId: 'R2'});
+      expect(rendered.container.textContent).toEqual('R2:');
+      await harness.act(() => store.delTable('t1'));
+      expect(rendered.container.textContent).toEqual('R2:');
+      await rendered.rerender({relationshipId: 'r2', remoteRowId: 'R2'});
+      expect(rendered.container.textContent).toEqual('R2:');
+      rendered.unmount();
+
+      store = createTestStore().setTables({
+        t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {c1: 'r4'}},
+      });
+      relationships = createRelationships(store)
+        .setRelationshipDefinition('r1', 't1', 't1', 'c1')
+        .setRelationshipDefinition('r2', 't2', 't2', 'c2');
+      rendered = harness.render(components.LinkedRowsView, {
+        relationships,
+        relationshipId: 'r0',
+        firstRowId: 'r0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('r0:r0:');
+      await rendered.rerender({relationshipId: 'r1', firstRowId: 'r1'});
+      expect(rendered.container.textContent).toEqual(
+        'r1:r1:c1:r2r2:c1:r3r3:c1:r4r4:',
+      );
+      await harness.act(() => store.setCell('t1', 'r2', 'c1', 'r4'));
+      expect(rendered.container.textContent).toEqual('r1:r1:c1:r2r2:c1:r4r4:');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('r1:r1:');
+      rendered.unmount();
+    });
+
+    test('queries', async () => {
+      let queries = createQueries(store)
+        .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+        .setQueryDefinition('q2', 't2', ({select}) => {
+          select('c1');
+          select('c2');
+        });
+      let rendered = harness.render(components.ResultTableView, {
+        queries,
+        queryId: 'q0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('q0:');
+      await rendered.rerender({queryId: 'q1'});
+      expect(rendered.container.textContent).toEqual('q1:r1:c1:1');
+      await harness.act(() => store.setCell('t1', 'r2', 'c1', 2));
+      expect(rendered.container.textContent).toEqual('q1:r1:c1:1r2:c1:2');
+      await rendered.rerender({queryId: 'q2'});
+      expect(rendered.container.textContent).toEqual('q2:r1:c1:2r2:c1:3c2:4');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('q2:');
+      rendered.unmount();
+
+      store = createTestStore();
+      queries = createQueries(store)
+        .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+        .setQueryDefinition('q2', 't2', ({select}) => {
+          select('c1');
+          select('c2');
+        });
+      rendered = harness.render(components.ResultSortedTableView, {
+        queries,
+        queryId: 'q0',
+        cellId: 'c0',
+        descending: true,
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('q0,c0:');
+      await rendered.rerender({queryId: 'q2', cellId: 'c1'});
+      expect(rendered.container.textContent).toEqual(
+        'q2,c1:r2:c1:3c2:4r1:c1:2',
+      );
+      await harness.act(() => store.setCell('t2', 'r1', 'c1', 4));
+      expect(rendered.container.textContent).toEqual(
+        'q2,c1:r1:c1:4r2:c1:3c2:4',
+      );
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('q2,c1:');
+      rendered.unmount();
+
+      store = createTestStore();
+      queries = createQueries(store)
+        .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+        .setQueryDefinition('q2', 't2', ({select}) => {
+          select('c1');
+          select('c2');
+        });
+      rendered = harness.render(components.ResultRowView, {
+        queries,
+        queryId: 'q0',
+        rowId: 'r0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('r0:');
+      await rendered.rerender({queryId: 'q1', rowId: 'r1'});
+      expect(rendered.container.textContent).toEqual('r1:c1:1');
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(rendered.container.textContent).toEqual('r1:c1:2');
+      await rendered.rerender({queryId: 'q2', rowId: 'r2'});
+      expect(rendered.container.textContent).toEqual('r2:c1:3c2:4');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('r2:');
+      rendered.unmount();
+
+      store = createTestStore();
+      queries = createQueries(store)
+        .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+        .setQueryDefinition('q2', 't2', ({select}) => {
+          select('c1');
+          select('c2');
+        });
+      rendered = harness.render(components.ResultCellView, {
+        queries,
+        queryId: 'q0',
+        rowId: 'r0',
+        cellId: 'c0',
+        cellPrefix: ':',
+      });
+      expect(rendered.container.textContent).toEqual('c0:');
+      await rendered.rerender({queryId: 'q2', rowId: 'r2', cellId: 'c2'});
+      expect(rendered.container.textContent).toEqual('c2:4');
+      await harness.act(() => store.setCell('t2', 'r2', 'c2', 5));
+      expect(rendered.container.textContent).toEqual('c2:5');
+      await harness.act(() => store.delTables());
+      expect(rendered.container.textContent).toEqual('c2:');
+      rendered.unmount();
+    });
+  });
+};
+
 export const testComponents = (
   framework: string,
   harness: ComponentHarness,

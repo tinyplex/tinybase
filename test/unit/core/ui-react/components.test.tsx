@@ -5,7 +5,6 @@ import type {ComponentType} from 'react';
 import {act, createElement, useCallback} from 'react';
 import type {
   Checkpoints,
-  Id,
   Indexes,
   Metrics,
   Queries,
@@ -114,7 +113,7 @@ import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {NoSchemas} from 'tinybase/with-schemas';
 import {createStore as createStore2} from 'tinybase/with-schemas';
 import {beforeEach, describe, expect, test, vi} from 'vitest';
-import {testComponents} from '../ui-common/components.ts';
+import {testComponents, testCustomComponents} from '../ui-common/components.ts';
 
 const {Provider: Provider2, useStore: useStore2} =
   UiReact as UiReact.WithSchemas<NoSchemas>;
@@ -123,52 +122,50 @@ let store: Store;
 
 type Props = {[key: string]: unknown};
 
-testComponents(
-  'ui-react',
-  {
-    separator: '/',
-    act: async (callback) => {
-      await act(async () => {
-        callback();
-      });
-    },
-    render: (component, props) => {
-      const Component = component as ComponentType<Props>;
-      let currentProps = props;
-      const rendered = render(createElement(Component, currentProps));
-      return {
-        container: rendered.container,
-        rerender: async (nextProps) => {
-          currentProps = {...currentProps, ...nextProps};
-          await act(async () => {
-            rendered.rerender(createElement(Component, currentProps));
-          });
-        },
-        unmount: rendered.unmount,
-      };
-    },
+const componentHarness = {
+  separator: '/',
+  act: async (callback: () => unknown) => {
+    await act(async () => {
+      callback();
+    });
   },
-  {
-    BackwardCheckpointsView,
-    CellView,
-    IndexView,
-    LinkedRowsView,
-    LocalRowsView,
-    MetricView,
-    RemoteRowView,
-    ResultCellView,
-    ResultRowView,
-    ResultSortedTableView,
-    ResultTableView,
-    RowView,
-    SliceView,
-    SortedTableView,
-    TableView,
-    TablesView,
-    ValueView,
-    ValuesView,
+  render: (component: unknown, props: Props) => {
+    const Component = component as ComponentType<Props>;
+    let currentProps = props;
+    const rendered = render(createElement(Component, currentProps));
+    return {
+      container: rendered.container,
+      rerender: async (nextProps: Props) => {
+        currentProps = {...currentProps, ...nextProps};
+        await act(async () => {
+          rendered.rerender(createElement(Component, currentProps));
+        });
+      },
+      unmount: rendered.unmount,
+    };
   },
-);
+};
+
+testComponents('ui-react', componentHarness, {
+  BackwardCheckpointsView,
+  CellView,
+  IndexView,
+  LinkedRowsView,
+  LocalRowsView,
+  MetricView,
+  RemoteRowView,
+  ResultCellView,
+  ResultRowView,
+  ResultSortedTableView,
+  ResultTableView,
+  RowView,
+  SliceView,
+  SortedTableView,
+  TableView,
+  TablesView,
+  ValueView,
+  ValuesView,
+});
 
 describe('Specific', () => {
   beforeEach(() => {
@@ -432,643 +429,24 @@ describe('Specific', () => {
       </>
     );
 
-    describe('TablesView', () => {
-      test('Custom', () => {
-        const Test = () => <TestTablesView store={store} cellPrefix=":" />;
-        const {container, unmount} = render(<Test />);
-        expect(container.textContent).toEqual(
-          't1:r1:c1:1t2:r1:c1:2r2:c1:3c2:4',
-        );
-
-        act(() => store.setCell('t1', 'r1', 'c1', 2));
-        expect(container.textContent).toEqual(
-          't1:r1:c1:2t2:r1:c1:2r2:c1:3c2:4',
-        );
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('');
-
-        unmount();
-      });
-    });
-
-    describe('TableView', () => {
-      test('Custom', () => {
-        const Test = ({tableId}: {readonly tableId: Id}) => (
-          <TestTableView store={store} tableId={tableId} cellPrefix=":" />
-        );
-        const {container, rerender, unmount} = render(<Test tableId="t0" />);
-        expect(container.textContent).toEqual('t0:');
-
-        rerender(<Test tableId="t2" />);
-        expect(container.textContent).toEqual('t2:r1:c1:2r2:c1:3c2:4');
-
-        act(() => store.setCell('t2', 'r1', 'c1', 3));
-        expect(container.textContent).toEqual('t2:r1:c1:3r2:c1:3c2:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('t2:');
-
-        unmount();
-      });
-    });
-
-    describe('SortedTableView', () => {
-      test('Custom', () => {
-        const Test = ({
-          tableId,
-          cellId,
-        }: {
-          readonly tableId: Id;
-          readonly cellId: Id;
-        }) => (
-          <TestSortedTableView
-            store={store}
-            tableId={tableId}
-            cellId={cellId}
-            descending={true}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test tableId="t0" cellId="c0" />,
-        );
-        expect(container.textContent).toEqual('t0,c0:');
-
-        rerender(<Test tableId="t2" cellId="c1" />);
-        expect(container.textContent).toEqual('t2,c1:r2:c1:3c2:4r1:c1:2');
-
-        act(() => store.setCell('t2', 'r1', 'c1', 3));
-        expect(container.textContent).toEqual('t2,c1:r2:c1:3c2:4r1:c1:3');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('t2,c1:');
-
-        unmount();
-      });
-    });
-
-    describe('RowView', () => {
-      test('Custom', () => {
-        const Test = ({
-          tableId,
-          rowId,
-        }: {
-          readonly tableId: Id;
-          readonly rowId: Id;
-        }) => (
-          <TestRowView
-            store={store}
-            tableId={tableId}
-            rowId={rowId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test tableId="t0" rowId="r0" />,
-        );
-        expect(container.textContent).toEqual('r0:');
-
-        act(() => rerender(<Test tableId="t2" rowId="r2" />));
-        expect(container.textContent).toEqual('r2:c1:3c2:4');
-
-        act(() => store.setCell('t2', 'r2', 'c1', 4));
-        expect(container.textContent).toEqual('r2:c1:4c2:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('r2:');
-
-        unmount();
-      });
-    });
-
-    describe('CellView', () => {
-      test('Custom', () => {
-        const Test = ({
-          tableId,
-          rowId,
-          cellId,
-        }: {
-          readonly tableId: Id;
-          readonly rowId: Id;
-          readonly cellId: Id;
-        }) => (
-          <TestCellView
-            store={store}
-            tableId={tableId}
-            rowId={rowId}
-            cellId={cellId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test tableId="t0" rowId="r0" cellId="c0" />,
-        );
-        expect(container.textContent).toEqual('c0:');
-
-        rerender(<Test tableId="t2" rowId="r2" cellId="c2" />);
-        expect(container.textContent).toEqual('c2:4');
-
-        act(() => store.setCell('t2', 'r2', 'c2', 5));
-        expect(container.textContent).toEqual('c2:5');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('c2:');
-
-        unmount();
-      });
-    });
-
-    describe('ValuesView', () => {
-      test('Custom', () => {
-        const Test = () => <TestValuesView store={store} valuePrefix=":" />;
-        const {container, unmount} = render(<Test />);
-        expect(container.textContent).toEqual('v1:3v2:4');
-
-        act(() => store.setValue('v1', 4));
-        expect(container.textContent).toEqual('v1:4v2:4');
-
-        act(() => store.delValues());
-        expect(container.textContent).toEqual('');
-
-        unmount();
-      });
-    });
-
-    describe('ValueView', () => {
-      test('Custom', () => {
-        const Test = ({valueId}: {readonly valueId: Id}) => (
-          <TestValueView store={store} valueId={valueId} valuePrefix=":" />
-        );
-        const {container, rerender, unmount} = render(<Test valueId="v0" />);
-        expect(container.textContent).toEqual('v0:');
-
-        rerender(<Test valueId="v2" />);
-        expect(container.textContent).toEqual('v2:4');
-
-        act(() => store.setValue('v2', 5));
-        expect(container.textContent).toEqual('v2:5');
-
-        act(() => store.delValues());
-        expect(container.textContent).toEqual('v2:');
-
-        unmount();
-      });
-    });
-
-    describe('MetricView', () => {
-      let metrics: Metrics;
-
-      beforeEach(() => {
-        metrics = createMetrics(store)
-          .setMetricDefinition('m1', 't1')
-          .setMetricDefinition('m2', 't2');
-      });
-
-      test('Custom', () => {
-        const Test = ({metricId}: {readonly metricId: Id}) => (
-          <TestMetricView metrics={metrics} metricId={metricId} />
-        );
-        const {container, rerender, unmount} = render(<Test metricId="m0" />);
-        expect(container.textContent).toEqual('m0:');
-
-        rerender(<Test metricId="m1" />);
-        expect(container.textContent).toEqual('m1:1');
-
-        act(() => store.setCell('t1', 'r2', 'c1', 2));
-        expect(container.textContent).toEqual('m1:2');
-
-        rerender(<Test metricId="m2" />);
-        expect(container.textContent).toEqual('m2:2');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('m2:');
-
-        unmount();
-      });
-    });
-
-    describe('IndexView', () => {
-      let indexes: Indexes;
-
-      beforeEach(() => {
-        indexes = createIndexes(store)
-          .setIndexDefinition('i1', 't1', 'c1')
-          .setIndexDefinition('i2', 't2', 'c1');
-      });
-
-      test('Custom', () => {
-        const Test = ({indexId}: {readonly indexId: Id}) => (
-          <TestIndexView indexes={indexes} indexId={indexId} cellPrefix=":" />
-        );
-        const {container, rerender, unmount} = render(<Test indexId="i0" />);
-        expect(container.textContent).toEqual('i0:');
-
-        rerender(<Test indexId="i1" />);
-        expect(container.textContent).toEqual('i1:1:r1:c1:1');
-
-        act(() => store.setCell('t1', 'r2', 'c1', 1));
-        expect(container.textContent).toEqual('i1:1:r1:c1:1r2:c1:1');
-
-        rerender(<Test indexId="i2" />);
-        expect(container.textContent).toEqual('i2:2:r1:c1:23:r2:c1:3c2:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('i2:');
-
-        unmount();
-      });
-    });
-
-    describe('SliceView', () => {
-      let indexes: Indexes;
-
-      beforeEach(() => {
-        indexes = createIndexes(store)
-          .setIndexDefinition('i1', 't1', 'c1')
-          .setIndexDefinition('i2', 't2', 'c1');
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          indexId,
-          sliceId,
-        }: {
-          readonly indexId: Id;
-          readonly sliceId: Id;
-        }) => (
-          <TestSliceView
-            indexes={indexes}
-            indexId={indexId}
-            sliceId={sliceId}
-            cellPrefix=":"
-          />
-        );
-
-        const {container, rerender, unmount} = render(
-          <Test indexId="i0" sliceId="0" />,
-        );
-        expect(container.textContent).toEqual('0:');
-
-        rerender(<Test indexId="i1" sliceId="0" />);
-        expect(container.textContent).toEqual('0:');
-
-        rerender(<Test indexId="i1" sliceId="1" />);
-        expect(container.textContent).toEqual('1:r1:c1:1');
-
-        act(() => store.setCell('t1', 'r2', 'c1', 1));
-        expect(container.textContent).toEqual('1:r1:c1:1r2:c1:1');
-
-        rerender(<Test indexId="i2" sliceId="2" />);
-        expect(container.textContent).toEqual('2:r1:c1:2');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('2:');
-
-        unmount();
-      });
-    });
-
-    describe('RemoteRowView', () => {
-      let relationships: Relationships;
-
-      beforeEach(() => {
-        store.setTables({
-          t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}, r3: {c1: 'R0'}},
-          T1: {R1: {C1: 1}, R2: {C1: 2}},
-        });
-        relationships = createRelationships(store)
-          .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
-          .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          relationshipId,
-          localRowId,
-        }: {
-          readonly relationshipId: Id;
-          readonly localRowId: Id;
-        }) => (
-          <TestRemoteRowView
-            relationships={relationships}
-            relationshipId={relationshipId}
-            localRowId={localRowId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test relationshipId="r0" localRowId="r0" />,
-        );
-        expect(container.textContent).toEqual('r0:');
-
-        rerender(<Test relationshipId="r1" localRowId="r1" />);
-        expect(container.textContent).toEqual('r1:R1:C1:1');
-
-        rerender(<Test relationshipId="r1" localRowId="r2" />);
-        expect(container.textContent).toEqual('r2:R1:C1:1');
-
-        rerender(<Test relationshipId="r1" localRowId="r1" />);
-        act(() => store.delTable('t1'));
-        expect(container.textContent).toEqual('r1:');
-
-        rerender(<Test relationshipId="r2" localRowId="r2" />);
-        expect(container.textContent).toEqual('r2:');
-
-        unmount();
-      });
-    });
-
-    describe('LocalRowsView', () => {
-      let relationships: Relationships;
-
-      beforeEach(() => {
-        store.setTables({
-          t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}},
-          T1: {R1: {C1: 1}, R2: {C1: 2}},
-        });
-        relationships = createRelationships(store)
-          .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
-          .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          relationshipId,
-          remoteRowId,
-        }: {
-          readonly relationshipId: Id;
-          readonly remoteRowId: Id;
-        }) => (
-          <TestLocalRowsView
-            relationships={relationships}
-            relationshipId={relationshipId}
-            remoteRowId={remoteRowId}
-            cellPrefix=":"
-          />
-        );
-
-        const {container, rerender, unmount} = render(
-          <Test relationshipId="r0" remoteRowId="R0" />,
-        );
-        expect(container.textContent).toEqual('R0:');
-
-        rerender(<Test relationshipId="r1" remoteRowId="R1" />);
-        expect(container.textContent).toEqual('R1:r1:c1:R1r2:c1:R1');
-
-        rerender(<Test relationshipId="r1" remoteRowId="R2" />);
-        expect(container.textContent).toEqual('R2:');
-
-        store.delTable('t1');
-        expect(container.textContent).toEqual('R2:');
-
-        rerender(<Test relationshipId="r2" remoteRowId="R2" />);
-        expect(container.textContent).toEqual('R2:');
-
-        unmount();
-      });
-    });
-
-    describe('LinkedRowsView', () => {
-      let relationships: Relationships;
-
-      beforeEach(() => {
-        store.setTables({
-          t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {c1: 'r4'}},
-        });
-        relationships = createRelationships(store)
-          .setRelationshipDefinition('r1', 't1', 't1', 'c1')
-          .setRelationshipDefinition('r2', 't2', 't2', 'c2');
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          relationshipId,
-          firstRowId,
-        }: {
-          readonly relationshipId: Id;
-          readonly firstRowId: Id;
-        }) => (
-          <TestLinkedRowsView
-            relationships={relationships}
-            relationshipId={relationshipId}
-            firstRowId={firstRowId}
-            cellPrefix=":"
-          />
-        );
-
-        const {container, rerender, unmount} = render(
-          <Test relationshipId="r0" firstRowId="r0" />,
-        );
-        expect(container.textContent).toEqual('r0:r0:');
-
-        rerender(<Test relationshipId="r1" firstRowId="r1" />);
-        expect(container.textContent).toEqual('r1:r1:c1:r2r2:c1:r3r3:c1:r4r4:');
-
-        rerender(<Test relationshipId="r1" firstRowId="r2" />);
-        expect(container.textContent).toEqual('r2:r2:c1:r3r3:c1:r4r4:');
-
-        act(() => store.delTable('t1'));
-        expect(container.textContent).toEqual('r2:r2:');
-
-        rerender(<Test relationshipId="r2" firstRowId="r2" />);
-        expect(container.textContent).toEqual('r2:r2:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultTableView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store).setQueryDefinition(
-          'q1',
-          't2',
-          ({select}) => {
-            select('c1');
-            select('c2');
-          },
-        );
-      });
-
-      test('Custom', () => {
-        const Test = ({queryId}: {readonly queryId: Id}) => (
-          <TestResultTableView
-            queries={queries}
-            queryId={queryId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(<Test queryId="q0" />);
-        expect(container.textContent).toEqual('q0:');
-
-        rerender(<Test queryId="q1" />);
-        expect(container.textContent).toEqual('q1:r1:c1:2r2:c1:3c2:4');
-
-        act(() => store.setCell('t2', 'r1', 'c1', 3));
-        expect(container.textContent).toEqual('q1:r1:c1:3r2:c1:3c2:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('q1:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultSortedTableView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store).setQueryDefinition(
-          'q1',
-          't2',
-          ({select}) => {
-            select('c1');
-            select('c2');
-          },
-        );
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          queryId,
-          cellId,
-        }: {
-          readonly queryId: Id;
-          readonly cellId: Id;
-        }) => (
-          <TestResultSortedTableView
-            queries={queries}
-            queryId={queryId}
-            cellId={cellId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test queryId="q0" cellId="c0" />,
-        );
-        expect(container.textContent).toEqual('q0,c0:');
-
-        rerender(<Test queryId="q1" cellId="c2" />);
-        expect(container.textContent).toEqual('q1,c2:r1:c1:2r2:c1:3c2:4');
-
-        act(() => store.setCell('t2', 'r1', 'c1', 3));
-        expect(container.textContent).toEqual('q1,c2:r1:c1:3r2:c1:3c2:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('q1,c2:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultRowView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store).setQueryDefinition(
-          'q1',
-          't2',
-          ({select}) => {
-            select('c1');
-            select('c2');
-          },
-        );
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(
-          <ResultRowView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            separator="/"
-          />,
-        );
-        expect(container.textContent).toEqual('3/4');
-
-        unmount();
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          queryId,
-          rowId,
-        }: {
-          readonly queryId: Id;
-          readonly rowId: Id;
-        }) => (
-          <TestResultRowView
-            queries={queries}
-            queryId={queryId}
-            rowId={rowId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test queryId="q0" rowId="r0" />,
-        );
-        expect(container.textContent).toEqual('r0:');
-
-        rerender(<Test queryId="q1" rowId="r2" />);
-        expect(container.textContent).toEqual('r2:c1:3c2:4');
-
-        act(() => store.setCell('t2', 'r2', 'c1', 4));
-        expect(container.textContent).toEqual('r2:c1:4c2:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('r2:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultCellView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store).setQueryDefinition(
-          'q1',
-          't2',
-          ({select}) => select('c1'),
-        );
-      });
-
-      test('Custom', () => {
-        const Test = ({
-          queryId,
-          rowId,
-          cellId,
-        }: {
-          readonly queryId: Id;
-          readonly rowId: Id;
-          readonly cellId: Id;
-        }) => (
-          <TestResultCellView
-            queries={queries}
-            queryId={queryId}
-            rowId={rowId}
-            cellId={cellId}
-            cellPrefix=":"
-          />
-        );
-        const {container, rerender, unmount} = render(
-          <Test queryId="q0" rowId="r0" cellId="c0" />,
-        );
-        expect(container.textContent).toEqual('c0:');
-
-        rerender(<Test queryId="q1" rowId="r2" cellId="c1" />);
-        expect(container.textContent).toEqual('c1:3');
-
-        act(() => store.setCell('t2', 'r2', 'c1', 4));
-        expect(container.textContent).toEqual('c1:4');
-
-        act(() => store.delTables());
-        expect(container.textContent).toEqual('c1:');
-
-        unmount();
-      });
+    testCustomComponents('ui-react', componentHarness, {
+      CellView: TestCellView,
+      IndexView: TestIndexView,
+      LinkedRowsView: TestLinkedRowsView,
+      LocalRowsView: TestLocalRowsView,
+      MetricView: TestMetricView,
+      RemoteRowView: TestRemoteRowView,
+      ResultCellView: TestResultCellView,
+      ResultRowView: TestResultRowView,
+      ResultSortedTableView: TestResultSortedTableView,
+      ResultTableView: TestResultTableView,
+      RowView: TestRowView,
+      SliceView: TestSliceView,
+      SortedTableView: TestSortedTableView,
+      TableView: TestTableView,
+      TablesView: TestTablesView,
+      ValueView: TestValueView,
+      ValuesView: TestValuesView,
     });
 
     describe('CheckpointsViews', () => {

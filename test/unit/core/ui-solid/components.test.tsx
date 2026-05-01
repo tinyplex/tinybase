@@ -86,7 +86,7 @@ import type {NoSchemas} from 'tinybase/with-schemas';
 import {createStore as createStore2} from 'tinybase/with-schemas';
 import {beforeEach, describe, expect, test} from 'vitest';
 import {pause} from '../../common/other.ts';
-import {testComponents} from '../ui-common/components.ts';
+import {testComponents, testCustomComponents} from '../ui-common/components.ts';
 
 const {Provider: Provider2, useStore: useStore2} =
   UiSolid as UiSolid.WithSchemas<NoSchemas>;
@@ -135,58 +135,50 @@ const expectText = async (
   expect(container.textContent).toEqual(textContent);
 };
 
-testComponents(
-  'ui-solid',
-  {
-    separator: sep,
-    act: async (callback) => {
-      callback();
-      await pause();
-    },
-    render: (component, props) => {
-      const Component = component as (props: Props) => JSXElement;
-      let currentProps = props;
-      const container = document.createElement('div');
-      let unmount = solidRender(
-        () => <Component {...currentProps} />,
-        container,
-      );
-      return {
-        container,
-        rerender: async (nextProps) => {
-          unmount();
-          currentProps = {...currentProps, ...nextProps};
-          unmount = solidRender(
-            () => <Component {...currentProps} />,
-            container,
-          );
-          await pause();
-        },
-        unmount: () => unmount(),
-      };
-    },
+const componentHarness = {
+  separator: sep,
+  act: async (callback: () => unknown) => {
+    callback();
+    await pause();
   },
-  {
-    BackwardCheckpointsView,
-    CellView,
-    IndexView,
-    LinkedRowsView,
-    LocalRowsView,
-    MetricView,
-    RemoteRowView,
-    ResultCellView,
-    ResultRowView,
-    ResultSortedTableView,
-    ResultTableView,
-    RowView,
-    SliceView,
-    SortedTableView,
-    TableView,
-    TablesView,
-    ValueView,
-    ValuesView,
+  render: (component: unknown, props: Props) => {
+    const Component = component as (props: Props) => JSXElement;
+    let currentProps = props;
+    const container = document.createElement('div');
+    let unmount = solidRender(() => <Component {...currentProps} />, container);
+    return {
+      container,
+      rerender: async (nextProps: Props) => {
+        unmount();
+        currentProps = {...currentProps, ...nextProps};
+        unmount = solidRender(() => <Component {...currentProps} />, container);
+        await pause();
+      },
+      unmount: () => unmount(),
+    };
   },
-);
+};
+
+testComponents('ui-solid', componentHarness, {
+  BackwardCheckpointsView,
+  CellView,
+  IndexView,
+  LinkedRowsView,
+  LocalRowsView,
+  MetricView,
+  RemoteRowView,
+  ResultCellView,
+  ResultRowView,
+  ResultSortedTableView,
+  ResultTableView,
+  RowView,
+  SliceView,
+  SortedTableView,
+  TableView,
+  TablesView,
+  ValueView,
+  ValuesView,
+});
 
 describe('Specific', () => {
   beforeEach(() => {
@@ -434,510 +426,24 @@ describe('Specific', () => {
       </>
     );
 
-    describe('TablesView', () => {
-      test('Custom', async () => {
-        const {container, unmount} = render(TestTablesView, {
-          props: {store, cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual(
-          't1:r1:c1:1t2:r1:c1:2r2:c1:3c2:4',
-        );
-
-        await act(() => store.setCell('t1', 'r1', 'c1', 2));
-        expect(container.textContent).toEqual(
-          't1:r1:c1:2t2:r1:c1:2r2:c1:3c2:4',
-        );
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('');
-
-        unmount();
-      });
-    });
-
-    describe('TableView', () => {
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestTableView, {
-          props: {store, tableId: 't0', cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual('t0:');
-
-        await rerender({tableId: 't2'});
-        expect(container.textContent).toEqual('t2:r1:c1:2r2:c1:3c2:4');
-
-        await act(() => store.setCell('t2', 'r1', 'c1', 3));
-        expect(container.textContent).toEqual('t2:r1:c1:3r2:c1:3c2:4');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('t2:');
-
-        unmount();
-      });
-    });
-
-    describe('SortedTableView', () => {
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestSortedTableView, {
-          props: {
-            store,
-            tableId: 't0',
-            cellId: 'c0',
-            descending: true,
-            cellPrefix: ':',
-          },
-        });
-        expect(container.textContent).toEqual('t0,c0:');
-
-        await rerender({tableId: 't2', cellId: 'c1'});
-        expect(container.textContent).toEqual('t2,c1:r2:c1:3c2:4r1:c1:2');
-
-        await act(() => store.setCell('t2', 'r1', 'c1', 3));
-        expect(container.textContent).toEqual('t2,c1:r2:c1:3c2:4r1:c1:3');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('t2,c1:');
-
-        unmount();
-      });
-    });
-
-    describe('RowView', () => {
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestRowView, {
-          props: {store, tableId: 't0', rowId: 'r0', cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual('r0:');
-
-        await rerender({tableId: 't2', rowId: 'r2'});
-        expect(container.textContent).toEqual('r2:c1:3c2:4');
-
-        await act(() => store.setCell('t2', 'r2', 'c1', 4));
-        expect(container.textContent).toEqual('r2:c1:4c2:4');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('r2:');
-
-        unmount();
-      });
-    });
-
-    describe('CellView', () => {
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestCellView, {
-          props: {
-            store,
-            tableId: 't0',
-            rowId: 'r0',
-            cellId: 'c0',
-            cellPrefix: ':',
-          },
-        });
-        expect(container.textContent).toEqual('c0:');
-
-        await rerender({tableId: 't2', rowId: 'r2', cellId: 'c2'});
-        expect(container.textContent).toEqual('c2:4');
-
-        await act(() => store.setCell('t2', 'r2', 'c2', 5));
-        expect(container.textContent).toEqual('c2:5');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('c2:');
-
-        unmount();
-      });
-    });
-
-    describe('ValuesView', () => {
-      test('Custom', async () => {
-        const {container, unmount} = render(TestValuesView, {
-          props: {store, valuePrefix: ':'},
-        });
-        expect(container.textContent).toEqual('v1:3v2:4');
-
-        await act(() => store.setValue('v1', 4));
-        expect(container.textContent).toEqual('v1:4v2:4');
-
-        await act(() => store.delValues());
-        expect(container.textContent).toEqual('');
-
-        unmount();
-      });
-    });
-
-    describe('ValueView', () => {
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestValueView, {
-          props: {store, valueId: 'v0', valuePrefix: ':'},
-        });
-        expect(container.textContent).toEqual('v0:');
-
-        await rerender({valueId: 'v2'});
-        expect(container.textContent).toEqual('v2:4');
-
-        await act(() => store.setValue('v2', 5));
-        expect(container.textContent).toEqual('v2:5');
-
-        await act(() => store.delValues());
-        expect(container.textContent).toEqual('v2:');
-
-        unmount();
-      });
-    });
-
-    describe('MetricView', () => {
-      let metrics: Metrics;
-
-      beforeEach(() => {
-        metrics = createMetrics(store)
-          .setMetricDefinition('m1', 't1')
-          .setMetricDefinition('m2', 't2');
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestMetricView, {
-          props: {metrics, metricId: 'm0'},
-        });
-        expect(container.textContent).toEqual('m0:');
-
-        await rerender({metricId: 'm1'});
-        expect(container.textContent).toEqual('m1:1');
-
-        await act(() => store.setCell('t1', 'r2', 'c1', 2));
-        expect(container.textContent).toEqual('m1:2');
-
-        await rerender({metricId: 'm2'});
-        expect(container.textContent).toEqual('m2:2');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('m2:');
-
-        unmount();
-      });
-    });
-
-    describe('IndexView', () => {
-      let indexes: Indexes;
-
-      beforeEach(() => {
-        indexes = createIndexes(store)
-          .setIndexDefinition('i1', 't1', 'c1')
-          .setIndexDefinition('i2', 't2', 'c1');
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestIndexView, {
-          props: {indexes, indexId: 'i0', cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual('i0:');
-
-        await rerender({indexId: 'i1'});
-        expect(container.textContent).toEqual('i1:1:r1:c1:1');
-
-        await act(() => store.setCell('t1', 'r2', 'c1', 1));
-        expect(container.textContent).toEqual('i1:1:r1:c1:1r2:c1:1');
-
-        await rerender({indexId: 'i2'});
-        expect(container.textContent).toEqual('i2:2:r1:c1:23:r2:c1:3c2:4');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('i2:');
-
-        unmount();
-      });
-    });
-
-    describe('SliceView', () => {
-      let indexes: Indexes;
-
-      beforeEach(() => {
-        indexes = createIndexes(store)
-          .setIndexDefinition('i1', 't1', 'c1')
-          .setIndexDefinition('i2', 't2', 'c1');
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestSliceView, {
-          props: {indexes, indexId: 'i0', sliceId: '0', cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual('0:');
-
-        await rerender({indexId: 'i1', sliceId: '0'});
-        expect(container.textContent).toEqual('0:');
-
-        await rerender({indexId: 'i1', sliceId: '1'});
-        expect(container.textContent).toEqual('1:r1:c1:1');
-
-        await act(() => store.setCell('t1', 'r2', 'c1', 1));
-        expect(container.textContent).toEqual('1:r1:c1:1r2:c1:1');
-
-        await rerender({indexId: 'i2', sliceId: '2'});
-        expect(container.textContent).toEqual('2:r1:c1:2');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('2:');
-
-        unmount();
-      });
-    });
-
-    describe('RemoteRowView', () => {
-      let relationships: Relationships;
-
-      beforeEach(() => {
-        store.setTables({
-          t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}, r3: {c1: 'R0'}},
-          T1: {R1: {C1: 1}, R2: {C1: 2}},
-        });
-        relationships = createRelationships(store)
-          .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
-          .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestRemoteRowView, {
-          props: {
-            relationships,
-            relationshipId: 'r0',
-            localRowId: 'r0',
-            cellPrefix: ':',
-          },
-        });
-        expect(container.textContent).toEqual('r0:');
-
-        await rerender({relationshipId: 'r1', localRowId: 'r1'});
-        expect(container.textContent).toEqual('r1:R1:C1:1');
-
-        await rerender({relationshipId: 'r1', localRowId: 'r2'});
-        expect(container.textContent).toEqual('r2:R1:C1:1');
-
-        await rerender({relationshipId: 'r1', localRowId: 'r1'});
-        await act(() => store.delTable('t1'));
-        expect(container.textContent).toEqual('r1:');
-
-        await rerender({relationshipId: 'r2', localRowId: 'r2'});
-        expect(container.textContent).toEqual('r2:');
-
-        unmount();
-      });
-    });
-
-    describe('LocalRowsView', () => {
-      let relationships: Relationships;
-
-      beforeEach(() => {
-        store.setTables({
-          t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}},
-          T1: {R1: {C1: 1}, R2: {C1: 2}},
-        });
-        relationships = createRelationships(store)
-          .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
-          .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestLocalRowsView, {
-          props: {
-            relationships,
-            relationshipId: 'r0',
-            remoteRowId: 'R0',
-            cellPrefix: ':',
-          },
-        });
-        expect(container.textContent).toEqual('R0:');
-
-        await rerender({relationshipId: 'r1', remoteRowId: 'R1'});
-        expect(container.textContent).toEqual('R1:r1:c1:R1r2:c1:R1');
-
-        await rerender({relationshipId: 'r1', remoteRowId: 'R2'});
-        expect(container.textContent).toEqual('R2:');
-
-        await act(() => store.delTable('t1'));
-        expect(container.textContent).toEqual('R2:');
-
-        await rerender({relationshipId: 'r2', remoteRowId: 'R2'});
-        expect(container.textContent).toEqual('R2:');
-
-        unmount();
-      });
-    });
-
-    describe('LinkedRowsView', () => {
-      let relationships: Relationships;
-
-      beforeEach(() => {
-        store.setTables({
-          t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {c1: 'r4'}},
-        });
-        relationships = createRelationships(store)
-          .setRelationshipDefinition('r1', 't1', 't1', 'c1')
-          .setRelationshipDefinition('r2', 't2', 't2', 'c2');
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestLinkedRowsView, {
-          props: {
-            relationships,
-            relationshipId: 'r0',
-            firstRowId: 'r0',
-            cellPrefix: ':',
-          },
-        });
-        expect(container.textContent).toEqual('r0:r0:');
-
-        await rerender({relationshipId: 'r1', firstRowId: 'r1'});
-        expect(container.textContent).toEqual('r1:r1:c1:r2r2:c1:r3r3:c1:r4r4:');
-
-        await act(() => store.setCell('t1', 'r2', 'c1', 'r4'));
-        expect(container.textContent).toEqual('r1:r1:c1:r2r2:c1:r4r4:');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('r1:r1:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultTableView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store)
-          .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-          .setQueryDefinition('q2', 't2', ({select}) => select('c1'));
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestResultTableView, {
-          props: {queries, queryId: 'q0', cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual('q0:');
-
-        await rerender({queryId: 'q1'});
-        expect(container.textContent).toEqual('q1:r1:c1:1');
-
-        await act(() => store.setCell('t1', 'r2', 'c1', 2));
-        expect(container.textContent).toEqual('q1:r1:c1:1r2:c1:2');
-
-        await rerender({queryId: 'q2'});
-        expect(container.textContent).toEqual('q2:r1:c1:2r2:c1:3');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('q2:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultSortedTableView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store)
-          .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-          .setQueryDefinition('q2', 't2', ({select}) => select('c1'));
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(
-          TestResultSortedTableView,
-          {
-            props: {queries, queryId: 'q0', cellId: 'c0', cellPrefix: ':'},
-          },
-        );
-        expect(container.textContent).toEqual('q0,c0:');
-
-        await rerender({queryId: 'q2', cellId: 'c1'});
-        expect(container.textContent).toEqual('q2,c1:r1:c1:2r2:c1:3');
-
-        await act(() => store.setCell('t2', 'r1', 'c1', 4));
-        expect(container.textContent).toEqual('q2,c1:r2:c1:3r1:c1:4');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('q2,c1:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultRowView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store)
-          .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-          .setQueryDefinition('q2', 't2', ({select}) => {
-            select('c1');
-            select('c2');
-          });
-      });
-
-      test('Separator', () => {
-        const {container, unmount} = render(ResultRowView, {
-          props: {queries, queryId: 'q2', rowId: 'r2', separator: sep},
-        });
-        expect(container.textContent).toEqual('3/4');
-        unmount();
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestResultRowView, {
-          props: {queries, queryId: 'q0', rowId: 'r0', cellPrefix: ':'},
-        });
-        expect(container.textContent).toEqual('r0:');
-
-        await rerender({queryId: 'q1', rowId: 'r1'});
-        expect(container.textContent).toEqual('r1:c1:1');
-
-        await act(() => store.setCell('t1', 'r1', 'c1', 2));
-        expect(container.textContent).toEqual('r1:c1:2');
-
-        await rerender({queryId: 'q2', rowId: 'r2'});
-        expect(container.textContent).toEqual('r2:c1:3c2:4');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('r2:');
-
-        unmount();
-      });
-    });
-
-    describe('ResultCellView', () => {
-      let queries: Queries;
-
-      beforeEach(() => {
-        queries = createQueries(store).setQueryDefinition(
-          'q1',
-          't2',
-          ({select}) => {
-            select('c1');
-            select('c2');
-          },
-        );
-      });
-
-      test('Custom', async () => {
-        const {container, rerender, unmount} = render(TestResultCellView, {
-          props: {
-            queries,
-            queryId: 'q0',
-            rowId: 'r0',
-            cellId: 'c0',
-            cellPrefix: ':',
-          },
-        });
-        expect(container.textContent).toEqual('c0:');
-
-        await rerender({queryId: 'q1', rowId: 'r2', cellId: 'c2'});
-        expect(container.textContent).toEqual('c2:4');
-
-        await act(() => store.setCell('t2', 'r2', 'c2', 5));
-        expect(container.textContent).toEqual('c2:5');
-
-        await act(() => store.delTables());
-        expect(container.textContent).toEqual('c2:');
-
-        unmount();
-      });
+    testCustomComponents('ui-solid', componentHarness, {
+      CellView: TestCellView,
+      IndexView: TestIndexView,
+      LinkedRowsView: TestLinkedRowsView,
+      LocalRowsView: TestLocalRowsView,
+      MetricView: TestMetricView,
+      RemoteRowView: TestRemoteRowView,
+      ResultCellView: TestResultCellView,
+      ResultRowView: TestResultRowView,
+      ResultSortedTableView: TestResultSortedTableView,
+      ResultTableView: TestResultTableView,
+      RowView: TestRowView,
+      SliceView: TestSliceView,
+      SortedTableView: TestSortedTableView,
+      TableView: TestTableView,
+      TablesView: TestTablesView,
+      ValueView: TestValueView,
+      ValuesView: TestValuesView,
     });
 
     describe('CheckpointsViews', () => {

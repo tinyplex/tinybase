@@ -11,16 +11,23 @@
     queries,
     queryId,
     cellId,
+    descending = true,
     cellPrefix = '',
   }: {
     queries?: Queries | Id;
     queryId: Id;
     cellId?: Id;
+    descending?: boolean;
     cellPrefix?: string;
   } = $props();
 </script>
 
-{queryId},{cellId}:<ResultSortedTableView {queryId} {cellId} {queries}>
+{queryId},{cellId}:<ResultSortedTableView
+  {queryId}
+  {cellId}
+  {descending}
+  {queries}
+>
   {#snippet row(rowId)}
     {rowId}:<ResultRowView {queryId} {rowId} {queries}>
       {#snippet cell(cellId)}
