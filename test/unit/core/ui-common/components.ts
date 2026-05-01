@@ -9,11 +9,16 @@ import type {
 import {
   createCheckpoints,
   createIndexes,
+  createMergeableStore,
   createMetrics,
   createQueries,
   createRelationships,
   createStore,
 } from 'tinybase';
+import type {AnyPersister} from 'tinybase/persisters';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+import type {Synchronizer} from 'tinybase/synchronizers';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {beforeEach, describe, expect, test} from 'vitest';
 
 type Rendered = {
@@ -57,6 +62,21 @@ export type CustomComponents = Omit<Components, 'BackwardCheckpointsView'>;
 export type CustomCheckpointComponents = {
   readonly CheckpointsView: unknown;
   readonly CurrentCheckpointView?: unknown;
+};
+
+export type ProviderComponents = {
+  readonly Store?: unknown;
+  readonly Metrics?: unknown;
+  readonly Indexes?: unknown;
+  readonly Relationships?: unknown;
+  readonly Queries?: unknown;
+  readonly Checkpoints?: unknown;
+  readonly Persister?: unknown;
+  readonly Synchronizer?: unknown;
+  readonly Nested?: unknown;
+  readonly NestedDifferent?: unknown;
+  readonly ProvideThings?: unknown;
+  readonly NestedDefaults?: unknown;
 };
 
 const createTestStore = (): Store =>
@@ -499,6 +519,367 @@ export const testCustomCheckpointComponents = (
         expect(container.textContent).toEqual('');
 
         unmount();
+      });
+    }
+  });
+};
+
+export const testProviderComponents = (
+  framework: string,
+  harness: ComponentHarness,
+  components: ProviderComponents,
+): void => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createTestStore();
+  });
+
+  describe(`${framework} provider component scenarios`, () => {
+    if (components.Store != null) {
+      describe('store', () => {
+        test.each([
+          [
+            'tables',
+            // eslint-disable-next-line max-len
+            '1234{"t1":{"r1":{"c1":1}},"t2":{"r1":{"c1":2},"r2":{"c1":3,"c2":4}}}',
+            () => store.setTables({t1: {r1: {c1: 2}}}),
+            '2{"t1":{"r1":{"c1":2}}}',
+            () => store.delTables(),
+            '{}',
+          ],
+          [
+            'table',
+            '1{"r1":{"c1":1}}',
+            () => store.setTable('t1', {r1: {c1: 2}}),
+            '2{"r1":{"c1":2}}',
+            () => store.delTable('t1'),
+            '{}',
+          ],
+          [
+            'row',
+            '1{"c1":1}',
+            () => store.setRow('t1', 'r1', {c1: 2}),
+            '2{"c1":2}',
+            () => store.delRow('t1', 'r1'),
+            '{}',
+          ],
+          [
+            'cell',
+            '11',
+            () => store.setCell('t1', 'r1', 'c1', 2),
+            '22',
+            () => store.delCell('t1', 'r1', 'c1'),
+            '',
+          ],
+        ])(
+          'default %s',
+          async (mode, initial, update, updated, remove, removed) => {
+            const {container, unmount} = harness.render(components.Store, {
+              store,
+              mode,
+            });
+            expect(container.textContent).toEqual(initial);
+            await harness.act(update);
+            expect(container.textContent).toEqual(updated);
+            await harness.act(remove);
+            expect(container.textContent).toEqual(removed);
+            unmount();
+          },
+        );
+
+        test.each([
+          [
+            'tables',
+            // eslint-disable-next-line max-len
+            '1234{"t1":{"r1":{"c1":1}},"t2":{"r1":{"c1":2},"r2":{"c1":3,"c2":4}}}',
+            () => store.setTables({t1: {r1: {c1: 2}}}),
+            '2{"t1":{"r1":{"c1":2}}}',
+            () => store.delTables(),
+            '{}',
+          ],
+          [
+            'table',
+            '1{"r1":{"c1":1}}',
+            () => store.setTable('t1', {r1: {c1: 2}}),
+            '2{"r1":{"c1":2}}',
+            () => store.delTable('t1'),
+            '{}',
+          ],
+          [
+            'row',
+            '1{"c1":1}',
+            () => store.setRow('t1', 'r1', {c1: 2}),
+            '2{"c1":2}',
+            () => store.delRow('t1', 'r1'),
+            '{}',
+          ],
+          [
+            'cell',
+            '11',
+            () => store.setCell('t1', 'r1', 'c1', 2),
+            '22',
+            () => store.delCell('t1', 'r1', 'c1'),
+            '',
+          ],
+        ])(
+          'named %s',
+          async (mode, initial, update, updated, remove, removed) => {
+            const {container, unmount} = harness.render(components.Store, {
+              storesById: {store1: store},
+              storeId: 'store1',
+              mode,
+            });
+            expect(container.textContent).toEqual(initial);
+            await harness.act(update);
+            expect(container.textContent).toEqual(updated);
+            await harness.act(remove);
+            expect(container.textContent).toEqual(removed);
+            unmount();
+          },
+        );
+      });
+    }
+
+    const testDefaultAndNamed = <Thing>(
+      name: string,
+      component: unknown,
+      thing: () => Thing,
+      defaultProps: (thing: Thing) => {[key: string]: unknown},
+      namedProps: (thing: Thing) => {[key: string]: unknown},
+      expected: string,
+    ) => {
+      test(`${name} default`, () => {
+        const createdThing = thing();
+        const {container, unmount} = harness.render(
+          component,
+          defaultProps(createdThing),
+        );
+        expect(container.textContent).toEqual(expected);
+        unmount();
+      });
+
+      test(`${name} named`, () => {
+        const createdThing = thing();
+        const {container, unmount} = harness.render(
+          component,
+          namedProps(createdThing),
+        );
+        expect(container.textContent).toEqual(expected);
+        unmount();
+      });
+    };
+
+    if (components.Metrics != null) {
+      testDefaultAndNamed(
+        'metrics',
+        components.Metrics,
+        () => createMetrics(store).setMetricDefinition('m1', 't1'),
+        (metrics) => ({metrics}),
+        (metrics) => ({
+          metricsById: {metrics1: metrics},
+          metricsId: 'metrics1',
+        }),
+        '11',
+      );
+    }
+
+    if (components.Indexes != null) {
+      testDefaultAndNamed(
+        'indexes',
+        components.Indexes,
+        () => createIndexes(store).setIndexDefinition('i1', 't1', 'c1'),
+        (indexes) => ({indexes}),
+        (indexes) => ({
+          indexesById: {indexes1: indexes},
+          indexesId: 'indexes1',
+        }),
+        '1["1"]1["r1"]',
+      );
+    }
+
+    if (components.Relationships != null) {
+      testDefaultAndNamed(
+        'relationships',
+        components.Relationships,
+        () => {
+          store.setTables({
+            t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}},
+            T1: {R1: {C1: 1}, R2: {C1: 2}},
+          });
+          return createRelationships(store).setRelationshipDefinition(
+            'r1',
+            't1',
+            'T1',
+            'c1',
+          );
+        },
+        (relationships) => ({relationships}),
+        (relationships) => ({
+          relationshipsById: {relationships1: relationships},
+          relationshipsId: 'relationships1',
+        }),
+        '1"R1"R1R1["r1","r2"]R1["r1"]',
+      );
+    }
+
+    if (components.Queries != null) {
+      testDefaultAndNamed(
+        'queries',
+        components.Queries,
+        () =>
+          createQueries(store).setQueryDefinition('q1', 't1', ({select}) =>
+            select('c1'),
+          ),
+        (queries) => ({queries}),
+        (queries) => ({
+          queriesById: {queries1: queries},
+          queriesId: 'queries1',
+        }),
+        '1{"r1":{"c1":1}}["r1"]1{"c1":1}["c1"]11',
+      );
+    }
+
+    if (components.Checkpoints != null) {
+      testDefaultAndNamed(
+        'checkpoints',
+        components.Checkpoints,
+        () => createCheckpoints(store),
+        (checkpoints) => ({checkpoints}),
+        (checkpoints) => ({
+          checkpointsById: {checkpoints1: checkpoints},
+          checkpointsId: 'checkpoints1',
+        }),
+        '[[],"0",[]]',
+      );
+    }
+
+    if (components.Persister != null) {
+      testDefaultAndNamed<AnyPersister>(
+        'persister',
+        components.Persister,
+        () => createLocalPersister(store, `${framework}-provider`),
+        (persister) => ({persister}),
+        (persister) => ({
+          persistersById: {persister1: persister},
+          persisterId: 'persister1',
+        }),
+        '0',
+      );
+    }
+
+    if (components.Synchronizer != null) {
+      testDefaultAndNamed<Synchronizer>(
+        'synchronizer',
+        components.Synchronizer,
+        () => createLocalSynchronizer(createMergeableStore()),
+        (synchronizer) => ({synchronizer}),
+        (synchronizer) => ({
+          synchronizersById: {synchronizer1: synchronizer},
+          synchronizerId: 'synchronizer1',
+        }),
+        '0',
+      );
+    }
+
+    if (components.Nested != null) {
+      test('nested same provider', () => {
+        const store1 = createStore();
+        const store2 = createStore();
+        const {container, unmount} = harness.render(components.Nested, {
+          store1,
+          store2,
+          outerStores: {a: store1},
+          innerStores: {b: store2},
+        });
+        expect(container.textContent).toEqual('["a","b"]1001');
+        unmount();
+      });
+
+      test('nested same provider, masked', () => {
+        const store1 = createStore();
+        const store2 = createStore();
+        const {container, unmount} = harness.render(components.Nested, {
+          store1,
+          store2,
+          outerStores: {a: store1, b: store1},
+          innerStores: {b: store2},
+        });
+        expect(container.textContent).toEqual('["a","b"]1001');
+        unmount();
+      });
+    }
+
+    if (components.NestedDifferent != null) {
+      test('nested different provider', () => {
+        const store1 = createStore();
+        const store2 = createStore();
+        const {container, unmount} = harness.render(
+          components.NestedDifferent,
+          {store1, store2},
+        );
+        expect(container.textContent).toEqual('["a","b"]1001');
+        unmount();
+      });
+    }
+
+    if (components.ProvideThings != null) {
+      test('provide functions', () => {
+        const metrics: Metrics = createMetrics(store);
+        const indexes: Indexes = createIndexes(store);
+        const relationships: Relationships = createRelationships(store);
+        const queries: Queries = createQueries(store);
+        const checkpoints: Checkpoints = createCheckpoints(store);
+        const persister: AnyPersister = createLocalPersister(
+          store,
+          `${framework}-provide`,
+        );
+        const synchronizer: Synchronizer = createLocalSynchronizer(
+          createMergeableStore(),
+        );
+        const {container, unmount} = harness.render(components.ProvideThings, {
+          store,
+          metrics,
+          indexes,
+          relationships,
+          queries,
+          checkpoints,
+          persister,
+          synchronizer,
+        });
+        expect(container.textContent).toEqual('smirqcpz');
+        unmount();
+        synchronizer.destroy();
+      });
+    }
+
+    if (components.NestedDefaults != null) {
+      test('nested default fallbacks', () => {
+        const metrics: Metrics = createMetrics(store);
+        const indexes: Indexes = createIndexes(store);
+        const relationships: Relationships = createRelationships(store);
+        const queries: Queries = createQueries(store);
+        const checkpoints: Checkpoints = createCheckpoints(store);
+        const persister: AnyPersister = createLocalPersister(
+          store,
+          `${framework}-defaults`,
+        );
+        const synchronizer: Synchronizer = createLocalSynchronizer(
+          createMergeableStore(),
+        );
+        const {container, unmount} = harness.render(components.NestedDefaults, {
+          store,
+          metrics,
+          indexes,
+          relationships,
+          queries,
+          checkpoints,
+          persister,
+          synchronizer,
+        });
+        expect(container.textContent).toEqual('smirqcpz');
+        unmount();
+        synchronizer.destroy();
       });
     }
   });

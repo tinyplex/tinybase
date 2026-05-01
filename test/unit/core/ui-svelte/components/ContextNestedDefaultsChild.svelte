@@ -15,4 +15,4 @@
   ? 'i'
   : ''}{getRelationships() ? 'r' : ''}{getQueries() ? 'q' : ''}{getCheckpoints()
   ? 'c'
-  : ''}{getPersister() ? 'p' : ''}{getSynchronizer() ? 'syn' : ''}
+  : ''}{getPersister() ? 'p' : ''}{getSynchronizer() ? 'z' : ''}

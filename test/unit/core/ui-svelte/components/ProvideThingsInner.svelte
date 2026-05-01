@@ -19,6 +19,7 @@
   } from 'tinybase';
   import type {AnyPersister} from 'tinybase/persisters';
   import type {Synchronizer} from 'tinybase/synchronizers';
+  import ProvideThingsProvided from './ProvideThingsProvided.svelte';
 
   let {
     store,
@@ -40,7 +41,7 @@
     synchronizer: Synchronizer;
   } = $props();
 
-  $effect(() => {
+  const provideThings = (): void => {
     provideStore('s1', store);
     provideMetrics('m1', metrics);
     provideIndexes('i1', indexes);
@@ -49,7 +50,7 @@
     provideCheckpoints('c1', checkpoints);
     providePersister('p1', persister);
     provideSynchronizer('syn1', synchronizer);
-  });
+  };
 </script>
 
-provided
+{#if provideThings() === undefined}<ProvideThingsProvided />{/if}
