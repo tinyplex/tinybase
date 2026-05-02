@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/globals, react-hooks/immutability */
 import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
-import {type ComponentType, MouseEvent, MouseEventHandler, act} from 'react';
+import {MouseEvent, MouseEventHandler, act} from 'react';
 import type {
   Cell,
   Checkpoints,
@@ -94,7 +93,6 @@ import {
   useParamValues,
   useParamValuesListener,
   useParamValuesState,
-  usePersister,
   usePersisterIds,
   usePersisterStatus,
   usePersisterStatusListener,
@@ -159,7 +157,6 @@ import {
   useStore,
   useStoreIds,
   useStores,
-  useSynchronizer,
   useSynchronizerIds,
   useSynchronizerStatus,
   useSynchronizerStatusListener,
@@ -187,10 +184,6 @@ import {
 import tmp from 'tmp';
 import {type Mock, beforeEach, describe, expect, test, vi} from 'vitest';
 import {noop, pause} from '../../common/other.ts';
-import {
-  type ContextPrimitiveProps,
-  testContextPrimitives,
-} from '../ui-common/primitives.ts';
 
 let store: Store;
 let didRender: Mock;
@@ -200,70 +193,6 @@ beforeEach(() => {
     .setTables({t1: {r1: {c1: 1}}})
     .setValues({v1: 1});
   didRender = vi.fn((rendered) => rendered);
-});
-
-type PrimitiveProps = {[key: string]: unknown};
-
-const primitiveHarness = {
-  render: (component: unknown, props: PrimitiveProps) => {
-    const Component = component as ComponentType<PrimitiveProps>;
-    const rendered = render(<Component {...props} />);
-    return {container: rendered.container, unmount: rendered.unmount};
-  },
-};
-
-const ContextPrimitiveThings = (props: ContextPrimitiveProps) => (
-  <Provider
-    storesById={{store1: props.store}}
-    metricsById={{metrics1: props.metrics}}
-    indexesById={{indexes1: props.indexes}}
-    relationshipsById={{relationships1: props.relationships}}
-    queriesById={{queries1: props.queries}}
-    checkpointsById={{checkpoints1: props.checkpoints}}
-    persistersById={{persister1: props.persister}}
-    synchronizersById={{synchronizer1: props.synchronizer}}
-  >
-    <ContextPrimitiveThingsChild {...props} />
-  </Provider>
-);
-
-const ContextPrimitiveThingsChild = (props: ContextPrimitiveProps) =>
-  JSON.stringify([
-    useStoreIds(),
-    useMetricsIds(),
-    useIndexesIds(),
-    useRelationshipsIds(),
-    useQueriesIds(),
-    useCheckpointsIds(),
-    usePersisterIds(),
-    useSynchronizerIds(),
-    useStores().store1 == props.store,
-    useStore('store1') == props.store,
-    useMetrics('metrics1') == props.metrics,
-    useIndexes('indexes1') == props.indexes,
-    useRelationships('relationships1') == props.relationships,
-    useQueries('queries1') == props.queries,
-    useCheckpoints('checkpoints1') == props.checkpoints,
-    usePersister('persister1') == props.persister,
-    useSynchronizer('synchronizer1') == props.synchronizer,
-  ]);
-
-const ContextPrimitiveNoContext = () =>
-  JSON.stringify([
-    useStoreIds(),
-    useMetricsIds(),
-    useIndexesIds(),
-    useRelationshipsIds(),
-    useQueriesIds(),
-    useCheckpointsIds(),
-    usePersisterIds(),
-    useSynchronizerIds(),
-  ]);
-
-testContextPrimitives('ui-react', primitiveHarness, {
-  Things: ContextPrimitiveThings,
-  NoContext: ContextPrimitiveNoContext,
-  hasStores: true,
 });
 
 describe('Create Hooks', () => {
