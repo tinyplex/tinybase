@@ -1,6 +1,7 @@
-import type {Accessor, Setter} from 'solid-js';
+import type {Accessor, JSXElement, Setter} from 'solid-js';
 import {createRoot, createSignal} from 'solid-js';
-import type {MergeableStore, Store, Table} from 'tinybase';
+import {render as solidRender} from 'solid-js/web';
+import type {Id, MergeableStore, Store, Table} from 'tinybase';
 import {
   createCheckpoints,
   createIndexes,
@@ -15,6 +16,7 @@ import type {Synchronizer} from 'tinybase/synchronizers';
 import {
   useAddRowCallback,
   useCell,
+  useCellIds,
   useCellListener,
   useCheckpoint,
   useCheckpointIds,
@@ -24,6 +26,7 @@ import {
   useHasCell,
   useHasRow,
   useHasTable,
+  useHasTableCell,
   useHasTables,
   useHasValue,
   useHasValues,
@@ -67,6 +70,10 @@ import {
 } from 'tinybase/ui-solid';
 import {describe, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
+import {testStoreReadFunctions} from '../ui-common/functions.ts';
+import {testContextPrimitives} from '../ui-common/primitives.ts';
+import {ContextPrimitiveNoContext} from './components/ContextPrimitiveNoContext.tsx';
+import {ContextPrimitiveThings} from './components/ContextPrimitiveThings.tsx';
 
 type TestPersister = Persister<Persists.StoreOnly> & {destroy: () => void};
 type TestSynchronizer = Synchronizer & {destroy: () => void};
@@ -85,7 +92,160 @@ const renderPrimitive = (primitive: () => void) => {
   });
 };
 
-describe('ui-solid primitives', () => {
+type Props = {[key: string]: unknown};
+type SolidComponent = (props: Props) => JSXElement;
+
+const primitiveHarness = {
+  act: async (callback: () => unknown) => {
+    callback();
+    await pause();
+  },
+  render: (component: unknown, props: Props = {}) => {
+    const container = document.createElement('div');
+    let currentProps = props;
+    const Component = component as SolidComponent;
+    let unmount = solidRender(() => Component(currentProps), container);
+    return {
+      container,
+      rerender: async (nextProps: Props) => {
+        unmount();
+        currentProps = {...currentProps, ...nextProps};
+        unmount = solidRender(() => Component(currentProps), container);
+        await pause();
+      },
+      unmount: () => unmount(),
+    };
+  },
+};
+
+const Reader = ({
+  mode,
+  store,
+  tableId,
+  rowId,
+  cellId,
+  valueId,
+  descending,
+  offset,
+  limit,
+}: {
+  readonly mode: string;
+  readonly store: Store;
+  readonly tableId?: Id;
+  readonly rowId?: Id;
+  readonly cellId?: Id;
+  readonly valueId?: Id;
+  readonly descending?: boolean;
+  readonly offset?: number;
+  readonly limit?: number;
+}) => {
+  const hasTables = useHasTables(store);
+  const tables = useTables(store);
+  const tableIds = useTableIds(store);
+  const hasTable = useHasTable(() => tableId, store);
+  const table = useTable(() => tableId, store);
+  const tableCellIds = useTableCellIds(() => tableId, store);
+  const hasTableCell = useHasTableCell(
+    () => tableId,
+    () => cellId,
+    store,
+  );
+  const rowCount = useRowCount(() => tableId, store);
+  const rowIds = useRowIds(() => tableId, store);
+  const sortedRowIds = useSortedRowIds(
+    () => tableId,
+    () => cellId,
+    () => descending,
+    () => offset,
+    () => limit,
+    store,
+  );
+  const hasRow = useHasRow(
+    () => tableId,
+    () => rowId,
+    store,
+  );
+  const row = useRow(
+    () => tableId,
+    () => rowId,
+    store,
+  );
+  const cellIds = useCellIds(
+    () => tableId,
+    () => rowId,
+    store,
+  );
+  const hasCell = useHasCell(
+    () => tableId,
+    () => rowId,
+    () => cellId,
+    store,
+  );
+  const cell = useCell(
+    () => tableId,
+    () => rowId,
+    () => cellId,
+    store,
+  );
+  const hasValues = useHasValues(store);
+  const values = useValues(store);
+  const valueIds = useValueIds(store);
+  const hasValue = useHasValue(() => valueId, store);
+  const storeValue = useValue(() => valueId, store);
+  const valueToRender =
+    mode == 'hasTables'
+      ? hasTables
+      : mode == 'tables'
+        ? tables
+        : mode == 'tableIds'
+          ? tableIds
+          : mode == 'hasTable'
+            ? hasTable
+            : mode == 'table'
+              ? table
+              : mode == 'tableCellIds'
+                ? tableCellIds
+                : mode == 'hasTableCell'
+                  ? hasTableCell
+                  : mode == 'rowCount'
+                    ? rowCount
+                    : mode == 'rowIds'
+                      ? rowIds
+                      : mode == 'sortedRowIds'
+                        ? sortedRowIds
+                        : mode == 'hasRow'
+                          ? hasRow
+                          : mode == 'row'
+                            ? row
+                            : mode == 'cellIds'
+                              ? cellIds
+                              : mode == 'hasCell'
+                                ? hasCell
+                                : mode == 'cell'
+                                  ? cell
+                                  : mode == 'hasValues'
+                                    ? hasValues
+                                    : mode == 'values'
+                                      ? values
+                                      : mode == 'valueIds'
+                                        ? valueIds
+                                        : mode == 'hasValue'
+                                          ? hasValue
+                                          : mode == 'value'
+                                            ? storeValue
+                                            : () => undefined;
+  return (() => JSON.stringify(valueToRender())) as unknown as JSXElement;
+};
+
+testContextPrimitives('ui-solid', primitiveHarness, {
+  Things: ContextPrimitiveThings,
+  NoContext: ContextPrimitiveNoContext,
+  hasStores: true,
+});
+
+testStoreReadFunctions('ui-solid', primitiveHarness, {Reader});
+
+describe('Solid-specific', () => {
   test('reads core store primitives', async () => {
     const store = createStore()
       .setTables({t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3}}})
