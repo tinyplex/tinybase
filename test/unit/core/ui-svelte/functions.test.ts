@@ -70,37 +70,10 @@ import {testStoreReadFunctions} from '../ui-common/functions.ts';
 import {testContextPrimitives} from '../ui-common/primitives.ts';
 import ContextPrimitiveNoContext from './components/ContextPrimitiveNoContext.svelte';
 import ContextPrimitiveThings from './components/ContextPrimitiveThings.svelte';
-import FunctionCheckpointIds from './components/FunctionCheckpointIds.svelte';
-import FunctionCheckpointsIds from './components/FunctionCheckpointsIds.svelte';
 import FunctionGoBackwardCallback from './components/FunctionGoBackwardCallback.svelte';
 import FunctionGoForwardCallback from './components/FunctionGoForwardCallback.svelte';
-import FunctionIndexIds from './components/FunctionIndexIds.svelte';
-import FunctionIndexesIds from './components/FunctionIndexesIds.svelte';
-import FunctionLinkedRowIds from './components/FunctionLinkedRowIds.svelte';
-import FunctionLocalRowIds from './components/FunctionLocalRowIds.svelte';
-import FunctionMetric from './components/FunctionMetric.svelte';
-import FunctionMetricIds from './components/FunctionMetricIds.svelte';
-import FunctionMetricsIds from './components/FunctionMetricsIds.svelte';
-import FunctionPersisterIds from './components/FunctionPersisterIds.svelte';
 import FunctionPersisterStatus from './components/FunctionPersisterStatus.svelte';
-import FunctionQueriesIds from './components/FunctionQueriesIds.svelte';
-import FunctionQueryIds from './components/FunctionQueryIds.svelte';
 import FunctionReader from './components/FunctionReader.svelte';
-import FunctionRelationshipIds from './components/FunctionRelationshipIds.svelte';
-import FunctionRelationshipsIds from './components/FunctionRelationshipsIds.svelte';
-import FunctionRemoteRowId from './components/FunctionRemoteRowId.svelte';
-import FunctionResultCell from './components/FunctionResultCell.svelte';
-import FunctionResultCellIds from './components/FunctionResultCellIds.svelte';
-import FunctionResultRow from './components/FunctionResultRow.svelte';
-import FunctionResultRowCount from './components/FunctionResultRowCount.svelte';
-import FunctionResultRowIds from './components/FunctionResultRowIds.svelte';
-import FunctionResultSortedRowIds from './components/FunctionResultSortedRowIds.svelte';
-import FunctionResultSortedRowIdsNoDefaults from './components/FunctionResultSortedRowIdsNoDefaults.svelte';
-import FunctionResultTable from './components/FunctionResultTable.svelte';
-import FunctionResultTableCellIds from './components/FunctionResultTableCellIds.svelte';
-import FunctionSliceIds from './components/FunctionSliceIds.svelte';
-import FunctionSliceRowIds from './components/FunctionSliceRowIds.svelte';
-import FunctionSynchronizerIds from './components/FunctionSynchronizerIds.svelte';
 import FunctionSynchronizerStatus from './components/FunctionSynchronizerStatus.svelte';
 import FunctionWindowlessCoverage from './components/FunctionWindowlessCoverage.svelte';
 import FunctionWritableCell from './components/FunctionWritableCell.svelte';
@@ -166,1507 +139,897 @@ describe('Svelte-specific', () => {
       unmount();
     });
   });
-});
 
-describe('Read Functions', () => {
-  test('getCell can set values', async () => {
-    store.setCell('t1', 'r1', 'c1', 0);
-    const {container, unmount} = render(FunctionWritableCell, {
-      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
-    });
-    expect(container.textContent).toContain('0');
-
-    await act(() =>
-      fireEvent.click(container.querySelector('button') as Element),
-    );
-    expect(container.textContent).toContain('1');
-    expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
-
-    unmount();
-  });
-
-  test('getValue can set values', async () => {
-    store.setValues({v1: false});
-    const {container, unmount} = render(FunctionWritableValue, {
-      props: {store, valueId: 'v1', newValue: true},
-    });
-    expect(container.textContent).toContain('false');
-
-    await act(() =>
-      fireEvent.click(container.querySelector('button') as Element),
-    );
-    expect(container.textContent).toContain('true');
-    expect(store.getValue('v1')).toEqual(true);
-
-    unmount();
-  });
-
-  test('getMetricsIds', async () => {
-    const {container, unmount} = render(FunctionMetricsIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getIndexesIds', async () => {
-    const {container, unmount} = render(FunctionIndexesIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getQueriesIds', async () => {
-    const {container, unmount} = render(FunctionQueriesIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getRelationshipsIds', async () => {
-    const {container, unmount} = render(FunctionRelationshipsIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getCheckpointsIds', async () => {
-    const {container, unmount} = render(FunctionCheckpointsIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getPersisterIds', async () => {
-    const {container, unmount} = render(FunctionPersisterIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getSynchronizerIds', async () => {
-    const {container, unmount} = render(FunctionSynchronizerIds);
-    expect(container.textContent).toEqual('[]');
-    unmount();
-  });
-
-  test('getMetricIds', async () => {
-    const metrics: Metrics = createMetrics(store);
-    const {container, unmount} = render(FunctionMetricIds, {props: {metrics}});
-    expect(container.textContent).toEqual('[]');
-
-    await act(() =>
-      metrics.setMetricDefinition('m1', 't1').setMetricDefinition('m2', 't2'),
-    );
-    expect(container.textContent).toEqual('["m1","m2"]');
-
-    await act(() => metrics.delMetricDefinition('m1'));
-    expect(container.textContent).toEqual('["m2"]');
-
-    unmount();
-  });
-
-  test('getMetric', async () => {
-    const metrics: Metrics = createMetrics(store)
-      .setMetricDefinition('m1', 't1')
-      .setMetricDefinition('m2', 't1', 'max', 'c1')
-      .setMetricDefinition('m3', 't3');
-    const {container, rerender, unmount} = render(FunctionMetric, {
-      props: {metrics, metricId: 'm0'},
-    });
-    expect(container.textContent).toEqual('');
-
-    await rerender({metricId: 'm1'});
-    expect(container.textContent).toEqual('1');
-
-    await act(() =>
-      store.setCell('t1', 'r2', 'c1', 3).setCell('t1', 'r2', 'c1', 3),
-    );
-    expect(container.textContent).toEqual('2');
-
-    await rerender({metricId: 'm2'});
-    expect(container.textContent).toEqual('3');
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual('');
-
-    await rerender({metricId: 'm3'});
-    expect(container.textContent).toEqual('');
-
-    unmount();
-  });
-
-  test('getIndexIds', async () => {
-    const indexes: Indexes = createIndexes(store);
-    const {container, unmount} = render(FunctionIndexIds, {props: {indexes}});
-    expect(container.textContent).toEqual('[]');
-
-    await act(() =>
-      indexes.setIndexDefinition('i1', 't1').setIndexDefinition('i2', 't2'),
-    );
-    expect(container.textContent).toEqual('["i1","i2"]');
-
-    await act(() => indexes.delIndexDefinition('i1'));
-    expect(container.textContent).toEqual('["i2"]');
-
-    unmount();
-  });
-
-  test('getSliceIds', async () => {
-    const indexes: Indexes = createIndexes(store)
-      .setIndexDefinition('i1', 't1', 'c1')
-      .setIndexDefinition('i2', 't1', 'c2')
-      .setIndexDefinition('i3', 't3', 'c3');
-    const {container, rerender, unmount} = render(FunctionSliceIds, {
-      props: {indexes, indexId: 'i0'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({indexId: 'i1'});
-    expect(container.textContent).toEqual(JSON.stringify(['1']));
-
-    await act(() =>
-      store
-        .setCell('t1', 'r2', 'c1', 2)
-        .setCell('t1', 'r2', 'c1', 2)
-        .setCell('t1', 'r2', 'c2', 3),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['1', '2']));
-
-    await rerender({indexId: 'i2'});
-    expect(container.textContent).toEqual(JSON.stringify(['', '3']));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({indexId: 'i3'});
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    unmount();
-  });
-
-  test('getSliceRowIds', async () => {
-    const indexes: Indexes = createIndexes(store)
-      .setIndexDefinition('i1', 't1', 'c1')
-      .setIndexDefinition('i2', 't2', 'c2');
-    const {container, rerender, unmount} = render(FunctionSliceRowIds, {
-      props: {indexes, indexId: 'i0', sliceId: '0'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({indexId: 'i1', sliceId: '1'});
-    expect(container.textContent).toEqual(JSON.stringify(['r1']));
-
-    await act(() =>
-      store
-        .setCell('t1', 'r2', 'c1', 1)
-        .setCell('t1', 'r2', 'c1', 1)
-        .setCell('t1', 'r3', 'c1', 2),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['r1', 'r2']));
-
-    await rerender({indexId: 'i1', sliceId: '2'});
-    expect(container.textContent).toEqual(JSON.stringify(['r3']));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({indexId: 'i2', sliceId: '2'});
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    unmount();
-  });
-
-  test('getRelationshipIds', async () => {
-    const relationships: Relationships = createRelationships(store);
-    const {container, unmount} = render(FunctionRelationshipIds, {
-      props: {relationships},
-    });
-    expect(container.textContent).toEqual('[]');
-
-    await act(() =>
-      relationships
-        .setRelationshipDefinition('r1', 't1', 't2', 'c1')
-        .setRelationshipDefinition('r2', 't2', 't2', 'c1'),
-    );
-    expect(container.textContent).toEqual('["r1","r2"]');
-
-    await act(() => relationships.delRelationshipDefinition('r1'));
-    expect(container.textContent).toEqual('["r2"]');
-
-    unmount();
-  });
-
-  test('getRemoteRowId', async () => {
-    const relationships: Relationships = createRelationships(store)
-      .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
-      .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-    const {container, rerender, unmount} = render(FunctionRemoteRowId, {
-      props: {relationships, relationshipId: 'r0', localRowId: 'r0'},
-    });
-    expect(container.textContent).toEqual('');
-
-    await rerender({relationshipId: 'r1', localRowId: 'r1'});
-    expect(container.textContent).toEqual(JSON.stringify('1'));
-
-    await act(() =>
-      store.setTables({
-        t1: {r1: {c1: 'R1'}, r2: {c1: 'R2'}},
-        T1: {R1: {C1: 1}, R2: {C1: 2}},
-      }),
-    );
-    expect(container.textContent).toEqual(JSON.stringify('R1'));
-
-    await rerender({relationshipId: 'r1', localRowId: 'r2'});
-    expect(container.textContent).toEqual(JSON.stringify('R2'));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual('');
-
-    await rerender({relationshipId: 'r2', localRowId: 'r2'});
-    expect(container.textContent).toEqual('');
-
-    unmount();
-  });
-
-  test('getLocalRowIds', async () => {
-    const relationships: Relationships = createRelationships(store)
-      .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
-      .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-    const {container, rerender, unmount} = render(FunctionLocalRowIds, {
-      props: {relationships, relationshipId: 'r0', remoteRowId: 'R0'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({relationshipId: 'r1', remoteRowId: 'R1'});
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await act(() =>
-      store.setTables({
-        t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}, r3: {c1: 'R2'}},
-        T1: {R1: {C1: 1}, R2: {C1: 2}},
-      }),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['r1', 'r2']));
-
-    await rerender({relationshipId: 'r1', remoteRowId: 'R2'});
-    expect(container.textContent).toEqual(JSON.stringify(['r3']));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({relationshipId: 'r2', remoteRowId: 'R2'});
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    unmount();
-  });
-
-  test('getLinkedRowIds', async () => {
-    const relationships: Relationships = createRelationships(store)
-      .setRelationshipDefinition('r1', 't1', 't1', 'c1')
-      .setRelationshipDefinition('r2', 't2', 't2', 'c2');
-    const {container, rerender, unmount} = render(FunctionLinkedRowIds, {
-      props: {relationships, relationshipId: 'r0', firstRowId: 'r0'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify(['r0']));
-
-    await rerender({relationshipId: 'r1', firstRowId: 'r1'});
-    expect(container.textContent).toEqual(JSON.stringify(['r1', '1']));
-
-    await act(() =>
-      store.setTables({
-        t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {c1: 'r4'}},
-      }),
-    );
-    expect(container.textContent).toEqual(
-      JSON.stringify(['r1', 'r2', 'r3', 'r4']),
-    );
-
-    await rerender({relationshipId: 'r1', firstRowId: 'r2'});
-    expect(container.textContent).toEqual(JSON.stringify(['r2', 'r3', 'r4']));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual(JSON.stringify(['r2']));
-
-    await rerender({relationshipId: 'r2', firstRowId: 'r2'});
-    expect(container.textContent).toEqual(JSON.stringify(['r2']));
-
-    unmount();
-  });
-
-  test('getQueryIds', async () => {
-    const queries: Queries = createQueries(store);
-    const {container, unmount} = render(FunctionQueryIds, {props: {queries}});
-    expect(container.textContent).toEqual('[]');
-
-    await act(() =>
-      queries
-        .setQueryDefinition('q1', 't1', () => undefined)
-        .setQueryDefinition('q2', 't2', () => undefined),
-    );
-    expect(container.textContent).toEqual('["q1","q2"]');
-
-    await act(() => queries.delQueryDefinition('q1'));
-    expect(container.textContent).toEqual('["q2"]');
-
-    unmount();
-  });
-
-  test('getResultTable', async () => {
-    const queries: Queries = createQueries(store)
-      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-      .setQueryDefinition('q2', 't1', ({select, where}) => {
-        select('c1');
-        where('c1', 3);
+  describe('Read Functions', () => {
+    test('getCell can set values', async () => {
+      store.setCell('t1', 'r1', 'c1', 0);
+      const {container, unmount} = render(FunctionWritableCell, {
+        props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
       });
-    const {container, rerender, unmount} = render(FunctionResultTable, {
-      props: {queries, queryId: 'q0'},
+      expect(container.textContent).toContain('0');
+
+      await act(() =>
+        fireEvent.click(container.querySelector('button') as Element),
+      );
+      expect(container.textContent).toContain('1');
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
+
+      unmount();
     });
-    expect(container.textContent).toEqual(JSON.stringify({}));
 
-    await rerender({queryId: 'q1'});
-    expect(container.textContent).toEqual(JSON.stringify({r1: {c1: 1}}));
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
-    );
-    expect(container.textContent).toEqual(
-      JSON.stringify({r1: {c1: 2}, r2: {c1: 3}}),
-    );
-
-    await rerender({queryId: 'q2'});
-    expect(container.textContent).toEqual(JSON.stringify({r2: {c1: 3}}));
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual(JSON.stringify({}));
-
-    unmount();
-  });
-
-  test('getResultRowIds', async () => {
-    const queries: Queries = createQueries(store)
-      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-      .setQueryDefinition('q2', 't1', ({select, where}) => {
-        select('c1');
-        select('c2');
-        where('c1', 3);
+    test('getValue can set values', async () => {
+      store.setValues({v1: false});
+      const {container, unmount} = render(FunctionWritableValue, {
+        props: {store, valueId: 'v1', newValue: true},
       });
-    const {container, rerender, unmount} = render(FunctionResultRowIds, {
-      props: {queries, queryId: 'q0'},
+      expect(container.textContent).toContain('false');
+
+      await act(() =>
+        fireEvent.click(container.querySelector('button') as Element),
+      );
+      expect(container.textContent).toContain('true');
+      expect(store.getValue('v1')).toEqual(true);
+
+      unmount();
     });
-    expect(container.textContent).toEqual(JSON.stringify([]));
 
-    await rerender({queryId: 'q1'});
-    expect(container.textContent).toEqual(JSON.stringify(['r1']));
-
-    await act(() =>
-      store
-        .setTables({
-          t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}},
-        })
-        .setTables({
-          t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}},
-        }),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['r1', 'r2', 'r3']));
-
-    await rerender({queryId: 'q2'});
-    expect(container.textContent).toEqual(JSON.stringify(['r2', 'r3']));
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    unmount();
-  });
-
-  test('getResultTableCellIds', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => {
-        select('c1');
-        select('c2');
-      },
-    );
-    const {container, rerender, unmount} = render(FunctionResultTableCellIds, {
-      props: {queries, queryId: 'q0'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    await rerender({queryId: 'q1'});
-    expect(container.textContent).toEqual(JSON.stringify(['c1']));
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2, c2: 3}}})
-        .setTables({t1: {r1: {c1: 2, c2: 3}}}),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['c1', 'c2']));
-
-    unmount();
-  });
-
-  test('getResultRowCount', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const {container, rerender, unmount} = render(FunctionResultRowCount, {
-      props: {queries, queryId: 'q0'},
-    });
-    expect(container.textContent).toEqual('0');
-
-    await rerender({queryId: 'q1'});
-    expect(container.textContent).toEqual('1');
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
-    );
-    expect(container.textContent).toEqual('2');
-
-    unmount();
-  });
-
-  test('getResultSortedRowIds', async () => {
-    const queries: Queries = createQueries(store)
-      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-      .setQueryDefinition('q2', 't1', ({select, where}) => {
-        select('c1');
-        select('c2');
-        where('c1', 3);
+    test('getPersisterStatus', async () => {
+      const persister: AnyPersister = createSessionPersister(store, 'test-key');
+      const {container, unmount} = render(FunctionPersisterStatus, {
+        props: {persister},
       });
-    const {container, rerender, unmount} = render(FunctionResultSortedRowIds, {
-      props: {
-        queries,
-        queryId: 'q0',
-        cellId: 'c0',
-        descending: false,
-        offset: 0,
-        limit: undefined,
-      },
+      expect(container.textContent).toEqual('0');
+      unmount();
+      persister.destroy();
     });
-    expect(container.textContent).toEqual(JSON.stringify([]));
 
-    await rerender({queryId: 'q1', cellId: 'c1', descending: false});
-    expect(container.textContent).toEqual(JSON.stringify(['r1']));
-
-    await act(() =>
-      store
-        .setTables({
-          t1: {
-            r1: {c1: 2},
-            r2: {c1: 1},
-            r3: {c1: 3, c2: 1},
-            r4: {c1: 3, c2: 2},
-          },
-        })
-        .setTables({
-          t1: {
-            r1: {c1: 2},
-            r2: {c1: 1},
-            r3: {c1: 3, c2: 1},
-            r4: {c1: 3, c2: 2},
-          },
-        }),
-    );
-    expect(container.textContent).toEqual(
-      JSON.stringify(['r2', 'r1', 'r3', 'r4']),
-    );
-
-    await rerender({
-      queryId: 'q2',
-      cellId: 'c2',
-      descending: true,
-      offset: 0,
-      limit: 2,
-    });
-    expect(container.textContent).toEqual(JSON.stringify(['r4', 'r3']));
-
-    await act(() => store.setRow('t1', 'r5', {c1: 3, c2: 3}));
-    expect(container.textContent).toEqual(JSON.stringify(['r5', 'r4']));
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    unmount();
-  });
-
-  test('getResultSortedRowIds, no-default descending & offset', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const {container, unmount} = render(FunctionResultSortedRowIdsNoDefaults, {
-      props: {queries, queryId: 'q1', cellId: 'c1'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify(['r1']));
-    unmount();
-  });
-
-  test('getResultRow', async () => {
-    const queries: Queries = createQueries(store)
-      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-      .setQueryDefinition('q2', 't1', ({select, where}) => {
-        select('c1');
-        where('c1', 3);
+    test('getSynchronizerStatus', async () => {
+      const store2 = createMergeableStore();
+      const synchronizer: Synchronizer = createLocalSynchronizer(store2);
+      const {container, unmount} = render(FunctionSynchronizerStatus, {
+        props: {synchronizer},
       });
-    const {container, rerender, unmount} = render(FunctionResultRow, {
-      props: {queries, queryId: 'q0', rowId: 'r0'},
+      expect(container.textContent).toEqual('0');
+      unmount();
+      synchronizer.destroy();
     });
-    expect(container.textContent).toEqual(JSON.stringify({}));
-
-    await rerender({queryId: 'q1', rowId: 'r1'});
-    expect(container.textContent).toEqual(JSON.stringify({c1: 1}));
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
-    );
-    expect(container.textContent).toEqual(JSON.stringify({c1: 2}));
-
-    await rerender({queryId: 'q2', rowId: 'r2'});
-    expect(container.textContent).toEqual(JSON.stringify({c1: 3}));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual(JSON.stringify({}));
-
-    unmount();
   });
 
-  test('getResultCellIds', async () => {
-    const queries: Queries = createQueries(store)
-      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-      .setQueryDefinition('q2', 't1', ({select, where}) => {
-        select('c1');
-        select('c2');
-        select('c3');
-        where('c1', 3);
+  describe('Checkpoint Callbacks', () => {
+    let checkpoints: Checkpoints;
+
+    beforeEach(() => {
+      store = createStore().setTables({t1: {r1: {c1: 1}}});
+      checkpoints = createCheckpoints(store);
+      store.setTables({t1: {r1: {c1: 2}}});
+      checkpoints.addCheckpoint();
+      store.setTables({t1: {r1: {c1: 3}}});
+      checkpoints.addCheckpoint();
+    });
+
+    test('createGoBackwardCallback', async () => {
+      const {getByRole, unmount} = render(FunctionGoBackwardCallback, {
+        props: {checkpoints},
       });
-    const {container, rerender, unmount} = render(FunctionResultCellIds, {
-      props: {queries, queryId: 'q0', rowId: 'r0'},
+
+      await act(() => fireEvent.click(getByRole('button')));
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+
+      await act(() => fireEvent.click(getByRole('button')));
+      expect(checkpoints.getCheckpointIds()).toEqual([[], '0', ['1', '2']]);
+
+      unmount();
     });
-    expect(container.textContent).toEqual(JSON.stringify([]));
 
-    await rerender({queryId: 'q1', rowId: 'r1'});
-    expect(container.textContent).toEqual(JSON.stringify(['c1']));
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}}),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['c1']));
-
-    await rerender({queryId: 'q2', rowId: 'r2'});
-    expect(container.textContent).toEqual(JSON.stringify(['c1', 'c2']));
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual(JSON.stringify([]));
-
-    unmount();
-  });
-
-  test('getResultCell', async () => {
-    const queries: Queries = createQueries(store)
-      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
-      .setQueryDefinition('q2', 't1', ({select, where}) => {
-        select('c1');
-        select('c2');
-        where('c1', 3);
+    test('createGoForwardCallback', async () => {
+      const {getByRole, unmount} = render(FunctionGoForwardCallback, {
+        props: {checkpoints},
       });
-    const {container, rerender, unmount} = render(FunctionResultCell, {
-      props: {queries, queryId: 'q0', rowId: 'r0', cellId: 'c0'},
+
+      checkpoints.goTo('0');
+
+      await act(() => fireEvent.click(getByRole('button')));
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+
+      await act(() => fireEvent.click(getByRole('button')));
+      expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
+
+      unmount();
     });
-    expect(container.textContent).toEqual('');
-
-    await rerender({queryId: 'q1', rowId: 'r1', cellId: 'c1'});
-    expect(container.textContent).toEqual('1');
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}}),
-    );
-    expect(container.textContent).toEqual('2');
-
-    await rerender({queryId: 'q2', rowId: 'r2', cellId: 'c2'});
-    expect(container.textContent).toEqual('4');
-
-    await act(() => store.delTable('t1'));
-    expect(container.textContent).toEqual('');
-
-    unmount();
   });
 
-  test('getCheckpointIds', async () => {
-    const checkpoints: Checkpoints = createCheckpoints(store);
-    const {container, unmount} = render(FunctionCheckpointIds, {
-      props: {checkpoints},
-    });
-    expect(container.textContent).toEqual(JSON.stringify([[], '0', []]));
+  describe('Listener Functions', () => {
+    test('onHasTables', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasTables).toEqual(0);
 
-    await act(() => store.setTables({t1: {r1: {c1: 2}}}));
-    expect(container.textContent).toEqual(
-      JSON.stringify([['0'], undefined, []]),
-    );
+      const {unmount} = render(ListenerFunctionHasTables, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().hasTables).toEqual(1);
 
-    await act(() => checkpoints.addCheckpoint());
-    expect(container.textContent).toEqual(JSON.stringify([['0'], '1', []]));
+      await act(() => store.delTables());
+      expect(listener).toHaveBeenCalledTimes(1);
 
-    unmount();
-  });
-
-  test('getPersisterStatus', async () => {
-    const persister: AnyPersister = createSessionPersister(store, 'test-key');
-    const {container, unmount} = render(FunctionPersisterStatus, {
-      props: {persister},
-    });
-    expect(container.textContent).toEqual('0');
-    unmount();
-    persister.destroy();
-  });
-
-  test('getSynchronizerStatus', async () => {
-    const store2 = createMergeableStore();
-    const synchronizer: Synchronizer = createLocalSynchronizer(store2);
-    const {container, unmount} = render(FunctionSynchronizerStatus, {
-      props: {synchronizer},
-    });
-    expect(container.textContent).toEqual('0');
-    unmount();
-    synchronizer.destroy();
-  });
-});
-
-describe('Checkpoint Callbacks', () => {
-  let checkpoints: Checkpoints;
-
-  beforeEach(() => {
-    store = createStore().setTables({t1: {r1: {c1: 1}}});
-    checkpoints = createCheckpoints(store);
-    store.setTables({t1: {r1: {c1: 2}}});
-    checkpoints.addCheckpoint();
-    store.setTables({t1: {r1: {c1: 3}}});
-    checkpoints.addCheckpoint();
-  });
-
-  test('createGoBackwardCallback', async () => {
-    const {getByRole, unmount} = render(FunctionGoBackwardCallback, {
-      props: {checkpoints},
+      unmount();
+      expect(store.getListenerStats().hasTables).toEqual(0);
     });
 
-    await act(() => fireEvent.click(getByRole('button')));
-    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+    test('onTables', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().tables).toEqual(0);
 
-    await act(() => fireEvent.click(getByRole('button')));
-    expect(checkpoints.getCheckpointIds()).toEqual([[], '0', ['1', '2']]);
+      const {unmount} = render(ListenerFunctionTables, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().tables).toEqual(1);
 
-    unmount();
-  });
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
 
-  test('createGoForwardCallback', async () => {
-    const {getByRole, unmount} = render(FunctionGoForwardCallback, {
-      props: {checkpoints},
+      unmount();
+      expect(store.getListenerStats().tables).toEqual(0);
     });
 
-    checkpoints.goTo('0');
-
-    await act(() => fireEvent.click(getByRole('button')));
-    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
-
-    await act(() => fireEvent.click(getByRole('button')));
-    expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
-
-    unmount();
-  });
-});
-
-describe('Listener Functions', () => {
-  test('onHasTables', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasTables).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasTables, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().hasTables).toEqual(1);
-
-    await act(() => store.delTables());
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasTables).toEqual(0);
-  });
-
-  test('onTables', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().tables).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionTables, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().tables).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().tables).toEqual(0);
-  });
-
-  test('onTableIds', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().tableIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionTableIds, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().tableIds).toEqual(1);
-
-    await act(() => store.setCell('t2', 'r1', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().tableIds).toEqual(0);
-  });
-
-  test('onHasTable', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasTable).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasTable, {
-      props: {store, tableId: 't1', listener},
-    });
-    expect(store.getListenerStats().hasTable).toEqual(1);
-
-    await act(() => store.delTable('t1'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasTable).toEqual(0);
-  });
-
-  test('onTable', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().table).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionTable, {
-      props: {store, tableId: 't1', listener},
-    });
-    expect(store.getListenerStats().table).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().table).toEqual(0);
-  });
-
-  test('onTableCellIds', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().tableCellIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionTableCellIds, {
-      props: {store, tableId: 't1', listener},
-    });
-    expect(store.getListenerStats().tableCellIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c2', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().tableCellIds).toEqual(0);
-  });
-
-  test('onHasTableCell', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasTableCell).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasTableCell, {
-      props: {store, tableId: 't1', cellId: 'c1', listener},
-    });
-    expect(store.getListenerStats().hasTableCell).toEqual(1);
-
-    await act(() => store.delCell('t1', 'r1', 'c1', true));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasTableCell).toEqual(0);
-  });
-
-  test('onRowCount', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().rowCount).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionRowCount, {
-      props: {store, tableId: 't1', listener},
-    });
-    expect(store.getListenerStats().rowCount).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r2', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().rowCount).toEqual(0);
-  });
-
-  test('onRowIds', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().rowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionRowIds, {
-      props: {store, tableId: 't1', listener},
-    });
-    expect(store.getListenerStats().rowIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r2', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().rowIds).toEqual(0);
-  });
-
-  test('onSortedRowIds', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().sortedRowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionSortedRowIds, {
-      props: {store, tableId: 't1', cellId: 'c1', listener},
-    });
-    expect(store.getListenerStats().sortedRowIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r2', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().sortedRowIds).toEqual(0);
-  });
-
-  test('onHasRow', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasRow).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasRow, {
-      props: {store, tableId: 't1', rowId: 'r1', listener},
-    });
-    expect(store.getListenerStats().hasRow).toEqual(1);
-
-    await act(() => store.delRow('t1', 'r1'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasRow).toEqual(0);
-  });
-
-  test('onRow', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().row).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionRow, {
-      props: {store, tableId: 't1', rowId: 'r1', listener},
-    });
-    expect(store.getListenerStats().row).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().row).toEqual(0);
-  });
-
-  test('onCellIds', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().cellIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionCellIds, {
-      props: {store, tableId: 't1', rowId: 'r1', listener},
-    });
-    expect(store.getListenerStats().cellIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c2', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().cellIds).toEqual(0);
-  });
-
-  test('onHasCell', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasCell).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasCell, {
-      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
-    });
-    expect(store.getListenerStats().hasCell).toEqual(1);
-
-    await act(() => store.delCell('t1', 'r1', 'c1', true));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasCell).toEqual(0);
-  });
-
-  test('onCell', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().cell).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionCell, {
-      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
-    });
-    expect(store.getListenerStats().cell).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().cell).toEqual(0);
-  });
-
-  test('onHasValues', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasValues).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasValues, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().hasValues).toEqual(1);
-
-    await act(() => store.delValues());
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasValues).toEqual(0);
-  });
-
-  test('onValues', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().values).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionValues, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().values).toEqual(1);
-
-    await act(() => store.setValue('v1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().values).toEqual(0);
-  });
-
-  test('onValueIds', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().valueIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionValueIds, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().valueIds).toEqual(1);
-
-    await act(() => store.setValue('v2', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().valueIds).toEqual(0);
-  });
-
-  test('onHasValue', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().hasValue).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionHasValue, {
-      props: {store, valueId: 'v1', listener},
-    });
-    expect(store.getListenerStats().hasValue).toEqual(1);
-
-    await act(() => store.delValue('v1'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().hasValue).toEqual(0);
-  });
-
-  test('onValue', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().value).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionValue, {
-      props: {store, valueId: 'v1', listener},
-    });
-    expect(store.getListenerStats().value).toEqual(1);
-
-    await act(() => store.setValue('v1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().value).toEqual(0);
-  });
-
-  test('onStartTransaction', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().transaction).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionStartTransaction, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().transaction).toEqual(1);
-
-    await act(() => store.setValue('v1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().transaction).toEqual(0);
-  });
-
-  test('onWillFinishTransaction', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().transaction).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionWillFinishTransaction, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().transaction).toEqual(1);
-
-    await act(() => store.setValue('v1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().transaction).toEqual(0);
-  });
-
-  test('onDidFinishTransaction', async () => {
-    const listener = vi.fn();
-    expect(store.getListenerStats().transaction).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionDidFinishTransaction, {
-      props: {store, listener},
-    });
-    expect(store.getListenerStats().transaction).toEqual(1);
-
-    await act(() => store.setValue('v1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(store.getListenerStats().transaction).toEqual(0);
-  });
-
-  test('onMetric', async () => {
-    const metrics: Metrics = createMetrics(store).setMetricDefinition(
-      'm1',
-      't1',
-      'max',
-      'c1',
-    );
-    const listener = vi.fn();
-    expect(metrics.getListenerStats().metric).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionMetric, {
-      props: {metrics, metricId: 'm1', listener},
-    });
-    expect(metrics.getListenerStats().metric).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(metrics.getListenerStats().metric).toEqual(0);
-  });
-
-  test('onSliceIds', async () => {
-    const indexes: Indexes = createIndexes(store).setIndexDefinition(
-      'i1',
-      't1',
-      'c1',
-    );
-    const listener = vi.fn();
-    expect(indexes.getListenerStats().sliceIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionSliceIds, {
-      props: {indexes, indexId: 'i1', listener},
-    });
-    expect(indexes.getListenerStats().sliceIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 'a'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(indexes.getListenerStats().sliceIds).toEqual(0);
-  });
-
-  test('onSliceRowIds', async () => {
-    const indexes: Indexes = createIndexes(store).setIndexDefinition(
-      'i1',
-      't1',
-      'c1',
-    );
-    const listener = vi.fn();
-    expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionSliceRowIds, {
-      props: {indexes, indexId: 'i1', sliceId: 'a', listener},
-    });
-    expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 'a'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
-  });
-
-  test('onRemoteRowId', async () => {
-    const relationships: Relationships = createRelationships(
-      store,
-    ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
-    const listener = vi.fn();
-    expect(relationships.getListenerStats().remoteRowId).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionRemoteRowId, {
-      props: {relationships, relationshipId: 'r1', localRowId: 'r1', listener},
-    });
-    expect(relationships.getListenerStats().remoteRowId).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(relationships.getListenerStats().remoteRowId).toEqual(0);
-  });
-
-  test('onLocalRowIds', async () => {
-    const relationships: Relationships = createRelationships(
-      store,
-    ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
-    const listener = vi.fn();
-    expect(relationships.getListenerStats().localRowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionLocalRowIds, {
-      props: {
-        relationships,
-        relationshipId: 'r1',
-        remoteRowId: 'R1',
-        listener,
-      },
-    });
-    expect(relationships.getListenerStats().localRowIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(relationships.getListenerStats().localRowIds).toEqual(0);
-  });
-
-  test('onLinkedRowIds', async () => {
-    const relationships: Relationships = createRelationships(
-      store,
-    ).setRelationshipDefinition('r1', 't1', 't1', 'c1');
-    const listener = vi.fn();
-    expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionLinkedRowIds, {
-      props: {
-        relationships,
-        relationshipId: 'r1',
-        firstRowId: 'r1',
-        listener,
-      },
-    });
-    expect(relationships.getListenerStats().linkedRowIds).toEqual(1);
-
-    await act(() => store.setTables({t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}}}));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
-  });
-
-  test('onResultTable', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().table).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultTable, {
-      props: {queries, queryId: 'q1', listener},
-    });
-    expect(queries.getListenerStats().table).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().table).toEqual(0);
-  });
-
-  test('onResultTableCellIds', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => {
-        select('c1');
-        select('c2');
-      },
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().tableCellIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultTableCellIds, {
-      props: {queries, queryId: 'q1', listener},
-    });
-    expect(queries.getListenerStats().tableCellIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c2', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().tableCellIds).toEqual(0);
-  });
-
-  test('onResultRowCount', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().rowCount).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultRowCount, {
-      props: {queries, queryId: 'q1', listener},
-    });
-    expect(queries.getListenerStats().rowCount).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r2', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().rowCount).toEqual(0);
-  });
-
-  test('onResultRowIds', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().rowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultRowIds, {
-      props: {queries, queryId: 'q1', listener},
-    });
-    expect(queries.getListenerStats().rowIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r2', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().rowIds).toEqual(0);
-  });
-
-  test('onResultSortedRowIds', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().sortedRowIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultSortedRowIds, {
-      props: {queries, queryId: 'q1', cellId: 'c1', listener},
-    });
-    expect(queries.getListenerStats().sortedRowIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r2', 'c1', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().sortedRowIds).toEqual(0);
-  });
-
-  test('onResultRow', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().row).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultRow, {
-      props: {queries, queryId: 'q1', rowId: 'r1', listener},
-    });
-    expect(queries.getListenerStats().row).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().row).toEqual(0);
-  });
-
-  test('onResultCellIds', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => {
-        select('c1');
-        select('c2');
-      },
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().cellIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultCellIds, {
-      props: {queries, queryId: 'q1', rowId: 'r1', listener},
-    });
-    expect(queries.getListenerStats().cellIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c2', 0));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().cellIds).toEqual(0);
-  });
-
-  test('onResultCell', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().cell).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionResultCell, {
-      props: {queries, queryId: 'q1', rowId: 'r1', cellId: 'c1', listener},
-    });
-    expect(queries.getListenerStats().cell).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().cell).toEqual(0);
-  });
-
-  test('onParamValues', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select, where, param}) => {
-        select('c1');
-        where('c1', param('p1') as number);
-      },
-      {p1: 1},
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().paramValues).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionParamValues, {
-      props: {queries, queryId: 'q1', listener},
-    });
-    expect(queries.getListenerStats().paramValues).toEqual(1);
-
-    await act(() => queries.setParamValue('q1', 'p1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().paramValues).toEqual(0);
-  });
-
-  test('onParamValue', async () => {
-    const queries: Queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select, where, param}) => {
-        select('c1');
-        where('c1', param('p1') as number);
-      },
-      {p1: 1},
-    );
-    const listener = vi.fn();
-    expect(queries.getListenerStats().paramValue).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionParamValue, {
-      props: {queries, queryId: 'q1', paramId: 'p1', listener},
-    });
-    expect(queries.getListenerStats().paramValue).toEqual(1);
-
-    await act(() => queries.setParamValue('q1', 'p1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(queries.getListenerStats().paramValue).toEqual(0);
-  });
-
-  test('onCheckpointIds', async () => {
-    const checkpoints: Checkpoints = createCheckpoints(store);
-    const listener = vi.fn();
-    expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionCheckpointIds, {
-      props: {checkpoints, listener},
-    });
-    expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
-
-    await act(() => store.setCell('t1', 'r1', 'c1', 2));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
-  });
-
-  test('onCheckpoint', async () => {
-    const checkpoints: Checkpoints = createCheckpoints(store);
-    const listener = vi.fn();
-    expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
-
-    const {unmount} = render(ListenerFunctionCheckpoint, {
-      props: {checkpoints, checkpointId: '0', listener},
-    });
-    expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
-
-    await act(() => checkpoints.setCheckpoint('0', 'c1'));
-    expect(listener).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
-  });
-
-  test('onPersisterStatus', async () => {
-    const persister: AnyPersister = createSessionPersister(store, 'test-key');
-    const listener = vi.fn();
-
-    const {unmount} = render(ListenerFunctionPersisterStatus, {
-      props: {persister, listener},
+    test('onTableIds', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().tableIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionTableIds, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().tableIds).toEqual(1);
+
+      await act(() => store.setCell('t2', 'r1', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().tableIds).toEqual(0);
     });
 
-    await act(() => persister.save());
-    expect(listener).toHaveBeenCalled();
+    test('onHasTable', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasTable).toEqual(0);
 
-    unmount();
-    persister.destroy();
-  });
+      const {unmount} = render(ListenerFunctionHasTable, {
+        props: {store, tableId: 't1', listener},
+      });
+      expect(store.getListenerStats().hasTable).toEqual(1);
 
-  test('onSynchronizerStatus', async () => {
-    const store2 = createMergeableStore();
-    const synchronizer: Synchronizer = createLocalSynchronizer(store2);
-    const listener = vi.fn();
+      await act(() => store.delTable('t1'));
+      expect(listener).toHaveBeenCalledTimes(1);
 
-    const {unmount} = render(ListenerFunctionSynchronizerStatus, {
-      props: {synchronizer, listener},
+      unmount();
+      expect(store.getListenerStats().hasTable).toEqual(0);
     });
 
-    await act(() => synchronizer.save());
-    expect(listener).toHaveBeenCalled();
+    test('onTable', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().table).toEqual(0);
 
-    unmount();
-    synchronizer.destroy();
+      const {unmount} = render(ListenerFunctionTable, {
+        props: {store, tableId: 't1', listener},
+      });
+      expect(store.getListenerStats().table).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().table).toEqual(0);
+    });
+
+    test('onTableCellIds', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().tableCellIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionTableCellIds, {
+        props: {store, tableId: 't1', listener},
+      });
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c2', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().tableCellIds).toEqual(0);
+    });
+
+    test('onHasTableCell', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasTableCell).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionHasTableCell, {
+        props: {store, tableId: 't1', cellId: 'c1', listener},
+      });
+      expect(store.getListenerStats().hasTableCell).toEqual(1);
+
+      await act(() => store.delCell('t1', 'r1', 'c1', true));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().hasTableCell).toEqual(0);
+    });
+
+    test('onRowCount', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().rowCount).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionRowCount, {
+        props: {store, tableId: 't1', listener},
+      });
+      expect(store.getListenerStats().rowCount).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r2', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().rowCount).toEqual(0);
+    });
+
+    test('onRowIds', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().rowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionRowIds, {
+        props: {store, tableId: 't1', listener},
+      });
+      expect(store.getListenerStats().rowIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r2', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().rowIds).toEqual(0);
+    });
+
+    test('onSortedRowIds', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().sortedRowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionSortedRowIds, {
+        props: {store, tableId: 't1', cellId: 'c1', listener},
+      });
+      expect(store.getListenerStats().sortedRowIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r2', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    });
+
+    test('onHasRow', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasRow).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionHasRow, {
+        props: {store, tableId: 't1', rowId: 'r1', listener},
+      });
+      expect(store.getListenerStats().hasRow).toEqual(1);
+
+      await act(() => store.delRow('t1', 'r1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().hasRow).toEqual(0);
+    });
+
+    test('onRow', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().row).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionRow, {
+        props: {store, tableId: 't1', rowId: 'r1', listener},
+      });
+      expect(store.getListenerStats().row).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().row).toEqual(0);
+    });
+
+    test('onCellIds', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().cellIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionCellIds, {
+        props: {store, tableId: 't1', rowId: 'r1', listener},
+      });
+      expect(store.getListenerStats().cellIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c2', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().cellIds).toEqual(0);
+    });
+
+    test('onHasCell', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasCell).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionHasCell, {
+        props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
+      });
+      expect(store.getListenerStats().hasCell).toEqual(1);
+
+      await act(() => store.delCell('t1', 'r1', 'c1', true));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().hasCell).toEqual(0);
+    });
+
+    test('onCell', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().cell).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionCell, {
+        props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
+      });
+      expect(store.getListenerStats().cell).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().cell).toEqual(0);
+    });
+
+    test('onHasValues', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasValues).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionHasValues, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().hasValues).toEqual(1);
+
+      await act(() => store.delValues());
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().hasValues).toEqual(0);
+    });
+
+    test('onValues', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().values).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionValues, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().values).toEqual(1);
+
+      await act(() => store.setValue('v1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().values).toEqual(0);
+    });
+
+    test('onValueIds', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().valueIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionValueIds, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().valueIds).toEqual(1);
+
+      await act(() => store.setValue('v2', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().valueIds).toEqual(0);
+    });
+
+    test('onHasValue', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().hasValue).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionHasValue, {
+        props: {store, valueId: 'v1', listener},
+      });
+      expect(store.getListenerStats().hasValue).toEqual(1);
+
+      await act(() => store.delValue('v1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().hasValue).toEqual(0);
+    });
+
+    test('onValue', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().value).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionValue, {
+        props: {store, valueId: 'v1', listener},
+      });
+      expect(store.getListenerStats().value).toEqual(1);
+
+      await act(() => store.setValue('v1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().value).toEqual(0);
+    });
+
+    test('onStartTransaction', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().transaction).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionStartTransaction, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().transaction).toEqual(1);
+
+      await act(() => store.setValue('v1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().transaction).toEqual(0);
+    });
+
+    test('onWillFinishTransaction', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().transaction).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionWillFinishTransaction, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().transaction).toEqual(1);
+
+      await act(() => store.setValue('v1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().transaction).toEqual(0);
+    });
+
+    test('onDidFinishTransaction', async () => {
+      const listener = vi.fn();
+      expect(store.getListenerStats().transaction).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionDidFinishTransaction, {
+        props: {store, listener},
+      });
+      expect(store.getListenerStats().transaction).toEqual(1);
+
+      await act(() => store.setValue('v1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(store.getListenerStats().transaction).toEqual(0);
+    });
+
+    test('onMetric', async () => {
+      const metrics: Metrics = createMetrics(store).setMetricDefinition(
+        'm1',
+        't1',
+        'max',
+        'c1',
+      );
+      const listener = vi.fn();
+      expect(metrics.getListenerStats().metric).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionMetric, {
+        props: {metrics, metricId: 'm1', listener},
+      });
+      expect(metrics.getListenerStats().metric).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(metrics.getListenerStats().metric).toEqual(0);
+    });
+
+    test('onSliceIds', async () => {
+      const indexes: Indexes = createIndexes(store).setIndexDefinition(
+        'i1',
+        't1',
+        'c1',
+      );
+      const listener = vi.fn();
+      expect(indexes.getListenerStats().sliceIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionSliceIds, {
+        props: {indexes, indexId: 'i1', listener},
+      });
+      expect(indexes.getListenerStats().sliceIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 'a'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(indexes.getListenerStats().sliceIds).toEqual(0);
+    });
+
+    test('onSliceRowIds', async () => {
+      const indexes: Indexes = createIndexes(store).setIndexDefinition(
+        'i1',
+        't1',
+        'c1',
+      );
+      const listener = vi.fn();
+      expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionSliceRowIds, {
+        props: {indexes, indexId: 'i1', sliceId: 'a', listener},
+      });
+      expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 'a'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
+    });
+
+    test('onRemoteRowId', async () => {
+      const relationships: Relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+      const listener = vi.fn();
+      expect(relationships.getListenerStats().remoteRowId).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionRemoteRowId, {
+        props: {
+          relationships,
+          relationshipId: 'r1',
+          localRowId: 'r1',
+          listener,
+        },
+      });
+      expect(relationships.getListenerStats().remoteRowId).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(relationships.getListenerStats().remoteRowId).toEqual(0);
+    });
+
+    test('onLocalRowIds', async () => {
+      const relationships: Relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+      const listener = vi.fn();
+      expect(relationships.getListenerStats().localRowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionLocalRowIds, {
+        props: {
+          relationships,
+          relationshipId: 'r1',
+          remoteRowId: 'R1',
+          listener,
+        },
+      });
+      expect(relationships.getListenerStats().localRowIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(relationships.getListenerStats().localRowIds).toEqual(0);
+    });
+
+    test('onLinkedRowIds', async () => {
+      const relationships: Relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', 't1', 't1', 'c1');
+      const listener = vi.fn();
+      expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionLinkedRowIds, {
+        props: {
+          relationships,
+          relationshipId: 'r1',
+          firstRowId: 'r1',
+          listener,
+        },
+      });
+      expect(relationships.getListenerStats().linkedRowIds).toEqual(1);
+
+      await act(() => store.setTables({t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}}}));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
+    });
+
+    test('onResultTable', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().table).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultTable, {
+        props: {queries, queryId: 'q1', listener},
+      });
+      expect(queries.getListenerStats().table).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().table).toEqual(0);
+    });
+
+    test('onResultTableCellIds', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => {
+          select('c1');
+          select('c2');
+        },
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().tableCellIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultTableCellIds, {
+        props: {queries, queryId: 'q1', listener},
+      });
+      expect(queries.getListenerStats().tableCellIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c2', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().tableCellIds).toEqual(0);
+    });
+
+    test('onResultRowCount', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().rowCount).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultRowCount, {
+        props: {queries, queryId: 'q1', listener},
+      });
+      expect(queries.getListenerStats().rowCount).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r2', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().rowCount).toEqual(0);
+    });
+
+    test('onResultRowIds', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().rowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultRowIds, {
+        props: {queries, queryId: 'q1', listener},
+      });
+      expect(queries.getListenerStats().rowIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r2', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().rowIds).toEqual(0);
+    });
+
+    test('onResultSortedRowIds', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().sortedRowIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultSortedRowIds, {
+        props: {queries, queryId: 'q1', cellId: 'c1', listener},
+      });
+      expect(queries.getListenerStats().sortedRowIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r2', 'c1', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().sortedRowIds).toEqual(0);
+    });
+
+    test('onResultRow', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().row).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultRow, {
+        props: {queries, queryId: 'q1', rowId: 'r1', listener},
+      });
+      expect(queries.getListenerStats().row).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().row).toEqual(0);
+    });
+
+    test('onResultCellIds', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => {
+          select('c1');
+          select('c2');
+        },
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().cellIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultCellIds, {
+        props: {queries, queryId: 'q1', rowId: 'r1', listener},
+      });
+      expect(queries.getListenerStats().cellIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c2', 0));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().cellIds).toEqual(0);
+    });
+
+    test('onResultCell', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().cell).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionResultCell, {
+        props: {queries, queryId: 'q1', rowId: 'r1', cellId: 'c1', listener},
+      });
+      expect(queries.getListenerStats().cell).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().cell).toEqual(0);
+    });
+
+    test('onParamValues', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as number);
+        },
+        {p1: 1},
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().paramValues).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionParamValues, {
+        props: {queries, queryId: 'q1', listener},
+      });
+      expect(queries.getListenerStats().paramValues).toEqual(1);
+
+      await act(() => queries.setParamValue('q1', 'p1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().paramValues).toEqual(0);
+    });
+
+    test('onParamValue', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as number);
+        },
+        {p1: 1},
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().paramValue).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionParamValue, {
+        props: {queries, queryId: 'q1', paramId: 'p1', listener},
+      });
+      expect(queries.getListenerStats().paramValue).toEqual(1);
+
+      await act(() => queries.setParamValue('q1', 'p1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().paramValue).toEqual(0);
+    });
+
+    test('onCheckpointIds', async () => {
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const listener = vi.fn();
+      expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionCheckpointIds, {
+        props: {checkpoints, listener},
+      });
+      expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
+
+      await act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
+    });
+
+    test('onCheckpoint', async () => {
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const listener = vi.fn();
+      expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
+
+      const {unmount} = render(ListenerFunctionCheckpoint, {
+        props: {checkpoints, checkpointId: '0', listener},
+      });
+      expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
+
+      await act(() => checkpoints.setCheckpoint('0', 'c1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
+    });
+
+    test('onPersisterStatus', async () => {
+      const persister: AnyPersister = createSessionPersister(store, 'test-key');
+      const listener = vi.fn();
+
+      const {unmount} = render(ListenerFunctionPersisterStatus, {
+        props: {persister, listener},
+      });
+
+      await act(() => persister.save());
+      expect(listener).toHaveBeenCalled();
+
+      unmount();
+      persister.destroy();
+    });
+
+    test('onSynchronizerStatus', async () => {
+      const store2 = createMergeableStore();
+      const synchronizer: Synchronizer = createLocalSynchronizer(store2);
+      const listener = vi.fn();
+
+      const {unmount} = render(ListenerFunctionSynchronizerStatus, {
+        props: {synchronizer, listener},
+      });
+
+      await act(() => synchronizer.save());
+      expect(listener).toHaveBeenCalled();
+
+      unmount();
+      synchronizer.destroy();
+    });
   });
 });

@@ -7,9 +7,13 @@ import type {
   Cell,
   Checkpoints,
   Id,
+  Indexes,
   MapCell,
   MapValue,
   MergeableStore,
+  Metrics,
+  Queries,
+  Relationships,
   Row,
   Store,
   Table,
@@ -229,20 +233,46 @@ const primitiveHarness = {
 const Reader = ({
   mode,
   store,
+  metrics,
+  indexes,
+  relationships,
+  queries,
+  checkpoints,
   tableId,
   rowId,
   cellId,
   valueId,
+  metricId,
+  indexId,
+  sliceId,
+  relationshipId,
+  localRowId,
+  remoteRowId,
+  firstRowId,
+  queryId,
   descending,
   offset,
   limit,
 }: {
   readonly mode: string;
   readonly store: Store;
+  readonly metrics?: Metrics;
+  readonly indexes?: Indexes;
+  readonly relationships?: Relationships;
+  readonly queries?: Queries;
+  readonly checkpoints?: Checkpoints;
   readonly tableId?: Id;
   readonly rowId?: Id;
   readonly cellId?: Id;
   readonly valueId?: Id;
+  readonly metricId?: Id;
+  readonly indexId?: Id;
+  readonly sliceId?: Id;
+  readonly relationshipId?: Id;
+  readonly localRowId?: Id;
+  readonly remoteRowId?: Id;
+  readonly firstRowId?: Id;
+  readonly queryId?: Id;
   readonly descending?: boolean;
   readonly offset?: number;
   readonly limit?: number;
@@ -274,49 +304,101 @@ const Reader = ({
   const valueIds = useValueIds(store);
   const hasValue = useHasValue(valueId, store);
   const storeValue = useValue(valueId, store);
-  const valueToRender =
-    mode == 'hasTables'
-      ? hasTables
-      : mode == 'tables'
-        ? tables
-        : mode == 'tableIds'
-          ? tableIds
-          : mode == 'hasTable'
-            ? hasTable
-            : mode == 'table'
-              ? table
-              : mode == 'tableCellIds'
-                ? tableCellIds
-                : mode == 'hasTableCell'
-                  ? hasTableCell
-                  : mode == 'rowCount'
-                    ? rowCount
-                    : mode == 'rowIds'
-                      ? rowIds
-                      : mode == 'sortedRowIds'
-                        ? sortedRowIds
-                        : mode == 'hasRow'
-                          ? hasRow
-                          : mode == 'row'
-                            ? row
-                            : mode == 'cellIds'
-                              ? cellIds
-                              : mode == 'hasCell'
-                                ? hasCell
-                                : mode == 'cell'
-                                  ? cell
-                                  : mode == 'hasValues'
-                                    ? hasValues
-                                    : mode == 'values'
-                                      ? values
-                                      : mode == 'valueIds'
-                                        ? valueIds
-                                        : mode == 'hasValue'
-                                          ? hasValue
-                                          : mode == 'value'
-                                            ? storeValue
-                                            : undefined;
-  return JSON.stringify(valueToRender);
+  const metricsIds = useMetricsIds();
+  const indexesIds = useIndexesIds();
+  const queriesIds = useQueriesIds();
+  const relationshipsIds = useRelationshipsIds();
+  const checkpointsIds = useCheckpointsIds();
+  const persisterIds = usePersisterIds();
+  const synchronizerIds = useSynchronizerIds();
+  const metricIds = useMetricIds(metrics);
+  const metric = useMetric(metricId, metrics);
+  const indexIds = useIndexIds(indexes);
+  const sliceIds = useSliceIds(indexId, indexes);
+  const sliceRowIds = useSliceRowIds(indexId, sliceId, indexes);
+  const relationshipIds = useRelationshipIds(relationships);
+  const remoteRowIdResult = useRemoteRowId(
+    relationshipId,
+    localRowId,
+    relationships,
+  );
+  const localRowIds = useLocalRowIds(
+    relationshipId,
+    remoteRowId,
+    relationships,
+  );
+  const linkedRowIds = useLinkedRowIds(
+    relationshipId,
+    firstRowId,
+    relationships,
+  );
+  const queryIds = useQueryIds(queries);
+  const resultTable = useResultTable(queryId, queries);
+  const resultTableCellIds = useResultTableCellIds(queryId, queries);
+  const resultRowCount = useResultRowCount(queryId, queries);
+  const resultRowIds = useResultRowIds(queryId, queries);
+  const resultSortedRowIds = useResultSortedRowIds(
+    queryId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    queries,
+  );
+  const resultRow = useResultRow(queryId, rowId, queries);
+  const resultCellIds = useResultCellIds(queryId, rowId, queries);
+  const resultCell = useResultCell(queryId, rowId, cellId, queries);
+  const checkpointIds = useCheckpointIds(checkpoints);
+  return JSON.stringify(
+    {
+      hasTables,
+      tables,
+      tableIds,
+      hasTable,
+      table,
+      tableCellIds,
+      hasTableCell,
+      rowCount,
+      rowIds,
+      sortedRowIds,
+      hasRow,
+      row,
+      cellIds,
+      hasCell,
+      cell,
+      hasValues,
+      values,
+      valueIds,
+      hasValue,
+      value: storeValue,
+      metricsIds,
+      indexesIds,
+      queriesIds,
+      relationshipsIds,
+      checkpointsIds,
+      persisterIds,
+      synchronizerIds,
+      metricIds,
+      metric,
+      indexIds,
+      sliceIds,
+      sliceRowIds,
+      relationshipIds,
+      remoteRowId: remoteRowIdResult,
+      localRowIds,
+      linkedRowIds,
+      queryIds,
+      resultTable,
+      resultTableCellIds,
+      resultRowCount,
+      resultRowIds,
+      resultSortedRowIds,
+      resultRow,
+      resultCellIds,
+      resultCell,
+      checkpointIds,
+    }[mode],
+  );
 };
 
 testContextPrimitives('ui-react', primitiveHarness, {
