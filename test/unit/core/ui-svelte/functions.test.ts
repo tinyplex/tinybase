@@ -66,6 +66,9 @@ import ListenerFunctionValueIds from './components/ListenerFunctionValueIds.svel
 import ListenerFunctionValues from './components/ListenerFunctionValues.svelte';
 import ListenerFunctionWillFinishTransaction from './components/ListenerFunctionWillFinishTransaction.svelte';
 
+import {testContextPrimitives} from '../ui-common/primitives.ts';
+import ContextPrimitiveNoContext from './components/ContextPrimitiveNoContext.svelte';
+import ContextPrimitiveThings from './components/ContextPrimitiveThings.svelte';
 import FunctionCell from './components/FunctionCell.svelte';
 import FunctionCellIds from './components/FunctionCellIds.svelte';
 import FunctionCheckpointIds from './components/FunctionCheckpointIds.svelte';
@@ -129,6 +132,20 @@ beforeEach(() => {
   store = createStore()
     .setTables({t1: {r1: {c1: 1}}})
     .setValues({v1: 1});
+});
+
+type SvelteComponent = Parameters<typeof render>[0];
+
+const primitiveHarness = {
+  render: (component: unknown, props: {[key: string]: unknown}) => {
+    const rendered = render(component as SvelteComponent, {props});
+    return {container: rendered.container, unmount: rendered.unmount};
+  },
+};
+
+testContextPrimitives('ui-svelte', primitiveHarness, {
+  Things: ContextPrimitiveThings,
+  NoContext: ContextPrimitiveNoContext,
 });
 
 test('windowless ui-svelte functions skip effects', () => {

@@ -156,18 +156,12 @@ export default tsLint.config(
     plugins: solidLint.configs['flat/typescript'].plugins,
     rules: {
       ...solidLint.configs['flat/typescript'].rules,
-      'solid/reactivity': [
-        1,
-        {customReactiveFunctions: ['renderView']},
-      ],
+      'solid/reactivity': [2, {customReactiveFunctions: ['renderView']}],
       ...Object.fromEntries(
         Object.keys(reactLint.rules).map((rule) => [`react/${rule}`, 0]),
       ),
       ...Object.fromEntries(
-        Object.keys(hooksLint.rules).map((rule) => [
-          `react-hooks/${rule}`,
-          0,
-        ]),
+        Object.keys(hooksLint.rules).map((rule) => [`react-hooks/${rule}`, 0]),
       ),
     },
   },
@@ -212,11 +206,6 @@ export default tsLint.config(
       'jsdoc/require-returns-type': 0,
       'jsdoc/check-param-names': 0,
     },
-  },
-
-  {
-    files: ['eslint.config.js'],
-    extends: [tsLint.configs.disableTypeChecked],
   },
 
   {

@@ -54,9 +54,13 @@ import {
   TablesView,
   TableView,
   useCheckpoints,
+  useCheckpointsIds,
   useIndexes,
+  useIndexesIds,
   useMetrics,
+  useMetricsIds,
   usePersister,
+  usePersisterIds,
   useProvideCheckpoints,
   useProvideIndexes,
   useProvideMetrics,
@@ -66,10 +70,14 @@ import {
   useProvideStore,
   useProvideSynchronizer,
   useQueries,
+  useQueriesIds,
   useRelationships,
+  useRelationshipsIds,
   useStore,
   useStoreIds,
+  useStores,
   useSynchronizer,
+  useSynchronizerIds,
   ValuesView,
   ValueView,
 } from 'tinybase/ui-solid';
@@ -82,6 +90,10 @@ import {
   testCustomComponents,
   testProviderComponents,
 } from '../ui-common/components.ts';
+import {
+  type ContextPrimitiveProps,
+  testContextPrimitives,
+} from '../ui-common/primitives.ts';
 
 const {Provider: Provider2, useStore: useStore2} =
   UiSolid as UiSolid.WithSchemas<NoSchemas>;
@@ -666,4 +678,93 @@ testProviderComponents('ui-solid', componentHarness, {
   NestedDifferent: ContextNestedDifferent,
   ProvideThings: ContextProvideThings,
   NestedDefaults: ContextNestedDefaults,
+});
+
+const ContextPrimitiveThings = (props: ContextPrimitiveProps) => (
+  <Provider
+    storesById={{store1: props.store}}
+    metricsById={{metrics1: props.metrics}}
+    indexesById={{indexes1: props.indexes}}
+    relationshipsById={{relationships1: props.relationships}}
+    queriesById={{queries1: props.queries}}
+    checkpointsById={{checkpoints1: props.checkpoints}}
+    persistersById={{persister1: props.persister}}
+    synchronizersById={{synchronizer1: props.synchronizer}}
+  >
+    <ContextPrimitiveThingsChild {...props} />
+  </Provider>
+);
+
+const ContextPrimitiveThingsChild = (props: ContextPrimitiveProps) => {
+  const stores = useStores();
+  const storeIds = useStoreIds();
+  const metricsIds = useMetricsIds();
+  const indexesIds = useIndexesIds();
+  const relationshipsIds = useRelationshipsIds();
+  const queriesIds = useQueriesIds();
+  const checkpointsIds = useCheckpointsIds();
+  const persisterIds = usePersisterIds();
+  const synchronizerIds = useSynchronizerIds();
+  const store = useStore('store1');
+  const metrics = useMetrics('metrics1');
+  const indexes = useIndexes('indexes1');
+  const relationships = useRelationships('relationships1');
+  const queries = useQueries('queries1');
+  const checkpoints = useCheckpoints('checkpoints1');
+  const persister = usePersister('persister1');
+  const synchronizer = useSynchronizer('synchronizer1');
+  return (
+    <>
+      {JSON.stringify([
+        storeIds(),
+        metricsIds(),
+        indexesIds(),
+        relationshipsIds(),
+        queriesIds(),
+        checkpointsIds(),
+        persisterIds(),
+        synchronizerIds(),
+        stores().store1 == props.store,
+        store() == props.store,
+        metrics() == props.metrics,
+        indexes() == props.indexes,
+        relationships() == props.relationships,
+        queries() == props.queries,
+        checkpoints() == props.checkpoints,
+        persister() == props.persister,
+        synchronizer() == props.synchronizer,
+      ])}
+    </>
+  );
+};
+
+const ContextPrimitiveNoContext = () => {
+  const storeIds = useStoreIds();
+  const metricsIds = useMetricsIds();
+  const indexesIds = useIndexesIds();
+  const relationshipsIds = useRelationshipsIds();
+  const queriesIds = useQueriesIds();
+  const checkpointsIds = useCheckpointsIds();
+  const persisterIds = usePersisterIds();
+  const synchronizerIds = useSynchronizerIds();
+  return (
+    <>
+      {JSON.stringify([
+        storeIds(),
+        metricsIds(),
+        indexesIds(),
+        relationshipsIds(),
+        queriesIds(),
+        checkpointsIds(),
+        persisterIds(),
+        synchronizerIds(),
+      ])}
+    </>
+  );
+};
+
+testContextPrimitives('ui-solid', componentHarness, {
+  Things: ContextPrimitiveThings,
+  NoContext: ContextPrimitiveNoContext,
+  hasStores: true,
 });
