@@ -66,6 +66,7 @@ import ListenerFunctionValueIds from './components/ListenerFunctionValueIds.svel
 import ListenerFunctionValues from './components/ListenerFunctionValues.svelte';
 import ListenerFunctionWillFinishTransaction from './components/ListenerFunctionWillFinishTransaction.svelte';
 
+import {testStoreReadFunctions} from '../ui-common/functions.ts';
 import {testContextPrimitives} from '../ui-common/primitives.ts';
 import ContextPrimitiveNoContext from './components/ContextPrimitiveNoContext.svelte';
 import ContextPrimitiveThings from './components/ContextPrimitiveThings.svelte';
@@ -77,9 +78,7 @@ import FunctionGoBackwardCallback from './components/FunctionGoBackwardCallback.
 import FunctionGoForwardCallback from './components/FunctionGoForwardCallback.svelte';
 import FunctionHasCell from './components/FunctionHasCell.svelte';
 import FunctionHasRow from './components/FunctionHasRow.svelte';
-import FunctionHasTable from './components/FunctionHasTable.svelte';
 import FunctionHasTableCell from './components/FunctionHasTableCell.svelte';
-import FunctionHasTables from './components/FunctionHasTables.svelte';
 import FunctionHasValue from './components/FunctionHasValue.svelte';
 import FunctionHasValues from './components/FunctionHasValues.svelte';
 import FunctionIndexIds from './components/FunctionIndexIds.svelte';
@@ -93,6 +92,7 @@ import FunctionPersisterIds from './components/FunctionPersisterIds.svelte';
 import FunctionPersisterStatus from './components/FunctionPersisterStatus.svelte';
 import FunctionQueriesIds from './components/FunctionQueriesIds.svelte';
 import FunctionQueryIds from './components/FunctionQueryIds.svelte';
+import FunctionReader from './components/FunctionReader.svelte';
 import FunctionRelationshipIds from './components/FunctionRelationshipIds.svelte';
 import FunctionRelationshipsIds from './components/FunctionRelationshipsIds.svelte';
 import FunctionRemoteRowId from './components/FunctionRemoteRowId.svelte';
@@ -114,10 +114,7 @@ import FunctionSortedRowIds from './components/FunctionSortedRowIds.svelte';
 import FunctionSortedRowIdsNoDefaults from './components/FunctionSortedRowIdsNoDefaults.svelte';
 import FunctionSynchronizerIds from './components/FunctionSynchronizerIds.svelte';
 import FunctionSynchronizerStatus from './components/FunctionSynchronizerStatus.svelte';
-import FunctionTable from './components/FunctionTable.svelte';
 import FunctionTableCellIds from './components/FunctionTableCellIds.svelte';
-import FunctionTableIds from './components/FunctionTableIds.svelte';
-import FunctionTables from './components/FunctionTables.svelte';
 import FunctionValue from './components/FunctionValue.svelte';
 import FunctionValueIds from './components/FunctionValueIds.svelte';
 import FunctionValues from './components/FunctionValues.svelte';
@@ -137,9 +134,20 @@ beforeEach(() => {
 type SvelteComponent = Parameters<typeof render>[0];
 
 const primitiveHarness = {
+  act: async (callback: () => unknown) => {
+    await act(() => callback());
+  },
   render: (component: unknown, props: {[key: string]: unknown}) => {
+    let currentProps = props;
     const rendered = render(component as SvelteComponent, {props});
-    return {container: rendered.container, unmount: rendered.unmount};
+    return {
+      container: rendered.container,
+      rerender: async (nextProps: {[key: string]: unknown}) => {
+        currentProps = {...currentProps, ...nextProps};
+        await rendered.rerender(currentProps);
+      },
+      unmount: rendered.unmount,
+    };
   },
 };
 
@@ -147,6 +155,8 @@ testContextPrimitives('ui-svelte', primitiveHarness, {
   Things: ContextPrimitiveThings,
   NoContext: ContextPrimitiveNoContext,
 });
+
+testStoreReadFunctions('ui-svelte', primitiveHarness, {Reader: FunctionReader});
 
 test('windowless ui-svelte functions skip effects', () => {
   vi.stubGlobal('window', undefined);
@@ -173,98 +183,6 @@ describe('Context Functions', () => {
 });
 
 describe('Read Functions', () => {
-  test('hasTables', async () => {
-    const {container, unmount} = render(FunctionHasTables, {props: {store}});
-    expect(container.textContent).toEqual('true');
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual('false');
-
-    unmount();
-  });
-
-  test('getTables', async () => {
-    const {container, unmount} = render(FunctionTables, {props: {store}});
-    expect(container.textContent).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
-
-    await act(() =>
-      store.setTables({t1: {r1: {c1: 2}}}).setTables({t1: {r1: {c1: 2}}}),
-    );
-    expect(container.textContent).toEqual(JSON.stringify({t1: {r1: {c1: 2}}}));
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual(JSON.stringify({}));
-
-    unmount();
-  });
-
-  test('getTableIds', async () => {
-    const {container, unmount} = render(FunctionTableIds, {props: {store}});
-    expect(container.textContent).toEqual(JSON.stringify(['t1']));
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}}),
-    );
-    expect(container.textContent).toEqual(JSON.stringify(['t1', 't2']));
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual('[]');
-
-    unmount();
-  });
-
-  test('hasTable', async () => {
-    const {container, rerender, unmount} = render(FunctionHasTable, {
-      props: {store, tableId: 't0'},
-    });
-    expect(container.textContent).toEqual('false');
-
-    await rerender({tableId: 't1'});
-    expect(container.textContent).toEqual('true');
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}}),
-    );
-    expect(container.textContent).toEqual('true');
-
-    await rerender({tableId: 't2'});
-    expect(container.textContent).toEqual('true');
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual('false');
-
-    unmount();
-  });
-
-  test('getTable', async () => {
-    const {container, rerender, unmount} = render(FunctionTable, {
-      props: {store, tableId: 't0'},
-    });
-    expect(container.textContent).toEqual(JSON.stringify({}));
-
-    await rerender({tableId: 't1'});
-    expect(container.textContent).toEqual(JSON.stringify({r1: {c1: 1}}));
-
-    await act(() =>
-      store
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}}),
-    );
-    expect(container.textContent).toEqual(JSON.stringify({r1: {c1: 2}}));
-
-    await rerender({tableId: 't2'});
-    expect(container.textContent).toEqual(JSON.stringify({r1: {c1: 3}}));
-
-    await act(() => store.delTables());
-    expect(container.textContent).toEqual(JSON.stringify({}));
-
-    unmount();
-  });
-
   test('getTableCellIds', async () => {
     const {container, rerender, unmount} = render(FunctionTableCellIds, {
       props: {store, tableId: 't0'},
