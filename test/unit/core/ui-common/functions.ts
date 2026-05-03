@@ -38,6 +38,7 @@ export type FunctionComponents = {
   readonly Callback: unknown;
   readonly Listener: unknown;
   readonly Reader: unknown;
+  readonly Writer?: unknown;
 };
 
 const renderReader = (
@@ -60,6 +61,13 @@ const renderCallback = (
   mode: string,
   props: {[key: string]: unknown} = {},
 ) => harness.render(components.Callback, {mode, ...props});
+
+const renderWriter = (
+  harness: FunctionHarness,
+  components: FunctionComponents,
+  mode: string,
+  props: {[key: string]: unknown} = {},
+) => harness.render(components.Writer, {mode, ...props});
 
 export const testStoreReadFunctions = (
   framework: string,
@@ -1810,6 +1818,157 @@ export const testCheckpointCallbackFunctions = (
         container.querySelector<HTMLButtonElement>('button')?.click(),
       );
       expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
+
+      unmount();
+    });
+  });
+};
+
+export const testWriteCallbackFunctions = (
+  framework: string,
+  harness: FunctionHarness,
+  components: FunctionComponents,
+): void => {
+  let store: Store;
+  let queries: Queries;
+  let checkpoints: Checkpoints;
+
+  beforeEach(() => {
+    store = createStore()
+      .setTables({t1: {r1: {c1: 1}}})
+      .setValues({v1: 1});
+    queries = createQueries(store).setQueryDefinition('q1', 't1', ({select}) =>
+      select('c1'),
+    );
+    checkpoints = createCheckpoints(store);
+  });
+
+  describe(`${framework} write callback scenarios`, () => {
+    test('setRow', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(harness, components, 'setRow', {
+        store,
+        then,
+      });
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 2});
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('addRow', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(harness, components, 'addRow', {
+        store,
+        then,
+      });
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getRow('t1', '0')).toEqual({c1: 3});
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setCell', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setCell',
+        {
+          store,
+          then,
+        },
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual('changed');
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('delCell', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'delCell',
+        {
+          store,
+          then,
+        },
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setValues', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setValues',
+        {store, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getValues()).toEqual({v1: 4});
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setParamValue', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setParamValue',
+        {queries, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(queries.getParamValue('q1', 'p1')).toEqual('value');
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setCheckpoint', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setCheckpoint',
+        {checkpoints, then},
+      );
+
+      store.setCell('t1', 'r1', 'c1', 2);
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpoint('1')).toEqual('label');
+      expect(then).toHaveBeenCalledTimes(1);
 
       unmount();
     });

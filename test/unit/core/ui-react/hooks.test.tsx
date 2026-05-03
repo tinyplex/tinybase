@@ -194,6 +194,7 @@ import {
   testCheckpointCallbackFunctions,
   testStoreListenerFunctions,
   testStoreReadFunctions,
+  testWriteCallbackFunctions,
 } from '../ui-common/functions.ts';
 import {testContextPrimitives} from '../ui-common/primitives.ts';
 import {ContextPrimitiveNoContext} from './components/ContextPrimitiveNoContext.tsx';
@@ -676,6 +677,66 @@ const Callback = ({
   );
 };
 
+const Writer = ({
+  mode,
+  store,
+  queries,
+  checkpoints,
+  then,
+}: {
+  readonly mode: string;
+  readonly store?: Store;
+  readonly queries?: Queries;
+  readonly checkpoints?: Checkpoints;
+  readonly then: any;
+}) => {
+  const setRow = useSetRowCallback(
+    't1',
+    'r1',
+    () => ({c1: 2}),
+    [],
+    store,
+    then,
+  );
+  const addRow = useAddRowCallback('t1', () => ({c1: 3}), [], store, then);
+  const setCell = useSetCellCallback(
+    't1',
+    'r1',
+    'c1',
+    () => 'changed',
+    [],
+    store,
+    then,
+  );
+  const delCell = useDelCellCallback('t1', 'r1', 'c1', true, store, then);
+  const setValues = useSetValuesCallback(() => ({v1: 4}), [], store, then);
+  const setParamValue = useSetParamValueCallback(
+    'q1',
+    'p1',
+    () => 'value',
+    [],
+    queries,
+    then,
+  );
+  const setCheckpoint = useSetCheckpointCallback(
+    () => 'label',
+    [],
+    checkpoints,
+    then,
+  );
+  const _handleClick = {
+    setRow,
+    addRow,
+    setCell,
+    delCell,
+    setValues,
+    setParamValue,
+    setCheckpoint,
+  }[mode];
+
+  return <button onClick={_handleClick} />;
+};
+
 testContextPrimitives('ui-react', primitiveHarness, {
   Things: ContextPrimitiveThings,
   NoContext: ContextPrimitiveNoContext,
@@ -686,16 +747,25 @@ testStoreReadFunctions('ui-react', primitiveHarness, {
   Callback,
   Listener,
   Reader,
+  Writer,
 });
 testStoreListenerFunctions('ui-react', primitiveHarness, {
   Callback,
   Listener,
   Reader,
+  Writer,
 });
 testCheckpointCallbackFunctions('ui-react', primitiveHarness, {
   Callback,
   Listener,
   Reader,
+  Writer,
+});
+testWriteCallbackFunctions('ui-react', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+  Writer,
 });
 
 describe('React-specific', () => {

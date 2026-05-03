@@ -103,6 +103,7 @@ import {
   useSetCheckpointCallback,
   useSetParamValueCallback,
   useSetRowCallback,
+  useSetValuesCallback,
   useSliceIds,
   useSliceIdsListener,
   useSliceRowIds,
@@ -126,7 +127,6 @@ import {
   useValueListener,
   useValues,
   useValuesListener,
-  useValuesState,
   useWillFinishTransactionListener,
 } from 'tinybase/ui-solid';
 import {describe, expect, test, vi} from 'vitest';
@@ -135,6 +135,7 @@ import {
   testCheckpointCallbackFunctions,
   testStoreListenerFunctions,
   testStoreReadFunctions,
+  testWriteCallbackFunctions,
 } from '../ui-common/functions.ts';
 import {testContextPrimitives} from '../ui-common/primitives.ts';
 import {ContextPrimitiveNoContext} from './components/ContextPrimitiveNoContext.tsx';
@@ -142,7 +143,6 @@ import {ContextPrimitiveThings} from './components/ContextPrimitiveThings.tsx';
 
 type TestPersister = Persister<Persists.StoreOnly> & {destroy: () => void};
 type TestSynchronizer = Synchronizer & {destroy: () => void};
-type StringCellSetter = (cell: string) => void;
 
 const createTestPersister = () =>
   ({destroy: vi.fn()}) as unknown as TestPersister;
@@ -638,6 +638,59 @@ const Callback = ({
   }) as unknown as JSXElement;
 };
 
+const Writer = ({
+  mode,
+  store,
+  queries,
+  checkpoints,
+  then,
+}: {
+  readonly mode: string;
+  readonly store?: Store;
+  readonly queries?: Queries;
+  readonly checkpoints?: Checkpoints;
+  readonly then: any;
+}) => {
+  const setRow = useSetRowCallback('t1', 'r1', () => ({c1: 2}), store, then);
+  const addRow = useAddRowCallback('t1', () => ({c1: 3}), store, then);
+  const setCell = useSetCellCallback(
+    't1',
+    'r1',
+    'c1',
+    () => 'changed',
+    store,
+    then,
+  );
+  const delCell = useDelCellCallback('t1', 'r1', 'c1', true, store, then);
+  const setValues = useSetValuesCallback(() => ({v1: 4}), store, then);
+  const setParamValue = useSetParamValueCallback(
+    'q1',
+    'p1',
+    () => 'value',
+    queries,
+    then,
+  );
+  const setCheckpoint = useSetCheckpointCallback(
+    () => 'label',
+    checkpoints,
+    then,
+  );
+  return (() => {
+    const button = document.createElement('button');
+    const handlers: {[mode: string]: EventListener} = {
+      setRow,
+      addRow,
+      setCell,
+      delCell,
+      setValues,
+      setParamValue,
+      setCheckpoint,
+    };
+    button.addEventListener('click', handlers[mode]);
+    return button;
+  }) as unknown as JSXElement;
+};
+
 testContextPrimitives('ui-solid', primitiveHarness, {
   Things: ContextPrimitiveThings,
   NoContext: ContextPrimitiveNoContext,
@@ -648,16 +701,25 @@ testStoreReadFunctions('ui-solid', primitiveHarness, {
   Callback,
   Listener,
   Reader,
+  Writer,
 });
 testStoreListenerFunctions('ui-solid', primitiveHarness, {
   Callback,
   Listener,
   Reader,
+  Writer,
 });
 testCheckpointCallbackFunctions('ui-solid', primitiveHarness, {
   Callback,
   Listener,
   Reader,
+  Writer,
+});
+testWriteCallbackFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+  Writer,
 });
 
 describe('Solid-specific', () => {
@@ -897,101 +959,6 @@ describe('Solid-specific', () => {
     setTableId!('t2');
     await pause();
     expect(table!()).toEqual({r1: {c1: 2}});
-
-    dispose();
-  });
-
-  test('sets and deletes data with callbacks', async () => {
-    const store = createStore().setTables({t1: {r1: {c1: 1}}});
-    const checkpoints = createCheckpoints(store);
-    const queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => select('c1'),
-    );
-    let row: Accessor<ReturnType<Store['getRow']>>;
-    let values: Accessor<ReturnType<Store['getValues']>>;
-    let resultCell: Accessor<ReturnType<Store['getCell']>>;
-    let setRow: (row: {c1: number}) => void;
-    let addRow: (row: {c1: number}) => void;
-    let delCell: () => void;
-    let setValues: (values: {v1: number}) => void;
-    let setParamValue: (value: string) => void;
-    let addCheckpoint: (label: string) => void;
-    const rowThen = vi.fn();
-    const checkpointThen = vi.fn();
-
-    const dispose = renderPrimitive(() => {
-      row = useRow('t1', 'r1', store);
-      [values, setValues] = useValuesState(store);
-      resultCell = useResultCell('q1', 'r1', 'c1', queries);
-      setRow = useSetRowCallback(
-        't1',
-        'r1',
-        (row: {c1: number}) => row,
-        store,
-        rowThen,
-      );
-      addRow = useAddRowCallback('t1', (row: {c1: number}) => row, store);
-      delCell = useDelCellCallback('t1', 'r1', 'c1', true, store);
-      setParamValue = useSetParamValueCallback(
-        'q1',
-        'p1',
-        (value: string) => value,
-        queries,
-      );
-      addCheckpoint = useSetCheckpointCallback(
-        (label: string) => label,
-        checkpoints,
-        checkpointThen,
-      );
-    });
-
-    setRow!({c1: 2});
-    await pause();
-    expect(row!()).toEqual({c1: 2});
-    expect(rowThen).toHaveBeenCalledTimes(1);
-
-    addRow!({c1: 3});
-    await pause();
-    expect(store.getRowIds('t1')).toEqual(['r1', '0']);
-
-    delCell!();
-    setValues!({v1: 4});
-    setParamValue!('value');
-    addCheckpoint!('label');
-    await pause();
-
-    expect(resultCell!()).toBeUndefined();
-    expect(values!()).toEqual({v1: 4});
-    expect(queries.getParamValue('q1', 'p1')).toBe('value');
-    expect(checkpoints.getCheckpoint('1')).toBe('label');
-    expect(checkpointThen).toHaveBeenCalledTimes(1);
-
-    dispose();
-  });
-
-  test('sets cells with callbacks', () => {
-    const store = createStore().setCell('t1', 'r1', 'c1', 1);
-    let cell: Accessor<ReturnType<Store['getCell']>>;
-    let setCell: StringCellSetter;
-
-    const dispose = renderPrimitive(() => {
-      cell = useCell('t1', 'r1', 'c1', store);
-      setCell = useSetCellCallback(
-        't1',
-        'r1',
-        'c1',
-        (cell: string) => cell,
-        store,
-      );
-    });
-
-    expect(cell!()).toBe(1);
-
-    setCell!('changed');
-    expect(store.getCell('t1', 'r1', 'c1')).toBe('changed');
-    expect(cell!()).toBe('changed');
 
     dispose();
   });
