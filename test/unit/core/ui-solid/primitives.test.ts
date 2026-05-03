@@ -32,6 +32,8 @@ import {
   useCellListener,
   useCheckpoint,
   useCheckpointIds,
+  useCheckpointIdsListener,
+  useCheckpointListener,
   useCheckpointsIds,
   useCreatePersister,
   useCreateSynchronizer,
@@ -56,26 +58,41 @@ import {
   useIndexIds,
   useIndexesIds,
   useLinkedRowIds,
+  useLinkedRowIdsListener,
   useLocalRowIds,
+  useLocalRowIdsListener,
   useMetric,
   useMetricIds,
+  useMetricListener,
   useMetricsIds,
   useParamValue,
+  useParamValueListener,
   useParamValues,
+  useParamValuesListener,
   usePersisterIds,
+  usePersisterStatusListener,
   useQueriesIds,
   useQueryIds,
   useRelationshipIds,
   useRelationshipsIds,
   useRemoteRowId,
+  useRemoteRowIdListener,
   useResultCell,
   useResultCellIds,
+  useResultCellIdsListener,
+  useResultCellListener,
   useResultRow,
   useResultRowCount,
+  useResultRowCountListener,
   useResultRowIds,
+  useResultRowIdsListener,
+  useResultRowListener,
   useResultSortedRowIds,
+  useResultSortedRowIdsListener,
   useResultTable,
   useResultTableCellIds,
+  useResultTableCellIdsListener,
+  useResultTableListener,
   useRow,
   useRowCount,
   useRowCountListener,
@@ -87,11 +104,14 @@ import {
   useSetParamValueCallback,
   useSetRowCallback,
   useSliceIds,
+  useSliceIdsListener,
   useSliceRowIds,
+  useSliceRowIdsListener,
   useSortedRowIds,
   useSortedRowIdsListener,
   useStartTransactionListener,
   useSynchronizerIds,
+  useSynchronizerStatusListener,
   useTable,
   useTableCellIds,
   useTableCellIdsListener,
@@ -194,6 +214,10 @@ const Reader = ({
   readonly relationships?: Relationships;
   readonly queries?: Queries;
   readonly checkpoints?: Checkpoints;
+  readonly persister?: Persister<Persists.StoreOnly>;
+  readonly synchronizer?: Synchronizer;
+  readonly persister?: Persister<Persists.StoreOnly>;
+  readonly synchronizer?: Synchronizer;
   readonly tableId?: Id;
   readonly rowId?: Id;
   readonly cellId?: Id;
@@ -381,18 +405,52 @@ const Listener = ({
   mode,
   store,
   listener,
+  metrics,
+  indexes,
+  relationships,
+  queries,
+  checkpoints,
+  persister,
+  synchronizer,
   tableId,
   rowId,
   cellId,
   valueId,
+  metricId,
+  indexId,
+  sliceId,
+  relationshipId,
+  localRowId,
+  remoteRowId,
+  firstRowId,
+  queryId,
+  paramId,
+  checkpointId,
 }: {
   readonly mode: string;
   readonly store: Store;
   readonly listener: any;
+  readonly metrics?: Metrics;
+  readonly indexes?: Indexes;
+  readonly relationships?: Relationships;
+  readonly queries?: Queries;
+  readonly checkpoints?: Checkpoints;
+  readonly persister?: Persister<Persists.StoreOnly>;
+  readonly synchronizer?: Synchronizer;
   readonly tableId?: Id;
   readonly rowId?: Id;
   readonly cellId?: Id;
   readonly valueId?: Id;
+  readonly metricId?: Id;
+  readonly indexId?: Id;
+  readonly sliceId?: Id;
+  readonly relationshipId?: Id;
+  readonly localRowId?: Id;
+  readonly remoteRowId?: Id;
+  readonly firstRowId?: Id;
+  readonly queryId?: Id;
+  readonly paramId?: Id;
+  readonly checkpointId?: Id;
 }) => {
   switch (mode) {
     case 'hasTables':
@@ -472,6 +530,89 @@ const Listener = ({
       break;
     case 'didFinishTransaction':
       useDidFinishTransactionListener(listener, store);
+      break;
+    case 'metric':
+      useMetricListener(metricId, listener, metrics);
+      break;
+    case 'sliceIds':
+      useSliceIdsListener(indexId, listener, indexes);
+      break;
+    case 'sliceRowIds':
+      useSliceRowIdsListener(indexId, sliceId, listener, indexes);
+      break;
+    case 'remoteRowId':
+      useRemoteRowIdListener(
+        relationshipId,
+        localRowId,
+        listener,
+        relationships,
+      );
+      break;
+    case 'localRowIds':
+      useLocalRowIdsListener(
+        relationshipId,
+        remoteRowId,
+        listener,
+        relationships,
+      );
+      break;
+    case 'linkedRowIds':
+      useLinkedRowIdsListener(
+        relationshipId ?? '',
+        firstRowId ?? '',
+        listener,
+        relationships,
+      );
+      break;
+    case 'resultTable':
+      useResultTableListener(queryId, listener, queries);
+      break;
+    case 'resultTableCellIds':
+      useResultTableCellIdsListener(queryId, listener, queries);
+      break;
+    case 'resultRowCount':
+      useResultRowCountListener(queryId, listener, queries);
+      break;
+    case 'resultRowIds':
+      useResultRowIdsListener(queryId, listener, queries);
+      break;
+    case 'resultSortedRowIds':
+      useResultSortedRowIdsListener(
+        queryId ?? '',
+        cellId,
+        false,
+        0,
+        undefined,
+        listener,
+        queries,
+      );
+      break;
+    case 'resultRow':
+      useResultRowListener(queryId, rowId, listener, queries);
+      break;
+    case 'resultCellIds':
+      useResultCellIdsListener(queryId, rowId, listener, queries);
+      break;
+    case 'resultCell':
+      useResultCellListener(queryId, rowId, cellId, listener, queries);
+      break;
+    case 'paramValues':
+      useParamValuesListener(queryId, listener, queries);
+      break;
+    case 'paramValue':
+      useParamValueListener(queryId, paramId, listener, queries);
+      break;
+    case 'checkpointIds':
+      useCheckpointIdsListener(listener, checkpoints);
+      break;
+    case 'checkpoint':
+      useCheckpointListener(checkpointId, listener, checkpoints);
+      break;
+    case 'persisterStatus':
+      usePersisterStatusListener(listener, persister);
+      break;
+    case 'synchronizerStatus':
+      useSynchronizerStatusListener(listener, synchronizer);
       break;
   }
   return null as unknown as JSXElement;

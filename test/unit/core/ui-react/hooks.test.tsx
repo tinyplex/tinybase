@@ -266,6 +266,10 @@ const Reader = ({
   readonly relationships?: Relationships;
   readonly queries?: Queries;
   readonly checkpoints?: Checkpoints;
+  readonly persister?: AnyPersister;
+  readonly synchronizer?: Synchronizer;
+  readonly persister?: AnyPersister;
+  readonly synchronizer?: Synchronizer;
   readonly tableId?: Id;
   readonly rowId?: Id;
   readonly cellId?: Id;
@@ -410,18 +414,52 @@ const Listener = ({
   mode,
   store,
   listener,
+  metrics,
+  indexes,
+  relationships,
+  queries,
+  checkpoints,
+  persister,
+  synchronizer,
   tableId,
   rowId,
   cellId,
   valueId,
+  metricId,
+  indexId,
+  sliceId,
+  relationshipId,
+  localRowId,
+  remoteRowId,
+  firstRowId,
+  queryId,
+  paramId,
+  checkpointId,
 }: {
   readonly mode: string;
   readonly store: Store;
   readonly listener: any;
+  readonly metrics?: Metrics;
+  readonly indexes?: Indexes;
+  readonly relationships?: Relationships;
+  readonly queries?: Queries;
+  readonly checkpoints?: Checkpoints;
+  readonly persister?: AnyPersister;
+  readonly synchronizer?: Synchronizer;
   readonly tableId?: Id;
   readonly rowId?: Id;
   readonly cellId?: Id;
   readonly valueId?: Id;
+  readonly metricId?: Id;
+  readonly indexId?: Id;
+  readonly sliceId?: Id;
+  readonly relationshipId?: Id;
+  readonly localRowId?: Id;
+  readonly remoteRowId?: Id;
+  readonly firstRowId?: Id;
+  readonly queryId?: Id;
+  readonly paramId?: Id;
+  readonly checkpointId?: Id;
 }) => {
   switch (mode) {
     case 'hasTables':
@@ -525,6 +563,100 @@ const Listener = ({
       break;
     case 'didFinishTransaction':
       useDidFinishTransactionListener(listener, [listener], store);
+      break;
+    case 'metric':
+      useMetricListener(metricId, listener, [listener], metrics);
+      break;
+    case 'sliceIds':
+      useSliceIdsListener(indexId, listener, [listener], indexes);
+      break;
+    case 'sliceRowIds':
+      useSliceRowIdsListener(indexId, sliceId, listener, [listener], indexes);
+      break;
+    case 'remoteRowId':
+      useRemoteRowIdListener(
+        relationshipId,
+        localRowId,
+        listener,
+        [listener],
+        relationships,
+      );
+      break;
+    case 'localRowIds':
+      useLocalRowIdsListener(
+        relationshipId,
+        remoteRowId,
+        listener,
+        [listener],
+        relationships,
+      );
+      break;
+    case 'linkedRowIds':
+      useLinkedRowIdsListener(
+        relationshipId,
+        firstRowId,
+        listener,
+        [listener],
+        relationships,
+      );
+      break;
+    case 'resultTable':
+      useResultTableListener(queryId, listener, [listener], queries);
+      break;
+    case 'resultTableCellIds':
+      useResultTableCellIdsListener(queryId, listener, [listener], queries);
+      break;
+    case 'resultRowCount':
+      useResultRowCountListener(queryId, listener, [listener], queries);
+      break;
+    case 'resultRowIds':
+      useResultRowIdsListener(queryId, listener, [listener], queries);
+      break;
+    case 'resultSortedRowIds':
+      useResultSortedRowIdsListener(
+        queryId,
+        cellId,
+        false,
+        0,
+        undefined,
+        listener,
+        [listener],
+        queries,
+      );
+      break;
+    case 'resultRow':
+      useResultRowListener(queryId, rowId, listener, [listener], queries);
+      break;
+    case 'resultCellIds':
+      useResultCellIdsListener(queryId, rowId, listener, [listener], queries);
+      break;
+    case 'resultCell':
+      useResultCellListener(
+        queryId,
+        rowId,
+        cellId,
+        listener,
+        [listener],
+        queries,
+      );
+      break;
+    case 'paramValues':
+      useParamValuesListener(queryId, listener, [listener], queries);
+      break;
+    case 'paramValue':
+      useParamValueListener(queryId, paramId, listener, [listener], queries);
+      break;
+    case 'checkpointIds':
+      useCheckpointIdsListener(listener, [listener], checkpoints);
+      break;
+    case 'checkpoint':
+      useCheckpointListener(checkpointId, listener, [listener], checkpoints);
+      break;
+    case 'persisterStatus':
+      usePersisterStatusListener(listener, [listener], persister);
+      break;
+    case 'synchronizerStatus':
+      useSynchronizerStatusListener(listener, [listener], synchronizer);
       break;
   }
   return <button />;

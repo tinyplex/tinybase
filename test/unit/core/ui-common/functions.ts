@@ -1,4 +1,5 @@
 import type {
+  Cell,
   Checkpoints,
   Indexes,
   Metrics,
@@ -14,6 +15,9 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import {createMergeableStore} from 'tinybase/mergeable-store';
+import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 export type FunctionRendered = {
@@ -1401,6 +1405,349 @@ export const testStoreListenerFunctions = (
         unmount();
         expect(store.getListenerStats()[stats]).toEqual(0);
       });
+    });
+
+    test('metric', async () => {
+      const metrics: Metrics = createMetrics(store).setMetricDefinition(
+        'm1',
+        't1',
+        'max',
+        'c1',
+      );
+      const listener = vi.fn();
+      expect(metrics.getListenerStats().metric).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'metric', {
+        metrics,
+        metricId: 'm1',
+        listener,
+      });
+      expect(metrics.getListenerStats().metric).toEqual(1);
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(metrics.getListenerStats().metric).toEqual(0);
+    });
+
+    test('sliceIds', async () => {
+      const indexes: Indexes = createIndexes(store).setIndexDefinition(
+        'i1',
+        't1',
+        'c1',
+      );
+      const listener = vi.fn();
+      expect(indexes.getListenerStats().sliceIds).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'sliceIds', {
+        indexes,
+        indexId: 'i1',
+        listener,
+      });
+      expect(indexes.getListenerStats().sliceIds).toEqual(1);
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 'a'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(indexes.getListenerStats().sliceIds).toEqual(0);
+    });
+
+    test('sliceRowIds', async () => {
+      const indexes: Indexes = createIndexes(store).setIndexDefinition(
+        'i1',
+        't1',
+        'c1',
+      );
+      const listener = vi.fn();
+      expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'sliceRowIds', {
+        indexes,
+        indexId: 'i1',
+        sliceId: 'a',
+        listener,
+      });
+      expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 'a'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
+    });
+
+    test('remoteRowId', async () => {
+      const relationships: Relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+      const listener = vi.fn();
+      expect(relationships.getListenerStats().remoteRowId).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'remoteRowId', {
+        relationships,
+        relationshipId: 'r1',
+        localRowId: 'r1',
+        listener,
+      });
+      expect(relationships.getListenerStats().remoteRowId).toEqual(1);
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(relationships.getListenerStats().remoteRowId).toEqual(0);
+    });
+
+    test('localRowIds', async () => {
+      const relationships: Relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+      const listener = vi.fn();
+      expect(relationships.getListenerStats().localRowIds).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'localRowIds', {
+        relationships,
+        relationshipId: 'r1',
+        remoteRowId: 'R1',
+        listener,
+      });
+      expect(relationships.getListenerStats().localRowIds).toEqual(1);
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(relationships.getListenerStats().localRowIds).toEqual(0);
+    });
+
+    test('linkedRowIds', async () => {
+      const relationships: Relationships = createRelationships(
+        store,
+      ).setRelationshipDefinition('r1', 't1', 't1', 'c1');
+      const listener = vi.fn();
+      expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'linkedRowIds', {
+        relationships,
+        relationshipId: 'r1',
+        firstRowId: 'r1',
+        listener,
+      });
+      expect(relationships.getListenerStats().linkedRowIds).toEqual(1);
+
+      await harness.act(() =>
+        store.setTables({t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}}}),
+      );
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
+    });
+
+    [
+      {
+        mode: 'resultTable',
+        stats: 'table',
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+      {
+        mode: 'resultTableCellIds',
+        stats: 'tableCellIds',
+        mutate: () => store.setCell('t1', 'r1', 'c2', 0),
+      },
+      {
+        mode: 'resultRowCount',
+        stats: 'rowCount',
+        mutate: () => store.setCell('t1', 'r2', 'c1', 0),
+      },
+      {
+        mode: 'resultRowIds',
+        stats: 'rowIds',
+        mutate: () => store.setCell('t1', 'r2', 'c1', 0),
+      },
+      {
+        mode: 'resultSortedRowIds',
+        stats: 'sortedRowIds',
+        props: {cellId: 'c1'},
+        mutate: () => store.setCell('t1', 'r2', 'c1', 0),
+      },
+      {
+        mode: 'resultRow',
+        stats: 'row',
+        props: {rowId: 'r1'},
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+      {
+        mode: 'resultCellIds',
+        stats: 'cellIds',
+        props: {rowId: 'r1'},
+        mutate: () => store.setCell('t1', 'r1', 'c2', 0),
+      },
+      {
+        mode: 'resultCell',
+        stats: 'cell',
+        props: {rowId: 'r1', cellId: 'c1'},
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+    ].forEach(({mode, stats, props, mutate}) => {
+      test(mode, async () => {
+        const queries: Queries = createQueries(store).setQueryDefinition(
+          'q1',
+          't1',
+          ({select}) => {
+            select('c1');
+            select('c2');
+          },
+        );
+        const listener = vi.fn();
+        expect(queries.getListenerStats()[stats]).toEqual(0);
+
+        const {unmount} = renderListener(harness, components, mode, {
+          queries,
+          queryId: 'q1',
+          listener,
+          ...(props ?? {}),
+        });
+        expect(queries.getListenerStats()[stats]).toEqual(1);
+
+        await harness.act(mutate);
+        expect(listener).toHaveBeenCalledTimes(1);
+
+        unmount();
+        expect(queries.getListenerStats()[stats]).toEqual(0);
+      });
+    });
+
+    test('paramValues', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as Cell);
+        },
+        {p1: 1},
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().paramValues).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'paramValues', {
+        queries,
+        queryId: 'q1',
+        listener,
+      });
+      expect(queries.getListenerStats().paramValues).toEqual(1);
+
+      await harness.act(() => queries.setParamValue('q1', 'p1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().paramValues).toEqual(0);
+    });
+
+    test('paramValue', async () => {
+      const queries: Queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as Cell);
+        },
+        {p1: 1},
+      );
+      const listener = vi.fn();
+      expect(queries.getListenerStats().paramValue).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'paramValue', {
+        queries,
+        queryId: 'q1',
+        paramId: 'p1',
+        listener,
+      });
+      expect(queries.getListenerStats().paramValue).toEqual(1);
+
+      await harness.act(() => queries.setParamValue('q1', 'p1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(queries.getListenerStats().paramValue).toEqual(0);
+    });
+
+    test('checkpointIds', async () => {
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const listener = vi.fn();
+      expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'checkpointIds', {
+        checkpoints,
+        listener,
+      });
+      expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
+    });
+
+    test('checkpoint', async () => {
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const listener = vi.fn();
+      expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
+
+      const {unmount} = renderListener(harness, components, 'checkpoint', {
+        checkpoints,
+        checkpointId: '0',
+        listener,
+      });
+      expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
+
+      await harness.act(() => checkpoints.setCheckpoint('0', 'c1'));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+      expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
+    });
+
+    test('persisterStatus', async () => {
+      const persister = createSessionPersister(
+        store,
+        `test-${framework}-listener`,
+      );
+      const listener = vi.fn();
+
+      const {unmount} = renderListener(harness, components, 'persisterStatus', {
+        persister,
+        listener,
+      });
+
+      await harness.act(() => persister.save());
+      expect(listener).toHaveBeenCalled();
+
+      unmount();
+      persister.destroy();
+    });
+
+    test('synchronizerStatus', async () => {
+      const mergeableStore = createMergeableStore();
+      const synchronizer = createLocalSynchronizer(mergeableStore);
+      const listener = vi.fn();
+
+      const {unmount} = renderListener(
+        harness,
+        components,
+        'synchronizerStatus',
+        {synchronizer, listener},
+      );
+
+      await harness.act(() => synchronizer.save());
+      expect(listener).toHaveBeenCalled();
+
+      unmount();
+      synchronizer.destroy();
     });
   });
 };
