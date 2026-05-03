@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/globals, react-hooks/immutability */
+/* eslint-disable react-hooks/rules-of-hooks */
 import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
@@ -189,7 +190,11 @@ import {
 import tmp from 'tmp';
 import {type Mock, beforeEach, describe, expect, test, vi} from 'vitest';
 import {noop, pause} from '../../common/other.ts';
-import {testStoreReadFunctions} from '../ui-common/functions.ts';
+import {
+  testCheckpointCallbackFunctions,
+  testStoreListenerFunctions,
+  testStoreReadFunctions,
+} from '../ui-common/functions.ts';
 import {testContextPrimitives} from '../ui-common/primitives.ts';
 import {ContextPrimitiveNoContext} from './components/ContextPrimitiveNoContext.tsx';
 import {ContextPrimitiveThings} from './components/ContextPrimitiveThings.tsx';
@@ -401,13 +406,165 @@ const Reader = ({
   );
 };
 
+const Listener = ({
+  mode,
+  store,
+  listener,
+  tableId,
+  rowId,
+  cellId,
+  valueId,
+}: {
+  readonly mode: string;
+  readonly store: Store;
+  readonly listener: any;
+  readonly tableId?: Id;
+  readonly rowId?: Id;
+  readonly cellId?: Id;
+  readonly valueId?: Id;
+}) => {
+  switch (mode) {
+    case 'hasTables':
+      useHasTablesListener(listener, [listener], false, store);
+      break;
+    case 'tables':
+      useTablesListener(listener, [listener], false, store);
+      break;
+    case 'tableIds':
+      useTableIdsListener(listener, [listener], false, store);
+      break;
+    case 'hasTable':
+      useHasTableListener(tableId, listener, [listener], false, store);
+      break;
+    case 'table':
+      useTableListener(tableId, listener, [listener], false, store);
+      break;
+    case 'tableCellIds':
+      useTableCellIdsListener(tableId, listener, [listener], false, store);
+      break;
+    case 'hasTableCell':
+      useHasTableCellListener(
+        tableId,
+        cellId,
+        listener,
+        [listener],
+        false,
+        store,
+      );
+      break;
+    case 'rowCount':
+      useRowCountListener(tableId, listener, [listener], false, store);
+      break;
+    case 'rowIds':
+      useRowIdsListener(tableId, listener, [listener], false, store);
+      break;
+    case 'sortedRowIds':
+      useSortedRowIdsListener(
+        tableId,
+        cellId,
+        false,
+        0,
+        undefined,
+        listener,
+        [listener],
+        false,
+        store,
+      );
+      break;
+    case 'hasRow':
+      useHasRowListener(tableId, rowId, listener, [listener], false, store);
+      break;
+    case 'row':
+      useRowListener(tableId, rowId, listener, [listener], false, store);
+      break;
+    case 'cellIds':
+      useCellIdsListener(tableId, rowId, listener, [listener], false, store);
+      break;
+    case 'hasCell':
+      useHasCellListener(
+        tableId,
+        rowId,
+        cellId,
+        listener,
+        [listener],
+        false,
+        store,
+      );
+      break;
+    case 'cell':
+      useCellListener(
+        tableId,
+        rowId,
+        cellId,
+        listener,
+        [listener],
+        false,
+        store,
+      );
+      break;
+    case 'hasValues':
+      useHasValuesListener(listener, [listener], false, store);
+      break;
+    case 'values':
+      useValuesListener(listener, [listener], false, store);
+      break;
+    case 'valueIds':
+      useValueIdsListener(listener, [listener], false, store);
+      break;
+    case 'hasValue':
+      useHasValueListener(valueId, listener, [listener], false, store);
+      break;
+    case 'value':
+      useValueListener(valueId, listener, [listener], false, store);
+      break;
+    case 'startTransaction':
+      useStartTransactionListener(listener, [listener], store);
+      break;
+    case 'willFinishTransaction':
+      useWillFinishTransactionListener(listener, [listener], store);
+      break;
+    case 'didFinishTransaction':
+      useDidFinishTransactionListener(listener, [listener], store);
+      break;
+  }
+  return <button />;
+};
+
+const Callback = ({
+  mode,
+  checkpoints,
+}: {
+  readonly mode: string;
+  readonly checkpoints: Checkpoints;
+}) => {
+  const goBackward = useGoBackwardCallback(checkpoints);
+  const goForward = useGoForwardCallback(checkpoints);
+  return (
+    <button onClick={mode == 'goBackward' ? goBackward : goForward}>Go</button>
+  );
+};
+
 testContextPrimitives('ui-react', primitiveHarness, {
   Things: ContextPrimitiveThings,
   NoContext: ContextPrimitiveNoContext,
   hasStores: true,
 });
 
-testStoreReadFunctions('ui-react', primitiveHarness, {Reader});
+testStoreReadFunctions('ui-react', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+});
+testStoreListenerFunctions('ui-react', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+});
+testCheckpointCallbackFunctions('ui-react', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+});
 
 describe('React-specific', () => {
   describe('Create Hooks', () => {

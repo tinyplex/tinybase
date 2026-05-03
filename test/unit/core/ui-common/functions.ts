@@ -14,7 +14,7 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
-import {beforeEach, describe, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 export type FunctionRendered = {
   readonly container: HTMLElement;
@@ -31,6 +31,8 @@ export type FunctionHarness = {
 };
 
 export type FunctionComponents = {
+  readonly Callback: unknown;
+  readonly Listener: unknown;
   readonly Reader: unknown;
 };
 
@@ -40,6 +42,20 @@ const renderReader = (
   mode: string,
   props: {[key: string]: unknown} = {},
 ) => harness.render(components.Reader, {mode, ...props});
+
+const renderListener = (
+  harness: FunctionHarness,
+  components: FunctionComponents,
+  mode: string,
+  props: {[key: string]: unknown} = {},
+) => harness.render(components.Listener, {mode, ...props});
+
+const renderCallback = (
+  harness: FunctionHarness,
+  components: FunctionComponents,
+  mode: string,
+  props: {[key: string]: unknown} = {},
+) => harness.render(components.Callback, {mode, ...props});
 
 export const testStoreReadFunctions = (
   framework: string,
@@ -1217,6 +1233,236 @@ export const testStoreReadFunctions = (
 
       await harness.act(() => checkpoints.addCheckpoint());
       expect(container.textContent).toEqual(JSON.stringify([['0'], '1', []]));
+
+      unmount();
+    });
+  });
+};
+
+export const testStoreListenerFunctions = (
+  framework: string,
+  harness: FunctionHarness,
+  components: FunctionComponents,
+): void => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createStore()
+      .setTables({t1: {r1: {c1: 1}}})
+      .setValues({v1: 1});
+  });
+
+  describe(`${framework} store listener function scenarios`, () => {
+    [
+      {
+        mode: 'hasTables',
+        stats: 'hasTables',
+        mutate: () => store.delTables(),
+      },
+      {
+        mode: 'tables',
+        stats: 'tables',
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+      {
+        mode: 'tableIds',
+        stats: 'tableIds',
+        mutate: () => store.setCell('t2', 'r1', 'c1', 0),
+      },
+      {
+        mode: 'hasTable',
+        stats: 'hasTable',
+        props: {tableId: 't1'},
+        mutate: () => store.delTable('t1'),
+      },
+      {
+        mode: 'table',
+        stats: 'table',
+        props: {tableId: 't1'},
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+      {
+        mode: 'tableCellIds',
+        stats: 'tableCellIds',
+        props: {tableId: 't1'},
+        mutate: () => store.setCell('t1', 'r1', 'c2', 0),
+      },
+      {
+        mode: 'hasTableCell',
+        stats: 'hasTableCell',
+        props: {tableId: 't1', cellId: 'c1'},
+        mutate: () => store.delCell('t1', 'r1', 'c1'),
+      },
+      {
+        mode: 'rowCount',
+        stats: 'rowCount',
+        props: {tableId: 't1'},
+        mutate: () => store.setCell('t1', 'r2', 'c1', 0),
+      },
+      {
+        mode: 'rowIds',
+        stats: 'rowIds',
+        props: {tableId: 't1'},
+        mutate: () => store.setCell('t1', 'r2', 'c1', 0),
+      },
+      {
+        mode: 'sortedRowIds',
+        stats: 'sortedRowIds',
+        props: {tableId: 't1', cellId: 'c1'},
+        mutate: () => store.setCell('t1', 'r2', 'c1', 0),
+      },
+      {
+        mode: 'hasRow',
+        stats: 'hasRow',
+        props: {tableId: 't1', rowId: 'r1'},
+        mutate: () => store.delRow('t1', 'r1'),
+      },
+      {
+        mode: 'row',
+        stats: 'row',
+        props: {tableId: 't1', rowId: 'r1'},
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+      {
+        mode: 'cellIds',
+        stats: 'cellIds',
+        props: {tableId: 't1', rowId: 'r1'},
+        mutate: () => store.setCell('t1', 'r1', 'c2', 0),
+      },
+      {
+        mode: 'hasCell',
+        stats: 'hasCell',
+        props: {tableId: 't1', rowId: 'r1', cellId: 'c1'},
+        mutate: () => store.delCell('t1', 'r1', 'c1'),
+      },
+      {
+        mode: 'cell',
+        stats: 'cell',
+        props: {tableId: 't1', rowId: 'r1', cellId: 'c1'},
+        mutate: () => store.setCell('t1', 'r1', 'c1', 2),
+      },
+      {
+        mode: 'hasValues',
+        stats: 'hasValues',
+        mutate: () => store.delValues(),
+      },
+      {
+        mode: 'values',
+        stats: 'values',
+        mutate: () => store.setValue('v1', 2),
+      },
+      {
+        mode: 'valueIds',
+        stats: 'valueIds',
+        mutate: () => store.setValue('v2', 0),
+      },
+      {
+        mode: 'hasValue',
+        stats: 'hasValue',
+        props: {valueId: 'v1'},
+        mutate: () => store.delValue('v1'),
+      },
+      {
+        mode: 'value',
+        stats: 'value',
+        props: {valueId: 'v1'},
+        mutate: () => store.setValue('v1', 2),
+      },
+      {
+        mode: 'startTransaction',
+        stats: 'transaction',
+        mutate: () => store.setValue('v1', 2),
+      },
+      {
+        mode: 'willFinishTransaction',
+        stats: 'transaction',
+        mutate: () => store.setValue('v1', 2),
+      },
+      {
+        mode: 'didFinishTransaction',
+        stats: 'transaction',
+        mutate: () => store.setValue('v1', 2),
+      },
+    ].forEach(({mode, stats, props, mutate}) => {
+      test(mode, async () => {
+        const listener = vi.fn();
+        expect(store.getListenerStats()[stats]).toEqual(0);
+
+        const {unmount} = renderListener(harness, components, mode, {
+          store,
+          listener,
+          ...(props ?? {}),
+        });
+        expect(store.getListenerStats()[stats]).toEqual(1);
+
+        await harness.act(mutate);
+        expect(listener).toHaveBeenCalledTimes(1);
+
+        unmount();
+        expect(store.getListenerStats()[stats]).toEqual(0);
+      });
+    });
+  });
+};
+
+export const testCheckpointCallbackFunctions = (
+  framework: string,
+  harness: FunctionHarness,
+  components: FunctionComponents,
+): void => {
+  let store: Store;
+  let checkpoints: Checkpoints;
+
+  beforeEach(() => {
+    store = createStore().setTables({t1: {r1: {c1: 1}}});
+    checkpoints = createCheckpoints(store);
+    store.setTables({t1: {r1: {c1: 2}}});
+    checkpoints.addCheckpoint();
+    store.setTables({t1: {r1: {c1: 3}}});
+    checkpoints.addCheckpoint();
+  });
+
+  describe(`${framework} checkpoint callback scenarios`, () => {
+    test('goBackward', async () => {
+      const {container, unmount} = renderCallback(
+        harness,
+        components,
+        'goBackward',
+        {checkpoints},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpointIds()).toEqual([[], '0', ['1', '2']]);
+
+      unmount();
+    });
+
+    test('goForward', async () => {
+      const {container, unmount} = renderCallback(
+        harness,
+        components,
+        'goForward',
+        {checkpoints},
+      );
+
+      checkpoints.goTo('0');
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
 
       unmount();
     });

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type {Accessor, JSXElement, Setter} from 'solid-js';
 import {createRoot, createSignal} from 'solid-js';
 import {render as solidRender} from 'solid-js/web';
@@ -27,6 +28,7 @@ import {
   useAddRowCallback,
   useCell,
   useCellIds,
+  useCellIdsListener,
   useCellListener,
   useCheckpoint,
   useCheckpointIds,
@@ -34,13 +36,23 @@ import {
   useCreatePersister,
   useCreateSynchronizer,
   useDelCellCallback,
+  useDidFinishTransactionListener,
+  useGoBackwardCallback,
+  useGoForwardCallback,
   useHasCell,
+  useHasCellListener,
   useHasRow,
+  useHasRowListener,
   useHasTable,
   useHasTableCell,
+  useHasTableCellListener,
+  useHasTableListener,
   useHasTables,
+  useHasTablesListener,
   useHasValue,
+  useHasValueListener,
   useHasValues,
+  useHasValuesListener,
   useIndexIds,
   useIndexesIds,
   useLinkedRowIds,
@@ -66,7 +78,10 @@ import {
   useResultTableCellIds,
   useRow,
   useRowCount,
+  useRowCountListener,
   useRowIds,
+  useRowIdsListener,
+  useRowListener,
   useSetCellCallback,
   useSetCheckpointCallback,
   useSetParamValueCallback,
@@ -74,20 +89,33 @@ import {
   useSliceIds,
   useSliceRowIds,
   useSortedRowIds,
+  useSortedRowIdsListener,
+  useStartTransactionListener,
   useSynchronizerIds,
   useTable,
   useTableCellIds,
+  useTableCellIdsListener,
   useTableIds,
+  useTableIdsListener,
+  useTableListener,
   useTables,
   useTablesListener,
   useValue,
   useValueIds,
+  useValueIdsListener,
+  useValueListener,
   useValues,
+  useValuesListener,
   useValuesState,
+  useWillFinishTransactionListener,
 } from 'tinybase/ui-solid';
 import {describe, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
-import {testStoreReadFunctions} from '../ui-common/functions.ts';
+import {
+  testCheckpointCallbackFunctions,
+  testStoreListenerFunctions,
+  testStoreReadFunctions,
+} from '../ui-common/functions.ts';
 import {testContextPrimitives} from '../ui-common/primitives.ts';
 import {ContextPrimitiveNoContext} from './components/ContextPrimitiveNoContext.tsx';
 import {ContextPrimitiveThings} from './components/ContextPrimitiveThings.tsx';
@@ -349,13 +377,147 @@ const Reader = ({
     JSON.stringify(valuesByMode[mode]?.())) as unknown as JSXElement;
 };
 
+const Listener = ({
+  mode,
+  store,
+  listener,
+  tableId,
+  rowId,
+  cellId,
+  valueId,
+}: {
+  readonly mode: string;
+  readonly store: Store;
+  readonly listener: any;
+  readonly tableId?: Id;
+  readonly rowId?: Id;
+  readonly cellId?: Id;
+  readonly valueId?: Id;
+}) => {
+  switch (mode) {
+    case 'hasTables':
+      useHasTablesListener(listener, false, store);
+      break;
+    case 'tables':
+      useTablesListener(listener, false, store);
+      break;
+    case 'tableIds':
+      useTableIdsListener(listener, false, store);
+      break;
+    case 'hasTable':
+      useHasTableListener(tableId, listener, false, store);
+      break;
+    case 'table':
+      useTableListener(tableId, listener, false, store);
+      break;
+    case 'tableCellIds':
+      useTableCellIdsListener(tableId, listener, false, store);
+      break;
+    case 'hasTableCell':
+      useHasTableCellListener(tableId, cellId, listener, false, store);
+      break;
+    case 'rowCount':
+      useRowCountListener(tableId, listener, false, store);
+      break;
+    case 'rowIds':
+      useRowIdsListener(tableId, listener, false, store);
+      break;
+    case 'sortedRowIds':
+      useSortedRowIdsListener(
+        tableId ?? '',
+        cellId,
+        false,
+        0,
+        undefined,
+        listener,
+        false,
+        store,
+      );
+      break;
+    case 'hasRow':
+      useHasRowListener(tableId, rowId, listener, false, store);
+      break;
+    case 'row':
+      useRowListener(tableId, rowId, listener, false, store);
+      break;
+    case 'cellIds':
+      useCellIdsListener(tableId, rowId, listener, false, store);
+      break;
+    case 'hasCell':
+      useHasCellListener(tableId, rowId, cellId, listener, false, store);
+      break;
+    case 'cell':
+      useCellListener(tableId, rowId, cellId, listener, false, store);
+      break;
+    case 'hasValues':
+      useHasValuesListener(listener, false, store);
+      break;
+    case 'values':
+      useValuesListener(listener, false, store);
+      break;
+    case 'valueIds':
+      useValueIdsListener(listener, false, store);
+      break;
+    case 'hasValue':
+      useHasValueListener(valueId, listener, false, store);
+      break;
+    case 'value':
+      useValueListener(valueId, listener, false, store);
+      break;
+    case 'startTransaction':
+      useStartTransactionListener(listener, store);
+      break;
+    case 'willFinishTransaction':
+      useWillFinishTransactionListener(listener, store);
+      break;
+    case 'didFinishTransaction':
+      useDidFinishTransactionListener(listener, store);
+      break;
+  }
+  return null as unknown as JSXElement;
+};
+
+const Callback = ({
+  mode,
+  checkpoints,
+}: {
+  readonly mode: string;
+  readonly checkpoints: Checkpoints;
+}) => {
+  const goBackward = useGoBackwardCallback(checkpoints);
+  const goForward = useGoForwardCallback(checkpoints);
+  return (() => {
+    const button = document.createElement('button');
+    button.textContent = 'Go';
+    button.addEventListener(
+      'click',
+      mode == 'goBackward' ? goBackward : goForward,
+    );
+    return button;
+  }) as unknown as JSXElement;
+};
+
 testContextPrimitives('ui-solid', primitiveHarness, {
   Things: ContextPrimitiveThings,
   NoContext: ContextPrimitiveNoContext,
   hasStores: true,
 });
 
-testStoreReadFunctions('ui-solid', primitiveHarness, {Reader});
+testStoreReadFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+});
+testStoreListenerFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+});
+testCheckpointCallbackFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  Listener,
+  Reader,
+});
 
 describe('Solid-specific', () => {
   test('reads core store primitives', async () => {
@@ -689,25 +851,6 @@ describe('Solid-specific', () => {
     setCell!('changed');
     expect(store.getCell('t1', 'r1', 'c1')).toBe('changed');
     expect(cell!()).toBe('changed');
-
-    dispose();
-  });
-
-  test('calls listeners', async () => {
-    const store = createStore().setCell('t1', 'r1', 'c1', 1);
-    const cellListener = vi.fn();
-    const tablesListener = vi.fn();
-
-    const dispose = renderPrimitive(() => {
-      useCellListener('t1', 'r1', 'c1', cellListener, false, store);
-      useTablesListener(tablesListener, false, store);
-    });
-
-    store.setCell('t1', 'r1', 'c1', 2);
-    await pause();
-
-    expect(cellListener).toHaveBeenCalledTimes(1);
-    expect(tablesListener).toHaveBeenCalledTimes(1);
 
     dispose();
   });
