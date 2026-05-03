@@ -145,14 +145,25 @@
           () => store,
         );
       case 'sortedRowIds':
-        return getSortedRowIds(
-          () => tableId,
-          () => cellId,
-          () => descending,
-          () => offset,
-          () => limit,
-          () => store,
-        );
+        return descending === undefined &&
+          offset === undefined &&
+          limit === undefined
+          ? getSortedRowIds(
+              () => tableId,
+              () => cellId,
+              undefined,
+              undefined,
+              undefined,
+              () => store,
+            )
+          : getSortedRowIds(
+              () => tableId,
+              () => cellId,
+              () => descending,
+              () => offset,
+              () => limit,
+              () => store,
+            );
       case 'hasRow':
         return hasRow(
           () => tableId,
@@ -278,14 +289,25 @@
           () => queries,
         );
       case 'resultSortedRowIds':
-        return getResultSortedRowIds(
-          () => queryId,
-          () => cellId,
-          () => descending,
-          () => offset,
-          () => limit,
-          () => queries,
-        );
+        return descending === undefined &&
+          offset === undefined &&
+          limit === undefined
+          ? getResultSortedRowIds(
+              () => queryId,
+              () => cellId,
+              undefined,
+              undefined,
+              undefined,
+              () => queries,
+            )
+          : getResultSortedRowIds(
+              () => queryId,
+              () => cellId,
+              () => descending,
+              () => offset,
+              () => limit,
+              () => queries,
+            );
       case 'resultRow':
         return getResultRow(
           () => queryId,
