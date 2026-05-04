@@ -1,3 +1,4 @@
+/* @jsxImportSource solid-js */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 // NB: an exclamation mark after a line visually indicates an expected TS error
 import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
@@ -155,7 +156,7 @@ const Getters = () => {
   useTableIds()().includes('t1');
   useTableIds()().includes('t2'); // !
 
-  useHasTable('t1')(); // !
+  useHasTable('t1')();
   useHasTable('t2')(); // !
 
   useTable('t1')();
@@ -232,8 +233,9 @@ const Getters = () => {
   )();
   useSortedRowIds(
     () => 't1',
-    () => 'c2',
-  )(); // !
+    () => undefined,
+  )();
+  useSortedRowIds('t1', 'c2')(); // !
   useCell(
     () => 't1',
     () => 'r1',
@@ -242,8 +244,8 @@ const Getters = () => {
   useCell(
     () => 't1',
     () => 'r1',
-    () => 'c2',
-  )(); // !
+    () => 'c2', // !
+  )();
   useValue(() => 'v1')() as number;
   useValue(() => 'v2')(); // !
 };
@@ -256,7 +258,6 @@ const Setters = () => {
       store.getTables().t2; // !
       return {t1: {r1: {c1: 1}}};
     },
-    undefined,
     undefined,
     (store) => {
       store.getTables().t1;
@@ -273,14 +274,13 @@ const Setters = () => {
       return {r1: {c1: 1}};
     },
     undefined,
-    undefined,
     (store) => {
       store.getTables().t1;
       store.getTables().t2; // !
     },
   );
   useSetTableCallback(
-    () => 't1',
+    () => 't1' as const,
     () => ({r1: {c1: 1}}),
   );
   useSetTableCallback('t1', () => ({r1: {c2: 1}})); // !
@@ -299,14 +299,13 @@ const Setters = () => {
       return {c1: 1};
     },
     undefined,
-    undefined,
     (store) => {
       store.getTables().t1;
       store.getTables().t2; // !
     },
   );
   useSetRowCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
     () => ({c1: 1}),
   );
@@ -326,14 +325,13 @@ const Setters = () => {
       return {c1: 1};
     },
     undefined,
-    undefined,
     (_rowId, store) => {
       store.getTables().t1;
       store.getTables().t2; // !
     },
   );
   useAddRowCallback(
-    () => 't1',
+    () => 't1' as const,
     () => ({c1: 1}),
   );
   useAddRowCallback('t1', () => ({c2: 1})); // !
@@ -352,14 +350,13 @@ const Setters = () => {
       return {c1: 1};
     },
     undefined,
-    undefined,
     (store) => {
       store.getTables().t1;
       store.getTables().t2; // !
     },
   );
   useSetPartialRowCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
     () => ({c1: 1}),
   );
@@ -381,23 +378,22 @@ const Setters = () => {
       return 1;
     },
     undefined,
-    undefined,
     (store) => {
       store.getTables().t1;
       store.getTables().t2; // !
     },
   );
   useSetCellCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
-    () => 'c1',
+    () => 'c1' as const,
     () => 1,
   );
   useSetCellCallback('t1', 'r1', 'c1', () => (cell) => {
     cell as number;
     cell as string; // !
     return 0;
-  }); // !
+  });
   useSetCellCallback('t1', 'r1', 'c1', () => () => ''); // !
   useSetCellCallback('t1', 'r1', 'c1', () => ''); // !
   useSetCellCallback('t1', 'r1', 'c2', () => 1); // !
@@ -409,15 +405,15 @@ const Setters = () => {
     () => 1,
   );
   useSetCellCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
     () => 'c2', // !
     () => 1,
   );
   useSetCellCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
-    () => 'c1',
+    () => 'c1' as const,
     () => '', // !
   );
 
@@ -427,7 +423,6 @@ const Setters = () => {
       store.getValues().v2; // !
       return {v1: 1};
     },
-    undefined,
     undefined,
     (store) => {
       store.getTables().t1;
@@ -442,7 +437,6 @@ const Setters = () => {
       store.getValues().v2; // !
       return {v1: 1};
     },
-    undefined,
     undefined,
     (store) => {
       store.getTables().t1;
@@ -459,21 +453,20 @@ const Setters = () => {
       return 1;
     },
     undefined,
-    undefined,
     (store) => {
       store.getTables().t1;
       store.getTables().t2; // !
     },
   );
   useSetValueCallback(
-    () => 'v1',
+    () => 'v1' as const,
     () => 1,
   );
   useSetValueCallback('v1', () => (value) => {
     value as number;
     value as string; // !
     return 0;
-  }); // !
+  });
   useSetValueCallback('v1', () => () => ''); // !
   useSetValueCallback('v1', () => ''); // !
   useSetValueCallback('v2', () => 1); // !
@@ -482,7 +475,7 @@ const Setters = () => {
     () => 1,
   );
   useSetValueCallback(
-    () => 'v1',
+    () => 'v1' as const,
     () => '', // !
   );
 };
@@ -495,13 +488,13 @@ const Deleters = () => {
   });
 
   useDelTableCallback('t1');
-  useDelTableCallback(() => 't1');
+  useDelTableCallback(() => 't1' as const);
   useDelTableCallback('t2'); // !
   useDelTableCallback(() => 't2'); // !
 
   useDelRowCallback('t1', 'r1');
   useDelRowCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
   );
   useDelRowCallback('t2', 'r1'); // !
@@ -512,9 +505,9 @@ const Deleters = () => {
 
   useDelCellCallback('t1', 'r1', 'c1');
   useDelCellCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
-    () => 'c1',
+    () => 'c1' as const,
   );
   useDelCellCallback('t1', 'r1', 'c2'); // !
   useDelCellCallback('t2', 'r1', 'c1'); // !
@@ -525,7 +518,7 @@ const Deleters = () => {
     () => 1,
   );
   useDelCellCallback(
-    () => 't1',
+    () => 't1' as const,
     () => 'r1',
     () => 'c2', // !
     () => 1,
@@ -537,7 +530,7 @@ const Deleters = () => {
   });
 
   useDelValueCallback('v1');
-  useDelValueCallback(() => 'v1');
+  useDelValueCallback(() => 'v1' as const);
   useDelValueCallback('v2'); // !
   useDelValueCallback(() => 'v2'); // !
 };
@@ -646,7 +639,7 @@ const Listeners = () => {
     (store, tableId) => {
       store.getTables().t1;
       tableId == 't1';
-      tableId == 't0';
+      tableId == 't0'; // !
       store.getTables().t2; // !
       tableId == 't2'; // !
     },
@@ -659,9 +652,6 @@ const Listeners = () => {
   useHasTableCellListener(
     't2', // !
     undefined,
-    true,
-    0,
-    10,
     () => null,
   );
 
@@ -704,7 +694,7 @@ const Listeners = () => {
     (store, tableId) => {
       store.getTables().t1;
       tableId == 't1';
-      tableId == 't0';
+      tableId == 't0'; // !
       store.getTables().t2; // !
       tableId == 't2'; // !
     },
@@ -1285,8 +1275,8 @@ const Metrics = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createMetrics,
   );
-  metricsWithSchema?.getStore().getTables().t1;
-  metricsWithSchema?.getStore().getTables().t2; // !
+  metricsWithSchema()?.getStore().getTables().t1;
+  metricsWithSchema()?.getStore().getTables().t2; // !
   useCreateMetrics(createStore(), createMetrics); // !
 
   useMetrics()()?.getStore().getTables().t1;
@@ -1304,8 +1294,8 @@ const Indexes = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createIndexes,
   );
-  indexesWithSchema?.getStore().getTables().t1;
-  indexesWithSchema?.getStore().getTables().t2; // !
+  indexesWithSchema()?.getStore().getTables().t1;
+  indexesWithSchema()?.getStore().getTables().t2; // !
   useCreateIndexes(createStore(), createIndexes); // !
 
   useIndexes()()?.getStore().getTables().t1;
@@ -1328,8 +1318,8 @@ const Relationships = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createRelationships,
   );
-  relationshipsWithSchema?.getStore().getTables().t1;
-  relationshipsWithSchema?.getStore().getTables().t2; // !
+  relationshipsWithSchema()?.getStore().getTables().t1;
+  relationshipsWithSchema()?.getStore().getTables().t2; // !
   useCreateRelationships(createStore(), createRelationships); // !
 
   useRelationships()()?.getStore().getTables().t1;
@@ -1357,8 +1347,8 @@ const Queries = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createQueries,
   );
-  queriesWithSchema?.getStore().getTables().t1;
-  queriesWithSchema?.getStore().getTables().t2; // !
+  queriesWithSchema()?.getStore().getTables().t1;
+  queriesWithSchema()?.getStore().getTables().t2; // !
   useCreateQueries(createStore(), createQueries); // !
 
   useQueries()()?.getStore().getTables().t1;
@@ -1401,15 +1391,14 @@ const Checkpoints = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createCheckpoints,
   );
-  checkpointsWithSchema?.getStore().getTables().t1;
-  checkpointsWithSchema?.getStore().getTables().t2; // !
+  checkpointsWithSchema()?.getStore().getTables().t1;
+  checkpointsWithSchema()?.getStore().getTables().t2; // !
   useCreateCheckpoints(createStore(), createCheckpoints); // !
 
   useCheckpoints()()?.getStore().getTables().t1;
   useCheckpoints()()?.getStore().getTables().t2; // !
 
   useSetCheckpointCallback(
-    undefined,
     undefined,
     undefined,
     (_checkpointId, checkpoints) => {
@@ -1420,7 +1409,6 @@ const Checkpoints = () => {
 
   useGoToCallback(
     () => 'c1',
-    undefined,
     undefined,
     (checkpoints) => {
       checkpoints.getStore().getTables().t1;
@@ -1450,8 +1438,8 @@ const Persister = () => {
       persister?.getStore().getTables().t2; // !
     },
   );
-  persisterWithSchema?.getStore().getTables().t1;
-  persisterWithSchema?.getStore().getTables().t2; // !
+  persisterWithSchema()?.getStore().getTables().t1;
+  persisterWithSchema()?.getStore().getTables().t2; // !
   useCreatePersister(createStore(), (s) => createFilePersister(s, '')); // !
 };
 
