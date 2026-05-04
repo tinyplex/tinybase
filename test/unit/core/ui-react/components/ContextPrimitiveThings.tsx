@@ -9,7 +9,7 @@ import type {
 import type {AnyPersister} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import {Provider} from 'tinybase/ui-react';
-import {ContextPrimitiveThingsChild} from './ContextPrimitiveThingsChild';
+import {ContextPrimitiveThingsChild} from './ContextPrimitiveThingsChild.tsx';
 
 export interface ContextPrimitiveThingsProps {
   readonly store: Store;

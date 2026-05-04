@@ -165,7 +165,10 @@ import {describe, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
 import {
   testCheckpointCallbackFunctions,
+  testCheckpointInformationFunctions,
+  testStateFunctions,
   testStoreListenerFunctions,
+  testStoreListenerOverloadFunctions,
   testStoreReadFunctions,
   testWriteCallbackFunctions,
 } from '../ui-common/functions.ts';
@@ -248,77 +251,49 @@ const Reader = ({
   readonly checkpoints?: Checkpoints;
   readonly persister?: Persister<Persists.StoreOnly>;
   readonly synchronizer?: Synchronizer;
-  readonly persister?: Persister<Persists.StoreOnly>;
-  readonly synchronizer?: Synchronizer;
-  readonly tableId?: Id;
-  readonly rowId?: Id;
-  readonly cellId?: Id;
-  readonly valueId?: Id;
-  readonly metricId?: Id;
-  readonly indexId?: Id;
-  readonly sliceId?: Id;
-  readonly relationshipId?: Id;
-  readonly localRowId?: Id;
-  readonly remoteRowId?: Id;
-  readonly firstRowId?: Id;
-  readonly queryId?: Id;
-  readonly descending?: boolean;
-  readonly offset?: number;
-  readonly limit?: number;
+  readonly tableId: Id;
+  readonly rowId: Id;
+  readonly cellId: Id;
+  readonly valueId: Id;
+  readonly metricId: Id;
+  readonly indexId: Id;
+  readonly sliceId: Id;
+  readonly relationshipId: Id;
+  readonly localRowId: Id;
+  readonly remoteRowId: Id;
+  readonly firstRowId: Id;
+  readonly queryId: Id;
+  readonly descending: boolean;
+  readonly offset: number;
+  readonly limit: number;
 }) => {
   const hasTables = useHasTables(store);
   const tables = useTables(store);
   const tableIds = useTableIds(store);
-  const hasTable = useHasTable(() => tableId, store);
-  const table = useTable(() => tableId, store);
-  const tableCellIds = useTableCellIds(() => tableId, store);
-  const hasTableCell = useHasTableCell(
-    () => tableId,
-    () => cellId,
-    store,
-  );
-  const rowCount = useRowCount(() => tableId, store);
-  const rowIds = useRowIds(() => tableId, store);
+  const hasTable = useHasTable(tableId, store);
+  const table = useTable(tableId, store);
+  const tableCellIds = useTableCellIds(tableId, store);
+  const hasTableCell = useHasTableCell(tableId, cellId, store);
+  const rowCount = useRowCount(tableId, store);
+  const rowIds = useRowIds(tableId, store);
   const sortedRowIds = useSortedRowIds(
-    () => tableId,
-    () => cellId,
-    () => descending,
-    () => offset,
-    () => limit,
+    tableId,
+    cellId,
+    descending,
+    offset,
+    limit,
     store,
   );
-  const hasRow = useHasRow(
-    () => tableId,
-    () => rowId,
-    store,
-  );
-  const row = useRow(
-    () => tableId,
-    () => rowId,
-    store,
-  );
-  const cellIds = useCellIds(
-    () => tableId,
-    () => rowId,
-    store,
-  );
-  const hasCell = useHasCell(
-    () => tableId,
-    () => rowId,
-    () => cellId,
-    store,
-  );
-  const cell = useCell(
-    () => tableId,
-    () => rowId,
-    () => cellId,
-    store,
-  );
+  const hasRow = useHasRow(tableId, rowId, store);
+  const row = useRow(tableId, rowId, store);
+  const cellIds = useCellIds(tableId, rowId, store);
+  const hasCell = useHasCell(tableId, rowId, cellId, store);
+  const cell = useCell(tableId, rowId, cellId, store);
   const hasValues = useHasValues(store);
   const values = useValues(store);
   const valueIds = useValueIds(store);
-  const hasValue = useHasValue(() => valueId, store);
-  const storeValue = useValue(() => valueId, store);
+  const hasValue = useHasValue(valueId, store);
+  const storeValue = useValue(valueId, store);
   const metricsIds = useMetricsIds();
   const indexesIds = useIndexesIds();
   const queriesIds = useQueriesIds();
@@ -327,59 +302,42 @@ const Reader = ({
   const persisterIds = usePersisterIds();
   const synchronizerIds = useSynchronizerIds();
   const metricIds = useMetricIds(metrics);
-  const metric = useMetric(() => metricId, metrics);
+  const metric = useMetric(metricId, metrics);
   const indexIds = useIndexIds(indexes);
-  const sliceIds = useSliceIds(() => indexId, indexes);
-  const sliceRowIds = useSliceRowIds(
-    () => indexId,
-    () => sliceId,
-    indexes,
-  );
+  const sliceIds = useSliceIds(indexId, indexes);
+  const sliceRowIds = useSliceRowIds(indexId, sliceId, indexes);
   const relationshipIds = useRelationshipIds(relationships);
   const remoteRowIdResult = useRemoteRowId(
-    () => relationshipId,
-    () => localRowId,
+    relationshipId,
+    localRowId,
     relationships,
   );
   const localRowIds = useLocalRowIds(
-    () => relationshipId,
-    () => remoteRowId,
+    relationshipId,
+    remoteRowId,
     relationships,
   );
   const linkedRowIds = useLinkedRowIds(
-    () => relationshipId,
-    () => firstRowId,
+    relationshipId,
+    firstRowId,
     relationships,
   );
   const queryIds = useQueryIds(queries);
-  const resultTable = useResultTable(() => queryId, queries);
-  const resultTableCellIds = useResultTableCellIds(() => queryId, queries);
-  const resultRowCount = useResultRowCount(() => queryId, queries);
-  const resultRowIds = useResultRowIds(() => queryId, queries);
+  const resultTable = useResultTable(queryId, queries);
+  const resultTableCellIds = useResultTableCellIds(queryId, queries);
+  const resultRowCount = useResultRowCount(queryId, queries);
+  const resultRowIds = useResultRowIds(queryId, queries);
   const resultSortedRowIds = useResultSortedRowIds(
-    () => queryId,
-    () => cellId,
-    () => descending,
-    () => offset,
-    () => limit,
+    queryId,
+    cellId,
+    descending,
+    offset,
+    limit,
     queries,
   );
-  const resultRow = useResultRow(
-    () => queryId,
-    () => rowId,
-    queries,
-  );
-  const resultCellIds = useResultCellIds(
-    () => queryId,
-    () => rowId,
-    queries,
-  );
-  const resultCell = useResultCell(
-    () => queryId,
-    () => rowId,
-    () => cellId,
-    queries,
-  );
+  const resultRow = useResultRow(queryId, rowId, queries);
+  const resultCellIds = useResultCellIds(queryId, rowId, queries);
+  const resultCell = useResultCell(queryId, rowId, cellId, queries);
   const checkpointIds = useCheckpointIds(checkpoints);
   const valuesByMode: {[mode: string]: Accessor<unknown>} = {
     hasTables,
@@ -469,20 +427,20 @@ const Listener = ({
   readonly checkpoints?: Checkpoints;
   readonly persister?: Persister<Persists.StoreOnly>;
   readonly synchronizer?: Synchronizer;
-  readonly tableId?: Id;
-  readonly rowId?: Id;
-  readonly cellId?: Id;
-  readonly valueId?: Id;
-  readonly metricId?: Id;
-  readonly indexId?: Id;
-  readonly sliceId?: Id;
-  readonly relationshipId?: Id;
-  readonly localRowId?: Id;
-  readonly remoteRowId?: Id;
-  readonly firstRowId?: Id;
-  readonly queryId?: Id;
-  readonly paramId?: Id;
-  readonly checkpointId?: Id;
+  readonly tableId: Id;
+  readonly rowId: Id;
+  readonly cellId: Id;
+  readonly valueId: Id;
+  readonly metricId: Id;
+  readonly indexId: Id;
+  readonly sliceId: Id;
+  readonly relationshipId: Id;
+  readonly localRowId: Id;
+  readonly remoteRowId: Id;
+  readonly firstRowId: Id;
+  readonly queryId: Id;
+  readonly paramId: Id;
+  readonly checkpointId: Id;
 }) => {
   switch (mode) {
     case 'hasTables':
@@ -519,6 +477,26 @@ const Listener = ({
         false,
         0,
         undefined,
+        listener,
+        false,
+        store,
+      );
+      break;
+    case 'sortedRowIdsObject':
+      useSortedRowIdsListener(
+        {tableId: 't1', cellId: 'c1'},
+        listener,
+        false,
+        store,
+      );
+      break;
+    case 'sortedRowIdsDefaults':
+      useSortedRowIdsListener(
+        't1',
+        'c1',
+        undefined as unknown as boolean,
+        undefined as unknown as number,
+        undefined as unknown as number,
         listener,
         false,
         store,
@@ -619,6 +597,17 @@ const Listener = ({
         queries,
       );
       break;
+    case 'resultSortedRowIdsDefaults':
+      useResultSortedRowIdsListener(
+        'q1',
+        'c1',
+        undefined as unknown as boolean,
+        undefined as unknown as number,
+        undefined as unknown as number,
+        listener,
+        queries,
+      );
+      break;
     case 'resultRow':
       useResultRowListener(queryId, rowId, listener, queries);
       break;
@@ -670,6 +659,59 @@ const Callback = ({
   }) as unknown as JSXElement;
 };
 
+const CheckpointInfo = ({
+  mode,
+  checkpoints,
+}: {
+  readonly mode: string;
+  readonly checkpoints: Checkpoints;
+}) => {
+  const undoInformation = useUndoInformation(checkpoints);
+  const redoInformation = useRedoInformation(checkpoints);
+  return (() => {
+    const button = document.createElement('button');
+    const [available, action, checkpointId, label] =
+      mode == 'undoInformation' ? undoInformation : redoInformation;
+    button.addEventListener('click', action);
+    return [JSON.stringify([available, checkpointId ?? null, label]), button];
+  }) as unknown as JSXElement;
+};
+
+const State = ({
+  mode,
+  store,
+  queries,
+}: {
+  readonly mode: string;
+  readonly store?: Store;
+  readonly queries?: Queries;
+}) => {
+  const [tables, setTables] = useTablesState(store);
+  const [table, setTable] = useTableState('t1', store);
+  const [row, setRow] = useRowState('t1', 'r1', store);
+  const [cell, setCell] = useCellState('t1', 'r1', 'c1', store);
+  const [values, setValues] = useValuesState(store);
+  const [value, setValue] = useValueState('v1', store);
+  const [paramValues, setParamValues] = useParamValuesState('q1', queries);
+  const [paramValue, setParamValue] = useParamValueState('q1', 'p1', queries);
+  const state = {
+    tablesState: [tables, () => setTables({t1: {r1: {c1: 2}}})],
+    tableState: [table, () => setTable({r1: {c1: 2}})],
+    rowState: [row, () => setRow({c1: 2})],
+    cellState: [cell, () => setCell(2)],
+    valuesState: [values, () => setValues({v1: 2})],
+    valueState: [value, () => setValue(2)],
+    paramValuesState: [paramValues, () => setParamValues({p1: 2})],
+    paramValueState: [paramValue, () => setParamValue(2)],
+  }[mode] as [Accessor<unknown>, () => void];
+  return (() => {
+    const button = document.createElement('button');
+    button.textContent = 'Set';
+    button.addEventListener('click', state[1]);
+    return [JSON.stringify(state[0]()), button];
+  }) as unknown as JSXElement;
+};
+
 const Writer = ({
   mode,
   store,
@@ -684,7 +726,25 @@ const Writer = ({
   readonly then: any;
 }) => {
   const setRow = useSetRowCallback('t1', 'r1', () => ({c1: 2}), store, then);
+  const setTables = useSetTablesCallback(
+    () => ({t1: {r1: {c1: 2}}}),
+    store,
+    then,
+  );
+  const setTable = useSetTableCallback(
+    't1',
+    () => ({r1: {c1: 2}}),
+    store,
+    then,
+  );
   const addRow = useAddRowCallback('t1', () => ({c1: 3}), store, then);
+  const setPartialRow = useSetPartialRowCallback(
+    't1',
+    'r1',
+    () => ({c2: 2}),
+    store,
+    then,
+  );
   const setCell = useSetCellCallback(
     't1',
     'r1',
@@ -695,6 +755,18 @@ const Writer = ({
   );
   const delCell = useDelCellCallback('t1', 'r1', 'c1', true, store, then);
   const setValues = useSetValuesCallback(() => ({v1: 4}), store, then);
+  const setPartialValues = useSetPartialValuesCallback(
+    () => ({v2: 2}),
+    store,
+    then,
+  );
+  const setValue = useSetValueCallback('v1', () => 2, store, then);
+  const setParamValues = useSetParamValuesCallback(
+    'q1',
+    () => ({p1: 'value'}),
+    queries,
+    then,
+  );
   const setParamValue = useSetParamValueCallback(
     'q1',
     'p1',
@@ -707,16 +779,32 @@ const Writer = ({
     checkpoints,
     then,
   );
+  const delTables = useDelTablesCallback(store, then);
+  const delTable = useDelTableCallback('t1', store, then);
+  const delRow = useDelRowCallback('t1', 'r1', store, then);
+  const delValues = useDelValuesCallback(store, then);
+  const delValue = useDelValueCallback('v1', store, then);
   return (() => {
     const button = document.createElement('button');
     const handlers: {[mode: string]: EventListener} = {
+      setTables,
+      setTable,
       setRow,
       addRow,
+      setPartialRow,
       setCell,
       delCell,
       setValues,
+      setPartialValues,
+      setValue,
+      setParamValues,
       setParamValue,
       setCheckpoint,
+      delTables,
+      delTable,
+      delRow,
+      delValues,
+      delValue,
     };
     button.addEventListener('click', handlers[mode]);
     return button;
@@ -731,26 +819,58 @@ testContextPrimitives('ui-solid', primitiveHarness, {
 
 testStoreReadFunctions('ui-solid', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
   Writer,
 });
 testStoreListenerFunctions('ui-solid', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
+  Writer,
+});
+testStoreListenerOverloadFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  CheckpointInfo,
+  Listener,
+  Reader,
+  State,
   Writer,
 });
 testCheckpointCallbackFunctions('ui-solid', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
+  Writer,
+});
+testCheckpointInformationFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  CheckpointInfo,
+  Listener,
+  Reader,
+  State,
   Writer,
 });
 testWriteCallbackFunctions('ui-solid', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
+  Writer,
+});
+testStateFunctions('ui-solid', primitiveHarness, {
+  Callback,
+  CheckpointInfo,
+  Listener,
+  Reader,
+  State,
   Writer,
 });
 
@@ -1011,8 +1131,8 @@ describe('Solid-specific', () => {
     let cell: Accessor<ReturnType<Store['getCell']>>;
     let values: Accessor<ReturnType<Store['getValues']>>;
     let value: Accessor<ReturnType<Store['getValue']>>;
-    let paramValues: Accessor<Record<string, unknown>>;
-    let paramValue: Accessor<unknown>;
+    let paramValues: Accessor<ReturnType<Queries['getParamValues']>>;
+    let paramValue: Accessor<ReturnType<Queries['getParamValue']>>;
     let directStore: Accessor<Store | undefined>;
     let noMetrics: Accessor<Metrics | undefined>;
     let sortedRowIds: Accessor<string[]>;
@@ -1023,8 +1143,10 @@ describe('Solid-specific', () => {
     let setCell: (cell: string) => void;
     let setValues: (values: ReturnType<Store['getValues']>) => void;
     let setValue: (value: string) => void;
-    let setParamValues: (values: Record<string, unknown>) => void;
-    let setParamValue: (value: string[]) => void;
+    let setParamValues: (values: ReturnType<Queries['getParamValues']>) => void;
+    let setParamValue: (
+      value: NonNullable<ReturnType<Queries['getParamValue']>>,
+    ) => void;
 
     const dispose = renderPrimitive(() => {
       const query = createQueries(store).setQueryDefinition(
@@ -1116,7 +1238,7 @@ describe('Solid-specific', () => {
     );
     let setTables: () => void;
     let setTable: () => void;
-    let addRow: () => void;
+    let addRow: (suffix: string) => void;
     let setRowByParameter: (rowId: string) => void;
     let setPartialRow: () => void;
     let setPartialValues: () => void;
@@ -1256,9 +1378,9 @@ describe('Solid-specific', () => {
     let lateUndefinedSynchronizerResolve: () => void;
     let persisterStatus: Accessor<number>;
     let synchronizerStatus: Accessor<number>;
-    let emptyPersister: Accessor<TestPersister | undefined>;
-    let undefinedPersister: Accessor<TestPersister | undefined>;
-    let createdPersister: Accessor<TestPersister | undefined>;
+    let emptyPersister: Accessor<unknown>;
+    let undefinedPersister: Accessor<unknown>;
+    let createdPersister: Accessor<unknown>;
     let emptySynchronizer: Accessor<TestSynchronizer | undefined>;
     let undefinedSynchronizer: Accessor<TestSynchronizer | undefined>;
     const persisterThen = vi.fn();
@@ -1268,10 +1390,7 @@ describe('Solid-specific', () => {
     const dispose = renderPrimitive(() => {
       persisterStatus = usePersisterStatus(persister);
       synchronizerStatus = useSynchronizerStatus(synchronizer);
-      emptyPersister = useCreatePersister<TestPersister>(
-        undefined,
-        async () => persister,
-      );
+      emptyPersister = useCreatePersister(undefined, async () => persister);
       undefinedPersister = useCreatePersister(
         createStore(),
         async () => undefined,
@@ -1336,9 +1455,9 @@ describe('Solid-specific', () => {
       useSortedRowIdsListener(
         't1',
         'c1',
-        undefined,
-        undefined,
-        undefined,
+        undefined as unknown as boolean,
+        undefined as unknown as number,
+        undefined as unknown as number,
         listener,
         false,
         store,

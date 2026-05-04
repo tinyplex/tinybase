@@ -192,7 +192,10 @@ import {type Mock, beforeEach, describe, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
 import {
   testCheckpointCallbackFunctions,
+  testCheckpointInformationFunctions,
+  testStateFunctions,
   testStoreListenerFunctions,
+  testStoreListenerOverloadFunctions,
   testStoreReadFunctions,
   testWriteCallbackFunctions,
 } from '../ui-common/functions.ts';
@@ -269,23 +272,21 @@ const Reader = ({
   readonly checkpoints?: Checkpoints;
   readonly persister?: AnyPersister;
   readonly synchronizer?: Synchronizer;
-  readonly persister?: AnyPersister;
-  readonly synchronizer?: Synchronizer;
-  readonly tableId?: Id;
-  readonly rowId?: Id;
-  readonly cellId?: Id;
-  readonly valueId?: Id;
-  readonly metricId?: Id;
-  readonly indexId?: Id;
-  readonly sliceId?: Id;
-  readonly relationshipId?: Id;
-  readonly localRowId?: Id;
-  readonly remoteRowId?: Id;
-  readonly firstRowId?: Id;
-  readonly queryId?: Id;
-  readonly descending?: boolean;
-  readonly offset?: number;
-  readonly limit?: number;
+  readonly tableId: Id;
+  readonly rowId: Id;
+  readonly cellId: Id;
+  readonly valueId: Id;
+  readonly metricId: Id;
+  readonly indexId: Id;
+  readonly sliceId: Id;
+  readonly relationshipId: Id;
+  readonly localRowId: Id;
+  readonly remoteRowId: Id;
+  readonly firstRowId: Id;
+  readonly queryId: Id;
+  readonly descending: boolean;
+  readonly offset: number;
+  readonly limit: number;
 }) => {
   const hasTables = useHasTables(store);
   const tables = useTables(store);
@@ -447,20 +448,20 @@ const Listener = ({
   readonly checkpoints?: Checkpoints;
   readonly persister?: AnyPersister;
   readonly synchronizer?: Synchronizer;
-  readonly tableId?: Id;
-  readonly rowId?: Id;
-  readonly cellId?: Id;
-  readonly valueId?: Id;
-  readonly metricId?: Id;
-  readonly indexId?: Id;
-  readonly sliceId?: Id;
-  readonly relationshipId?: Id;
-  readonly localRowId?: Id;
-  readonly remoteRowId?: Id;
-  readonly firstRowId?: Id;
-  readonly queryId?: Id;
-  readonly paramId?: Id;
-  readonly checkpointId?: Id;
+  readonly tableId: Id;
+  readonly rowId: Id;
+  readonly cellId: Id;
+  readonly valueId: Id;
+  readonly metricId: Id;
+  readonly indexId: Id;
+  readonly sliceId: Id;
+  readonly relationshipId: Id;
+  readonly localRowId: Id;
+  readonly remoteRowId: Id;
+  readonly firstRowId: Id;
+  readonly queryId: Id;
+  readonly paramId: Id;
+  readonly checkpointId: Id;
 }) => {
   switch (mode) {
     case 'hasTables':
@@ -504,6 +505,28 @@ const Listener = ({
         false,
         0,
         undefined,
+        listener,
+        [listener],
+        false,
+        store,
+      );
+      break;
+    case 'sortedRowIdsObject':
+      useSortedRowIdsListener(
+        {tableId: 't1', cellId: 'c1'},
+        listener,
+        [listener],
+        false,
+        store,
+      );
+      break;
+    case 'sortedRowIdsDefaults':
+      useSortedRowIdsListener(
+        't1',
+        'c1',
+        undefined as unknown as boolean,
+        undefined as unknown as number,
+        undefined as unknown as number,
         listener,
         [listener],
         false,
@@ -625,6 +648,18 @@ const Listener = ({
         queries,
       );
       break;
+    case 'resultSortedRowIdsDefaults':
+      useResultSortedRowIdsListener(
+        'q1',
+        'c1',
+        undefined as unknown as boolean,
+        undefined as unknown as number,
+        undefined as unknown as number,
+        listener,
+        [listener],
+        queries,
+      );
+      break;
     case 'resultRow':
       useResultRowListener(queryId, rowId, listener, [listener], queries);
       break;
@@ -677,6 +712,61 @@ const Callback = ({
   );
 };
 
+const CheckpointInfo = ({
+  mode,
+  checkpoints,
+}: {
+  readonly mode: string;
+  readonly checkpoints: Checkpoints;
+}) => {
+  const undoInformation = useUndoInformation(checkpoints);
+  const redoInformation = useRedoInformation(checkpoints);
+  const [available, action, checkpointId, label] =
+    mode == 'undoInformation' ? undoInformation : redoInformation;
+  return (
+    <>
+      {JSON.stringify([available, checkpointId ?? null, label])}
+      <button onClick={action} />
+    </>
+  );
+};
+
+const State = ({
+  mode,
+  store,
+  queries,
+}: {
+  readonly mode: string;
+  readonly store?: Store;
+  readonly queries?: Queries;
+}) => {
+  const [tables, setTables] = useTablesState(store);
+  const [table, setTable] = useTableState('t1', store);
+  const [row, setRow] = useRowState('t1', 'r1', store);
+  const [cell, setCell] = useCellState('t1', 'r1', 'c1', store);
+  const [values, setValues] = useValuesState(store);
+  const [value, setValue] = useValueState('v1', store);
+  const [paramValues, setParamValues] = useParamValuesState('q1', queries);
+  const [paramValue, setParamValue] = useParamValueState('q1', 'p1', queries);
+  const state = {
+    tablesState: [tables, () => setTables({t1: {r1: {c1: 2}}})],
+    tableState: [table, () => setTable({r1: {c1: 2}})],
+    rowState: [row, () => setRow({c1: 2})],
+    cellState: [cell, () => setCell(2)],
+    valuesState: [values, () => setValues({v1: 2})],
+    valueState: [value, () => setValue(2)],
+    paramValuesState: [paramValues, () => setParamValues({p1: 2})],
+    paramValueState: [paramValue, () => setParamValue(2)],
+  }[mode] as [unknown, () => void];
+  const _handleClick = state[1];
+  return (
+    <>
+      {JSON.stringify(state[0])}
+      <button onClick={_handleClick}>Set</button>
+    </>
+  );
+};
+
 const Writer = ({
   mode,
   store,
@@ -698,7 +788,28 @@ const Writer = ({
     store,
     then,
   );
+  const setTables = useSetTablesCallback(
+    () => ({t1: {r1: {c1: 2}}}),
+    [],
+    store,
+    then,
+  );
+  const setTable = useSetTableCallback(
+    't1',
+    () => ({r1: {c1: 2}}),
+    [],
+    store,
+    then,
+  );
   const addRow = useAddRowCallback('t1', () => ({c1: 3}), [], store, then);
+  const setPartialRow = useSetPartialRowCallback(
+    't1',
+    'r1',
+    () => ({c2: 2}),
+    [],
+    store,
+    then,
+  );
   const setCell = useSetCellCallback(
     't1',
     'r1',
@@ -710,6 +821,20 @@ const Writer = ({
   );
   const delCell = useDelCellCallback('t1', 'r1', 'c1', true, store, then);
   const setValues = useSetValuesCallback(() => ({v1: 4}), [], store, then);
+  const setPartialValues = useSetPartialValuesCallback(
+    () => ({v2: 2}),
+    [],
+    store,
+    then,
+  );
+  const setValue = useSetValueCallback('v1', () => 2, [], store, then);
+  const setParamValues = useSetParamValuesCallback(
+    'q1',
+    () => ({p1: 'value'}),
+    [],
+    queries,
+    then,
+  );
   const setParamValue = useSetParamValueCallback(
     'q1',
     'p1',
@@ -724,14 +849,30 @@ const Writer = ({
     checkpoints,
     then,
   );
+  const delTables = useDelTablesCallback(store, then);
+  const delTable = useDelTableCallback('t1', store, then);
+  const delRow = useDelRowCallback('t1', 'r1', store, then);
+  const delValues = useDelValuesCallback(store, then);
+  const delValue = useDelValueCallback('v1', store, then);
   const _handleClick = {
+    setTables,
+    setTable,
     setRow,
     addRow,
+    setPartialRow,
     setCell,
     delCell,
     setValues,
+    setPartialValues,
+    setValue,
+    setParamValues,
     setParamValue,
     setCheckpoint,
+    delTables,
+    delTable,
+    delRow,
+    delValues,
+    delValue,
   }[mode];
 
   return <button onClick={_handleClick} />;
@@ -745,26 +886,58 @@ testContextPrimitives('ui-react', primitiveHarness, {
 
 testStoreReadFunctions('ui-react', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
   Writer,
 });
 testStoreListenerFunctions('ui-react', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
+  Writer,
+});
+testStoreListenerOverloadFunctions('ui-react', primitiveHarness, {
+  Callback,
+  CheckpointInfo,
+  Listener,
+  Reader,
+  State,
   Writer,
 });
 testCheckpointCallbackFunctions('ui-react', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
+  Writer,
+});
+testCheckpointInformationFunctions('ui-react', primitiveHarness, {
+  Callback,
+  CheckpointInfo,
+  Listener,
+  Reader,
+  State,
   Writer,
 });
 testWriteCallbackFunctions('ui-react', primitiveHarness, {
   Callback,
+  CheckpointInfo,
   Listener,
   Reader,
+  State,
+  Writer,
+});
+testStateFunctions('ui-react', primitiveHarness, {
+  Callback,
+  CheckpointInfo,
+  Listener,
+  Reader,
+  State,
   Writer,
 });
 

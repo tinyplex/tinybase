@@ -88,21 +88,21 @@
     relationships?: Relationships;
     queries?: Queries;
     checkpoints?: Checkpoints;
-    tableId?: Id;
-    rowId?: Id;
-    cellId?: Id;
-    valueId?: Id;
-    metricId?: Id;
-    indexId?: Id;
-    sliceId?: Id;
-    relationshipId?: Id;
-    localRowId?: Id;
-    remoteRowId?: Id;
-    firstRowId?: Id;
-    queryId?: Id;
-    descending?: boolean;
-    offset?: number;
-    limit?: number;
+    tableId: Id;
+    rowId: Id;
+    cellId: Id;
+    valueId: Id;
+    metricId: Id;
+    indexId: Id;
+    sliceId: Id;
+    relationshipId: Id;
+    localRowId: Id;
+    remoteRowId: Id;
+    firstRowId: Id;
+    queryId: Id;
+    descending: boolean;
+    offset: number;
+    limit: number;
   } = $props();
 
   const getFunction = () => {

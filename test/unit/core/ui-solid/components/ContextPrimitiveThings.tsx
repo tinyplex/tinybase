@@ -1,3 +1,4 @@
+/* @jsxImportSource solid-js */
 import type {
   Checkpoints,
   Indexes,
@@ -9,7 +10,7 @@ import type {
 import type {AnyPersister} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import {Provider} from 'tinybase/ui-solid';
-import {ContextPrimitiveThingsChild} from './ContextPrimitiveThingsChild';
+import {ContextPrimitiveThingsChild} from './ContextPrimitiveThingsChild.tsx';
 
 export interface ContextPrimitiveThingsProps {
   readonly store: Store;

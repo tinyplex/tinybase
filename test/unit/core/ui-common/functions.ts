@@ -30,14 +30,16 @@ export type FunctionHarness = {
   readonly act: (callback: () => unknown) => Promise<void>;
   readonly render: (
     component: unknown,
-    props?: {[key: string]: unknown},
+    props: {[key: string]: unknown},
   ) => FunctionRendered;
 };
 
 export type FunctionComponents = {
   readonly Callback: unknown;
+  readonly CheckpointInfo?: unknown;
   readonly Listener: unknown;
   readonly Reader: unknown;
+  readonly State?: unknown;
   readonly Writer?: unknown;
 };
 
@@ -62,12 +64,129 @@ const renderCallback = (
   props: {[key: string]: unknown} = {},
 ) => harness.render(components.Callback, {mode, ...props});
 
+const renderCheckpointInfo = (
+  harness: FunctionHarness,
+  components: FunctionComponents,
+  mode: string,
+  props: {[key: string]: unknown} = {},
+) => harness.render(components.CheckpointInfo, {mode, ...props});
+
+const renderState = (
+  harness: FunctionHarness,
+  components: FunctionComponents,
+  mode: string,
+  props: {[key: string]: unknown} = {},
+) => harness.render(components.State, {mode, ...props});
+
 const renderWriter = (
   harness: FunctionHarness,
   components: FunctionComponents,
   mode: string,
   props: {[key: string]: unknown} = {},
 ) => harness.render(components.Writer, {mode, ...props});
+
+export const testStateFunctions = (
+  framework: string,
+  harness: FunctionHarness,
+  components: FunctionComponents,
+): void => {
+  let store: Store;
+  let queries: Queries;
+
+  beforeEach(() => {
+    store = createStore()
+      .setTables({t1: {r1: {c1: 1}}})
+      .setValues({v1: 1});
+    queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1},
+    );
+  });
+
+  describe(`${framework} state function scenarios`, () => {
+    [
+      {
+        mode: 'tablesState',
+        before: {t1: {r1: {c1: 1}}},
+        after: {t1: {r1: {c1: 2}}},
+        getProps: () => ({store}),
+        assert: () => expect(store.getCell('t1', 'r1', 'c1')).toEqual(2),
+      },
+      {
+        mode: 'tableState',
+        before: {r1: {c1: 1}},
+        after: {r1: {c1: 2}},
+        getProps: () => ({store}),
+        assert: () => expect(store.getCell('t1', 'r1', 'c1')).toEqual(2),
+      },
+      {
+        mode: 'rowState',
+        before: {c1: 1},
+        after: {c1: 2},
+        getProps: () => ({store}),
+        assert: () => expect(store.getRow('t1', 'r1')).toEqual({c1: 2}),
+      },
+      {
+        mode: 'cellState',
+        before: 1,
+        after: 2,
+        getProps: () => ({store}),
+        assert: () => expect(store.getCell('t1', 'r1', 'c1')).toEqual(2),
+      },
+      {
+        mode: 'valuesState',
+        before: {v1: 1},
+        after: {v1: 2},
+        getProps: () => ({store}),
+        assert: () => expect(store.getValue('v1')).toEqual(2),
+      },
+      {
+        mode: 'valueState',
+        before: 1,
+        after: 2,
+        getProps: () => ({store}),
+        assert: () => expect(store.getValue('v1')).toEqual(2),
+      },
+      {
+        mode: 'paramValuesState',
+        before: {p1: 1},
+        after: {p1: 2},
+        getProps: () => ({queries}),
+        assert: () => expect(queries.getParamValue('q1', 'p1')).toEqual(2),
+      },
+      {
+        mode: 'paramValueState',
+        before: 1,
+        after: 2,
+        getProps: () => ({queries}),
+        assert: () => expect(queries.getParamValue('q1', 'p1')).toEqual(2),
+      },
+    ].forEach(({mode, before, after, getProps, assert}) => {
+      test(mode, async () => {
+        const {container, unmount} = renderState(
+          harness,
+          components,
+          mode,
+          getProps(),
+        );
+        expect(container.textContent).toEqual(JSON.stringify(before) + 'Set');
+
+        await harness.act(() =>
+          container.querySelector<HTMLButtonElement>('button')?.click(),
+        );
+        expect(container.textContent).toEqual(JSON.stringify(after) + 'Set');
+        assert();
+
+        unmount();
+      });
+    });
+  });
+};
 
 export const testStoreReadFunctions = (
   framework: string,
@@ -1398,20 +1517,21 @@ export const testStoreListenerFunctions = (
     ].forEach(({mode, stats, props, mutate}) => {
       test(mode, async () => {
         const listener = vi.fn();
-        expect(store.getListenerStats()[stats]).toEqual(0);
+        const statsKey = stats as keyof ReturnType<Store['getListenerStats']>;
+        expect(store.getListenerStats()[statsKey]).toEqual(0);
 
         const {unmount} = renderListener(harness, components, mode, {
           store,
           listener,
           ...(props ?? {}),
         });
-        expect(store.getListenerStats()[stats]).toEqual(1);
+        expect(store.getListenerStats()[statsKey]).toEqual(1);
 
         await harness.act(mutate);
         expect(listener).toHaveBeenCalledTimes(1);
 
         unmount();
-        expect(store.getListenerStats()[stats]).toEqual(0);
+        expect(store.getListenerStats()[statsKey]).toEqual(0);
       });
     });
 
@@ -1610,7 +1730,8 @@ export const testStoreListenerFunctions = (
           },
         );
         const listener = vi.fn();
-        expect(queries.getListenerStats()[stats]).toEqual(0);
+        const statsKey = stats as keyof ReturnType<Queries['getListenerStats']>;
+        expect(queries.getListenerStats()[statsKey]).toEqual(0);
 
         const {unmount} = renderListener(harness, components, mode, {
           queries,
@@ -1618,13 +1739,13 @@ export const testStoreListenerFunctions = (
           listener,
           ...(props ?? {}),
         });
-        expect(queries.getListenerStats()[stats]).toEqual(1);
+        expect(queries.getListenerStats()[statsKey]).toEqual(1);
 
         await harness.act(mutate);
         expect(listener).toHaveBeenCalledTimes(1);
 
         unmount();
-        expect(queries.getListenerStats()[stats]).toEqual(0);
+        expect(queries.getListenerStats()[statsKey]).toEqual(0);
       });
     });
 
@@ -1760,6 +1881,71 @@ export const testStoreListenerFunctions = (
   });
 };
 
+export const testStoreListenerOverloadFunctions = (
+  framework: string,
+  harness: FunctionHarness,
+  components: FunctionComponents,
+): void => {
+  let store: Store;
+  let queries: Queries;
+
+  beforeEach(() => {
+    store = createStore().setTables({
+      t1: {r1: {c1: 1}, r2: {c1: 2}},
+    });
+    queries = createQueries(store).setQueryDefinition('q1', 't1', ({select}) =>
+      select('c1'),
+    );
+  });
+
+  describe(`${framework} listener overload function scenarios`, () => {
+    test('sortedRowIds object args', async () => {
+      const listener = vi.fn();
+      const {unmount} = renderListener(
+        harness,
+        components,
+        'sortedRowIdsObject',
+        {store, listener},
+      );
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 3));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('sortedRowIds defaults', async () => {
+      const listener = vi.fn();
+      const {unmount} = renderListener(
+        harness,
+        components,
+        'sortedRowIdsDefaults',
+        {store, listener},
+      );
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 3));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('resultSortedRowIds defaults', async () => {
+      const listener = vi.fn();
+      const {unmount} = renderListener(
+        harness,
+        components,
+        'resultSortedRowIdsDefaults',
+        {queries, listener},
+      );
+
+      await harness.act(() => store.setCell('t1', 'r1', 'c1', 3));
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+  });
+};
+
 export const testCheckpointCallbackFunctions = (
   framework: string,
   harness: FunctionHarness,
@@ -1824,6 +2010,77 @@ export const testCheckpointCallbackFunctions = (
   });
 };
 
+export const testCheckpointInformationFunctions = (
+  framework: string,
+  harness: FunctionHarness,
+  components: FunctionComponents,
+): void => {
+  let store: Store;
+  let checkpoints: Checkpoints;
+
+  beforeEach(() => {
+    store = createStore().setTables({t1: {r1: {c1: 1}}});
+    checkpoints = createCheckpoints(store);
+    store.setCell('t1', 'r1', 'c1', 2);
+    checkpoints.addCheckpoint('first');
+    store.setCell('t1', 'r1', 'c1', 3);
+    checkpoints.addCheckpoint('second');
+  });
+
+  describe(`${framework} checkpoint information scenarios`, () => {
+    test('undoInformation', async () => {
+      const {container, unmount} = renderCheckpointInfo(
+        harness,
+        components,
+        'undoInformation',
+        {checkpoints},
+      );
+      expect(container.textContent).toEqual(
+        JSON.stringify([true, '2', 'second']),
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+
+      unmount();
+    });
+
+    test('redoInformation', async () => {
+      checkpoints.goTo('0');
+      const {container, unmount} = renderCheckpointInfo(
+        harness,
+        components,
+        'redoInformation',
+        {checkpoints},
+      );
+      expect(container.textContent).toEqual(
+        JSON.stringify([true, '1', 'first']),
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+
+      unmount();
+    });
+
+    test('information label fallbacks', () => {
+      const emptyCheckpoints = createCheckpoints(createStore());
+      const {container, unmount} = renderCheckpointInfo(
+        harness,
+        components,
+        'undoInformation',
+        {checkpoints: emptyCheckpoints},
+      );
+      expect(container.textContent).toEqual(JSON.stringify([false, '0', '']));
+      unmount();
+    });
+  });
+};
+
 export const testWriteCallbackFunctions = (
   framework: string,
   harness: FunctionHarness,
@@ -1855,6 +2112,42 @@ export const testWriteCallbackFunctions = (
         container.querySelector<HTMLButtonElement>('button')?.click(),
       );
       expect(store.getRow('t1', 'r1')).toEqual({c1: 2});
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setTables', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setTables',
+        {store, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setTable', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setTable',
+        {store, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getTable('t1')).toEqual({r1: {c1: 2}});
       expect(then).toHaveBeenCalledTimes(1);
 
       unmount();
@@ -1892,6 +2185,24 @@ export const testWriteCallbackFunctions = (
         container.querySelector<HTMLButtonElement>('button')?.click(),
       );
       expect(store.getCell('t1', 'r1', 'c1')).toEqual('changed');
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setPartialRow', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setPartialRow',
+        {store, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 1, c2: 2});
       expect(then).toHaveBeenCalledTimes(1);
 
       unmount();
@@ -1936,6 +2247,42 @@ export const testWriteCallbackFunctions = (
       unmount();
     });
 
+    test('setPartialValues', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setPartialValues',
+        {store, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getValues()).toEqual({v1: 1, v2: 2});
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setValue', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setValue',
+        {store, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(store.getValue('v1')).toEqual(2);
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
     test('setParamValue', async () => {
       const then = vi.fn();
       const {container, unmount} = renderWriter(
@@ -1949,6 +2296,24 @@ export const testWriteCallbackFunctions = (
         container.querySelector<HTMLButtonElement>('button')?.click(),
       );
       expect(queries.getParamValue('q1', 'p1')).toEqual('value');
+      expect(then).toHaveBeenCalledTimes(1);
+
+      unmount();
+    });
+
+    test('setParamValues', async () => {
+      const then = vi.fn();
+      const {container, unmount} = renderWriter(
+        harness,
+        components,
+        'setParamValues',
+        {queries, then},
+      );
+
+      await harness.act(() =>
+        container.querySelector<HTMLButtonElement>('button')?.click(),
+      );
+      expect(queries.getParamValues('q1')).toEqual({p1: 'value'});
       expect(then).toHaveBeenCalledTimes(1);
 
       unmount();
@@ -1971,6 +2336,45 @@ export const testWriteCallbackFunctions = (
       expect(then).toHaveBeenCalledTimes(1);
 
       unmount();
+    });
+
+    [
+      {
+        mode: 'delRow',
+        assert: () => expect(store.hasRow('t1', 'r1')).toBe(false),
+      },
+      {
+        mode: 'delTable',
+        assert: () => expect(store.hasTable('t1')).toBe(false),
+      },
+      {
+        mode: 'delTables',
+        assert: () => expect(store.hasTables()).toBe(false),
+      },
+      {
+        mode: 'delValue',
+        assert: () => expect(store.hasValue('v1')).toBe(false),
+      },
+      {
+        mode: 'delValues',
+        assert: () => expect(store.hasValues()).toBe(false),
+      },
+    ].forEach(({mode, assert}) => {
+      test(mode, async () => {
+        const then = vi.fn();
+        const {container, unmount} = renderWriter(harness, components, mode, {
+          store,
+          then,
+        });
+
+        await harness.act(() =>
+          container.querySelector<HTMLButtonElement>('button')?.click(),
+        );
+        assert();
+        expect(then).toHaveBeenCalledTimes(1);
+
+        unmount();
+      });
     });
   });
 };
