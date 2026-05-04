@@ -108,7 +108,7 @@ const _App = () => (
     />
     <TableInHtmlTable
       tableId="t1"
-      customCells={{c1d: {component: GoodT1C1CellView}}}
+      customCells={{c1d: {component: GoodT1C1CellView}}} // !
     />
     <TableInHtmlTable
       tableId="t1"
@@ -143,7 +143,7 @@ const _App = () => (
     />
     <SortedTableInHtmlTable
       tableId="t1"
-      customCells={{c1d: {component: GoodT1C1CellView}}}
+      customCells={{c1d: {component: GoodT1C1CellView}}} // !
     />
     <SortedTableInHtmlTable
       tableId="t1"

@@ -280,7 +280,7 @@ const Listeners = () => {
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  onTableCellIds('t1', (store) => {
+  onTableCellIds('t1', (store, _tableId, _getIdChanges) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
@@ -306,7 +306,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  onHasTableCell('t1', 'c1', (store) => {
+  onHasTableCell('t1', 'c1', (store, _tableId, _cellId) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
@@ -464,7 +464,7 @@ const Listeners = () => {
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  onCellIds('t1', 'r1', (store) => {
+  onCellIds('t1', 'r1', (store, _tableId, _rowId, _getIdChanges) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
@@ -500,7 +500,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  onHasCell('t1', 'r1', 'c1', (store) => {
+  onHasCell('t1', 'r1', 'c1', (store, _tableId, _rowId, _cellId, _hasCell) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
@@ -580,10 +580,15 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  onCell('t1', 'r1', 'c1', (store) => {
-    store.getTables().t1;
-    store.getTables().t2; // !
-  });
+  onCell(
+    't1',
+    'r1',
+    'c1',
+    (store, _tableId, _rowId, _cellId, _newCell, _oldCell, _getCellChange) => {
+      store.getTables().t1;
+      store.getTables().t2; // !
+    },
+  );
   onCell('t1', 'r1', 'c1', () => null);
   onCell('t1', 'r1', 'c2', () => null); // !
   onCell('t2', 'r1', 'c1', () => null); // !

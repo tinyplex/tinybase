@@ -75,13 +75,10 @@ editableValueProps.valueId = 'v2'; // !
 const _App = {
   goodTable: {
     tableId: 't1',
-    customCells: {
-      c1: {component: GoodCellView},
-      c1d: {component: GoodT1C1CellView},
-    },
+    customCells: {c1d: {component: GoodT1C1CellView}}, // !
   } satisfies ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']>,
   badTable: {
     tableId: 't1',
-    customCells: {c1: {component: PoorCellView}},
-  } satisfies ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']>, // !
+    customCells: {c1: {component: PoorCellView}}, // !
+  } satisfies ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']>,
 };

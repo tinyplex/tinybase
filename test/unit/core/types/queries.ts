@@ -56,8 +56,8 @@ queriesWithSchema.setQueryDefinition('q1', 't1', ({select, join, where}) => {
   where('jt1', 'jc1', '');
   where((getTableCell) => {
     getTableCell('c1') as number;
-    getTableCell('c1') as string;
-    getTableCell('c2');
+    getTableCell('c1') as string; // !
+    getTableCell('c2'); // !
     getTableCell('jt1', 'jc1');
     return true;
   });

@@ -155,7 +155,7 @@ const Getters = () => {
   useTableIds().includes('t1');
   useTableIds().includes('t2'); // !
 
-  useHasTable('t1'); // !
+  useHasTable('t1');
   useHasTable('t2'); // !
 
   useTable('t1');
@@ -370,7 +370,7 @@ const Setters = () => {
     cell as number;
     cell as string; // !
     return 0;
-  }); // !
+  });
   useSetCellCallback('t1', 'r1', 'c1', () => () => ''); // !
   useSetCellCallback('t1', 'r1', 'c1', () => ''); // !
   useSetCellCallback('t1', 'r1', 'c2', () => 1); // !
@@ -446,7 +446,7 @@ const Setters = () => {
     value as number;
     value as string; // !
     return 0;
-  }); // !
+  });
   useSetValueCallback('v1', () => () => ''); // !
   useSetValueCallback('v1', () => ''); // !
   useSetValueCallback('v2', () => 1); // !
@@ -619,7 +619,7 @@ const Listeners = () => {
     (store, tableId) => {
       store.getTables().t1;
       tableId == 't1';
-      tableId == 't0';
+      tableId == 't0'; // !
       store.getTables().t2; // !
       tableId == 't2'; // !
     },
@@ -677,7 +677,7 @@ const Listeners = () => {
     (store, tableId) => {
       store.getTables().t1;
       tableId == 't1';
-      tableId == 't0';
+      tableId == 't0'; // !
       store.getTables().t2; // !
       tableId == 't2'; // !
     },

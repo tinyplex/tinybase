@@ -684,7 +684,7 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     (store, tableId) => {
       store.getTables().t1;
       tableId == 't1';
-      tableId == 't0';
+      tableId == 't0'; // !
       store.getTables().t2; // !
       tableId == 't2'; // !
     },
@@ -1520,7 +1520,7 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1d?.[0] as string;
   mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1?.[0] as string; // !
   mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1d?.[0] as number; // !
-  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c2?.[0] as number;
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c2?.[0] as number; // !
 
   mergeableContent[1][0].v1;
   mergeableContent[1][0].v1![0] as undefined;
