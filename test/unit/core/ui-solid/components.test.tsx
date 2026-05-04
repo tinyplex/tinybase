@@ -10,6 +10,7 @@ import type {
   Relationships,
   Store,
 } from 'tinybase';
+import {createStore} from 'tinybase';
 import type {AnyPersister} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import type {
@@ -69,12 +70,14 @@ import {
   useRelationships,
   useStore,
   useStoreIds,
+  useStores,
   useSynchronizer,
   ValuesView,
   ValueView,
 } from 'tinybase/ui-solid';
 import * as UiSolid from 'tinybase/ui-solid/with-schemas';
 import type {NoSchemas, Store as StoreWithSchemas} from 'tinybase/with-schemas';
+import {expect, test} from 'vitest';
 import {pause} from '../../common/other.ts';
 import {
   testComponents,
@@ -666,4 +669,48 @@ testProviderComponents('ui-solid', componentHarness, {
   NestedDifferent: ContextNestedDifferent,
   ProvideThings: ContextProvideThings,
   NestedDefaults: ContextNestedDefaults,
+});
+
+const UndefinedContextChildren = ({store}: {readonly store: Store}) => {
+  useProvideStore('store1', store);
+  return (
+    <>
+      {useStore()() ? 1 : 0}
+      {JSON.stringify(useStoreIds()())}
+      {JSON.stringify(useStores()())}
+    </>
+  );
+};
+
+const DuplicateProvidedStore = ({store}: {readonly store: Store}) => {
+  useProvideStore('store1', store);
+  return '';
+};
+
+test('covers context fallbacks and duplicate providers', async () => {
+  const store = createStore();
+  const container = document.createElement('div');
+  const Context = (
+    globalThis as unknown as {
+      readonly tinybase_uisc: any;
+    }
+  ).tinybase_uisc;
+
+  const unmount = solidRender(
+    () => (
+      <Context.Provider value={{value: undefined}}>
+        <UndefinedContextChildren store={store} />
+        <Provider>
+          <DuplicateProvidedStore store={store} />
+          <DuplicateProvidedStore store={store} />
+        </Provider>
+      </Context.Provider>
+    ),
+    container,
+  );
+
+  await pause();
+  expect(container.innerHTML).toBe('0[]{}');
+
+  unmount();
 });

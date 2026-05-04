@@ -30,17 +30,31 @@ import {
   useCellIds,
   useCellIdsListener,
   useCellListener,
+  useCellState,
   useCheckpoint,
   useCheckpointIds,
   useCheckpointIdsListener,
   useCheckpointListener,
   useCheckpointsIds,
+  useCreateCheckpoints,
+  useCreateIndexes,
+  useCreateMergeableStore,
+  useCreateMetrics,
   useCreatePersister,
+  useCreateQueries,
+  useCreateRelationships,
+  useCreateStore,
   useCreateSynchronizer,
   useDelCellCallback,
+  useDelRowCallback,
+  useDelTableCallback,
+  useDelTablesCallback,
+  useDelValueCallback,
+  useDelValuesCallback,
   useDidFinishTransactionListener,
   useGoBackwardCallback,
   useGoForwardCallback,
+  useGoToCallback,
   useHasCell,
   useHasCellListener,
   useHasRow,
@@ -67,12 +81,16 @@ import {
   useMetricsIds,
   useParamValue,
   useParamValueListener,
+  useParamValueState,
   useParamValues,
   useParamValuesListener,
+  useParamValuesState,
   usePersisterIds,
+  usePersisterStatus,
   usePersisterStatusListener,
   useQueriesIds,
   useQueryIds,
+  useRedoInformation,
   useRelationshipIds,
   useRelationshipsIds,
   useRemoteRowId,
@@ -99,10 +117,17 @@ import {
   useRowIds,
   useRowIdsListener,
   useRowListener,
+  useRowState,
   useSetCellCallback,
   useSetCheckpointCallback,
   useSetParamValueCallback,
+  useSetParamValuesCallback,
+  useSetPartialRowCallback,
+  useSetPartialValuesCallback,
   useSetRowCallback,
+  useSetTableCallback,
+  useSetTablesCallback,
+  useSetValueCallback,
   useSetValuesCallback,
   useSliceIds,
   useSliceIdsListener,
@@ -111,7 +136,9 @@ import {
   useSortedRowIds,
   useSortedRowIdsListener,
   useStartTransactionListener,
+  useStore,
   useSynchronizerIds,
+  useSynchronizerStatus,
   useSynchronizerStatusListener,
   useTable,
   useTableCellIds,
@@ -119,14 +146,19 @@ import {
   useTableIds,
   useTableIdsListener,
   useTableListener,
+  useTableState,
   useTables,
   useTablesListener,
+  useTablesState,
+  useUndoInformation,
   useValue,
   useValueIds,
   useValueIdsListener,
   useValueListener,
+  useValueState,
   useValues,
   useValuesListener,
+  useValuesState,
   useWillFinishTransactionListener,
 } from 'tinybase/ui-solid';
 import {describe, expect, test, vi} from 'vitest';
@@ -959,6 +991,371 @@ describe('Solid-specific', () => {
     setTableId!('t2');
     await pause();
     expect(table!()).toEqual({r1: {c1: 2}});
+
+    dispose();
+  });
+
+  test('covers create and state primitives', async () => {
+    const store = createStore().setTables({t1: {r1: {c1: 1}}});
+    const mergeableStore = createMergeableStore();
+    let createdStore: Accessor<Store>;
+    let createdMergeableStore: Accessor<MergeableStore>;
+    let metrics: Accessor<Metrics | undefined>;
+    let indexes: Accessor<Indexes | undefined>;
+    let relationships: Accessor<Relationships | undefined>;
+    let queries: Accessor<Queries | undefined>;
+    let checkpoints: Accessor<Checkpoints | undefined>;
+    let tables: Accessor<ReturnType<Store['getTables']>>;
+    let table: Accessor<Table>;
+    let row: Accessor<ReturnType<Store['getRow']>>;
+    let cell: Accessor<ReturnType<Store['getCell']>>;
+    let values: Accessor<ReturnType<Store['getValues']>>;
+    let value: Accessor<ReturnType<Store['getValue']>>;
+    let paramValues: Accessor<Record<string, unknown>>;
+    let paramValue: Accessor<unknown>;
+    let directStore: Accessor<Store | undefined>;
+    let noMetrics: Accessor<Metrics | undefined>;
+    let sortedRowIds: Accessor<string[]>;
+    let resultSortedRowIds: Accessor<string[]>;
+    let setTables: (tables: ReturnType<Store['getTables']>) => void;
+    let setTable: (table: Table) => void;
+    let setRow: (row: ReturnType<Store['getRow']>) => void;
+    let setCell: (cell: string) => void;
+    let setValues: (values: ReturnType<Store['getValues']>) => void;
+    let setValue: (value: string) => void;
+    let setParamValues: (values: Record<string, unknown>) => void;
+    let setParamValue: (value: string[]) => void;
+
+    const dispose = renderPrimitive(() => {
+      const query = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getCell) =>
+            (param('p1') as string[]).includes(getCell('c1') as string),
+          );
+        },
+        {p1: ['a']},
+      );
+
+      createdStore = useCreateStore(() => store);
+      createdMergeableStore = useCreateMergeableStore(() => mergeableStore);
+      noMetrics = useCreateMetrics(undefined, (store) => createMetrics(store));
+      metrics = useCreateMetrics(store, (store) => createMetrics(store));
+      indexes = useCreateIndexes(store, (store) => createIndexes(store));
+      relationships = useCreateRelationships(store, (store) =>
+        createRelationships(store),
+      );
+      queries = useCreateQueries(store, (store) => createQueries(store));
+      checkpoints = useCreateCheckpoints(store, (store) =>
+        createCheckpoints(store),
+      );
+      [tables, setTables] = useTablesState(store);
+      [table, setTable] = useTableState('t1', store);
+      [row, setRow] = useRowState('t1', 'r1', store);
+      [cell, setCell] = useCellState('t1', 'r1', 'c1', store);
+      [values, setValues] = useValuesState(store);
+      [value, setValue] = useValueState('v1', store);
+      [paramValues, setParamValues] = useParamValuesState('q1', query);
+      [paramValue, setParamValue] = useParamValueState('q1', 'p1', query);
+      directStore = useStore(store as unknown as string);
+      sortedRowIds = useSortedRowIds({tableId: 't1', cellId: 'c1'}, store);
+      resultSortedRowIds = useResultSortedRowIds(
+        'q1',
+        'c1',
+        false,
+        undefined,
+        undefined,
+        query,
+      );
+    });
+
+    expect(createdStore!()).toBe(store);
+    expect(createdMergeableStore!()).toBe(mergeableStore);
+    expect(noMetrics!()).toBeUndefined();
+    expect(metrics!()?.getMetricIds()).toEqual([]);
+    expect(indexes!()?.getIndexIds()).toEqual([]);
+    expect(relationships!()?.getRelationshipIds()).toEqual([]);
+    expect(queries!()?.getQueryIds()).toEqual(['q1']);
+    expect(checkpoints!()?.getCheckpointIds()).toEqual([[], '0', []]);
+
+    setTables!({t1: {r1: {c1: 'a'}}});
+    setTable!({r1: {c1: 'b'}});
+    setRow!({c1: 'c'});
+    setCell!('d');
+    setValues!({v1: 'e'});
+    setValue!('f');
+    setParamValues!({p1: ['d']});
+    setParamValue!(['c']);
+    await pause();
+
+    expect(tables!()).toEqual({t1: {r1: {c1: 'd'}}});
+    expect(table!()).toEqual({r1: {c1: 'd'}});
+    expect(row!()).toEqual({c1: 'd'});
+    expect(cell!()).toBe('d');
+    expect(values!()).toEqual({v1: 'f'});
+    expect(value!()).toBe('f');
+    expect(paramValues!()).toEqual({p1: ['c']});
+    expect(paramValue!()).toEqual(['c']);
+    expect(directStore!()).toBe(store);
+    expect(sortedRowIds!()).toEqual(['r1']);
+    expect(resultSortedRowIds!()).toEqual([]);
+
+    dispose();
+  });
+
+  test('covers write callback variants', () => {
+    const store = createStore()
+      .setTables({t1: {r1: {c1: 1}}})
+      .setValues({v1: 1});
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    let setTables: () => void;
+    let setTable: () => void;
+    let addRow: () => void;
+    let setRowByParameter: (rowId: string) => void;
+    let setPartialRow: () => void;
+    let setPartialValues: () => void;
+    let setValue: () => void;
+    let setParamValues: () => void;
+    let delTables: () => void;
+    let delTableByFunction: () => void;
+    let delTable: () => void;
+    let delRow: () => void;
+    let delValues: () => void;
+    let delValue: () => void;
+
+    const dispose = renderPrimitive(() => {
+      setTables = useSetTablesCallback(() => ({t1: {r1: {c1: 2}}}), store);
+      setTable = useSetTableCallback(
+        () => 't1',
+        () => ({r1: {c1: 3}}),
+        store,
+      );
+      addRow = useAddRowCallback(
+        (suffix: string) => 't' + suffix,
+        () => ({
+          c1: 4,
+        }),
+        store,
+      );
+      setRowByParameter = useSetRowCallback(
+        't1',
+        (rowId: string) => rowId,
+        () => ({c1: 8}),
+        store,
+      );
+      setPartialRow = useSetPartialRowCallback(
+        't1',
+        'r1',
+        () => ({c2: 5}),
+        store,
+      );
+      setPartialValues = useSetPartialValuesCallback(() => ({v2: 6}), store);
+      setValue = useSetValueCallback('v1', () => 7, store);
+      setParamValues = useSetParamValuesCallback(
+        'q1',
+        () => ({p1: 'v'}),
+        queries,
+      );
+      delTables = useDelTablesCallback(store);
+      delTableByFunction = useDelTableCallback(() => 't2', store);
+      delTable = useDelTableCallback('t1', store);
+      delRow = useDelRowCallback('t1', 'r1', store);
+      delValues = useDelValuesCallback(store);
+      delValue = useDelValueCallback('v1', store);
+    });
+
+    setTables!();
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(2);
+    setTable!();
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(3);
+    addRow!('2');
+    expect(store.getRow('t2', '0')).toEqual({c1: 4});
+    setRowByParameter!('r2');
+    expect(store.getRow('t1', 'r2')).toEqual({c1: 8});
+    setPartialRow!();
+    expect(store.getRow('t1', 'r1')).toEqual({c1: 3, c2: 5});
+    setPartialValues!();
+    expect(store.getValues()).toEqual({v1: 1, v2: 6});
+    setValue!();
+    expect(store.getValue('v1')).toBe(7);
+    setParamValues!();
+    expect(queries.getParamValues('q1')).toEqual({p1: 'v'});
+    delRow!();
+    expect(store.hasRow('t1', 'r1')).toBe(false);
+    delValue!();
+    expect(store.hasValue('v1')).toBe(false);
+    delValues!();
+    expect(store.hasValues()).toBe(false);
+    delTableByFunction!();
+    expect(store.hasTable('t2')).toBe(false);
+    store.setTable('t1', {r1: {c1: 1}});
+    delTable!();
+    expect(store.hasTable('t1')).toBe(false);
+    store.setTable('t1', {r1: {c1: 1}});
+    delTables!();
+    expect(store.hasTables()).toBe(false);
+
+    dispose();
+  });
+
+  test('covers checkpoint information and callbacks', async () => {
+    const store = createStore().setCell('t1', 'r1', 'c1', 1);
+    const checkpoints = createCheckpoints(store);
+    store.setCell('t1', 'r1', 'c1', 2);
+    store.setCell('t1', 'r1', 'c1', 3);
+    checkpoints.goBackward();
+    let setCheckpoint: () => void;
+    let goTo: (checkpointId: string) => void;
+    let undoInfo: ReturnType<typeof useUndoInformation>;
+    let redoInfo: ReturnType<typeof useUndoInformation>;
+    let emptyUndoInfo: ReturnType<typeof useUndoInformation>;
+    let emptyRedoInfo: ReturnType<typeof useRedoInformation>;
+    let undefinedUndoInfo: ReturnType<typeof useUndoInformation>;
+
+    const dispose = renderPrimitive(() => {
+      setCheckpoint = useSetCheckpointCallback(undefined, checkpoints);
+      goTo = useGoToCallback(
+        (checkpointId: string) => checkpointId,
+        checkpoints,
+      );
+      undoInfo = useUndoInformation(checkpoints);
+      redoInfo = useRedoInformation(checkpoints);
+      const emptyCheckpoints = createCheckpoints(createStore());
+      emptyUndoInfo = useUndoInformation(emptyCheckpoints);
+      emptyRedoInfo = useRedoInformation(emptyCheckpoints);
+      undefinedUndoInfo = useUndoInformation();
+    });
+
+    expect(undoInfo![3]).toEqual(expect.any(String));
+    expect(redoInfo![0]).toBe(true);
+    expect(redoInfo![3]).toEqual(expect.any(String));
+    expect(emptyUndoInfo![3]).toBe('');
+    expect(emptyRedoInfo![3]).toBe('');
+    expect(undefinedUndoInfo![3]).toBe('');
+
+    redoInfo![1]();
+    await pause();
+    setCheckpoint!();
+    goTo!('0');
+
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(1);
+
+    dispose();
+  });
+
+  test('covers status and undefined create primitives', async () => {
+    const persister = createTestPersister();
+    const synchronizer = createTestSynchronizer();
+    let lateUndefinedPersisterResolve: () => void;
+    let lateUndefinedSynchronizerResolve: () => void;
+    let persisterStatus: Accessor<number>;
+    let synchronizerStatus: Accessor<number>;
+    let emptyPersister: Accessor<TestPersister | undefined>;
+    let undefinedPersister: Accessor<TestPersister | undefined>;
+    let createdPersister: Accessor<TestPersister | undefined>;
+    let emptySynchronizer: Accessor<TestSynchronizer | undefined>;
+    let undefinedSynchronizer: Accessor<TestSynchronizer | undefined>;
+    const persisterThen = vi.fn();
+    const persisterDestroy = vi.fn();
+    const synchronizerDestroy = vi.fn();
+
+    const dispose = renderPrimitive(() => {
+      persisterStatus = usePersisterStatus(persister);
+      synchronizerStatus = useSynchronizerStatus(synchronizer);
+      emptyPersister = useCreatePersister<TestPersister>(
+        undefined,
+        async () => persister,
+      );
+      undefinedPersister = useCreatePersister(
+        createStore(),
+        async () => undefined,
+        persisterThen,
+        persisterDestroy,
+      );
+      createdPersister = useCreatePersister(
+        createStore(),
+        async () => persister,
+        persisterThen,
+        persisterDestroy,
+      );
+      useCreatePersister(
+        createStore(),
+        async () =>
+          new Promise<undefined>((resolve) => {
+            lateUndefinedPersisterResolve = () => resolve(undefined);
+          }),
+      );
+      emptySynchronizer = useCreateSynchronizer(
+        undefined,
+        async () => synchronizer,
+      );
+      undefinedSynchronizer = useCreateSynchronizer(
+        createMergeableStore(),
+        async () => undefined,
+        synchronizerDestroy,
+      );
+      useCreateSynchronizer(
+        createMergeableStore(),
+        async () =>
+          new Promise<undefined>((resolve) => {
+            lateUndefinedSynchronizerResolve = () => resolve(undefined);
+          }),
+      );
+    });
+
+    await pause();
+    expect(persisterStatus!()).toBe(0);
+    expect(synchronizerStatus!()).toBe(0);
+    expect(emptyPersister!()).toBeUndefined();
+    expect(undefinedPersister!()).toBeUndefined();
+    expect(createdPersister!()).toBe(persister);
+    expect(emptySynchronizer!()).toBeUndefined();
+    expect(undefinedSynchronizer!()).toBeUndefined();
+    expect(persisterThen).toHaveBeenCalledTimes(1);
+
+    dispose();
+    lateUndefinedPersisterResolve!();
+    lateUndefinedSynchronizerResolve!();
+    await pause();
+    expect(persisterDestroy).toHaveBeenCalledTimes(1);
+    expect(synchronizerDestroy).not.toHaveBeenCalled();
+  });
+
+  test('covers sorted row ids listener overloads', async () => {
+    const store = createStore().setTables({t1: {r1: {c1: 1}, r2: {c1: 2}}});
+    const listener = vi.fn();
+    const objectListener = vi.fn();
+
+    const dispose = renderPrimitive(() => {
+      useSortedRowIdsListener(
+        't1',
+        'c1',
+        undefined,
+        undefined,
+        undefined,
+        listener,
+        false,
+        store,
+      );
+      useSortedRowIdsListener(
+        {tableId: 't1', cellId: 'c1'},
+        objectListener,
+        false,
+        store,
+      );
+    });
+
+    store.setCell('t1', 'r1', 'c1', 3);
+    await pause();
+
+    expect(listener).toHaveBeenCalled();
+    expect(objectListener).toHaveBeenCalled();
 
     dispose();
   });
