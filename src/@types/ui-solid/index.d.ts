@@ -118,6 +118,25 @@ export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
 export type GetId<Parameter> = (parameter: Parameter, store: Store) => Id;
 
+type MaybeId = MaybeAccessor<Id>;
+type MaybeIdOrNull = MaybeAccessor<IdOrNull>;
+type MaybeStoreOrStoreId = MaybeAccessor<StoreOrStoreId | undefined>;
+type MaybeMetricsOrMetricsId = MaybeAccessor<MetricsOrMetricsId | undefined>;
+type MaybeIndexesOrIndexesId = MaybeAccessor<IndexesOrIndexesId | undefined>;
+type MaybeRelationshipsOrRelationshipsId = MaybeAccessor<
+  RelationshipsOrRelationshipsId | undefined
+>;
+type MaybeQueriesOrQueriesId = MaybeAccessor<QueriesOrQueriesId | undefined>;
+type MaybeCheckpointsOrCheckpointsId = MaybeAccessor<
+  CheckpointsOrCheckpointsId | undefined
+>;
+type MaybePersisterOrPersisterId = MaybeAccessor<
+  PersisterOrPersisterId | undefined
+>;
+type MaybeSynchronizerOrSynchronizerId = MaybeAccessor<
+  SynchronizerOrSynchronizerId | undefined
+>;
+
 /// ui-solid.useCreateStore
 export function useCreateStore(create: () => Store): Accessor<Store>;
 
@@ -130,14 +149,16 @@ export function useCreateMergeableStore(
 export function useStoreIds(): Accessor<Ids>;
 
 /// ui-solid.useStore
-export function useStore(id?: Id): Accessor<Store | undefined>;
+export function useStore(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Store | undefined>;
 
 /// ui-solid.useStores
 export function useStores(): Accessor<{[storeId: Id]: Store}>;
 
 /// ui-solid.useStoreOrStoreById
 export function useStoreOrStoreById(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Store | undefined>;
 
 /// ui-solid.useProvideStore
@@ -145,280 +166,288 @@ export function useProvideStore(storeId: Id, store: Store): void;
 
 /// ui-solid.useHasTables
 export function useHasTables(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useTables
-export function useTables(storeOrStoreId?: StoreOrStoreId): Accessor<Tables>;
+export function useTables(
+  storeOrStoreId?: MaybeStoreOrStoreId,
+): Accessor<Tables>;
 
 /// ui-solid.useTablesState
 export function useTablesState(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): [Accessor<Tables>, (tables: Tables) => void];
 
 /// ui-solid.useTableIds
-export function useTableIds(storeOrStoreId?: StoreOrStoreId): Accessor<Ids>;
+export function useTableIds(
+  storeOrStoreId?: MaybeStoreOrStoreId,
+): Accessor<Ids>;
 
 /// ui-solid.useHasTable
 export function useHasTable(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useTable
 export function useTable(
   tableId: MaybeAccessor<Id>,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Table>;
 
 /// ui-solid.useTableState
 export function useTableState(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): [Accessor<Table>, (table: Table) => void];
 
 /// ui-solid.useTableCellIds
 export function useTableCellIds(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Ids>;
 
 /// ui-solid.useHasTableCell
 export function useHasTableCell(
-  tableId: Id,
-  cellId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  cellId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useRowCount
 export function useRowCount(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<number>;
 
 /// ui-solid.useRowIds
 export function useRowIds(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Ids>;
 
 /// ui-solid.useSortedRowIds
 export function useSortedRowIds(
-  tableId: Id,
-  cellId?: Id,
-  descending?: boolean,
-  offset?: number,
-  limit?: number,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  cellId?: MaybeAccessor<Id | undefined>,
+  descending?: MaybeAccessor<boolean | undefined>,
+  offset?: MaybeAccessor<number | undefined>,
+  limit?: MaybeAccessor<number | undefined>,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Ids>;
 
 /// ui-solid.useSortedRowIds.2
 export function useSortedRowIds(
   args: SortedRowIdsArgs,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Ids>;
 
 /// ui-solid.useHasRow
 export function useHasRow(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useRow
 export function useRow(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Row>;
 
 /// ui-solid.useRowState
 export function useRowState(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): [Accessor<Row>, (row: Row) => void];
 
 /// ui-solid.useCellIds
 export function useCellIds(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<Ids>;
 
 /// ui-solid.useHasCell
 export function useHasCell(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  cellId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useCell
 export function useCell(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  cellId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<CellOrUndefined>;
 
 /// ui-solid.useCellState
 export function useCellState(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId,
+  rowId: MaybeId,
+  cellId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): [Accessor<CellOrUndefined>, (cell: Cell) => void];
 
 /// ui-solid.useHasValues
 export function useHasValues(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useValues
-export function useValues(storeOrStoreId?: StoreOrStoreId): Accessor<Values>;
+export function useValues(
+  storeOrStoreId?: MaybeStoreOrStoreId,
+): Accessor<Values>;
 
 /// ui-solid.useValuesState
 export function useValuesState(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): [Accessor<Values>, (values: Values) => void];
 
 /// ui-solid.useValueIds
-export function useValueIds(storeOrStoreId?: StoreOrStoreId): Accessor<Ids>;
+export function useValueIds(
+  storeOrStoreId?: MaybeStoreOrStoreId,
+): Accessor<Ids>;
 
 /// ui-solid.useHasValue
 export function useHasValue(
-  valueId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  valueId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<boolean>;
 
 /// ui-solid.useValue
 export function useValue(
-  valueId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  valueId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): Accessor<ValueOrUndefined>;
 
 /// ui-solid.useValueState
 export function useValueState(
-  valueId: Id,
-  storeOrStoreId?: StoreOrStoreId,
+  valueId: MaybeId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): [value: Accessor<ValueOrUndefined>, setValue: (value: Value) => void];
 
 /// ui-solid.useSetTablesCallback
 export function useSetTablesCallback<Parameter>(
   getTables: (parameter: Parameter, store: Store) => Tables,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, tables: Tables) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetTableCallback
 export function useSetTableCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
+  tableId: MaybeId | GetId<Parameter>,
   getTable: (parameter: Parameter, store: Store) => Table,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, table: Table) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetRowCallback
 export function useSetRowCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
-  rowId: Id | GetId<Parameter>,
+  tableId: MaybeId | GetId<Parameter>,
+  rowId: MaybeId | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, row: Row) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useAddRowCallback
 export function useAddRowCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
+  tableId: MaybeId | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (rowId: Id | undefined, store: Store, row: Row) => void,
   reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetPartialRowCallback
 export function useSetPartialRowCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
-  rowId: Id | GetId<Parameter>,
+  tableId: MaybeId | GetId<Parameter>,
+  rowId: MaybeId | GetId<Parameter>,
   getPartialRow: (parameter: Parameter, store: Store) => Row,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, partialRow: Row) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetCellCallback
 export function useSetCellCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
-  rowId: Id | GetId<Parameter>,
-  cellId: Id | GetId<Parameter>,
+  tableId: MaybeId | GetId<Parameter>,
+  rowId: MaybeId | GetId<Parameter>,
+  cellId: MaybeId | GetId<Parameter>,
   getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, cell: Cell | MapCell) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetValuesCallback
 export function useSetValuesCallback<Parameter>(
   getValues: (parameter: Parameter, store: Store) => Values,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, values: Values) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetPartialValuesCallback
 export function useSetPartialValuesCallback<Parameter>(
   getPartialValues: (parameter: Parameter, store: Store) => Values,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, partialValues: Values) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetValueCallback
 export function useSetValueCallback<Parameter>(
-  valueId: Id | GetId<Parameter>,
+  valueId: MaybeId | GetId<Parameter>,
   getValue: (parameter: Parameter, store: Store) => Value | MapValue,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store, value: Value | MapValue) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useDelTablesCallback
 export function useDelTablesCallback(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store) => void,
 ): Callback;
 
 /// ui-solid.useDelTableCallback
 export function useDelTableCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId | GetId<Parameter>,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useDelRowCallback
 export function useDelRowCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
-  rowId: Id | GetId<Parameter>,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId | GetId<Parameter>,
+  rowId: MaybeId | GetId<Parameter>,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useDelCellCallback
 export function useDelCellCallback<Parameter>(
-  tableId: Id | GetId<Parameter>,
-  rowId: Id | GetId<Parameter>,
-  cellId: Id | GetId<Parameter>,
-  forceDel?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  tableId: MaybeId | GetId<Parameter>,
+  rowId: MaybeId | GetId<Parameter>,
+  cellId: MaybeId | GetId<Parameter>,
+  forceDel?: MaybeAccessor<boolean | undefined>,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useDelValuesCallback
 export function useDelValuesCallback(
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store) => void,
 ): Callback;
 
 /// ui-solid.useDelValueCallback
 export function useDelValueCallback<Parameter>(
-  valueId: Id | GetId<Parameter>,
-  storeOrStoreId?: StoreOrStoreId,
+  valueId: MaybeId | GetId<Parameter>,
+  storeOrStoreId?: MaybeStoreOrStoreId,
   then?: (store: Store) => void,
 ): ParameterizedCallback<Parameter>;
 
@@ -426,82 +455,82 @@ export function useDelValueCallback<Parameter>(
 export function useHasTablesListener(
   listener: HasTablesListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useTablesListener
 export function useTablesListener(
   listener: TablesListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useTableIdsListener
 export function useTableIdsListener(
   listener: TableIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useHasTableListener
 export function useHasTableListener(
-  tableId: IdOrNull,
+  tableId: MaybeIdOrNull,
   listener: HasTableListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useTableListener
 export function useTableListener(
-  tableId: IdOrNull,
+  tableId: MaybeIdOrNull,
   listener: TableListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useTableCellIdsListener
 export function useTableCellIdsListener(
-  tableId: IdOrNull,
+  tableId: MaybeIdOrNull,
   listener: TableCellIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useHasTableCellListener
 export function useHasTableCellListener(
-  tableId: IdOrNull,
-  cellId: IdOrNull,
+  tableId: MaybeIdOrNull,
+  cellId: MaybeIdOrNull,
   listener: HasTableCellListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useRowCountListener
 export function useRowCountListener(
-  tableId: IdOrNull,
+  tableId: MaybeIdOrNull,
   listener: RowCountListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useRowIdsListener
 export function useRowIdsListener(
-  tableId: IdOrNull,
+  tableId: MaybeIdOrNull,
   listener: RowIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useSortedRowIdsListener
 export function useSortedRowIdsListener(
-  tableId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
+  tableId: MaybeId,
+  cellId: MaybeAccessor<Id | undefined>,
+  descending: MaybeAccessor<boolean>,
+  offset: MaybeAccessor<number>,
+  limit: MaybeAccessor<number | undefined>,
   listener: SortedRowIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useSortedRowIdsListener.2
@@ -509,114 +538,114 @@ export function useSortedRowIdsListener(
   args: SortedRowIdsArgs,
   listener: SortedRowIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useHasRowListener
 export function useHasRowListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
+  tableId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
   listener: HasRowListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useRowListener
 export function useRowListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
+  tableId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
   listener: RowListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useCellIdsListener
 export function useCellIdsListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
+  tableId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
   listener: CellIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useHasCellListener
 export function useHasCellListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
+  tableId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
+  cellId: MaybeIdOrNull,
   listener: HasCellListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useCellListener
 export function useCellListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
+  tableId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
+  cellId: MaybeIdOrNull,
   listener: CellListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useHasValuesListener
 export function useHasValuesListener(
   listener: HasValuesListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useValuesListener
 export function useValuesListener(
   listener: ValuesListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useValueIdsListener
 export function useValueIdsListener(
   listener: ValueIdsListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useHasValueListener
 export function useHasValueListener(
-  valueId: IdOrNull,
+  valueId: MaybeIdOrNull,
   listener: HasValueListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useValueListener
 export function useValueListener(
-  valueId: IdOrNull,
+  valueId: MaybeIdOrNull,
   listener: ValueListener,
   mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useStartTransactionListener
 export function useStartTransactionListener(
   listener: TransactionListener,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useWillFinishTransactionListener
 export function useWillFinishTransactionListener(
   listener: TransactionListener,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useDidFinishTransactionListener
 export function useDidFinishTransactionListener(
   listener: TransactionListener,
-  storeOrStoreId?: StoreOrStoreId,
+  storeOrStoreId?: MaybeStoreOrStoreId,
 ): void;
 
 /// ui-solid.useCreateMetrics
 export function useCreateMetrics(
-  store: Store | undefined,
+  store: MaybeAccessor<Store | undefined>,
   create: (store: Store) => Metrics,
 ): Accessor<Metrics | undefined>;
 
@@ -624,36 +653,38 @@ export function useCreateMetrics(
 export function useMetricsIds(): Accessor<Ids>;
 
 /// ui-solid.useMetrics
-export function useMetrics(id?: Id): Accessor<Metrics | undefined>;
+export function useMetrics(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Metrics | undefined>;
 
 /// ui-solid.useMetricsOrMetricsById
 export function useMetricsOrMetricsById(
-  metricsOrMetricsId?: MetricsOrMetricsId,
+  metricsOrMetricsId?: MaybeMetricsOrMetricsId,
 ): Accessor<Metrics | undefined>;
 
 export function useProvideMetrics(metricsId: Id, metrics: Metrics): void;
 
 /// ui-solid.useMetricIds
 export function useMetricIds(
-  metricsOrMetricsId?: MetricsOrMetricsId,
+  metricsOrMetricsId?: MaybeMetricsOrMetricsId,
 ): Accessor<Ids>;
 
 /// ui-solid.useMetric
 export function useMetric(
-  metricId: Id,
-  metricsOrMetricsId?: MetricsOrMetricsId,
+  metricId: MaybeId,
+  metricsOrMetricsId?: MaybeMetricsOrMetricsId,
 ): Accessor<number | undefined>;
 
 /// ui-solid.useMetricListener
 export function useMetricListener(
-  metricId: IdOrNull,
+  metricId: MaybeIdOrNull,
   listener: MetricListener,
-  metricsOrMetricsId?: MetricsOrMetricsId,
+  metricsOrMetricsId?: MaybeMetricsOrMetricsId,
 ): void;
 
 /// ui-solid.useCreateIndexes
 export function useCreateIndexes(
-  store: Store | undefined,
+  store: MaybeAccessor<Store | undefined>,
   create: (store: Store) => Indexes,
 ): Accessor<Indexes | undefined>;
 
@@ -661,51 +692,53 @@ export function useCreateIndexes(
 export function useIndexesIds(): Accessor<Ids>;
 
 /// ui-solid.useIndexes
-export function useIndexes(id?: Id): Accessor<Indexes | undefined>;
+export function useIndexes(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Indexes | undefined>;
 
 /// ui-solid.useIndexesOrIndexesById
 export function useIndexesOrIndexesById(
-  indexesOrIndexesId?: IndexesOrIndexesId,
+  indexesOrIndexesId?: MaybeIndexesOrIndexesId,
 ): Accessor<Indexes | undefined>;
 
 export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 
 /// ui-solid.useIndexIds
 export function useIndexIds(
-  indexesOrIndexesId?: IndexesOrIndexesId,
+  indexesOrIndexesId?: MaybeIndexesOrIndexesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useSliceIds
 export function useSliceIds(
-  indexId: Id,
-  indexesOrIndexesId?: IndexesOrIndexesId,
+  indexId: MaybeId,
+  indexesOrIndexesId?: MaybeIndexesOrIndexesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useSliceRowIds
 export function useSliceRowIds(
-  indexId: Id,
-  sliceId: Id,
-  indexesOrIndexesId?: IndexesOrIndexesId,
+  indexId: MaybeId,
+  sliceId: MaybeId,
+  indexesOrIndexesId?: MaybeIndexesOrIndexesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useSliceIdsListener
 export function useSliceIdsListener(
-  indexId: IdOrNull,
+  indexId: MaybeIdOrNull,
   listener: SliceIdsListener,
-  indexesOrIndexesId?: IndexesOrIndexesId,
+  indexesOrIndexesId?: MaybeIndexesOrIndexesId,
 ): void;
 
 /// ui-solid.useSliceRowIdsListener
 export function useSliceRowIdsListener(
-  indexId: IdOrNull,
-  sliceId: IdOrNull,
+  indexId: MaybeIdOrNull,
+  sliceId: MaybeIdOrNull,
   listener: SliceRowIdsListener,
-  indexesOrIndexesId?: IndexesOrIndexesId,
+  indexesOrIndexesId?: MaybeIndexesOrIndexesId,
 ): void;
 
 /// ui-solid.useCreateRelationships
 export function useCreateRelationships(
-  store: Store | undefined,
+  store: MaybeAccessor<Store | undefined>,
   create: (store: Store) => Relationships,
 ): Accessor<Relationships | undefined>;
 
@@ -713,11 +746,13 @@ export function useCreateRelationships(
 export function useRelationshipsIds(): Accessor<Ids>;
 
 /// ui-solid.useRelationships
-export function useRelationships(id?: Id): Accessor<Relationships | undefined>;
+export function useRelationships(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Relationships | undefined>;
 
 /// ui-solid.useRelationshipsOrRelationshipsById
 export function useRelationshipsOrRelationshipsById(
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): Accessor<Relationships | undefined>;
 
 export function useProvideRelationships(
@@ -727,57 +762,57 @@ export function useProvideRelationships(
 
 /// ui-solid.useRelationshipIds
 export function useRelationshipIds(
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): Accessor<Ids>;
 
 /// ui-solid.useRemoteRowId
 export function useRemoteRowId(
-  relationshipId: Id,
-  localRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipId: MaybeId,
+  localRowId: MaybeId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): Accessor<Id | undefined>;
 
 /// ui-solid.useLocalRowIds
 export function useLocalRowIds(
-  relationshipId: Id,
-  remoteRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipId: MaybeId,
+  remoteRowId: MaybeId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): Accessor<Ids>;
 
 /// ui-solid.useLinkedRowIds
 export function useLinkedRowIds(
-  relationshipId: Id,
-  firstRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipId: MaybeId,
+  firstRowId: MaybeId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): Accessor<Ids>;
 
 /// ui-solid.useRemoteRowIdListener
 export function useRemoteRowIdListener(
-  relationshipId: IdOrNull,
-  localRowId: IdOrNull,
+  relationshipId: MaybeIdOrNull,
+  localRowId: MaybeIdOrNull,
   listener: RemoteRowIdListener,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): void;
 
 /// ui-solid.useLocalRowIdsListener
 export function useLocalRowIdsListener(
-  relationshipId: IdOrNull,
-  remoteRowId: IdOrNull,
+  relationshipId: MaybeIdOrNull,
+  remoteRowId: MaybeIdOrNull,
   listener: LocalRowIdsListener,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): void;
 
 /// ui-solid.useLinkedRowIdsListener
 export function useLinkedRowIdsListener(
-  relationshipId: Id,
-  firstRowId: Id,
+  relationshipId: MaybeId,
+  firstRowId: MaybeId,
   listener: LinkedRowIdsListener,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId,
 ): void;
 
 /// ui-solid.useCreateQueries
 export function useCreateQueries(
-  store: Store | undefined,
+  store: MaybeAccessor<Store | undefined>,
   create: (store: Store) => Queries,
 ): Accessor<Queries | undefined>;
 
@@ -785,201 +820,203 @@ export function useCreateQueries(
 export function useQueriesIds(): Accessor<Ids>;
 
 /// ui-solid.useQueries
-export function useQueries(id?: Id): Accessor<Queries | undefined>;
+export function useQueries(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Queries | undefined>;
 
 /// ui-solid.useQueriesOrQueriesById
 export function useQueriesOrQueriesById(
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Queries | undefined>;
 
 export function useProvideQueries(queriesId: Id, queries: Queries): void;
 
 /// ui-solid.useQueryIds
 export function useQueryIds(
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useResultTable
 export function useResultTable(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Table>;
 
 /// ui-solid.useResultTableCellIds
 export function useResultTableCellIds(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useResultRowCount
 export function useResultRowCount(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<number>;
 
 /// ui-solid.useResultRowIds
 export function useResultRowIds(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useResultSortedRowIds
 export function useResultSortedRowIds(
-  queryId: Id,
-  cellId?: Id,
-  descending?: boolean,
-  offset?: number,
-  limit?: number,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  cellId?: MaybeAccessor<Id | undefined>,
+  descending?: MaybeAccessor<boolean | undefined>,
+  offset?: MaybeAccessor<number | undefined>,
+  limit?: MaybeAccessor<number | undefined>,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useResultRow
 export function useResultRow(
-  queryId: Id,
-  rowId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  rowId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Row>;
 
 /// ui-solid.useResultCellIds
 export function useResultCellIds(
-  queryId: Id,
-  rowId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  rowId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Ids>;
 
 /// ui-solid.useResultCell
 export function useResultCell(
-  queryId: Id,
-  rowId: Id,
-  cellId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  rowId: MaybeId,
+  cellId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<Cell | undefined>;
 
 /// ui-solid.useResultTableListener
 export function useResultTableListener(
-  queryId: IdOrNull,
+  queryId: MaybeIdOrNull,
   listener: ResultTableListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultTableCellIdsListener
 export function useResultTableCellIdsListener(
-  queryId: IdOrNull,
+  queryId: MaybeIdOrNull,
   listener: ResultTableCellIdsListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultRowCountListener
 export function useResultRowCountListener(
-  queryId: IdOrNull,
+  queryId: MaybeIdOrNull,
   listener: ResultRowCountListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultRowIdsListener
 export function useResultRowIdsListener(
-  queryId: IdOrNull,
+  queryId: MaybeIdOrNull,
   listener: ResultRowIdsListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultSortedRowIdsListener
 export function useResultSortedRowIdsListener(
-  queryId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
+  queryId: MaybeId,
+  cellId: MaybeAccessor<Id | undefined>,
+  descending: MaybeAccessor<boolean>,
+  offset: MaybeAccessor<number>,
+  limit: MaybeAccessor<number | undefined>,
   listener: ResultSortedRowIdsListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultRowListener
 export function useResultRowListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
+  queryId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
   listener: ResultRowListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultCellIdsListener
 export function useResultCellIdsListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
+  queryId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
   listener: ResultCellIdsListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useResultCellListener
 export function useResultCellListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
+  queryId: MaybeIdOrNull,
+  rowId: MaybeIdOrNull,
+  cellId: MaybeIdOrNull,
   listener: ResultCellListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useParamValues
 export function useParamValues(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<ParamValues>;
 
 /// ui-solid.useParamValuesState
 export function useParamValuesState(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): [Accessor<ParamValues>, (paramValues: ParamValues) => void];
 
 /// ui-solid.useParamValue
 export function useParamValue(
-  queryId: Id,
-  paramId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  paramId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): Accessor<ParamValue | undefined>;
 
 /// ui-solid.useParamValueState
 export function useParamValueState(
-  queryId: Id,
-  paramId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queryId: MaybeId,
+  paramId: MaybeId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): [Accessor<ParamValue | undefined>, (paramValue: ParamValue) => void];
 
 /// ui-solid.useParamValuesListener
 export function useParamValuesListener(
-  queryId: IdOrNull,
+  queryId: MaybeIdOrNull,
   listener: ParamValuesListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useParamValueListener
 export function useParamValueListener(
-  queryId: IdOrNull,
-  paramId: IdOrNull,
+  queryId: MaybeIdOrNull,
+  paramId: MaybeIdOrNull,
   listener: ParamValueListener,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
 ): void;
 
 /// ui-solid.useSetParamValueCallback
 export function useSetParamValueCallback<Parameter>(
-  queryId: Id | GetId<Parameter>,
-  paramId: Id | GetId<Parameter>,
+  queryId: MaybeId | GetId<Parameter>,
+  paramId: MaybeId | GetId<Parameter>,
   getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
   then?: (queries: Queries, paramValue: ParamValue) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useSetParamValuesCallback
 export function useSetParamValuesCallback<Parameter>(
-  queryId: Id | GetId<Parameter>,
+  queryId: MaybeId | GetId<Parameter>,
   getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
-  queriesOrQueriesId?: QueriesOrQueriesId,
+  queriesOrQueriesId?: MaybeQueriesOrQueriesId,
   then?: (queries: Queries, paramValues: ParamValues) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useCreateCheckpoints
 export function useCreateCheckpoints(
-  store: Store | undefined,
+  store: MaybeAccessor<Store | undefined>,
   create: (store: Store) => Checkpoints,
 ): Accessor<Checkpoints | undefined>;
 
@@ -987,11 +1024,13 @@ export function useCreateCheckpoints(
 export function useCheckpointsIds(): Accessor<Ids>;
 
 /// ui-solid.useCheckpoints
-export function useCheckpoints(id?: Id): Accessor<Checkpoints | undefined>;
+export function useCheckpoints(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Checkpoints | undefined>;
 
 /// ui-solid.useCheckpointsOrCheckpointsById
 export function useCheckpointsOrCheckpointsById(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): Accessor<Checkpoints | undefined>;
 
 export function useProvideCheckpoints(
@@ -1001,60 +1040,64 @@ export function useProvideCheckpoints(
 
 /// ui-solid.useCheckpointIds
 export function useCheckpointIds(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): Accessor<CheckpointIds>;
 
 /// ui-solid.useCheckpoint
 export function useCheckpoint(
-  checkpointId: Id,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointId: MaybeId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): Accessor<string | undefined>;
 
 /// ui-solid.useSetCheckpointCallback
 export function useSetCheckpointCallback<Parameter>(
   getCheckpoint?: (parameter: Parameter) => string,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-  then?: (checkpointId: Id, checkpoints: Checkpoints, label?: string) => void,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
+  then?: (
+    checkpointId: MaybeId,
+    checkpoints: Checkpoints,
+    label?: string,
+  ) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useGoBackwardCallback
 export function useGoBackwardCallback(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): Callback;
 
 /// ui-solid.useGoForwardCallback
 export function useGoForwardCallback(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): Callback;
 
 /// ui-solid.useGoToCallback
 export function useGoToCallback<Parameter>(
   getCheckpointId: (parameter: Parameter) => Id,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
   then?: (checkpoints: Checkpoints, checkpointId: Id) => void,
 ): ParameterizedCallback<Parameter>;
 
 /// ui-solid.useUndoInformation
 export function useUndoInformation(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): UndoOrRedoInformation;
 
 /// ui-solid.useRedoInformation
 export function useRedoInformation(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): UndoOrRedoInformation;
 
 /// ui-solid.useCheckpointIdsListener
 export function useCheckpointIdsListener(
   listener: CheckpointIdsListener,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): void;
 
 /// ui-solid.useCheckpointListener
 export function useCheckpointListener(
-  checkpointId: IdOrNull,
+  checkpointId: MaybeIdOrNull,
   listener: CheckpointListener,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
 ): void;
 
 /// ui-solid.useCreatePersister
@@ -1062,10 +1105,7 @@ export function useCreatePersister<
   Persist extends Persists,
   PersisterOrUndefined extends Persister<Persist> | undefined,
 >(
-  store:
-    | PersistedStore<Persist>
-    | Accessor<PersistedStore<Persist> | undefined>
-    | undefined,
+  store: MaybeAccessor<PersistedStore<Persist> | undefined>,
   create: (
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
@@ -1077,11 +1117,13 @@ export function useCreatePersister<
 export function usePersisterIds(): Accessor<Ids>;
 
 /// ui-solid.usePersister
-export function usePersister(id?: Id): Accessor<AnyPersister | undefined>;
+export function usePersister(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<AnyPersister | undefined>;
 
 /// ui-solid.usePersisterOrPersisterById
 export function usePersisterOrPersisterById(
-  persisterOrPersisterId?: PersisterOrPersisterId,
+  persisterOrPersisterId?: MaybePersisterOrPersisterId,
 ): Accessor<AnyPersister | undefined>;
 
 export function useProvidePersister(
@@ -1091,20 +1133,20 @@ export function useProvidePersister(
 
 /// ui-solid.usePersisterStatus
 export function usePersisterStatus(
-  persisterOrPersisterId?: PersisterOrPersisterId,
+  persisterOrPersisterId?: MaybePersisterOrPersisterId,
 ): Accessor<Status>;
 
 /// ui-solid.usePersisterStatusListener
 export function usePersisterStatusListener(
   listener: StatusListener,
-  persisterOrPersisterId?: PersisterOrPersisterId,
+  persisterOrPersisterId?: MaybePersisterOrPersisterId,
 ): void;
 
 /// ui-solid.useCreateSynchronizer
 export function useCreateSynchronizer<
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
-  store: MergeableStore | Accessor<MergeableStore | undefined> | undefined,
+  store: MaybeAccessor<MergeableStore | undefined>,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   destroy?: (synchronizer: Synchronizer) => void,
 ): Accessor<SynchronizerOrUndefined | undefined>;
@@ -1113,11 +1155,13 @@ export function useCreateSynchronizer<
 export function useSynchronizerIds(): Accessor<Ids>;
 
 /// ui-solid.useSynchronizer
-export function useSynchronizer(id?: Id): Accessor<Synchronizer | undefined>;
+export function useSynchronizer(
+  id?: MaybeAccessor<Id | undefined>,
+): Accessor<Synchronizer | undefined>;
 
 /// ui-solid.useSynchronizerOrSynchronizerById
 export function useSynchronizerOrSynchronizerById(
-  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId,
 ): Accessor<Synchronizer | undefined>;
 
 export function useProvideSynchronizer(
@@ -1127,13 +1171,13 @@ export function useProvideSynchronizer(
 
 /// ui-solid.useSynchronizerStatus
 export function useSynchronizerStatus(
-  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId,
 ): Accessor<Status>;
 
 /// ui-solid.useSynchronizerStatusListener
 export function useSynchronizerStatusListener(
   listener: StatusListener,
-  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId,
 ): void;
 
 /// ui-solid.ExtraProps

@@ -139,6 +139,27 @@ import type {
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
 import type {MaybeAccessor} from '../index.d.ts';
 
+type MaybeStoreOrStoreId<Schemas extends OptionalSchemas> = MaybeAccessor<
+  StoreOrStoreId<Schemas> | undefined
+>;
+type MaybeMetricsOrMetricsId<Schemas extends OptionalSchemas> = MaybeAccessor<
+  MetricsOrMetricsId<Schemas> | undefined
+>;
+type MaybeIndexesOrIndexesId<Schemas extends OptionalSchemas> = MaybeAccessor<
+  IndexesOrIndexesId<Schemas> | undefined
+>;
+type MaybeRelationshipsOrRelationshipsId<Schemas extends OptionalSchemas> =
+  MaybeAccessor<RelationshipsOrRelationshipsId<Schemas> | undefined>;
+type MaybeQueriesOrQueriesId<Schemas extends OptionalSchemas> = MaybeAccessor<
+  QueriesOrQueriesId<Schemas> | undefined
+>;
+type MaybeCheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
+  MaybeAccessor<CheckpointsOrCheckpointsId<Schemas> | undefined>;
+type MaybePersisterOrPersisterId<Schemas extends OptionalSchemas> =
+  MaybeAccessor<PersisterOrPersisterId<Schemas> | undefined>;
+type MaybeSynchronizerOrSynchronizerId<Schemas extends OptionalSchemas> =
+  MaybeAccessor<SynchronizerOrSynchronizerId<Schemas> | undefined>;
+
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-solid.MaybeAccessor
   MaybeAccessor: <Thing>(thing: Thing) => MaybeAccessor<Thing>;
@@ -182,53 +203,57 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useStoreIds: () => Accessor<Ids>;
 
   /// ui-solid.useStore
-  useStore: (id?: Id) => Accessor<Store<Schemas> | undefined>;
+  useStore: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Store<Schemas> | undefined>;
 
   /// ui-solid.useStores
   useStores: () => Accessor<{[storeId: Id]: Store<OptionalSchemas>}>;
 
   /// ui-solid.useStoreOrStoreById
   useStoreOrStoreById: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<Store<Schemas> | undefined>;
 
   /// ui-solid.useProvideStore
   useProvideStore: (storeId: Id, store: Store<Schemas>) => void;
 
   /// ui-solid.useHasTables
-  useHasTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Accessor<boolean>;
+  useHasTables: (
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
+  ) => Accessor<boolean>;
 
   /// ui-solid.useTables
   useTables: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<Tables<Schemas[0]>>;
 
   /// ui-solid.useTablesState
   useTablesState: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => [Accessor<Tables<Schemas[0]>>, (tables: Tables<Schemas[0]>) => void];
 
   /// ui-solid.useTableIds
   useTableIds: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<TableIdFromSchema<Schemas[0]>[]>;
 
   /// ui-solid.useHasTable
   useHasTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<boolean>;
 
   /// ui-solid.useTable
   useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeAccessor<TableId>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<Table<Schemas[0], TableId>>;
 
   /// ui-solid.useTableState
   useTableState: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => [
     Accessor<Table<Schemas[0], TableId>>,
     (table: Table<Schemas[0], TableId>) => void,
@@ -236,27 +261,27 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useTableCellIds
   useTableCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<CellIdFromSchema<Schemas[0], TableId>[]>;
 
   /// ui-solid.useHasTableCell
   useHasTableCell: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    cellId: CellIdFromSchema<Schemas[0], TableId>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    cellId: MaybeAccessor<CellIdFromSchema<Schemas[0], TableId>>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<boolean>;
 
   /// ui-solid.useRowCount
   useRowCount: (
-    tableId: TableIdFromSchema<Schemas[0]>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableIdFromSchema<Schemas[0]>>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<number>;
 
   /// ui-solid.useRowIds
   useRowIds: (
-    tableId: TableIdFromSchema<Schemas[0]>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableIdFromSchema<Schemas[0]>>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<Ids>;
 
   useSortedRowIds: {
@@ -265,40 +290,40 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       TableId extends TableIdFromSchema<Schemas[0]>,
       CellId extends CellIdFromSchema<Schemas[0], TableId>,
     >(
-      tableId: TableId,
+      tableId: MaybeAccessor<TableId>,
       cellId?: CellId,
-      descending?: boolean,
-      offset?: number,
-      limit?: number,
-      storeOrStoreId?: StoreOrStoreId<Schemas>,
+      descending?: MaybeAccessor<boolean | undefined>,
+      offset?: MaybeAccessor<number | undefined>,
+      limit?: MaybeAccessor<number | undefined>,
+      storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     ): Accessor<Ids>;
 
     /// ui-solid.useSortedRowIds.2
     <TableId extends TableIdFromSchema<Schemas[0]>>(
       args: SortedRowIdsArgs<Schemas[0], TableId>,
-      storeOrStoreId?: StoreOrStoreId<Schemas>,
+      storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     ): Accessor<Ids>;
   };
 
   /// ui-solid.useHasRow
   useHasRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<boolean>;
 
   /// ui-solid.useRow
   useRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<Row<Schemas[0], TableId>>;
 
   /// ui-solid.useRowState
   useRowState: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => [
     Accessor<Row<Schemas[0], TableId>>,
     (row: Row<Schemas[0], TableId>) => void,
@@ -306,9 +331,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useCellIds
   useCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<CellIdFromSchema<Schemas[0], TableId>[]>;
 
   /// ui-solid.useHasCell
@@ -316,10 +341,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    cellId: MaybeAccessor<CellId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<boolean>;
 
   /// ui-solid.useCell
@@ -327,10 +352,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    cellId: MaybeAccessor<CellId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>>;
 
   /// ui-solid.useCellState
@@ -338,49 +363,51 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId>,
+    rowId: MaybeAccessor<Id>,
+    cellId: MaybeAccessor<CellId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => [
     Accessor<CellOrUndefined<Schemas[0], TableId, CellId>>,
     (cell: Cell<Schemas[0], TableId, CellId>) => void,
   ];
 
   /// ui-solid.useHasValues
-  useHasValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Accessor<boolean>;
+  useHasValues: (
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
+  ) => Accessor<boolean>;
 
   /// ui-solid.useValues
   useValues: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<Values<Schemas[1]>>;
 
   /// ui-solid.useValuesState
   useValuesState: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => [Accessor<Values<Schemas[1]>>, (values: Values<Schemas[1]>) => void];
 
   /// ui-solid.useValueIds
   useValueIds: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<ValueIdFromSchema<Schemas[1]>[]>;
 
   /// ui-solid.useHasValue
   useHasValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    valueId: MaybeAccessor<ValueId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<boolean>;
 
   /// ui-solid.useValue
   useValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    valueId: MaybeAccessor<ValueId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => Accessor<DefaultedValueFromSchema<Schemas[1], ValueId>>;
 
   /// ui-solid.useValueState
   useValueState: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    valueId: MaybeAccessor<ValueId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => [
     value: Accessor<DefaultedValueFromSchema<Schemas[1], ValueId>>,
     setValue: (value: Value<Schemas[1], ValueId>) => void,
@@ -392,7 +419,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetTables>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, tables: SetTables) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -402,12 +429,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     SetTable = Table<Schemas[0], TableId, true>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
     getTable: (
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetTable>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, table: SetTable) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -417,10 +444,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     SetRow = Row<Schemas[0], TableId, true>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    rowId: Id | GetId<Schemas, Parameter, Id>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
+    rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
     getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<SetRow>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, row: SetRow) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -430,9 +457,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     AddRow = Row<Schemas[0], TableId, true>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
     getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<AddRow>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (rowId: Id | undefined, store: Store<Schemas>, row: AddRow) => void,
     reuseRowIds?: boolean,
   ) => ParameterizedCallback<Parameter>;
@@ -443,13 +470,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     SetPartialRow = Row<Schemas[0], TableId, true>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    rowId: Id | GetId<Schemas, Parameter, Id>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
+    rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
     getPartialRow: (
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetPartialRow>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, partialRow: SetPartialRow) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -462,14 +489,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       | Cell<Schemas[0], TableId, CellId>
       | MapCell<Schemas[0], TableId, CellId>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    rowId: Id | GetId<Schemas, Parameter, Id>,
-    cellId: CellId | GetId<Schemas, Parameter, CellId>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
+    rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
+    cellId: MaybeAccessor<CellId> | GetId<Schemas, Parameter, CellId>,
     getCell: (
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetOrMapCell>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, cell: SetOrMapCell) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -479,7 +506,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetValues>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, values: SetValues) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -492,7 +519,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetPartialValues>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, partialValues: SetPartialValues) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -502,18 +529,18 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     ValueId extends ValueIdFromSchema<Schemas[1]>,
     SetOrMapValue = Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
   >(
-    valueId: ValueId | GetId<Schemas, Parameter, ValueId>,
+    valueId: MaybeAccessor<ValueId> | GetId<Schemas, Parameter, ValueId>,
     getValue: (
       parameter: Parameter,
       store: Store<Schemas>,
     ) => NoInfer<SetOrMapValue>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, value: SetOrMapValue) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useDelTablesCallback
   useDelTablesCallback: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
   ) => Callback;
 
@@ -522,16 +549,16 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useDelRowCallback
   useDelRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    rowId: Id | GetId<Schemas, Parameter, Id>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
+    rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -541,17 +568,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    rowId: Id | GetId<Schemas, Parameter, Id>,
-    cellId: CellId | GetId<Schemas, Parameter, CellId>,
-    forceDel?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
+    rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
+    cellId: MaybeAccessor<CellId> | GetId<Schemas, Parameter, CellId>,
+    forceDel?: MaybeAccessor<boolean | undefined>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useDelValuesCallback
   useDelValuesCallback: (
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
   ) => Callback;
 
@@ -560,8 +587,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     Parameter,
     ValueId extends ValueIdFromSchema<Schemas[1]>,
   >(
-    valueId: ValueId | GetId<Schemas, Parameter, ValueId>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    valueId: MaybeAccessor<ValueId> | GetId<Schemas, Parameter, ValueId>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
   ) => ParameterizedCallback<Parameter>;
 
@@ -569,51 +596,51 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useHasTablesListener: (
     listener: HasTablesListener<Schemas>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useTablesListener
   useTablesListener: (
     listener: TablesListener<Schemas>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useTableIdsListener
   useTableIdsListener: (
     listener: TableIdsListener<Schemas>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useHasTableListener
   useHasTableListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
     listener: HasTableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useTableListener
   useTableListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
     listener: TableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useTableCellIdsListener
   useTableCellIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
     listener: TableCellIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useHasTableCellListener
@@ -625,31 +652,31 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
   >(
-    tableId: TableIdOrNull,
-    cellId: CellIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
+    cellId: MaybeAccessor<CellIdOrNull>,
     listener: HasTableCellListener<Schemas, TableIdOrNull, CellIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useRowCountListener
   useRowCountListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
     listener: RowCountListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useRowIdsListener
   useRowIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
     listener: RowIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   useSortedRowIdsListener: {
@@ -660,14 +687,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
         | CellIdFromSchema<Schemas[0], TableId>
         | undefined,
     >(
-      tableId: TableId,
-      cellId: CellIdOrUndefined,
-      descending: boolean,
-      offset: number,
-      limit: number | undefined,
+      tableId: MaybeAccessor<TableId>,
+      cellId: MaybeAccessor<CellIdOrUndefined>,
+      descending: MaybeAccessor<boolean>,
+      offset: MaybeAccessor<number>,
+      limit: MaybeAccessor<number | undefined>,
       listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
       mutator?: boolean,
-      storeOrStoreId?: StoreOrStoreId<Schemas>,
+      storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     ): void;
 
     /// ui-solid.useSortedRowIdsListener.2
@@ -680,7 +707,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       args: SortedRowIdsArgs<Schemas[0], TableId>,
       listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
       mutator?: boolean,
-      storeOrStoreId?: StoreOrStoreId<Schemas>,
+      storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
     ): void;
   };
 
@@ -689,11 +716,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
+    rowId: MaybeAccessor<RowIdOrNull>,
     listener: HasRowListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useRowListener
@@ -701,11 +728,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
+    rowId: MaybeAccessor<RowIdOrNull>,
     listener: RowListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useCellIdsListener
@@ -713,11 +740,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
+    rowId: MaybeAccessor<RowIdOrNull>,
     listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useHasCellListener
@@ -730,9 +757,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
   >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
-    cellId: CellIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
+    rowId: MaybeAccessor<RowIdOrNull>,
+    cellId: MaybeAccessor<CellIdOrNull>,
     listener: HasCellListener<
       Schemas,
       TableIdOrNull,
@@ -740,7 +767,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       CellIdOrNull
     >,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useCellListener
@@ -753,76 +780,76 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
   >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
-    cellId: CellIdOrNull,
+    tableId: MaybeAccessor<TableIdOrNull>,
+    rowId: MaybeAccessor<RowIdOrNull>,
+    cellId: MaybeAccessor<CellIdOrNull>,
     listener: CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useHasValuesListener
   useHasValuesListener: (
     listener: HasValuesListener<Schemas>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useValuesListener
   useValuesListener: (
     listener: ValuesListener<Schemas>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useValueIdsListener
   useValueIdsListener: (
     listener: ValueIdsListener<Schemas>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useHasValueListener
   useHasValueListener: <
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
   >(
-    valueId: ValueIdOrNull,
+    valueId: MaybeAccessor<ValueIdOrNull>,
     listener: HasValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useValueListener
   useValueListener: <
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
   >(
-    valueId: ValueIdOrNull,
+    valueId: MaybeAccessor<ValueIdOrNull>,
     listener: ValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useStartTransactionListener
   useStartTransactionListener: (
     listener: TransactionListener<Schemas>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useWillFinishTransactionListener
   useWillFinishTransactionListener: (
     listener: TransactionListener<Schemas>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useDidFinishTransactionListener
   useDidFinishTransactionListener: (
     listener: TransactionListener<Schemas>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    storeOrStoreId?: MaybeStoreOrStoreId<Schemas>,
   ) => void;
 
   /// ui-solid.useCreateMetrics
   useCreateMetrics: (
-    store: Store<Schemas> | undefined,
+    store: MaybeAccessor<Store<Schemas> | undefined>,
     create: (store: Store<Schemas>) => Metrics<Schemas>,
   ) => Accessor<Metrics<Schemas> | undefined>;
 
@@ -830,35 +857,39 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useMetricsIds: () => Accessor<Ids>;
 
   /// ui-solid.useMetrics
-  useMetrics: (id?: Id) => Accessor<Metrics<Schemas> | undefined>;
+  useMetrics: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Metrics<Schemas> | undefined>;
 
   /// ui-solid.useMetricsOrMetricsById
   useMetricsOrMetricsById: (
-    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+    metricsOrMetricsId?: MaybeMetricsOrMetricsId<Schemas>,
   ) => Accessor<Metrics<Schemas> | undefined>;
 
   // useProvideMetrics
   useProvideMetrics: (metricsId: Id, metrics: Metrics<Schemas>) => void;
 
   /// ui-solid.useMetricIds
-  useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId<Schemas>): Accessor<Ids>;
+  useMetricIds(
+    metricsOrMetricsId?: MaybeMetricsOrMetricsId<Schemas>,
+  ): Accessor<Ids>;
 
   /// ui-solid.useMetric
   useMetric: (
-    metricId: Id,
-    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+    metricId: MaybeAccessor<Id>,
+    metricsOrMetricsId?: MaybeMetricsOrMetricsId<Schemas>,
   ) => Accessor<number | undefined>;
 
   /// ui-solid.useMetricListener
   useMetricListener: (
-    metricId: IdOrNull,
+    metricId: MaybeAccessor<IdOrNull>,
     listener: MetricListener<Schemas>,
-    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+    metricsOrMetricsId?: MaybeMetricsOrMetricsId<Schemas>,
   ) => void;
 
   /// ui-solid.useCreateIndexes
   useCreateIndexes: (
-    store: Store<Schemas> | undefined,
+    store: MaybeAccessor<Store<Schemas> | undefined>,
     create: (store: Store<Schemas>) => Indexes<Schemas>,
   ) => Accessor<Indexes<Schemas> | undefined>;
 
@@ -866,50 +897,54 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useIndexesIds: () => Accessor<Ids>;
 
   /// ui-solid.useIndexes
-  useIndexes: (id?: Id) => Accessor<Indexes<Schemas> | undefined>;
+  useIndexes: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Indexes<Schemas> | undefined>;
 
   /// ui-solid.useIndexesOrIndexesById
   useIndexesOrIndexesById: (
-    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+    indexesOrIndexesId?: MaybeIndexesOrIndexesId<Schemas>,
   ) => Accessor<Indexes<Schemas> | undefined>;
 
   // useProvideIndexes
   useProvideIndexes: (indexesId: Id, indexes: Indexes<Schemas>) => void;
 
   /// ui-solid.useIndexIds
-  useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId<Schemas>): Accessor<Ids>;
+  useIndexIds(
+    indexesOrIndexesId?: MaybeIndexesOrIndexesId<Schemas>,
+  ): Accessor<Ids>;
 
   /// ui-solid.useSliceIds
   useSliceIds: (
-    indexId: Id,
-    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+    indexId: MaybeAccessor<Id>,
+    indexesOrIndexesId?: MaybeIndexesOrIndexesId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useSliceRowIds
   useSliceRowIds: (
-    indexId: Id,
-    sliceId: Id,
-    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+    indexId: MaybeAccessor<Id>,
+    sliceId: MaybeAccessor<Id>,
+    indexesOrIndexesId?: MaybeIndexesOrIndexesId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useSliceIdsListener
   useSliceIdsListener: (
-    indexId: IdOrNull,
+    indexId: MaybeAccessor<IdOrNull>,
     listener: SliceIdsListener<Schemas>,
-    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+    indexesOrIndexesId?: MaybeIndexesOrIndexesId<Schemas>,
   ) => void;
 
   /// ui-solid.useSliceRowIdsListener
   useSliceRowIdsListener: (
-    indexId: IdOrNull,
-    sliceId: IdOrNull,
+    indexId: MaybeAccessor<IdOrNull>,
+    sliceId: MaybeAccessor<IdOrNull>,
     listener: SliceRowIdsListener<Schemas>,
-    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+    indexesOrIndexesId?: MaybeIndexesOrIndexesId<Schemas>,
   ) => void;
 
   /// ui-solid.useCreateRelationships
   useCreateRelationships: (
-    store: Store<Schemas> | undefined,
+    store: MaybeAccessor<Store<Schemas> | undefined>,
     create: (store: Store<Schemas>) => Relationships<Schemas>,
   ) => Accessor<Relationships<Schemas> | undefined>;
 
@@ -917,11 +952,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useRelationshipsIds: () => Accessor<Ids>;
 
   /// ui-solid.useRelationships
-  useRelationships: (id?: Id) => Accessor<Relationships<Schemas> | undefined>;
+  useRelationships: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Relationships<Schemas> | undefined>;
 
   /// ui-solid.useRelationshipsOrRelationshipsById
   useRelationshipsOrRelationshipsById: (
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => Accessor<Relationships<Schemas> | undefined>;
 
   // useProvideRelationships
@@ -932,57 +969,57 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useRelationshipIds
   useRelationshipIds(
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ): Accessor<Ids>;
 
   /// ui-solid.useRemoteRowId
   useRemoteRowId: (
-    relationshipId: Id,
-    localRowId: Id,
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipId: MaybeAccessor<Id>,
+    localRowId: MaybeAccessor<Id>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => Accessor<Id | undefined>;
 
   /// ui-solid.useLocalRowIds
   useLocalRowIds: (
-    relationshipId: Id,
-    remoteRowId: Id,
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipId: MaybeAccessor<Id>,
+    remoteRowId: MaybeAccessor<Id>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useLinkedRowIds
   useLinkedRowIds: (
-    relationshipId: Id,
-    firstRowId: Id,
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipId: MaybeAccessor<Id>,
+    firstRowId: MaybeAccessor<Id>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useRemoteRowIdListener
   useRemoteRowIdListener: (
-    relationshipId: IdOrNull,
-    localRowId: IdOrNull,
+    relationshipId: MaybeAccessor<IdOrNull>,
+    localRowId: MaybeAccessor<IdOrNull>,
     listener: RemoteRowIdListener<Schemas>,
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// ui-solid.useLocalRowIdsListener
   useLocalRowIdsListener: (
-    relationshipId: IdOrNull,
-    remoteRowId: IdOrNull,
+    relationshipId: MaybeAccessor<IdOrNull>,
+    remoteRowId: MaybeAccessor<IdOrNull>,
     listener: LocalRowIdsListener<Schemas>,
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// ui-solid.useLinkedRowIdsListener
   useLinkedRowIdsListener: (
-    relationshipId: Id,
-    firstRowId: Id,
+    relationshipId: MaybeAccessor<Id>,
+    firstRowId: MaybeAccessor<Id>,
     listener: LinkedRowIdsListener<Schemas>,
-    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+    relationshipsOrRelationshipsId?: MaybeRelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// ui-solid.useCreateQueries
   useCreateQueries: (
-    store: Store<Schemas> | undefined,
+    store: MaybeAccessor<Store<Schemas> | undefined>,
     create: (store: Store<Schemas>) => Queries<Schemas>,
   ) => Accessor<Queries<Schemas> | undefined>;
 
@@ -990,206 +1027,210 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useQueriesIds: () => Accessor<Ids>;
 
   /// ui-solid.useQueries
-  useQueries: (id?: Id) => Accessor<Queries<Schemas> | undefined>;
+  useQueries: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Queries<Schemas> | undefined>;
 
   /// ui-solid.useQueriesOrQueriesById
   useQueriesOrQueriesById: (
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<Queries<Schemas> | undefined>;
 
   // useProvideQueries
   useProvideQueries: (queriesId: Id, queries: Queries<Schemas>) => void;
 
   /// ui-solid.useQueryIds
-  useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId<Schemas>): Accessor<Ids>;
+  useQueryIds(
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
+  ): Accessor<Ids>;
 
   /// ui-solid.useResultTable
   useResultTable: (
-    queryId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<ResultTable>;
 
   /// ui-solid.useResultTableCellIds
   useResultTableCellIds: (
-    queryId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useResultRowCount
   useResultRowCount: (
-    queryId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<number>;
 
   /// ui-solid.useResultRowIds
   useResultRowIds: (
-    queryId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useResultSortedRowIds
   useResultSortedRowIds: (
-    queryId: Id,
-    cellId?: Id,
-    descending?: boolean,
-    offset?: number,
-    limit?: number,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    cellId?: MaybeAccessor<Id | undefined>,
+    descending?: MaybeAccessor<boolean | undefined>,
+    offset?: MaybeAccessor<number | undefined>,
+    limit?: MaybeAccessor<number | undefined>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useResultRow
   useResultRow: (
-    queryId: Id,
-    rowId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    rowId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<ResultRow>;
 
   /// ui-solid.useResultCellIds
   useResultCellIds: (
-    queryId: Id,
-    rowId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    rowId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<Ids>;
 
   /// ui-solid.useResultCell
   useResultCell: (
-    queryId: Id,
-    rowId: Id,
-    cellId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    rowId: MaybeAccessor<Id>,
+    cellId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<ResultCell | undefined>;
 
   /// ui-solid.useResultTableListener
   useResultTableListener: (
-    queryId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
     listener: ResultTableListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultTableCellIdsListener
   useResultTableCellIdsListener: (
-    queryId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
     listener: ResultTableCellIdsListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultRowCountListener
   useResultRowCountListener: (
-    queryId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
     listener: ResultRowCountListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultRowIdsListener
   useResultRowIdsListener: (
-    queryId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
     listener: ResultRowIdsListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultSortedRowIdsListener
   useResultSortedRowIdsListener: (
-    queryId: Id,
-    cellId: Id | undefined,
-    descending: boolean,
-    offset: number,
-    limit: number | undefined,
+    queryId: MaybeAccessor<Id>,
+    cellId: MaybeAccessor<Id | undefined>,
+    descending: MaybeAccessor<boolean>,
+    offset: MaybeAccessor<number>,
+    limit: MaybeAccessor<number | undefined>,
     listener: ResultSortedRowIdsListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultRowListener
   useResultRowListener: (
-    queryId: IdOrNull,
-    rowId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
+    rowId: MaybeAccessor<IdOrNull>,
     listener: ResultRowListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultCellIdsListener
   useResultCellIdsListener: (
-    queryId: IdOrNull,
-    rowId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
+    rowId: MaybeAccessor<IdOrNull>,
     listener: ResultCellIdsListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useResultCellListener
   useResultCellListener: (
-    queryId: IdOrNull,
-    rowId: IdOrNull,
-    cellId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
+    rowId: MaybeAccessor<IdOrNull>,
+    cellId: MaybeAccessor<IdOrNull>,
     listener: ResultCellListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useParamValues
   useParamValues: (
-    queryId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<ParamValues>;
 
   /// ui-solid.useParamValuesState
   useParamValuesState: (
-    queryId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => [Accessor<ParamValues>, (paramValues: ParamValues) => void];
 
   /// ui-solid.useParamValue
   useParamValue: (
-    queryId: Id,
-    paramId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    paramId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => Accessor<ParamValue | undefined>;
 
   /// ui-solid.useParamValueState
   useParamValueState: (
-    queryId: Id,
-    paramId: Id,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queryId: MaybeAccessor<Id>,
+    paramId: MaybeAccessor<Id>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => [Accessor<ParamValue | undefined>, (paramValue: ParamValue) => void];
 
   /// ui-solid.useParamValuesListener
   useParamValuesListener: (
-    queryId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
     listener: ParamValuesListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useParamValueListener
   useParamValueListener: (
-    queryId: IdOrNull,
-    paramId: IdOrNull,
+    queryId: MaybeAccessor<IdOrNull>,
+    paramId: MaybeAccessor<IdOrNull>,
     listener: ParamValueListener<Schemas>,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-solid.useSetParamValueCallback
   useSetParamValueCallback: <Parameter>(
-    queryId: Id | GetId<Schemas, Parameter, Id>,
-    paramId: Id | GetId<Schemas, Parameter, Id>,
+    queryId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
+    paramId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
     getParamValue: (
       parameter: Parameter,
       queries: Queries<Schemas>,
     ) => ParamValue,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
     then?: (queries: Queries<Schemas>, paramValue: ParamValue) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetParamValuesCallback
   useSetParamValuesCallback: <Parameter>(
-    queryId: Id | GetId<Schemas, Parameter, Id>,
+    queryId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
     getParamValues: (
       parameter: Parameter,
       queries: Queries<Schemas>,
     ) => ParamValues,
-    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    queriesOrQueriesId?: MaybeQueriesOrQueriesId<Schemas>,
     then?: (queries: Queries<Schemas>, paramValues: ParamValues) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useCreateCheckpoints
   useCreateCheckpoints: (
-    store: Store<Schemas> | undefined,
+    store: MaybeAccessor<Store<Schemas> | undefined>,
     create: (store: Store<Schemas>) => Checkpoints<Schemas>,
   ) => Accessor<Checkpoints<Schemas> | undefined>;
 
@@ -1197,11 +1238,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCheckpointsIds: () => Accessor<Ids>;
 
   /// ui-solid.useCheckpoints
-  useCheckpoints: (id?: Id) => Accessor<Checkpoints<Schemas> | undefined>;
+  useCheckpoints: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Checkpoints<Schemas> | undefined>;
 
   /// ui-solid.useCheckpointsOrCheckpointsById
   useCheckpointsOrCheckpointsById: (
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => Accessor<Checkpoints<Schemas> | undefined>;
 
   // useProvideCheckpoints
@@ -1212,21 +1255,21 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useCheckpointIds
   useCheckpointIds: (
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => Accessor<CheckpointIds>;
 
   /// ui-solid.useCheckpoint
   useCheckpoint: (
-    checkpointId: Id,
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointId: MaybeAccessor<Id>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => Accessor<string | undefined>;
 
   /// ui-solid.useSetCheckpointCallback
   useSetCheckpointCallback: <Parameter>(
     getCheckpoint?: (parameter: Parameter) => string,
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
     then?: (
-      checkpointId: Id,
+      checkpointId: MaybeAccessor<Id>,
       checkpoints: Checkpoints<Schemas>,
       label?: string,
     ) => void,
@@ -1234,42 +1277,42 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useGoBackwardCallback
   useGoBackwardCallback: (
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => Callback;
 
   /// ui-solid.useGoForwardCallback
   useGoForwardCallback: (
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => Callback;
 
   /// ui-solid.useGoToCallback
   useGoToCallback: <Parameter>(
     getCheckpointId: (parameter: Parameter) => Id,
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
     then?: (checkpoints: Checkpoints<Schemas>, checkpointId: Id) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useUndoInformation
   useUndoInformation: (
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => UndoOrRedoInformation;
 
   /// ui-solid.useRedoInformation
   useRedoInformation: (
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => UndoOrRedoInformation;
 
   /// ui-solid.useCheckpointIdsListener
   useCheckpointIdsListener: (
     listener: CheckpointIdsListener<Schemas>,
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => void;
 
   /// ui-solid.useCheckpointListener
   useCheckpointListener: (
-    checkpointId: IdOrNull,
+    checkpointId: MaybeAccessor<IdOrNull>,
     listener: CheckpointListener<Schemas>,
-    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId<Schemas>,
   ) => void;
 
   /// ui-solid.useCreatePersister
@@ -1277,10 +1320,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     Persist extends Persists,
     PersisterOrUndefined extends Persister<Schemas, Persist> | undefined,
   >(
-    store:
-      | PersistedStore<Schemas, Persist>
-      | Accessor<PersistedStore<Schemas, Persist> | undefined>
-      | undefined,
+    store: MaybeAccessor<PersistedStore<Schemas, Persist> | undefined>,
     create: (
       store: PersistedStore<Schemas, Persist>,
     ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
@@ -1293,12 +1333,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.usePersister
   usePersister: (
-    id?: Id,
+    id?: MaybeAccessor<Id | undefined>,
   ) => Accessor<Persister<Schemas, Persists.StoreOrMergeableStore> | undefined>;
 
   /// ui-solid.usePersisterOrPersisterById
   usePersisterOrPersisterById: (
-    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+    persisterOrPersisterId?: MaybePersisterOrPersisterId<Schemas>,
   ) => Accessor<Persister<Schemas, Persists.StoreOrMergeableStore> | undefined>;
 
   // useProvidePersister
@@ -1309,23 +1349,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.usePersisterStatus
   usePersisterStatus: (
-    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+    persisterOrPersisterId?: MaybePersisterOrPersisterId<Schemas>,
   ) => Accessor<Status>;
 
   /// ui-solid.usePersisterStatusListener
   usePersisterStatusListener: (
     listener: StatusListener<Schemas>,
-    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+    persisterOrPersisterId?: MaybePersisterOrPersisterId<Schemas>,
   ) => void;
 
   /// ui-solid.useCreateSynchronizer
   useCreateSynchronizer: <
     SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
   >(
-    store:
-      | MergeableStore<Schemas>
-      | Accessor<MergeableStore<Schemas> | undefined>
-      | undefined,
+    store: MaybeAccessor<MergeableStore<Schemas> | undefined>,
     create: (
       store: MergeableStore<Schemas>,
     ) => Promise<SynchronizerOrUndefined>,
@@ -1336,11 +1373,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSynchronizerIds: () => Accessor<Ids>;
 
   /// ui-solid.useSynchronizer
-  useSynchronizer: (id?: Id) => Accessor<Synchronizer<Schemas> | undefined>;
+  useSynchronizer: (
+    id?: MaybeAccessor<Id | undefined>,
+  ) => Accessor<Synchronizer<Schemas> | undefined>;
 
   /// ui-solid.useSynchronizerOrSynchronizerById
   useSynchronizerOrSynchronizerById: (
-    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+    synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId<Schemas>,
   ) => Accessor<Synchronizer<Schemas> | undefined>;
 
   // useProvideSynchronizer
@@ -1351,13 +1390,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-solid.useSynchronizerStatus
   useSynchronizerStatus: (
-    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+    synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId<Schemas>,
   ) => Accessor<Status>;
 
   /// ui-solid.useSynchronizerStatusListener
   useSynchronizerStatusListener: (
     listener: StatusListener<Schemas>,
-    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+    synchronizerOrSynchronizerId?: MaybeSynchronizerOrSynchronizerId<Schemas>,
   ) => void;
 
   /// ui-solid.ExtraProps
