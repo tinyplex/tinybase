@@ -347,7 +347,6 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether any Tables exist.
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -370,11 +369,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns A Tables object containing the tabular data of the Store.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -388,7 +385,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -410,11 +406,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array containing the Tables object and a function to set it.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -429,7 +423,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category State primitives
  * @since v8.3.0
  */
@@ -451,11 +444,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the Ids of every Table in the Store.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -472,7 +463,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -499,7 +489,6 @@
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -513,7 +502,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -540,7 +528,6 @@
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -554,7 +541,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -577,11 +563,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array containing the Table and a function to set it.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -596,7 +580,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category State primitives
  * @since v8.3.0
  */
@@ -667,7 +650,6 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns The number of Row objects in the Table.
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -690,11 +672,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the Ids of every Row in the Table.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -711,7 +691,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -740,11 +719,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the sorted Ids of every Row in the Table.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -761,7 +738,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -799,11 +775,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether a Row with that Id exists in that Table.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -817,7 +791,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -845,7 +818,6 @@
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -859,7 +831,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @essential Using Solid
  * @since v8.3.0
@@ -884,11 +855,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array containing the Row and a function to set it.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -903,7 +872,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category State primitives
  * @since v8.3.0
  */
@@ -928,11 +896,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the Ids of every Cell in the Row.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -946,7 +912,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -972,11 +937,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether a Cell with that Id exists in that Row in that Table.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -990,7 +953,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1051,11 +1013,9 @@
  * explicit reference.
  * @returns A tuple containing the current Cell and a setter callback that can
  * be called with a new Cell value.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1070,7 +1030,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category State primitives
  * @since v8.3.0
  */
@@ -1093,7 +1052,6 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether any Values exist.
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1116,11 +1074,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns A Values object containing the keyed value data of the Store.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1134,7 +1090,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1156,11 +1111,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array containing the Values object and a function to set it.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1175,7 +1128,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category State primitives
  * @since v8.3.0
  */
@@ -1197,11 +1149,9 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the Ids of every Value in the Store.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1215,7 +1165,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1242,7 +1191,6 @@
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1256,7 +1204,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1283,7 +1230,6 @@
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1297,7 +1243,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category Store primitives
  * @essential Using Solid
  * @since v8.3.0
@@ -1317,11 +1262,9 @@
  * explicit reference.
  * @returns A tuple containing the current Value and a setter callback that can
  * be called with a new Value.
- *
  * @example
  * This example creates a Store, binds it to the primitive, and reads the
  * resulting Solid Accessor.
- *
  * ```js
  * import {createRoot} from 'solid-js';
  * import {createStore} from 'tinybase';
@@ -1336,7 +1279,6 @@
  *   dispose();
  * });
  * ```
- *
  * @category State primitives
  * @since v8.3.0
  */
@@ -1356,7 +1298,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param getTables A function which returns the Tables object that will be used
  * to update the Store, based on the parameter the callback will receive (and
  * which is most likely a DOM event).
@@ -1385,7 +1326,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store to set, or a GetId function
  * that will return it.
  * @param getTable A function which returns the Table object that will be used
@@ -1416,7 +1356,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store, or a GetId function that
  * will return it.
  * @param rowId The Id of the Row in the Table to set, or a GetId function that
@@ -1489,7 +1428,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store, or a GetId function that
  * will return it.
  * @param rowId The Id of the Row in the Table to set, or a GetId function that
@@ -1522,7 +1460,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store, or a GetId function that
  * will return it.
  * @param rowId The Id of the Row in the Table, or a GetId function that will
@@ -1573,7 +1510,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param getValues A function which returns the Values object that will be used
  * to update the Store, based on the parameter the callback will receive (and
  * which is most likely a DOM event).
@@ -1603,7 +1539,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param getPartialValues A function which returns the partial Values object
  * that will be used to update the Store, based on the parameter the callback
  * will receive (and which is most likely a DOM event).
@@ -1632,7 +1567,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the mutation to
  * your application's undo stack.
- *
  * @param valueId The Id of the Value in the Store to set, or a GetId function
  * that will return it.
  * @param getValue A function which returns the Value object that will be used
@@ -1659,7 +1593,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the deletion to
  * your application's undo stack.
- *
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -1682,7 +1615,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the deletion to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store to delete, or a GetId
  * function that will return it.
  * @param storeOrStoreId The Store to be updated: omit for the default context
@@ -1707,7 +1639,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the deletion to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store, or a GetId function that
  * will return it.
  * @param rowId The Id of the Row in the Table to delete, or a GetId function
@@ -1734,7 +1665,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the deletion to
  * your application's undo stack.
- *
  * @param tableId The Id of the Table in the Store, or a GetId function that
  * will return it.
  * @param rowId The Id of the Row in the Table, or a GetId function that will
@@ -1765,7 +1695,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the deletion to
  * your application's undo stack.
- *
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -1788,7 +1717,6 @@
  * called just after the Store has been updated. This is a useful place to call
  * the addCheckpoint method, for example, if you wish to add the deletion to
  * your application's undo stack.
- *
  * @param valueId The Id of the Value in the Store to delete, or a GetId
  * function that will return it.
  * @param storeOrStoreId The Store to be updated: omit for the default context
@@ -3811,7 +3739,6 @@
  *
  * For convenience, you can optionally provide a `then` function which will be
  * called just after the query parameter has been updated.
- *
  * @param queryId The Id of the query to update, or a GetId function that will
  * return it.
  * @param paramId The Id of the parameter to update, or a GetId function that
@@ -3843,7 +3770,6 @@
  *
  * For convenience, you can optionally provide a `then` function which will be
  * called just after the query parameters have been updated.
- *
  * @param queryId The Id of the query to update, or a GetId function that will
  * return it.
  * @param getParamValues A function which returns the parameter values object
@@ -3994,7 +3920,6 @@
  *
  * For convenience, you can optionally provide a `then` function which will be
  * called just after the checkpoint has been set.
- *
  * @param getCheckpoint An optional function which returns a string that will be
  * used to describe the actions leading up to this checkpoint, based on the
  * parameter the callback will receive (and which is most likely a DOM event).
@@ -4059,7 +3984,6 @@
  *
  * For convenience, you can optionally provide a `then` function which will be
  * called just after the checkpoint has been set.
- *
  * @param getCheckpointId A function which returns an Id that will be used to
  * indicate which checkpoint to move to, based on the parameter the callback
  * will receive (and which is most likely a DOM event).
@@ -4171,7 +4095,6 @@
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Persister being created every time the app renders or updates, since v5.0 the
  * this primitive performs the creation in an effect.
- *
  * @returns A reference to the Persister.
  * @category Persister primitives
  * @since v8.3.0
