@@ -14,6 +14,7 @@ import {dirname, extname, join, resolve} from 'path';
 import postgres from 'postgres';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
+import * as Solid from 'solid-js';
 import * as sqlite3 from 'sqlite3';
 import * as Svelte from 'svelte';
 import {compileModule, compile as compileSvelte} from 'svelte/compiler';
@@ -50,6 +51,7 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
+import * as TinyBaseUiSolid from 'tinybase/ui-solid';
 import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
 import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
 import * as TinyBaseUiSvelteInspector from 'tinybase/ui-svelte-inspector';
@@ -93,11 +95,13 @@ const TinyBaseForTest = {
   postgres,
   react: React,
   'react-dom/client': ReactDOMClient,
+  'solid-js': Solid,
   svelte: Svelte,
   sqlite3,
   tinybase: TinyBaseForTest,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
+  'tinybase/ui-solid': TinyBaseUiSolid,
   'tinybase/ui-svelte': TinyBaseUiSvelte,
   'tinybase/ui-svelte-dom': TinyBaseUiSvelteDom,
   'tinybase/ui-svelte-inspector': TinyBaseUiSvelteInspector,

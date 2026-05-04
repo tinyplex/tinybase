@@ -3,2143 +3,3036 @@
  * components for using TinyBase in Solid applications.
  *
  * The primitives in this module provide access to the data and structures
- * exposed by other modules in the project. They return Solid Accessor functions
- * and register listeners so components using those primitives update when data
- * changes.
+ * exposed by other modules in the project. They return Solid Accessor
+ * functions and register listeners so components using those primitives update
+ * when data changes.
  *
- * Unlike the ui-react module, the primitive signatures do not include
- * dependency-list parameters. Solid tracks reactive reads automatically, and
- * the primitives update when their Store data or accessor arguments change.
- * Prefer passing reactive values as accessor functions, such as
- * `() => props.tableId`.
- * @category Module
+ * Unlike React hooks, the primitive signatures do not include dependency-list
+ * parameters. Solid tracks reactive reads automatically, and the primitives
+ * update when their Store data or accessor arguments change. Prefer passing
+ * reactive values as accessor functions, such as `() => props.tableId`.
+ * @see Building UIs guides
+ * @see Building UIs With Metrics guide
+ * @see Building UIs With Indexes guide
+ * @see Building UIs With Relationships guide
+ * @see Building UIs With Queries guide
+ * @see Building UIs With Checkpoints guide
  * @packageDocumentation
  * @module ui-solid
  * @since v8.3.0
  */
 /// ui-solid
 /**
- * Documentation for TablesProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TablesProps.store
-/**
- * Documentation for TablesProps.tableComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TablesProps.tableComponent
-/**
- * Documentation for TablesProps.getTableComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TablesProps.getTableComponentProps
-/**
- * Documentation for TablesProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TablesProps.separator
-/**
- * Documentation for TablesProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TablesProps.debugIds
-/**
- * Documentation for TableProps.tableId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.tableId
-/**
- * Documentation for TableProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.store
-/**
- * Documentation for TableProps.rowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.rowComponent
-/**
- * Documentation for TableProps.getRowComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.getRowComponentProps
-/**
- * Documentation for TableProps.customCellIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.customCellIds
-/**
- * Documentation for TableProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.separator
-/**
- * Documentation for TableProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.TableProps.debugIds
-/**
- * Documentation for SortedTableProps.tableId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.tableId
-/**
- * Documentation for SortedTableProps.cellId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.cellId
-/**
- * Documentation for SortedTableProps.descending in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.descending
-/**
- * Documentation for SortedTableProps.offset in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.offset
-/**
- * Documentation for SortedTableProps.limit in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.limit
-/**
- * Documentation for SortedTableProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.store
-/**
- * Documentation for SortedTableProps.rowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.rowComponent
-/**
- * Documentation for SortedTableProps.getRowComponentProps in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.getRowComponentProps
-/**
- * Documentation for SortedTableProps.customCellIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.customCellIds
-/**
- * Documentation for SortedTableProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.separator
-/**
- * Documentation for SortedTableProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SortedTableProps.debugIds
-/**
- * Documentation for RowProps.tableId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.tableId
-/**
- * Documentation for RowProps.rowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.rowId
-/**
- * Documentation for RowProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.store
-/**
- * Documentation for RowProps.cellComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.cellComponent
-/**
- * Documentation for RowProps.getCellComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.getCellComponentProps
-/**
- * Documentation for RowProps.customCellIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.customCellIds
-/**
- * Documentation for RowProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.separator
-/**
- * Documentation for RowProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RowProps.debugIds
-/**
- * Documentation for CellProps.tableId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CellProps.tableId
-/**
- * Documentation for CellProps.rowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CellProps.rowId
-/**
- * Documentation for CellProps.cellId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CellProps.cellId
-/**
- * Documentation for CellProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CellProps.store
-/**
- * Documentation for CellProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CellProps.debugIds
-/**
- * Documentation for ValuesProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValuesProps.store
-/**
- * Documentation for ValuesProps.valueComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValuesProps.valueComponent
-/**
- * Documentation for ValuesProps.getValueComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValuesProps.getValueComponentProps
-/**
- * Documentation for ValuesProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValuesProps.separator
-/**
- * Documentation for ValuesProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValuesProps.debugIds
-/**
- * Documentation for ValueProps.valueId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValueProps.valueId
-/**
- * Documentation for ValueProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValueProps.store
-/**
- * Documentation for ValueProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ValueProps.debugIds
-/**
- * Documentation for MetricProps.metricId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.MetricProps.metricId
-/**
- * Documentation for MetricProps.metrics in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.MetricProps.metrics
-/**
- * Documentation for MetricProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.MetricProps.debugIds
-/**
- * Documentation for IndexProps.indexId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.IndexProps.indexId
-/**
- * Documentation for IndexProps.indexes in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.IndexProps.indexes
-/**
- * Documentation for IndexProps.sliceComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.IndexProps.sliceComponent
-/**
- * Documentation for IndexProps.getSliceComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.IndexProps.getSliceComponentProps
-/**
- * Documentation for IndexProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.IndexProps.separator
-/**
- * Documentation for IndexProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.IndexProps.debugIds
-/**
- * Documentation for SliceProps.indexId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.indexId
-/**
- * Documentation for SliceProps.sliceId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.sliceId
-/**
- * Documentation for SliceProps.indexes in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.indexes
-/**
- * Documentation for SliceProps.rowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.rowComponent
-/**
- * Documentation for SliceProps.getRowComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.getRowComponentProps
-/**
- * Documentation for SliceProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.separator
-/**
- * Documentation for SliceProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.SliceProps.debugIds
-/**
- * Documentation for RemoteRowProps.relationshipId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RemoteRowProps.relationshipId
-/**
- * Documentation for RemoteRowProps.localRowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RemoteRowProps.localRowId
-/**
- * Documentation for RemoteRowProps.relationships in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RemoteRowProps.relationships
-/**
- * Documentation for RemoteRowProps.rowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RemoteRowProps.rowComponent
-/**
- * Documentation for RemoteRowProps.getRowComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RemoteRowProps.getRowComponentProps
-/**
- * Documentation for RemoteRowProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.RemoteRowProps.debugIds
-/**
- * Documentation for LocalRowsProps.relationshipId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.relationshipId
-/**
- * Documentation for LocalRowsProps.remoteRowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.remoteRowId
-/**
- * Documentation for LocalRowsProps.relationships in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.relationships
-/**
- * Documentation for LocalRowsProps.rowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.rowComponent
-/**
- * Documentation for LocalRowsProps.getRowComponentProps in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.getRowComponentProps
-/**
- * Documentation for LocalRowsProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.separator
-/**
- * Documentation for LocalRowsProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LocalRowsProps.debugIds
-/**
- * Documentation for LinkedRowsProps.relationshipId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.relationshipId
-/**
- * Documentation for LinkedRowsProps.firstRowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.firstRowId
-/**
- * Documentation for LinkedRowsProps.relationships in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.relationships
-/**
- * Documentation for LinkedRowsProps.rowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.rowComponent
-/**
- * Documentation for LinkedRowsProps.getRowComponentProps in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.getRowComponentProps
-/**
- * Documentation for LinkedRowsProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.separator
-/**
- * Documentation for LinkedRowsProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.LinkedRowsProps.debugIds
-/**
- * Documentation for ResultTableProps.queryId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultTableProps.queryId
-/**
- * Documentation for ResultTableProps.queries in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultTableProps.queries
-/**
- * Documentation for ResultTableProps.resultRowComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultTableProps.resultRowComponent
-/**
- * Documentation for ResultTableProps.getResultRowComponentProps in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultTableProps.getResultRowComponentProps
-/**
- * Documentation for ResultTableProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultTableProps.separator
-/**
- * Documentation for ResultTableProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultTableProps.debugIds
-/**
- * Documentation for ResultSortedTableProps.queryId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.queryId
-/**
- * Documentation for ResultSortedTableProps.cellId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.cellId
-/**
- * Documentation for ResultSortedTableProps.descending in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.descending
-/**
- * Documentation for ResultSortedTableProps.offset in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.offset
-/**
- * Documentation for ResultSortedTableProps.limit in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.limit
-/**
- * Documentation for ResultSortedTableProps.queries in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.queries
-/**
- * Documentation for ResultSortedTableProps.resultRowComponent in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.resultRowComponent
-/**
- * Documentation for ResultSortedTableProps.getResultRowComponentProps in the
- * ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.getResultRowComponentProps
-/**
- * Documentation for ResultSortedTableProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.separator
-/**
- * Documentation for ResultSortedTableProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultSortedTableProps.debugIds
-/**
- * Documentation for ResultRowProps.queryId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.queryId
-/**
- * Documentation for ResultRowProps.rowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.rowId
-/**
- * Documentation for ResultRowProps.queries in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.queries
-/**
- * Documentation for ResultRowProps.resultCellComponent in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.resultCellComponent
-/**
- * Documentation for ResultRowProps.getResultCellComponentProps in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.getResultCellComponentProps
-/**
- * Documentation for ResultRowProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.separator
-/**
- * Documentation for ResultRowProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultRowProps.debugIds
-/**
- * Documentation for ResultCellProps.queryId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultCellProps.queryId
-/**
- * Documentation for ResultCellProps.rowId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultCellProps.rowId
-/**
- * Documentation for ResultCellProps.cellId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultCellProps.cellId
-/**
- * Documentation for ResultCellProps.queries in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultCellProps.queries
-/**
- * Documentation for ResultCellProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ResultCellProps.debugIds
-/**
- * Documentation for CheckpointProps.checkpointId in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CheckpointProps.checkpointId
-/**
- * Documentation for CheckpointProps.checkpoints in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CheckpointProps.checkpoints
-/**
- * Documentation for CheckpointProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CheckpointProps.debugIds
-/**
- * Documentation for BackwardCheckpointsProps.checkpoints in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.BackwardCheckpointsProps.checkpoints
-/**
- * Documentation for BackwardCheckpointsProps.checkpointComponent in the
- * ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.BackwardCheckpointsProps.checkpointComponent
-/**
- * Documentation for BackwardCheckpointsProps.getCheckpointComponentProps in the
- * ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.BackwardCheckpointsProps.getCheckpointComponentProps
-/**
- * Documentation for BackwardCheckpointsProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.BackwardCheckpointsProps.separator
-/**
- * Documentation for BackwardCheckpointsProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.BackwardCheckpointsProps.debugIds
-/**
- * Documentation for CurrentCheckpointProps.checkpoints in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CurrentCheckpointProps.checkpoints
-/**
- * Documentation for CurrentCheckpointProps.checkpointComponent in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CurrentCheckpointProps.checkpointComponent
-/**
- * Documentation for CurrentCheckpointProps.getCheckpointComponentProps in the
- * ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CurrentCheckpointProps.getCheckpointComponentProps
-/**
- * Documentation for CurrentCheckpointProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.CurrentCheckpointProps.debugIds
-/**
- * Documentation for ForwardCheckpointsProps.checkpoints in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ForwardCheckpointsProps.checkpoints
-/**
- * Documentation for ForwardCheckpointsProps.checkpointComponent in the ui-solid
- * module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ForwardCheckpointsProps.checkpointComponent
-/**
- * Documentation for ForwardCheckpointsProps.getCheckpointComponentProps in the
- * ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ForwardCheckpointsProps.getCheckpointComponentProps
-/**
- * Documentation for ForwardCheckpointsProps.separator in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ForwardCheckpointsProps.separator
-/**
- * Documentation for ForwardCheckpointsProps.debugIds in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ForwardCheckpointsProps.debugIds
-/**
- * Documentation for ProviderProps.store in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.store
-/**
- * Documentation for ProviderProps.storesById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.storesById
-/**
- * Documentation for ProviderProps.metrics in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.metrics
-/**
- * Documentation for ProviderProps.metricsById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.metricsById
-/**
- * Documentation for ProviderProps.indexes in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.indexes
-/**
- * Documentation for ProviderProps.indexesById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.indexesById
-/**
- * Documentation for ProviderProps.relationships in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.relationships
-/**
- * Documentation for ProviderProps.relationshipsById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.relationshipsById
-/**
- * Documentation for ProviderProps.queries in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.queries
-/**
- * Documentation for ProviderProps.queriesById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.queriesById
-/**
- * Documentation for ProviderProps.checkpoints in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.checkpoints
-/**
- * Documentation for ProviderProps.checkpointsById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.checkpointsById
-/**
- * Documentation for ProviderProps.persister in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.persister
-/**
- * Documentation for ProviderProps.persistersById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.persistersById
-/**
- * Documentation for ProviderProps.synchronizer in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.synchronizer
-/**
- * Documentation for ProviderProps.synchronizersById in the ui-solid module.
- * @category Props
- * @since v8.3.0
- */
-/// ui-solid.ProviderProps.synchronizersById
-/**
- * Documentation for MaybeAccessor in the ui-solid module.
+ * The MaybeAccessor type represents a value that can be provided either as a
+ * plain value or as a Solid Accessor function.
+ *
+ * When an Accessor is provided to a primitive, its reactive reads are tracked
+ * so the primitive updates when the Accessor value changes. This is the
+ * idiomatic way to pass changing props, such as `() => props.tableId`.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.MaybeAccessor
 /**
- * Documentation for StoreOrStoreId in the ui-solid module.
+ * The StoreOrStoreId type is used when you need to refer to a Store in a
+ * ui-solid primitive or component.
+ *
+ * In simple cases you can pass a Store object directly. When using the
+ * Provider component, you can also pass the Id of a Store that has been placed
+ * into context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.StoreOrStoreId
 /**
- * Documentation for MetricsOrMetricsId in the ui-solid module.
+ * The MetricsOrMetricsId type is used when you need to refer to a Metrics
+ * object in a ui-solid primitive or component.
+ *
+ * You can pass a Metrics object directly, or pass the Id of a Metrics object
+ * that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.MetricsOrMetricsId
 /**
- * Documentation for IndexesOrIndexesId in the ui-solid module.
+ * The IndexesOrIndexesId type is used when you need to refer to an Indexes
+ * object in a ui-solid primitive or component.
+ *
+ * You can pass an Indexes object directly, or pass the Id of an Indexes object
+ * that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.IndexesOrIndexesId
 /**
- * Documentation for RelationshipsOrRelationshipsId in the ui-solid module.
+ * The RelationshipsOrRelationshipsId type is used when you need to refer to a
+ * Relationships object in a ui-solid primitive or component.
+ *
+ * You can pass a Relationships object directly, or pass the Id of a
+ * Relationships object that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.RelationshipsOrRelationshipsId
 /**
- * Documentation for QueriesOrQueriesId in the ui-solid module.
+ * The QueriesOrQueriesId type is used when you need to refer to a Queries
+ * object in a ui-solid primitive or component.
+ *
+ * You can pass a Queries object directly, or pass the Id of a Queries object
+ * that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.QueriesOrQueriesId
 /**
- * Documentation for CheckpointsOrCheckpointsId in the ui-solid module.
+ * The CheckpointsOrCheckpointsId type is used when you need to refer to a
+ * Checkpoints object in a ui-solid primitive or component.
+ *
+ * You can pass a Checkpoints object directly, or pass the Id of a Checkpoints
+ * object that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.CheckpointsOrCheckpointsId
 /**
- * Documentation for PersisterOrPersisterId in the ui-solid module.
+ * The PersisterOrPersisterId type is used when you need to refer to a
+ * Persister object in a ui-solid primitive or component.
+ *
+ * You can pass a Persister object directly, or pass the Id of a Persister
+ * object that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.PersisterOrPersisterId
 /**
- * Documentation for SynchronizerOrSynchronizerId in the ui-solid module.
+ * The SynchronizerOrSynchronizerId type is used when you need to refer to a
+ * Synchronizer object in a ui-solid primitive or component.
+ *
+ * You can pass a Synchronizer object directly, or pass the Id of a
+ * Synchronizer object that has been placed into Provider context.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.SynchronizerOrSynchronizerId
 /**
- * Documentation for UndoOrRedoInformation in the ui-solid module.
+ * The UndoOrRedoInformation type is an array that describes whether and how a
+ * Checkpoints object can move the underlying Store backward or forward.
+ *
+ * This type is useful when building undo and redo buttons with the
+ * useUndoInformation primitive and the useRedoInformation primitive.
  * @category Identity
  * @since v8.3.0
  */
 /// ui-solid.UndoOrRedoInformation
 /**
- * Documentation for useCreateStore in the ui-solid module.
- * @category Hooks
+ * The useCreateStore primitive creates a Store object for use in a Solid
+ * application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {useCreateStore} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'species', 'dog'),
+ *   );
+ *   console.log(store().getCell('pets', 'fido', 'species'));
+ *   // -> 'dog'
+ *   dispose();
+ * });
+ * ```
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateStore
 /**
- * Documentation for useCreateMergeableStore in the ui-solid module.
- * @category Hooks
+ * The useCreateMergeableStore primitive creates a Mergeable Store object for
+ * use in a Solid application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateMergeableStore
 /**
- * Documentation for useStoreIds in the ui-solid module.
- * @category Hooks
+ * The useStoreIds primitive returns a Solid Accessor for the Ids of store
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useStoreIds
 /**
- * Documentation for useStore in the ui-solid module.
- * @category Hooks
+ * The useStore primitive returns a Solid Accessor for the current store.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useStore
 /**
- * Documentation for useStores in the ui-solid module.
- * @category Hooks
+ * The useStores primitive returns a Solid Accessor for the current stores.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useStores
 /**
- * Documentation for useStoreOrStoreById in the ui-solid module.
- * @category Hooks
+ * The useStoreOrStoreById primitive returns a Solid Accessor for a store or
+ * store object, resolving either a direct object or an Id from Provider
+ * context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useStoreOrStoreById
 /**
- * Documentation for useProvideStore in the ui-solid module.
- * @category Hooks
+ * The useProvideStore primitive places a Store object into Provider context
+ * from within a Solid component.
+ *
+ * Components and primitives below that context can then refer to it by Id.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useProvideStore
 /**
- * Documentation for useHasTables in the ui-solid module.
- * @category Hooks
+ * The useHasTables primitive returns a Solid Accessor for whether the tables
+ * exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasTables
 /**
- * Documentation for useTables in the ui-solid module.
- * @category Hooks
+ * The useTables primitive returns a Solid Accessor for the current tables.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTables
 /**
- * Documentation for useTablesState in the ui-solid module.
- * @category Hooks
+ * The useTablesState primitive returns a Solid Accessor for the current tables
+ * and a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTablesState
 /**
- * Documentation for useTableIds in the ui-solid module.
- * @category Hooks
+ * The useTableIds primitive returns a Solid Accessor for the Ids of table
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTableIds
 /**
- * Documentation for useHasTable in the ui-solid module.
- * @category Hooks
+ * The useHasTable primitive returns a Solid Accessor for whether the table
+ * exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasTable
 /**
- * Documentation for useTable in the ui-solid module.
- * @category Hooks
+ * The useTable primitive returns a Solid Accessor for the current table.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTable
 /**
- * Documentation for useTableState in the ui-solid module.
- * @category Hooks
+ * The useTableState primitive returns a Solid Accessor for the current table
+ * and a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTableState
 /**
- * Documentation for useTableCellIds in the ui-solid module.
- * @category Hooks
+ * The useTableCellIds primitive returns a Solid Accessor for the Ids of table
+ * cell objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTableCellIds
 /**
- * Documentation for useHasTableCell in the ui-solid module.
- * @category Hooks
+ * The useHasTableCell primitive returns a Solid Accessor for whether the table
+ * cell exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasTableCell
 /**
- * Documentation for useRowCount in the ui-solid module.
- * @category Hooks
+ * The useRowCount primitive returns a Solid Accessor for the current row
+ * count.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowCount
 /**
- * Documentation for useRowIds in the ui-solid module.
- * @category Hooks
+ * The useRowIds primitive returns a Solid Accessor for the Ids of row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowIds
 /**
- * Documentation for useSortedRowIds in the ui-solid module.
- * @category Hooks
+ * The useSortedRowIds primitive returns a Solid Accessor for the Ids of sorted
+ * row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSortedRowIds
 /**
- * Documentation for useSortedRowIds.2 in the ui-solid module.
- * @category Hooks
+ * This useSortedRowIds overload accepts its sorting options as a single object.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSortedRowIds.2
 /**
- * Documentation for useHasRow in the ui-solid module.
- * @category Hooks
+ * The useHasRow primitive returns a Solid Accessor for whether the row exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasRow
 /**
- * Documentation for useRow in the ui-solid module.
- * @category Hooks
+ * The useRow primitive returns a Solid Accessor for the current row.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRow
 /**
- * Documentation for useRowState in the ui-solid module.
- * @category Hooks
+ * The useRowState primitive returns a Solid Accessor for the current row and a
+ * setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowState
 /**
- * Documentation for useCellIds in the ui-solid module.
- * @category Hooks
+ * The useCellIds primitive returns a Solid Accessor for the Ids of cell
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCellIds
 /**
- * Documentation for useHasCell in the ui-solid module.
- * @category Hooks
+ * The useHasCell primitive returns a Solid Accessor for whether the cell
+ * exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasCell
 /**
- * Documentation for useCell in the ui-solid module.
- * @category Hooks
+ * The useCell primitive returns a Solid Accessor for the current cell.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {useCell} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'species', 'dog');
+ *   const species = useCell('pets', 'fido', 'species', store);
+ *   console.log(species());
+ *   // -> 'dog'
+ *   dispose();
+ * });
+ * ```
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCell
 /**
- * Documentation for useCellState in the ui-solid module.
- * @category Hooks
+ * The useCellState primitive returns a Solid Accessor for the current cell and
+ * a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCellState
 /**
- * Documentation for useHasValues in the ui-solid module.
- * @category Hooks
+ * The useHasValues primitive returns a Solid Accessor for whether the values
+ * exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasValues
 /**
- * Documentation for useValues in the ui-solid module.
- * @category Hooks
+ * The useValues primitive returns a Solid Accessor for the current values.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValues
 /**
- * Documentation for useValuesState in the ui-solid module.
- * @category Hooks
+ * The useValuesState primitive returns a Solid Accessor for the current values
+ * and a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValuesState
 /**
- * Documentation for useValueIds in the ui-solid module.
- * @category Hooks
+ * The useValueIds primitive returns a Solid Accessor for the Ids of value
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValueIds
 /**
- * Documentation for useHasValue in the ui-solid module.
- * @category Hooks
+ * The useHasValue primitive returns a Solid Accessor for whether the value
+ * exists.
+ *
+ * The Accessor updates when the underlying Store data changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasValue
 /**
- * Documentation for useValue in the ui-solid module.
- * @category Hooks
+ * The useValue primitive returns a Solid Accessor for the current value.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValue
 /**
- * Documentation for useValueState in the ui-solid module.
- * @category Hooks
+ * The useValueState primitive returns a Solid Accessor for the current value
+ * and a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValueState
 /**
- * Documentation for useSetTablesCallback in the ui-solid module.
- * @category Hooks
+ * The useSetTablesCallback primitive returns a stable callback that performs
+ * the set tables operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetTablesCallback
 /**
- * Documentation for useSetTableCallback in the ui-solid module.
- * @category Hooks
+ * The useSetTableCallback primitive returns a stable callback that performs
+ * the set table operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetTableCallback
 /**
- * Documentation for useSetRowCallback in the ui-solid module.
- * @category Hooks
+ * The useSetRowCallback primitive returns a stable callback that performs the
+ * set row operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetRowCallback
 /**
- * Documentation for useAddRowCallback in the ui-solid module.
- * @category Hooks
+ * The useAddRowCallback primitive returns a stable callback that performs the
+ * add row operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useAddRowCallback
 /**
- * Documentation for useSetPartialRowCallback in the ui-solid module.
- * @category Hooks
+ * The useSetPartialRowCallback primitive returns a stable callback that
+ * performs the set partial row operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetPartialRowCallback
 /**
- * Documentation for useSetCellCallback in the ui-solid module.
- * @category Hooks
+ * The useSetCellCallback primitive returns a stable callback that performs the
+ * set cell operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {useCell, useSetCellCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'sold', false);
+ *   const sold = useCell('pets', 'fido', 'sold', store);
+ *   const sell = useSetCellCallback('pets', 'fido', 'sold', () => true, store);
+ *   sell();
+ *   console.log(sold());
+ *   // -> true
+ *   dispose();
+ * });
+ * ```
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetCellCallback
 /**
- * Documentation for useSetValuesCallback in the ui-solid module.
- * @category Hooks
+ * The useSetValuesCallback primitive returns a stable callback that performs
+ * the set values operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetValuesCallback
 /**
- * Documentation for useSetPartialValuesCallback in the ui-solid module.
- * @category Hooks
+ * The useSetPartialValuesCallback primitive returns a stable callback that
+ * performs the set partial values operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetPartialValuesCallback
 /**
- * Documentation for useSetValueCallback in the ui-solid module.
- * @category Hooks
+ * The useSetValueCallback primitive returns a stable callback that performs
+ * the set value operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetValueCallback
 /**
- * Documentation for useDelTablesCallback in the ui-solid module.
- * @category Hooks
+ * The useDelTablesCallback primitive returns a stable callback that performs
+ * the del tables operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDelTablesCallback
 /**
- * Documentation for useDelTableCallback in the ui-solid module.
- * @category Hooks
+ * The useDelTableCallback primitive returns a stable callback that performs
+ * the del table operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDelTableCallback
 /**
- * Documentation for useDelRowCallback in the ui-solid module.
- * @category Hooks
+ * The useDelRowCallback primitive returns a stable callback that performs the
+ * del row operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDelRowCallback
 /**
- * Documentation for useDelCellCallback in the ui-solid module.
- * @category Hooks
+ * The useDelCellCallback primitive returns a stable callback that performs the
+ * del cell operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDelCellCallback
 /**
- * Documentation for useDelValuesCallback in the ui-solid module.
- * @category Hooks
+ * The useDelValuesCallback primitive returns a stable callback that performs
+ * the del values operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDelValuesCallback
 /**
- * Documentation for useDelValueCallback in the ui-solid module.
- * @category Hooks
+ * The useDelValueCallback primitive returns a stable callback that performs
+ * the del value operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDelValueCallback
 /**
- * Documentation for useHasTablesListener in the ui-solid module.
- * @category Hooks
+ * The useHasTablesListener primitive registers a has tables listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasTablesListener
 /**
- * Documentation for useTablesListener in the ui-solid module.
- * @category Hooks
+ * The useTablesListener primitive registers a tables listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTablesListener
 /**
- * Documentation for useTableIdsListener in the ui-solid module.
- * @category Hooks
+ * The useTableIdsListener primitive registers a table ids listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTableIdsListener
 /**
- * Documentation for useHasTableListener in the ui-solid module.
- * @category Hooks
+ * The useHasTableListener primitive registers a has table listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasTableListener
 /**
- * Documentation for useTableListener in the ui-solid module.
- * @category Hooks
+ * The useTableListener primitive registers a table listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTableListener
 /**
- * Documentation for useTableCellIdsListener in the ui-solid module.
- * @category Hooks
+ * The useTableCellIdsListener primitive registers a table cell ids listener in
+ * a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useTableCellIdsListener
 /**
- * Documentation for useHasTableCellListener in the ui-solid module.
- * @category Hooks
+ * The useHasTableCellListener primitive registers a has table cell listener in
+ * a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasTableCellListener
 /**
- * Documentation for useRowCountListener in the ui-solid module.
- * @category Hooks
+ * The useRowCountListener primitive registers a row count listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowCountListener
 /**
- * Documentation for useRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useRowIdsListener primitive registers a row ids listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowIdsListener
 /**
- * Documentation for useSortedRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useSortedRowIdsListener primitive registers a sorted row ids listener in
+ * a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSortedRowIdsListener
 /**
- * Documentation for useSortedRowIdsListener.2 in the ui-solid module.
- * @category Hooks
+ * This useSortedRowIdsListener overload accepts its sorting options as a
+ * single object.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSortedRowIdsListener.2
 /**
- * Documentation for useHasRowListener in the ui-solid module.
- * @category Hooks
+ * The useHasRowListener primitive registers a has row listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasRowListener
 /**
- * Documentation for useRowListener in the ui-solid module.
- * @category Hooks
+ * The useRowListener primitive registers a row listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowListener
 /**
- * Documentation for useCellIdsListener in the ui-solid module.
- * @category Hooks
+ * The useCellIdsListener primitive registers a cell ids listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCellIdsListener
 /**
- * Documentation for useHasCellListener in the ui-solid module.
- * @category Hooks
+ * The useHasCellListener primitive registers a has cell listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasCellListener
 /**
- * Documentation for useCellListener in the ui-solid module.
- * @category Hooks
+ * The useCellListener primitive registers a cell listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {useCellListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'species', 'dog');
+ *   useCellListener(
+ *     'pets',
+ *     'fido',
+ *     'species',
+ *     (_store, _tableId, _rowId, _cellId, newCell) => console.log(newCell),
+ *     false,
+ *     store,
+ *   );
+ *   store.setCell('pets', 'fido', 'species', 'guide dog');
+ *   // -> 'guide dog'
+ *   dispose();
+ * });
+ * ```
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCellListener
 /**
- * Documentation for useHasValuesListener in the ui-solid module.
- * @category Hooks
+ * The useHasValuesListener primitive registers a has values listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasValuesListener
 /**
- * Documentation for useValuesListener in the ui-solid module.
- * @category Hooks
+ * The useValuesListener primitive registers a values listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValuesListener
 /**
- * Documentation for useValueIdsListener in the ui-solid module.
- * @category Hooks
+ * The useValueIdsListener primitive registers a value ids listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValueIdsListener
 /**
- * Documentation for useHasValueListener in the ui-solid module.
- * @category Hooks
+ * The useHasValueListener primitive registers a has value listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useHasValueListener
 /**
- * Documentation for useValueListener in the ui-solid module.
- * @category Hooks
+ * The useValueListener primitive registers a value listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useValueListener
 /**
- * Documentation for useStartTransactionListener in the ui-solid module.
- * @category Hooks
+ * The useStartTransactionListener primitive registers a start transaction
+ * listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useStartTransactionListener
 /**
- * Documentation for useWillFinishTransactionListener in the ui-solid module.
- * @category Hooks
+ * The useWillFinishTransactionListener primitive registers a will finish
+ * transaction listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useWillFinishTransactionListener
 /**
- * Documentation for useDidFinishTransactionListener in the ui-solid module.
- * @category Hooks
+ * The useDidFinishTransactionListener primitive registers a did finish
+ * transaction listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useDidFinishTransactionListener
 /**
- * Documentation for useCreateMetrics in the ui-solid module.
- * @category Hooks
+ * The useCreateMetrics primitive creates a Metrics object for use in a Solid
+ * application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateMetrics
 /**
- * Documentation for useMetricsIds in the ui-solid module.
- * @category Hooks
+ * The useMetricsIds primitive returns a Solid Accessor for the Ids of metrics
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetricsIds
 /**
- * Documentation for useMetrics in the ui-solid module.
- * @category Hooks
+ * The useMetrics primitive returns a Solid Accessor for the current metrics.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetrics
 /**
- * Documentation for useMetricsOrMetricsById in the ui-solid module.
- * @category Hooks
+ * The useMetricsOrMetricsById primitive returns a Solid Accessor for a metrics
+ * or metrics object, resolving either a direct object or an Id from Provider
+ * context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetricsOrMetricsById
 /**
- * Documentation for useMetricIds in the ui-solid module.
- * @category Hooks
+ * The useMetricIds primitive returns a Solid Accessor for the Ids of metric
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetricIds
 /**
- * Documentation for useMetric in the ui-solid module.
- * @category Hooks
+ * The useMetric primitive returns a Solid Accessor for the current metric.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetric
 /**
- * Documentation for useMetricListener in the ui-solid module.
- * @category Hooks
+ * The useMetricListener primitive registers a metric listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetricListener
 /**
- * Documentation for useCreateIndexes in the ui-solid module.
- * @category Hooks
+ * The useCreateIndexes primitive creates a Indexes object for use in a Solid
+ * application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateIndexes
 /**
- * Documentation for useIndexesIds in the ui-solid module.
- * @category Hooks
+ * The useIndexesIds primitive returns a Solid Accessor for the Ids of indexes
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useIndexesIds
 /**
- * Documentation for useIndexes in the ui-solid module.
- * @category Hooks
+ * The useIndexes primitive returns a Solid Accessor for the current indexes.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useIndexes
 /**
- * Documentation for useIndexesOrIndexesById in the ui-solid module.
- * @category Hooks
+ * The useIndexesOrIndexesById primitive returns a Solid Accessor for a indexes
+ * or indexes object, resolving either a direct object or an Id from Provider
+ * context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useIndexesOrIndexesById
 /**
- * Documentation for useIndexIds in the ui-solid module.
- * @category Hooks
+ * The useIndexIds primitive returns a Solid Accessor for the Ids of index
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useIndexIds
 /**
- * Documentation for useSliceIds in the ui-solid module.
- * @category Hooks
+ * The useSliceIds primitive returns a Solid Accessor for the Ids of slice
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSliceIds
 /**
- * Documentation for useSliceRowIds in the ui-solid module.
- * @category Hooks
+ * The useSliceRowIds primitive returns a Solid Accessor for the Ids of slice
+ * row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSliceRowIds
 /**
- * Documentation for useSliceIdsListener in the ui-solid module.
- * @category Hooks
+ * The useSliceIdsListener primitive registers a slice ids listener in a Solid
+ * component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSliceIdsListener
 /**
- * Documentation for useSliceRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useSliceRowIdsListener primitive registers a slice row ids listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSliceRowIdsListener
 /**
- * Documentation for useCreateRelationships in the ui-solid module.
- * @category Hooks
+ * The useCreateRelationships primitive creates a Relationships object for use
+ * in a Solid application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateRelationships
 /**
- * Documentation for useRelationshipsIds in the ui-solid module.
- * @category Hooks
+ * The useRelationshipsIds primitive returns a Solid Accessor for the Ids of
+ * relationships objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRelationshipsIds
 /**
- * Documentation for useRelationships in the ui-solid module.
- * @category Hooks
+ * The useRelationships primitive returns a Solid Accessor for the current
+ * relationships.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRelationships
 /**
- * Documentation for useRelationshipsOrRelationshipsById in the ui-solid module.
- * @category Hooks
+ * The useRelationshipsOrRelationshipsById primitive returns a Solid Accessor
+ * for a relationships or relationships object, resolving either a direct
+ * object or an Id from Provider context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRelationshipsOrRelationshipsById
 /**
- * Documentation for useRelationshipIds in the ui-solid module.
- * @category Hooks
+ * The useRelationshipIds primitive returns a Solid Accessor for the Ids of
+ * relationship objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRelationshipIds
 /**
- * Documentation for useRemoteRowId in the ui-solid module.
- * @category Hooks
+ * The useRemoteRowId primitive returns a Solid Accessor for the current remote
+ * row id.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRemoteRowId
 /**
- * Documentation for useLocalRowIds in the ui-solid module.
- * @category Hooks
+ * The useLocalRowIds primitive returns a Solid Accessor for the Ids of local
+ * row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useLocalRowIds
 /**
- * Documentation for useLinkedRowIds in the ui-solid module.
- * @category Hooks
+ * The useLinkedRowIds primitive returns a Solid Accessor for the Ids of linked
+ * row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useLinkedRowIds
 /**
- * Documentation for useRemoteRowIdListener in the ui-solid module.
- * @category Hooks
+ * The useRemoteRowIdListener primitive registers a remote row id listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRemoteRowIdListener
 /**
- * Documentation for useLocalRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useLocalRowIdsListener primitive registers a local row ids listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useLocalRowIdsListener
 /**
- * Documentation for useLinkedRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useLinkedRowIdsListener primitive registers a linked row ids listener in
+ * a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useLinkedRowIdsListener
 /**
- * Documentation for useCreateQueries in the ui-solid module.
- * @category Hooks
+ * The useCreateQueries primitive creates a Queries object for use in a Solid
+ * application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateQueries
 /**
- * Documentation for useQueriesIds in the ui-solid module.
- * @category Hooks
+ * The useQueriesIds primitive returns a Solid Accessor for the Ids of queries
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useQueriesIds
 /**
- * Documentation for useQueries in the ui-solid module.
- * @category Hooks
+ * The useQueries primitive returns a Solid Accessor for the current queries.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useQueries
 /**
- * Documentation for useQueriesOrQueriesById in the ui-solid module.
- * @category Hooks
+ * The useQueriesOrQueriesById primitive returns a Solid Accessor for a queries
+ * or queries object, resolving either a direct object or an Id from Provider
+ * context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useQueriesOrQueriesById
 /**
- * Documentation for useQueryIds in the ui-solid module.
- * @category Hooks
+ * The useQueryIds primitive returns a Solid Accessor for the Ids of query
+ * objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useQueryIds
 /**
- * Documentation for useResultTable in the ui-solid module.
- * @category Hooks
+ * The useResultTable primitive returns a Solid Accessor for the current result
+ * table.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultTable
 /**
- * Documentation for useResultTableCellIds in the ui-solid module.
- * @category Hooks
+ * The useResultTableCellIds primitive returns a Solid Accessor for the Ids of
+ * result table cell objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultTableCellIds
 /**
- * Documentation for useResultRowCount in the ui-solid module.
- * @category Hooks
+ * The useResultRowCount primitive returns a Solid Accessor for the current
+ * result row count.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultRowCount
 /**
- * Documentation for useResultRowIds in the ui-solid module.
- * @category Hooks
+ * The useResultRowIds primitive returns a Solid Accessor for the Ids of result
+ * row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultRowIds
 /**
- * Documentation for useResultSortedRowIds in the ui-solid module.
- * @category Hooks
+ * The useResultSortedRowIds primitive returns a Solid Accessor for the Ids of
+ * result sorted row objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultSortedRowIds
 /**
- * Documentation for useResultRow in the ui-solid module.
- * @category Hooks
+ * The useResultRow primitive returns a Solid Accessor for the current result
+ * row.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultRow
 /**
- * Documentation for useResultCellIds in the ui-solid module.
- * @category Hooks
+ * The useResultCellIds primitive returns a Solid Accessor for the Ids of
+ * result cell objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultCellIds
 /**
- * Documentation for useResultCell in the ui-solid module.
- * @category Hooks
+ * The useResultCell primitive returns a Solid Accessor for the current result
+ * cell.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultCell
 /**
- * Documentation for useResultTableListener in the ui-solid module.
- * @category Hooks
+ * The useResultTableListener primitive registers a result table listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultTableListener
 /**
- * Documentation for useResultTableCellIdsListener in the ui-solid module.
- * @category Hooks
+ * The useResultTableCellIdsListener primitive registers a result table cell
+ * ids listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultTableCellIdsListener
 /**
- * Documentation for useResultRowCountListener in the ui-solid module.
- * @category Hooks
+ * The useResultRowCountListener primitive registers a result row count
+ * listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultRowCountListener
 /**
- * Documentation for useResultRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useResultRowIdsListener primitive registers a result row ids listener in
+ * a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultRowIdsListener
 /**
- * Documentation for useResultSortedRowIdsListener in the ui-solid module.
- * @category Hooks
+ * The useResultSortedRowIdsListener primitive registers a result sorted row
+ * ids listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultSortedRowIdsListener
 /**
- * Documentation for useResultRowListener in the ui-solid module.
- * @category Hooks
+ * The useResultRowListener primitive registers a result row listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultRowListener
 /**
- * Documentation for useResultCellIdsListener in the ui-solid module.
- * @category Hooks
+ * The useResultCellIdsListener primitive registers a result cell ids listener
+ * in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultCellIdsListener
 /**
- * Documentation for useResultCellListener in the ui-solid module.
- * @category Hooks
+ * The useResultCellListener primitive registers a result cell listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useResultCellListener
 /**
- * Documentation for useParamValues in the ui-solid module.
- * @category Hooks
+ * The useParamValues primitive returns a Solid Accessor for the current param
+ * values.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValues
 /**
- * Documentation for useParamValuesState in the ui-solid module.
- * @category Hooks
+ * The useParamValuesState primitive returns a Solid Accessor for the current
+ * param values and a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValuesState
 /**
- * Documentation for useParamValue in the ui-solid module.
- * @category Hooks
+ * The useParamValue primitive returns a Solid Accessor for the current param
+ * value.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValue
 /**
- * Documentation for useParamValueState in the ui-solid module.
- * @category Hooks
+ * The useParamValueState primitive returns a Solid Accessor for the current
+ * param value and a setter for updating it.
+ *
+ * The Accessor updates when the underlying Store data changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValueState
 /**
- * Documentation for useParamValuesListener in the ui-solid module.
- * @category Hooks
+ * The useParamValuesListener primitive registers a param values listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValuesListener
 /**
- * Documentation for useParamValueListener in the ui-solid module.
- * @category Hooks
+ * The useParamValueListener primitive registers a param value listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValueListener
 /**
- * Documentation for useSetParamValueCallback in the ui-solid module.
- * @category Hooks
+ * The useSetParamValueCallback primitive returns a stable callback that
+ * performs the set param value operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetParamValueCallback
 /**
- * Documentation for useSetParamValuesCallback in the ui-solid module.
- * @category Hooks
+ * The useSetParamValuesCallback primitive returns a stable callback that
+ * performs the set param values operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetParamValuesCallback
 /**
- * Documentation for useCreateCheckpoints in the ui-solid module.
- * @category Hooks
+ * The useCreateCheckpoints primitive creates a Checkpoints object for use in a
+ * Solid application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateCheckpoints
 /**
- * Documentation for useCheckpointsIds in the ui-solid module.
- * @category Hooks
+ * The useCheckpointsIds primitive returns a Solid Accessor for the Ids of
+ * checkpoints objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpointsIds
 /**
- * Documentation for useCheckpoints in the ui-solid module.
- * @category Hooks
+ * The useCheckpoints primitive returns a Solid Accessor for the current
+ * checkpoints.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpoints
 /**
- * Documentation for useCheckpointsOrCheckpointsById in the ui-solid module.
- * @category Hooks
+ * The useCheckpointsOrCheckpointsById primitive returns a Solid Accessor for a
+ * checkpoints or checkpoints object, resolving either a direct object or an Id
+ * from Provider context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpointsOrCheckpointsById
 /**
- * Documentation for useCheckpointIds in the ui-solid module.
- * @category Hooks
+ * The useCheckpointIds primitive returns a Solid Accessor for the Ids of
+ * checkpoint objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpointIds
 /**
- * Documentation for useCheckpoint in the ui-solid module.
- * @category Hooks
+ * The useCheckpoint primitive returns a Solid Accessor for the current
+ * checkpoint.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpoint
 /**
- * Documentation for useSetCheckpointCallback in the ui-solid module.
- * @category Hooks
+ * The useSetCheckpointCallback primitive returns a stable callback that
+ * performs the set checkpoint operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSetCheckpointCallback
 /**
- * Documentation for useGoBackwardCallback in the ui-solid module.
- * @category Hooks
+ * The useGoBackwardCallback primitive returns a stable callback that performs
+ * the go backward operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useGoBackwardCallback
 /**
- * Documentation for useGoForwardCallback in the ui-solid module.
- * @category Hooks
+ * The useGoForwardCallback primitive returns a stable callback that performs
+ * the go forward operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useGoForwardCallback
 /**
- * Documentation for useGoToCallback in the ui-solid module.
- * @category Hooks
+ * The useGoToCallback primitive returns a stable callback that performs the go
+ * to operation.
+ *
+ * Id parameters may be plain values, Solid Accessors, or functions derived
+ * from the callback parameter where supported. The optional `then` callback
+ * runs after the Store has been updated.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useGoToCallback
 /**
- * Documentation for useUndoInformation in the ui-solid module.
- * @category Hooks
+ * The useUndoInformation primitive returns a Solid Accessor for the current
+ * undo information.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useUndoInformation
 /**
- * Documentation for useRedoInformation in the ui-solid module.
- * @category Hooks
+ * The useRedoInformation primitive returns a Solid Accessor for the current
+ * redo information.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useRedoInformation
 /**
- * Documentation for useCheckpointIdsListener in the ui-solid module.
- * @category Hooks
+ * The useCheckpointIdsListener primitive registers a checkpoint ids listener
+ * in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpointIdsListener
 /**
- * Documentation for useCheckpointListener in the ui-solid module.
- * @category Hooks
+ * The useCheckpointListener primitive registers a checkpoint listener in a
+ * Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpointListener
 /**
- * Documentation for useCreatePersister in the ui-solid module.
- * @category Hooks
+ * The useCreatePersister primitive creates a Persister object for use in a
+ * Solid application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreatePersister
 /**
- * Documentation for usePersisterIds in the ui-solid module.
- * @category Hooks
+ * The usePersisterIds primitive returns a Solid Accessor for the Ids of
+ * persister objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.usePersisterIds
 /**
- * Documentation for usePersister in the ui-solid module.
- * @category Hooks
+ * The usePersister primitive returns a Solid Accessor for the current
+ * persister.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.usePersister
 /**
- * Documentation for usePersisterOrPersisterById in the ui-solid module.
- * @category Hooks
+ * The usePersisterOrPersisterById primitive returns a Solid Accessor for a
+ * persister or persister object, resolving either a direct object or an Id
+ * from Provider context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.usePersisterOrPersisterById
 /**
- * Documentation for usePersisterStatus in the ui-solid module.
- * @category Hooks
+ * The usePersisterStatus primitive returns a Solid Accessor for the current
+ * persister status.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.usePersisterStatus
 /**
- * Documentation for usePersisterStatusListener in the ui-solid module.
- * @category Hooks
+ * The usePersisterStatusListener primitive registers a persister status
+ * listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.usePersisterStatusListener
 /**
- * Documentation for useCreateSynchronizer in the ui-solid module.
- * @category Hooks
+ * The useCreateSynchronizer primitive creates a Synchronizer object for use in
+ * a Solid application.
+ *
+ * It returns a Solid Accessor. The object is created once within the current
+ * reactive owner and cleaned up when that owner is disposed.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useCreateSynchronizer
 /**
- * Documentation for useSynchronizerIds in the ui-solid module.
- * @category Hooks
+ * The useSynchronizerIds primitive returns a Solid Accessor for the Ids of
+ * synchronizer objects.
+ *
+ * The Accessor updates whenever the underlying Id list changes.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSynchronizerIds
 /**
- * Documentation for useSynchronizer in the ui-solid module.
- * @category Hooks
+ * The useSynchronizer primitive returns a Solid Accessor for the current
+ * synchronizer.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSynchronizer
 /**
- * Documentation for useSynchronizerOrSynchronizerById in the ui-solid module.
- * @category Hooks
+ * The useSynchronizerOrSynchronizerById primitive returns a Solid Accessor for
+ * a synchronizer or synchronizer object, resolving either a direct object or
+ * an Id from Provider context.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSynchronizerOrSynchronizerById
 /**
- * Documentation for useSynchronizerStatus in the ui-solid module.
- * @category Hooks
+ * The useSynchronizerStatus primitive returns a Solid Accessor for the current
+ * synchronizer status.
+ *
+ * The Accessor updates when the underlying TinyBase object changes, and Id
+ * parameters may be plain values or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSynchronizerStatus
 /**
- * Documentation for useSynchronizerStatusListener in the ui-solid module.
- * @category Hooks
+ * The useSynchronizerStatusListener primitive registers a synchronizer status
+ * listener in a Solid component.
+ *
+ * The listener is added when the primitive runs and is automatically removed
+ * when the current reactive owner is disposed. Parameters may be plain values
+ * or Solid Accessors.
+ * @category Primitives
  * @since v8.3.0
  */
 /// ui-solid.useSynchronizerStatusListener
 /**
- * Documentation for ExtraProps in the ui-solid module.
+ * The ExtraProps type describes an arbitrary object of additional props that
+ * can be passed to child components rendered by TinyBase view components.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ExtraProps
 /**
- * Documentation for TablesProps in the ui-solid module.
+ * The TablesProps type describes the props accepted by the TablesView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.TablesProps
 /**
- * Documentation for TableProps in the ui-solid module.
+ * The TableProps type describes the props accepted by the TableView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.TableProps
 /**
- * Documentation for SortedTableProps in the ui-solid module.
+ * The SortedTableProps type describes the props accepted by the
+ * SortedTableView Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.SortedTableProps
 /**
- * Documentation for RowProps in the ui-solid module.
+ * The RowProps type describes the props accepted by the RowView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.RowProps
 /**
- * Documentation for CellProps in the ui-solid module.
+ * The CellProps type describes the props accepted by the CellView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.CellProps
 /**
- * Documentation for ValuesProps in the ui-solid module.
+ * The ValuesProps type describes the props accepted by the ValuesView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ValuesProps
 /**
- * Documentation for ValueProps in the ui-solid module.
+ * The ValueProps type describes the props accepted by the ValueView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ValueProps
 /**
- * Documentation for MetricProps in the ui-solid module.
+ * The MetricProps type describes the props accepted by the MetricView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.MetricProps
 /**
- * Documentation for IndexProps in the ui-solid module.
+ * The IndexProps type describes the props accepted by the IndexView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.IndexProps
 /**
- * Documentation for SliceProps in the ui-solid module.
+ * The SliceProps type describes the props accepted by the SliceView Solid
+ * component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.SliceProps
 /**
- * Documentation for RemoteRowProps in the ui-solid module.
+ * The RemoteRowProps type describes the props accepted by the RemoteRowView
+ * Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.RemoteRowProps
 /**
- * Documentation for LocalRowsProps in the ui-solid module.
+ * The LocalRowsProps type describes the props accepted by the LocalRowsView
+ * Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.LocalRowsProps
 /**
- * Documentation for LinkedRowsProps in the ui-solid module.
+ * The LinkedRowsProps type describes the props accepted by the LinkedRowsView
+ * Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.LinkedRowsProps
 /**
- * Documentation for ResultTableProps in the ui-solid module.
+ * The ResultTableProps type describes the props accepted by the
+ * ResultTableView Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ResultTableProps
 /**
- * Documentation for ResultSortedTableProps in the ui-solid module.
+ * The ResultSortedTableProps type describes the props accepted by the
+ * ResultSortedTableView Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ResultSortedTableProps
 /**
- * Documentation for ResultRowProps in the ui-solid module.
+ * The ResultRowProps type describes the props accepted by the ResultRowView
+ * Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ResultRowProps
 /**
- * Documentation for ResultCellProps in the ui-solid module.
+ * The ResultCellProps type describes the props accepted by the ResultCellView
+ * Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ResultCellProps
 /**
- * Documentation for CheckpointProps in the ui-solid module.
+ * The CheckpointProps type describes the props accepted by the CheckpointView
+ * Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.CheckpointProps
 /**
- * Documentation for BackwardCheckpointsProps in the ui-solid module.
+ * The BackwardCheckpointsProps type describes the props accepted by the
+ * BackwardCheckpointsView Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.BackwardCheckpointsProps
 /**
- * Documentation for CurrentCheckpointProps in the ui-solid module.
+ * The CurrentCheckpointProps type describes the props accepted by the
+ * CurrentCheckpointView Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.CurrentCheckpointProps
 /**
- * Documentation for ForwardCheckpointsProps in the ui-solid module.
+ * The ForwardCheckpointsProps type describes the props accepted by the
+ * ForwardCheckpointsView Solid component.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ForwardCheckpointsProps
 /**
- * Documentation for ProviderProps in the ui-solid module.
+ * ProviderProps props are used with the Provider component to place Store,
+ * Metrics, Indexes, Relationships, Queries, Checkpoints, Persisters, and
+ * Synchronizers into Solid context.
+ *
+ * One object of each type can be provided as a default, and additional objects
+ * can be provided by Id with the `___ById` props.
  * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ProviderProps
 /**
- * Documentation for ComponentReturnType in the ui-solid module.
- * @category Identity
+ * The ComponentReturnType type is the JSX return type used by Solid view
+ * components in this module.
+ * @category Props
  * @since v8.3.0
  */
 /// ui-solid.ComponentReturnType
 /**
- * Documentation for Provider in the ui-solid module.
- * @category Identity
+ * The Provider component places TinyBase objects into Solid context for its
+ * children.
+ *
+ * Use it when several primitives or view components need access to the same
+ * Store, Metrics, Indexes, Relationships, Queries, Checkpoints, Persisters, or
+ * Synchronizers.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {Provider} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'species', 'dog');
+ *   const provider = Provider({store, children: 'content'});
+ *   console.log(typeof provider);
+ *   // -> 'function'
+ *   dispose();
+ * });
+ * ```
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.Provider
 /**
- * Documentation for CellView in the ui-solid module.
- * @category Identity
+ * The CellView component renders the cell using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.CellView
 /**
- * Documentation for RowView in the ui-solid module.
- * @category Identity
+ * The RowView component renders the row using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.RowView
 /**
- * Documentation for SortedTableView in the ui-solid module.
- * @category Identity
+ * The SortedTableView component renders the sorted table using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.SortedTableView
 /**
- * Documentation for TableView in the ui-solid module.
- * @category Identity
+ * The TableView component renders the table using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.TableView
 /**
- * Documentation for TablesView in the ui-solid module.
- * @category Identity
+ * The TablesView component renders the tables using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {TablesView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'species', 'dog');
+ *   const view = TablesView({store, debugIds: true});
+ *   console.log(typeof view);
+ *   // -> 'function'
+ *   dispose();
+ * });
+ * ```
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.TablesView
 /**
- * Documentation for ValueView in the ui-solid module.
- * @category Identity
+ * The ValueView component renders the value using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ValueView
 /**
- * Documentation for ValuesView in the ui-solid module.
- * @category Identity
+ * The ValuesView component renders the values using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ValuesView
 /**
- * Documentation for MetricView in the ui-solid module.
- * @category Identity
+ * The MetricView component renders the metric using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.MetricView
 /**
- * Documentation for SliceView in the ui-solid module.
- * @category Identity
+ * The SliceView component renders the slice using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.SliceView
 /**
- * Documentation for IndexView in the ui-solid module.
- * @category Identity
+ * The IndexView component renders the index using ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.IndexView
 /**
- * Documentation for RemoteRowView in the ui-solid module.
- * @category Identity
+ * The RemoteRowView component renders the remote row using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.RemoteRowView
 /**
- * Documentation for LocalRowsView in the ui-solid module.
- * @category Identity
+ * The LocalRowsView component renders the local rows using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.LocalRowsView
 /**
- * Documentation for LinkedRowsView in the ui-solid module.
- * @category Identity
+ * The LinkedRowsView component renders the linked rows using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.LinkedRowsView
 /**
- * Documentation for ResultCellView in the ui-solid module.
- * @category Identity
+ * The ResultCellView component renders the result cell using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ResultCellView
 /**
- * Documentation for ResultRowView in the ui-solid module.
- * @category Identity
+ * The ResultRowView component renders the result row using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ResultRowView
 /**
- * Documentation for ResultSortedTableView in the ui-solid module.
- * @category Identity
+ * The ResultSortedTableView component renders the result sorted table using
+ * ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ResultSortedTableView
 /**
- * Documentation for ResultTableView in the ui-solid module.
- * @category Identity
+ * The ResultTableView component renders the result table using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ResultTableView
 /**
- * Documentation for CheckpointView in the ui-solid module.
- * @category Identity
+ * The CheckpointView component renders the checkpoint using ui-solid
+ * primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.CheckpointView
 /**
- * Documentation for BackwardCheckpointsView in the ui-solid module.
- * @category Identity
+ * The BackwardCheckpointsView component renders the backward checkpoints using
+ * ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.BackwardCheckpointsView
 /**
- * Documentation for CurrentCheckpointView in the ui-solid module.
- * @category Identity
+ * The CurrentCheckpointView component renders the current checkpoint using
+ * ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.CurrentCheckpointView
 /**
- * Documentation for ForwardCheckpointsView in the ui-solid module.
- * @category Identity
+ * The ForwardCheckpointsView component renders the forward checkpoints using
+ * ui-solid primitives.
+ *
+ * It updates automatically when the underlying TinyBase data changes and can
+ * be customized with component props such as child components, separators, and
+ * debug Id rendering where supported.
+ * @category Components
  * @since v8.3.0
  */
 /// ui-solid.ForwardCheckpointsView
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TablesProps.store
+/**
+ * A Solid component used to render each Table.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TablesProps.tableComponent
+/**
+ * A function that returns extra props for each Table component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TablesProps.getTableComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TablesProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TablesProps.debugIds
+/**
+ * The Id of the Table to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.tableId
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.store
+/**
+ * A Solid component used to render each Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.rowComponent
+/**
+ * A function that returns extra props for each Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.getRowComponentProps
+/**
+ * An optional list of Cell Ids to control which Cells are rendered and in what
+ * order.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.customCellIds
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.TableProps.debugIds
+/**
+ * The Id of the Table to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.tableId
+/**
+ * The Id of the Cell to render, observe, or sort by.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.cellId
+/**
+ * Whether sorted Row Ids should be returned in descending order.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.descending
+/**
+ * The number of sorted Row Ids to skip.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.offset
+/**
+ * The maximum number of sorted Row Ids to return.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.limit
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.store
+/**
+ * A Solid component used to render each Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.rowComponent
+/**
+ * A function that returns extra props for each Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.getRowComponentProps
+/**
+ * An optional list of Cell Ids to control which Cells are rendered and in what
+ * order.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.customCellIds
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SortedTableProps.debugIds
+/**
+ * The Id of the Table to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.tableId
+/**
+ * The Id of the Row to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.rowId
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.store
+/**
+ * A Solid component used to render each Cell.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.cellComponent
+/**
+ * A function that returns extra props for each Cell component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.getCellComponentProps
+/**
+ * An optional list of Cell Ids to control which Cells are rendered and in what
+ * order.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.customCellIds
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RowProps.debugIds
+/**
+ * The Id of the Table to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CellProps.tableId
+/**
+ * The Id of the Row to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CellProps.rowId
+/**
+ * The Id of the Cell to render, observe, or sort by.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CellProps.cellId
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CellProps.store
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CellProps.debugIds
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValuesProps.store
+/**
+ * A Solid component used to render each Value.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValuesProps.valueComponent
+/**
+ * A function that returns extra props for each Value component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValuesProps.getValueComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValuesProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValuesProps.debugIds
+/**
+ * The Id of the Value to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValueProps.valueId
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValueProps.store
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ValueProps.debugIds
+/**
+ * The Id of the Metric to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.MetricProps.metricId
+/**
+ * A Metrics object or Metrics Id to use instead of the default Metrics object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.MetricProps.metrics
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.MetricProps.debugIds
+/**
+ * The Id of the Index to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.IndexProps.indexId
+/**
+ * An Indexes object or Indexes Id to use instead of the default Indexes object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.IndexProps.indexes
+/**
+ * A Solid component used to render each Slice.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.IndexProps.sliceComponent
+/**
+ * A function that returns extra props for each Slice component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.IndexProps.getSliceComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.IndexProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.IndexProps.debugIds
+/**
+ * The Id of the Index to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.indexId
+/**
+ * The Id of the Slice to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.sliceId
+/**
+ * An Indexes object or Indexes Id to use instead of the default Indexes object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.indexes
+/**
+ * A Solid component used to render each Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.rowComponent
+/**
+ * A function that returns extra props for each Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.getRowComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.SliceProps.debugIds
+/**
+ * The Id of the Relationship to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RemoteRowProps.relationshipId
+/**
+ * The Id of the local Row in a Relationship lookup.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RemoteRowProps.localRowId
+/**
+ * A Relationships object or Relationships Id to use instead of the default
+ * Relationships object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RemoteRowProps.relationships
+/**
+ * A Solid component used to render each Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RemoteRowProps.rowComponent
+/**
+ * A function that returns extra props for each Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RemoteRowProps.getRowComponentProps
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.RemoteRowProps.debugIds
+/**
+ * The Id of the Relationship to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.relationshipId
+/**
+ * The Id of the remote Row in a Relationship lookup.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.remoteRowId
+/**
+ * A Relationships object or Relationships Id to use instead of the default
+ * Relationships object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.relationships
+/**
+ * A Solid component used to render each Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.rowComponent
+/**
+ * A function that returns extra props for each Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.getRowComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LocalRowsProps.debugIds
+/**
+ * The Id of the Relationship to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.relationshipId
+/**
+ * The Id of the first Row in a linked-rows Relationship traversal.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.firstRowId
+/**
+ * A Relationships object or Relationships Id to use instead of the default
+ * Relationships object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.relationships
+/**
+ * A Solid component used to render each Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.rowComponent
+/**
+ * A function that returns extra props for each Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.getRowComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.LinkedRowsProps.debugIds
+/**
+ * The Id of the Query to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultTableProps.queryId
+/**
+ * A Queries object or Queries Id to use instead of the default Queries object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultTableProps.queries
+/**
+ * A Solid component used to render each Result Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultTableProps.resultRowComponent
+/**
+ * A function that returns extra props for each Result Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultTableProps.getResultRowComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultTableProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultTableProps.debugIds
+/**
+ * The Id of the Query to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.queryId
+/**
+ * The Id of the Cell to render, observe, or sort by.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.cellId
+/**
+ * Whether sorted Row Ids should be returned in descending order.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.descending
+/**
+ * The number of sorted Row Ids to skip.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.offset
+/**
+ * The maximum number of sorted Row Ids to return.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.limit
+/**
+ * A Queries object or Queries Id to use instead of the default Queries object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.queries
+/**
+ * A Solid component used to render each Result Row.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.resultRowComponent
+/**
+ * A function that returns extra props for each Result Row component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.getResultRowComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultSortedTableProps.debugIds
+/**
+ * The Id of the Query to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.queryId
+/**
+ * The Id of the Row to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.rowId
+/**
+ * A Queries object or Queries Id to use instead of the default Queries object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.queries
+/**
+ * A Solid component used to render each Result Cell.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.resultCellComponent
+/**
+ * A function that returns extra props for each Result Cell component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.getResultCellComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultRowProps.debugIds
+/**
+ * The Id of the Query to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultCellProps.queryId
+/**
+ * The Id of the Row to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultCellProps.rowId
+/**
+ * The Id of the Cell to render, observe, or sort by.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultCellProps.cellId
+/**
+ * A Queries object or Queries Id to use instead of the default Queries object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultCellProps.queries
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ResultCellProps.debugIds
+/**
+ * The Id of the Checkpoint to render or observe.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CheckpointProps.checkpointId
+/**
+ * A Checkpoints object or Checkpoints Id to use instead of the default
+ * Checkpoints object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CheckpointProps.checkpoints
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CheckpointProps.debugIds
+/**
+ * A Checkpoints object or Checkpoints Id to use instead of the default
+ * Checkpoints object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.BackwardCheckpointsProps.checkpoints
+/**
+ * A Solid component used to render each Checkpoint.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.BackwardCheckpointsProps.checkpointComponent
+/**
+ * A function that returns extra props for each Checkpoint component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.BackwardCheckpointsProps.getCheckpointComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.BackwardCheckpointsProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.BackwardCheckpointsProps.debugIds
+/**
+ * A Checkpoints object or Checkpoints Id to use instead of the default
+ * Checkpoints object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CurrentCheckpointProps.checkpoints
+/**
+ * A Solid component used to render each Checkpoint.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CurrentCheckpointProps.checkpointComponent
+/**
+ * A function that returns extra props for each Checkpoint component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CurrentCheckpointProps.getCheckpointComponentProps
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.CurrentCheckpointProps.debugIds
+/**
+ * A Checkpoints object or Checkpoints Id to use instead of the default
+ * Checkpoints object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ForwardCheckpointsProps.checkpoints
+/**
+ * A Solid component used to render each Checkpoint.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ForwardCheckpointsProps.checkpointComponent
+/**
+ * A function that returns extra props for each Checkpoint component.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ForwardCheckpointsProps.getCheckpointComponentProps
+/**
+ * A Solid JSX node or string to render between repeated child components.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ForwardCheckpointsProps.separator
+/**
+ * Whether to render TinyBase Ids alongside rendered content for debugging.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ForwardCheckpointsProps.debugIds
+/**
+ * A Store object or Store Id to use instead of the default Store from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.store
+/**
+ * An Id-keyed map of Store objects to make available in Provider context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.storesById
+/**
+ * A Metrics object or Metrics Id to use instead of the default Metrics object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.metrics
+/**
+ * An Id-keyed map of Metrics objects to make available in Provider context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.metricsById
+/**
+ * An Indexes object or Indexes Id to use instead of the default Indexes object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.indexes
+/**
+ * An Id-keyed map of Indexes objects to make available in Provider context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.indexesById
+/**
+ * A Relationships object or Relationships Id to use instead of the default
+ * Relationships object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.relationships
+/**
+ * An Id-keyed map of Relationships objects to make available in Provider
+ * context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.relationshipsById
+/**
+ * A Queries object or Queries Id to use instead of the default Queries object
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.queries
+/**
+ * An Id-keyed map of Queries objects to make available in Provider context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.queriesById
+/**
+ * A Checkpoints object or Checkpoints Id to use instead of the default
+ * Checkpoints object from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.checkpoints
+/**
+ * An Id-keyed map of Checkpoints objects to make available in Provider
+ * context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.checkpointsById
+/**
+ * A Persister object or Persister Id to use instead of the default Persister
+ * from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.persister
+/**
+ * An Id-keyed map of Persister objects to make available in Provider context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.persistersById
+/**
+ * A Synchronizer object or Synchronizer Id to use instead of the default
+ * Synchronizer from context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.synchronizer
+/**
+ * An Id-keyed map of Synchronizer objects to make available in Provider
+ * context.
+ * @category Props
+ * @since v8.3.0
+ */
+/// ui-solid.ProviderProps.synchronizersById
