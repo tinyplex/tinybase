@@ -519,8 +519,8 @@ export const mount = (component, options = {}) => {
       const module = {exports: {}};
       const exports = module.exports;
       ${code}
-      const run = module.exports.default ?? module.exports;
-      return await run();
+      const __docsRun = module.exports.default ?? module.exports;
+      return await __docsRun();
     `,
   );
   return getResults(nodeRequire) as Promise<Results>;

@@ -1274,6 +1274,41 @@
  * listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the backward checkpoint Ids.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {BackwardCheckpointsView} from 'tinybase/ui-svelte';
+ *
+ *   export let checkpoints;
+ * </script>
+ *
+ * <BackwardCheckpointsView {checkpoints}>
+ *   {#snippet checkpoint(checkpointId)}{checkpointId}{/snippet}
+ * </BackwardCheckpointsView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> ''
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1284,6 +1319,38 @@
  * cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Cell, or nothing if not present.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {CellView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <CellView tableId="pets" rowId="fido" cellId="species" {store} />
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'dog'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1294,6 +1361,39 @@
  * result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the checkpoint label.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {CheckpointView} from 'tinybase/ui-svelte';
+ *
+ *   export let checkpoints;
+ * </script>
+ *
+ * <CheckpointView checkpointId="0" {checkpoints} />
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> ''
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1304,6 +1404,41 @@
  * result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the current checkpoint.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {CurrentCheckpointView} from 'tinybase/ui-svelte';
+ *
+ *   export let checkpoints;
+ * </script>
+ *
+ * <CurrentCheckpointView {checkpoints}>
+ *   {#snippet checkpoint(checkpointId)}{checkpointId}{/snippet}
+ * </CurrentCheckpointView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> '0'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1314,6 +1449,41 @@
  * listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the forward checkpoint Ids.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ForwardCheckpointsView} from 'tinybase/ui-svelte';
+ *
+ *   export let checkpoints;
+ * </script>
+ *
+ * <ForwardCheckpointsView {checkpoints}>
+ *   {#snippet checkpoint(checkpointId)}{checkpointId}{/snippet}
+ * </ForwardCheckpointsView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> ''
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1323,6 +1493,45 @@
  * listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the slices.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {IndexView} from 'tinybase/ui-svelte';
+ *
+ *   export let indexes;
+ * </script>
+ *
+ * <IndexView indexId="bySpecies" {indexes}>
+ *   {#snippet slice(sliceId)}{sliceId}{/snippet}
+ * </IndexView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const indexes = createIndexes(store).setIndexDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
+ * console.log(app.textContent);
+ * // -> 'dogcat'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1333,6 +1542,46 @@
  * re-render.
  * @param props The props for this component.
  * @returns A rendering of the linked Row Ids.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {LinkedRowsView} from 'tinybase/ui-svelte';
+ *
+ *   export let relationships;
+ * </script>
+ *
+ * <LinkedRowsView relationshipId="nextPet" firstRowId="fido" {relationships}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </LinkedRowsView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store).setRelationshipDefinition(
+ *   'nextPet',
+ *   'pets',
+ *   'pets',
+ *   'next',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> 'fidofelix'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1343,6 +1592,46 @@
  * result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the local Row Ids.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {LocalRowsView} from 'tinybase/ui-svelte';
+ *
+ *   export let relationships;
+ * </script>
+ *
+ * <LocalRowsView relationshipId="petSpecies" remoteRowId="dog" {relationships}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </LocalRowsView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store).setRelationshipDefinition(
+ *   'petSpecies',
+ *   'pets',
+ *   'species',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> 'fido'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1353,6 +1642,43 @@
  * cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Metric value.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {MetricView} from 'tinybase/ui-svelte';
+ *
+ *   export let metrics;
+ * </script>
+ *
+ * <MetricView metricId="petCount" {metrics} />
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const metrics = createMetrics(store).setMetricDefinition(
+ *   'petCount',
+ *   'pets',
+ *   'count',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {metrics}}));
+ * console.log(app.textContent);
+ * // -> '2'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1363,6 +1689,46 @@
  * result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the remote Row.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {RemoteRowView} from 'tinybase/ui-svelte';
+ *
+ *   export let relationships;
+ * </script>
+ *
+ * <RemoteRowView relationshipId="petSpecies" localRowId="fido" {relationships}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </RemoteRowView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store).setRelationshipDefinition(
+ *   'petSpecies',
+ *   'pets',
+ *   'species',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> 'dog'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1373,6 +1739,43 @@
  * listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the result Cell.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ResultCellView} from 'tinybase/ui-svelte';
+ *
+ *   export let queries;
+ * </script>
+ *
+ * <ResultCellView queryId="petColors" rowId="fido" cellId="color" {queries} />
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> 'brown'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1383,6 +1786,45 @@
  * result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the result Row.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ResultRowView} from 'tinybase/ui-svelte';
+ *
+ *   export let queries;
+ * </script>
+ *
+ * <ResultRowView queryId="petColors" rowId="fido" {queries}>
+ *   {#snippet cell(cellId)}{cellId}{/snippet}
+ * </ResultRowView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> 'color'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1393,6 +1835,45 @@
  * changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the sorted result Table.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ResultSortedTableView} from 'tinybase/ui-svelte';
+ *
+ *   export let queries;
+ * </script>
+ *
+ * <ResultSortedTableView queryId="petColors" cellId="color" {queries}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </ResultSortedTableView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> 'felixfido'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1403,6 +1884,45 @@
  * result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the result Table.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ResultTableView} from 'tinybase/ui-svelte';
+ *
+ *   export let queries;
+ * </script>
+ *
+ * <ResultTableView queryId="petColors" {queries}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </ResultTableView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> 'fidofelix'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1413,6 +1933,38 @@
  * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing if not present.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {RowView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <RowView tableId="pets" rowId="fido" {store} customCellIds={['species']} />
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'dog'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1423,6 +1975,45 @@
  * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Rows in the Slice.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {SliceView} from 'tinybase/ui-svelte';
+ *
+ *   export let indexes;
+ * </script>
+ *
+ * <SliceView indexId="bySpecies" sliceId="dog" {indexes}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </SliceView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const indexes = createIndexes(store).setIndexDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
+ * console.log(app.textContent);
+ * // -> 'fido'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1433,6 +2024,40 @@
  * will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the sorted Table.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {SortedTableView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <SortedTableView tableId="pets" cellId="sold" {store}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </SortedTableView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'fidofelix'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1442,6 +2067,40 @@
  * a listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Table.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {TableView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <TableView tableId="pets" {store}>
+ *   {#snippet row(rowId)}{rowId}{/snippet}
+ * </TableView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'fidofelix'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1452,6 +2111,40 @@
  * re-render.
  * @param props The props for this component.
  * @returns A rendering of all Tables.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {TablesView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <TablesView {store}>
+ *   {#snippet table(tableId)}{tableId}{/snippet}
+ * </TablesView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'petsspecies'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1462,6 +2155,38 @@
  * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Value, or nothing if not present.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ValueView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <ValueView valueId="open" {store} />
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1471,6 +2196,40 @@
  * listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of all Values.
+ * @example
+ * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {ValuesView} from 'tinybase/ui-svelte';
+ *
+ *   export let store;
+ * </script>
+ *
+ * <ValuesView {store}>
+ *   {#snippet value(valueId)}{valueId}{/snippet}
+ * </ValuesView>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'openemployees'
+ * ```
  * @category Component
  * @since v8.1.0
  */
@@ -1481,6 +2240,42 @@
  * that result will update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasTables} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasTables(store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1491,6 +2286,42 @@
  * update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Tables property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getTables} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getTables(store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '{"pets":{"fido":{"species":"dog","color":"brown","sold":false,"next":"felix"},"felix":{"species":"cat","color":"black","sold":true}},"species":{"dog":{"price":5},"cat":{"price":4}}}'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1501,6 +2332,42 @@
  * will update `current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getTableIds} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getTableIds(store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '["pets","species"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1512,6 +2379,42 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasTable} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasTable('pets', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1523,6 +2426,42 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Table property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getTable} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getTable('pets', store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '{"fido":{"species":"dog","color":"brown","sold":false,"next":"felix"},"felix":{"species":"cat","color":"black","sold":true}}'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1534,6 +2473,42 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getTableCellIds} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getTableCellIds('pets', store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '["species","color","sold","next"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1546,6 +2521,42 @@
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasTableCell} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasTableCell('pets', 'species', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1557,6 +2568,42 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` number property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getRowCount} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getRowCount('pets', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '2'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1568,6 +2615,42 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getRowIds('pets', store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '["fido","felix"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1583,6 +2666,42 @@
  * @param limit The maximum number of Rows to return (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getSortedRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getSortedRowIds('pets', 'sold', false, 0, undefined, store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '["fido","felix"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1595,6 +2714,42 @@
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasRow} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasRow('pets', 'fido', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1607,6 +2762,42 @@
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Row property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getRow} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getRow('pets', 'fido', store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '{"species":"dog","color":"brown","sold":false,"next":"felix"}'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1619,6 +2810,42 @@
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getCellIds} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getCellIds('pets', 'fido', store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '["species","color","sold","next"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1632,6 +2859,42 @@
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasCell} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasCell('pets', 'fido', 'species', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1657,6 +2920,42 @@
  * // const name = getCell('pets', 'cat', 'name', store);
  * // $: console.log(name.current); // 'Fido'
  * ```
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getCell} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getCell('pets', 'fido', 'species', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'dog'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1667,6 +2966,42 @@
  * that result will update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasValues} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasValues(store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1676,6 +3011,42 @@
  * Store, and registers a listener so that any changes will update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Values property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getValues} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getValues(store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '{"open":true,"employees":3}'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1686,6 +3057,42 @@
  * `current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getValueIds} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getValueIds(store);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> '["open","employees"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1697,6 +3104,42 @@
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {hasValue} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = hasValue('open', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1711,6 +3154,42 @@
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with gettable and settable `current`.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getValue} from 'tinybase/ui-svelte';
+ *
+ *   let {store} = $props();
+ *
+ *   const result = getValue('open', store);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
+ * console.log(app.textContent);
+ * // -> 'true'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1774,6 +3253,48 @@
  * will update `current`.
  * @param metricsOrMetricsId The Metrics object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getMetricIds} from 'tinybase/ui-svelte';
+ *
+ *   let {metrics} = $props();
+ *
+ *   const result = getMetricIds(metrics);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const metrics = createMetrics(store).setMetricDefinition(
+ *   'speciesPrice',
+ *   'species',
+ *   'sum',
+ *   'price',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {metrics}}));
+ * console.log(app.textContent);
+ * // -> '["speciesPrice"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1786,6 +3307,48 @@
  * @param metricsOrMetricsId The Metrics object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` number | undefined property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getMetric} from 'tinybase/ui-svelte';
+ *
+ *   let {metrics} = $props();
+ *
+ *   const result = getMetric('speciesPrice', metrics);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const metrics = createMetrics(store).setMetricDefinition(
+ *   'speciesPrice',
+ *   'species',
+ *   'sum',
+ *   'price',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {metrics}}));
+ * console.log(app.textContent);
+ * // -> '9'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1815,6 +3378,47 @@
  * @param indexesOrId The Indexes object, its Id, or a getter returning either.
  * @param indexId The Id of the index, or a getter returning it.
  * @returns An object with `store` and `tableId` getter properties.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getIndexStoreTableId} from 'tinybase/ui-svelte';
+ *
+ *   let {indexes} = $props();
+ *
+ *   const result = getIndexStoreTableId(indexes, 'bySpecies');
+ * </script>
+ *
+ * {result.tableId}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const indexes = createIndexes(store).setIndexDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
+ * console.log(app.textContent);
+ * // -> 'pets'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1833,6 +3437,47 @@
  * will update `current`.
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getIndexIds} from 'tinybase/ui-svelte';
+ *
+ *   let {indexes} = $props();
+ *
+ *   const result = getIndexIds(indexes);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const indexes = createIndexes(store).setIndexDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
+ * console.log(app.textContent);
+ * // -> '["bySpecies"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1845,6 +3490,47 @@
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getSliceIds} from 'tinybase/ui-svelte';
+ *
+ *   let {indexes} = $props();
+ *
+ *   const result = getSliceIds('bySpecies', indexes);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const indexes = createIndexes(store).setIndexDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
+ * console.log(app.textContent);
+ * // -> '["dog","cat"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1858,6 +3544,47 @@
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getSliceRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {indexes} = $props();
+ *
+ *   const result = getSliceRowIds('bySpecies', 'dog', indexes);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const indexes = createIndexes(store).setIndexDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   'species',
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
+ * console.log(app.textContent);
+ * // -> '["fido"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1895,6 +3622,47 @@
  * will update `current`.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getQueryIds} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getQueryIds(queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '["petColors"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1907,6 +3675,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Table property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultTable} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultTable('petColors', queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '{"fido":{"color":"brown"},"felix":{"color":"black"}}'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1919,6 +3728,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultTableCellIds} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultTableCellIds('petColors', queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '["color"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1931,6 +3781,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` number property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultRowCount} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultRowCount('petColors', queries);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '2'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1943,6 +3834,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultRowIds('petColors', queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '["fido","felix"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1959,6 +3891,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultSortedRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultSortedRowIds('petColors', 'color', false, 0, undefined, queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '["felix","fido"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1972,6 +3945,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Row property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultRow} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultRow('petColors', 'fido', queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '{"color":"brown"}'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1985,6 +3999,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultCellIds} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultCellIds('petColors', 'fido', queries);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> '["color"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -1999,6 +4054,47 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Cell | undefined property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getResultCell} from 'tinybase/ui-svelte';
+ *
+ *   let {queries} = $props();
+ *
+ *   const result = getResultCell('petColors', 'fido', 'color', queries);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
+ * console.log(app.textContent);
+ * // -> 'brown'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2032,6 +4128,45 @@
  * @param relationshipId The Id of the relationship, or a getter returning it.
  * @returns An object with `store`, `localTableId`, and `remoteTableId` getter
  * properties.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getRelationshipsStoreTableIds} from 'tinybase/ui-svelte';
+ *
+ *   let {relationships} = $props();
+ *
+ *   const result = getRelationshipsStoreTableIds(relationships, 'petSpecies');
+ * </script>
+ *
+ * {result.localTableId + ':' + result.remoteTableId}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store)
+ *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *   .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> 'pets:species'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2051,6 +4186,45 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getRelationshipIds} from 'tinybase/ui-svelte';
+ *
+ *   let {relationships} = $props();
+ *
+ *   const result = getRelationshipIds(relationships);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store)
+ *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *   .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> '["petSpecies","nextPet"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2064,6 +4238,45 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
  * or getter), or its Id.
  * @returns A reactive object with a `current` Id | undefined property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getRemoteRowId} from 'tinybase/ui-svelte';
+ *
+ *   let {relationships} = $props();
+ *
+ *   const result = getRemoteRowId('petSpecies', 'fido', relationships);
+ * </script>
+ *
+ * {result.current}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store)
+ *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *   .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> 'dog'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2077,6 +4290,45 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
  * or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getLocalRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {relationships} = $props();
+ *
+ *   const result = getLocalRowIds('petSpecies', 'dog', relationships);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store)
+ *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *   .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> '["fido"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2090,6 +4342,45 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
  * or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getLinkedRowIds} from 'tinybase/ui-svelte';
+ *
+ *   let {relationships} = $props();
+ *
+ *   const result = getLinkedRowIds('nextPet', 'fido', relationships);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const relationships = createRelationships(store)
+ *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *   .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
+ * console.log(app.textContent);
+ * // -> '["fido","felix"]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2129,6 +4420,43 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
  * @returns A reactive object with a `current` CheckpointIds property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getCheckpointIds} from 'tinybase/ui-svelte';
+ *
+ *   let {checkpoints} = $props();
+ *
+ *   const result = getCheckpointIds(checkpoints);
+ * </script>
+ *
+ * {JSON.stringify(result.current)}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> '[[],"0",[]]'
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2141,6 +4469,43 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
  * @returns A reactive object with a `current` string | undefined property.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {getCheckpoint} from 'tinybase/ui-svelte';
+ *
+ *   let {checkpoints} = $props();
+ *
+ *   const result = getCheckpoint('0', checkpoints);
+ * </script>
+ *
+ * {result.current ?? ''}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> ''
+ * ```
  * @category Getter
  * @since v8.1.0
  */
@@ -2150,6 +4515,44 @@
  * called, moves the Checkpoints object backward to the previous checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {createGoBackwardCallback} from 'tinybase/ui-svelte';
+ *
+ *   let {checkpoints} = $props();
+ *
+ *   const goBackward = createGoBackwardCallback(checkpoints);
+ *   goBackward();
+ * </script>
+ *
+ * {'done'}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> 'done'
+ * ```
  * @category Callback
  * @since v8.1.0
  */
@@ -2159,6 +4562,44 @@
  * called, moves the Checkpoints object forward to the next checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
+ * @example
+ * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ *
+ * ```svelte file=App.svelte
+ * <svelte:options runes={true} />
+ *
+ * <script>
+ *   import {createGoForwardCallback} from 'tinybase/ui-svelte';
+ *
+ *   let {checkpoints} = $props();
+ *
+ *   const goForward = createGoForwardCallback(checkpoints);
+ *   goForward();
+ * </script>
+ *
+ * {'done'}
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import App from './App.svelte';
+ *
+ * const store = createStore()
+ *   .setTables({
+ *     pets: {
+ *       fido: {species: 'dog', color: 'brown', sold: false, next: 'felix'},
+ *       felix: {species: 'cat', color: 'black', sold: true},
+ *     },
+ *     species: {dog: {price: 5}, cat: {price: 4}},
+ *   })
+ *   .setValues({open: true, employees: 3});
+ * const checkpoints = createCheckpoints(store);
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {checkpoints}}));
+ * console.log(app.textContent);
+ * // -> 'done'
+ * ```
  * @category Callback
  * @since v8.1.0
  */
