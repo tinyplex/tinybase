@@ -14,6 +14,7 @@ import {Readme} from './ui/Readme.tsx';
 const internalEsm: string[] = [
   'tinybase',
   'tinybase/ui-react',
+  'tinybase/ui-solid',
   'tinybase/ui-svelte',
   'tinybase/ui-react-dom',
   'tinybase/ui-svelte-dom',
@@ -27,6 +28,8 @@ const externalEsm: string[] = [
   'react',
   'react-dom/client',
   'react/jsx-runtime',
+  'solid-js',
+  'solid-js/web',
   'svelte',
 ];
 
@@ -39,6 +42,7 @@ const CATEGORIES = [
   'Persisting stores',
   'Synchronizing stores',
   'Using React',
+  'Using Solid',
 
   'Store components',
   'Queries components',
@@ -70,6 +74,7 @@ const REFLECTIONS = [
   'synchronizers',
   /^synchronizer/,
   /^ui-react/,
+  /^ui-solid/,
   /^ui-svelte/,
   /^TablesProps/,
   /^TableProps/,
@@ -405,6 +410,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/ui-react/index.d.ts')
     .addApiFile('dist/@types/ui-react-dom/index.d.ts')
     .addApiFile('dist/@types/ui-react-inspector/index.d.ts')
+    .addApiFile('dist/@types/ui-solid/index.d.ts')
     .addApiFile('dist/@types/ui-svelte/index.d.ts')
     .addApiFile('dist/@types/ui-svelte-dom/index.d.ts')
     .addApiFile('dist/@types/ui-svelte-inspector/index.d.ts');
