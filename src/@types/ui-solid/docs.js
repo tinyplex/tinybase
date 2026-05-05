@@ -202,6 +202,18 @@
  */
 /// ui-solid.UndoOrRedoInformation
 /**
+ * The GetId type describes a function which, when passed a parameter, will
+ * return an Id.
+ *
+ * This type is used in primitives that create callbacks - like the
+ * useSetTableCallback primitive or useSetRowCallback primitive - so that the Id
+ * arguments of the object to set can also be dependent on the event or
+ * parameter provided (as well as the object itself being set).
+ * @category Identity
+ * @since v8.3.0
+ */
+/// ui-solid.GetId
+/**
  * The useCreateStore primitive is used to create a Store within a Solid
  * application with convenient ownership.
  *
@@ -245,6 +257,66 @@
  * The useStoreIds primitive is used to retrieve the Ids of all the named Store
  * objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useStoreIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useStoreIds();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -265,6 +337,66 @@
  * the Provider.
  * @returns A reference to the Store (or `undefined` if not within a Provider
  * context, or if the requested Store does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useStore} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useStore();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -280,6 +412,66 @@
  *
  * The useStores primitive lets you get a reference to the latter as an object.
  * @returns An object containing all the Store objects named by Id.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useStores} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useStores();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -300,6 +492,66 @@
  * named with an Id in the Provider, or the Store object itself.
  * @returns A reference to the Store object (or `undefined` if not within a
  * Provider context, or if the requested Store object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useStoreOrStoreById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useStoreOrStoreById(store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -325,6 +577,66 @@
  * below, we use the null-safe `useStore('petStore')?` to do this.
  * @param storeId The Id of the Store object to be registered with the Provider.
  * @param store The Store object to be registered.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useProvideStore} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useProvideStore('petStore', store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -347,6 +659,66 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether any Tables exist.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasTables} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasTables(store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -391,7 +763,7 @@
 /// ui-solid.useTables
 /**
  * The useTablesState primitive returns a Tables object and a function to set
- * it, following the same pattern as Solid's useState primitive.
+ * it, following the same pattern as Solid's createSignal convention.
  *
  * This is a convenience primitive that combines the useTables and
  * useSetTablesCallback primitives. It's useful when you need both read and
@@ -514,8 +886,8 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
  * useTable primitive lets you indicate which Store to get data for: omit the
- * final optional final parameter for the default context Store, provide an Id
- * for a named context Store, or provide a Store explicitly by reference.
+ * final optional parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the Table will cause an update. When the component containing this primitive
@@ -547,7 +919,7 @@
 /// ui-solid.useTable
 /**
  * The useTableState primitive returns a Table and a function to set it,
- * following the same pattern as Solid's useState primitive.
+ * following the same pattern as Solid's createSignal convention.
  *
  * This is a convenience primitive that combines the useTable and
  * useSetTableCallback primitives. It's useful when you need both read and write
@@ -603,6 +975,66 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the Ids of every Cell used across the whole Table.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useTableCellIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useTableCellIds('pets', store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -627,6 +1059,66 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether a Cell with that Id exists anywhere in that Table.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasTableCell} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasTableCell('pets', 'species', store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -634,7 +1126,7 @@
 /**
  * The useRowCount primitive returns the count of the Row objects in a given
  * Table, and registers a listener so that any changes to that result will cause
- * a update.
+ * an update.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
@@ -650,13 +1142,73 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns The number of Row objects in the Table.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRowCount} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRowCount('pets', store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
 /// ui-solid.useRowCount
 /**
  * The useRowIds primitive returns the Ids of every Row in a given Table, and
- * registers a listener so that any changes to that result will cause a update.
+ * registers a listener so that any changes to that result will cause an update.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
@@ -711,7 +1263,7 @@
  * primitive is unmounted, the listener will be automatically removed.
  * @param tableId The Id of the Table in the Store.
  * @param cellId The Id of the Cell whose values are used for the sorting, or
- * `undefined` to by sort the Row Id itself.
+ * `undefined` to sort by the Row Id itself.
  * @param descending Whether the sorting should be in descending order.
  * @param offset The number of Row Ids to skip for pagination purposes, if any.
  * @param limit The maximum number of Row Ids to return, or `undefined` for all.
@@ -732,7 +1284,14 @@
  *     fido: {sold: true},
  *     felix: {sold: false},
  *   });
- *   const rowIds = useSortedRowIds('pets', 'sold', false, 0, undefined, store);
+ *   const rowIds = useSortedRowIds(
+ *     'pets',
+ *     'sold',
+ *     false,
+ *     0,
+ *     undefined,
+ *     store,
+ *   );
  *   console.log(JSON.stringify(rowIds()));
  *   // -> '["felix","fido"]'
  *   dispose();
@@ -751,6 +1310,66 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns An array of the sorted Ids of every Row in the Table.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSortedRowIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSortedRowIds({tableId: 'pets', cellId: 'species'}, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -803,8 +1422,8 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
  * useRow primitive lets you indicate which Store to get data for: omit the
- * final optional final parameter for the default context Store, provide an Id
- * for a named context Store, or provide a Store explicitly by reference.
+ * final optional parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the Row will cause an update. When the component containing this primitive is
@@ -838,7 +1457,7 @@
 /// ui-solid.useRow
 /**
  * The useRowState primitive returns a Row and a function to set it, following
- * the same pattern as Solid's useState primitive.
+ * the same pattern as Solid's createSignal convention.
  *
  * This is a convenience primitive that combines the useRow and
  * useSetRowCallback primitives. It's useful when you need both read and write
@@ -965,8 +1584,8 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
  * useCell primitive lets you indicate which Store to get data for: omit the
- * final optional final parameter for the default context Store, provide an Id
- * for a named context Store, or provide a Store explicitly by reference.
+ * final optional parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the Cell will cause an update. When the component containing this primitive
@@ -1052,6 +1671,66 @@
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
  * @returns Whether any Values exist.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasValues} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasValues(store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1096,7 +1775,7 @@
 /// ui-solid.useValues
 /**
  * The useValuesState primitive returns a Values object and a function to set
- * it, following the same pattern as Solid's useState primitive.
+ * it, following the same pattern as Solid's createSignal convention.
  *
  * This is a convenience primitive that combines the useValues and
  * useSetValuesCallback primitives. It's useful when you need both read and
@@ -1216,8 +1895,8 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
  * useValue primitive lets you indicate which Store to get data for: omit the
- * final optional final parameter for the default context Store, provide an Id
- * for a named context Store, or provide a Store explicitly by reference.
+ * final optional parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the Value will cause an update. When the component containing this primitive
@@ -1307,6 +1986,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Tables used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetTablesCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetTablesCallback(() => ({pets: {fido: {species: 'dog'}}}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1337,6 +2076,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Table used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetTableCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetTableCallback('pets', () => ({fido: {species: 'dog'}}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1369,6 +2168,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Row used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetRowCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetRowCallback('pets', 'fido', () => ({species: 'dog'}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1408,6 +2267,66 @@
  * @param reuseRowIds Whether Ids should be recycled from previously deleted Row
  * objects, defaulting to `true`.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useAddRowCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useAddRowCallback('pets', () => ({species: 'hamster'}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1441,6 +2360,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Row used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetPartialRowCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetPartialRowCallback('pets', 'fido', () => ({sold: true}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1484,7 +2463,13 @@
  * createRoot((dispose) => {
  *   const store = createStore().setCell('pets', 'fido', 'sold', false);
  *   const sold = useCell('pets', 'fido', 'sold', store);
- *   const sell = useSetCellCallback('pets', 'fido', 'sold', () => true, store);
+ *   const sell = useSetCellCallback(
+ *     'pets',
+ *     'fido',
+ *     'sold',
+ *     () => true,
+ *     store,
+ *   );
  *   sell();
  *   console.log(sold());
  *   // -> true
@@ -1519,6 +2504,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Values used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetValuesCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetValuesCallback(() => ({open: false}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1548,6 +2593,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Values used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetPartialValuesCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetPartialValuesCallback(() => ({employees: 3}), store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1578,6 +2683,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Store and the Value used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetValueCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetValueCallback('open', () => false, store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1599,6 +2764,66 @@
  * @param then A function which is called after the deletion, with a reference
  * to the Store.
  * @returns A callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDelTablesCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDelTablesCallback(store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1623,6 +2848,66 @@
  * @param then A function which is called after the deletion, with a reference
  * to the Store.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDelTableCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDelTableCallback('species', store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1649,6 +2934,66 @@
  * @param then A function which is called after the deletion, with a reference
  * to the Store.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDelRowCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDelRowCallback('pets', 'felix', store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1680,6 +3025,66 @@
  * @param then A function which is called after the deletion, with a reference
  * to the Store.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDelCellCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDelCellCallback('pets', 'fido', 'next', false, store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1701,6 +3106,66 @@
  * @param then A function which is called after the deletion, with a reference
  * to the Store.
  * @returns A callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDelValuesCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDelValuesCallback(store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1725,6 +3190,66 @@
  * @param then A function which is called after the deletion, with a reference
  * to the Store.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDelValueCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDelValueCallback('open', store)();
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1740,9 +3265,8 @@
  *
  * Unlike the addHasTablesListener method, which returns a listener Id and
  * requires you to remove it manually, the useHasTablesListener primitive
- * manages you to remove it manually, the useHasTablesListener primitive manages
- * this lifecycle for you: when the component unmounts, the listener on the
- * underlying Store will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Store will be deleted.
  * @param listener The function that will be called whenever Tables as a whole
  * are added or removed.
  * @param mutator An optional boolean that indicates that the listener mutates
@@ -1750,6 +3274,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasTablesListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasTablesListener(() => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1773,6 +3357,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useTablesListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useTablesListener(() => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1797,6 +3441,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useTableIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useTableIdsListener(() => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1825,6 +3529,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasTableListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasTableListener('pets', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1852,6 +3616,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useTableListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useTableListener('pets', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1870,9 +3694,8 @@
  *
  * Unlike the addTableCellIdsListener method, which returns a listener Id and
  * requires you to remove it manually, the useTableCellIdsListener primitive
- * manages you to remove it manually, the useTableListener primitive manages
- * this lifecycle for you: when the component unmounts, the listener on the
- * underlying Store will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Store will be deleted.
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Cell Ids that
  * appear anywhere in a Table change.
@@ -1881,6 +3704,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useTableCellIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useTableCellIdsListener('pets', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1911,6 +3794,72 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasTableCellListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasTableCellListener(
+ *     'pets',
+ *     'species',
+ *     () => undefined,
+ *     false,
+ *     store,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1939,6 +3888,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRowCountListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRowCountListener('pets', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1966,6 +3975,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRowIdsListener('pets', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -1981,12 +4050,11 @@
  *
  * Unlike the addSortedRowIdsListener method, which returns a listener Id and
  * requires you to remove it manually, the useSortedRowIdsListener primitive
- * manages you to remove it manually, the useRowIdsListener primitive manages
- * this lifecycle for you: when the component unmounts, the listener on the
- * underlying Store will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Store will be deleted.
  * @param tableId The Id of the Table in the Store.
  * @param cellId The Id of the Cell whose values are used for the sorting, or
- * `undefined` to by sort the Row Id itself.
+ * `undefined` to sort by the Row Id itself.
  * @param descending Whether the sorting should be in descending order.
  * @param offset The number of Row Ids to skip for pagination purposes, if any.
  * @param limit The maximum number of Row Ids to return, or `undefined` for all.
@@ -1997,6 +4065,75 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSortedRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSortedRowIdsListener(
+ *     'pets',
+ *     'species',
+ *     false,
+ *     0,
+ *     undefined,
+ *     () => undefined,
+ *     false,
+ *     store,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2013,6 +4150,71 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSortedRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSortedRowIdsListener(
+ *     {tableId: 'pets', cellId: 'species'},
+ *     () => undefined,
+ *     false,
+ *     store,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2047,6 +4249,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasRowListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasRowListener('pets', 'fido', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2081,6 +4343,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRowListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRowListener('pets', 'fido', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2116,6 +4438,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCellIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCellIdsListener('pets', 'fido', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2152,6 +4534,73 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasCellListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasCellListener(
+ *     'pets',
+ *     'fido',
+ *     'color',
+ *     () => undefined,
+ *     false,
+ *     store,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2223,9 +4672,8 @@
  *
  * Unlike the addHasValuesListener method, which returns a listener Id and
  * requires you to remove it manually, the useHasValuesListener primitive
- * manages you to remove it manually, the useCellListener primitive manages this
- * lifecycle for you: when the component unmounts, the listener on the
- * underlying Store will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Store will be deleted.
  * @param listener The function that will be called whenever Values as a whole
  * are added or removed.
  * @param mutator An optional boolean that indicates that the listener mutates
@@ -2233,6 +4681,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasValuesListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasValuesListener(() => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2256,6 +4764,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useValuesListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useValuesListener(() => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2280,6 +4848,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useValueIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useValueIdsListener(() => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2309,6 +4937,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useHasValueListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useHasValueListener('open', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2336,6 +5024,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useValueListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useValueListener('open', () => undefined, false, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2355,6 +5103,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useStartTransactionListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useStartTransactionListener(() => undefined, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2364,7 +5172,7 @@
  * with a Store that will be called just before other non-mutating listeners are
  * called at the end of the transaction.
  *
- * Unlike the addWillFinisTransactionListener method, which returns a listener
+ * Unlike the addWillFinishTransactionListener method, which returns a listener
  * Id and requires you to remove it manually, the
  * useWillFinishTransactionListener primitive manages this lifecycle for you:
  * when the component unmounts, the listener on the underlying Store will be
@@ -2374,6 +5182,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useWillFinishTransactionListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useWillFinishTransactionListener(() => undefined, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2393,6 +5261,66 @@
  * @param storeOrStoreId The Store to register the listener with: omit for the
  * default context Store, provide an Id for a named context Store, or provide an
  * explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useDidFinishTransactionListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useDidFinishTransactionListener(() => undefined, store);
+ *   dispose();
+ * });
+ * ```
  * @category Store primitives
  * @since v8.3.0
  */
@@ -2417,6 +5345,66 @@
  * object for the Store, plus any additional steps such as adding definitions or
  * listeners, and returning it.
  * @returns A reference to the Metrics object.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreateMetrics} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreateMetrics(store, (store) => createMetrics(store));
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
@@ -2425,6 +5413,66 @@
  * The useMetricsIds primitive is used to retrieve the Ids of all the named
  * Metrics objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useMetricsIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useMetricsIds();
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
@@ -2445,6 +5493,66 @@
  * an Id in the Provider.
  * @returns A reference to the Metrics object (or `undefined` if not within a
  * Provider context, or if the requested Metrics object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useMetrics} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useMetrics();
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
@@ -2465,10 +5573,111 @@
  * was named with an Id in the Provider, or the Metrics object itself.
  * @returns A reference to the Metrics object (or `undefined` if not within a
  * Provider context, or if the requested Metrics object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useMetricsOrMetricsById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useMetricsOrMetricsById(metrics);
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
 /// ui-solid.useMetricsOrMetricsById
+/**
+ * The useProvideMetrics primitive is used to add a Metrics object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Metrics object by Id in a context by using the
+ * `metricsById` prop of the top-level Provider component. This primitive,
+ * however, lets you dynamically add a new Metrics object to the context, from
+ * within a descendent component. This is useful for applications where the set
+ * of Metrics objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ * A Metrics object added to the Provider context in this way will be available
+ * to other components within the context (using the useMetrics primitive and so
+ * on). If you use the same Id as an existing Metrics object registration, the
+ * new one will take priority over one provided by the `metricsById` prop.
+ * @param metricsId The Id of the Metrics object to be registered with the
+ * Provider.
+ * @param metrics The Metrics object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {useProvideMetrics} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'petCount',
+ *     'pets',
+ *     'count',
+ *   );
+ *   useProvideMetrics('petMetrics', metrics);
+ *   console.log(metrics.getMetric('petCount'));
+ *   // -> 1
+ *   dispose();
+ * });
+ * ```
+ * @category Metrics primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvideMetrics
 /**
  * The useMetricIds primitive gets an array of the Metric Ids registered with a
  * Metrics object, and registers a listener so that any changes to that result
@@ -2489,6 +5698,66 @@
  * default context Metrics object, provide an Id for a named context Metrics
  * object, or provide an explicit reference.
  * @returns The Metric Ids in the Metrics object, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useMetricIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useMetricIds(metrics);
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
@@ -2512,6 +5781,66 @@
  * default context Metrics object, provide an Id for a named context Metrics
  * object, or provide an explicit reference.
  * @returns The numeric value of the Metric, or `undefined`.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useMetric} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useMetric('highestPrice', metrics);
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
@@ -2538,6 +5867,66 @@
  * @param metricsOrMetricsId The Metrics object to register the listener with:
  * omit for the default context Metrics object, provide an Id for a named
  * context Metrics object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useMetricListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useMetricListener('highestPrice', () => undefined, metrics);
+ *   dispose();
+ * });
+ * ```
  * @category Metrics primitives
  * @since v8.3.0
  */
@@ -2550,8 +5939,8 @@
  * regular createIndexes function and pass it in, but you may prefer to create
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Indexes object being created every time the app renders or updates, since
- * v5.0 the this primitive performs the creation in an effect. As a result it
- * will return `undefined` on the brief first render (or if the Store is not yet
+ * v5.0 this primitive performs the creation in an effect. As a result it will
+ * return `undefined` on the brief first render (or if the Store is not yet
  * defined), which you should defend against.
  *
  * This primitive ensures the Indexes object is destroyed whenever a new one is
@@ -2562,6 +5951,66 @@
  * object for the Store, plus any additional steps such as adding definitions or
  * listeners, and returning it.
  * @returns A reference to the Indexes object.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreateIndexes} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreateIndexes(store, (store) => createIndexes(store));
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2570,6 +6019,66 @@
  * The useIndexesIds primitive is used to retrieve the Ids of all the named
  * Indexes objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useIndexesIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useIndexesIds();
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2590,6 +6099,66 @@
  * an Id in the Provider.
  * @returns A reference to the Indexes object (or `undefined` if not within a
  * Provider context, or if the requested Indexes object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useIndexes} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useIndexes();
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2606,14 +6175,115 @@
  *
  * This primitive is unlikely to be used often. For most situations, you will
  * want to use the useIndexes primitive.
- * @param indexesOrIndexesId Either an Id for accessing a Indexes object that
+ * @param indexesOrIndexesId Either an Id for accessing an Indexes object that
  * was named with an Id in the Provider, or the Indexes object itself.
  * @returns A reference to the Indexes object (or `undefined` if not within a
  * Provider context, or if the requested Indexes object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useIndexesOrIndexesById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useIndexesOrIndexesById(indexes);
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
 /// ui-solid.useIndexesOrIndexesById
+/**
+ * The useProvideIndexes primitive is used to add an Indexes object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register an Indexes object by Id in a context by using the
+ * `indexesById` prop of the top-level Provider component. This primitive,
+ * however, lets you dynamically add a new Indexes object to the context, from
+ * within a descendent component. This is useful for applications where the set
+ * of Indexes objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ * An Indexes object added to the Provider context in this way will be available
+ * to other components within the context (using the useIndexes primitive and so
+ * on). If you use the same Id as an existing Indexes object registration, the
+ * new one will take priority over one provided by the `indexesById` prop.
+ * @param indexesId The Id of the Indexes object to be registered with the
+ * Provider.
+ * @param indexes The Indexes object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {useProvideIndexes} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'petsByColor',
+ *     'pets',
+ *     'color',
+ *   );
+ *   useProvideIndexes('petIndexes', indexes);
+ *   console.log(JSON.stringify(indexes.getSliceIds('petsByColor')));
+ *   // -> '["brown"]'
+ *   dispose();
+ * });
+ * ```
+ * @category Indexes primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvideIndexes
 /**
  * The useIndexIds primitive gets an array of the Index Ids registered with an
  * Indexes object, and registers a listener so that any changes to that result
@@ -2634,6 +6304,66 @@
  * default context Indexes object, provide an Id for a named context Indexes
  * object, or provide an explicit reference.
  * @returns The Index Ids in the Indexes object, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useIndexIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useIndexIds(indexes);
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2657,13 +6387,73 @@
  * default context Indexes object, provide an Id for a named context Indexes
  * object, or provide an explicit reference.
  * @returns The Slice Ids in the Index, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSliceIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSliceIds('bySpecies', indexes);
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
 /// ui-solid.useSliceIds
 /**
  * The useSliceRowIds primitive gets the list of Row Ids in a given Slice, and
- * registers a listener so that any changes to that result will cause a update.
+ * registers a listener so that any changes to that result will cause an update.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Indexes object or a set of Indexes objects named by
@@ -2681,6 +6471,66 @@
  * default context Indexes object, provide an Id for a named context Indexes
  * object, or provide an explicit reference.
  * @returns The Row Ids in the Slice, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSliceRowIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSliceRowIds('bySpecies', 'dog', indexes);
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2708,6 +6558,66 @@
  * @param indexesOrIndexesId The Indexes object to register the listener with:
  * omit for the default context Indexes object, provide an Id for a named
  * context Indexes object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSliceIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSliceIdsListener('bySpecies', () => undefined, indexes);
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2731,7 +6641,6 @@
  *
  * Unlike the addSliceRowIdsListener method, which returns a listener Id and
  * requires you to remove it manually, the useSliceRowIdsListener primitive
- * manages you to remove it manually, the useSliceRowIdsListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Indexes object will be deleted.
  * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
@@ -2741,6 +6650,66 @@
  * @param indexesOrIndexesId The Indexes object to register the listener with:
  * omit for the default context Indexes object, provide an Id for a named
  * context Indexes object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSliceRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSliceRowIdsListener('bySpecies', 'dog', () => undefined, indexes);
+ *   dispose();
+ * });
+ * ```
  * @category Indexes primitives
  * @since v8.3.0
  */
@@ -2764,6 +6733,66 @@
  * @param create An optional callback for performing post-creation steps on the
  * Relationships object, such as adding definitions or listeners.
  * @returns A reference to the Relationships object.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreateRelationships} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreateRelationships(store, (store) => createRelationships(store));
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2773,6 +6802,66 @@
  * named Relationships objects present in the current Provider component
  * context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRelationshipsIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRelationshipsIds();
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2795,6 +6884,66 @@
  * @returns A reference to the Relationships object (or `undefined` if not
  * within a Provider context, or if the requested Relationships object does not
  * exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRelationships} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRelationships();
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2817,10 +6966,112 @@
  * @returns A reference to the Relationships object (or `undefined` if not
  * within a Provider context, or if the requested Relationships object does not
  * exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRelationshipsOrRelationshipsById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRelationshipsOrRelationshipsById(relationships);
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
 /// ui-solid.useRelationshipsOrRelationshipsById
+/**
+ * The useProvideRelationships primitive is used to add a Relationships object
+ * by Id to a Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Relationships object by Id in a context by using
+ * the `relationshipsById` prop of the top-level Provider component. This
+ * primitive, however, lets you dynamically add a new Relationships object to
+ * the context, from within a component. This is useful for applications where
+ * the set of Relationships objects is not known at the time of the first render
+ * of the root Provider.
+ *
+ * A Relationships object added to the Provider context in this way will be
+ * available to other components within the context (using the useRelationships
+ * primitive and so on). If you use the same Id as an existing Relationships
+ * object registration, the new one will take priority over one provided by the
+ * `relationshipsById` prop.
+ * @param relationshipsId The Id of the Relationships object to be registered
+ * with the Provider.
+ * @param relationships The Relationships object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {useProvideRelationships} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTable('pets', {fido: {species: 'dog'}})
+ *     .setTable('species', {dog: {price: 5}});
+ *   const relationships = createRelationships(
+ *     store,
+ *   ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
+ *   useProvideRelationships('petRelationships', relationships);
+ *   console.log(relationships.getRemoteRowId('petSpecies', 'fido'));
+ *   // -> 'dog'
+ *   dispose();
+ * });
+ * ```
+ * @category Relationships primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvideRelationships
 /**
  * The useRelationshipIds primitive gets an array of the Relationship Ids
  * registered with a Relationships object, and registers a listener so that any
@@ -2842,6 +7093,66 @@
  * accessed: omit for the default context Relationships object, provide an Id
  * for a named context Relationships object, or provide an explicit reference.
  * @returns The Relationship Ids in the Relationships object, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRelationshipIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRelationshipIds(relationships);
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2868,6 +7179,66 @@
  * accessed: omit for the default context Relationships object, provide an Id
  * for a named context Relationships object, or provide an explicit reference.
  * @returns The remote Row Id in the Relationship, or `undefined`.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRemoteRowId} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRemoteRowId('petSpecies', 'fido', relationships);
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2894,6 +7265,66 @@
  * accessed: omit for the default context Relationships object, provide an Id
  * for a named context Relationships object, or provide an explicit reference.
  * @returns The local Row Ids in the Relationship, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useLocalRowIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useLocalRowIds('petSpecies', 'dog', relationships);
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2920,6 +7351,66 @@
  * accessed: omit for the default context Relationships object, provide an Id
  * for a named context Relationships object, or provide an explicit reference.
  * @returns The linked Row Ids in the Relationship.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useLinkedRowIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useLinkedRowIds('nextPet', 'fido', relationships);
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2944,7 +7435,6 @@
  *
  * Unlike the addRemoteRowIdListener method, which returns a listener Id and
  * requires you to remove it manually, the useRemoteRowIdListener primitive
- * manages you to remove it manually, the useRemoteRowIdListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Indexes object will be deleted.
  * @param relationshipId The Id of the Relationship to listen to, or `null` as a
@@ -2957,6 +7447,71 @@
  * the listener with: omit for the default context Relationships object, provide
  * an Id for a named context Relationships object, or provide an explicit
  * reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRemoteRowIdListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRemoteRowIdListener(
+ *     'petSpecies',
+ *     'fido',
+ *     () => undefined,
+ *     relationships,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -2968,7 +7523,7 @@
  *
  * This primitive is useful for situations where a component needs to register
  * its own specific listener to do more than simply tracking the value (which is
- * more easily done with the useLocalRowsId primitive).
+ * more easily done with the useLocalRowIds primitive).
  *
  * You can either listen to a single local Row (by specifying the Relationship
  * Id and local Row Id as the method's first two parameters), or changes to any
@@ -2981,7 +7536,6 @@
  *
  * Unlike the addLocalRowsIdListener method, which returns a listener Id and
  * requires you to remove it manually, the useLocalRowIdsListener primitive
- * manages you to remove it manually, the useLocalRowsIdListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Indexes object will be deleted.
  * @param relationshipId The Id of the Relationship to listen to, or `null` as a
@@ -2994,6 +7548,71 @@
  * the listener with: omit for the default context Relationships object, provide
  * an Id for a named context Relationships object, or provide an explicit
  * reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useLocalRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useLocalRowIdsListener(
+ *     'petSpecies',
+ *     'dog',
+ *     () => undefined,
+ *     relationships,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -3005,7 +7624,7 @@
  *
  * This primitive is useful for situations where a component needs to register
  * its own specific listener to do more than simply tracking the value (which is
- * more easily done with the useLinkedRowsId primitive).
+ * more easily done with the useLinkedRowIds primitive).
  *
  * Unlike other listener registration methods, you cannot provide `null`
  * wildcards for the first two parameters of the useLinkedRowIdsListener method.
@@ -3014,7 +7633,6 @@
  *
  * Unlike the addLinkedRowsIdListener method, which returns a listener Id and
  * requires you to remove it manually, the useLinkedRowIdsListener primitive
- * manages you to remove it manually, the useLinkedRowsIdListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Indexes object will be deleted.
  * @param relationshipId The Id of the Relationship to listen to.
@@ -3025,6 +7643,71 @@
  * the listener with: omit for the default context Relationships object, provide
  * an Id for a named context Relationships object, or provide an explicit
  * reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useLinkedRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useLinkedRowIdsListener(
+ *     'nextPet',
+ *     'fido',
+ *     () => undefined,
+ *     relationships,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Relationships primitives
  * @since v8.3.0
  */
@@ -3048,6 +7731,66 @@
  * @param create An optional callback for performing post-creation steps on the
  * Queries object, such as adding definitions or listeners.
  * @returns A reference to the Queries object.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreateQueries} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreateQueries(store, (store) => createQueries(store));
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3056,6 +7799,66 @@
  * The useQueriesIds primitive is used to retrieve the Ids of all the named
  * Queries objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useQueriesIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useQueriesIds();
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3076,6 +7879,66 @@
  * an Id in the Provider.
  * @returns A reference to the Queries object (or `undefined` if not within a
  * Provider context, or if the requested Queries object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useQueries} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useQueries();
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3096,10 +7959,116 @@
  * was named with an Id in the Provider, or the Queries object itself.
  * @returns A reference to the Queries object (or `undefined` if not within a
  * Provider context, or if the requested Queries object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useQueriesOrQueriesById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useQueriesOrQueriesById(queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
 /// ui-solid.useQueriesOrQueriesById
+/**
+ * The useProvideQueries primitive is used to add a Queries object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Queries object by Id in a context by using the
+ * `queriesById` prop of the top-level Provider component. This primitive,
+ * however, lets you dynamically add a new Queries object to the context, from
+ * within a component. This is useful for applications where the set of Queries
+ * objects is not known at the time of the first render of the root Provider.
+ *
+ * A Queries object added to the Provider context in this way will be available
+ * to other components within the context (using the useQueries primitive and so
+ * on). If you use the same Id as an existing Queries object registration, the
+ * new one will take priority over one provided by the `queriesById` prop.
+ * @param queriesId The Id of the Queries object to be registered with the
+ * Provider.
+ * @param queries The Queries object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {useProvideQueries} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setRow('pets', 'fido', {
+ *     color: 'brown',
+ *     legs: 4,
+ *   });
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'brownLegs',
+ *     'pets',
+ *     ({select, where}) => {
+ *       select('legs');
+ *       where('color', 'brown');
+ *     },
+ *   );
+ *   useProvideQueries('petQueries', queries);
+ *   console.log(JSON.stringify(queries.getResultTable('brownLegs')));
+ *   // -> '{"fido":{"legs":4}}'
+ *   dispose();
+ * });
+ * ```
+ * @category Queries primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvideQueries
 /**
  * The useQueryIds primitive gets an array of the Query Ids registered with a
  * Queries object, and registers a listener so that any changes to that result
@@ -3120,6 +8089,66 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns The Query Ids in the Queries object, or an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useQueryIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useQueryIds(queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3132,7 +8161,7 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultTable primitive lets you indicate which Queries object to
- * get data for: omit the final optional final parameter for the default context
+ * get data for: omit the final optional parameter for the default context
  * Queries object, provide an Id for a named context Queries object, or provide
  * a Queries object explicitly by reference.
  *
@@ -3144,6 +8173,66 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns An object containing the entire data of the ResultTable.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultTable} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultTable('petColors', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3156,9 +8245,9 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultTableCellIds primitive lets you indicate which Queries
- * object to get data for: omit the final optional final parameter for the
- * default context Queries object, provide an Id for a named context Queries
- * object, or provide a Queries object explicitly by reference.
+ * object to get data for: omit the final optional parameter for the default
+ * context Queries object, provide an Id for a named context Queries object, or
+ * provide a Queries object explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the result Cell Ids will cause an update. When the component containing this
@@ -3169,6 +8258,66 @@
  * object, or provide an explicit reference. See the
  * addResultTableCellIdsListener method for more details.
  * @returns An array of the Ids of every Cell in the result of the query.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultTableCellIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultTableCellIds('petColors', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3181,7 +8330,7 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultRowCount primitive lets you indicate which Queries object to
- * get data for: omit the final optional final parameter for the default context
+ * get data for: omit the final optional parameter for the default context
  * Queries object, provide an Id for a named context Queries object, or provide
  * a Queries object explicitly by reference.
  *
@@ -3195,6 +8344,66 @@
  * object, or provide an explicit reference. See the addResultRowCountListener
  * method for more details.
  * @returns The number of ResultRow objects in the ResultTable.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultRowCount} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultRowCount('petColors', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3207,7 +8416,7 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultRowIds primitive lets you indicate which Queries object to
- * get data for: omit the final optional final parameter for the default context
+ * get data for: omit the final optional parameter for the default context
  * Queries object, provide an Id for a named context Queries object, or provide
  * a Queries object explicitly by reference.
  *
@@ -3220,6 +8429,66 @@
  * object, or provide an explicit reference. See the addResultRowIdsListener
  * method for more details.
  * @returns An array of the Ids of every Row in the result of the query.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultRowIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultRowIds('petColors', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3232,16 +8501,16 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultSortedRowIds primitive lets you indicate which Queries
- * object to get data for: omit the final optional final parameter for the
- * default context Queries object, provide an Id for a named context Queries
- * object, or provide a Queries object explicitly by reference.
+ * object to get data for: omit the final optional parameter for the default
+ * context Queries object, provide an Id for a named context Queries object, or
+ * provide a Queries object explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the sorted result Row Ids will cause an update. When the component containing
  * this primitive is unmounted, the listener will be automatically removed.
  * @param queryId The Id of the query.
  * @param cellId The Id of the result Cell whose values are used for the
- * sorting, or `undefined` to by sort the result Row Id itself.
+ * sorting, or `undefined` to sort by the result Row Id itself.
  * @param descending Whether the sorting should be in descending order.
  * @param offset The number of Row Ids to skip for pagination purposes, if any.
  * @param limit The maximum number of Row Ids to return, or `undefined` for all.
@@ -3249,6 +8518,73 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns An array of the Ids of every Row in the result of the query.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultSortedRowIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultSortedRowIds(
+ *     'petColors',
+ *     'color',
+ *     false,
+ *     0,
+ *     undefined,
+ *     queries,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3261,9 +8597,9 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultRow primitive lets you indicate which Queries object to get
- * data for: omit the final optional final parameter for the default context
- * Queries object, provide an Id for a named context Queries object, or provide
- * a Queries object explicitly by reference.
+ * data for: omit the final optional parameter for the default context Queries
+ * object, provide an Id for a named context Queries object, or provide a
+ * Queries object explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the result Row will cause an update. When the component containing this
@@ -3275,6 +8611,66 @@
  * object, or provide an explicit reference.
  * @returns An object containing the entire data of the Row in the ResultTable
  * of the query.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultRow} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultRow('petColors', 'fido', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3287,7 +8683,7 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultCellIds primitive lets you indicate which Queries object to
- * get data for: omit the final optional final parameter for the default context
+ * get data for: omit the final optional parameter for the default context
  * Queries object, provide an Id for a named context Queries object, or provide
  * a Queries object explicitly by reference.
  *
@@ -3301,6 +8697,66 @@
  * object, or provide an explicit reference.
  * @returns An array of the Ids of every Cell in the Row in the result of the
  * query.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultCellIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultCellIds('petColors', 'fido', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3313,9 +8769,9 @@
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
  * Id. The useResultCell primitive lets you indicate which Queries object to get
- * data for: omit the final optional final parameter for the default context
- * Queries object, provide an Id for a named context Queries object, or provide
- * a Queries object explicitly by reference.
+ * data for: omit the final optional parameter for the default context Queries
+ * object, provide an Id for a named context Queries object, or provide a
+ * Queries object explicitly by reference.
  *
  * When first rendered, this primitive will create a listener so that changes to
  * the result Cell will cause an update. When the component containing this
@@ -3327,6 +8783,66 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns The value of the Cell, or `undefined`.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultCell} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultCell('petColors', 'fido', 'color', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3345,7 +8861,6 @@
  *
  * Unlike the addResultTableListener method, which returns a listener Id and
  * requires you to remove it manually, the useResultTableListener primitive
- * manages you to remove it manually, the useResultTableListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
@@ -3354,6 +8869,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultTableListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultTableListener('petColors', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3383,6 +8958,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultTableCellIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultTableCellIdsListener('petColors', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3402,16 +9037,74 @@
  *
  * Unlike the addResultRowCountListener method, which returns a listener Id and
  * requires you to remove it manually, the useResultRowCountListener primitive
- * manages this lifecycle for you: when the listener changes (per its you to
- * remove it manually, the useResultRowCountListener primitive manages this
- * lifecycle for you: when the component unmounts, the listener on the
- * underlying Queries object will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
  * matching ResultTable change.
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultRowCountListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultRowCountListener('petColors', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3431,7 +9124,6 @@
  *
  * Unlike the addResultRowIdsListener method, which returns a listener Id and
  * requires you to remove it manually, the useResultRowIdsListener primitive
- * manages you to remove it manually, the useResultRowIdsListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
@@ -3440,6 +9132,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultRowIdsListener('petColors', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3461,7 +9213,7 @@
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to.
  * @param cellId The Id of the Cell whose values are used for the sorting, or
- * `undefined` to by sort the Row Id itself.
+ * `undefined` to sort by the Row Id itself.
  * @param descending Whether the sorting should be in descending order.
  * @param offset The number of Row Ids to skip for pagination purposes, if any.
  * @param limit The maximum number of Row Ids to return, or `undefined` for all.
@@ -3470,6 +9222,74 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultSortedRowIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultSortedRowIdsListener(
+ *     'petColors',
+ *     'color',
+ *     false,
+ *     0,
+ *     undefined,
+ *     () => undefined,
+ *     queries,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3493,9 +9313,8 @@
  *
  * Unlike the addResultRowListener method, which returns a listener Id and
  * requires you to remove it manually, the useResultRowListener primitive
- * manages you to remove it manually, the useResultRowListener primitive manages
- * this lifecycle for you: when the component unmounts, the listener on the
- * underlying Queries object will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param rowId The Id of the result Row to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the
@@ -3503,6 +9322,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultRowListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultRowListener('petColors', 'fido', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3523,7 +9402,6 @@
  *
  * Unlike the addResultCellIdsListener method, which returns a listener Id and
  * requires you to remove it manually, the useResultCellIdsListener primitive
- * manages you to remove it manually, the useResultCellIdsListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
@@ -3533,6 +9411,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultCellIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultCellIdsListener('petColors', 'fido', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3556,7 +9494,6 @@
  *
  * Unlike the addResultCellListener method, which returns a listener Id and
  * requires you to remove it manually, the useResultCellListener primitive
- * manages you to remove it manually, the useResultCellListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
@@ -3568,6 +9505,72 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useResultCellListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useResultCellListener(
+ *     'petColors',
+ *     'fido',
+ *     'color',
+ *     () => undefined,
+ *     queries,
+ *   );
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3592,6 +9595,66 @@
  * object, or provide an explicit reference.
  * @returns An object containing all parameter values for the query, or
  * undefined if the query doesn't exist.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useParamValues} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useParamValues('petColors', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3616,6 +9679,66 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns An array containing the parameter values and a function to set them.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useParamValuesState} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useParamValuesState('petColors', queries);
+ *   dispose();
+ * });
+ * ```
  * @category State primitives
  * @since v8.3.0
  */
@@ -3640,13 +9763,73 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns The value of the parameter, or undefined if it doesn't exist.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useParamValue} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useParamValue('petColors', 'species', queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
 /// ui-solid.useParamValue
 /**
  * The useParamValueState primitive returns a parameter value and a function to
- * set it, following the same pattern as Solid's useState primitive.
+ * set it, following the same pattern as Solid's createSignal convention.
  *
  * This is a convenience primitive that combines the useParamValue and
  * useSetParamValueCallback primitives. It's useful when you need both read and
@@ -3664,6 +9847,66 @@
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
  * @returns An array containing the parameter value and a function to set it.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useParamValueState} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useParamValueState('petColors', 'species', queries);
+ *   dispose();
+ * });
+ * ```
  * @category State primitives
  * @since v8.3.0
  */
@@ -3679,7 +9922,6 @@
  *
  * Unlike the addParamValuesListener method, which returns a listener Id and
  * requires you to remove it manually, the useParamValuesListener primitive
- * manages you to remove it manually, the useParamValuesListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
@@ -3688,6 +9930,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useParamValuesListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useParamValuesListener('petColors', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3711,7 +10013,6 @@
  *
  * Unlike the addParamValueListener method, which returns a listener Id and
  * requires you to remove it manually, the useParamValueListener primitive
- * manages you to remove it manually, the useParamValueListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
@@ -3721,6 +10022,66 @@
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useParamValueListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useParamValueListener('petColors', 'species', () => undefined, queries);
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3752,6 +10113,66 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Queries object and the parameter value used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetParamValueCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetParamValueCallback('petColors', 'species', () => 'cat', queries)();
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3781,6 +10202,70 @@
  * @param then A function which is called after the mutation, with a reference
  * to the Queries object and the parameter values used in the update.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetParamValuesCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetParamValuesCallback(
+ *     'petColors',
+ *     () => ({species: 'cat'}),
+ *     queries,
+ *   )();
+ *   dispose();
+ * });
+ * ```
  * @category Queries primitives
  * @since v8.3.0
  */
@@ -3805,6 +10290,66 @@
  * object for the Store, plus any additional steps such as adding definitions or
  * listeners, and returning it.
  * @returns A reference to the Checkpoints object.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreateCheckpoints} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreateCheckpoints(store, (store) => createCheckpoints(store));
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3813,6 +10358,66 @@
  * The useCheckpointsIds primitive is used to retrieve the Ids of all the named
  * Checkpoints objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpointsIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpointsIds();
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3833,6 +10438,66 @@
  * with an Id in the Provider.
  * @returns A reference to the Checkpoints object (or `undefined` if not within
  * a Provider context, or if the requested Checkpoints object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpoints} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpoints();
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3854,10 +10519,108 @@
  * itself.
  * @returns A reference to the Checkpoints object (or `undefined` if not within
  * a Provider context, or if the requested Checkpoints object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpointsOrCheckpointsById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpointsOrCheckpointsById(checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
 /// ui-solid.useCheckpointsOrCheckpointsById
+/**
+ * The useProvideCheckpoints primitive is used to add a Checkpoints object by Id
+ * to a Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Checkpoints object by Id in a context by using
+ * the `checkpointsById` prop of the top-level Provider component. This
+ * primitive, however, lets you dynamically add a new Checkpoints object to the
+ * context, from within a component. This is useful for applications where the
+ * set of Checkpoints objects is not known at the time of the first render of
+ * the root Provider.
+ *
+ * A Checkpoints object added to the Provider context in this way will be
+ * available to other components within the context (using the useCheckpoints
+ * primitive and so on). If you use the same Id as an existing Checkpoints
+ * object registration, the new one will take priority over one provided by the
+ * `checkpointsById` prop.
+ * @param checkpointsId The Id of the Checkpoints object to be registered with
+ * the Provider.
+ * @param checkpoints The Checkpoints object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {useProvideCheckpoints} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ *   const checkpoints = createCheckpoints(store);
+ *   useProvideCheckpoints('petCheckpoints', checkpoints);
+ *   console.log(JSON.stringify(checkpoints.getCheckpointIds()));
+ *   // -> '[[],"0",[]]'
+ *   dispose();
+ * });
+ * ```
+ * @category Checkpoints primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvideCheckpoints
 /**
  * The useCheckpointIds primitive returns an array of the checkpoint Ids being
  * managed by this Checkpoints object, and registers a listener so that any
@@ -3878,6 +10641,66 @@
  * Checkpoints object, or provide an explicit reference.
  * @returns A CheckpointIds array, containing the checkpoint Ids managed by this
  * Checkpoints object.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpointIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpointIds(checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3902,6 +10725,66 @@
  * Checkpoints object, or provide an explicit reference.
  * @returns A string label for the requested checkpoint, an empty string if it
  * was never set, or `undefined` if the checkpoint does not exist.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpoint} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpoint('0', checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3930,6 +10813,66 @@
  * new checkpoint Id, a reference to the Checkpoints object and the label
  * provided, if any.
  * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSetCheckpointCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSetCheckpointCallback(() => 'saved', checkpoints)();
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3948,6 +10891,66 @@
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
  * @returns A callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useGoBackwardCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useGoBackwardCallback(checkpoints)();
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3958,14 +10961,73 @@
  * an 'redo' on the Store data.
  *
  * This primitive is useful, for example, when creating an event handler that
- * will go forward to the next checkpoint - such as when clicking an redo
- * button.
+ * will go forward to the next checkpoint - such as when clicking a redo button.
  *
  * If there is no future checkpoint to return to, this callback has no effect.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
  * @returns A callback for subsequent use.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useGoForwardCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useGoForwardCallback(checkpoints)();
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -3994,6 +11056,66 @@
  * reference to the Checkpoints object and the checkpoint Id moved to.
  * @returns A parameterized callback for subsequent use. This parameter defaults
  * to an empty array.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useGoToCallback} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useGoToCallback(() => '0', checkpoints)();
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -4012,6 +11134,66 @@
  * a named context Checkpoints object, or provide an explicit reference.
  * @returns UndoOrRedoInformation about if and how you can move the state of the
  * underlying Store backward.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useUndoInformation} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useUndoInformation(checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -4021,7 +11203,7 @@
  * indicates if and how you can move the state of the underlying Store forwards
  * to a future checkpoint.
  *
- * This primitive is useful if you are building an redo button: the information
+ * This primitive is useful if you are building a redo button: the information
  * contains whether a redo action is available (to enable the button), the
  * callback to perform the redo action, the checkpoint Id that will be redone,
  * and its label, if available.
@@ -4030,6 +11212,66 @@
  * a named context Checkpoints object, or provide an explicit reference.
  * @returns UndoOrRedoInformation about if and how you can move the state of the
  * underlying Store forward.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useRedoInformation} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useRedoInformation(checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -4045,7 +11287,6 @@
  *
  * Unlike the addCheckpointIdsListener method, which returns a listener Id and
  * requires you to remove it manually, the useCheckpointIdsListener primitive
- * manages you to remove it manually, the useCheckpointIdsListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Checkpoints object will be deleted.
  * @param listener The function that will be called whenever the checkpoints
@@ -4053,6 +11294,66 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to register the
  * listener with: omit for the default context Checkpoints object, provide an Id
  * for a named context Checkpoints object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpointIdsListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpointIdsListener(() => undefined, checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -4072,7 +11373,6 @@
  *
  * Unlike the addCheckpointListener method, which returns a listener Id and
  * requires you to remove it manually, the useCheckpointListener primitive
- * manages you to remove it manually, the useCheckpointListener primitive
  * manages this lifecycle for you: when the component unmounts, the listener on
  * the underlying Checkpoints object will be deleted.
  * @param checkpointId The Id of the checkpoint to listen to, or `null` as a
@@ -4082,6 +11382,66 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to register the
  * listener with: omit for the default context Checkpoints object, provide an Id
  * for a named context Checkpoints object, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCheckpointListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCheckpointListener('0', () => undefined, checkpoints);
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints primitives
  * @since v8.3.0
  */
@@ -4096,6 +11456,66 @@
  * Persister being created every time the app renders or updates, since v5.0 the
  * this primitive performs the creation in an effect.
  * @returns A reference to the Persister.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreatePersister} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreatePersister(undefined, async () => undefined);
+ *   dispose();
+ * });
+ * ```
  * @category Persister primitives
  * @since v8.3.0
  */
@@ -4104,6 +11524,66 @@
  * The usePersisterIds primitive is used to retrieve the Ids of all the named
  * Persister objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {usePersisterIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   usePersisterIds();
+ *   dispose();
+ * });
+ * ```
  * @category Persister primitives
  * @since v8.3.0
  */
@@ -4124,6 +11604,66 @@
  * an Id in the Provider.
  * @returns A reference to the Persister object (or `undefined` if not within a
  * Provider context, or if the requested Persister object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {usePersister} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   usePersister();
+ *   dispose();
+ * });
+ * ```
  * @category Persister primitives
  * @since v8.3.0
  */
@@ -4144,10 +11684,109 @@
  * that was named with an Id in the Provider, or the Persister object itself.
  * @returns A reference to the Persister object (or `undefined` if not within a
  * Provider context, or if the requested Persister object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {usePersisterOrPersisterById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   usePersisterOrPersisterById();
+ *   dispose();
+ * });
+ * ```
  * @category Persister primitives
  * @since v8.3.0
  */
 /// ui-solid.usePersisterOrPersisterById
+/**
+ * The useProvidePersister primitive is used to add a Persister object by Id to
+ * a Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Persister object by Id in a context by using the
+ * `persistersById` prop of the top-level Provider component. This primitive,
+ * however, lets you dynamically add a new Persister object to the context, from
+ * within a component. This is useful for applications where the set of Persister
+ * objects is not known at the time of the first render of the root Provider.
+ *
+ * A Persister object added to the Provider context in this way will be
+ * available to other components within the context (using the usePersister
+ * primitive and so on). If you use the same Id as an existing Persister object
+ * registration, the new one will take priority over one provided by the
+ * `persistersById` prop.
+ * @param persisterId The Id of the Persister object to be registered with the
+ * Provider.
+ * @param persister The Persister object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {useProvidePersister} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ *   const persister = createSessionPersister(store, 'pets');
+ *   useProvidePersister('petPersister', persister);
+ *   console.log(persister.getStatus());
+ *   // -> 0
+ *   persister.destroy();
+ *   dispose();
+ * });
+ * ```
+ * @category Persister primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvidePersister
 /**
  * The usePersisterStatus primitive returns a the status of a Persister, and
  * registers a listener so that any changes to it will cause an update.
@@ -4167,6 +11806,66 @@
  * provide an explicit reference.
  * @returns The status of the Persister: 0 means idle, 1 means loading, and 2
  * means saving.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {usePersisterStatus} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   usePersisterStatus();
+ *   dispose();
+ * });
+ * ```
  * @category Persister primitives
  * @since v8.3.0
  */
@@ -4189,6 +11888,66 @@
  * @param persisterOrPersisterId The Persister to be accessed: omit for the
  * default context Persister, provide an Id for a named context Persister, or
  * provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {usePersisterStatusListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   usePersisterStatusListener(() => undefined);
+ *   dispose();
+ * });
+ * ```
  * @category Persister primitives
  * @since v8.3.0
  */
@@ -4220,6 +11979,66 @@
  * @param destroy An optional callback whenever the Synchronizer is destroyed
  * when its create function observes different reactive input.
  * @returns A reference to the Synchronizer.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useCreateSynchronizer} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useCreateSynchronizer(undefined, async () => undefined);
+ *   dispose();
+ * });
+ * ```
  * @category Synchronizer primitives
  * @since v8.3.0
  */
@@ -4228,6 +12047,66 @@
  * The useSynchronizerIds primitive is used to retrieve the Ids of all the named
  * Synchronizer objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSynchronizerIds} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSynchronizerIds();
+ *   dispose();
+ * });
+ * ```
  * @category Synchronizer primitives
  * @since v8.3.0
  */
@@ -4248,6 +12127,66 @@
  * with an Id in the Provider.
  * @returns A reference to the Synchronizer object (or `undefined` if not within
  * a Provider context, or if the requested Synchronizer object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSynchronizer} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSynchronizer();
+ *   dispose();
+ * });
+ * ```
  * @category Synchronizer primitives
  * @since v8.3.0
  */
@@ -4269,10 +12208,115 @@
  * itself.
  * @returns A reference to the Synchronizer object (or `undefined` if not within
  * a Provider context, or if the requested Synchronizer object does not exist).
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSynchronizerOrSynchronizerById} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSynchronizerOrSynchronizerById();
+ *   dispose();
+ * });
+ * ```
  * @category Synchronizer primitives
  * @since v8.3.0
  */
 /// ui-solid.useSynchronizerOrSynchronizerById
+/**
+ * The useProvideSynchronizer primitive is used to add a Synchronizer object by
+ * Id to a Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Synchronizer object by Id in a context by using
+ * the `synchronizersById` prop of the top-level Provider component. This
+ * primitive, however, lets you dynamically add a new Synchronizer object to the
+ * context, from within a component. This is useful for applications where the
+ * set of Synchronizer objects is not known at the time of the first render of
+ * the root Provider.
+ *
+ * A Synchronizer object added to the Provider context in this way will be
+ * available to other components within the context (using the useSynchronizer
+ * primitive and so on). If you use the same Id as an existing Synchronizer
+ * object registration, the new one will take priority over one provided by the
+ * `synchronizersById` prop.
+ * @param synchronizerId The Id of the Synchronizer object to be registered with
+ * the Provider.
+ * @param synchronizer The Synchronizer object to be registered.
+ * @example
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {useProvideSynchronizer} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createMergeableStore().setCell(
+ *     'pets',
+ *     'fido',
+ *     'color',
+ *     'brown',
+ *   );
+ *   const synchronizer = createLocalSynchronizer(store);
+ *   useProvideSynchronizer('petSynchronizer', synchronizer);
+ *   console.log(synchronizer.getStatus());
+ *   // -> 0
+ *   synchronizer.destroy();
+ *   dispose();
+ * });
+ * ```
+ * @category Synchronizer primitives
+ * @since v8.3.0
+ */
+/// ui-solid.useProvideSynchronizer
 /**
  * The useSynchronizerStatus primitive returns a the status of a Synchronizer,
  * and registers a listener so that any changes to it will cause an update.
@@ -4292,6 +12336,66 @@
  * Synchronizer, or provide an explicit reference.
  * @returns The status of the Synchronizer: 0 means idle, 1 means loading, and 2
  * means saving.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSynchronizerStatus} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSynchronizerStatus();
+ *   dispose();
+ * });
+ * ```
  * @category Synchronizer primitives
  * @since v8.3.0
  */
@@ -4306,14 +12410,73 @@
  *
  * Unlike the addStatusListener method, which returns a listener Id and requires
  * you to remove it manually, the useSynchronizerStatusListener primitive
- * manages you to remove it manually, the useStatusListener primitive manages
- * this lifecycle for you: when the component unmounts, the listener on the
- * underlying Synchronizer will be deleted.
+ * manages this lifecycle for you: when the component unmounts, the listener on
+ * the underlying Synchronizer will be deleted.
  * @param listener The function that will be called whenever the status of the
  * Synchronizer changes.
  * @param synchronizerOrSynchronizerId The Synchronizer to be accessed: omit for
  * the default context Synchronizer, provide an Id for a named context
  * Synchronizer, or provide an explicit reference.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {useSynchronizerStatusListener} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   useSynchronizerStatusListener(() => undefined);
+ *   dispose();
+ * });
+ * ```
  * @category Synchronizer primitives
  * @since v8.3.0
  */
@@ -5501,6 +13664,66 @@
  * any changes to the specified Cell will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Cell, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {CellView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   CellView({tableId: 'pets', rowId: 'fido', cellId: 'color', store});
+ *   dispose();
+ * });
+ * ```
  * @category Store components
  * @since v8.3.0
  */
@@ -5530,6 +13753,66 @@
  * to the structure of the Row will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {RowView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   RowView({tableId: 'pets', rowId: 'fido', store});
+ *   dispose();
+ * });
+ * ```
  * @category Store components
  * @since v8.3.0
  */
@@ -5561,6 +13844,66 @@
  * prescribed set of the Table's Cells in a given order for each Row.
  * @param props The props for this component.
  * @returns A rendering of the Table, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {SortedTableView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   SortedTableView({tableId: 'pets', cellId: 'species', store});
+ *   dispose();
+ * });
+ * ```
  * @category Store components
  * @since v8.3.0
  */
@@ -5590,13 +13933,73 @@
  * prescribed set of the Table's Cells in a given order for each Row.
  * @param props The props for this component.
  * @returns A rendering of the Table, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {TableView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   TableView({tableId: 'pets', store});
+ *   dispose();
+ * });
+ * ```
  * @category Store components
  * @since v8.3.0
  */
 /// ui-solid.TableView
 /**
  * The TablesView component renders the tabular contents of a Store, and
- * registers a listener so that any changes to that result will cause a update.
+ * registers a listener so that any changes to that result will cause an update.
  *
  * The component's props can identify which Store to render - either the default
  * context Store, a named context Store, or an explicit reference.
@@ -5647,13 +14050,73 @@
  * any changes to the specified Value will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Value, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ValueView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ValueView({valueId: 'open', store});
+ *   dispose();
+ * });
+ * ```
  * @category Store components
  * @since v8.3.0
  */
 /// ui-solid.ValueView
 /**
  * The ValuesView component renders the keyed value contents of a Store, and
- * registers a listener so that any changes to that result will cause a update.
+ * registers a listener so that any changes to that result will cause an update.
  *
  * The component's props can identify which Store to render - either the default
  * context Store, a named context Store, or an explicit reference.
@@ -5672,6 +14135,66 @@
  * that any changes to the Store's Values will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Values, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ValuesView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ValuesView({store});
+ *   dispose();
+ * });
+ * ```
  * @category Store components
  * @since v8.3.0
  */
@@ -5688,6 +14211,66 @@
  * that any changes to the Metric will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Metric, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {MetricView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   MetricView({metricId: 'highestPrice', metrics});
+ *   dispose();
+ * });
+ * ```
  * @category Metrics components
  * @since v8.3.0
  */
@@ -5710,6 +14293,66 @@
  * means that any changes to the structure of the Slice will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Slice, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {SliceView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   SliceView({indexId: 'bySpecies', sliceId: 'dog', indexes});
+ *   dispose();
+ * });
+ * ```
  * @category Indexes components
  * @since v8.3.0
  */
@@ -5733,6 +14376,66 @@
  * that any changes to the structure of the Index will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the Index, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {IndexView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   IndexView({indexId: 'bySpecies', indexes});
+ *   dispose();
+ * });
+ * ```
  * @category Indexes components
  * @since v8.3.0
  */
@@ -5758,6 +14461,70 @@
  * update.
  * @param props The props for this component.
  * @returns A rendering of the remote Row, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {RemoteRowView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   RemoteRowView({
+ *     relationshipId: 'petSpecies',
+ *     localRowId: 'fido',
+ *     relationships,
+ *   });
+ *   dispose();
+ * });
+ * ```
  * @category Relationships components
  * @since v8.3.0
  */
@@ -5783,6 +14550,70 @@
  * update.
  * @param props The props for this component.
  * @returns A rendering of the local Row objects, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {LocalRowsView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   LocalRowsView({
+ *     relationshipId: 'petSpecies',
+ *     remoteRowId: 'dog',
+ *     relationships,
+ *   });
+ *   dispose();
+ * });
+ * ```
  * @category Relationships components
  * @since v8.3.0
  */
@@ -5808,6 +14639,70 @@
  * update.
  * @param props The props for this component.
  * @returns A rendering of the local Row objects, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {LinkedRowsView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   LinkedRowsView({
+ *     relationshipId: 'nextPet',
+ *     firstRowId: 'fido',
+ *     relationships,
+ *   });
+ *   dispose();
+ * });
+ * ```
  * @category Relationships components
  * @since v8.3.0
  */
@@ -5830,6 +14725,71 @@
  * that any changes to the specified Cell will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the result Cell, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ResultCellView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ResultCellView({
+ *     queryId: 'petColors',
+ *     rowId: 'fido',
+ *     cellId: 'color',
+ *     queries,
+ *   });
+ *   dispose();
+ * });
+ * ```
  * @category Queries components
  * @since v8.3.0
  */
@@ -5859,6 +14819,66 @@
  * update.
  * @param props The props for this component.
  * @returns A rendering of the result Row, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ResultRowView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ResultRowView({queryId: 'petColors', rowId: 'fido', queries});
+ *   dispose();
+ * });
+ * ```
  * @category Queries components
  * @since v8.3.0
  */
@@ -5888,6 +14908,66 @@
  * will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the ResultTable, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ResultSortedTableView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ResultSortedTableView({queryId: 'petColors', cellId: 'color', queries});
+ *   dispose();
+ * });
+ * ```
  * @category Queries components
  * @since v8.3.0
  */
@@ -5913,6 +14993,66 @@
  * update.
  * @param props The props for this component.
  * @returns A rendering of the ResultTable, or nothing, if not present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ResultTableView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ResultTableView({queryId: 'petColors', queries});
+ *   dispose();
+ * });
+ * ```
  * @category Queries components
  * @since v8.3.0
  */
@@ -5932,6 +15072,66 @@
  * update.
  * @param props The props for this component.
  * @returns A rendering of the checkpoint: its label if present, or Id.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {CheckpointView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   CheckpointView({checkpointId: '0', checkpoints});
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints components
  * @since v8.3.0
  */
@@ -5953,9 +15153,69 @@
  *
  * This component uses the useCheckpointIds primitive under the covers, which
  * means that any changes to the checkpoint Ids in the Checkpoints object will
- * cause a update.
+ * cause an update.
  * @param props The props for this component.
  * @returns A rendering of the previous checkpoints, if present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {BackwardCheckpointsView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   BackwardCheckpointsView({checkpoints});
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints components
  * @since v8.3.0
  */
@@ -5979,6 +15239,66 @@
  * will cause an update.
  * @param props The props for this component.
  * @returns A rendering of the current checkpoint, if present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {CurrentCheckpointView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   CurrentCheckpointView({checkpoints});
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints components
  * @since v8.3.0
  */
@@ -6000,9 +15320,69 @@
  *
  * This component uses the useCheckpointIds primitive under the covers, which
  * means that any changes to the checkpoint Ids in the Checkpoints object will
- * cause a update.
+ * cause an update.
  * @param props The props for this component.
  * @returns A rendering of the future checkpoints, if present.
+ * @example
+ * This example creates the TinyBase objects needed by the Solid primitive or
+ * component and calls it from within a reactive root.
+ *
+ * ```js
+ * import {createRoot} from 'solid-js';
+ * import {
+ *   createCheckpoints,
+ *   createIndexes,
+ *   createMetrics,
+ *   createQueries,
+ *   createRelationships,
+ *   createStore,
+ * } from 'tinybase';
+ * import {ForwardCheckpointsView} from 'tinybase/ui-solid';
+ *
+ * createRoot((dispose) => {
+ *   const store = createStore()
+ *     .setTables({
+ *       pets: {
+ *         fido: {species: 'dog', color: 'brown', next: 'felix'},
+ *         felix: {species: 'cat', color: 'black'},
+ *       },
+ *       species: {dog: {price: 5}, cat: {price: 4}},
+ *     })
+ *     .setValues({open: true});
+ *   const metrics = createMetrics(store).setMetricDefinition(
+ *     'highestPrice',
+ *     'species',
+ *     'max',
+ *     'price',
+ *   );
+ *   const indexes = createIndexes(store).setIndexDefinition(
+ *     'bySpecies',
+ *     'pets',
+ *     'species',
+ *   );
+ *   const relationships = createRelationships(store)
+ *     .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+ *     .setRelationshipDefinition('nextPet', 'pets', 'pets', 'next');
+ *   const queries = createQueries(store).setQueryDefinition(
+ *     'petColors',
+ *     'pets',
+ *     ({select, where, param}) => {
+ *       select('color');
+ *       where((getCell) => getCell('species') == param('species'));
+ *     },
+ *     {species: 'dog'},
+ *   );
+ *   const checkpoints = createCheckpoints(store);
+ *   store.setCell('pets', 'fido', 'color', 'walnut');
+ *   checkpoints.setCheckpoint('updated color');
+ *   metrics.getMetric('highestPrice');
+ *   indexes.getSliceIds('bySpecies');
+ *   relationships.getRemoteRowId('petSpecies', 'fido');
+ *   queries.getResultRowIds('petColors');
+ *   ForwardCheckpointsView({checkpoints});
+ *   dispose();
+ * });
+ * ```
  * @category Checkpoints components
  * @since v8.3.0
  */

@@ -116,6 +116,7 @@ export type SynchronizerOrSynchronizerId = Synchronizer | Id;
 /// ui-solid.UndoOrRedoInformation
 export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
+/// ui-solid.GetId
 export type GetId<Parameter> = (parameter: Parameter, store: Store) => Id;
 
 /// ui-solid.useCreateStore
@@ -643,6 +644,7 @@ export function useMetricsOrMetricsById(
   metricsOrMetricsId?: MaybeAccessor<MetricsOrMetricsId | undefined>,
 ): Accessor<Metrics | undefined>;
 
+/// ui-solid.useProvideMetrics
 export function useProvideMetrics(metricsId: Id, metrics: Metrics): void;
 
 /// ui-solid.useMetricIds
@@ -682,6 +684,7 @@ export function useIndexesOrIndexesById(
   indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
 ): Accessor<Indexes | undefined>;
 
+/// ui-solid.useProvideIndexes
 export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 
 /// ui-solid.useIndexIds
@@ -738,6 +741,7 @@ export function useRelationshipsOrRelationshipsById(
   >,
 ): Accessor<Relationships | undefined>;
 
+/// ui-solid.useProvideRelationships
 export function useProvideRelationships(
   relationshipsId: Id,
   relationships: Relationships,
@@ -826,6 +830,7 @@ export function useQueriesOrQueriesById(
   queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId | undefined>,
 ): Accessor<Queries | undefined>;
 
+/// ui-solid.useProvideQueries
 export function useProvideQueries(queriesId: Id, queries: Queries): void;
 
 /// ui-solid.useQueryIds
@@ -1032,6 +1037,7 @@ export function useCheckpointsOrCheckpointsById(
   >,
 ): Accessor<Checkpoints | undefined>;
 
+/// ui-solid.useProvideCheckpoints
 export function useProvideCheckpoints(
   checkpointsId: Id,
   checkpoints: Checkpoints,
@@ -1145,6 +1151,7 @@ export function usePersisterOrPersisterById(
   persisterOrPersisterId?: MaybeAccessor<PersisterOrPersisterId | undefined>,
 ): Accessor<AnyPersister | undefined>;
 
+/// ui-solid.useProvidePersister
 export function useProvidePersister(
   persisterId: Id,
   persister: AnyPersister,
@@ -1185,6 +1192,7 @@ export function useSynchronizerOrSynchronizerById(
   >,
 ): Accessor<Synchronizer | undefined>;
 
+/// ui-solid.useProvideSynchronizer
 export function useProvideSynchronizer(
   synchronizerId: Id,
   synchronizer: Synchronizer,
