@@ -1448,8 +1448,8 @@
    * });
    *
    * await persister.load();
-   * // -> `Status changed to 1`
-   * // -> `Status changed to 0`
+   * // -> 'Status changed to 1'
+   * // -> 'Status changed to 0'
    *
    * persister.delListener(listenerId);
    *

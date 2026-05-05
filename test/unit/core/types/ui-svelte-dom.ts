@@ -20,11 +20,6 @@ type _UiSvelteDomWithSchemas = UiSvelteDom.WithSchemas<
   [typeof _tablesSchema, typeof _valuesSchema]
 >;
 
-const GoodCellView = undefined as unknown as Component<{
-  readonly tableId: 't0' | 't1';
-  readonly rowId: Id;
-  readonly cellId: 'c0' | 'c1' | 'c1d';
-}>;
 const GoodT1C1CellView = undefined as unknown as Component<{
   readonly tableId: 't1';
   readonly rowId: Id;

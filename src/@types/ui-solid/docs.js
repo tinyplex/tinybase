@@ -11755,8 +11755,9 @@
  * Normally you will register a Persister object by Id in a context by using the
  * `persistersById` prop of the top-level Provider component. This primitive,
  * however, lets you dynamically add a new Persister object to the context, from
- * within a component. This is useful for applications where the set of Persister
- * objects is not known at the time of the first render of the root Provider.
+ * within a component. This is useful for applications where the set of
+ * Persister objects is not known at the time of the first render of the root
+ * Provider.
  *
  * A Persister object added to the Provider context in this way will be
  * available to other components within the context (using the usePersister

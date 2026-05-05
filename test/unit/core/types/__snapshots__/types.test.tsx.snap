@@ -4248,19 +4248,19 @@ exports[`Types in ui-svelte.ts > 865:20 1`] = `"Argument of type 'Store<[NoTable
 
 exports[`Types in ui-svelte.ts > 866:20 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
-exports[`Types in ui-svelte-dom.ts > 43:11 1`] = `"Cannot assign to 'tableId' because it is a read-only property."`;
+exports[`Types in ui-svelte-dom.ts > 38:11 1`] = `"Cannot assign to 'tableId' because it is a read-only property."`;
 
-exports[`Types in ui-svelte-dom.ts > 51:12 1`] = `"Cannot assign to 'cellId' because it is a read-only property."`;
+exports[`Types in ui-svelte-dom.ts > 46:12 1`] = `"Cannot assign to 'cellId' because it is a read-only property."`;
 
-exports[`Types in ui-svelte-dom.ts > 56:12 1`] = `"Cannot assign to 'valueComponent' because it is a read-only property."`;
+exports[`Types in ui-svelte-dom.ts > 51:12 1`] = `"Cannot assign to 'valueComponent' because it is a read-only property."`;
 
-exports[`Types in ui-svelte-dom.ts > 65:18 1`] = `"Cannot assign to 'cellId' because it is a read-only property."`;
+exports[`Types in ui-svelte-dom.ts > 60:18 1`] = `"Cannot assign to 'cellId' because it is a read-only property."`;
 
-exports[`Types in ui-svelte-dom.ts > 72:19 1`] = `"Cannot assign to 'valueId' because it is a read-only property."`;
+exports[`Types in ui-svelte-dom.ts > 67:19 1`] = `"Cannot assign to 'valueId' because it is a read-only property."`;
 
-exports[`Types in ui-svelte-dom.ts > 77:4 1`] = `"Type '{ c1d: { component: Component<{ readonly tableId: "t1"; readonly rowId: Id; readonly cellId: "c1"; }, {}, string>; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+exports[`Types in ui-svelte-dom.ts > 72:4 1`] = `"Type '{ c1d: { component: Component<{ readonly tableId: "t1"; readonly rowId: Id; readonly cellId: "c1"; }, {}, string>; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
 
-exports[`Types in ui-svelte-dom.ts > 81:4 1`] = `"Type '{ c1: { component: Component<{ readonly tableId: "t0" | "t1"; readonly rowId: Id; readonly cellId: "c0" | "c2"; }, {}, string>; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+exports[`Types in ui-svelte-dom.ts > 76:4 1`] = `"Type '{ c1: { component: Component<{ readonly tableId: "t0" | "t1"; readonly rowId: Id; readonly cellId: "c0" | "c2"; }, {}, string>; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
 
 exports[`Types in ui-svelte-inspector.ts > 5:6 1`] = `"Cannot assign to 'position' because it is a read-only property."`;
 

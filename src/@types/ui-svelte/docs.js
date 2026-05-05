@@ -1273,7 +1273,8 @@
  * @param props The props for this component.
  * @returns A rendering of the backward checkpoint Ids.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1318,7 +1319,8 @@
  * @param props The props for this component.
  * @returns A rendering of the Cell, or nothing if not present.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1360,7 +1362,8 @@
  * @param props The props for this component.
  * @returns A rendering of the checkpoint label.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1403,7 +1406,8 @@
  * @param props The props for this component.
  * @returns A rendering of the current checkpoint.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1448,7 +1452,8 @@
  * @param props The props for this component.
  * @returns A rendering of the forward checkpoint Ids.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1492,7 +1497,8 @@
  * @param props The props for this component.
  * @returns A rendering of the slices.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1501,7 +1507,8 @@
  *   export let indexes;
  * </script>
  *
- * <IndexView indexId="bySpecies" {indexes}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <IndexView indexId="bySpecies" {indexes} {separator}>
  *   {#snippet slice(sliceId)}{sliceId}{/snippet}
  * </IndexView>
  * ```
@@ -1528,7 +1535,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {indexes}}));
  * console.log(app.textContent);
- * // -> 'dogcat'
+ * // -> 'dog cat'
  * ```
  * @category Component
  * @since v8.1.0
@@ -1541,7 +1548,8 @@
  * @param props The props for this component.
  * @returns A rendering of the linked Row Ids.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1550,7 +1558,13 @@
  *   export let relationships;
  * </script>
  *
- * <LinkedRowsView relationshipId="nextPet" firstRowId="fido" {relationships}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <LinkedRowsView
+ *   relationshipId="nextPet"
+ *   firstRowId="fido"
+ *   {relationships}
+ *   {separator}
+ * >
  *   {#snippet row(rowId)}{rowId}{/snippet}
  * </LinkedRowsView>
  * ```
@@ -1578,7 +1592,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {relationships}}));
  * console.log(app.textContent);
- * // -> 'fidofelix'
+ * // -> 'fido felix'
  * ```
  * @category Component
  * @since v8.1.0
@@ -1591,7 +1605,8 @@
  * @param props The props for this component.
  * @returns A rendering of the local Row Ids.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1641,7 +1656,8 @@
  * @param props The props for this component.
  * @returns A rendering of the Metric value.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1688,7 +1704,8 @@
  * @param props The props for this component.
  * @returns A rendering of the remote Row.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1738,7 +1755,8 @@
  * @param props The props for this component.
  * @returns A rendering of the result Cell.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1785,7 +1803,8 @@
  * @param props The props for this component.
  * @returns A rendering of the result Row.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1834,7 +1853,8 @@
  * @param props The props for this component.
  * @returns A rendering of the sorted result Table.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1843,7 +1863,13 @@
  *   export let queries;
  * </script>
  *
- * <ResultSortedTableView queryId="petColors" cellId="color" {queries}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <ResultSortedTableView
+ *   queryId="petColors"
+ *   cellId="color"
+ *   {queries}
+ *   {separator}
+ * >
  *   {#snippet row(rowId)}{rowId}{/snippet}
  * </ResultSortedTableView>
  * ```
@@ -1870,7 +1896,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {queries}}));
  * console.log(app.textContent);
- * // -> 'felixfido'
+ * // -> 'felix fido'
  * ```
  * @category Component
  * @since v8.1.0
@@ -1883,7 +1909,8 @@
  * @param props The props for this component.
  * @returns A rendering of the result Table.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1892,7 +1919,8 @@
  *   export let queries;
  * </script>
  *
- * <ResultTableView queryId="petColors" {queries}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <ResultTableView queryId="petColors" {queries} {separator}>
  *   {#snippet row(rowId)}{rowId}{/snippet}
  * </ResultTableView>
  * ```
@@ -1919,7 +1947,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {queries}}));
  * console.log(app.textContent);
- * // -> 'fidofelix'
+ * // -> 'fido felix'
  * ```
  * @category Component
  * @since v8.1.0
@@ -1932,7 +1960,8 @@
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing if not present.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -1974,7 +2003,8 @@
  * @param props The props for this component.
  * @returns A rendering of the Rows in the Slice.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -2023,7 +2053,8 @@
  * @param props The props for this component.
  * @returns A rendering of the sorted Table.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -2032,7 +2063,8 @@
  *   export let store;
  * </script>
  *
- * <SortedTableView tableId="pets" cellId="sold" {store}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <SortedTableView tableId="pets" cellId="sold" {store} {separator}>
  *   {#snippet row(rowId)}{rowId}{/snippet}
  * </SortedTableView>
  * ```
@@ -2054,7 +2086,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.textContent);
- * // -> 'fidofelix'
+ * // -> 'fido felix'
  * ```
  * @category Component
  * @since v8.1.0
@@ -2066,7 +2098,8 @@
  * @param props The props for this component.
  * @returns A rendering of the Table.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -2075,7 +2108,8 @@
  *   export let store;
  * </script>
  *
- * <TableView tableId="pets" {store}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <TableView tableId="pets" {store} {separator}>
  *   {#snippet row(rowId)}{rowId}{/snippet}
  * </TableView>
  * ```
@@ -2097,7 +2131,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.textContent);
- * // -> 'fidofelix'
+ * // -> 'fido felix'
  * ```
  * @category Component
  * @since v8.1.0
@@ -2110,7 +2144,8 @@
  * @param props The props for this component.
  * @returns A rendering of all Tables.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -2119,7 +2154,8 @@
  *   export let store;
  * </script>
  *
- * <TablesView {store}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <TablesView {store} {separator}>
  *   {#snippet table(tableId)}{tableId}{/snippet}
  * </TablesView>
  * ```
@@ -2141,7 +2177,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.textContent);
- * // -> 'petsspecies'
+ * // -> 'pets species'
  * ```
  * @category Component
  * @since v8.1.0
@@ -2154,7 +2190,8 @@
  * @param props The props for this component.
  * @returns A rendering of the Value, or nothing if not present.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -2195,7 +2232,8 @@
  * @param props The props for this component.
  * @returns A rendering of all Values.
  * @example
- * This example creates TinyBase objects outside the component and renders the Svelte component with them.
+ * This example creates TinyBase objects outside the component and renders
+ * the Svelte component with them.
  *
  * ```svelte file=App.svelte
  * <script>
@@ -2204,7 +2242,8 @@
  *   export let store;
  * </script>
  *
- * <ValuesView {store}>
+ * {#snippet separator()}{' '}{/snippet}
+ * <ValuesView {store} {separator}>
  *   {#snippet value(valueId)}{valueId}{/snippet}
  * </ValuesView>
  * ```
@@ -2226,7 +2265,7 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.textContent);
- * // -> 'openemployees'
+ * // -> 'open employees'
  * ```
  * @category Component
  * @since v8.1.0
@@ -2239,7 +2278,8 @@
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2285,7 +2325,8 @@
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Tables property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2318,7 +2359,32 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.textContent);
- * // -> '{"pets":{"fido":{"species":"dog","color":"brown","sold":false,"next":"felix"},"felix":{"species":"cat","color":"black","sold":true}},"species":{"dog":{"price":5},"cat":{"price":4}}}'
+ * // ->
+ * `
+ * {
+ *   "pets":{
+ *     "fido":{
+ *       "species":"dog",
+ *       "color":"brown",
+ *       "sold":false,
+ *       "next":"felix"
+ *     },
+ *     "felix":{
+ *       "species":"cat",
+ *       "color":"black",
+ *       "sold":true
+ *     }
+ *   },
+ *   "species":{
+ *     "dog":{
+ *       "price":5
+ *     },
+ *     "cat":{
+ *       "price":4
+ *     }
+ *   }
+ * }
+ * `;
  * ```
  * @category Getter
  * @since v8.1.0
@@ -2331,7 +2397,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2378,7 +2445,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2425,7 +2493,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Table property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2458,7 +2527,22 @@
  * const app = document.body.appendChild(document.createElement('div'));
  * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.textContent);
- * // -> '{"fido":{"species":"dog","color":"brown","sold":false,"next":"felix"},"felix":{"species":"cat","color":"black","sold":true}}'
+ * // ->
+ * `
+ * {
+ *   "fido":{
+ *     "species":"dog",
+ *     "color":"brown",
+ *     "sold":false,
+ *     "next":"felix"
+ *   },
+ *   "felix":{
+ *     "species":"cat",
+ *     "color":"black",
+ *     "sold":true
+ *   }
+ * }
+ * `;
  * ```
  * @category Getter
  * @since v8.1.0
@@ -2472,7 +2556,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2520,7 +2605,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2567,7 +2653,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` number property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2614,7 +2701,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2665,7 +2753,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2713,7 +2802,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2761,7 +2851,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Row property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2809,7 +2900,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2858,7 +2950,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2919,7 +3012,8 @@
  * // $: console.log(name.current); // 'Fido'
  * ```
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -2965,7 +3059,8 @@
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3010,7 +3105,8 @@
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Values property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3056,7 +3152,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3103,7 +3200,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3153,7 +3251,8 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with gettable and settable `current`.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3198,7 +3297,8 @@
  * @param id An optional Id of a named Store in the Provider context.
  * @returns The Store, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3246,7 +3346,8 @@
  * @param storeOrStoreId The Store, its Id, or a getter returning either.
  * @returns A getter function returning the Store, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3293,7 +3394,8 @@
  * registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3341,7 +3443,8 @@
  * @param id An optional Id of a named Metrics object in the Provider context.
  * @returns The Metrics object, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3395,7 +3498,8 @@
  * either.
  * @returns A getter function returning the Metrics object, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3447,7 +3551,8 @@
  * Metrics objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3501,7 +3606,8 @@
  * @param metricsOrMetricsId The Metrics object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3555,7 +3661,8 @@
  * Id.
  * @returns A reactive object with a `current` number | undefined property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3606,7 +3713,8 @@
  * @param id An optional Id of a named Indexes object in the Provider context.
  * @returns The Indexes object, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3660,7 +3768,8 @@
  * either.
  * @returns A getter function returning the Indexes object, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3669,7 +3778,9 @@
  *   import {resolveIndexes, getIndexesIds} from 'tinybase/ui-svelte';
  * </script>
  *
- * {resolveIndexes('petIndexes')()?.getSliceRowIds('bySpecies', 'dog')?.join(',')}
+ * {resolveIndexes('petIndexes')()
+ *   ?.getSliceRowIds('bySpecies', 'dog')
+ *   ?.join(',')}
  * ```
  *
  * ```svelte file=App.svelte
@@ -3714,7 +3825,8 @@
  * @param indexId The Id of the index, or a getter returning it.
  * @returns An object with `store` and `tableId` getter properties.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3763,7 +3875,8 @@
  * Indexes objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -3817,7 +3930,8 @@
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3870,7 +3984,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3924,7 +4039,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -3974,7 +4090,8 @@
  * @param id An optional Id of a named Queries object in the Provider context.
  * @returns The Queries object, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -4028,7 +4145,8 @@
  * either.
  * @returns A getter function returning the Queries object, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -4037,7 +4155,11 @@
  *   import {resolveQueries, getQueriesIds} from 'tinybase/ui-svelte';
  * </script>
  *
- * {resolveQueries('petQueries')()?.getResultCell('petSpecies', 'fido', 'species')}
+ * {resolveQueries('petQueries')()?.getResultCell(
+ *   'petSpecies',
+ *   'fido',
+ *   'species',
+ * )}
  * ```
  *
  * ```svelte file=App.svelte
@@ -4080,7 +4202,8 @@
  * Queries objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -4134,7 +4257,8 @@
  * @param queriesOrQueriesId The Queries object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4187,7 +4311,8 @@
  * Id.
  * @returns A reactive object with a `current` Table property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4240,7 +4365,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4293,7 +4419,8 @@
  * Id.
  * @returns A reactive object with a `current` number property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4346,7 +4473,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4403,7 +4531,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4413,7 +4542,8 @@
  *
  *   let {queries} = $props();
  *
- *   const result = getResultSortedRowIds('petColors', 'color', false, 0, undefined, queries);
+ *   const result = getResultSortedRowIds(
+ * 'petColors', 'color', false, 0, undefined, queries);
  * </script>
  *
  * {JSON.stringify(result.current)}
@@ -4457,7 +4587,8 @@
  * Id.
  * @returns A reactive object with a `current` Row property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4511,7 +4642,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4566,7 +4698,8 @@
  * Id.
  * @returns A reactive object with a `current` Cell | undefined property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4617,7 +4750,8 @@
  * context.
  * @returns The Relationships object, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -4673,16 +4807,19 @@
  * @returns A getter function returning the Relationships object, or
  * `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
  *
  * <script>
- *   import {resolveRelationships, getRelationshipsIds} from 'tinybase/ui-svelte';
+ *   import {resolveRelationships, getRelationshipsIds}
+ * from 'tinybase/ui-svelte';
  * </script>
  *
- * {resolveRelationships('petRelationships')()?.getRemoteRowId('petSpecies', 'fido')}
+ * {resolveRelationships('petRelationships')()
+ * ?.getRemoteRowId('petSpecies', 'fido')}
  * ```
  *
  * ```svelte file=App.svelte
@@ -4730,7 +4867,8 @@
  * @returns An object with `store`, `localTableId`, and `remoteTableId` getter
  * properties.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4777,7 +4915,8 @@
  * all Relationships objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -4833,7 +4972,8 @@
  * Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4885,7 +5025,8 @@
  * or getter), or its Id.
  * @returns A reactive object with a `current` Id | undefined property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4937,7 +5078,8 @@
  * or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -4989,7 +5131,8 @@
  * or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -5038,7 +5181,8 @@
  * context.
  * @returns The Checkpoints object, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5088,7 +5232,8 @@
  * returning either.
  * @returns A getter function returning the Checkpoints object, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5136,7 +5281,8 @@
  * Checkpoints objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5187,7 +5333,8 @@
  * getter), or its Id.
  * @returns A reactive object with a `current` CheckpointIds property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -5236,7 +5383,8 @@
  * getter), or its Id.
  * @returns A reactive object with a `current` string | undefined property.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -5282,7 +5430,8 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -5329,7 +5478,8 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
  * @example
- * This example passes a TinyBase object into a Svelte component and reads the reactive object's `current` property.
+ * This example passes a TinyBase object into a Svelte component and reads
+ * the reactive object's `current` property.
  *
  * ```svelte file=App.svelte
  * <svelte:options runes={true} />
@@ -5376,7 +5526,8 @@
  * @param id An optional Id of a named Persister in the Provider context.
  * @returns The Persister, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5433,7 +5584,8 @@
  * returning either.
  * @returns A getter function returning the Persister object, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5488,7 +5640,8 @@
  * Persisters registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5545,7 +5698,8 @@
  * @param persisterOrPersisterId The Persister to use, or its Id.
  * @returns A reactive object with a `current` Status property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5601,7 +5755,8 @@
  * @param id An optional Id of a named Synchronizer in the Provider context.
  * @returns The Synchronizer, or `undefined` if not found.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5651,7 +5806,8 @@
  * getter returning either.
  * @returns A getter function returning the Synchronizer object, or `undefined`.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5699,7 +5855,8 @@
  * Synchronizers registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -5749,7 +5906,8 @@
  * @param synchronizerOrSynchronizerId The Synchronizer to use, or its Id.
  * @returns A reactive object with a `current` Status property.
  * @example
- * This example reads a TinyBase object from Svelte context inside a child component.
+ * This example reads a TinyBase object from Svelte context inside a child
+ * component.
  *
  * ```svelte file=Child.svelte
  * <svelte:options runes={true} />
@@ -6300,7 +6458,8 @@
  *   let {store} = $props();
  *   let seen = $state('');
  *
- *   onSortedRowIds('pets', 'species', false, 0, undefined, () => (seen = 'changed'), false, store);
+ *   onSortedRowIds('pets', 'species', false, 0, undefined, () =>
+ *  (seen = 'changed'), false, store);
  * </script>
  *
  * {seen}
@@ -6522,7 +6681,8 @@
  *   let {store} = $props();
  *   let seen = $state('');
  *
- *   onHasCell('pets', 'fido', 'species', () => (seen = 'changed'), false, store);
+ *   onHasCell('pets', 'fido', 'species', () => (seen = 'changed'),
+ * false, store);
  * </script>
  *
  * {seen}
@@ -7221,7 +7381,8 @@
  *   let {relationships} = $props();
  *   let seen = $state('');
  *
- *   onRemoteRowId('petSpecies', 'fido', () => (seen = 'changed'), relationships);
+ *   onRemoteRowId('petSpecies', 'fido',
+ *  () => (seen = 'changed'), relationships);
  * </script>
  *
  * {seen}
@@ -7279,7 +7440,8 @@
  *   let {relationships} = $props();
  *   let seen = $state('');
  *
- *   onLocalRowIds('petSpecies', 'dog', () => (seen = 'changed'), relationships);
+ *   onLocalRowIds('petSpecies', 'dog',
+ *  () => (seen = 'changed'), relationships);
  * </script>
  *
  * {seen}
@@ -7625,7 +7787,8 @@
  *   let {queries} = $props();
  *   let seen = $state('');
  *
- *   onResultSortedRowIds('petColors', 'color', false, 0, undefined, () => (seen = 'changed'), queries);
+ *   onResultSortedRowIds('petColors', 'color', false, 0,
+ * undefined, () => (seen = 'changed'), queries);
  * </script>
  *
  * {seen}
@@ -7807,7 +7970,8 @@
  *   let {queries} = $props();
  *   let seen = $state('');
  *
- *   onResultCell('petColors', 'fido', 'color', () => (seen = 'changed'), queries);
+ *   onResultCell('petColors', 'fido', 'color',
+ *  () => (seen = 'changed'), queries);
  * </script>
  *
  * {seen}
