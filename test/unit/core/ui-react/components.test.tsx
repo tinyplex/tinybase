@@ -763,14 +763,16 @@ const ContextProvideThings = ({
   };
   const ProvidedThings = () => (
     <>
-      {useStore('store1') == store ? 's' : ''}
-      {useMetrics('metrics1') == metrics ? 'm' : ''}
-      {useIndexes('indexes1') == indexes ? 'i' : ''}
-      {useRelationships('relationships1') == relationships ? 'r' : ''}
-      {useQueries('queries1') == queries ? 'q' : ''}
-      {useCheckpoints('checkpoints1') == checkpoints ? 'c' : ''}
-      {usePersister('persister1') == persister ? 'p' : ''}
-      {useSynchronizer('synchronizer1') == synchronizer ? 'z' : ''}
+      {useStore('store1') == store ? 'Store ' : ''}
+      {useMetrics('metrics1') == metrics ? 'Metrics ' : ''}
+      {useIndexes('indexes1') == indexes ? 'Indexes ' : ''}
+      {useRelationships('relationships1') == relationships
+        ? 'Relationships '
+        : ''}
+      {useQueries('queries1') == queries ? 'Queries ' : ''}
+      {useCheckpoints('checkpoints1') == checkpoints ? 'Checkpoints ' : ''}
+      {usePersister('persister1') == persister ? 'Persister ' : ''}
+      {useSynchronizer('synchronizer1') == synchronizer ? 'Synchronizer' : ''}
     </>
   );
   return (
@@ -844,14 +846,14 @@ const ContextNestedDefaultsChild = ({
   readonly synchronizer: Synchronizer;
 }) => (
   <>
-    {useStore() == store ? 's' : ''}
-    {useMetrics() == metrics ? 'm' : ''}
-    {useIndexes() == indexes ? 'i' : ''}
-    {useRelationships() == relationships ? 'r' : ''}
-    {useQueries() == queries ? 'q' : ''}
-    {useCheckpoints() == checkpoints ? 'c' : ''}
-    {usePersister() == persister ? 'p' : ''}
-    {useSynchronizer() == synchronizer ? 'z' : ''}
+    {useStore() == store ? 'Store ' : ''}
+    {useMetrics() == metrics ? 'Metrics ' : ''}
+    {useIndexes() == indexes ? 'Indexes ' : ''}
+    {useRelationships() == relationships ? 'Relationships ' : ''}
+    {useQueries() == queries ? 'Queries ' : ''}
+    {useCheckpoints() == checkpoints ? 'Checkpoints ' : ''}
+    {usePersister() == persister ? 'Persister ' : ''}
+    {useSynchronizer() == synchronizer ? 'Synchronizer' : ''}
   </>
 );
 

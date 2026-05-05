@@ -11,10 +11,12 @@
   } from 'tinybase/ui-svelte';
 </script>
 
-{getStore('s1') ? 's' : ''}{getMetrics('m1') ? 'm' : ''}{getIndexes('i1')
-  ? 'i'
-  : ''}{getRelationships('r1') ? 'r' : ''}{getQueries('q1')
-  ? 'q'
-  : ''}{getCheckpoints('c1') ? 'c' : ''}{getPersister('p1')
-  ? 'p'
-  : ''}{getSynchronizer('syn1') ? 'z' : ''}
+{getStore('s1') ? 'Store ' : ''}{getMetrics('m1') ? 'Metrics ' : ''}{getIndexes(
+  'i1',
+)
+  ? 'Indexes '
+  : ''}{getRelationships('r1') ? 'Relationships ' : ''}{getQueries('q1')
+  ? 'Queries '
+  : ''}{getCheckpoints('c1') ? 'Checkpoints ' : ''}{getPersister('p1')
+  ? 'Persister '
+  : ''}{getSynchronizer('syn1') ? 'Synchronizer' : ''}

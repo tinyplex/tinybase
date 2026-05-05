@@ -567,14 +567,14 @@ const ContextProvidedThings = ({
   const providedSynchronizer = useSynchronizer('synchronizer1');
   return (
     <>
-      {providedStore() == store ? 's' : ''}
-      {providedMetrics() == metrics ? 'm' : ''}
-      {providedIndexes() == indexes ? 'i' : ''}
-      {providedRelationships() == relationships ? 'r' : ''}
-      {providedQueries() == queries ? 'q' : ''}
-      {providedCheckpoints() == checkpoints ? 'c' : ''}
-      {providedPersister() == persister ? 'p' : ''}
-      {providedSynchronizer() == synchronizer ? 'z' : ''}
+      {providedStore() == store ? 'Store ' : ''}
+      {providedMetrics() == metrics ? 'Metrics ' : ''}
+      {providedIndexes() == indexes ? 'Indexes ' : ''}
+      {providedRelationships() == relationships ? 'Relationships ' : ''}
+      {providedQueries() == queries ? 'Queries ' : ''}
+      {providedCheckpoints() == checkpoints ? 'Checkpoints ' : ''}
+      {providedPersister() == persister ? 'Persister ' : ''}
+      {providedSynchronizer() == synchronizer ? 'Synchronizer' : ''}
     </>
   );
 };
@@ -652,14 +652,14 @@ const ContextNestedDefaultsChild = ({
   const providedSynchronizer = useSynchronizer();
   return (
     <>
-      {providedStore() == store ? 's' : ''}
-      {providedMetrics() == metrics ? 'm' : ''}
-      {providedIndexes() == indexes ? 'i' : ''}
-      {providedRelationships() == relationships ? 'r' : ''}
-      {providedQueries() == queries ? 'q' : ''}
-      {providedCheckpoints() == checkpoints ? 'c' : ''}
-      {providedPersister() == persister ? 'p' : ''}
-      {providedSynchronizer() == synchronizer ? 'z' : ''}
+      {providedStore() == store ? 'Store ' : ''}
+      {providedMetrics() == metrics ? 'Metrics ' : ''}
+      {providedIndexes() == indexes ? 'Indexes ' : ''}
+      {providedRelationships() == relationships ? 'Relationships ' : ''}
+      {providedQueries() == queries ? 'Queries ' : ''}
+      {providedCheckpoints() == checkpoints ? 'Checkpoints ' : ''}
+      {providedPersister() == persister ? 'Persister ' : ''}
+      {providedSynchronizer() == synchronizer ? 'Synchronizer' : ''}
     </>
   );
 };

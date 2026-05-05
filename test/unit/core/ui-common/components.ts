@@ -847,7 +847,10 @@ export const testProviderComponents = (
           persister,
           synchronizer,
         });
-        expect(container.textContent).toEqual('smirqcpz');
+        expect(container.textContent).toEqual(
+          'Store Metrics Indexes Relationships Queries Checkpoints Persister ' +
+            'Synchronizer',
+        );
         unmount();
         synchronizer.destroy();
       });
@@ -877,7 +880,10 @@ export const testProviderComponents = (
           persister,
           synchronizer,
         });
-        expect(container.textContent).toEqual('smirqcpz');
+        expect(container.textContent).toEqual(
+          'Store Metrics Indexes Relationships Queries Checkpoints Persister ' +
+            'Synchronizer',
+        );
         unmount();
         synchronizer.destroy();
       });

@@ -11,8 +11,10 @@
   } from 'tinybase/ui-svelte';
 </script>
 
-{getStore() ? 's' : ''}{getMetrics() ? 'm' : ''}{getIndexes()
-  ? 'i'
-  : ''}{getRelationships() ? 'r' : ''}{getQueries() ? 'q' : ''}{getCheckpoints()
-  ? 'c'
-  : ''}{getPersister() ? 'p' : ''}{getSynchronizer() ? 'z' : ''}
+{getStore() ? 'Store ' : ''}{getMetrics() ? 'Metrics ' : ''}{getIndexes()
+  ? 'Indexes '
+  : ''}{getRelationships() ? 'Relationships ' : ''}{getQueries()
+  ? 'Queries '
+  : ''}{getCheckpoints() ? 'Checkpoints ' : ''}{getPersister()
+  ? 'Persister '
+  : ''}{getSynchronizer() ? 'Synchronizer' : ''}
