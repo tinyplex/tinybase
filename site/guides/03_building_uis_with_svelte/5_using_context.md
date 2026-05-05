@@ -70,5 +70,5 @@ The ui-svelte module is the Svelte 5 counterpart to ui-react. It favors
 reactive handles, named snippets, and Provider-based context over hooks and
 component override props.
 
-This concludes the UI-focused guides. Next we move on to schemas and
-persistence in the [Schemas](/guides/schemas/) guides.
+Next we move on to Solid-specific UI patterns in the
+[Building UIs With Solid](/guides/building-uis-with-solid/) guides.

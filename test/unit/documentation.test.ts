@@ -15,6 +15,7 @@ import postgres from 'postgres';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as Solid from 'solid-js';
+import type * as SolidWebTypes from 'solid-js/web';
 import * as sqlite3 from 'sqlite3';
 import * as Svelte from 'svelte';
 import {compileModule, compile as compileSvelte} from 'svelte/compiler';
@@ -72,6 +73,10 @@ import {
 } from './common/other.ts';
 
 const [reset, getNow] = getTimeFunctions();
+const nodeRequire = createRequire(import.meta.url);
+const SolidWeb = nodeRequire(
+  'solid-js/web/dist/web.cjs',
+) as typeof SolidWebTypes;
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
 const TinyBaseForTest = {
@@ -96,6 +101,7 @@ const TinyBaseForTest = {
   react: React,
   'react-dom/client': ReactDOMClient,
   'solid-js': Solid,
+  'solid-js/web': SolidWeb,
   svelte: Svelte,
   sqlite3,
   tinybase: TinyBaseForTest,
@@ -158,7 +164,6 @@ const resultsByName: {[name: string]: () => Promise<Results>} = {};
 const FILE_BLOCKS = /```([^\n]*)\n([\s\S]*?)```/g;
 const FILE_MATCH = /\bfile=(\S+)/;
 const SCRIPT_BLOCK = /^(?:[jt]sx?)$/;
-const nodeRequire = createRequire(import.meta.url);
 const DOCS_SVELTE_SHIM_PATH = '/__docs__/svelte.ts';
 const TINYBASE_CONTEXT_KEY = 'tinybase_uisc';
 const TINYBASE_SOURCE_MODULES: {[path: string]: string} = {
