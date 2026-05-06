@@ -1,24 +1,14 @@
 <link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-svelte-full-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/car-analysis-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/movie-database-demo.png"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v8-3">v8.3</h1><h2 id="solid-support">Solid Support</h2><p>This release adds the new <a href="https://beta.tinybase.org/api/ui-solid/"><code>ui-solid</code></a> module, bringing TinyBase&#x27;s reactive <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> bindings to Solid apps. It provides Solid primitives that return Accessor functions, listener primitives that clean up with Solid&#x27;s lifecycle, Provider context helpers, and view components for rendering <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> data directly in a Solid component tree.</p><p>The primitives follow Solid&#x27;s fine-grained reactivity model. They read TinyBase data immediately, then update the Accessor when the underlying <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> data changes:</p>
 
 ```js
-import {createRoot as createSolidRootForRelease} from 'solid-js';
-import {createStore as createSolidStoreForRelease} from 'tinybase';
-import {useCell as useSolidCellForRelease} from 'tinybase/ui-solid';
+import {createRoot} from 'solid-js';
+import {createStore} from 'tinybase';
+import {useCell} from 'tinybase/ui-solid';
 
-const solidStoreForRelease = createSolidStoreForRelease().setCell(
-  'pets',
-  'fido',
-  'color',
-  'brown',
-);
+const solidStore = createStore().setCell('pets', 'fido', 'color', 'brown');
 
-createSolidRootForRelease((dispose) => {
-  const color = useSolidCellForRelease(
-    'pets',
-    'fido',
-    'color',
-    solidStoreForRelease,
-  );
+createRoot((dispose) => {
+  const color = useCell('pets', 'fido', 'color', solidStore);
 
   console.log(color());
   // -> 'brown'
@@ -30,28 +20,23 @@ createSolidRootForRelease((dispose) => {
 <p>The module also includes Solid view components and a <a href="https://beta.tinybase.org/api/the-essentials/using-react/provider/"><code>Provider</code></a> component, so you can assemble UI directly from TinyBase data while still taking advantage of Solid&#x27;s selective updates:</p>
 
 ```jsx
-import {render as renderSolidForRelease} from 'solid-js/web';
-import {CellView as SolidCellViewForRelease} from 'tinybase/ui-solid';
+import {render} from 'solid-js/web';
+import {CellView} from 'tinybase/ui-solid';
 
-const solidAppForRelease = document.createElement('div');
-document.body.appendChild(solidAppForRelease);
+const solidApp = document.createElement('div');
+document.body.appendChild(solidApp);
 
-const disposeSolidForRelease = renderSolidForRelease(
+const disposeSolid = render(
   () => (
-    <SolidCellViewForRelease
-      tableId="pets"
-      rowId="fido"
-      cellId="color"
-      store={solidStoreForRelease}
-    />
+    <CellView tableId="pets" rowId="fido" cellId="color" store={solidStore} />
   ),
-  solidAppForRelease,
+  solidApp,
 );
 
-console.log(solidAppForRelease.textContent);
+console.log(solidApp.textContent);
 // -> 'brown'
 
-disposeSolidForRelease();
+disposeSolid();
 ```
 
 <p>Read more in the <a href="https://beta.tinybase.org/guides/building-uis-with-solid/">Building UIs With Solid</a> guides and the <a href="https://beta.tinybase.org/api/ui-solid/"><code>ui-solid</code></a> module documentation.</p><p>There are no intended breaking changes in this release. If you try the new Solid bindings, please let us know how they fit your Solid apps.</p><hr><h1 id="v8-2">v8.2</h1><h2 id="svelte-dom-components-and-inspector">Svelte DOM Components And Inspector</h2><p>This release completes TinyBase&#x27;s Svelte support with two new additions: the <a href="https://beta.tinybase.org/api/ui-svelte-dom/"><code>ui-svelte-dom</code></a> module and the <a href="https://beta.tinybase.org/api/ui-svelte-inspector/"><code>ui-svelte-inspector</code></a> module.</p><p>The <a href="https://beta.tinybase.org/api/ui-svelte-dom/"><code>ui-svelte-dom</code></a> module provides browser-ready Svelte components for rendering and editing TinyBase data as HTML tables. They mirror the React DOM components, but use Svelte component composition and props throughout:</p><p><img src="https://beta.tinybase.org/shots/sortedtableinhtmltable-svelte-demo.png" alt="SortedTableInHtmlTable (Svelte)" title="SortedTableInHtmlTable (Svelte)"></p>

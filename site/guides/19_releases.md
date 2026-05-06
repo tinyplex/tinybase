@@ -20,24 +20,14 @@ data immediately, then update the Accessor when the underlying Store data
 changes:
 
 ```js
-import {createRoot as createSolidRootForRelease} from 'solid-js';
-import {createStore as createSolidStoreForRelease} from 'tinybase';
-import {useCell as useSolidCellForRelease} from 'tinybase/ui-solid';
+import {createRoot} from 'solid-js';
+import {createStore} from 'tinybase';
+import {useCell} from 'tinybase/ui-solid';
 
-const solidStoreForRelease = createSolidStoreForRelease().setCell(
-  'pets',
-  'fido',
-  'color',
-  'brown',
-);
+const solidStore = createStore().setCell('pets', 'fido', 'color', 'brown');
 
-createSolidRootForRelease((dispose) => {
-  const color = useSolidCellForRelease(
-    'pets',
-    'fido',
-    'color',
-    solidStoreForRelease,
-  );
+createRoot((dispose) => {
+  const color = useCell('pets', 'fido', 'color', solidStore);
 
   console.log(color());
   // -> 'brown'
@@ -51,28 +41,23 @@ can assemble UI directly from TinyBase data while still taking advantage of
 Solid's selective updates:
 
 ```jsx
-import {render as renderSolidForRelease} from 'solid-js/web';
-import {CellView as SolidCellViewForRelease} from 'tinybase/ui-solid';
+import {render} from 'solid-js/web';
+import {CellView} from 'tinybase/ui-solid';
 
-const solidAppForRelease = document.createElement('div');
-document.body.appendChild(solidAppForRelease);
+const solidApp = document.createElement('div');
+document.body.appendChild(solidApp);
 
-const disposeSolidForRelease = renderSolidForRelease(
+const disposeSolid = render(
   () => (
-    <SolidCellViewForRelease
-      tableId="pets"
-      rowId="fido"
-      cellId="color"
-      store={solidStoreForRelease}
-    />
+    <CellView tableId="pets" rowId="fido" cellId="color" store={solidStore} />
   ),
-  solidAppForRelease,
+  solidApp,
 );
 
-console.log(solidAppForRelease.textContent);
+console.log(solidApp.textContent);
 // -> 'brown'
 
-disposeSolidForRelease();
+disposeSolid();
 ```
 
 Read more in the Building UIs With Solid guides and the ui-solid module
@@ -94,8 +79,7 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
-'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -142,8 +126,7 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
-'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -204,7 +187,7 @@ assembling UIs directly from Store data.
 Read more in the ui-svelte module documentation and the Building UIs With Svelte
 guide.
 
-## New Demos  
+## New Demos
 
 To showcase the new Svelte support, we have created two new Svelte-specific
 demos: a Hello World (Svelte) demo and a Countries (Svelte) demo. Check them out
@@ -852,8 +835,7 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue,
-#[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 
