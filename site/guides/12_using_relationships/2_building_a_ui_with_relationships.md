@@ -168,27 +168,7 @@ console.log(app.innerHTML);
 The `relationshipsById` prop can be used in the same way that the `storesById`
 prop is, to let you reference multiple Relationships objects by Id.
 
-## Svelte And Solid
-
-Svelte uses reactive functions for relationship lookups, and components for
-rendering the local, remote, or linked Rows:
-
-```svelte
-<script>
-  import {getRemoteRowId, RemoteRowView} from 'tinybase/ui-svelte';
-
-  let {relationships} = $props();
-  const remoteRowId = getRemoteRowId('petSpecies', 'cujo', relationships);
-</script>
-
-<span>{remoteRowId.current}</span>
-<RemoteRowView
-  relationshipId="petSpecies"
-  localRowId="cujo"
-  {relationships}
-  debugIds={true}
-/>
-```
+## Solid And Svelte
 
 Solid follows the same shape with Accessor-returning primitives and JSX
 components:
@@ -241,6 +221,26 @@ const disposeSolidRelationships = renderSolidRelationships(
 console.log(solidRelationshipsApp.innerHTML);
 // -> 'wolf'
 disposeSolidRelationships();
+```
+
+Svelte uses reactive functions for relationship lookups, and components for
+rendering the local, remote, or linked Rows:
+
+```svelte
+<script>
+  import {getRemoteRowId, RemoteRowView} from 'tinybase/ui-svelte';
+
+  let {relationships} = $props();
+  const remoteRowId = getRemoteRowId('petSpecies', 'cujo', relationships);
+</script>
+
+<span>{remoteRowId.current}</span>
+<RemoteRowView
+  relationshipId="petSpecies"
+  localRowId="cujo"
+  {relationships}
+  debugIds={true}
+/>
 ```
 
 ## Summary

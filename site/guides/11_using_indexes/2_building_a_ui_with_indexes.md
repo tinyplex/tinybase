@@ -169,22 +169,7 @@ console.log(app.innerHTML);
 The `indexesById` prop can be used in the same way that the `storesById` prop
 is, to let you reference multiple Indexes objects by Id.
 
-## Svelte And Solid
-
-In Svelte, Indexes can be read with reactive functions such as getSliceIds and
-rendered with the IndexView and SliceView components:
-
-```svelte
-<script>
-  import {getSliceIds, SliceView} from 'tinybase/ui-svelte';
-
-  let {indexes} = $props();
-  const sliceIds = getSliceIds('bySpecies', indexes);
-</script>
-
-<span>{JSON.stringify(sliceIds.current)}</span>
-<SliceView indexId="bySpecies" sliceId="dog" {indexes} debugIds={true} />
-```
+## Solid And Svelte
 
 In Solid, the equivalent primitive returns an Accessor, and the components can
 be used directly in JSX:
@@ -236,6 +221,21 @@ const disposeSolidIndexes = renderSolidIndexes(
 console.log(solidIndexesApp.innerHTML);
 // -> 'dog:{fido:{species:{dog}}cujo:{species:{dog}}}'
 disposeSolidIndexes();
+```
+
+In Svelte, Indexes can be read with reactive functions such as getSliceIds and
+rendered with the IndexView and SliceView components:
+
+```svelte
+<script>
+  import {getSliceIds, SliceView} from 'tinybase/ui-svelte';
+
+  let {indexes} = $props();
+  const sliceIds = getSliceIds('bySpecies', indexes);
+</script>
+
+<span>{JSON.stringify(sliceIds.current)}</span>
+<SliceView indexId="bySpecies" sliceId="dog" {indexes} debugIds={true} />
 ```
 
 ## Summary

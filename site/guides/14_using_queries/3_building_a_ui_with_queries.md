@@ -188,22 +188,7 @@ console.log(app.innerHTML);
 The `queriesById` prop can be used in the same way that the `storesById`
 prop is, to let you reference multiple Queries objects by Id.
 
-## Svelte And Solid
-
-In Svelte, query results can be read with reactive functions and rendered with
-the Result\* view components:
-
-```svelte
-<script>
-  import {getResultRowIds, ResultCellView} from 'tinybase/ui-svelte';
-
-  let {queries} = $props();
-  const rowIds = getResultRowIds('dogColors', queries);
-</script>
-
-<span>{JSON.stringify(rowIds.current)}</span>
-<ResultCellView queryId="dogColors" rowId="fido" cellId="color" {queries} />
-```
+## Solid And Svelte
 
 In Solid, the equivalent primitive returns an Accessor, and query view
 components can be used directly in JSX:
@@ -258,6 +243,21 @@ const disposeSolidQueries = renderSolidQueries(
 console.log(solidQueriesApp.innerHTML);
 // -> 'brown'
 disposeSolidQueries();
+```
+
+In Svelte, query results can be read with reactive functions and rendered with
+the Result\* view components:
+
+```svelte
+<script>
+  import {getResultRowIds, ResultCellView} from 'tinybase/ui-svelte';
+
+  let {queries} = $props();
+  const rowIds = getResultRowIds('dogColors', queries);
+</script>
+
+<span>{JSON.stringify(rowIds.current)}</span>
+<ResultCellView queryId="dogColors" rowId="fido" cellId="color" {queries} />
 ```
 
 ## Summary

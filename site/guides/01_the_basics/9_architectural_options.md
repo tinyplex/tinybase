@@ -221,4 +221,5 @@ TinyBase provides many different architectural choices, depending on the type of
 app you are building, and where you want the data to reside when not in use.
 
 Next we will show how you can quickly build user interfaces on top of a Store,
-and for that, it's time to proceed to the Building UIs guide.
+and for that, it's time to proceed to the
+[Building UIs With React](/guides/building-uis-with-react/) guide.

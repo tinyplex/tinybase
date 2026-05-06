@@ -132,26 +132,11 @@ console.log(app.innerHTML);
 The `metricsById` prop can be used in the same way that the `storesById` prop
 is, to let you reference multiple Metrics objects by Id.
 
-## Svelte And Solid
+## Solid And Svelte
 
-The ui-svelte and ui-solid modules expose the same Metrics concepts using each
-framework's native reactive style. In Svelte, use the getMetric function for a
-reactive value, or MetricView for declarative rendering:
-
-```svelte
-<script>
-  import {getMetric, MetricView} from 'tinybase/ui-svelte';
-
-  let {metrics} = $props();
-  const highestPrice = getMetric('highestPrice', metrics);
-</script>
-
-<span>{highestPrice.current}</span>
-<MetricView metricId="highestPrice" {metrics} />
-```
-
-In Solid, the useMetric primitive returns an Accessor, and MetricView renders
-the same result as a component:
+The ui-solid and ui-svelte modules expose the same Metrics concepts using each
+framework's native reactive style. In Solid, the useMetric primitive returns an
+Accessor, and MetricView renders the same result as a component:
 
 ```tsx
 import {createRoot as createSolidMetricsRoot} from 'solid-js';
@@ -195,11 +180,26 @@ console.log(solidMetricsApp.innerHTML);
 disposeSolidMetrics();
 ```
 
+In Svelte, use the getMetric function for a reactive value, or MetricView for
+declarative rendering:
+
+```svelte
+<script>
+  import {getMetric, MetricView} from 'tinybase/ui-svelte';
+
+  let {metrics} = $props();
+  const highestPrice = getMetric('highestPrice', metrics);
+</script>
+
+<span>{highestPrice.current}</span>
+<MetricView metricId="highestPrice" {metrics} />
+```
+
 ## Summary
 
 The support for Metrics objects in the UI modules is very similar to that for
 the Store object, making it easy to attach Metric results to your user
-interface from React, Svelte, or Solid.
+interface from React, Solid, or Svelte.
 
 We finish off this section about the metrics module with the Advanced Metric
 Definition guide.

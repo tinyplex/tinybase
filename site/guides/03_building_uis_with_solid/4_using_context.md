@@ -96,7 +96,7 @@ primitive, and similar helpers for the other TinyBase object types.
 ## Nesting Context
 
 Provider components can also be nested. Their contexts merge in the same spirit
-as the ui-react and ui-svelte module Providers, so outer defaults and named
+as the other UI module Providers, so outer defaults and named
 objects remain visible unless a nearer Provider replaces them.
 
 This makes it practical to keep app-wide objects at the top of the tree while
@@ -104,9 +104,8 @@ injecting route-local or feature-local TinyBase objects deeper in the UI.
 
 ## Summary
 
-The ui-solid module is the Solid counterpart to ui-react and ui-svelte. It
-favors Accessor-returning primitives, Solid components, and Provider-based
-context.
+The ui-solid module is part of the React, Solid, and Svelte UI family. It favors
+Accessor-returning primitives, Solid components, and Provider-based context.
 
-This concludes the UI-focused guides. Next we move on to schemas and
-persistence in the Schemas guides.
+Next we move on to Svelte-specific UI patterns in the
+[Building UIs With Svelte](/guides/building-uis-with-svelte/) guides.

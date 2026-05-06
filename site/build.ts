@@ -43,7 +43,7 @@ const CATEGORIES = [
   'Synchronizing stores',
   'Using React',
   'Using Solid',
-
+  'Using Svelte',
   'Store components',
   'Queries components',
   'Other components',
@@ -61,16 +61,19 @@ const CATEGORIES = [
   /^Other/,
 ];
 const REFLECTIONS = [
-  'store',
-  'mergeable-store',
-  'metrics',
-  'indexes',
-  'relationships',
-  'queries',
   'checkpoints',
   'common',
+  'indexes',
+  'mergeable-store',
+  'metrics',
+  'middleware',
   'persisters',
   /^persister/,
+  'queries',
+  'relationships',
+  'schematizers',
+  /^schematizer/,
+  'store',
   'synchronizers',
   /^synchronizer/,
   /^ui-react/,
@@ -348,15 +351,12 @@ export const build = async (
 
 const addApi = (docs: Docs): Docs =>
   docs
-    .addApiFile('dist/@types/common/index.d.ts')
-    .addApiFile('dist/@types/store/index.d.ts')
     .addApiFile('dist/@types/checkpoints/index.d.ts')
+    .addApiFile('dist/@types/common/index.d.ts')
     .addApiFile('dist/@types/indexes/index.d.ts')
+    .addApiFile('dist/@types/mergeable-store/index.d.ts')
     .addApiFile('dist/@types/metrics/index.d.ts')
     .addApiFile('dist/@types/middleware/index.d.ts')
-    .addApiFile('dist/@types/relationships/index.d.ts')
-    .addApiFile('dist/@types/queries/index.d.ts')
-    .addApiFile('dist/@types/mergeable-store/index.d.ts')
     .addApiFile('dist/@types/persisters/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-automerge/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-browser/index.d.ts')
@@ -382,10 +382,12 @@ const addApi = (docs: Docs): Docs =>
       'dist/@types/persisters/persister-react-native-sqlite/index.d.ts',
     )
     .addApiFile('dist/@types/persisters/persister-remote/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-sqlite-bun/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite-wasm/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite3/index.d.ts')
-    .addApiFile('dist/@types/persisters/persister-sqlite-bun/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-yjs/index.d.ts')
+    .addApiFile('dist/@types/queries/index.d.ts')
+    .addApiFile('dist/@types/relationships/index.d.ts')
     .addApiFile('dist/@types/schematizers/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-arktype/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-effect/index.d.ts')
@@ -393,19 +395,20 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/schematizers/schematizer-valibot/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-yup/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-zod/index.d.ts')
+    .addApiFile('dist/@types/store/index.d.ts')
     .addApiFile('dist/@types/synchronizers/index.d.ts')
+    .addApiFile(
+      'dist/@types/synchronizers/synchronizer-broadcast-channel/index.d.ts',
+    )
     .addApiFile('dist/@types/synchronizers/synchronizer-local/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-ws-client/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-ws-server/index.d.ts')
-    .addApiFile(
-      'dist/@types/synchronizers/synchronizer-ws-server-simple/index.d.ts',
-    )
     .addApiFile(
       // eslint-disable-next-line max-len
       'dist/@types/synchronizers/synchronizer-ws-server-durable-object/index.d.ts',
     )
     .addApiFile(
-      'dist/@types/synchronizers/synchronizer-broadcast-channel/index.d.ts',
+      'dist/@types/synchronizers/synchronizer-ws-server-simple/index.d.ts',
     )
     .addApiFile('dist/@types/ui-react/index.d.ts')
     .addApiFile('dist/@types/ui-react-dom/index.d.ts')

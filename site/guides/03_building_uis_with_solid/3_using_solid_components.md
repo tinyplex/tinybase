@@ -29,7 +29,7 @@ console.log(app.innerHTML);
 dispose();
 ```
 
-Like the ui-react and ui-svelte components, these have intentionally plain
+Like the components in the other UI modules, these have intentionally plain
 default renderings. For example, RowView concatenates the rendered Cells in a
 Row, while TablesView concatenates the rendered Tables in a Store. The
 `separator` and `debugIds` props are often useful while prototyping:

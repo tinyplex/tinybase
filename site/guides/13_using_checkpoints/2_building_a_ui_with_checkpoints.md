@@ -165,22 +165,7 @@ console.log(app.innerHTML);
 The `checkpointsById` prop can be used in the same way that the `storesById`
 prop is, to let you reference multiple Checkpoints objects by Id.
 
-## Svelte And Solid
-
-In Svelte, checkpoint state is exposed by reactive functions and by the three
-view components for backward, current, and forward checkpoints:
-
-```svelte
-<script>
-  import {getCheckpointIds, CurrentCheckpointView} from 'tinybase/ui-svelte';
-
-  let {checkpoints} = $props();
-  const checkpointIds = getCheckpointIds(checkpoints);
-</script>
-
-<span>{JSON.stringify(checkpointIds.current)}</span>
-<CurrentCheckpointView {checkpoints} debugIds={true} />
-```
+## Solid And Svelte
 
 In Solid, the same data is available as Accessors and JSX components:
 
@@ -224,6 +209,21 @@ const disposeSolidCheckpoints = renderSolidCheckpoints(
 console.log(solidCheckpointsApp.innerHTML);
 // -> '1:{sale}'
 disposeSolidCheckpoints();
+```
+
+In Svelte, checkpoint state is exposed by reactive functions and by the three
+view components for backward, current, and forward checkpoints:
+
+```svelte
+<script>
+  import {getCheckpointIds, CurrentCheckpointView} from 'tinybase/ui-svelte';
+
+  let {checkpoints} = $props();
+  const checkpointIds = getCheckpointIds(checkpoints);
+</script>
+
+<span>{JSON.stringify(checkpointIds.current)}</span>
+<CurrentCheckpointView {checkpoints} debugIds={true} />
 ```
 
 ## Summary
