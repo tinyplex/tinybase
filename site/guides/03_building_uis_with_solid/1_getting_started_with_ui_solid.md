@@ -16,7 +16,7 @@ store.setCell('t1', 'r1', 'c1', 'Hello World');
 
 const app = document.createElement('div');
 const dispose = render(
-  () => CellView({tableId: 't1', rowId: 'r1', cellId: 'c1', store}),
+  () => <CellView tableId="t1" rowId="r1" cellId="c1" store={store} />,
   app,
 );
 console.log(app.innerHTML);

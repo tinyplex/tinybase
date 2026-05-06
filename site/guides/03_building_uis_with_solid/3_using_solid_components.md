@@ -21,7 +21,7 @@ const store = createStore().setTables({
 
 const app = document.createElement('div');
 const dispose = render(
-  () => CellView({tableId: 'pets', rowId: 'fido', cellId: 'species', store}),
+  () => <CellView tableId="pets" rowId="fido" cellId="species" store={store} />,
   app,
 );
 console.log(app.innerHTML);
@@ -37,13 +37,7 @@ Row, while TablesView concatenates the rendered Tables in a Store. The
 ```tsx
 const app2 = document.createElement('div');
 const dispose2 = render(
-  () =>
-    RowView({
-      tableId: 'pets',
-      rowId: 'fido',
-      store,
-      separator: '/',
-    }),
+  () => <RowView tableId="pets" rowId="fido" store={store} separator="/" />,
   app2,
 );
 console.log(app2.innerHTML);
@@ -57,7 +51,7 @@ with their Ids:
 ```tsx
 const app3 = document.createElement('div');
 const dispose3 = render(
-  () => TablesView({store, separator: '/', debugIds: true}),
+  () => <TablesView store={store} separator="/" debugIds={true} />,
   app3,
 );
 console.log(app3.innerHTML);
@@ -79,14 +73,15 @@ const CellWithId = (props) =>
 
 const app4 = document.createElement('div');
 const dispose4 = render(
-  () =>
-    RowView({
-      tableId: 'pets',
-      rowId: 'fido',
-      store,
-      cellComponent: CellWithId,
-      separator: '/',
-    }),
+  () => (
+    <RowView
+      tableId="pets"
+      rowId="fido"
+      store={store}
+      cellComponent={CellWithId}
+      separator="/"
+    />
+  ),
   app4,
 );
 console.log(app4.innerHTML);

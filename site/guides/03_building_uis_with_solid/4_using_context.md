@@ -9,7 +9,7 @@ primitives and components use automatically when no explicit reference is
 given:
 
 ```tsx ignore
-import {createComponent, render} from 'solid-js/web';
+import {render} from 'solid-js/web';
 import {createStore} from 'tinybase';
 import {CellView, Provider, useCell, useCreateStore} from 'tinybase/ui-solid';
 
@@ -27,14 +27,11 @@ const App = () => {
     }),
   );
 
-  return createComponent(Provider, {
-    get store() {
-      return store();
-    },
-    get children() {
-      return Pane();
-    },
-  });
+  return (
+    <Provider store={store()}>
+      <Pane />
+    </Provider>
+  );
 };
 
 const app = document.createElement('div');
@@ -64,23 +61,16 @@ const planetStore = createStore().setTables({
 
 const Pane2 = () =>
   [
-    CellView({
-      tableId: 'pets',
-      rowId: 'fido',
-      cellId: 'species',
-      store: 'pet',
-    }),
+    CellView({tableId: 'pets', rowId: 'fido', cellId: 'species', store: 'pet'}),
     ',',
     useCell('planets', 'mars', 'moons', 'planet')(),
   ].join('');
 
-const App2 = () =>
-  createComponent(Provider, {
-    storesById: {pet: petStore, planet: planetStore},
-    get children() {
-      return Pane2();
-    },
-  });
+const App2 = () => (
+  <Provider storesById={{pet: petStore, planet: planetStore}}>
+    <Pane2 />
+  </Provider>
+);
 
 const app2 = document.createElement('div');
 const dispose2 = render(App2, app2);

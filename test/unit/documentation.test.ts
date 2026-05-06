@@ -52,7 +52,6 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
-import * as TinyBaseUiSolid from 'tinybase/ui-solid';
 import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
 import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
 import * as TinyBaseUiSvelteInspector from 'tinybase/ui-svelte-inspector';
@@ -81,6 +80,10 @@ const SolidBrowser = nodeRequire('solid-js/dist/solid.cjs') as typeof Solid;
 const SolidWeb = nodeRequire(
   'solid-js/web/dist/web.cjs',
 ) as typeof SolidWebTypes;
+(nodeRequire.cache as any)[nodeRequire.resolve('solid-js/web')] = {
+  exports: SolidWeb,
+};
+const TinyBaseUiSolid = nodeRequire('tinybase/ui-solid');
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
 const TinyBaseForTest = {
@@ -269,6 +272,18 @@ const isSolidSource = (source: string): boolean =>
   source.includes('from "solid-js') ||
   source.includes("from 'tinybase/ui-solid'") ||
   source.includes('from "tinybase/ui-solid"');
+
+const isOtherUiSource = (source: string): boolean =>
+  source.includes("from 'react'") ||
+  source.includes('from "react"') ||
+  source.includes("from 'react-dom") ||
+  source.includes('from "react-dom') ||
+  source.includes("from 'tinybase/ui-react") ||
+  source.includes('from "tinybase/ui-react') ||
+  source.includes("from 'svelte") ||
+  source.includes('from "svelte') ||
+  source.includes("from 'tinybase/ui-svelte") ||
+  source.includes('from "tinybase/ui-svelte');
 
 const transformSolidJsx = (source: string, loader: 'jsx' | 'tsx'): string =>
   `import {createComponent} from 'solid-js';\n${
@@ -594,6 +609,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
   if (hasSvelteBlocks || hasNamedFiles) {
     const files: {[path: string]: string} = {};
     const scriptBlocks: {content: string; lang: string}[] = [];
+    let inSolidSource = false;
     codeBlocks.forEach(({content, file, info, lang}) => {
       if (
         content == '' ||
@@ -602,6 +618,11 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
       ) {
         return;
       }
+      inSolidSource = isSolidSource(content)
+        ? true
+        : isOtherUiSource(content)
+          ? false
+          : inSolidSource;
       if (file != null) {
         files[resolve('/', file)] = SCRIPT_BLOCK.test(extname(file).slice(1))
           ? replaceSvelteImports(content)
@@ -609,7 +630,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
       } else if (lang == 'svelte') {
         files['/App.svelte'] = content;
       } else if (SCRIPT_BLOCK.test(lang)) {
-        const isSolidJsx = lang.endsWith('x') && isSolidSource(content);
+        const isSolidJsx = lang.endsWith('x') && inSolidSource;
         scriptBlocks.push({
           content: replaceSvelteImports(
             isSolidJsx
