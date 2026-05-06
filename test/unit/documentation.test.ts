@@ -74,6 +74,10 @@ import {
 
 const [reset, getNow] = getTimeFunctions();
 const nodeRequire = createRequire(import.meta.url);
+const SolidBrowser = nodeRequire('solid-js/dist/solid.cjs') as typeof Solid;
+(nodeRequire.cache as any)[nodeRequire.resolve('solid-js')] = {
+  exports: SolidBrowser,
+};
 const SolidWeb = nodeRequire(
   'solid-js/web/dist/web.cjs',
 ) as typeof SolidWebTypes;
@@ -100,7 +104,7 @@ const TinyBaseForTest = {
   postgres,
   react: React,
   'react-dom/client': ReactDOMClient,
-  'solid-js': Solid,
+  'solid-js': SolidBrowser,
   'solid-js/web': SolidWeb,
   svelte: Svelte,
   sqlite3,
@@ -225,8 +229,57 @@ const forEachDirAndFile = (
     }
   });
 
+const getRunnableImport = (
+  _: string,
+  typeOnly: string | undefined,
+  imports: string,
+  module: string,
+): string => {
+  if (typeOnly != null) {
+    return '';
+  }
+  const moduleExpression = `modules[\`${module}\`]`;
+  const trimmedImports = imports.trim();
+  const defaultAndNamedImports = trimmedImports.match(/^(\w+),\s*({.*})$/s);
+  if (defaultAndNamedImports != null) {
+    return (
+      `var ${defaultAndNamedImports[1]} = ` +
+      `${moduleExpression}.default ?? ${moduleExpression};\n` +
+      `var ${defaultAndNamedImports[2].replace(/\bas\b/g, ':')} = ` +
+      `${moduleExpression};`
+    );
+  }
+  if (trimmedImports.startsWith('{')) {
+    return `var ${trimmedImports.replace(/\bas\b/g, ':')} = ${moduleExpression};`;
+  }
+  if (trimmedImports.startsWith('* as ')) {
+    return `var ${trimmedImports.slice(5)} = ${moduleExpression};`;
+  }
+  return `var ${trimmedImports} = ${moduleExpression}.default ?? ${moduleExpression};`;
+};
+
+const replaceRunnableImports = (source: string): string =>
+  source.replace(
+    /import (type )?(.*?) from ['"](.*?)['"];/gms,
+    getRunnableImport,
+  );
+
+const isSolidSource = (source: string): boolean =>
+  source.includes("from 'solid-js") ||
+  source.includes('from "solid-js') ||
+  source.includes("from 'tinybase/ui-solid'") ||
+  source.includes('from "tinybase/ui-solid"');
+
+const transformSolidJsx = (source: string, loader: 'jsx' | 'tsx'): string =>
+  `import {createComponent} from 'solid-js';\n${
+    transformSync(source, {
+      loader,
+      jsxFactory: 'createComponent',
+    }).code
+  }`;
+
 const prepareRunnableCode = (source: string, replaceImports: boolean): string =>
-  source
+  (replaceImports ? replaceRunnableImports(source) : source)
     .replace(
       /console\.log\((.+?)\.innerHTML\);$/gm,
       '_actual.push(getHtml($1));',
@@ -252,10 +305,6 @@ const prepareRunnableCode = (source: string, replaceImports: boolean): string =>
     .replace(/^(.*?) \/\/ !ignore$/gm, '')
     .replace(/\/\/ !reset$/gm, 'reset();')
     .replace(/\n+/g, '\n')
-    .replace(
-      replaceImports ? /import (type )?(.*?) from '(.*?)';/gms : /$^/,
-      'var $2 = modules[`$3`];',
-    )
     .replace(/export (const|class) /gm, '$1 ');
 
 const parseCodeBlocks = (block: string) =>
@@ -560,7 +609,18 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
       } else if (lang == 'svelte') {
         files['/App.svelte'] = content;
       } else if (SCRIPT_BLOCK.test(lang)) {
-        scriptBlocks.push({content: replaceSvelteImports(content), lang});
+        const isSolidJsx = lang.endsWith('x') && isSolidSource(content);
+        scriptBlocks.push({
+          content: replaceSvelteImports(
+            isSolidJsx
+              ? transformSolidJsx(
+                  prepareRunnableCode(content, false),
+                  lang as 'jsx' | 'tsx',
+                )
+              : content,
+          ),
+          lang: isSolidJsx ? 'js' : lang,
+        });
       }
     });
     if (scriptBlocks.length == 0) {
@@ -616,15 +676,18 @@ ${body
 
   let problem;
   if (tsx != '') {
-    const realTsx = prepareRunnableCode(tsx, true) ?? '';
+    const realTsx = prepareRunnableCode(tsx, false) ?? '';
     // lol what could go wrong
     try {
-      const js = transformSync(realTsx, {loader: 'tsx'});
+      const js = isSolidSource(realTsx)
+        ? {code: transformSolidJsx(realTsx, 'tsx')}
+        : transformSync(realTsx, {loader: 'tsx'});
+      const runnableJs = replaceRunnableImports(js.code);
       resultsByName[suffixedName] = new AsyncFunction(`
         ${HTML_HELPERS}
         const _expected = [];
         const _actual = [];
-        ${js.code}
+        ${runnableJs}
         return Array(Math.max(_expected.length, _actual.length))
           .fill('')
           .map((_, r) => [_expected[r], _actual[r]]);`);
