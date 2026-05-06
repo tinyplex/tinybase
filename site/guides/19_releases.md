@@ -64,7 +64,8 @@ Read more in the Building UIs With Solid guides and the ui-solid module
 documentation.
 
 There are no intended breaking changes in this release. If you try the new
-Solid bindings, please let us know how they fit your Solid apps.
+Solid bindings, please let us know how they fit your expectations of building
+Solid apps - and good luck!
 
 ---
 
