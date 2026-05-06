@@ -5,6 +5,84 @@ highlighted features.
 
 ---
 
+# v8.3
+
+## Solid Support
+
+This release adds the new ui-solid module, bringing TinyBase's reactive Store
+bindings to Solid apps. It provides Solid primitives that return Accessor
+functions, listener primitives that clean up with Solid's lifecycle, Provider
+context helpers, and view components for rendering Store data directly in a
+Solid component tree.
+
+The primitives follow Solid's fine-grained reactivity model. They read TinyBase
+data immediately, then update the Accessor when the underlying Store data
+changes:
+
+```js
+import {createRoot as createSolidRootForRelease} from 'solid-js';
+import {createStore as createSolidStoreForRelease} from 'tinybase';
+import {useCell as useSolidCellForRelease} from 'tinybase/ui-solid';
+
+const solidStoreForRelease = createSolidStoreForRelease().setCell(
+  'pets',
+  'fido',
+  'color',
+  'brown',
+);
+
+createSolidRootForRelease((dispose) => {
+  const color = useSolidCellForRelease(
+    'pets',
+    'fido',
+    'color',
+    solidStoreForRelease,
+  );
+
+  console.log(color());
+  // -> 'brown'
+
+  dispose();
+});
+```
+
+The module also includes Solid view components and a Provider component, so you
+can assemble UI directly from TinyBase data while still taking advantage of
+Solid's selective updates:
+
+```jsx
+import {render as renderSolidForRelease} from 'solid-js/web';
+import {CellView as SolidCellViewForRelease} from 'tinybase/ui-solid';
+
+const solidAppForRelease = document.createElement('div');
+document.body.appendChild(solidAppForRelease);
+
+const disposeSolidForRelease = renderSolidForRelease(
+  () => (
+    <SolidCellViewForRelease
+      tableId="pets"
+      rowId="fido"
+      cellId="color"
+      store={solidStoreForRelease}
+    />
+  ),
+  solidAppForRelease,
+);
+
+console.log(solidAppForRelease.textContent);
+// -> 'brown'
+
+disposeSolidForRelease();
+```
+
+Read more in the Building UIs With Solid guides and the ui-solid module
+documentation.
+
+There are no intended breaking changes in this release. If you try the new
+Solid bindings, please let us know how they fit your Solid apps.
+
+---
+
 # v8.2
 
 ## Svelte DOM Components And Inspector

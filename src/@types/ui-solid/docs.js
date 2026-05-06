@@ -15,12 +15,12 @@
  * parameters. Solid tracks reactive reads automatically, and the primitives
  * update when their Store data or accessor arguments change. Prefer passing
  * reactive values as accessor functions, such as `() => props.tableId`.
- * @see Building UIs guides
- * @see Building UIs With Metrics guide
- * @see Building UIs With Indexes guide
- * @see Building UIs With Relationships guide
- * @see Building UIs With Queries guide
- * @see Building UIs With Checkpoints guide
+ * @see Building UIs With Solid guide
+ * @see Building A UI With Metrics guide
+ * @see Building A UI With Indexes guide
+ * @see Building A UI With Relationships guide
+ * @see Building A UI With Queries guide
+ * @see Building A UI With Checkpoints guide
  * @packageDocumentation
  * @module ui-solid
  * @since v8.3.0

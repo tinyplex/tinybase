@@ -165,10 +165,71 @@ console.log(app.innerHTML);
 The `checkpointsById` prop can be used in the same way that the `storesById`
 prop is, to let you reference multiple Checkpoints objects by Id.
 
+## Svelte And Solid
+
+In Svelte, checkpoint state is exposed by reactive functions and by the three
+view components for backward, current, and forward checkpoints:
+
+```svelte
+<script>
+  import {getCheckpointIds, CurrentCheckpointView} from 'tinybase/ui-svelte';
+
+  let {checkpoints} = $props();
+  const checkpointIds = getCheckpointIds(checkpoints);
+</script>
+
+<span>{JSON.stringify(checkpointIds.current)}</span>
+<CurrentCheckpointView {checkpoints} debugIds={true} />
+```
+
+In Solid, the same data is available as Accessors and JSX components:
+
+```tsx
+import {createRoot as createSolidCheckpointsRoot} from 'solid-js';
+import {render as renderSolidCheckpoints} from 'solid-js/web';
+import {createCheckpoints as createSolidCheckpoints} from 'tinybase';
+import {createStore as createSolidCheckpointsStore} from 'tinybase';
+import {
+  CurrentCheckpointView as SolidCurrentCheckpointView,
+  useCheckpointIds as useSolidCheckpointIds,
+} from 'tinybase/ui-solid';
+
+const solidCheckpointsStore = createSolidCheckpointsStore().setTable('pets', {
+  fido: {species: 'dog'},
+});
+const solidCheckpoints = createSolidCheckpoints(solidCheckpointsStore);
+
+createSolidCheckpointsRoot((dispose) => {
+  const checkpointIds = useSolidCheckpointIds(solidCheckpoints);
+  console.log(JSON.stringify(checkpointIds()));
+  // -> '[[],"0",[]]'
+
+  solidCheckpointsStore.setCell('pets', 'fido', 'sold', true);
+  solidCheckpoints.addCheckpoint('sale');
+  console.log(JSON.stringify(checkpointIds()));
+  // -> '[["0"],"1",[]]'
+  dispose();
+});
+
+const solidCheckpointsApp = document.createElement('div');
+const disposeSolidCheckpoints = renderSolidCheckpoints(
+  () => (
+    <SolidCurrentCheckpointView
+      checkpoints={solidCheckpoints}
+      debugIds={true}
+    />
+  ),
+  solidCheckpointsApp,
+);
+console.log(solidCheckpointsApp.innerHTML);
+// -> '1:{sale}'
+disposeSolidCheckpoints();
+```
+
 ## Summary
 
-The support for Checkpoints objects in the ui-react module is very similar to
-that for all the other types of top level object, making it easy to attach
+The support for Checkpoints objects in the UI modules is very similar to that
+for all the other types of top level object, making it easy to attach
 checkpoints and undo/redo functionality to your user interface.
 
 Let's move on to the ways in which we can create more advanced queries in the

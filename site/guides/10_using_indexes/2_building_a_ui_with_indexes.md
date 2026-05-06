@@ -169,11 +169,80 @@ console.log(app.innerHTML);
 The `indexesById` prop can be used in the same way that the `storesById` prop
 is, to let you reference multiple Indexes objects by Id.
 
+## Svelte And Solid
+
+In Svelte, Indexes can be read with reactive functions such as getSliceIds and
+rendered with the IndexView and SliceView components:
+
+```svelte
+<script>
+  import {getSliceIds, SliceView} from 'tinybase/ui-svelte';
+
+  let {indexes} = $props();
+  const sliceIds = getSliceIds('bySpecies', indexes);
+</script>
+
+<span>{JSON.stringify(sliceIds.current)}</span>
+<SliceView indexId="bySpecies" sliceId="dog" {indexes} debugIds={true} />
+```
+
+In Solid, the equivalent primitive returns an Accessor, and the components can
+be used directly in JSX:
+
+```tsx
+import {createRoot as createSolidIndexesRoot} from 'solid-js';
+import {render as renderSolidIndexes} from 'solid-js/web';
+import {createIndexes as createSolidIndexes} from 'tinybase';
+import {createStore as createSolidIndexesStore} from 'tinybase';
+import {
+  SliceView as SolidSliceView,
+  useSliceIds as useSolidSliceIds,
+} from 'tinybase/ui-solid';
+
+const solidIndexesStore = createSolidIndexesStore().setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat'},
+  cujo: {species: 'dog'},
+});
+const solidIndexes = createSolidIndexes(solidIndexesStore).setIndexDefinition(
+  'bySpecies',
+  'pets',
+  'species',
+);
+
+createSolidIndexesRoot((dispose) => {
+  const sliceIds = useSolidSliceIds('bySpecies', solidIndexes);
+  console.log(JSON.stringify(sliceIds()));
+  // -> '["dog","cat"]'
+
+  solidIndexesStore.setRow('pets', 'lowly', {species: 'worm'});
+  console.log(JSON.stringify(sliceIds()));
+  // -> '["dog","cat","worm"]'
+  dispose();
+});
+
+const solidIndexesApp = document.createElement('div');
+const disposeSolidIndexes = renderSolidIndexes(
+  () => (
+    <SolidSliceView
+      indexId="bySpecies"
+      sliceId="dog"
+      indexes={solidIndexes}
+      debugIds={true}
+    />
+  ),
+  solidIndexesApp,
+);
+console.log(solidIndexesApp.innerHTML);
+// -> 'dog:{fido:{species:{dog}}cujo:{species:{dog}}}'
+disposeSolidIndexes();
+```
+
 ## Summary
 
-The support for Indexes objects in the ui-react module is very similar to that
-for the Store object and Metrics object, making it easy to attach Index and
-Slice contents to your user interface.
+The support for Indexes objects in the UI modules is very similar to that for
+the Store object and Metrics object, making it easy to attach Index and Slice
+contents to your user interface.
 
 We finish off this section about the indexes module with the Advanced Index
 Definition guide.

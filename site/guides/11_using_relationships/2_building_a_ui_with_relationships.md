@@ -168,10 +168,85 @@ console.log(app.innerHTML);
 The `relationshipsById` prop can be used in the same way that the `storesById`
 prop is, to let you reference multiple Relationships objects by Id.
 
+## Svelte And Solid
+
+Svelte uses reactive functions for relationship lookups, and components for
+rendering the local, remote, or linked Rows:
+
+```svelte
+<script>
+  import {getRemoteRowId, RemoteRowView} from 'tinybase/ui-svelte';
+
+  let {relationships} = $props();
+  const remoteRowId = getRemoteRowId('petSpecies', 'cujo', relationships);
+</script>
+
+<span>{remoteRowId.current}</span>
+<RemoteRowView
+  relationshipId="petSpecies"
+  localRowId="cujo"
+  {relationships}
+  debugIds={true}
+/>
+```
+
+Solid follows the same shape with Accessor-returning primitives and JSX
+components:
+
+```tsx
+import {createRoot as createSolidRelationshipsRoot} from 'solid-js';
+import {render as renderSolidRelationships} from 'solid-js/web';
+import {createRelationships as createSolidRelationships} from 'tinybase';
+import {createStore as createSolidRelationshipsStore} from 'tinybase';
+import {
+  RemoteRowView as SolidRemoteRowView,
+  useRemoteRowId as useSolidRemoteRowId,
+} from 'tinybase/ui-solid';
+
+const solidRelationshipsStore = createSolidRelationshipsStore()
+  .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
+  .setTable('species', {wolf: {price: 10}, dog: {price: 5}});
+const solidRelationships = createSolidRelationships(
+  solidRelationshipsStore,
+).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
+
+createSolidRelationshipsRoot((dispose) => {
+  const remoteRowId = useSolidRemoteRowId(
+    'petSpecies',
+    'cujo',
+    solidRelationships,
+  );
+  console.log(remoteRowId());
+  // -> 'dog'
+
+  solidRelationshipsStore.setCell('pets', 'cujo', 'species', 'wolf');
+  console.log(remoteRowId());
+  // -> 'wolf'
+  dispose();
+});
+
+const SolidRelationshipRow = (props) => props.rowId;
+const solidRelationshipsApp = document.createElement('div');
+const disposeSolidRelationships = renderSolidRelationships(
+  () => (
+    <SolidRemoteRowView
+      relationshipId="petSpecies"
+      localRowId="cujo"
+      relationships={solidRelationships}
+      rowComponent={SolidRelationshipRow}
+    />
+  ),
+  solidRelationshipsApp,
+);
+console.log(solidRelationshipsApp.innerHTML);
+// -> 'wolf'
+disposeSolidRelationships();
+```
+
 ## Summary
 
-The support for Relationships objects in the ui-react module is very similar to
-that for the Store object, making it easy to attach relationships to your user
+The support for Relationships objects in the UI modules is very similar to that
+for the Store object, making it easy to attach relationships to your user
 interface.
 
 We finish off this section about the relationships module with the Advanced

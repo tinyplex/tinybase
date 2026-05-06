@@ -9,12 +9,12 @@
  *
  * The components in this module provide a further abstraction over those hooks
  * to ease the composition of user interfaces that use TinyBase.
- * @see Building UIs guides
- * @see Building UIs With Metrics guide
- * @see Building UIs With Indexes guide
- * @see Building UIs With Relationships guide
- * @see Building UIs With Queries guide
- * @see Building UIs With Checkpoints guide
+ * @see Building UIs With React guide
+ * @see Building A UI With Metrics guide
+ * @see Building A UI With Indexes guide
+ * @see Building A UI With Relationships guide
+ * @see Building A UI With Queries guide
+ * @see Building A UI With Checkpoints guide
  * @see Hello World (React) demo
  * @see Countries (React) demo
  * @see Todo App demos

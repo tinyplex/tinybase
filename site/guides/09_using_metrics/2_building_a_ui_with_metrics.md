@@ -132,11 +132,74 @@ console.log(app.innerHTML);
 The `metricsById` prop can be used in the same way that the `storesById` prop
 is, to let you reference multiple Metrics objects by Id.
 
+## Svelte And Solid
+
+The ui-svelte and ui-solid modules expose the same Metrics concepts using each
+framework's native reactive style. In Svelte, use the getMetric function for a
+reactive value, or MetricView for declarative rendering:
+
+```svelte
+<script>
+  import {getMetric, MetricView} from 'tinybase/ui-svelte';
+
+  let {metrics} = $props();
+  const highestPrice = getMetric('highestPrice', metrics);
+</script>
+
+<span>{highestPrice.current}</span>
+<MetricView metricId="highestPrice" {metrics} />
+```
+
+In Solid, the useMetric primitive returns an Accessor, and MetricView renders
+the same result as a component:
+
+```tsx
+import {createRoot as createSolidMetricsRoot} from 'solid-js';
+import {render as renderSolidMetrics} from 'solid-js/web';
+import {createMetrics as createSolidMetrics} from 'tinybase';
+import {createStore as createSolidMetricsStore} from 'tinybase';
+import {
+  MetricView as SolidMetricView,
+  useMetric as useSolidMetric,
+} from 'tinybase/ui-solid';
+
+const solidMetricsStore = createSolidMetricsStore().setTable('species', {
+  dog: {price: 5},
+  cat: {price: 4},
+});
+const solidMetrics = createSolidMetrics(solidMetricsStore).setMetricDefinition(
+  'highestPrice',
+  'species',
+  'max',
+  'price',
+);
+
+createSolidMetricsRoot((dispose) => {
+  const highestPrice = useSolidMetric('highestPrice', solidMetrics);
+  console.log(highestPrice());
+  // -> 5
+
+  solidMetricsStore.setCell('species', 'horse', 'price', 20);
+  console.log(highestPrice());
+  // -> 20
+  dispose();
+});
+
+const solidMetricsApp = document.createElement('div');
+const disposeSolidMetrics = renderSolidMetrics(
+  () => <SolidMetricView metricId="highestPrice" metrics={solidMetrics} />,
+  solidMetricsApp,
+);
+console.log(solidMetricsApp.innerHTML);
+// -> '20'
+disposeSolidMetrics();
+```
+
 ## Summary
 
-The support for Metrics objects in the ui-react module is very similar to that
-for the Store object, making it easy to attach Metric results to your user
-interface.
+The support for Metrics objects in the UI modules is very similar to that for
+the Store object, making it easy to attach Metric results to your user
+interface from React, Svelte, or Solid.
 
 We finish off this section about the metrics module with the Advanced Metric
 Definition guide.

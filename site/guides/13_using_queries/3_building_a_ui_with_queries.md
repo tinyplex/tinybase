@@ -188,10 +188,82 @@ console.log(app.innerHTML);
 The `queriesById` prop can be used in the same way that the `storesById`
 prop is, to let you reference multiple Queries objects by Id.
 
+## Svelte And Solid
+
+In Svelte, query results can be read with reactive functions and rendered with
+the Result\* view components:
+
+```svelte
+<script>
+  import {getResultRowIds, ResultCellView} from 'tinybase/ui-svelte';
+
+  let {queries} = $props();
+  const rowIds = getResultRowIds('dogColors', queries);
+</script>
+
+<span>{JSON.stringify(rowIds.current)}</span>
+<ResultCellView queryId="dogColors" rowId="fido" cellId="color" {queries} />
+```
+
+In Solid, the equivalent primitive returns an Accessor, and query view
+components can be used directly in JSX:
+
+```tsx
+import {createRoot as createSolidQueriesRoot} from 'solid-js';
+import {render as renderSolidQueries} from 'solid-js/web';
+import {createQueries as createSolidQueries} from 'tinybase';
+import {createStore as createSolidQueriesStore} from 'tinybase';
+import {
+  ResultCellView as SolidResultCellView,
+  useResultRowIds as useSolidResultRowIds,
+} from 'tinybase/ui-solid';
+
+const solidQueriesStore = createSolidQueriesStore().setTable('pets', {
+  fido: {species: 'dog', color: 'brown'},
+  felix: {species: 'cat', color: 'black'},
+  cujo: {species: 'dog', color: 'black'},
+});
+const solidQueries = createSolidQueries(solidQueriesStore).setQueryDefinition(
+  'dogColors',
+  'pets',
+  ({select, where}) => {
+    select('color');
+    where('species', 'dog');
+  },
+);
+
+createSolidQueriesRoot((dispose) => {
+  const rowIds = useSolidResultRowIds('dogColors', solidQueries);
+  console.log(JSON.stringify(rowIds()));
+  // -> '["fido","cujo"]'
+
+  solidQueriesStore.setCell('pets', 'cujo', 'species', 'wolf');
+  console.log(JSON.stringify(rowIds()));
+  // -> '["fido"]'
+  dispose();
+});
+
+const solidQueriesApp = document.createElement('div');
+const disposeSolidQueries = renderSolidQueries(
+  () => (
+    <SolidResultCellView
+      queryId="dogColors"
+      rowId="fido"
+      cellId="color"
+      queries={solidQueries}
+    />
+  ),
+  solidQueriesApp,
+);
+console.log(solidQueriesApp.innerHTML);
+// -> 'brown'
+disposeSolidQueries();
+```
+
 ## Summary
 
-The support for Queries objects in the ui-react module is very similar to that
-for the Store object, making it easy to attach queries to your user interface.
+The support for Queries objects in the UI modules is very similar to that for
+the Store object, making it easy to attach queries to your user interface.
 
 We now move on to learning about the Inspector tool that TinyBase provides. Read
 more about that in the Inspector Data guide.
