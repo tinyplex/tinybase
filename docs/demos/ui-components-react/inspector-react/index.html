@@ -7,13 +7,13 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
-import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
-import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
-import React from &quot;https://esm.sh/react@^19.2.5&quot;;
-import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
-import { Provider, useCreateStore, useTableIds } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector&quot;;
+import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.6/jsx-runtime&quot;;
+import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.6&quot;;
+import React from &quot;https://esm.sh/react@^19.2.6&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.6/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.3&quot;;
+import { Provider, useCreateStore, useTableIds } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react-inspector&quot;;
 var App = () =&gt; {
   const store = useCreateStore(createStore);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,13 +64,13 @@ var loadTable = async (store, tableId) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-react-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component, which allows you to view and edit the content of a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> in a debug web environment.</p><p>Let&#x27;s make changes to the <a href="/demos/ui-components-react/tableinhtmltable-react/">&lt;TableInHtmlTable /&gt; (React)</a> demo so we can start with a well-populated <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> to inspect.</p><h3 id="set-up">Set Up</h3><p>Let&#x27;s import the <a href="/api/ui-react-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
 <span class="prefix"> </span>  {
 <span class="prefix"> </span>    "imports": {
-<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.3.0-beta.2",
-<span class="prefix"> </span>      "tinybase/ui-react": "https://esm.sh/tinybase@8.3.0-beta.2/ui-react",
-</span><span class="deleted-sign"><span class="prefix">-</span>       "tinybase/ui-react-dom": "https://esm.sh/tinybase@8.3.0-beta.2/ui-react-dom",
-</span><span class="inserted-sign"><span class="prefix">+</span>       "tinybase/ui-react-inspector": "https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector",
-</span><span class="unchanged"><span class="prefix"> </span>      "react": "https://esm.sh/react@^19.2.5",
-<span class="prefix"> </span>      "react/jsx-runtime": "https://esm.sh/react@^19.2.5/jsx-runtime",
-<span class="prefix"> </span>      "react-dom/client": "https://esm.sh/react-dom@^19.2.5/client"
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.3.0-beta.3",
+<span class="prefix"> </span>      "tinybase/ui-react": "https://esm.sh/tinybase@8.3.0-beta.3/ui-react",
+</span><span class="deleted-sign"><span class="prefix">-</span>       "tinybase/ui-react-dom": "https://esm.sh/tinybase@8.3.0-beta.3/ui-react-dom",
+</span><span class="inserted-sign"><span class="prefix">+</span>       "tinybase/ui-react-inspector": "https://esm.sh/tinybase@8.3.0-beta.3/ui-react-inspector",
+</span><span class="unchanged"><span class="prefix"> </span>      "react": "https://esm.sh/react@^19.2.6",
+<span class="prefix"> </span>      "react/jsx-runtime": "https://esm.sh/react@^19.2.6/jsx-runtime",
+<span class="prefix"> </span>      "react-dom/client": "https://esm.sh/react-dom@^19.2.6/client"
 <span class="prefix"> </span>    }
 <span class="prefix"> </span>  }
 <span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

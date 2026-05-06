@@ -1,10 +1,10 @@
 // dist/ui-react-dom/index.js
-import React2 from "https://esm.sh/react@^19.2.5";
-import { Fragment, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.5/jsx-runtime";
+import React2 from "https://esm.sh/react@^19.2.6";
+import { Fragment, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.6/jsx-runtime";
 
 // dist/ui-react/index.js
-import React from "https://esm.sh/react@^19.2.5";
-import { jsx } from "https://esm.sh/react@^19.2.5/jsx-runtime";
+import React from "https://esm.sh/react@^19.2.6";
+import { jsx } from "https://esm.sh/react@^19.2.6/jsx-runtime";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";

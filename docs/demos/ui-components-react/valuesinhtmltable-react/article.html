@@ -7,13 +7,13 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
-import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
-import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
-import React from &quot;https://esm.sh/react@^19.2.5&quot;;
-import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
-import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
-import { ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-dom&quot;;
+import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.6/jsx-runtime&quot;;
+import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.6&quot;;
+import React from &quot;https://esm.sh/react@^19.2.6&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.6/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.3&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react&quot;;
+import { ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react-dom&quot;;
 var App = () =&gt; {
   const store = useCreateStore(createStore);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,12 +37,12 @@ var Body = () =&gt; {
     &lt;/html&gt;"></iframe><p>In this first demo, we set up a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> containing some sample data, and showcase the <a href="/api/ui-react-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a> component.</p><p>Due to the rendering of tables, these demos are probably best viewed on a desktop browser.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react-dom"</span><span class="punctuation">,</span>
-      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
-      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
-      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/ui-react-dom"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.6/client"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

@@ -7,16 +7,16 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
-import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
-import { useCallback } from &quot;https://esm.sh/react@^19.2.5&quot;;
-import React from &quot;https://esm.sh/react@^19.2.5&quot;;
-import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
+import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.6/jsx-runtime&quot;;
+import { useCallback } from &quot;https://esm.sh/react@^19.2.6&quot;;
+import React from &quot;https://esm.sh/react@^19.2.6&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.6/client&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.3.0-beta.3&quot;;
 import {
   createLocalPersister,
   createSessionPersister
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.2/persisters/persister-browser&quot;;
-import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/persisters/persister-remote&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.3/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/persisters/persister-remote&quot;;
 import {
   CellView,
   IndexView,
@@ -29,8 +29,8 @@ import {
   useSetValuesCallback,
   useSliceRowIds,
   useValues
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react-inspector&quot;;
 var STAR = &quot;\u2605&quot;;
 var UNSTAR = &quot;\u2606&quot;;
 var App = () =&gt; {
@@ -179,14 +179,14 @@ var Country = (props) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build a simple app that uses React and a simple <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object to load and display country data.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/persisters/persister-remote"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector"</span><span class="punctuation">,</span>
-      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
-      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
-      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.6/client"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

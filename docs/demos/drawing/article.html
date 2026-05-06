@@ -7,7 +7,7 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
-import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
+import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.6/jsx-runtime&quot;;
 import {
   createContext,
   useCallback,
@@ -16,11 +16,11 @@ import {
   useLayoutEffect,
   useRef,
   useState
-} from &quot;https://esm.sh/react@^19.2.5&quot;;
-import React from &quot;https://esm.sh/react@^19.2.5&quot;;
-import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createCheckpoints, createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
-import { createLocalPersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/persisters/persister-browser&quot;;
+} from &quot;https://esm.sh/react@^19.2.6&quot;;
+import React from &quot;https://esm.sh/react@^19.2.6&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.6/client&quot;;
+import { createCheckpoints, createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.3&quot;;
+import { createLocalPersister } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/persisters/persister-browser&quot;;
 import {
   LinkedRowsView,
   Provider,
@@ -41,8 +41,8 @@ import {
   useSetPartialRowCallback,
   useStore,
   useUndoInformation
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.3/ui-react-inspector&quot;;
 var useDraggableObject = (getInitial, onDrag, onDragStart = null, onDragStop = null) =&gt; {
   const [start, setStart] = useState();
   const handleMouseDown = useCallback(
@@ -639,13 +639,13 @@ var Grip = ({ m: [mx1, my1, mx2, my2], id, x, y, d }) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build a more complex drawing app, using many of the features of TinyBase together.</p><p>Note that this demo does not work particularly well on mobile devices, given its use of drag and drop. Preferably try it out on a desktop browser.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector"</span><span class="punctuation">,</span>
-      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
-      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
-      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.3/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.6/client"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
