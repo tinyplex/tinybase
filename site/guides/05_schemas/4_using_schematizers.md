@@ -41,7 +41,7 @@ const schematizer = createZodSchematizer();
 const store = createStore().setTablesSchema(
   schematizer.toTablesSchema({
     pets: z.object({
-      species: z.string(),
+      species: z.enum(['dog', 'cat']),
       age: z.number(),
       sold: z.boolean().default(false),
     }),
@@ -54,8 +54,10 @@ console.log(store.getRow('pets', 'fido'));
 ```
 
 The schematizer performs a best-effort conversion, extracting basic type
-information (string, number, boolean), defaults, and nullable settings from your
-Zod schemas.
+information (string, number, boolean), string enums, defaults, and nullable
+settings from your Zod schemas. For example, a `z.enum(['dog', 'cat'])` field
+is converted to a TinyBase `string` cell type, leaving the original enum
+validation as a Zod concern.
 
 ## Converting Values Schemas
 

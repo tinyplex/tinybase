@@ -50,6 +50,20 @@ describe('TypeBox Schematizer', () => {
       });
     });
 
+    test('converts TypeBox string enums', () => {
+      expect(
+        schematizer.toTablesSchema({
+          ratings: Type.Object({
+            rating: Type.Enum({Up: 'up', Down: 'down'}),
+          }),
+        }),
+      ).toEqual({
+        ratings: {
+          rating: {type: 'string'},
+        },
+      });
+    });
+
     test('converts TypeBox schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -181,6 +195,16 @@ describe('TypeBox Schematizer', () => {
         v1: {type: 'string'},
         v2: {type: 'number'},
         v3: {type: 'boolean'},
+      });
+    });
+
+    test('converts TypeBox string enum values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          rating: Type.Enum({Up: 'up', Down: 'down'}),
+        }),
+      ).toEqual({
+        rating: {type: 'string'},
       });
     });
 

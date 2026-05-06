@@ -20,10 +20,10 @@
  * into a TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * nullable flags, and optional flags from Effect schemas. Default values are
- * not supported as they exist in Effect's runtime transformations, not in the
- * schema AST. Complex validation rules, transformations, and refinements are
- * ignored.
+ * string literals, nullable flags, and optional flags from Effect schemas.
+ * Default values are not supported as they exist in Effect's runtime
+ * transformations, not in the schema AST. Complex validation rules,
+ * transformations, and refinements are ignored.
  * @param schemas - A mapping of table IDs to Effect Schema struct schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -59,9 +59,9 @@
  * TinyBase ValuesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * nullable flags, and optional flags from Effect schemas. Default values are
- * not supported as they exist in Effect's runtime transformations, not in the
- * schema AST.
+ * string literals, nullable flags, and optional flags from Effect schemas.
+ * Default values are not supported as they exist in Effect's runtime
+ * transformations, not in the schema AST.
  * @param schemas - A mapping of value IDs to Effect Schema schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

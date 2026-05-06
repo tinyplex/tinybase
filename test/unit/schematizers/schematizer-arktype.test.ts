@@ -50,6 +50,20 @@ describe('ArkType Schematizer', () => {
       });
     });
 
+    test('converts ArkType string literals', () => {
+      expect(
+        schematizer.toTablesSchema({
+          ratings: type({
+            rating: type.enumerated('up', 'down'),
+          }),
+        }),
+      ).toEqual({
+        ratings: {
+          rating: {type: 'string'},
+        },
+      });
+    });
+
     test('converts ArkType schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -172,6 +186,16 @@ describe('ArkType Schematizer', () => {
         v1: {type: 'string'},
         v2: {type: 'number'},
         v3: {type: 'boolean'},
+      });
+    });
+
+    test('converts ArkType string literal values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          rating: type.enumerated('up', 'down'),
+        }),
+      ).toEqual({
+        rating: {type: 'string'},
       });
     });
 

@@ -48,6 +48,20 @@ describe('Effect Schematizer', () => {
       });
     });
 
+    test('converts Effect string literals', () => {
+      expect(
+        schematizer.toTablesSchema({
+          ratings: S.Struct({
+            rating: S.Literal('up', 'down'),
+          }),
+        }),
+      ).toEqual({
+        ratings: {
+          rating: {type: 'string'},
+        },
+      });
+    });
+
     test('converts Effect schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -155,6 +169,16 @@ describe('Effect Schematizer', () => {
       ).toEqual({
         v1: {type: 'boolean'},
         v2: {type: 'number'},
+      });
+    });
+
+    test('converts Effect string literal values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          rating: S.Literal('up', 'down'),
+        }),
+      ).toEqual({
+        rating: {type: 'string'},
       });
     });
 

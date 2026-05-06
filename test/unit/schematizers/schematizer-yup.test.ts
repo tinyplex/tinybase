@@ -50,6 +50,20 @@ describe('Yup Schematizer', () => {
       });
     });
 
+    test('converts Yup string enums', () => {
+      expect(
+        schematizer.toTablesSchema({
+          ratings: yup.object({
+            rating: yup.mixed().oneOf(['up', 'down']),
+          }),
+        }),
+      ).toEqual({
+        ratings: {
+          rating: {type: 'string'},
+        },
+      });
+    });
+
     test('converts Yup schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -161,6 +175,16 @@ describe('Yup Schematizer', () => {
       ).toEqual({
         v1: {type: 'boolean'},
         v2: {type: 'number'},
+      });
+    });
+
+    test('converts Yup string enum values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          rating: yup.mixed().oneOf(['up', 'down']),
+        }),
+      ).toEqual({
+        rating: {type: 'string'},
       });
     });
 

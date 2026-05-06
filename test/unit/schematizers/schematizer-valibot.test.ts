@@ -50,6 +50,24 @@ describe('Valibot Schematizer', () => {
       });
     });
 
+    test('converts Valibot string picklists', () => {
+      expect(
+        schematizer.toTablesSchema({
+          ratings: v.object({
+            direction: v.literal('up'),
+            rating: v.picklist(['up', 'down']),
+            status: v.fallback(v.picklist(['draft', 'live']), 'draft'),
+          }),
+        }),
+      ).toEqual({
+        ratings: {
+          direction: {type: 'string'},
+          rating: {type: 'string'},
+          status: {type: 'string', default: 'draft'},
+        },
+      });
+    });
+
     test('converts Valibot schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -190,6 +208,18 @@ describe('Valibot Schematizer', () => {
         v1: {type: 'string'},
         v2: {type: 'number'},
         v3: {type: 'boolean'},
+      });
+    });
+
+    test('converts Valibot string picklist values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          direction: v.literal('up'),
+          rating: v.picklist(['up', 'down']),
+        }),
+      ).toEqual({
+        direction: {type: 'string'},
+        rating: {type: 'string'},
       });
     });
 

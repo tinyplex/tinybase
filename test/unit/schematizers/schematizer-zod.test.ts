@@ -50,6 +50,24 @@ describe('Zod Schematizer', () => {
       });
     });
 
+    test('converts Zod string enums', () => {
+      expect(
+        schematizer.toTablesSchema({
+          ratings: z.object({
+            direction: z.literal('up'),
+            rating: z.enum(['up', 'down']),
+            status: z.enum(['draft', 'live']).default('draft'),
+          }),
+        }),
+      ).toEqual({
+        ratings: {
+          direction: {type: 'string'},
+          rating: {type: 'string'},
+          status: {type: 'string', default: 'draft'},
+        },
+      });
+    });
+
     test('converts Zod schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -155,26 +173,33 @@ describe('Zod Schematizer', () => {
 
     test('works with TinyBase store', () => {
       const tablesSchema = schematizer.toTablesSchema({
-        t1: z.object({
-          c1: z.string(),
-          c2: z.number(),
-          c3: z.boolean().default(false),
+        ratings: z.object({
+          id: z.string(),
+          rating: z.enum(['up', 'down']),
+          score: z.number(),
+          notes: z.string().default(''),
         }),
       });
       const store = createStore().setTablesSchema(tablesSchema);
 
       expect(store.getTablesSchemaJson()).toEqual(
         JSON.stringify({
-          t1: {
-            c1: {type: 'string'},
-            c2: {type: 'number'},
-            c3: {type: 'boolean', default: false},
+          ratings: {
+            id: {type: 'string'},
+            rating: {type: 'string'},
+            score: {type: 'number'},
+            notes: {type: 'string', default: ''},
           },
         }),
       );
 
-      store.setRow('t1', 'r1', {c1: 'a', c2: 1});
-      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 1, c3: false});
+      store.setRow('ratings', 'r1', {id: 'abc', rating: 'up', score: 1});
+      expect(store.getRow('ratings', 'r1')).toEqual({
+        id: 'abc',
+        rating: 'up',
+        score: 1,
+        notes: '',
+      });
     });
   });
 
@@ -190,6 +215,18 @@ describe('Zod Schematizer', () => {
         v1: {type: 'string'},
         v2: {type: 'number'},
         v3: {type: 'boolean'},
+      });
+    });
+
+    test('converts Zod string enum values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          direction: z.literal('up'),
+          rating: z.enum(['up', 'down']),
+        }),
+      ).toEqual({
+        direction: {type: 'string'},
+        rating: {type: 'string'},
       });
     });
 

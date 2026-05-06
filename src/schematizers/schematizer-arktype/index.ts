@@ -5,6 +5,7 @@ import {
   isArray,
   isFalse,
   isNull,
+  isString,
   isTrue,
   isUndefined,
   size,
@@ -18,6 +19,7 @@ import {
   OPTIONAL,
   REQUIRED,
   SEQUENCE,
+  STRING,
   TYPE,
   UNIT,
   _VALUE,
@@ -29,23 +31,29 @@ const unwrapSchema = (
   defaultValue?: any,
   allowNull?: boolean,
 ): [any, any, boolean] => {
-  if (isArray(schema)) {
+  const schemaData = schema?.json ?? schema;
+
+  if (isArray(schemaData)) {
     const hasNull = !arrayEvery(
-      schema,
+      schemaData,
       (item: any) => !isNull(item?.[UNIT]) && !isNull(item),
     );
 
     if (
-      size(schema) === 2 &&
-      isFalse((schema[0] as any)?.[UNIT]) &&
-      isTrue((schema[1] as any)?.[UNIT])
+      size(schemaData) === 2 &&
+      isFalse((schemaData[0] as any)?.[UNIT]) &&
+      isTrue((schemaData[1] as any)?.[UNIT])
     ) {
       return [{[TYPE]: BOOLEAN}, defaultValue, allowNull ?? false];
     }
 
+    if (arrayEvery(schemaData, (item: any) => isString(item?.[UNIT] ?? item))) {
+      return [{[TYPE]: STRING}, defaultValue, allowNull ?? false];
+    }
+
     if (hasNull) {
       const nonNullItem = arrayFind(
-        schema,
+        schemaData,
         (item: any) => !isNull(item?.[UNIT]) && !isNull(item) && item !== '=',
       );
       if (nonNullItem) {
@@ -54,15 +62,16 @@ const unwrapSchema = (
     }
   }
 
-  if (
-    !isArray(schema) &&
-    !isUndefined(schema?.[SEQUENCE] ?? schema?.json?.[SEQUENCE])
-  ) {
+  if (!isArray(schemaData) && !isUndefined(schemaData?.[SEQUENCE])) {
     return [{[TYPE]: ARRAY}, defaultValue, allowNull ?? false];
   }
 
+  if (!isArray(schemaData) && isString(schemaData?.[UNIT])) {
+    return [{[TYPE]: STRING}, defaultValue, allowNull ?? false];
+  }
+
   return [
-    {[TYPE]: schema?.[DOMAIN] || schema},
+    {[TYPE]: schemaData?.[DOMAIN] || schemaData},
     defaultValue,
     allowNull ?? false,
   ];

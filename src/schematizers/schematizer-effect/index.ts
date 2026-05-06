@@ -31,8 +31,12 @@ const unwrapSchema = (
   const type = ast._tag;
   if (type === UNION) {
     const types = ast.types;
+    const nonNullType = arrayFind(
+      types,
+      (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
+    );
     return [
-      {[TYPE]: getSimpleType(types[0]._tag)},
+      {[TYPE]: getSimpleType(nonNullType)},
       defaultValue,
       allowNull ||
         !!arrayFind(
@@ -42,21 +46,31 @@ const unwrapSchema = (
     ];
   }
 
-  return [{[TYPE]: getSimpleType(type)}, defaultValue, allowNull || false];
+  return [{[TYPE]: getSimpleType(ast)}, defaultValue, allowNull || false];
 };
 
-const getSimpleType = (tag: string): string =>
-  tag === STRING_KEYWORD
-    ? STRING
-    : tag === NUMBER_KEYWORD
-      ? NUMBER
-      : tag === BOOLEAN_KEYWORD
-        ? BOOLEAN
-        : tag === TUPLE_TYPE
-          ? ARRAY
-          : tag === TYPE_LITERAL
-            ? OBJECT
-            : EMPTY_STRING;
+const getSimpleType = (ast: TypeNode): string => {
+  const tag = ast?._tag;
+  const literalType = typeof ast?.literal;
+
+  return tag === LITERAL
+    ? literalType === STRING ||
+      literalType === NUMBER ||
+      literalType === BOOLEAN
+      ? literalType
+      : EMPTY_STRING
+    : tag === STRING_KEYWORD
+      ? STRING
+      : tag === NUMBER_KEYWORD
+        ? NUMBER
+        : tag === BOOLEAN_KEYWORD
+          ? BOOLEAN
+          : tag === TUPLE_TYPE
+            ? ARRAY
+            : tag === TYPE_LITERAL
+              ? OBJECT
+              : EMPTY_STRING;
+};
 
 const getProperties = (schema: any) => {
   const ast = schema.ast;

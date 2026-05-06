@@ -20,8 +20,9 @@
  * TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * default values, and nullable flags from ArkType schemas. Complex validation
- * rules like min/max, regex patterns, refinements, and transforms are ignored.
+ * string literals, default values, and nullable flags from ArkType schemas.
+ * Complex validation rules like min/max, regex patterns, refinements, and
+ * transforms are ignored.
  * @param schemas - A mapping of table IDs to ArkType object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -56,8 +57,8 @@
  * The toValuesSchema method converts a mapping of ArkType schemas into a
  * TinyBase ValuesSchema.
  *
- * This method extracts basic type information and default values from ArkType
- * schemas.
+ * This method extracts basic type information, string literals, and default
+ * values from ArkType schemas.
  * @param schemas - A mapping of value IDs to ArkType schemas.
  * @returns A TinyBase ValuesSchema.
  * @example
