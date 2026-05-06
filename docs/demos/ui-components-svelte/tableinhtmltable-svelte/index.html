@@ -7,19 +7,19 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $2 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { Provider } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
-import { TableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-dom&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte&quot;;
+import { TableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte-dom&quot;;
 
 // demo-files:/demo/src/DictionaryCell.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { getCell } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
+import { getCell } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte&quot;;
 var root = $.from_html(`&lt;a target=&quot;_blank&quot;&gt; &lt;/a&gt;`);
 function DictionaryCell($$anchor, $$props) {
   $.push($$props, true);
@@ -104,7 +104,7 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
 </span><span class="inserted-sign"><span class="prefix">+</span><span class="keyword">const</span> <span class="constant">NUMERIC</span> <span class="operator">=</span> <span class="regex"><span class="regex-delimiter">/</span><span class="regex-source">^[\d\.]+$</span><span class="regex-delimiter">/</span></span><span class="punctuation">;</span>
 <span class="prefix">+</span>
 <span class="prefix">+</span><span class="keyword">const</span> <span class="function-variable">loadTable</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">store<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span>  <span class="keyword">const</span> rows <span class="operator">=</span> <span class="punctuation">(</span>
 <span class="prefix">+</span>    <span class="keyword">await</span> <span class="punctuation">(</span><span class="keyword">await</span> <span class="function">fetch</span><span class="punctuation">(</span><span class="template-string"><span class="template-punctuation">`</span><span class="string">https://tinybase.org/assets/</span><span class="interpolation"><span class="interpolation-punctuation">${</span>tableId<span class="interpolation-punctuation">}</span></span><span class="string">.tsv</span><span class="template-punctuation">`</span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function">text</span><span class="punctuation">(</span><span class="punctuation">)</span>
 <span class="prefix">+</span>  <span class="punctuation">)</span><span class="punctuation">.</span><span class="function">split</span><span class="punctuation">(</span><span class="string">'\n'</span><span class="punctuation">)</span><span class="punctuation">;</span>
@@ -125,7 +125,7 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
 <span class="prefix">+</span>      <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span>    <span class="punctuation">}</span>
 <span class="prefix">+</span>  <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span><span class="punctuation">}</span><span class="punctuation">;</span>
 </span>
 <span class="deleted-sign"><span class="prefix">-</span><span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>

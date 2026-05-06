@@ -11,9 +11,9 @@ import { Fragment, jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runti
 import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
-import { Provider, useCell, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
-import { TableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
+import { Provider, useCell, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
+import { TableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-dom&quot;;
 var App = () =&gt; {
   const store = useCreateStore(createStore);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +76,7 @@ var customCells = { name: { label: &quot;Name&quot;, component: DictionaryCell }
 </span></code></pre><h3 id="loading-data">Loading Data</h3><p>We&#x27;re loading a table of data in exactly the same way as we did in the <a href="/demos/movie-database/">Movie Database</a> demo:</p><pre><code><span class="keyword">const</span> <span class="constant">NUMERIC</span> <span class="operator">=</span> <span class="regex"><span class="regex-delimiter">/</span><span class="regex-source">^[\d\.]+$</span><span class="regex-delimiter">/</span></span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> <span class="function-variable">loadTable</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">store<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="keyword">const</span> rows <span class="operator">=</span> <span class="punctuation">(</span>
     <span class="keyword">await</span> <span class="punctuation">(</span><span class="keyword">await</span> <span class="function">fetch</span><span class="punctuation">(</span><span class="template-string"><span class="template-punctuation">`</span><span class="string">https://tinybase.org/assets/</span><span class="interpolation"><span class="interpolation-punctuation">${</span>tableId<span class="interpolation-punctuation">}</span></span><span class="string">.tsv</span><span class="template-punctuation">`</span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function">text</span><span class="punctuation">(</span><span class="punctuation">)</span>
   <span class="punctuation">)</span><span class="punctuation">.</span><span class="function">split</span><span class="punctuation">(</span><span class="string">'\n'</span><span class="punctuation">)</span><span class="punctuation">;</span>
@@ -95,7 +95,7 @@ var customCells = { name: { label: &quot;Name&quot;, component: DictionaryCell }
       <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
-  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
 </code></pre><p>This is a small and narrow <a href="/api/store/type-aliases/store/table/"><code>Table</code></a>, with just <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> and name for the sixteen movie genres.</p><h3 id="using-the-tableinhtmltable-component">Using the <a href="/api/ui-react-dom/functions/store-components/tableinhtmltable/"><code>TableInHtmlTable</code></a> Component</h3><p>The <a href="/api/ui-react-dom/functions/store-components/tableinhtmltable/"><code>TableInHtmlTable</code></a> component is almost as simple as the <a href="/api/ui-react-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a> component, though it will need one prop, the <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a>:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">Body</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
 <span class="prefix"> </span>  <span class="keyword">return</span> <span class="punctuation">(</span>

@@ -11,15 +11,15 @@ import { jsx } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
 import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
 import {
   CellView,
   Provider,
   useCell,
   useCreateRelationships,
   useCreateStore
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
-import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
+import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-dom&quot;;
 var App = () =&gt; {
   const store = useCreateStore(createStore);
   const relationships = useCreateRelationships(
@@ -111,7 +111,7 @@ var customRelationshipCells = {
 </span><span class="inserted-sign"><span class="prefix">+</span><span class="keyword">import</span> <span class="punctuation">{</span>RelationshipInHtmlTable<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react-dom'</span><span class="punctuation">;</span>
 </span></code></pre><p>We need to define the <a href="/api/relationships/type-aliases/concept/relationship/"><code>Relationship</code></a> we are going to use. For the sake of this demo we are going to hand-create a second table which the genres table links to to get extra metadata. Note how metadata is missing for genre 13, &#x27;Music&#x27;, and so that is empty in the table.</p><pre><code><span class="unchanged"><span class="prefix"> </span>  <span class="function">useMemo</span><span class="punctuation">(</span><span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
 <span class="prefix"> </span>    <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-</span><span class="inserted-sign"><span class="prefix">+</span>    store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'metadata'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>    store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'metadata'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
 <span class="prefix">+</span>      <span class="literal-property">g01_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Dramatic movies to make you think'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">6</span><span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="prefix">+</span>      <span class="literal-property">g02_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'These ones make you laugh'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">7</span><span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="prefix">+</span>      <span class="literal-property">g03_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Fun for all the family'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">8</span><span class="punctuation">}</span><span class="punctuation">,</span>

@@ -7,14 +7,14 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { Provider, getTableIds } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-inspector&quot;;
+import { Provider, getTableIds } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte-inspector&quot;;
 var root_1 = $.from_html(`&lt;div id=&quot;info&quot;&gt; &lt;/div&gt; &lt;!&gt;`, 1);
 function App($$anchor, $$props) {
   $.push($$props, true);
@@ -75,16 +75,16 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component, which allows you to view and edit the content of a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> in a debug web environment.</p><p>Let&#x27;s make changes to the <a href="/demos/ui-components-svelte/tableinhtmltable-svelte/">&lt;TableInHtmlTable /&gt; (Svelte)</a> demo so we can start with a well-populated <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> to inspect.</p><h3 id="set-up">Set Up</h3><p>Let&#x27;s import the <a href="/api/ui-svelte-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
 <span class="prefix"> </span>  {
 <span class="prefix"> </span>    "imports": {
-<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.3.0-beta.1",
-<span class="prefix"> </span>      "tinybase/ui-svelte": "https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte",
-</span><span class="deleted-sign"><span class="prefix">-</span>      "tinybase/ui-svelte-dom": "https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-dom",
-</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-inspector",
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.3.0-beta.2",
+<span class="prefix"> </span>      "tinybase/ui-svelte": "https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte",
+</span><span class="deleted-sign"><span class="prefix">-</span>      "tinybase/ui-svelte-dom": "https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte-dom",
+</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte-inspector",
 </span><span class="unchanged"><span class="prefix"> </span>      "svelte": "https://esm.sh/svelte@^5.55.5"
 <span class="prefix"> </span>    }
 <span class="prefix"> </span>  }
 <span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
 </span></code></pre><p>The inspector component is best showcased with a larger data set, so we load up all four tables of the movie database data:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">loadTable</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">store<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-</span><span class="deleted-sign"><span class="prefix">-</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </span><span class="unchanged"><span class="prefix"> </span>  <span class="keyword">const</span> rows <span class="operator">=</span> <span class="punctuation">(</span>
 <span class="prefix"> </span>    <span class="keyword">await</span> <span class="punctuation">(</span><span class="keyword">await</span> <span class="function">fetch</span><span class="punctuation">(</span><span class="template-string"><span class="template-punctuation">`</span><span class="string">https://tinybase.org/assets/</span><span class="interpolation"><span class="interpolation-punctuation">${</span>tableId<span class="interpolation-punctuation">}</span></span><span class="string">.tsv</span><span class="template-punctuation">`</span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function">text</span><span class="punctuation">(</span><span class="punctuation">)</span>
 <span class="prefix"> </span>  <span class="punctuation">)</span><span class="punctuation">.</span><span class="function">split</span><span class="punctuation">(</span><span class="string">'\n'</span><span class="punctuation">)</span><span class="punctuation">;</span>
@@ -105,7 +105,7 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
 <span class="prefix"> </span>       <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix"> </span>     <span class="punctuation">}</span>
 <span class="prefix"> </span>   <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
-</span><span class="deleted-sign"><span class="prefix">-</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</span><span class="deleted-sign"><span class="prefix">-</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">-</span><span class="punctuation">}</span><span class="punctuation">;</span>
 </span><span class="inserted-sign"><span class="prefix">+</span><span class="punctuation">}</span><span class="punctuation">;</span>
 </span><span class="unchanged"><span class="prefix"> </span>
@@ -116,13 +116,13 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
 <span class="prefix">-</span><span class="punctuation">}</span><span class="punctuation">;</span>
 </span><span class="inserted-sign"><span class="prefix">+</span><span class="keyword">const</span> <span class="function-variable">init</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
 <span class="prefix">+</span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/starttransaction/">startTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span>  <span class="keyword">await</span> Promise<span class="punctuation">.</span><span class="function">all</span><span class="punctuation">(</span>
 <span class="prefix">+</span>    <span class="punctuation">[</span><span class="string">'movies'</span><span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">,</span> <span class="string">'people'</span><span class="punctuation">,</span> <span class="string">'cast'</span><span class="punctuation">]</span><span class="punctuation">.</span><span class="function">map</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">tableId</span><span class="punctuation">)</span> <span class="operator">=></span>
 <span class="prefix">+</span>      <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> tableId<span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="prefix">+</span>    <span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="prefix">+</span>  <span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/transaction/finishtransaction/">finishTransaction</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span>  <span class="function">mount</span><span class="punctuation">(</span>App<span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">target</span><span class="operator">:</span> document<span class="punctuation">.</span>body<span class="punctuation">,</span> <span class="literal-property">props</span><span class="operator">:</span> <span class="punctuation">{</span>store<span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span><span class="punctuation">}</span><span class="punctuation">;</span>
 </span></code></pre><p>Let&#x27;s update the app to show some very basic data about the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>:</p><div class="preFile">src/App.svelte</div><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span>

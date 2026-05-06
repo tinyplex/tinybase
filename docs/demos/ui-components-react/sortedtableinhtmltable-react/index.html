@@ -11,9 +11,9 @@ import { Fragment, jsx } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quo
 import { useMemo, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
-import { Provider, useCell, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
-import { SortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-dom&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
+import { Provider, useCell, useCreateStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
+import { SortedTableInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-dom&quot;;
 var App = () =&gt; {
   const store = useCreateStore(createStore);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,7 +85,7 @@ var customCells = { name: &quot;Name&quot;, year: &quot;Year&quot;, rating: &quo
 <span class="prefix"> </span>        tableId<span class="operator">=</span><span class="string">'movies'</span>
 </span><span class="inserted-sign"><span class="prefix">+</span>        customCells<span class="operator">=</span><span class="punctuation">{</span>customCells<span class="punctuation">}</span>
 </span><span class="unchanged"><span class="prefix"> </span>      <span class="operator">/</span><span class="operator">></span>
-</span></code></pre><p>The <a href="/api/ui-react-dom/type-aliases/props/sortedtableinhtmltableprops/"><code>SortedTableInHtmlTableProps</code></a> component, much like the <a href="/api/store/interfaces/store/store/methods/getter/getsortedrowids/"><code>getSortedRowIds</code></a> method, can take props to indicate how the sorting should work. <code>cellId</code> indicates which <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to use to sort on, and <code>descending</code> indicates the direction. We can sort the movies by rating accordingly:</p><pre><code><span class="unchanged"><span class="prefix"> </span>      <span class="operator">&lt;</span>SortedTableInHtmlTable
+</span></code></pre><p>The <a href="/api/ui-react-dom/type-aliases/props/sortedtableinhtmltableprops/"><code>SortedTableInHtmlTableProps</code></a> component, much like the <a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/getter/getsortedrowids/"><code>getSortedRowIds</code></a> method, can take props to indicate how the sorting should work. <code>cellId</code> indicates which <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to use to sort on, and <code>descending</code> indicates the direction. We can sort the movies by rating accordingly:</p><pre><code><span class="unchanged"><span class="prefix"> </span>      <span class="operator">&lt;</span>SortedTableInHtmlTable
 <span class="prefix"> </span>        tableId<span class="operator">=</span><span class="string">'movies'</span>
 <span class="prefix"> </span>        customCells<span class="operator">=</span><span class="punctuation">{</span>customCells<span class="punctuation">}</span>
 </span><span class="inserted-sign"><span class="prefix">+</span>        cellId<span class="operator">=</span><span class="string">'rating'</span>

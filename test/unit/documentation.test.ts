@@ -253,11 +253,13 @@ const getRunnableImport = (
     );
   }
   if (trimmedImports.startsWith('{')) {
+    // eslint-disable-next-line max-len
     return `var ${trimmedImports.replace(/\bas\b/g, ':')} = ${moduleExpression};`;
   }
   if (trimmedImports.startsWith('* as ')) {
     return `var ${trimmedImports.slice(5)} = ${moduleExpression};`;
   }
+  // eslint-disable-next-line max-len
   return `var ${trimmedImports} = ${moduleExpression}.default ?? ${moduleExpression};`;
 };
 
@@ -268,21 +270,21 @@ const replaceRunnableImports = (source: string): string =>
   );
 
 const isSolidSource = (source: string): boolean =>
-  source.includes("from 'solid-js") ||
+  source.includes(`from 'solid-js`) ||
   source.includes('from "solid-js') ||
-  source.includes("from 'tinybase/ui-solid'") ||
+  source.includes(`from 'tinybase/ui-solid'`) ||
   source.includes('from "tinybase/ui-solid"');
 
 const isOtherUiSource = (source: string): boolean =>
-  source.includes("from 'react'") ||
+  source.includes(`from 'react'`) ||
   source.includes('from "react"') ||
-  source.includes("from 'react-dom") ||
+  source.includes(`from 'react-dom`) ||
   source.includes('from "react-dom') ||
-  source.includes("from 'tinybase/ui-react") ||
+  source.includes(`from 'tinybase/ui-react`) ||
   source.includes('from "tinybase/ui-react') ||
-  source.includes("from 'svelte") ||
+  source.includes(`from 'svelte`) ||
   source.includes('from "svelte') ||
-  source.includes("from 'tinybase/ui-svelte") ||
+  source.includes(`from 'tinybase/ui-svelte`) ||
   source.includes('from "tinybase/ui-svelte');
 
 const transformSolidJsx = (source: string, loader: 'jsx' | 'tsx'): string =>

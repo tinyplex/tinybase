@@ -11,7 +11,7 @@ import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
 import { useCallback, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createIndexes, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createIndexes, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
 import {
   CellView,
   Provider,
@@ -22,8 +22,8 @@ import {
   useCreateStore,
   useValue,
   useValueState
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector&quot;;
 var TYPES = [&quot;Home&quot;, &quot;Work&quot;, &quot;Archived&quot;];
 var INITIAL_TODOS = {
   todos: {
@@ -138,7 +138,7 @@ var TodoType = ({ tableId, rowId }) =&gt; {
 </span><span class="unchanged"><span class="prefix"> </span>  <span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="prefix"> </span><span class="punctuation">}</span><span class="punctuation">;</span>
 </span></code></pre><h3 id="adding-additional-stores-and-indexes">Adding Additional Stores And <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a></h3><p>In this demo we let people select a todo type and see a filtered list. The current type being displayed will need to be known by components across the app. We could make this a part of the top level component&#x27;s state and pass it around with props.</p><p>But instead, we will create and memoize a second <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object called <code>viewStore</code> to store the current type being viewed, in a <a href="/api/store/type-aliases/store/value/"><code>Value</code></a> called <code>type</code>.</p><p>We also want to index the todos by type, so we create and memoize an <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object, and define an index called <code>types</code> on the <code>todos</code> <a href="/api/store/type-aliases/store/table/"><code>Table</code></a>, based on the value of the <code>type</code> <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a>:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-<span class="prefix"> </span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settables/">setTables</a></span><span class="punctuation">(</span><span class="constant">INITIAL_TODOS</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix"> </span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settables/">setTables</a></span><span class="punctuation">(</span><span class="constant">INITIAL_TODOS</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </span><span class="inserted-sign"><span class="prefix">+</span>  <span class="keyword">const</span> viewStore <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
 <span class="prefix">+</span>    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/the-essentials/setting-data/setvalue/">setValue</a></span><span class="punctuation">(</span><span class="string">'type'</span><span class="punctuation">,</span> <span class="string">'Home'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="prefix">+</span>  <span class="punctuation">)</span><span class="punctuation">;</span>

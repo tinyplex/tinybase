@@ -11,7 +11,7 @@ import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.5/jsx-runtime&quot;;
 import { useCallback, useState } from &quot;https://esm.sh/react@^19.2.5&quot;;
 import React from &quot;https://esm.sh/react@^19.2.5&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.5/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
 import {
   CellView,
   Provider,
@@ -19,8 +19,8 @@ import {
   useAddRowCallback,
   useCellState,
   useCreateStore
-} from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector&quot;;
+} from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector&quot;;
 var INITIAL_TODOS = {
   todos: {
     0: { text: &quot;Clean the floor&quot; },
@@ -74,9 +74,9 @@ var TodoText = ({ tableId, rowId }) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build a minimum viable &#x27;Todo&#x27; app. It uses React and a simple <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> to let people add new todos and then mark them as done.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.1/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.3.0-beta.2/ui-react-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.5/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.5/client"</span>
@@ -104,7 +104,7 @@ var TodoText = ({ tableId, rowId }) =&gt; {
   <span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
 </code></pre><h3 id="the-top-level-app-component">The Top-Level <code>App</code> Component</h3><p>We have a top-level <code>App</code> component, in which we create our <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object with the sample data, and render the parts of the app. We use the <a href="/api/the-essentials/using-react/usecreatestore/"><code>useCreateStore</code></a> hook, since it provides memoization in case the component is rendered more than once.</p><p>We <em>could</em> drill the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object as a React prop down to all the components, but for clarity we wrap our app with the <a href="/api/the-essentials/using-react/provider/"><code>Provider</code></a> component, which then makes it available throughout our app as the default <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object:</p><pre><code><span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settables/">setTables</a></span><span class="punctuation">(</span><span class="constant">INITIAL_TODOS</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settables/">setTables</a></span><span class="punctuation">(</span><span class="constant">INITIAL_TODOS</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
   <span class="keyword">return</span> <span class="punctuation">(</span>
     <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span> <span class="attr-name">store</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">

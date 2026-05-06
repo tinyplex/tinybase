@@ -7,19 +7,19 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.1&quot;;
+import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.3.0-beta.2&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $2 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { Provider } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
-import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte-dom&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte&quot;;
+import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte-dom&quot;;
 
 // demo-files:/demo/src/Popularity.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { getCell } from &quot;https://esm.sh/tinybase@8.3.0-beta.1/ui-svelte&quot;;
+import { getCell } from &quot;https://esm.sh/tinybase@8.3.0-beta.2/ui-svelte&quot;;
 var root = $.from_html(`&lt;b&gt; &lt;/b&gt;`);
 function Popularity($$anchor, $$props) {
   $.push($$props, true);
@@ -117,7 +117,7 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
 </span></code></pre><pre><code><span class="unchanged"><span class="prefix"> </span><span class="keyword">const</span> <span class="function-variable">init</span> <span class="operator">=</span> <span class="keyword">async</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
 <span class="prefix"> </span>  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix"> </span>  <span class="keyword">await</span> <span class="function">loadTable</span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'genres'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-</span><span class="inserted-sign"><span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'metadata'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  store<span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'metadata'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
 <span class="prefix">+</span>    <span class="literal-property">g01_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Dramatic movies to make you think'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">6</span><span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="prefix">+</span>    <span class="literal-property">g02_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'These ones make you laugh'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">7</span><span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="prefix">+</span>    <span class="literal-property">g03_meta</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">text</span><span class="operator">:</span> <span class="string">'Fun for all the family'</span><span class="punctuation">,</span> <span class="literal-property">popularity</span><span class="operator">:</span> <span class="number">8</span><span class="punctuation">}</span><span class="punctuation">,</span>
