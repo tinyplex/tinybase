@@ -63,9 +63,54 @@ disposeSolid();
 Read more in the Building UIs With Solid guides and the ui-solid module
 documentation.
 
-There are no intended breaking changes in this release. If you try the new
-Solid bindings, please let us know how they fit your expectations of building
-Solid apps - and good luck!
+A huge thanks to [Daniel Grant]([@bitmage](https://github.com/djgrant)) for
+designing and implementing this new Solid support! Please let us know how it
+works for you and if you have any feedback or suggestions.
+
+## Queries From Queries
+
+Also in this release, TinyQL queries can now use the result of another query as
+their source. This lets you build complex results in small, readable steps -
+for example, first finding all dogs, and then querying that result to find just
+the brown ones:
+
+```js
+import {createQueries} from 'tinybase';
+
+const queryStore = createStore().setTable('pets', {
+  fido: {species: 'dog', color: 'brown'},
+  felix: {species: 'cat', color: 'black'},
+  cujo: {species: 'dog', color: 'black'},
+});
+
+const queryQueries = createQueries(queryStore)
+  .setQueryDefinition('dogs', 'pets', ({select, where}) => {
+    select('color');
+    where('species', 'dog');
+  })
+  .setQueryDefinition('brownDogs', true, 'dogs', ({select, where}) => {
+    select('color');
+    where('color', 'brown');
+  });
+
+console.log(queryQueries.getResultTable('brownDogs'));
+// -> {fido: {color: 'brown'}}
+```
+
+The `true` argument tells setQueryDefinition that `dogs` is another query
+result, not a Table in the underlying Store. This works in query clauses too,
+so you can select or join from query results as your TinyQL definitions become
+more modular.
+
+## Schematizer Enums
+
+This release addresses enum types in the schematizers. For example, Zod enums
+are now schematized as string types, rather than being rejected as invalid. This
+is also now documented accordingly.
+
+There are no intended breaking changes in this release. If you try the new Solid
+bindings in particular, please let us know how they fit your expectations of
+building Solid apps - and good luck!
 
 ---
 
@@ -257,8 +302,6 @@ Previously, TinyBase supported `string`, `number`, `boolean`, and (since v7.0)
 directly in a Store.
 
 ```js
-import {createStore} from 'tinybase';
-
 const store = createStore().setRow('pets', 'fido', {
   species: 'dog',
   traits: {friendly: true, energetic: true},
@@ -417,8 +460,6 @@ time.
 Let's take a look with a simple example:
 
 ```js
-import {createQueries} from 'tinybase';
-
 store.setTable('pets', {
   fido: {age: 2, species: 'dog'},
   felix: {age: 1, species: 'cat'},
@@ -1814,7 +1855,7 @@ module:
 
 ```jsx
 import React from 'react';
-import {createRoot} from 'react-dom/client';
+import {createRoot as createReactRoot} from 'react-dom/client';
 import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 
 const App = ({store}) => (
@@ -1828,7 +1869,7 @@ store.setTables({
   },
 });
 const app = document.createElement('div');
-const root = createRoot(app);
+const root = createReactRoot(app);
 root.render(<App store={store} />); // !act
 
 console.log(app.innerHTML);

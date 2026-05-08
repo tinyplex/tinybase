@@ -246,21 +246,21 @@ const getRunnableImport = (
   const defaultAndNamedImports = trimmedImports.match(/^(\w+),\s*({.*})$/s);
   if (defaultAndNamedImports != null) {
     return (
-      `var ${defaultAndNamedImports[1]} = ` +
+      `const ${defaultAndNamedImports[1]} = ` +
       `${moduleExpression}.default ?? ${moduleExpression};\n` +
-      `var ${defaultAndNamedImports[2].replace(/\bas\b/g, ':')} = ` +
+      `const ${defaultAndNamedImports[2].replace(/\bas\b/g, ':')} = ` +
       `${moduleExpression};`
     );
   }
   if (trimmedImports.startsWith('{')) {
     // eslint-disable-next-line max-len
-    return `var ${trimmedImports.replace(/\bas\b/g, ':')} = ${moduleExpression};`;
+    return `const ${trimmedImports.replace(/\bas\b/g, ':')} = ${moduleExpression};`;
   }
   if (trimmedImports.startsWith('* as ')) {
-    return `var ${trimmedImports.slice(5)} = ${moduleExpression};`;
+    return `const ${trimmedImports.slice(5)} = ${moduleExpression};`;
   }
   // eslint-disable-next-line max-len
-  return `var ${trimmedImports} = ${moduleExpression}.default ?? ${moduleExpression};`;
+  return `const ${trimmedImports} = ${moduleExpression}.default ?? ${moduleExpression};`;
 };
 
 const replaceRunnableImports = (source: string): string =>

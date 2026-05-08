@@ -543,6 +543,42 @@ store.setCell('owner', 2, 'regionId', '4');
 Now that Bob is in Canada, removing Felix (cost 6) from California lowers its
 average to 4.5 - too low for our results, and we only see New York! Magic.
 
+## Querying From Other Queries
+
+Since TinyBase v8.3, you can also use the result of one query as the source for
+another query - in other words, selecting or joining from a query instead of an
+underlying table. This allows you to build more complex queries out of simpler
+ones and pipe them together.
+
+To do this, overload the setQueryDefinition method with a `isQuery` parameter
+set to `true` before you specify the query Id. (Similar overloads are available
+in the query clauses themselves.)
+
+```js
+queries.setQueryDefinition('dogs', 'pets', ({select, where}) => {
+  select('speciesId');
+  select('colorId');
+  select('ownerId');
+  where('speciesId', '1');
+});
+
+queries.setQueryDefinition('brownDogs', true, 'dogs', ({select, where}) => {
+  select((_, rowId) => rowId).as('petId');
+  select('ownerId');
+  where('ownerId', '1');
+});
+
+console.log(queries.getResultTable('brownDogs'));
+// -> {fido: {"petId": "fido", "ownerId": "1"}}
+```
+
+This example also shows how you can use the callback-form of the `select`
+function to include the Row Id of the source query into the result of the new
+query.
+
+Though TinyBase is designed to defend against it, do be careful not to create
+circular dependencies between queries when you are querying in turn from them!
+
 ## Summary
 
 Next, let's find out how to include queries in a user interface in the Building
