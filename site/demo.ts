@@ -110,9 +110,15 @@ const getCss = (source: string): string => {
 
 const getHtmlDoc = (html: string): string => html.trim();
 
-const getJs = (esbuild: any, path: string, source: string): string =>
-  esbuild
-    .transformSync(source, {
+const getJs = (
+  esbuild: any,
+  path: string,
+  source: string,
+  solid = false,
+): string => {
+  const jsx = path.endsWith('.jsx') || path.endsWith('.tsx');
+  return esbuild
+    .transformSync(solid && jsx ? `import h from 'solid-js/h';\n${source}` : source, {
       loader: path.endsWith('.tsx')
         ? 'tsx'
         : path.endsWith('.ts')
@@ -121,10 +127,14 @@ const getJs = (esbuild: any, path: string, source: string): string =>
             ? 'jsx'
             : 'js',
       format: 'esm',
-      jsx: 'automatic',
+      logOverride: {'unsupported-jsx-comment': 'silent'},
+      jsx: solid && jsx ? 'transform' : 'automatic',
+      jsxFactory: 'h',
+      jsxFragment: 'h.Fragment',
     })
     .code.replace(PURE_REGEX, '')
     .trim();
+};
 
 const getBundle = async (
   esbuild: any,
@@ -209,11 +219,12 @@ const getDemoDoc = async (
     importMap.react != null ||
     importMap['react-dom/client'] != null ||
     importMap['react/jsx-runtime'] != null;
+  const solid = importMap['solid-js'] != null || importMap['solid-js/web'] != null;
   const allFiles = {
     ...files,
     ...(tsx == '' || Object.keys(files).some((path) => JS_FILE_REGEX.test(path))
       ? {}
-      : {[react ? 'src/main.jsx' : 'src/main.js']: tsx}),
+      : {[react || solid ? 'src/main.jsx' : 'src/main.js']: tsx}),
   };
   const entryFileName = getEntryFileName(allFiles);
   let extraCss = less == '' ? '' : getCss(less);
@@ -231,7 +242,7 @@ const getDemoDoc = async (
       return;
     }
     if (JS_FILE_REGEX.test(path)) {
-      moduleFiles[path] = getJs(esbuild, path, source);
+      moduleFiles[path] = getJs(esbuild, path, source, solid);
     }
   });
 

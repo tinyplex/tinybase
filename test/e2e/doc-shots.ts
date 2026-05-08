@@ -81,6 +81,18 @@ export const DOC_SHOTS: readonly DocShot[] = [
     style: IFRAME_DOC_SHOT_STYLE,
   },
   {
+    asset: 'hello-world-solid-demo.png',
+    fixedText: '12:34:56 PM',
+    fixedTextSelector: '#value',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/hello-world/hello-world-solid/',
+    readySelector: 'body',
+    readyText: /\d{1,2}:\d{2}:\d{2}/,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
     asset: 'hello-world-svelte-demo.png',
     fixedText: '12:34:56 PM',
     fixedTextSelector: '#value',

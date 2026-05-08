@@ -110,5 +110,5 @@ body {
 }
 ```
 
-Next, we will render that same live-updating Cell with Svelte. Please continue
-to the Hello World (Svelte) demo.
+Next, we will render that same live-updating Cell with Solid. Please continue
+to the Hello World (Solid) demo.

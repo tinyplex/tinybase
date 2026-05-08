@@ -43,6 +43,16 @@ test('hello-world-react', async ({page}) => {
   );
 });
 
+test('hello-world-solid', async ({page}) => {
+  await expectPage(page, `/demos/hello-world/hello-world-solid/`);
+  await expectedElement(page, 'h1', 'Hello World (Solid)');
+  await expectedFramedElement(
+    page,
+    'body',
+    new Date(new Date().getTime() + 1000).toLocaleTimeString(),
+  );
+});
+
 test('hello-world-svelte', async ({page}) => {
   await expectPage(page, `/demos/hello-world/hello-world-svelte/`);
   await expectedElement(page, 'h1', 'Hello World (Svelte)');
