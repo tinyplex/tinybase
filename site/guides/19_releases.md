@@ -63,9 +63,9 @@ disposeSolid();
 Read more in the Building UIs With Solid guides and the ui-solid module
 documentation.
 
-A huge thanks to [Daniel Grant]([@bitmage](https://github.com/djgrant)) for
-designing and implementing this new Solid support! Please let us know how it
-works for you and if you have any feedback or suggestions.
+A huge thanks to [Daniel Grant](https://github.com/djgrant) for designing and
+implementing this new Solid support! Please let us know how it works for you and
+if you have any feedback or suggestions.
 
 ## Queries From Queries
 
