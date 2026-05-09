@@ -88,9 +88,15 @@
 
 <section id="friends">
 <h2>TinyBase works great on its own, but also plays well with friends.</h2>
+<h3><a href='/guides/'>UI Frameworks</a></h3>
 <div>
   <a href='/guides/building-uis-with-react/getting-started-with-ui-react'>
     <img width="48" src="/react.svg?asImg" /> React
+  </a>
+</div>
+<div>
+  <a href='/guides/building-uis-with-solid/getting-started-with-ui-solid'>
+    <img width="48" src="/solid.svg?asImg" /> Solid
   </a>
 </div>
 <div>
@@ -98,6 +104,7 @@
     <img width="48" src="/svelte.svg?asImg" /> Svelte
   </a>
 </div>
+<h3><a href='/guides/persistence/'>Storage & Sync</a></h3>
 <div>
   <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
     <img width="48" src="/indexeddb.svg?asImg" /> IndexedDB
@@ -173,6 +180,7 @@
     <img width="48" src="/automerge.svg?asImg" /> Automerge
   </a>
 </div>
+<h3><a href='/guides/schemas/using-schematizers/'>Schema Systems</a></h3>
 <div>
   <a href='/api/schematizer-zod/functions/creation/createzodschematizer'>
     <img width="48" src="/zod.svg?asImg" /> Zod
