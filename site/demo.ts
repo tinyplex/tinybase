@@ -118,20 +118,23 @@ const getJs = (
 ): string => {
   const jsx = path.endsWith('.jsx') || path.endsWith('.tsx');
   return esbuild
-    .transformSync(solid && jsx ? `import h from 'solid-js/h';\n${source}` : source, {
-      loader: path.endsWith('.tsx')
-        ? 'tsx'
-        : path.endsWith('.ts')
-          ? 'ts'
-          : path.endsWith('.jsx')
-            ? 'jsx'
-            : 'js',
-      format: 'esm',
-      logOverride: {'unsupported-jsx-comment': 'silent'},
-      jsx: solid && jsx ? 'transform' : 'automatic',
-      jsxFactory: 'h',
-      jsxFragment: 'h.Fragment',
-    })
+    .transformSync(
+      solid && jsx ? `import h from 'solid-js/h';\n${source}` : source,
+      {
+        loader: path.endsWith('.tsx')
+          ? 'tsx'
+          : path.endsWith('.ts')
+            ? 'ts'
+            : path.endsWith('.jsx')
+              ? 'jsx'
+              : 'js',
+        format: 'esm',
+        logOverride: {'unsupported-jsx-comment': 'silent'},
+        jsx: solid && jsx ? 'transform' : 'automatic',
+        jsxFactory: 'h',
+        jsxFragment: 'h.Fragment',
+      },
+    )
     .code.replace(PURE_REGEX, '')
     .trim();
 };
@@ -219,7 +222,8 @@ const getDemoDoc = async (
     importMap.react != null ||
     importMap['react-dom/client'] != null ||
     importMap['react/jsx-runtime'] != null;
-  const solid = importMap['solid-js'] != null || importMap['solid-js/web'] != null;
+  const solid =
+    importMap['solid-js'] != null || importMap['solid-js/web'] != null;
   const allFiles = {
     ...files,
     ...(tsx == '' || Object.keys(files).some((path) => JS_FILE_REGEX.test(path))
