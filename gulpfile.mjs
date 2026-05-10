@@ -65,6 +65,7 @@ const ALL_MODULES = [
   'ui-react-inspector',
   'ui-react',
   'ui-solid-dom',
+  'ui-solid-inspector',
   'ui-solid',
   'ui-svelte-dom',
   'ui-svelte-inspector',
@@ -88,7 +89,9 @@ const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 const SOLID_JSX_H_IMPORT = `import h from 'solid-js/h';\n`;
 
 const moduleIsSolid = (module) =>
-  module == 'ui-solid' || module == 'ui-solid-dom';
+  module == 'ui-solid' ||
+  module == 'ui-solid-dom' ||
+  module == 'ui-solid-inspector';
 const moduleIsSvelte = (module) =>
   module == 'ui-svelte' ||
   module == 'ui-svelte-dom' ||
@@ -742,6 +745,8 @@ export const compileForTest = async () => {
 
 export const compileForTestInspectorOnly = async () => {
   await compileModule('ui-react-inspector', DIST_DIR);
+  await compileModule('ui-solid-inspector', DIST_DIR);
+  await compileModule('ui-svelte-inspector', DIST_DIR);
 };
 
 export const lintFiles = async () => {

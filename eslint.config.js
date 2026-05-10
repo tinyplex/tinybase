@@ -152,7 +152,11 @@ export default tsLint.config(
   },
 
   {
-    files: ['src/ui-solid/**/*.{ts,tsx}', 'src/ui-solid-dom/**/*.{ts,tsx}'],
+    files: [
+      'src/ui-solid/**/*.{ts,tsx}',
+      'src/ui-solid-dom/**/*.{ts,tsx}',
+      'src/ui-solid-inspector/**/*.{ts,tsx}',
+    ],
     plugins: solidLint.configs['flat/typescript'].plugins,
     rules: {
       ...solidLint.configs['flat/typescript'].rules,

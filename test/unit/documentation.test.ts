@@ -52,6 +52,8 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
+import * as TinyBaseUiSolid from 'tinybase/ui-solid';
+import * as TinyBaseUiSolidInspector from 'tinybase/ui-solid-inspector';
 import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
 import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
 import * as TinyBaseUiSvelteInspector from 'tinybase/ui-svelte-inspector';
@@ -83,7 +85,6 @@ const SolidWeb = nodeRequire(
 (nodeRequire.cache as any)[nodeRequire.resolve('solid-js/web')] = {
   exports: SolidWeb,
 };
-const TinyBaseUiSolid = nodeRequire('tinybase/ui-solid');
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
 const TinyBaseForTest = {
@@ -115,6 +116,7 @@ const TinyBaseForTest = {
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/ui-solid': TinyBaseUiSolid,
+  'tinybase/ui-solid-inspector': TinyBaseUiSolidInspector,
   'tinybase/ui-svelte': TinyBaseUiSvelte,
   'tinybase/ui-svelte-dom': TinyBaseUiSvelteDom,
   'tinybase/ui-svelte-inspector': TinyBaseUiSvelteInspector,
