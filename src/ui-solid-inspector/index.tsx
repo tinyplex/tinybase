@@ -1,8 +1,16 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
-import {ErrorBoundary, createEffect, createSignal, onCleanup} from 'solid-js';
+import {
+  ErrorBoundary,
+  Show,
+  createEffect,
+  createRenderEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import type {Id} from '../@types/common/index.d.ts';
+import type {Store} from '../@types/store/index.d.ts';
 import type {InspectorProps} from '../@types/ui-solid-inspector/index.d.ts';
 import type {
   CellProps,
@@ -40,7 +48,7 @@ import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
 import {isUndefined, mathFloor} from '../common/other.ts';
-import {DEFAULT, TABLE, TABLES, VALUES} from '../common/strings.ts';
+import {DEFAULT, EMPTY_STRING, TABLE, TABLES, VALUES} from '../common/strings.ts';
 import {createSessionPersister} from '../persisters/persister-browser/index.ts';
 import {createStore} from '../store/index.ts';
 import {
@@ -86,6 +94,7 @@ import {
   useStore,
   useStoreIds,
   useStoreOrStoreById,
+  useTable,
   useTableCellIds,
   useTableIds,
   useValue,
@@ -95,17 +104,30 @@ import {
 
 type OnDoneProp = {readonly onDone: () => void};
 type ChildrenProp = {readonly children?: JSXElement};
+type EditableProp = {readonly get: () => boolean};
 
 const useEditable = (
   uniqueId: Id,
-  s: StoreProp['s'],
-): [() => boolean, (event: MouseEvent) => void] => [
-  () => !!useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s)(),
-  (event) => {
-    s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, (editable) => !editable);
-    event.preventDefault();
-  },
-];
+  s: Store,
+): [() => boolean, (event: MouseEvent) => void] => {
+  const storedEditable = useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s);
+  const [editable, setEditable] = createSignal(false);
+  createEffect(() => {
+    if (storedEditable()) {
+      setEditable(true);
+    }
+  });
+  return [
+    editable,
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextEditable = !editable();
+      setEditable(nextEditable);
+      s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, nextEditable);
+    },
+  ];
+};
 
 const useHasTableCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
   const store = useStoreOrStoreById(storeOrStoreId);
@@ -129,12 +151,20 @@ const Details = (
   props: {
     readonly uniqueId: Id;
     readonly title: JSXElement;
-    readonly editable?: boolean;
+    readonly editable?: EditableProp;
     readonly handleEditable?: (event: MouseEvent) => void;
   } & ChildrenProp &
     StoreProp,
 ) => {
   const open = useCell(STATE_TABLE, props.uniqueId, OPEN_CELL, props.s);
+  let editImg: HTMLImageElement | undefined;
+  createRenderEffect(() => {
+    const editable = !!props.editable?.get();
+    if (editImg) {
+      editImg.className = editable ? 'done' : 'edit';
+      editImg.title = editable ? 'Done editing' : 'Edit';
+    }
+  });
   const handleToggle = (event: Event & {currentTarget: HTMLDetailsElement}) =>
     props.s.setCell(
       STATE_TABLE,
@@ -142,21 +172,24 @@ const Details = (
       OPEN_CELL,
       event.currentTarget.open,
     );
-  return (
+  return (() => (
     <details open={!!open()} onToggle={handleToggle}>
       <summary>
         <span>{props.title}</span>
         {props.handleEditable ? (
           <img
+            ref={(img) => (editImg = img)}
             onClick={props.handleEditable}
-            class={props.editable ? 'done' : 'edit'}
-            title={props.editable ? 'Done editing' : 'Edit'}
+            class="edit"
+            title="Edit"
           />
-        ) : null}
+        ) : (
+          EMPTY_STRING
+        )}
       </summary>
       <div>{props.children}</div>
     </details>
-  );
+  )) as unknown as JSXElement;
 };
 
 const ConfirmableActions = <
@@ -338,7 +371,7 @@ const TablesActions = (props: TablesProps) =>
           actions: [['delete', 'Delete all tables', DeleteTables]],
           store: props.store,
         })
-      : null,
+      : EMPTY_STRING,
   });
 
 const AddRow = (props: OnDoneProp & TableProps) => {
@@ -514,7 +547,7 @@ const ValuesActions = (props: ValuesProps) =>
           actions: [['delete', 'Delete all values', DeleteValues]],
           store: props.store,
         })
-      : null,
+      : EMPTY_STRING,
   });
 
 const CloneValue = (props: OnDoneProp & ValueProps) => {
@@ -556,7 +589,9 @@ const EditableCellViewWithActions = (props: CellProps) => (
     <EditableCellView {...props} />
     {useHasCell(props.tableId, props.rowId, props.cellId, props.store)() ? (
       <CellActions {...props} />
-    ) : null}
+    ) : (
+      EMPTY_STRING
+    )}
   </>
 );
 
@@ -565,15 +600,16 @@ const ValuesView = (
 ) => {
   const uniqueId = getUniqueId('v', props.storeId);
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
-  return (
-    <Details
-      uniqueId={uniqueId}
-      title={VALUES}
-      editable={editable()}
+  const valueIds = useValueIds(props.store);
+  return (() => (
+      <Details
+        uniqueId={uniqueId}
+        title={VALUES}
+        editable={{get: editable}}
       handleEditable={handleEditable}
       s={props.s}
     >
-      {arrayIsEmpty(useValueIds(props.store)()) ? (
+      {arrayIsEmpty(valueIds()) ? (
         <p>No values.</p>
       ) : (
         <ValuesInHtmlTable
@@ -582,9 +618,11 @@ const ValuesView = (
           extraCellsAfter={editable() ? valueActions : []}
         />
       )}
-      {editable() ? <ValuesActions store={props.store} /> : null}
+      <Show when={editable}>
+        <ValuesActions store={props.store} />
+      </Show>
     </Details>
-  );
+  )) as unknown as JSXElement;
 };
 
 const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
@@ -606,7 +644,7 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
       <Details
         uniqueId={uniqueId}
         title={TABLE + ': ' + props.tableId}
-        editable={editable()}
+        editable={{get: editable}}
         handleEditable={handleEditable}
         s={props.s}
       >
@@ -629,7 +667,7 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
             ]),
           )}
         />
-        {editable() ? (
+        <Show when={editable}>
           <div class="actions">
             <div>
               <TableActions1 tableId={props.tableId} store={props.store} />
@@ -638,7 +676,7 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
               <TableActions2 tableId={props.tableId} store={props.store} />
             </div>
           </div>
-        ) : null}
+        </Show>
       </Details>
     );
   }) as unknown as JSXElement;
@@ -650,11 +688,11 @@ const TablesView = (
   const uniqueId = getUniqueId('ts', props.storeId);
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
   const tableIds = useTableIds(props.store);
-  return (
-    <Details
-      uniqueId={uniqueId}
-      title={TABLES}
-      editable={editable()}
+  return (() => (
+      <Details
+        uniqueId={uniqueId}
+        title={TABLES}
+        editable={{get: editable}}
       handleEditable={handleEditable}
       s={props.s}
     >
@@ -670,15 +708,17 @@ const TablesView = (
           />
         ))
       )}
-      {editable() ? <TablesActions store={props.store} /> : null}
+      <Show when={editable}>
+        <TablesActions store={props.store} />
+      </Show>
     </Details>
-  );
+  )) as unknown as JSXElement;
 };
 
 const StoreView = (props: {readonly storeId?: Id} & StoreProp) => {
   const store = useStore(props.storeId);
   return (() =>
-    isUndefined(store()) ? null : (
+    isUndefined(store()) ? EMPTY_STRING : (
       <Details
         uniqueId={getUniqueId('s', props.storeId)}
         title={
@@ -706,7 +746,7 @@ const MetricsView = (props: {readonly metricsId?: Id} & StoreProp) => {
   const metrics = useMetrics(props.metricsId);
   const metricIds = useMetricIds(metrics);
   return (() =>
-    isUndefined(metrics()) ? null : (
+    isUndefined(metrics()) ? EMPTY_STRING : (
       <Details
         uniqueId={getUniqueId('m', props.metricsId)}
         title={'Metrics: ' + (props.metricsId ?? DEFAULT)}
@@ -753,7 +793,7 @@ const SliceView = (
     <Details
       uniqueId={uniqueId}
       title={'Slice: ' + props.sliceId}
-      editable={editable()}
+      editable={{get: editable}}
       handleEditable={handleEditable}
       s={props.s}
     >
@@ -795,7 +835,7 @@ const IndexesView = (props: {readonly indexesId?: Id} & StoreProp) => {
   const indexes = useIndexes(props.indexesId);
   const indexIds = useIndexIds(indexes);
   return (() =>
-    isUndefined(indexes()) ? null : (
+    isUndefined(indexes()) ? EMPTY_STRING : (
       <Details
         uniqueId={getUniqueId('i', props.indexesId)}
         title={'Indexes: ' + (props.indexesId ?? DEFAULT)}
@@ -859,7 +899,7 @@ const QueriesView = (props: {readonly queriesId?: Id} & StoreProp) => {
   const queries = useQueries(props.queriesId);
   const queryIds = useQueryIds(queries);
   return (() =>
-    isUndefined(queries()) ? null : (
+    isUndefined(queries()) ? EMPTY_STRING : (
       <Details
         uniqueId={getUniqueId('q', props.queriesId)}
         title={'Queries: ' + (props.queriesId ?? DEFAULT)}
@@ -896,7 +936,7 @@ const RelationshipView = (
     <Details
       uniqueId={uniqueId}
       title={'Relationship: ' + props.relationshipId}
-      editable={editable()}
+      editable={{get: editable}}
       handleEditable={handleEditable}
       s={props.s}
     >
@@ -915,7 +955,7 @@ const RelationshipsView = (
   const relationships = useRelationships(props.relationshipsId);
   const relationshipIds = useRelationshipIds(relationships);
   return (() =>
-    isUndefined(relationships()) ? null : (
+    isUndefined(relationships()) ? EMPTY_STRING : (
       <Details
         uniqueId={getUniqueId('r', props.relationshipsId)}
         title={'Relationships: ' + (props.relationshipsId ?? DEFAULT)}
@@ -947,7 +987,7 @@ const Header = (props: StoreProp) => {
       <img class="flat" title={TITLE} onClick={handleClick} />
       <span>{TITLE}</span>
       {arrayMap(POSITIONS, (name, p) =>
-        p == (position() ?? 1) ? null : (
+        p == (position() ?? 1) ? EMPTY_STRING : (
           <img onClick={handleDock} data-id={p} title={'Dock to ' + name} />
         ),
       )}
@@ -961,7 +1001,7 @@ const Nub = ({s}: StoreProp) => {
   const open = useValue(OPEN_VALUE, s);
   const handleOpen = () => s.setValue(OPEN_VALUE, true);
   return (() =>
-    open() ? null : (
+    open() ? EMPTY_STRING : (
       <img onClick={handleOpen} title={TITLE} data-position={position() ?? 1} />
     )) as unknown as JSXElement;
 };
@@ -970,6 +1010,7 @@ const Body = ({s}: StoreProp) => {
   let article: HTMLElement | undefined;
   let idleCallback = 0;
   const [scrolled, setScrolled] = createSignal(false);
+  const state = useTable(STATE_TABLE, s);
   const scrollValues = useValues(s);
 
   createEffect(() => {
@@ -1011,8 +1052,9 @@ const Body = ({s}: StoreProp) => {
   const queries = useQueries();
   const queriesIds = useQueriesIds();
 
-  return (() =>
-    isUndefined(store()) &&
+  return (() => {
+    state();
+    return isUndefined(store()) &&
     arrayIsEmpty(storeIds()) &&
     isUndefined(metrics()) &&
     arrayIsEmpty(metricsIds()) &&
@@ -1046,7 +1088,8 @@ const Body = ({s}: StoreProp) => {
           <QueriesView queriesId={queriesId} s={s} />
         ))}
       </article>
-    )) as unknown as JSXElement;
+    );
+  }) as unknown as JSXElement;
 };
 
 const Panel = ({s}: StoreProp) => {
@@ -1062,36 +1105,41 @@ const Panel = ({s}: StoreProp) => {
           <Body s={s} />
         </ErrorBoundary>
       </main>
-    ) : null) as unknown as JSXElement;
+    ) : EMPTY_STRING) as unknown as JSXElement;
 };
 
 export const Inspector = (props: InspectorProps) => {
-  const s = useCreateStore(createStore);
   const position = props.position ?? 'right';
   const open = props.open ?? false;
+  const values = {
+    position: getInitialPosition(position),
+    open: !!open,
+  };
+  const s = useCreateStore(createStore);
+  const [ready, setReady] = createSignal(false);
 
   useCreatePersister(
     s,
     (s) => createSessionPersister(s, UNIQUE_ID),
     async (persister) => {
-      await persister.load([
-        {},
-        {
-          position: getInitialPosition(position),
-          open: !!open,
-        },
-      ]);
+      await persister.load([{}, values]);
       await persister.startAutoSave();
+      setReady(true);
     },
     (persister) => persister.destroy(),
   );
 
   return (
     <>
-      <aside id={UNIQUE_ID} style={{'--hue': props.hue ?? 270}}>
-        <Nub s={s()} />
-        <Panel s={s()} />
-      </aside>
+      {(() =>
+        ready() ? (
+          <aside id={UNIQUE_ID} style={{'--hue': props.hue ?? 270}}>
+            <Nub s={s()} />
+            <Panel s={s()} />
+          </aside>
+        ) : (
+          EMPTY_STRING
+        )) as unknown as JSXElement}
       <style>{APP_STYLESHEET}</style>
     </>
   );

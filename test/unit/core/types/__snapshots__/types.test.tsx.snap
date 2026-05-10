@@ -3860,6 +3860,12 @@ exports[`Types in ui-solid-dom.tsx > 167:46 1`] = `"Type '"c2"' is not assignabl
 
 exports[`Types in ui-solid-dom.tsx > 172:23 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
 
+exports[`Types in ui-solid-inspector.tsx > 6:6 1`] = `"Cannot assign to 'position' because it is a read-only property."`;
+
+exports[`Types in ui-solid-inspector.tsx > 7:6 1`] = `"Cannot assign to 'open' because it is a read-only property."`;
+
+exports[`Types in ui-solid-inspector.tsx > 8:6 1`] = `"Cannot assign to 'hue' because it is a read-only property."`;
+
 exports[`Types in ui-svelte.ts > 107:26 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 110:27 1`] = `"Property 't3' does not exist on type 'Tables<{ t2: { c2: { type: "number"; }; }; }, false>'."`;
