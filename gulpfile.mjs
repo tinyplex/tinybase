@@ -64,6 +64,7 @@ const ALL_MODULES = [
   'ui-react-dom',
   'ui-react-inspector',
   'ui-react',
+  'ui-solid-dom',
   'ui-solid',
   'ui-svelte-dom',
   'ui-svelte-inspector',
@@ -84,7 +85,24 @@ const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
-const SOLID_JSX_H_IMPORT = "import h from 'solid-js/h';\n";
+const SOLID_JSX_H_IMPORT = `import h from 'solid-js/h';\n`;
+
+const moduleIsSolid = (module) =>
+  module == 'ui-solid' || module == 'ui-solid-dom';
+const moduleIsSvelte = (module) =>
+  module == 'ui-svelte' ||
+  module == 'ui-svelte-dom' ||
+  module == 'ui-svelte-inspector';
+const getUiModule = (module) =>
+  module == moduleIsSvelte(module)
+    ? 'ui-svelte'
+    : moduleIsSolid(module)
+      ? 'ui-solid'
+      : 'ui-react';
+const getUiModuleReplacements = (uiModule) => ({
+  ['../' + uiModule + '/index.ts']: '../' + uiModule,
+  ['../' + uiModule + '/index.tsx']: '../' + uiModule,
+});
 
 const getGlobalName = (module) =>
   'TinyBase' +
@@ -515,18 +533,10 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
   const {default: image} = await import('@rollup/plugin-image');
   const {default: terser} = await import('@rollup/plugin-terser');
-  const sveltePlugin =
-    module == 'ui-svelte' ||
-    module == 'ui-svelte-dom' ||
-    module == 'ui-svelte-inspector'
-      ? (await import('rollup-plugin-svelte')).default
-      : null;
-  const uiModule =
-    module == 'ui-svelte-dom' || module == 'ui-svelte-inspector'
-      ? 'ui-svelte'
-      : module == 'ui-solid'
-        ? 'ui-solid'
-        : 'ui-react';
+  const sveltePlugin = moduleIsSvelte(module)
+    ? (await import('rollup-plugin-svelte')).default
+    : null;
+  const uiModule = getUiModule(module);
 
   let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
@@ -554,15 +564,11 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       ...(module == 'omni'
         ? []
         : ['tinybase/store', '../ui-react', '../ui-solid', '../' + uiModule]),
-      ...(module == 'ui-svelte' ||
-      module == 'ui-svelte-dom' ||
-      module == 'ui-svelte-inspector'
-        ? [/^svelte/]
-        : []),
+      ...(moduleIsSvelte(module) ? [/^svelte/] : []),
     ],
     input: inputFile,
     plugins: [
-      module == 'ui-solid'
+      moduleIsSolid(module)
         ? {
             name: 'solid-jsx-h',
             transform: (code, id) =>
@@ -575,8 +581,8 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         target: 'esnext',
         legalComments: 'inline',
         logOverride: {'unsupported-jsx-comment': 'silent'},
-        tsconfig: module == 'ui-solid' ? false : undefined,
-        jsx: module == 'ui-solid' ? 'transform' : 'automatic',
+        tsconfig: moduleIsSolid(module) ? false : undefined,
+        jsx: moduleIsSolid(module) ? 'transform' : 'automatic',
         jsxFactory: 'h',
         jsxFragment: 'h.Fragment',
       }),
@@ -584,13 +590,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         '/*!': '\n/*',
         delimiters: ['', ''],
         preventAssignment: true,
-        ...(module == 'omni'
-          ? {}
-          : {
-              ['../' + uiModule + '/index.ts']: '../' + uiModule,
-              '../ui-react/index.ts': '../ui-react',
-              '../ui-solid/index.ts': '../ui-solid',
-            }),
+        ...(module == 'omni' ? {} : getUiModuleReplacements(uiModule)),
       }),
       shebang(),
       image(),

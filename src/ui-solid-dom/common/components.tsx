@@ -1,0 +1,292 @@
+/* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
+import {createEffect, createSignal} from 'solid-js';
+import type {Cell, Id, Value} from '../../@types/index.d.ts';
+import type {HtmlTableProps} from '../../@types/ui-solid-dom/index.d.ts';
+import {arrayMap} from '../../common/array.ts';
+import {
+  CellOrValueType,
+  getCellOrValueType,
+  getTypeCase,
+} from '../../common/cell.ts';
+import {jsonParse, jsonString} from '../../common/json.ts';
+import {isObject, objToArray} from '../../common/obj.ts';
+import {isArray, isFalse, isUndefined, tryReturn} from '../../common/other.ts';
+import {getProps, getValue} from '../../common/solid.ts';
+import {
+  _VALUE,
+  ARRAY,
+  BOOLEAN,
+  CURRENT_TARGET,
+  EMPTY_STRING,
+  NUMBER,
+  OBJECT,
+  STRING,
+} from '../../common/strings.ts';
+import {getCallbackOrUndefined} from './hooks.tsx';
+import {
+  DOWN_ARROW,
+  extraHeaders,
+  extraRowCells,
+  HandleSort,
+  HtmlTableParams,
+  SortAndOffset,
+  UP_ARROW,
+} from './index.tsx';
+
+export const HtmlHeaderCell = (props: {
+  readonly cellId?: Id;
+  readonly sort: SortAndOffset | [];
+  readonly label?: string;
+  readonly onClick?: HandleSort;
+}) => {
+  const sortDescending = props.sort[1];
+  const cellId = props.cellId;
+  return (
+    <th
+      onClick={getCallbackOrUndefined(
+        () => props.onClick?.(cellId),
+        props.onClick,
+      )}
+      class={
+        isUndefined(sortDescending) || props.sort[0] != cellId
+          ? undefined
+          : `sorted ${sortDescending ? 'de' : 'a'}scending`
+      }
+    >
+      {isUndefined(sortDescending) || props.sort[0] != cellId
+        ? null
+        : (sortDescending ? DOWN_ARROW : UP_ARROW) + ' '}
+      {props.label ?? cellId ?? EMPTY_STRING}
+    </th>
+  );
+};
+
+export const HtmlTable = (
+  props: HtmlTableProps & {
+    readonly params: HtmlTableParams;
+  },
+) =>
+  (() => {
+    const [
+      cells,
+      cellComponentProps,
+      rowIds,
+      extraCellsBefore,
+      extraCellsAfter,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent,
+    ] = props.params;
+    const sort: SortAndOffset | [] =
+      sortAndOffset == null ? [] : getValue(sortAndOffset);
+    return (
+      <table class={props.className}>
+        {paginatorComponent ? (
+          <caption>{getValue(paginatorComponent)}</caption>
+        ) : null}
+        {props.headerRow === false ? null : (
+          <thead>
+            <tr>
+              {extraHeaders(extraCellsBefore)}
+              {props.idColumn === false ? null : (
+                <HtmlHeaderCell sort={sort} label="Id" onClick={handleSort} />
+              )}
+              {objToArray(getValue(cells), ({label}, cellId) => (
+                <HtmlHeaderCell
+                  cellId={cellId}
+                  label={label}
+                  sort={sort}
+                  onClick={handleSort}
+                />
+              ))}
+              {extraHeaders(extraCellsAfter)}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {arrayMap(getValue(rowIds), (rowId) => {
+            const rowProps = {...(cellComponentProps as any), rowId};
+            return (
+              <tr>
+                {extraRowCells(extraCellsBefore, rowProps)}
+                {isFalse(props.idColumn) ? null : (
+                  <th title={rowId}>{rowId}</th>
+                )}
+                {objToArray(
+                  getValue(cells),
+                  ({component: CellView, getComponentProps}, cellId) => (
+                    <td>
+                      <CellView
+                        {...getProps(getComponentProps, rowId, cellId)}
+                        {...rowProps}
+                        cellId={cellId}
+                      />
+                    </td>
+                  ),
+                )}
+                {extraRowCells(extraCellsAfter, rowProps)}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  }) as unknown as any;
+
+export const EditableThing = (props: {
+  readonly thing: Cell | Value | undefined;
+  readonly onThingChange: (thing: Cell | Value) => void;
+  readonly class: string;
+  readonly hasSchema: (() => boolean) | undefined;
+  readonly showType?: boolean;
+}) => {
+  const [thingType, setThingType] = createSignal<CellOrValueType>();
+  const [stringThing, setStringThing] = createSignal<string>();
+  const [numberThing, setNumberThing] = createSignal<number>();
+  const [booleanThing, setBooleanThing] = createSignal<boolean>();
+  const [objectThing, setObjectThing] = createSignal<string>('{}');
+  const [arrayThing, setArrayThing] = createSignal<string>('[]');
+
+  const [objectClassName, setObjectClassName] = createSignal<string>('');
+  const [arrayClassName, setArrayClassName] = createSignal<string>('');
+
+  createEffect(() => {
+    const thing = props.thing;
+    setThingType(getCellOrValueType(thing));
+    if (isObject(thing)) {
+      setObjectThing(jsonString(thing));
+    } else if (isArray(thing)) {
+      setArrayThing(jsonString(thing));
+    } else {
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
+  });
+
+  const handleThingChange = <Thing extends Cell | Value>(
+    thing: Thing,
+    setTypedThing: (thing: Thing) => void,
+  ) => {
+    setTypedThing(thing);
+    props.onThingChange(thing);
+  };
+
+  const handleJsonThingChange = (
+    value: string,
+    setTypedThing: (value: string) => void,
+    isThing: (thing: any) => boolean,
+    setTypedClassName: (className: string) => void,
+  ) => {
+    setTypedThing(value);
+    try {
+      const object = jsonParse(value);
+      if (isThing(object)) {
+        props.onThingChange(object);
+        setTypedClassName('');
+      }
+    } catch {
+      setTypedClassName('invalid');
+    }
+  };
+
+  const handleTypeChange = () => {
+    if (!props.hasSchema?.()) {
+      const nextType = getTypeCase(
+        thingType(),
+        NUMBER,
+        BOOLEAN,
+        OBJECT,
+        ARRAY,
+        STRING,
+      ) as CellOrValueType;
+      const thing = getTypeCase(
+        nextType,
+        stringThing(),
+        numberThing(),
+        booleanThing(),
+        tryReturn(() => jsonParse(objectThing()), {}),
+        tryReturn(() => jsonParse(arrayThing()), []),
+      );
+      setThingType(nextType);
+      props.onThingChange(thing);
+    }
+  };
+
+  const widget = () =>
+    getTypeCase(
+      thingType(),
+      <input
+        value={stringThing()}
+        onChange={(event) =>
+          handleThingChange(
+            String(event[CURRENT_TARGET][_VALUE]),
+            setStringThing,
+          )
+        }
+      />,
+      <input
+        type="number"
+        value={numberThing()}
+        onChange={(event) =>
+          handleThingChange(
+            Number(event[CURRENT_TARGET][_VALUE] || 0),
+            setNumberThing,
+          )
+        }
+      />,
+      <input
+        type="checkbox"
+        checked={booleanThing()}
+        onChange={(event) =>
+          handleThingChange(
+            Boolean(event[CURRENT_TARGET].checked),
+            setBooleanThing,
+          )
+        }
+      />,
+      <input
+        value={objectThing()}
+        class={objectClassName()}
+        onChange={(event) =>
+          handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setObjectThing,
+            isObject,
+            setObjectClassName,
+          )
+        }
+      />,
+      <input
+        value={arrayThing()}
+        class={arrayClassName()}
+        onChange={(event) =>
+          handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setArrayThing,
+            isArray,
+            setArrayClassName,
+          )
+        }
+      />,
+    );
+
+  return (() => {
+    const currentWidget = widget();
+    return (
+      <div class={props.class}>
+        {props.showType !== false && currentWidget ? (
+          <button
+            title={thingType()}
+            class={thingType()}
+            onClick={handleTypeChange}
+          >
+            {thingType()}
+          </button>
+        ) : null}
+        {currentWidget}
+      </div>
+    );
+  }) as unknown as any;
+};
