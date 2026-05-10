@@ -10,8 +10,11 @@ const solidJsxHPlugin = () => ({
   transform: (code: string, id: string) => {
     const path = id.split('?')[0];
     return path.endsWith('.tsx') &&
-      (path.includes('/src/ui-solid/') ||
-        path.includes('/test/unit/core/ui-solid/'))
+      [
+        '/src/ui-solid/',
+        '/src/ui-solid-dom/',
+        '/test/unit/core/ui-solid/',
+      ].some((solidPath) => path.includes(solidPath))
       ? {code: `import h from 'solid-js/h';\n` + code, map: null}
       : null;
   },

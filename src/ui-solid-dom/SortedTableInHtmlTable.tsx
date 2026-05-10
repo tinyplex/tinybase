@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import type {
   HtmlTableProps,
@@ -37,33 +38,31 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = (
       () => props.paginator ?? false,
       () => props.onChange,
     );
-  return (
-    <HtmlTable
-      {...props}
-      params={getParams(
-        useCells(
-          useTableCellIds(
-            () => props.tableId,
-            () => props.store,
-          ),
-          props.customCells,
-          props.editable ? EditableCellView : CellView,
-        ),
-        getStoreCellComponentProps(props.store, props.tableId),
-        useSortedRowIds(
+  return HtmlTable({
+    ...props,
+    params: getParams(
+      useCells(
+        useTableCellIds(
           () => props.tableId,
-          () => sortAndOffset()[0],
-          () => sortAndOffset()[1],
-          () => sortAndOffset()[2],
-          () => props.limit,
           () => props.store,
         ),
-        props.extraCellsBefore,
-        props.extraCellsAfter,
-        sortAndOffset,
-        handleSort,
-        paginatorComponent,
-      )}
-    />
-  );
+        props.customCells,
+        props.editable ? EditableCellView : CellView,
+      ),
+      getStoreCellComponentProps(props.store, props.tableId),
+      useSortedRowIds(
+        () => props.tableId,
+        () => sortAndOffset()[0],
+        () => sortAndOffset()[1],
+        () => sortAndOffset()[2],
+        () => props.limit,
+        () => props.store,
+      ),
+      props.extraCellsBefore,
+      props.extraCellsAfter,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent,
+    ),
+  });
 };

@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import type {EditableValueView as EditableValueViewDecl} from '../@types/ui-solid-dom/index.d.ts';
 import type {ValueProps} from '../@types/ui-solid/index.d.ts';
@@ -18,13 +19,13 @@ export const EditableValueView: typeof EditableValueViewDecl = (
     () => props.store,
   );
   const store = useStoreOrStoreById(() => props.store);
-  return (
-    <EditableThing
-      thing={value()}
-      onThingChange={setValue}
-      class={props.className ?? EDITABLE + VALUE}
-      showType={props.showType}
-      hasSchema={() => !!store()?.hasValuesSchema()}
-    />
-  );
+  return EditableThing({
+    get thing() {
+      return value();
+    },
+    onThingChange: setValue,
+    class: props.className ?? EDITABLE + VALUE,
+    showType: props.showType,
+    hasSchema: () => !!store()?.hasValuesSchema(),
+  });
 };

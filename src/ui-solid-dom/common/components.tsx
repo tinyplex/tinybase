@@ -1,6 +1,6 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
-import {createEffect, createSignal} from 'solid-js';
+import {createEffect, createSignal, untrack} from 'solid-js';
 import type {Cell, Id, Value} from '../../@types/index.d.ts';
 import type {HtmlTableProps} from '../../@types/ui-solid-dom/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
@@ -89,17 +89,17 @@ export const HtmlTable = (
           <thead>
             <tr>
               {extraHeaders(extraCellsBefore)}
-              {props.idColumn === false ? null : (
-                <HtmlHeaderCell sort={sort} label="Id" onClick={handleSort} />
+              {props.idColumn === false
+                ? null
+                : HtmlHeaderCell({sort, label: 'Id', onClick: handleSort})}
+              {objToArray(getValue(cells), ({label}, cellId) =>
+                HtmlHeaderCell({
+                  cellId,
+                  label,
+                  sort,
+                  onClick: handleSort,
+                }),
               )}
-              {objToArray(getValue(cells), ({label}, cellId) => (
-                <HtmlHeaderCell
-                  cellId={cellId}
-                  label={label}
-                  sort={sort}
-                  onClick={handleSort}
-                />
-              ))}
               {extraHeaders(extraCellsAfter)}
             </tr>
           </thead>
@@ -142,6 +142,7 @@ export const EditableThing = (props: {
   readonly showType?: boolean;
 }) => {
   const [thingType, setThingType] = createSignal<CellOrValueType>();
+  const [currentThing, setCurrentThing] = createSignal<Cell | Value>();
   const [stringThing, setStringThing] = createSignal<string>();
   const [numberThing, setNumberThing] = createSignal<number>();
   const [booleanThing, setBooleanThing] = createSignal<boolean>();
@@ -153,15 +154,18 @@ export const EditableThing = (props: {
 
   createEffect(() => {
     const thing = props.thing;
-    setThingType(getCellOrValueType(thing));
-    if (isObject(thing)) {
-      setObjectThing(jsonString(thing));
-    } else if (isArray(thing)) {
-      setArrayThing(jsonString(thing));
-    } else {
-      setStringThing(String(thing));
-      setNumberThing(Number(thing) || 0);
-      setBooleanThing(Boolean(thing));
+    if (untrack(currentThing) !== thing) {
+      setThingType(getCellOrValueType(thing));
+      setCurrentThing(() => thing);
+      if (isObject(thing)) {
+        setObjectThing(jsonString(thing));
+      } else if (isArray(thing)) {
+        setArrayThing(jsonString(thing));
+      } else {
+        setStringThing(String(thing));
+        setNumberThing(Number(thing) || 0);
+        setBooleanThing(Boolean(thing));
+      }
     }
   });
 
@@ -170,6 +174,7 @@ export const EditableThing = (props: {
     setTypedThing: (thing: Thing) => void,
   ) => {
     setTypedThing(thing);
+    setCurrentThing(() => thing);
     props.onThingChange(thing);
   };
 
@@ -183,6 +188,7 @@ export const EditableThing = (props: {
     try {
       const object = jsonParse(value);
       if (isThing(object)) {
+        setCurrentThing(() => object);
         props.onThingChange(object);
         setTypedClassName('');
       }
@@ -210,6 +216,7 @@ export const EditableThing = (props: {
         tryReturn(() => jsonParse(arrayThing()), []),
       );
       setThingType(nextType);
+      setCurrentThing(() => thing);
       props.onThingChange(thing);
     }
   };

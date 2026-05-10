@@ -179,9 +179,9 @@ export const RelationshipInHtmlTable = (
           </thead>
         )}
         <tbody>
-          {arrayMap(rowIds(), (localRowId) => (
-            <RelationshipInHtmlRow localRowId={localRowId} params={params} />
-          ))}
+          {arrayMap(rowIds(), (localRowId) =>
+            RelationshipInHtmlRow({localRowId, params}),
+          )}
         </tbody>
       </table>
     );

@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import type {
   HtmlTableProps,
@@ -19,10 +20,10 @@ import {
 
 export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = (
   props: ResultTableInHtmlTableProps & HtmlTableProps,
-): JSXElement => (
-  <HtmlTable
-    {...props}
-    params={getParams(
+): JSXElement =>
+  HtmlTable({
+    ...props,
+    params: getParams(
       useCells(
         useResultTableCellIds(
           () => props.queryId,
@@ -38,6 +39,5 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = (
       ),
       props.extraCellsBefore,
       props.extraCellsAfter,
-    )}
-  />
-);
+    ),
+  });

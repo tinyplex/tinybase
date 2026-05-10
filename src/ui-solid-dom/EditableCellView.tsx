@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import type {EditableCellView as EditableCellViewDecl} from '../@types/ui-solid-dom/index.d.ts';
 import type {CellProps} from '../@types/ui-solid/index.d.ts';
@@ -17,13 +18,13 @@ export const EditableCellView: typeof EditableCellViewDecl = (
     () => props.store,
   );
   const store = useStoreOrStoreById(() => props.store);
-  return (
-    <EditableThing
-      thing={cell()}
-      onThingChange={setCell}
-      class={props.className ?? EDITABLE + CELL}
-      showType={props.showType}
-      hasSchema={() => !!store()?.hasTablesSchema()}
-    />
-  );
+  return EditableThing({
+    get thing() {
+      return cell();
+    },
+    onThingChange: setCell,
+    class: props.className ?? EDITABLE + CELL,
+    showType: props.showType,
+    hasSchema: () => !!store()?.hasTablesSchema(),
+  });
 };

@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import type {
   HtmlTableProps,
@@ -17,10 +18,10 @@ import {EditableCellView} from './EditableCellView.tsx';
 
 export const TableInHtmlTable: typeof TableInHtmlTableDecl = (
   props: TableInHtmlTableProps & HtmlTableProps,
-): JSXElement => (
-  <HtmlTable
-    {...props}
-    params={getParams(
+): JSXElement =>
+  HtmlTable({
+    ...props,
+    params: getParams(
       useCells(
         useTableCellIds(
           () => props.tableId,
@@ -36,6 +37,5 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = (
       ),
       props.extraCellsBefore,
       props.extraCellsAfter,
-    )}
-  />
-);
+    ),
+  });

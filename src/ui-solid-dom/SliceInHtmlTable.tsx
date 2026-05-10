@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import {createMemo} from 'solid-js';
 import type {Id} from '../@types/index.d.ts';
@@ -29,27 +30,25 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = (
   const details = createMemo(() =>
     getIndexStoreTableId(resolvedIndexes(), props.indexId),
   );
-  return (
-    <HtmlTable
-      {...props}
-      params={getParams(
-        useCells(
-          useTableCellIds(
-            () => details()[2] as Id,
-            () => details()[1],
-          ),
-          props.customCells,
-          props.editable ? EditableCellView : CellView,
+  return HtmlTable({
+    ...props,
+    params: getParams(
+      useCells(
+        useTableCellIds(
+          () => details()[2] as Id,
+          () => details()[1],
         ),
-        getStoreCellComponentProps(details()[1], details()[2] as Id),
-        useSliceRowIds(
-          () => props.indexId,
-          () => props.sliceId,
-          resolvedIndexes,
-        ),
-        props.extraCellsBefore,
-        props.extraCellsAfter,
-      )}
-    />
-  );
+        props.customCells,
+        props.editable ? EditableCellView : CellView,
+      ),
+      getStoreCellComponentProps(details()[1], details()[2] as Id),
+      useSliceRowIds(
+        () => props.indexId,
+        () => props.sliceId,
+        resolvedIndexes,
+      ),
+      props.extraCellsBefore,
+      props.extraCellsAfter,
+    ),
+  });
 };

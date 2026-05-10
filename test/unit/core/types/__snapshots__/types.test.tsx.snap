@@ -3820,6 +3820,46 @@ exports[`Types in ui-solid.tsx > 1666:6 1`] = `"Type 'Store<[NoTablesSchema, { r
 
 exports[`Types in ui-solid.tsx > 1671:6 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
+exports[`Types in ui-solid-dom.tsx > 102:22 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 103:49 1`] = `"Type '"c2"' is not assignable to type '"c1" | "c1d"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 104:49 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; }'."`;
+
+exports[`Types in ui-solid-dom.tsx > 107:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: Id; readonly cellId: "c0" | "c2"; }) => JSX.Element; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 111:6 1`] = `"Type '{ c1d: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t1"; readonly rowId: Id; readonly cellId: "c1"; }) => JSX.Element; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 115:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t1"; readonly rowId: Id; readonly cellId: "c2"; }) => JSX.Element; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 119:20 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; }'."`;
+
+exports[`Types in ui-solid-dom.tsx > 136:28 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 137:41 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d" | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 138:55 1`] = `"Type '"c2"' is not assignable to type '"c1" | "c1d"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 139:55 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; }'."`;
+
+exports[`Types in ui-solid-dom.tsx > 142:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: Id; readonly cellId: "c0" | "c2"; }) => JSX.Element; }; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 146:6 1`] = `"Type '{ c1d: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t1"; readonly rowId: Id; readonly cellId: "c1"; }) => JSX.Element; }; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 150:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t1"; readonly rowId: Id; readonly cellId: "c2"; }) => JSX.Element; }; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
+
+exports[`Types in ui-solid-dom.tsx > 154:20 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; }'."`;
+
+exports[`Types in ui-solid-dom.tsx > 161:23 1`] = `"Type '({ valueId }: { readonly valueId: "v1" | "v2"; }) => JSX.Element' is not assignable to type 'Component<ValueProps<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>>'."`;
+
+exports[`Types in ui-solid-dom.tsx > 166:46 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 167:22 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 167:46 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
+
+exports[`Types in ui-solid-dom.tsx > 172:23 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
+
 exports[`Types in ui-svelte.ts > 107:26 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 110:27 1`] = `"Property 't3' does not exist on type 'Tables<{ t2: { c2: { type: "number"; }; }; }, false>'."`;
