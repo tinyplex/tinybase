@@ -17,6 +17,7 @@ import type {
 } from '../../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import type {MaybeAccessor} from '../../common/solid.ts';
+import {getValue} from '../../common/solid.ts';
 import {EXTRA} from '../../common/strings.ts';
 
 export type Cells<Props extends Record<string, any> = CellProps> = {
@@ -65,10 +66,10 @@ export const DOWN_ARROW = '\u2193';
 export const EDITABLE = 'editable';
 
 export const extraRowCells = (
-  extraRowCells: ExtraRowCell[] = [],
+  extraRowCells: MaybeAccessor<ExtraRowCell[] | undefined> = [],
   extraRowCellProps: RowProps,
 ) =>
-  arrayMap(extraRowCells, (extraRowCell) => {
+  arrayMap(getValue(extraRowCells) ?? [], (extraRowCell) => {
     const Component = extraRowCell.component;
     return (
       <td class={EXTRA}>
@@ -78,6 +79,8 @@ export const extraRowCells = (
   });
 
 export const extraHeaders = (
-  extraCells: (ExtraRowCell | ExtraValueCell)[] = [],
+  extraCells: MaybeAccessor<(ExtraRowCell | ExtraValueCell)[] | undefined> = [],
 ) =>
-  arrayMap(extraCells, (extraCell) => <th class={EXTRA}>{extraCell.label}</th>);
+  arrayMap(getValue(extraCells) ?? [], (extraCell) => (
+    <th class={EXTRA}>{extraCell.label}</th>
+  ));

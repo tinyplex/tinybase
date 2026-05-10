@@ -9,7 +9,7 @@ import type {
 import type {ValueProps} from '../@types/ui-solid/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {isFalse} from '../common/other.ts';
-import {getProps} from '../common/solid.ts';
+import {getProps, getValue} from '../common/solid.ts';
 import {EXTRA, VALUE} from '../common/strings.ts';
 import {ValueView} from '../ui-solid/index.ts';
 import {useValueIds} from '../ui-solid/primitives.ts';
@@ -17,10 +17,10 @@ import {EditableValueView} from './EditableValueView.tsx';
 import {extraHeaders} from './common/index.tsx';
 
 const extraValueCells = (
-  extraValueCells: ExtraValueCell[] = [],
+  extraValueCells: ExtraValueCell[] | (() => ExtraValueCell[] | undefined) = [],
   extraValueCellProps: ValueProps,
 ) =>
-  arrayMap(extraValueCells, (extraValueCell) => {
+  arrayMap(getValue(extraValueCells) ?? [], (extraValueCell) => {
     const Component = extraValueCell.component;
     return (
       <td class={EXTRA}>
@@ -37,16 +37,16 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = (
   return (() => {
     const Value =
       props.valueComponent ??
-      (props.editable === true ? EditableValueView : ValueView);
+      (getValue(props.editable as any) === true ? EditableValueView : ValueView);
     return (
       <table class={props.className}>
         {props.headerRow === false ? null : (
           <thead>
             <tr>
-              {extraHeaders(props.extraCellsBefore)}
+              {extraHeaders(props.extraCellsBefore as any)}
               {props.idColumn === false ? null : <th>Id</th>}
               <th>{VALUE}</th>
-              {extraHeaders(props.extraCellsAfter)}
+              {extraHeaders(props.extraCellsAfter as any)}
             </tr>
           </thead>
         )}
@@ -55,7 +55,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = (
             const valueProps = {valueId, store: props.store};
             return (
               <tr>
-                {extraValueCells(props.extraCellsBefore, valueProps)}
+                {extraValueCells(props.extraCellsBefore as any, valueProps)}
                 {isFalse(props.idColumn) ? null : (
                   <th title={valueId}>{valueId}</th>
                 )}
@@ -65,7 +65,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = (
                     {...valueProps}
                   />
                 </td>
-                {extraValueCells(props.extraCellsAfter, valueProps)}
+                {extraValueCells(props.extraCellsAfter as any, valueProps)}
               </tr>
             );
           })}

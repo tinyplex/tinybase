@@ -45,14 +45,16 @@ export const getParams = <
 export const useCells = (
   defaultCellIds: MaybeAccessor<Ids>,
   customCells:
-    | Ids
-    | {[cellId: Id]: string | CustomCell | CustomResultCell}
-    | undefined,
+    | MaybeAccessor<
+        | Ids
+        | {[cellId: Id]: string | CustomCell | CustomResultCell}
+        | undefined
+      >,
   defaultCellComponent: CellComponent,
 ): (() => Cells<any>) =>
   // eslint-disable-next-line solid/reactivity
   createMemo(() => {
-    const cellIds = customCells ?? getValue(defaultCellIds);
+    const cellIds = getValue(customCells) ?? getValue(defaultCellIds);
     return objMap(
       isArray(cellIds)
         ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))

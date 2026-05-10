@@ -1,11 +1,9 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
-import type {JSXElement} from 'solid-js';
+import type {Accessor, JSXElement} from 'solid-js';
 import {
   ErrorBoundary,
-  Show,
   createEffect,
-  createRenderEffect,
   createSignal,
   onCleanup,
 } from 'solid-js';
@@ -104,19 +102,14 @@ import {
 
 type OnDoneProp = {readonly onDone: () => void};
 type ChildrenProp = {readonly children?: JSXElement};
-type EditableProp = {readonly get: () => boolean};
 
 const useEditable = (
   uniqueId: Id,
   s: Store,
-): [() => boolean, (event: MouseEvent) => void] => {
+): [Accessor<boolean>, (event: MouseEvent) => void] => {
   const storedEditable = useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s);
   const [editable, setEditable] = createSignal(false);
-  createEffect(() => {
-    if (storedEditable()) {
-      setEditable(true);
-    }
-  });
+  createEffect(() => setEditable(!!storedEditable()));
   return [
     editable,
     (event) => {
@@ -124,7 +117,12 @@ const useEditable = (
       event.stopPropagation();
       const nextEditable = !editable();
       setEditable(nextEditable);
-      s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, nextEditable);
+      s.setCell(
+        STATE_TABLE,
+        uniqueId,
+        EDITABLE_CELL,
+        nextEditable,
+      );
     },
   ];
 };
@@ -151,20 +149,12 @@ const Details = (
   props: {
     readonly uniqueId: Id;
     readonly title: JSXElement;
-    readonly editable?: EditableProp;
+    readonly editable?: Accessor<boolean>;
     readonly handleEditable?: (event: MouseEvent) => void;
   } & ChildrenProp &
     StoreProp,
 ) => {
   const open = useCell(STATE_TABLE, props.uniqueId, OPEN_CELL, props.s);
-  let editImg: HTMLImageElement | undefined;
-  createRenderEffect(() => {
-    const editable = !!props.editable?.get();
-    if (editImg) {
-      editImg.className = editable ? 'done' : 'edit';
-      editImg.title = editable ? 'Done editing' : 'Edit';
-    }
-  });
   const handleToggle = (event: Event & {currentTarget: HTMLDetailsElement}) =>
     props.s.setCell(
       STATE_TABLE,
@@ -178,16 +168,23 @@ const Details = (
         <span>{props.title}</span>
         {props.handleEditable ? (
           <img
-            ref={(img) => (editImg = img)}
             onClick={props.handleEditable}
-            class="edit"
-            title="Edit"
+            class={
+              (() =>
+                props.editable?.() ? 'done' : 'edit') as unknown as string
+            }
+            title={
+              (() =>
+                props.editable?.()
+                  ? 'Done editing'
+                  : 'Edit') as unknown as string
+            }
           />
         ) : (
           EMPTY_STRING
         )}
       </summary>
-      <div>{props.children}</div>
+      <div>{(() => props.children) as unknown as JSXElement}</div>
     </details>
   )) as unknown as JSXElement;
 };
@@ -601,28 +598,31 @@ const ValuesView = (
   const uniqueId = getUniqueId('v', props.storeId);
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
   const valueIds = useValueIds(props.store);
-  return (() => (
-      <Details
-        uniqueId={uniqueId}
-        title={VALUES}
-        editable={{get: editable}}
-      handleEditable={handleEditable}
-      s={props.s}
-    >
-      {arrayIsEmpty(valueIds()) ? (
-        <p>No values.</p>
-      ) : (
-        <ValuesInHtmlTable
-          store={props.store}
-          editable={editable()}
-          extraCellsAfter={editable() ? valueActions : []}
-        />
-      )}
-      <Show when={editable}>
-        <ValuesActions store={props.store} />
-      </Show>
-    </Details>
-  )) as unknown as JSXElement;
+  return Details({
+    uniqueId,
+    title: VALUES,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      return (
+        <>
+          {arrayIsEmpty(valueIds()) ? (
+            <p>No values.</p>
+          ) : (
+            <ValuesInHtmlTable
+              store={props.store}
+              editable={editable as unknown as boolean}
+              extraCellsAfter={
+                (() => (editable() ? valueActions : [])) as unknown as []
+              }
+            />
+          )}
+          {editable() ? <ValuesActions store={props.store} /> : EMPTY_STRING}
+        </>
+      );
+    },
+  });
 };
 
 const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
@@ -637,20 +637,21 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
   );
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
   const cellIds = useTableCellIds(props.tableId, props.store);
-  return (() => {
-    const [cellId, descending, offset] = jsonParse((sort() as string) ?? '[]');
-    const CellComponent = editable() ? EditableCellViewWithActions : CellView;
-    return (
-      <Details
-        uniqueId={uniqueId}
-        title={TABLE + ': ' + props.tableId}
-        editable={{get: editable}}
-        handleEditable={handleEditable}
-        s={props.s}
-      >
-        <SortedTableInHtmlTable
-          tableId={props.tableId}
-          store={props.store}
+  return Details({
+    uniqueId,
+    title: TABLE + ': ' + props.tableId,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      const [cellId, descending, offset] = jsonParse(
+        (sort() as string) ?? '[]',
+      );
+      return (
+        <>
+          <SortedTableInHtmlTable
+            tableId={props.tableId}
+            store={props.store}
           cellId={cellId}
           descending={descending}
           offset={offset}
@@ -658,16 +659,25 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
           paginator={true}
           sortOnClick={true}
           onChange={handleChange}
-          editable={editable()}
-          extraCellsAfter={editable() ? rowActions : []}
-          customCells={objNew(
-            arrayMap(cellIds(), (cellId) => [
-              cellId,
-              {label: cellId, component: CellComponent},
-            ]),
-          )}
+          editable={editable as unknown as boolean}
+          extraCellsAfter={
+            (() => (editable() ? rowActions : [])) as unknown as []
+          }
+          customCells={
+            (() => {
+              const CellComponent = editable()
+                ? EditableCellViewWithActions
+                : CellView;
+              return objNew(
+                arrayMap(cellIds(), (cellId) => [
+                  cellId,
+                  {label: cellId, component: CellComponent},
+                ]),
+              );
+            }) as unknown as {}
+          }
         />
-        <Show when={editable}>
+        {editable() ? (
           <div class="actions">
             <div>
               <TableActions1 tableId={props.tableId} store={props.store} />
@@ -676,10 +686,13 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
               <TableActions2 tableId={props.tableId} store={props.store} />
             </div>
           </div>
-        </Show>
-      </Details>
-    );
-  }) as unknown as JSXElement;
+        ) : (
+          EMPTY_STRING
+        )}
+        </>
+      );
+    },
+  });
 };
 
 const TablesView = (
@@ -688,31 +701,32 @@ const TablesView = (
   const uniqueId = getUniqueId('ts', props.storeId);
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
   const tableIds = useTableIds(props.store);
-  return (() => (
-      <Details
-        uniqueId={uniqueId}
-        title={TABLES}
-        editable={{get: editable}}
-      handleEditable={handleEditable}
-      s={props.s}
-    >
-      {arrayIsEmpty(tableIds()) ? (
-        <p>No tables.</p>
-      ) : (
-        sortedIdsMap(tableIds(), (tableId) => (
-          <TableView
-            store={props.store}
-            storeId={props.storeId}
-            tableId={tableId}
-            s={props.s}
-          />
-        ))
-      )}
-      <Show when={editable}>
-        <TablesActions store={props.store} />
-      </Show>
-    </Details>
-  )) as unknown as JSXElement;
+  return Details({
+    uniqueId,
+    title: TABLES,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      return (
+        <>
+          {arrayIsEmpty(tableIds()) ? (
+            <p>No tables.</p>
+          ) : (
+            sortedIdsMap(tableIds(), (tableId) => (
+              <TableView
+                store={props.store}
+                storeId={props.storeId}
+                tableId={tableId}
+                s={props.s}
+              />
+            ))
+          )}
+          {editable() ? <TablesActions store={props.store} /> : EMPTY_STRING}
+        </>
+      );
+    },
+  });
 };
 
 const StoreView = (props: {readonly storeId?: Id} & StoreProp) => {
@@ -789,22 +803,23 @@ const SliceView = (
     props.sliceId,
   );
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
-  return (
-    <Details
-      uniqueId={uniqueId}
-      title={'Slice: ' + props.sliceId}
-      editable={{get: editable}}
-      handleEditable={handleEditable}
-      s={props.s}
-    >
-      <SliceInHtmlTable
-        sliceId={props.sliceId}
-        indexId={props.indexId}
-        indexes={props.indexes}
-        editable={editable()}
-      />
-    </Details>
-  );
+  return Details({
+    uniqueId,
+    title: 'Slice: ' + props.sliceId,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      return (
+        <SliceInHtmlTable
+          sliceId={props.sliceId}
+          indexId={props.indexId}
+          indexes={props.indexes}
+          editable={editable as unknown as boolean}
+        />
+      );
+    },
+  });
 };
 
 const IndexView = (
@@ -932,21 +947,22 @@ const RelationshipView = (
     props.relationshipId,
   );
   const [editable, handleEditable] = useEditable(uniqueId, props.s);
-  return (
-    <Details
-      uniqueId={uniqueId}
-      title={'Relationship: ' + props.relationshipId}
-      editable={{get: editable}}
-      handleEditable={handleEditable}
-      s={props.s}
-    >
-      <RelationshipInHtmlTable
-        relationshipId={props.relationshipId}
-        relationships={props.relationships}
-        editable={editable()}
-      />
-    </Details>
-  );
+  return Details({
+    uniqueId,
+    title: 'Relationship: ' + props.relationshipId,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      return (
+        <RelationshipInHtmlTable
+          relationshipId={props.relationshipId}
+          relationships={props.relationships}
+          editable={editable as unknown as boolean}
+        />
+      );
+    },
+  });
 };
 
 const RelationshipsView = (
@@ -1129,7 +1145,7 @@ export const Inspector = (props: InspectorProps) => {
     (persister) => persister.destroy(),
   );
 
-  return (
+  return (() => (
     <>
       {(() =>
         ready() ? (
@@ -1142,5 +1158,5 @@ export const Inspector = (props: InspectorProps) => {
         )) as unknown as JSXElement}
       <style>{APP_STYLESHEET}</style>
     </>
-  );
+  )) as unknown as JSXElement;
 };
