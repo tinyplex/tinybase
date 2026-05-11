@@ -712,7 +712,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
   await makeDir(TMP_DIR);
   await esbuild.build({
     entryPoints: ['site/build.ts'],
-    external: ['tinydocs', 'react', '@prettier/sync'],
+    external: ['tinydocs', 'react', '@prettier/sync', '@babel/core'],
     target: 'esnext',
     bundle: true,
     outfile: './tmp/build.js',

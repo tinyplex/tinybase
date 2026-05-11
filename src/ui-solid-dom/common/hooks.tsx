@@ -44,12 +44,9 @@ export const getParams = <
 
 export const useCells = (
   defaultCellIds: MaybeAccessor<Ids>,
-  customCells:
-    | MaybeAccessor<
-        | Ids
-        | {[cellId: Id]: string | CustomCell | CustomResultCell}
-        | undefined
-      >,
+  customCells: MaybeAccessor<
+    Ids | {[cellId: Id]: string | CustomCell | CustomResultCell} | undefined
+  >,
   defaultCellComponent: CellComponent,
 ): (() => Cells<any>) =>
   // eslint-disable-next-line solid/reactivity

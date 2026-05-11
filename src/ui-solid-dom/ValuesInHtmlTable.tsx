@@ -37,7 +37,9 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = (
   return (() => {
     const Value =
       props.valueComponent ??
-      (getValue(props.editable as any) === true ? EditableValueView : ValueView);
+      (getValue(props.editable as any) === true
+        ? EditableValueView
+        : ValueView);
     return (
       <table class={props.className}>
         {props.headerRow === false ? null : (

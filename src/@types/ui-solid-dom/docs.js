@@ -666,7 +666,7 @@
  *
  * See the <TableInHtmlTable /> (Solid) demo for this component in action:
  *
- * ![TableInHtmlTable example](/shots/tableinhtmltable-Solid-demo.png
+ * ![TableInHtmlTable example](/shots/tableinhtmltable-solid-demo.png
  * "TableInHtmlTable example")
  *
  * The component's props identify which Table to render based on Table Id, and
@@ -808,7 +808,7 @@
  * action:
  *
  * ![SortedTableInHtmlTable example](
- * /shots/sortedtableinhtmltable-Solid-demo.png
+ * /shots/sortedtableinhtmltable-solid-demo.png
  * "SortedTableInHtmlTable example")
  *
  * The component's props identify which Table to render based on Table Id, and
@@ -976,7 +976,7 @@
  *
  * See the <ValuesInHtmlTable /> (Solid) demo for this component in action:
  *
- * ![ValuesInHtmlTable example](/shots/valuesinhtmltable-Solid-demo.png
+ * ![ValuesInHtmlTable example](/shots/valuesinhtmltable-solid-demo.png
  * "ValuesInHtmlTable example")
  *
  * The component's props identify which Row to render based on Table Id, Row Id,
@@ -1102,7 +1102,7 @@
  *
  * See the <SliceInHtmlTable /> (Solid) demo for this component in action:
  *
- * ![SliceInHtmlTable example](/shots/sliceinhtmltable-Solid-demo.png
+ * ![SliceInHtmlTable example](/shots/sliceinhtmltable-solid-demo.png
  * "SliceInHtmlTable example")
  *
  * The component's props identify which Slice to render based on Index Id, Slice
@@ -1256,7 +1256,7 @@
  * action:
  *
  * ![RelationshipInHtmlTable example](
- * /shots/relationshipinhtmltable-Solid-demo.png
+ * /shots/relationshipinhtmltable-solid-demo.png
  * "RelationshipInHtmlTable example")
  *
  * The component's props identify which Relationship to render based on
@@ -1428,7 +1428,7 @@
  * action:
  *
  * ![ResultTableInHtmlTable example](
- * /shots/resulttableinhtmltable-Solid-demo.png
+ * /shots/resulttableinhtmltable-solid-demo.png
  * "ResultTableInHtmlTable example")
  *
  * The component's props identify which ResultTable to render based on query Id,
@@ -1577,7 +1577,7 @@
  * action:
  *
  * ![ResultSortedTableInHtmlTable example](
- * /shots/resultsortedtableinhtmltable-Solid-demo.png
+ * /shots/resultsortedtableinhtmltable-solid-demo.png
  * "ResultSortedTableInHtmlTable example")
  *
  * The component's props identify which ResultTable to render based on query Id,
@@ -1746,7 +1746,7 @@
  *
  * See the <EditableCellView /> (Solid) demo for this component in action:
  *
- * ![EditableCellView example](/shots/editablecellview-Solid-demo.png
+ * ![EditableCellView example](/shots/editablecellview-solid-demo.png
  * "EditableCellView example")
  *
  * The component's props identify which Cell to render based on Table Id, Row
@@ -1813,7 +1813,7 @@
  *
  * See the <EditableValueView /> (Solid) demo for this component in action:
  *
- * ![EditableValueView example](/shots/editablevalueview-Solid-demo.png
+ * ![EditableValueView example](/shots/editablevalueview-solid-demo.png
  * "EditableValueView example")
  *
  * The component's props identify which Value to render based on Table Id, Row
@@ -1877,7 +1877,7 @@
  * See the <SortedTableInHtmlTable /> (Solid) demo for this component in
  * action:
  *
- * ![SortedTablePaginator example](/shots/sortedtablepaginator-Solid-demo.png
+ * ![SortedTablePaginator example](/shots/sortedtablepaginator-solid-demo.png
  * "SortedTablePaginator example")
  *
  * The component displays 'previous' and 'next' buttons for paging through the

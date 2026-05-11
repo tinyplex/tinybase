@@ -1,12 +1,7 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
 import type {Accessor, JSXElement} from 'solid-js';
-import {
-  ErrorBoundary,
-  createEffect,
-  createSignal,
-  onCleanup,
-} from 'solid-js';
+import {ErrorBoundary, createEffect, createSignal, onCleanup} from 'solid-js';
 import type {Id} from '../@types/common/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
 import type {InspectorProps} from '../@types/ui-solid-inspector/index.d.ts';
@@ -46,7 +41,13 @@ import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
 import {isUndefined, mathFloor} from '../common/other.ts';
-import {DEFAULT, EMPTY_STRING, TABLE, TABLES, VALUES} from '../common/strings.ts';
+import {
+  DEFAULT,
+  EMPTY_STRING,
+  TABLE,
+  TABLES,
+  VALUES,
+} from '../common/strings.ts';
 import {createSessionPersister} from '../persisters/persister-browser/index.ts';
 import {createStore} from '../store/index.ts';
 import {
@@ -117,12 +118,7 @@ const useEditable = (
       event.stopPropagation();
       const nextEditable = !editable();
       setEditable(nextEditable);
-      s.setCell(
-        STATE_TABLE,
-        uniqueId,
-        EDITABLE_CELL,
-        nextEditable,
-      );
+      s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, nextEditable);
     },
   ];
 };
@@ -652,43 +648,43 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
           <SortedTableInHtmlTable
             tableId={props.tableId}
             store={props.store}
-          cellId={cellId}
-          descending={descending}
-          offset={offset}
-          limit={10}
-          paginator={true}
-          sortOnClick={true}
-          onChange={handleChange}
-          editable={editable as unknown as boolean}
-          extraCellsAfter={
-            (() => (editable() ? rowActions : [])) as unknown as []
-          }
-          customCells={
-            (() => {
-              const CellComponent = editable()
-                ? EditableCellViewWithActions
-                : CellView;
-              return objNew(
-                arrayMap(cellIds(), (cellId) => [
-                  cellId,
-                  {label: cellId, component: CellComponent},
-                ]),
-              );
-            }) as unknown as {}
-          }
-        />
-        {editable() ? (
-          <div class="actions">
-            <div>
-              <TableActions1 tableId={props.tableId} store={props.store} />
+            cellId={cellId}
+            descending={descending}
+            offset={offset}
+            limit={10}
+            paginator={true}
+            sortOnClick={true}
+            onChange={handleChange}
+            editable={editable as unknown as boolean}
+            extraCellsAfter={
+              (() => (editable() ? rowActions : [])) as unknown as []
+            }
+            customCells={
+              (() => {
+                const CellComponent = editable()
+                  ? EditableCellViewWithActions
+                  : CellView;
+                return objNew(
+                  arrayMap(cellIds(), (cellId) => [
+                    cellId,
+                    {label: cellId, component: CellComponent},
+                  ]),
+                );
+              }) as unknown as {}
+            }
+          />
+          {editable() ? (
+            <div class="actions">
+              <div>
+                <TableActions1 tableId={props.tableId} store={props.store} />
+              </div>
+              <div>
+                <TableActions2 tableId={props.tableId} store={props.store} />
+              </div>
             </div>
-            <div>
-              <TableActions2 tableId={props.tableId} store={props.store} />
-            </div>
-          </div>
-        ) : (
-          EMPTY_STRING
-        )}
+          ) : (
+            EMPTY_STRING
+          )}
         </>
       );
     },
@@ -732,7 +728,9 @@ const TablesView = (
 const StoreView = (props: {readonly storeId?: Id} & StoreProp) => {
   const store = useStore(props.storeId);
   return (() =>
-    isUndefined(store()) ? EMPTY_STRING : (
+    isUndefined(store()) ? (
+      EMPTY_STRING
+    ) : (
       <Details
         uniqueId={getUniqueId('s', props.storeId)}
         title={
@@ -760,7 +758,9 @@ const MetricsView = (props: {readonly metricsId?: Id} & StoreProp) => {
   const metrics = useMetrics(props.metricsId);
   const metricIds = useMetricIds(metrics);
   return (() =>
-    isUndefined(metrics()) ? EMPTY_STRING : (
+    isUndefined(metrics()) ? (
+      EMPTY_STRING
+    ) : (
       <Details
         uniqueId={getUniqueId('m', props.metricsId)}
         title={'Metrics: ' + (props.metricsId ?? DEFAULT)}
@@ -850,7 +850,9 @@ const IndexesView = (props: {readonly indexesId?: Id} & StoreProp) => {
   const indexes = useIndexes(props.indexesId);
   const indexIds = useIndexIds(indexes);
   return (() =>
-    isUndefined(indexes()) ? EMPTY_STRING : (
+    isUndefined(indexes()) ? (
+      EMPTY_STRING
+    ) : (
       <Details
         uniqueId={getUniqueId('i', props.indexesId)}
         title={'Indexes: ' + (props.indexesId ?? DEFAULT)}
@@ -914,7 +916,9 @@ const QueriesView = (props: {readonly queriesId?: Id} & StoreProp) => {
   const queries = useQueries(props.queriesId);
   const queryIds = useQueryIds(queries);
   return (() =>
-    isUndefined(queries()) ? EMPTY_STRING : (
+    isUndefined(queries()) ? (
+      EMPTY_STRING
+    ) : (
       <Details
         uniqueId={getUniqueId('q', props.queriesId)}
         title={'Queries: ' + (props.queriesId ?? DEFAULT)}
@@ -971,7 +975,9 @@ const RelationshipsView = (
   const relationships = useRelationships(props.relationshipsId);
   const relationshipIds = useRelationshipIds(relationships);
   return (() =>
-    isUndefined(relationships()) ? EMPTY_STRING : (
+    isUndefined(relationships()) ? (
+      EMPTY_STRING
+    ) : (
       <Details
         uniqueId={getUniqueId('r', props.relationshipsId)}
         title={'Relationships: ' + (props.relationshipsId ?? DEFAULT)}
@@ -1003,7 +1009,9 @@ const Header = (props: StoreProp) => {
       <img class="flat" title={TITLE} onClick={handleClick} />
       <span>{TITLE}</span>
       {arrayMap(POSITIONS, (name, p) =>
-        p == (position() ?? 1) ? EMPTY_STRING : (
+        p == (position() ?? 1) ? (
+          EMPTY_STRING
+        ) : (
           <img onClick={handleDock} data-id={p} title={'Dock to ' + name} />
         ),
       )}
@@ -1017,7 +1025,9 @@ const Nub = ({s}: StoreProp) => {
   const open = useValue(OPEN_VALUE, s);
   const handleOpen = () => s.setValue(OPEN_VALUE, true);
   return (() =>
-    open() ? EMPTY_STRING : (
+    open() ? (
+      EMPTY_STRING
+    ) : (
       <img onClick={handleOpen} title={TITLE} data-position={position() ?? 1} />
     )) as unknown as JSXElement;
 };
@@ -1071,15 +1081,15 @@ const Body = ({s}: StoreProp) => {
   return (() => {
     state();
     return isUndefined(store()) &&
-    arrayIsEmpty(storeIds()) &&
-    isUndefined(metrics()) &&
-    arrayIsEmpty(metricsIds()) &&
-    isUndefined(indexes()) &&
-    arrayIsEmpty(indexesIds()) &&
-    isUndefined(relationships()) &&
-    arrayIsEmpty(relationshipsIds()) &&
-    isUndefined(queries()) &&
-    arrayIsEmpty(queriesIds()) ? (
+      arrayIsEmpty(storeIds()) &&
+      isUndefined(metrics()) &&
+      arrayIsEmpty(metricsIds()) &&
+      isUndefined(indexes()) &&
+      arrayIsEmpty(indexesIds()) &&
+      isUndefined(relationships()) &&
+      arrayIsEmpty(relationshipsIds()) &&
+      isUndefined(queries()) &&
+      arrayIsEmpty(queriesIds()) ? (
       <span class="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
     ) : (
       <article ref={article} onScroll={handleScroll}>
@@ -1121,7 +1131,9 @@ const Panel = ({s}: StoreProp) => {
           <Body s={s} />
         </ErrorBoundary>
       </main>
-    ) : EMPTY_STRING) as unknown as JSXElement;
+    ) : (
+      EMPTY_STRING
+    )) as unknown as JSXElement;
 };
 
 export const Inspector = (props: InspectorProps) => {
@@ -1147,15 +1159,17 @@ export const Inspector = (props: InspectorProps) => {
 
   return (() => (
     <>
-      {(() =>
-        ready() ? (
-          <aside id={UNIQUE_ID} style={{'--hue': props.hue ?? 270}}>
-            <Nub s={s()} />
-            <Panel s={s()} />
-          </aside>
-        ) : (
-          EMPTY_STRING
-        )) as unknown as JSXElement}
+      {
+        (() =>
+          ready() ? (
+            <aside id={UNIQUE_ID} style={{'--hue': props.hue ?? 270}}>
+              <Nub s={s()} />
+              <Panel s={s()} />
+            </aside>
+          ) : (
+            EMPTY_STRING
+          )) as unknown as JSXElement
+      }
       <style>{APP_STYLESHEET}</style>
     </>
   )) as unknown as JSXElement;

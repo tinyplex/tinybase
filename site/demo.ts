@@ -1,3 +1,4 @@
+import {transformSync} from '@babel/core';
 import {posix} from 'node:path';
 import {compile} from 'svelte/compiler';
 import type {Docs, Node} from 'tinydocs';
@@ -117,25 +118,27 @@ const getJs = (
   solid = false,
 ): string => {
   const jsx = path.endsWith('.jsx') || path.endsWith('.tsx');
-  return esbuild
-    .transformSync(
-      solid && jsx ? `import h from 'solid-js/h';\n${source}` : source,
-      {
-        loader: path.endsWith('.tsx')
-          ? 'tsx'
-          : path.endsWith('.ts')
-            ? 'ts'
-            : path.endsWith('.jsx')
-              ? 'jsx'
-              : 'js',
-        format: 'esm',
-        logOverride: {'unsupported-jsx-comment': 'silent'},
-        jsx: solid && jsx ? 'transform' : 'automatic',
-        jsxFactory: 'h',
-        jsxFragment: 'h.Fragment',
-      },
-    )
-    .code.replace(PURE_REGEX, '')
+  const code = esbuild.transformSync(source, {
+    loader: path.endsWith('.tsx')
+      ? 'tsx'
+      : path.endsWith('.ts')
+        ? 'ts'
+        : path.endsWith('.jsx')
+          ? 'jsx'
+          : 'js',
+    format: 'esm',
+    logOverride: {'unsupported-jsx-comment': 'silent'},
+    jsx: solid && jsx ? 'preserve' : 'automatic',
+  }).code;
+  return (
+    solid && jsx
+      ? (transformSync(code, {
+          filename: path,
+          presets: ['solid'],
+        })?.code ?? '')
+      : code
+  )
+    .replace(PURE_REGEX, '')
     .trim();
 };
 
