@@ -4,6 +4,7 @@ import type {Accessor, JSXElement} from 'solid-js';
 import {ErrorBoundary, createEffect, createSignal, onCleanup} from 'solid-js';
 import type {Id} from '../@types/common/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
+import type {CustomCell} from '../@types/ui-solid-dom/index.d.ts';
 import type {InspectorProps} from '../@types/ui-solid-inspector/index.d.ts';
 import type {
   CellProps,
@@ -286,7 +287,7 @@ const NewId = (
         <input
           type="text"
           value={newId()}
-          onChange={handleNewIdChange}
+          onInput={handleNewIdChange}
           onKeyDown={handleKeyDown}
           autofocus
         />{' '}
@@ -608,7 +609,7 @@ const ValuesView = (
           ) : (
             <ValuesInHtmlTable
               store={props.store}
-              editable={editable as unknown as boolean}
+              editable={editable()}
               extraCellsAfter={
                 (() => (editable() ? valueActions : [])) as unknown as []
               }
@@ -655,7 +656,7 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
             paginator={true}
             sortOnClick={true}
             onChange={handleChange}
-            editable={editable as unknown as boolean}
+            editable={editable()}
             extraCellsAfter={
               (() => (editable() ? rowActions : [])) as unknown as []
             }
@@ -670,7 +671,7 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
                     {label: cellId, component: CellComponent},
                   ]),
                 );
-              }) as unknown as {}
+              }) as unknown as {[cellId: Id]: CustomCell}
             }
           />
           {editable() ? (
@@ -815,7 +816,7 @@ const SliceView = (
           sliceId={props.sliceId}
           indexId={props.indexId}
           indexes={props.indexes}
-          editable={editable as unknown as boolean}
+          editable={editable()}
         />
       );
     },
@@ -962,7 +963,7 @@ const RelationshipView = (
         <RelationshipInHtmlTable
           relationshipId={props.relationshipId}
           relationships={props.relationships}
-          editable={editable as unknown as boolean}
+          editable={editable()}
         />
       );
     },
@@ -1080,40 +1081,44 @@ const Body = ({s}: StoreProp) => {
 
   return (() => {
     state();
-    return isUndefined(store()) &&
-      arrayIsEmpty(storeIds()) &&
-      isUndefined(metrics()) &&
-      arrayIsEmpty(metricsIds()) &&
-      isUndefined(indexes()) &&
-      arrayIsEmpty(indexesIds()) &&
-      isUndefined(relationships()) &&
-      arrayIsEmpty(relationshipsIds()) &&
-      isUndefined(queries()) &&
-      arrayIsEmpty(queriesIds()) ? (
-      <span class="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
-    ) : (
-      <article ref={article} onScroll={handleScroll}>
-        <StoreView s={s} />
-        {arrayMap(storeIds(), (storeId) => (
-          <StoreView storeId={storeId} s={s} />
-        ))}
-        <MetricsView s={s} />
-        {arrayMap(metricsIds(), (metricsId) => (
-          <MetricsView metricsId={metricsId} s={s} />
-        ))}
-        <IndexesView s={s} />
-        {arrayMap(indexesIds(), (indexesId) => (
-          <IndexesView indexesId={indexesId} s={s} />
-        ))}
-        <RelationshipsView s={s} />
-        {arrayMap(relationshipsIds(), (relationshipsId) => (
-          <RelationshipsView relationshipsId={relationshipsId} s={s} />
-        ))}
-        <QueriesView s={s} />
-        {arrayMap(queriesIds(), (queriesId) => (
-          <QueriesView queriesId={queriesId} s={s} />
-        ))}
-      </article>
+    return (
+      <>
+        {isUndefined(store()) &&
+        arrayIsEmpty(storeIds()) &&
+        isUndefined(metrics()) &&
+        arrayIsEmpty(metricsIds()) &&
+        isUndefined(indexes()) &&
+        arrayIsEmpty(indexesIds()) &&
+        isUndefined(relationships()) &&
+        arrayIsEmpty(relationshipsIds()) &&
+        isUndefined(queries()) &&
+        arrayIsEmpty(queriesIds()) ? (
+          <span class="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
+        ) : (
+          <article ref={article} onScroll={handleScroll}>
+            <StoreView s={s} />
+            {arrayMap(storeIds(), (storeId) => (
+              <StoreView storeId={storeId} s={s} />
+            ))}
+            <MetricsView s={s} />
+            {arrayMap(metricsIds(), (metricsId) => (
+              <MetricsView metricsId={metricsId} s={s} />
+            ))}
+            <IndexesView s={s} />
+            {arrayMap(indexesIds(), (indexesId) => (
+              <IndexesView indexesId={indexesId} s={s} />
+            ))}
+            <RelationshipsView s={s} />
+            {arrayMap(relationshipsIds(), (relationshipsId) => (
+              <RelationshipsView relationshipsId={relationshipsId} s={s} />
+            ))}
+            <QueriesView s={s} />
+            {arrayMap(queriesIds(), (queriesId) => (
+              <QueriesView queriesId={queriesId} s={s} />
+            ))}
+          </article>
+        )}
+      </>
     );
   }) as unknown as JSXElement;
 };

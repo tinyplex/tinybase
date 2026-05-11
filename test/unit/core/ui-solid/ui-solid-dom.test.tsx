@@ -1021,7 +1021,7 @@ describe('EditableCellView', () => {
       {v1: 1, v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('spinbutton')[0], {target: {value: '2'}});
+    fireEvent.input(getAllByRole('spinbutton')[0], {target: {value: '2'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 2}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
@@ -1046,7 +1046,7 @@ describe('EditableCellView', () => {
       {v1: 1, v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('textbox')[0], {
+    fireEvent.input(getAllByRole('textbox')[0], {
       target: {value: '{"x":1}'},
     });
     expect(store.getContent()).toEqual([
@@ -1060,7 +1060,7 @@ describe('EditableCellView', () => {
       {v1: 1, v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('textbox')[0], {target: {value: '[1,2]'}});
+    fireEvent.input(getAllByRole('textbox')[0], {target: {value: '[1,2]'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: [1, 2]}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
@@ -1072,7 +1072,7 @@ describe('EditableCellView', () => {
       {v1: 1, v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('textbox')[0], {target: {value: 'two'}});
+    fireEvent.input(getAllByRole('textbox')[0], {target: {value: 'two'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 'two'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
@@ -1144,7 +1144,7 @@ describe('EditableValueView', () => {
       {v1: 1, v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('spinbutton')[0], {target: {value: 2}});
+    fireEvent.input(getAllByRole('spinbutton')[0], {target: {value: 2}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 2, v2: 2},
@@ -1168,7 +1168,7 @@ describe('EditableValueView', () => {
       {v1: {}, v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('textbox')[0], {
+    fireEvent.input(getAllByRole('textbox')[0], {
       target: {value: '{"x":1}'},
     });
     expect(store.getContent()).toEqual([
@@ -1182,7 +1182,7 @@ describe('EditableValueView', () => {
       {v1: [], v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('textbox')[0], {target: {value: '[1,2]'}});
+    fireEvent.input(getAllByRole('textbox')[0], {target: {value: '[1,2]'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: [1, 2], v2: 2},
@@ -1194,7 +1194,7 @@ describe('EditableValueView', () => {
       {v1: '1', v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
-    fireEvent.change(getAllByRole('textbox')[0], {target: {value: 'two'}});
+    fireEvent.input(getAllByRole('textbox')[0], {target: {value: 'two'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 'two', v2: 2},

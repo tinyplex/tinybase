@@ -87,7 +87,6 @@ const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 const SOLID_JSX_H_IMPORT = `import h from 'solid-js/h';\n`;
-
 const moduleIsSolid = (module) =>
   module == 'ui-solid' ||
   module == 'ui-solid-dom' ||
@@ -744,8 +743,14 @@ export const compileForTest = async () => {
 };
 
 export const compileForTestInspectorOnly = async () => {
+  await compileModule('ui-react', DIST_DIR);
+  await compileModule('ui-react-dom', DIST_DIR);
   await compileModule('ui-react-inspector', DIST_DIR);
+  await compileModule('ui-solid', DIST_DIR);
+  await compileModule('ui-solid-dom', DIST_DIR);
   await compileModule('ui-solid-inspector', DIST_DIR);
+  await compileModule('ui-svelte', DIST_DIR);
+  await compileModule('ui-svelte-dom', DIST_DIR);
   await compileModule('ui-svelte-inspector', DIST_DIR);
 };
 

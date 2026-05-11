@@ -226,7 +226,7 @@ export const EditableThing = (props: {
       thingType(),
       <input
         value={stringThing()}
-        onChange={(event) =>
+        onInput={(event) =>
           handleThingChange(
             String(event[CURRENT_TARGET][_VALUE]),
             setStringThing,
@@ -236,7 +236,7 @@ export const EditableThing = (props: {
       <input
         type="number"
         value={numberThing()}
-        onChange={(event) =>
+        onInput={(event) =>
           handleThingChange(
             Number(event[CURRENT_TARGET][_VALUE] || 0),
             setNumberThing,
@@ -246,7 +246,7 @@ export const EditableThing = (props: {
       <input
         type="checkbox"
         checked={booleanThing()}
-        onChange={(event) =>
+        onInput={(event) =>
           handleThingChange(
             Boolean(event[CURRENT_TARGET].checked),
             setBooleanThing,
@@ -256,7 +256,7 @@ export const EditableThing = (props: {
       <input
         value={objectThing()}
         class={objectClassName()}
-        onChange={(event) =>
+        onInput={(event) =>
           handleJsonThingChange(
             event[CURRENT_TARGET][_VALUE],
             setObjectThing,
@@ -268,7 +268,7 @@ export const EditableThing = (props: {
       <input
         value={arrayThing()}
         class={arrayClassName()}
-        onChange={(event) =>
+        onInput={(event) =>
           handleJsonThingChange(
             event[CURRENT_TARGET][_VALUE],
             setArrayThing,
