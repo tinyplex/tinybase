@@ -33,46 +33,43 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = (
   props: ValuesInHtmlTableProps & HtmlTableProps,
 ): JSXElement => {
   const valueIds = useValueIds(() => props.store);
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
-    const Value =
-      props.valueComponent ??
-      (getValue(props.editable as any) === true
-        ? EditableValueView
-        : ValueView);
-    return (
-      <table class={props.className}>
-        {props.headerRow === false ? null : (
-          <thead>
+  return (
+    <table class={props.className}>
+      {props.headerRow === false ? null : (
+        <thead>
+          <tr>
+            {extraHeaders(props.extraCellsBefore as any)}
+            {props.idColumn === false ? null : <th>Id</th>}
+            <th>{VALUE}</th>
+            {extraHeaders(props.extraCellsAfter as any)}
+          </tr>
+        </thead>
+      )}
+      <tbody>
+        {arrayMap(valueIds(), (valueId) => {
+          const valueProps = {valueId, store: props.store};
+          const Value =
+            props.valueComponent ??
+            (getValue(props.editable as any) === true
+              ? EditableValueView
+              : ValueView);
+          return (
             <tr>
-              {extraHeaders(props.extraCellsBefore as any)}
-              {props.idColumn === false ? null : <th>Id</th>}
-              <th>{VALUE}</th>
-              {extraHeaders(props.extraCellsAfter as any)}
+              {extraValueCells(props.extraCellsBefore as any, valueProps)}
+              {isFalse(props.idColumn) ? null : (
+                <th title={valueId}>{valueId}</th>
+              )}
+              <td>
+                <Value
+                  {...getProps(props.getValueComponentProps, valueId)}
+                  {...valueProps}
+                />
+              </td>
+              {extraValueCells(props.extraCellsAfter as any, valueProps)}
             </tr>
-          </thead>
-        )}
-        <tbody>
-          {arrayMap(valueIds(), (valueId) => {
-            const valueProps = {valueId, store: props.store};
-            return (
-              <tr>
-                {extraValueCells(props.extraCellsBefore as any, valueProps)}
-                {isFalse(props.idColumn) ? null : (
-                  <th title={valueId}>{valueId}</th>
-                )}
-                <td>
-                  <Value
-                    {...getProps(props.getValueComponentProps, valueId)}
-                    {...valueProps}
-                  />
-                </td>
-                {extraValueCells(props.extraCellsAfter as any, valueProps)}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    );
-  }) as unknown as JSXElement;
+          );
+        })}
+      </tbody>
+    </table>
+  );
 };

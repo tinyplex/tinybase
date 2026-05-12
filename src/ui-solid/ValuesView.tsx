@@ -10,8 +10,7 @@ import {ValueView} from './ValueView.tsx';
 
 export const ValuesView = (props: ValuesProps): JSXElement => {
   const valueIds = useValueIds(() => props.store);
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const Value = props.valueComponent ?? ValueView;
     return wrap(
       arrayMap(getValue(valueIds) as Id[], (valueId: Id) => (
@@ -24,5 +23,6 @@ export const ValuesView = (props: ValuesProps): JSXElement => {
       )),
       props.separator,
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

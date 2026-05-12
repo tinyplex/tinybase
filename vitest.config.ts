@@ -1,37 +1,9 @@
-import {transformSync as babelTransformSync} from '@babel/core';
 import {svelte} from '@sveltejs/vite-plugin-svelte';
 import {svelteTesting} from '@testing-library/svelte/vite';
-import {transformSync as esbuildTransformSync} from 'esbuild';
 import {tmpdir} from 'os';
 import {resolve} from 'path';
+import solid from 'vite-plugin-solid';
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
-
-const solidJsxPlugin = () => ({
-  name: 'solid-jsx',
-  enforce: 'pre' as const,
-  transform: (code: string, id: string) => {
-    const path = id.split('?')[0];
-    return path.endsWith('.tsx') &&
-      [
-        '/src/ui-solid/',
-        '/src/ui-solid-dom/',
-        '/test/unit/core/ui-solid/',
-      ].some((solidPath) => path.includes(solidPath))
-      ? {
-          code:
-            babelTransformSync(
-              esbuildTransformSync(code, {
-                format: 'esm',
-                jsx: 'preserve',
-                loader: 'tsx',
-              }).code,
-              {filename: path, presets: ['solid']},
-            )?.code ?? '',
-          map: null,
-        }
-      : null;
-  },
-});
 
 export default defineConfig({
   test: {
@@ -116,7 +88,19 @@ export default defineConfig({
       {
         extends: true,
         oxc: false,
-        plugins: [solidJsxPlugin()],
+        plugins: [
+          solid({
+            dev: false,
+            hot: false,
+            include: [
+              'src/ui-solid/**/*.tsx',
+              'src/ui-solid-dom/**/*.tsx',
+              'src/ui-solid-inspector/**/*.tsx',
+              'test/unit/core/ui-solid/**/*.tsx',
+            ],
+            solid: {delegateEvents: false},
+          }),
+        ],
         esbuild: {
           logOverride: {'unsupported-jsx-comment': 'silent'},
         },

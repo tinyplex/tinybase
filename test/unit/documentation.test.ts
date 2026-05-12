@@ -1,4 +1,5 @@
 import * as AutomergeRepo from '@automerge/automerge-repo';
+import {transformSync as babelTransformSync} from '@babel/core';
 import * as pglite from '@electric-sql/pglite';
 import * as typeBox from '@sinclair/typebox';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
@@ -52,13 +53,11 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
-import * as TinyBaseUiSolid from 'tinybase/ui-solid';
-import * as TinyBaseUiSolidInspector from 'tinybase/ui-solid-inspector';
 import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
 import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
 import * as TinyBaseUiSvelteInspector from 'tinybase/ui-svelte-inspector';
 import * as valibot from 'valibot';
-import {beforeAll, describe, expect, test} from 'vitest';
+import {beforeAll, describe, expect, test, vi} from 'vitest';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
 import * as yup from 'yup';
@@ -85,6 +84,14 @@ const SolidWeb = nodeRequire(
 (nodeRequire.cache as any)[nodeRequire.resolve('solid-js/web')] = {
   exports: SolidWeb,
 };
+vi.mock('solid-js/web', async () =>
+  (await import('module')).createRequire(import.meta.url)(
+    'solid-js/web/dist/web.cjs',
+  ),
+);
+const TinyBaseUiSolid = await import('tinybase/ui-solid');
+const TinyBaseUiSolidDom = await import('tinybase/ui-solid-dom');
+const TinyBaseUiSolidInspector = await import('tinybase/ui-solid-inspector');
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
 const TinyBaseForTest = {
@@ -116,6 +123,7 @@ const TinyBaseForTest = {
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/ui-solid': TinyBaseUiSolid,
+  'tinybase/ui-solid-dom': TinyBaseUiSolidDom,
   'tinybase/ui-solid-inspector': TinyBaseUiSolidInspector,
   'tinybase/ui-svelte': TinyBaseUiSvelte,
   'tinybase/ui-svelte-dom': TinyBaseUiSvelteDom,
@@ -290,12 +298,14 @@ const isOtherUiSource = (source: string): boolean =>
   source.includes('from "tinybase/ui-svelte');
 
 const transformSolidJsx = (source: string, loader: 'jsx' | 'tsx'): string =>
-  `import {createComponent} from 'solid-js';\n${
+  babelTransformSync(
     transformSync(source, {
+      format: 'esm',
+      jsx: 'preserve',
       loader,
-      jsxFactory: 'createComponent',
-    }).code
-  }`;
+    }).code,
+    {presets: [['solid', {delegateEvents: false}]]},
+  )?.code ?? '';
 
 const prepareRunnableCode = (source: string, replaceImports: boolean): string =>
   (replaceImports ? replaceRunnableImports(source) : source)

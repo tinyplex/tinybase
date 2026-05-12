@@ -29,8 +29,8 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = (
           () => props.queryId,
           () => props.queries,
         ),
-        props.customCells,
-        ResultCellView,
+        () => props.customCells,
+        () => ResultCellView,
       ),
       getQueriesCellComponentProps(props.queries, props.queryId),
       useResultRowIds(

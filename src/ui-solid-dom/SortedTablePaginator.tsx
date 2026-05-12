@@ -79,9 +79,8 @@ export const useSortingAndPagination = (
 
 export const SortedTablePaginator: typeof SortedTablePaginatorDecl = (
   props: SortedTablePaginatorProps,
-) =>
-  // eslint-disable-next-line solid/reactivity
-  (() => {
+) => {
+  const content = () => {
     let offset = props.offset ?? 0;
     const limit = props.limit ?? props.total;
     if (offset > props.total || offset < 0) {
@@ -121,4 +120,6 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = (
         {props.total} {props.total != 1 ? plural : singular}
       </>
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
+};

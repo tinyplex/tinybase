@@ -152,7 +152,7 @@ export const Provider = (
 
   return (
     <Context.Provider value={{value: contextValue}}>
-      {(() => props.children) as unknown as JSXElement}
+      {props.children}
     </Context.Provider>
   );
 };

@@ -1,6 +1,6 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
-import {createEffect, createSignal, untrack} from 'solid-js';
+import {createRenderEffect, createSignal, untrack} from 'solid-js';
 import type {Cell, Id, Value} from '../../@types/index.d.ts';
 import type {HtmlTableProps} from '../../@types/ui-solid-dom/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
@@ -66,8 +66,8 @@ export const HtmlTable = (
   props: HtmlTableProps & {
     readonly params: HtmlTableParams;
   },
-) =>
-  (() => {
+) => {
+  const content = () => {
     const [
       cells,
       cellComponentProps,
@@ -80,11 +80,10 @@ export const HtmlTable = (
     ] = props.params;
     const sort: SortAndOffset | [] =
       sortAndOffset == null ? [] : getValue(sortAndOffset);
+    const paginator = getValue(paginatorComponent);
     return (
       <table class={props.className}>
-        {paginatorComponent ? (
-          <caption>{getValue(paginatorComponent)}</caption>
-        ) : null}
+        {paginator ? <caption>{paginator}</caption> : null}
         {props.headerRow === false ? null : (
           <thead>
             <tr>
@@ -132,7 +131,9 @@ export const HtmlTable = (
         </tbody>
       </table>
     );
-  }) as unknown as any;
+  };
+  return <>{content()}</>;
+};
 
 export const EditableThing = (props: {
   readonly thing: Cell | Value | undefined;
@@ -152,7 +153,7 @@ export const EditableThing = (props: {
   const [objectClassName, setObjectClassName] = createSignal<string>('');
   const [arrayClassName, setArrayClassName] = createSignal<string>('');
 
-  createEffect(() => {
+  createRenderEffect(() => {
     const thing = props.thing;
     if (untrack(currentThing) !== thing) {
       setThingType(getCellOrValueType(thing));
@@ -279,7 +280,7 @@ export const EditableThing = (props: {
       />,
     );
 
-  return (() => {
+  const content = () => {
     const currentWidget = widget();
     return (
       <div class={props.class}>
@@ -295,5 +296,6 @@ export const EditableThing = (props: {
         {currentWidget}
       </div>
     );
-  }) as unknown as any;
+  };
+  return <>{content()}</>;
 };

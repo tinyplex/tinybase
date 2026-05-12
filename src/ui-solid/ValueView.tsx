@@ -11,12 +11,14 @@ export const ValueView = (props: ValueProps): JSXElement => {
     () => props.valueId,
     () => props.store,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() =>
-    wrap(
-      EMPTY_STRING + (getValue(value) ?? EMPTY_STRING),
-      undefined,
-      props.debugIds,
-      props.valueId,
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {wrap(
+        EMPTY_STRING + (getValue(value) ?? EMPTY_STRING),
+        undefined,
+        props.debugIds,
+        props.valueId,
+      )}
+    </>
+  );
 };

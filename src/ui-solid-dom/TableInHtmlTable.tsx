@@ -27,8 +27,8 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = (
           () => props.tableId,
           () => props.store,
         ),
-        props.customCells,
-        props.editable ? EditableCellView : CellView,
+        () => props.customCells,
+        () => (props.editable ? EditableCellView : CellView),
       ),
       getStoreCellComponentProps(props.store, props.tableId),
       useRowIds(

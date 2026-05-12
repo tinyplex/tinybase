@@ -1,4 +1,5 @@
 /* @jsxImportSource solid-js */
+/* eslint-disable solid/reactivity */
 import type {JSXElement} from 'solid-js';
 import {createMemo} from 'solid-js';
 import type {Id, Store} from '../@types/index.d.ts';
@@ -46,9 +47,11 @@ const useDottedCellIds = (
   return dottedCellIds;
 };
 
-export const RelationshipInHtmlRow = ({
-  localRowId,
-  params: [
+export const RelationshipInHtmlRow = (props: {
+  readonly localRowId: Id;
+  readonly params: RelationshipInHtmlRowParams;
+}) => {
+  const [
     idColumn,
     cells,
     localTableId,
@@ -58,27 +61,23 @@ export const RelationshipInHtmlRow = ({
     store,
     extraCellsBefore,
     extraCellsAfter,
-  ],
-}: {
-  readonly localRowId: Id;
-  readonly params: RelationshipInHtmlRowParams;
-}) => {
+  ] = props.params;
   const remoteRowId = useRemoteRowId(
     () => relationshipId,
-    () => localRowId,
+    () => props.localRowId,
     () => relationships,
   );
   const rowProps: RowProps = {
     tableId: localTableId ?? '',
-    rowId: localRowId,
+    rowId: props.localRowId,
     store,
   };
-  return (() => (
+  return (
     <tr>
       {extraRowCells(extraCellsBefore, rowProps)}
       {isFalse(idColumn) ? null : (
         <>
-          <th title={localRowId}>{localRowId}</th>
+          <th title={props.localRowId}>{props.localRowId}</th>
           <th title={remoteRowId()}>{remoteRowId()}</th>
         </>
       )}
@@ -88,7 +87,7 @@ export const RelationshipInHtmlRow = ({
           const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
           const rowId =
             tableId === localTableId
-              ? localRowId
+              ? props.localRowId
               : tableId === remoteTableId
                 ? remoteRowId()
                 : undefined;
@@ -107,7 +106,7 @@ export const RelationshipInHtmlRow = ({
       )}
       {extraRowCells(extraCellsAfter, rowProps)}
     </tr>
-  )) as unknown as JSXElement;
+  );
 };
 
 export const RelationshipInHtmlTable = (
@@ -131,22 +130,16 @@ export const RelationshipInHtmlTable = (
     () => details()[1],
   );
   const cellIds = createMemo(() => [...localCellIds(), ...remoteCellIds()]);
-  // eslint-disable-next-line solid/reactivity
-  const customCells = props.customCells;
-  // eslint-disable-next-line solid/reactivity
-  const editable = props.editable;
-  // eslint-disable-next-line solid/reactivity
   const cells = useCells(
     cellIds,
-    customCells,
-    editable ? EditableCellView : CellView,
+    () => props.customCells,
+    () => (props.editable ? EditableCellView : CellView),
   );
   const rowIds = useRowIds(
     () => details()[2] as Id,
     () => details()[1],
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const [relationships, store, localTableId, remoteTableId] = details();
     const params = getParams(
       props.idColumn ?? true,
@@ -185,5 +178,6 @@ export const RelationshipInHtmlTable = (
         </tbody>
       </table>
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

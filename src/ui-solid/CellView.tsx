@@ -13,12 +13,14 @@ export const CellView = (props: CellProps): JSXElement => {
     () => props.cellId,
     () => props.store,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() =>
-    wrap(
-      EMPTY_STRING + (getValue(cell) ?? EMPTY_STRING),
-      undefined,
-      props.debugIds,
-      props.cellId,
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {wrap(
+        EMPTY_STRING + (getValue(cell) ?? EMPTY_STRING),
+        undefined,
+        props.debugIds,
+        props.cellId,
+      )}
+    </>
+  );
 };

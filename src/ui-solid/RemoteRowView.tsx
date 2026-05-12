@@ -24,8 +24,7 @@ export const RemoteRowView = (props: RemoteRowProps): JSXElement => {
     () => props.localRowId,
     resolvedRelationships,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const Row = props.rowComponent ?? RowView;
     const [_relationshipsValue, store, , remoteTableId] =
       getRelationshipsStoreTableIds(
@@ -47,5 +46,6 @@ export const RemoteRowView = (props: RemoteRowProps): JSXElement => {
       props.debugIds,
       props.localRowId,
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

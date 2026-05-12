@@ -11,12 +11,14 @@ export const MetricView = (props: MetricProps): JSXElement => {
     () => props.metricId,
     () => props.metrics,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() =>
-    wrap(
-      getValue(metric) ?? EMPTY_STRING,
-      undefined,
-      props.debugIds,
-      props.metricId,
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {wrap(
+        getValue(metric) ?? EMPTY_STRING,
+        undefined,
+        props.debugIds,
+        props.metricId,
+      )}
+    </>
+  );
 };

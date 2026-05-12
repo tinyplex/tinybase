@@ -1,7 +1,13 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
 import type {Accessor, JSXElement} from 'solid-js';
-import {ErrorBoundary, createEffect, createSignal, onCleanup} from 'solid-js';
+import {
+  ErrorBoundary,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import type {Id} from '../@types/common/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
 import type {CustomCell} from '../@types/ui-solid-dom/index.d.ts';
@@ -159,31 +165,23 @@ const Details = (
       OPEN_CELL,
       event.currentTarget.open,
     );
-  return (() => (
+  return (
     <details open={!!open()} onToggle={handleToggle}>
       <summary>
         <span>{props.title}</span>
         {props.handleEditable ? (
           <img
             onClick={props.handleEditable}
-            class={
-              (() =>
-                props.editable?.() ? 'done' : 'edit') as unknown as string
-            }
-            title={
-              (() =>
-                props.editable?.()
-                  ? 'Done editing'
-                  : 'Edit') as unknown as string
-            }
+            class={props.editable?.() ? 'done' : 'edit'}
+            title={props.editable?.() ? 'Done editing' : 'Edit'}
           />
         ) : (
           EMPTY_STRING
         )}
       </summary>
-      <div>{(() => props.children) as unknown as JSXElement}</div>
+      <div>{props.children}</div>
     </details>
-  )) as unknown as JSXElement;
+  );
 };
 
 const ConfirmableActions = <
@@ -213,7 +211,7 @@ const ConfirmableActions = <
     }
   });
 
-  return (() => {
+  const content = () => {
     const confirmingIndex = confirming();
     const Component = isUndefined(confirmingIndex)
       ? undefined
@@ -236,7 +234,9 @@ const ConfirmableActions = <
         )}
       </>
     );
-  }) as unknown as JSXElement;
+  };
+
+  return <>{content()}</>;
 };
 
 const NewId = (
@@ -276,29 +276,30 @@ const NewId = (
     }
   };
 
-  return (() => {
+  createEffect(() => {
     if (props.suggestedId != previousSuggestedId()) {
       setNewId(props.suggestedId);
       setPreviousSuggestedNewId(props.suggestedId);
     }
-    return (
-      <>
-        {(props.prompt ?? 'New Id') + ': '}
-        <input
-          type="text"
-          value={newId()}
-          onInput={handleNewIdChange}
-          onKeyDown={handleKeyDown}
-          autofocus
-        />{' '}
-        <img
-          onClick={handleClick}
-          title={newIdOk() ? 'Confirm' : 'Id already exists'}
-          class={newIdOk() ? 'ok' : 'okDis'}
-        />
-      </>
-    );
-  }) as unknown as JSXElement;
+  });
+
+  return (
+    <>
+      {(props.prompt ?? 'New Id') + ': '}
+      <input
+        type="text"
+        value={newId()}
+        onInput={handleNewIdChange}
+        onKeyDown={handleKeyDown}
+        autofocus
+      />{' '}
+      <img
+        onClick={handleClick}
+        title={newIdOk() ? 'Confirm' : 'Id already exists'}
+        class={newIdOk() ? 'ok' : 'okDis'}
+      />
+    </>
+  );
 };
 
 const Delete = (props: {
@@ -728,23 +729,26 @@ const TablesView = (
 
 const StoreView = (props: {readonly storeId?: Id} & StoreProp) => {
   const store = useStore(props.storeId);
-  return (() =>
-    isUndefined(store()) ? (
-      EMPTY_STRING
-    ) : (
-      <Details
-        uniqueId={getUniqueId('s', props.storeId)}
-        title={
-          (store()!.isMergeable() ? 'Mergeable' : '') +
-          'Store: ' +
-          (props.storeId ?? DEFAULT)
-        }
-        s={props.s}
-      >
-        <ValuesView storeId={props.storeId} store={store()} s={props.s} />
-        <TablesView storeId={props.storeId} store={store()} s={props.s} />
-      </Details>
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {isUndefined(store()) ? (
+        EMPTY_STRING
+      ) : (
+        <Details
+          uniqueId={getUniqueId('s', props.storeId)}
+          title={
+            (store()!.isMergeable() ? 'Mergeable' : '') +
+            'Store: ' +
+            (props.storeId ?? DEFAULT)
+          }
+          s={props.s}
+        >
+          <ValuesView storeId={props.storeId} store={store()} s={props.s} />
+          <TablesView storeId={props.storeId} store={store()} s={props.s} />
+        </Details>
+      )}
+    </>
+  );
 };
 
 const MetricRow = (props: {readonly metrics: any; readonly metricId: Id}) => (
@@ -758,35 +762,38 @@ const MetricRow = (props: {readonly metrics: any; readonly metricId: Id}) => (
 const MetricsView = (props: {readonly metricsId?: Id} & StoreProp) => {
   const metrics = useMetrics(props.metricsId);
   const metricIds = useMetricIds(metrics);
-  return (() =>
-    isUndefined(metrics()) ? (
-      EMPTY_STRING
-    ) : (
-      <Details
-        uniqueId={getUniqueId('m', props.metricsId)}
-        title={'Metrics: ' + (props.metricsId ?? DEFAULT)}
-        s={props.s}
-      >
-        {arrayIsEmpty(metricIds()) ? (
-          'No metrics defined'
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Metric Id</th>
-                <th>Table Id</th>
-                <th>Metric</th>
-              </tr>
-            </thead>
-            <tbody>
-              {arrayMap(metricIds(), (metricId) => (
-                <MetricRow metrics={metrics()} metricId={metricId} />
-              ))}
-            </tbody>
-          </table>
-        )}
-      </Details>
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {isUndefined(metrics()) ? (
+        EMPTY_STRING
+      ) : (
+        <Details
+          uniqueId={getUniqueId('m', props.metricsId)}
+          title={'Metrics: ' + (props.metricsId ?? DEFAULT)}
+          s={props.s}
+        >
+          {arrayIsEmpty(metricIds()) ? (
+            'No metrics defined'
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric Id</th>
+                  <th>Table Id</th>
+                  <th>Metric</th>
+                </tr>
+              </thead>
+              <tbody>
+                {arrayMap(metricIds(), (metricId) => (
+                  <MetricRow metrics={metrics()} metricId={metricId} />
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Details>
+      )}
+    </>
+  );
 };
 
 const SliceView = (
@@ -850,27 +857,30 @@ const IndexView = (
 const IndexesView = (props: {readonly indexesId?: Id} & StoreProp) => {
   const indexes = useIndexes(props.indexesId);
   const indexIds = useIndexIds(indexes);
-  return (() =>
-    isUndefined(indexes()) ? (
-      EMPTY_STRING
-    ) : (
-      <Details
-        uniqueId={getUniqueId('i', props.indexesId)}
-        title={'Indexes: ' + (props.indexesId ?? DEFAULT)}
-        s={props.s}
-      >
-        {arrayIsEmpty(indexIds())
-          ? 'No indexes defined'
-          : sortedIdsMap(indexIds(), (indexId) => (
-              <IndexView
-                indexes={indexes()}
-                indexesId={props.indexesId}
-                indexId={indexId}
-                s={props.s}
-              />
-            ))}
-      </Details>
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {isUndefined(indexes()) ? (
+        EMPTY_STRING
+      ) : (
+        <Details
+          uniqueId={getUniqueId('i', props.indexesId)}
+          title={'Indexes: ' + (props.indexesId ?? DEFAULT)}
+          s={props.s}
+        >
+          {arrayIsEmpty(indexIds())
+            ? 'No indexes defined'
+            : sortedIdsMap(indexIds(), (indexId) => (
+                <IndexView
+                  indexes={indexes()}
+                  indexesId={props.indexesId}
+                  indexId={indexId}
+                  s={props.s}
+                />
+              ))}
+        </Details>
+      )}
+    </>
+  );
 };
 
 const QueryView = (
@@ -882,6 +892,9 @@ const QueryView = (
 ) => {
   const uniqueId = getUniqueId('q', props.queriesId, props.queryId);
   const sort = useCell(STATE_TABLE, uniqueId, SORT_CELL, props.s);
+  const sortProps = createMemo(
+    () => jsonParse((sort() as string) ?? '[]') as [Id, boolean, number],
+  );
   const handleChange = useSetCellCallback(
     STATE_TABLE,
     uniqueId,
@@ -889,54 +902,50 @@ const QueryView = (
     jsonStringWithMap,
     props.s,
   );
-  return (() => {
-    const [cellId, descending, offset] = jsonParse((sort() as string) ?? '[]');
-    return (
-      <Details
-        uniqueId={uniqueId}
-        title={'Query: ' + props.queryId}
-        s={props.s}
-      >
-        <ResultSortedTableInHtmlTable
-          queryId={props.queryId}
-          queries={props.queries}
-          cellId={cellId}
-          descending={descending}
-          offset={offset}
-          limit={10}
-          paginator={true}
-          sortOnClick={true}
-          onChange={handleChange}
-        />
-      </Details>
-    );
-  }) as unknown as JSXElement;
+  return (
+    <Details uniqueId={uniqueId} title={'Query: ' + props.queryId} s={props.s}>
+      <ResultSortedTableInHtmlTable
+        queryId={props.queryId}
+        queries={props.queries}
+        cellId={sortProps()[0]}
+        descending={sortProps()[1]}
+        offset={sortProps()[2]}
+        limit={10}
+        paginator={true}
+        sortOnClick={true}
+        onChange={handleChange}
+      />
+    </Details>
+  );
 };
 
 const QueriesView = (props: {readonly queriesId?: Id} & StoreProp) => {
   const queries = useQueries(props.queriesId);
   const queryIds = useQueryIds(queries);
-  return (() =>
-    isUndefined(queries()) ? (
-      EMPTY_STRING
-    ) : (
-      <Details
-        uniqueId={getUniqueId('q', props.queriesId)}
-        title={'Queries: ' + (props.queriesId ?? DEFAULT)}
-        s={props.s}
-      >
-        {arrayIsEmpty(queryIds())
-          ? 'No queries defined'
-          : sortedIdsMap(queryIds(), (queryId) => (
-              <QueryView
-                queries={queries()}
-                queriesId={props.queriesId}
-                queryId={queryId}
-                s={props.s}
-              />
-            ))}
-      </Details>
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {isUndefined(queries()) ? (
+        EMPTY_STRING
+      ) : (
+        <Details
+          uniqueId={getUniqueId('q', props.queriesId)}
+          title={'Queries: ' + (props.queriesId ?? DEFAULT)}
+          s={props.s}
+        >
+          {arrayIsEmpty(queryIds())
+            ? 'No queries defined'
+            : sortedIdsMap(queryIds(), (queryId) => (
+                <QueryView
+                  queries={queries()}
+                  queriesId={props.queriesId}
+                  queryId={queryId}
+                  s={props.s}
+                />
+              ))}
+        </Details>
+      )}
+    </>
+  );
 };
 
 const RelationshipView = (
@@ -975,27 +984,30 @@ const RelationshipsView = (
 ) => {
   const relationships = useRelationships(props.relationshipsId);
   const relationshipIds = useRelationshipIds(relationships);
-  return (() =>
-    isUndefined(relationships()) ? (
-      EMPTY_STRING
-    ) : (
-      <Details
-        uniqueId={getUniqueId('r', props.relationshipsId)}
-        title={'Relationships: ' + (props.relationshipsId ?? DEFAULT)}
-        s={props.s}
-      >
-        {arrayIsEmpty(relationshipIds())
-          ? 'No relationships defined'
-          : sortedIdsMap(relationshipIds(), (relationshipId) => (
-              <RelationshipView
-                relationships={relationships()}
-                relationshipsId={props.relationshipsId}
-                relationshipId={relationshipId}
-                s={props.s}
-              />
-            ))}
-      </Details>
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {isUndefined(relationships()) ? (
+        EMPTY_STRING
+      ) : (
+        <Details
+          uniqueId={getUniqueId('r', props.relationshipsId)}
+          title={'Relationships: ' + (props.relationshipsId ?? DEFAULT)}
+          s={props.s}
+        >
+          {arrayIsEmpty(relationshipIds())
+            ? 'No relationships defined'
+            : sortedIdsMap(relationshipIds(), (relationshipId) => (
+                <RelationshipView
+                  relationships={relationships()}
+                  relationshipsId={props.relationshipsId}
+                  relationshipId={relationshipId}
+                  s={props.s}
+                />
+              ))}
+        </Details>
+      )}
+    </>
+  );
 };
 
 const Header = (props: StoreProp) => {
@@ -1021,24 +1033,31 @@ const Header = (props: StoreProp) => {
   );
 };
 
-const Nub = ({s}: StoreProp) => {
-  const position = useValue(POSITION_VALUE, s);
-  const open = useValue(OPEN_VALUE, s);
-  const handleOpen = () => s.setValue(OPEN_VALUE, true);
-  return (() =>
-    open() ? (
-      EMPTY_STRING
-    ) : (
-      <img onClick={handleOpen} title={TITLE} data-position={position() ?? 1} />
-    )) as unknown as JSXElement;
+const Nub = (props: StoreProp) => {
+  const position = useValue(POSITION_VALUE, props.s);
+  const open = useValue(OPEN_VALUE, props.s);
+  const handleOpen = () => props.s.setValue(OPEN_VALUE, true);
+  return (
+    <>
+      {open() ? (
+        EMPTY_STRING
+      ) : (
+        <img
+          onClick={handleOpen}
+          title={TITLE}
+          data-position={position() ?? 1}
+        />
+      )}
+    </>
+  );
 };
 
-const Body = ({s}: StoreProp) => {
+const Body = (props: StoreProp) => {
   let article: HTMLElement | undefined;
   let idleCallback = 0;
   const [scrolled, setScrolled] = createSignal(false);
-  const state = useTable(STATE_TABLE, s);
-  const scrollValues = useValues(s);
+  const state = useTable(STATE_TABLE, props.s);
+  const scrollValues = useValues(props.s);
 
   createEffect(() => {
     const {scrollLeft, scrollTop} = scrollValues();
@@ -1064,7 +1083,7 @@ const Body = ({s}: StoreProp) => {
     cancelInspectorIdleCallback(idleCallback);
     idleCallback = requestInspectorIdleCallback(() => {
       setScrolled(true);
-      s.setPartialValues({scrollLeft, scrollTop});
+      props.s.setPartialValues({scrollLeft, scrollTop});
     });
   };
 
@@ -1079,66 +1098,67 @@ const Body = ({s}: StoreProp) => {
   const queries = useQueries();
   const queriesIds = useQueriesIds();
 
-  return (() => {
-    state();
-    return (
-      <>
-        {isUndefined(store()) &&
-        arrayIsEmpty(storeIds()) &&
-        isUndefined(metrics()) &&
-        arrayIsEmpty(metricsIds()) &&
-        isUndefined(indexes()) &&
-        arrayIsEmpty(indexesIds()) &&
-        isUndefined(relationships()) &&
-        arrayIsEmpty(relationshipsIds()) &&
-        isUndefined(queries()) &&
-        arrayIsEmpty(queriesIds()) ? (
-          <span class="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
-        ) : (
-          <article ref={article} onScroll={handleScroll}>
-            <StoreView s={s} />
-            {arrayMap(storeIds(), (storeId) => (
-              <StoreView storeId={storeId} s={s} />
-            ))}
-            <MetricsView s={s} />
-            {arrayMap(metricsIds(), (metricsId) => (
-              <MetricsView metricsId={metricsId} s={s} />
-            ))}
-            <IndexesView s={s} />
-            {arrayMap(indexesIds(), (indexesId) => (
-              <IndexesView indexesId={indexesId} s={s} />
-            ))}
-            <RelationshipsView s={s} />
-            {arrayMap(relationshipsIds(), (relationshipsId) => (
-              <RelationshipsView relationshipsId={relationshipsId} s={s} />
-            ))}
-            <QueriesView s={s} />
-            {arrayMap(queriesIds(), (queriesId) => (
-              <QueriesView queriesId={queriesId} s={s} />
-            ))}
-          </article>
-        )}
-      </>
-    );
-  }) as unknown as JSXElement;
+  return (
+    <>
+      {state() &&
+      isUndefined(store()) &&
+      arrayIsEmpty(storeIds()) &&
+      isUndefined(metrics()) &&
+      arrayIsEmpty(metricsIds()) &&
+      isUndefined(indexes()) &&
+      arrayIsEmpty(indexesIds()) &&
+      isUndefined(relationships()) &&
+      arrayIsEmpty(relationshipsIds()) &&
+      isUndefined(queries()) &&
+      arrayIsEmpty(queriesIds()) ? (
+        <span class="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
+      ) : (
+        <article ref={article} onScroll={handleScroll}>
+          <StoreView s={props.s} />
+          {arrayMap(storeIds(), (storeId) => (
+            <StoreView storeId={storeId} s={props.s} />
+          ))}
+          <MetricsView s={props.s} />
+          {arrayMap(metricsIds(), (metricsId) => (
+            <MetricsView metricsId={metricsId} s={props.s} />
+          ))}
+          <IndexesView s={props.s} />
+          {arrayMap(indexesIds(), (indexesId) => (
+            <IndexesView indexesId={indexesId} s={props.s} />
+          ))}
+          <RelationshipsView s={props.s} />
+          {arrayMap(relationshipsIds(), (relationshipsId) => (
+            <RelationshipsView relationshipsId={relationshipsId} s={props.s} />
+          ))}
+          <QueriesView s={props.s} />
+          {arrayMap(queriesIds(), (queriesId) => (
+            <QueriesView queriesId={queriesId} s={props.s} />
+          ))}
+        </article>
+      )}
+    </>
+  );
 };
 
-const Panel = ({s}: StoreProp) => {
-  const position = useValue(POSITION_VALUE, s);
-  const open = useValue(OPEN_VALUE, s);
-  return (() =>
-    open() ? (
-      <main data-position={position() ?? 1}>
-        <Header s={s} />
-        <ErrorBoundary
-          fallback={<span class="warn">{INSPECTOR_ERROR_MESSAGE}</span>}
-        >
-          <Body s={s} />
-        </ErrorBoundary>
-      </main>
-    ) : (
-      EMPTY_STRING
-    )) as unknown as JSXElement;
+const Panel = (props: StoreProp) => {
+  const position = useValue(POSITION_VALUE, props.s);
+  const open = useValue(OPEN_VALUE, props.s);
+  return (
+    <>
+      {open() ? (
+        <main data-position={position() ?? 1}>
+          <Header s={props.s} />
+          <ErrorBoundary
+            fallback={<span class="warn">{INSPECTOR_ERROR_MESSAGE}</span>}
+          >
+            <Body s={props.s} />
+          </ErrorBoundary>
+        </main>
+      ) : (
+        EMPTY_STRING
+      )}
+    </>
+  );
 };
 
 export const Inspector = (props: InspectorProps) => {
@@ -1162,20 +1182,17 @@ export const Inspector = (props: InspectorProps) => {
     (persister) => persister.destroy(),
   );
 
-  return (() => (
+  return (
     <>
-      {
-        (() =>
-          ready() ? (
-            <aside id={UNIQUE_ID} style={{'--hue': props.hue ?? 270}}>
-              <Nub s={s()} />
-              <Panel s={s()} />
-            </aside>
-          ) : (
-            EMPTY_STRING
-          )) as unknown as JSXElement
-      }
+      {ready() ? (
+        <aside id={UNIQUE_ID} style={{'--hue': props.hue ?? 270}}>
+          <Nub s={s()} />
+          <Panel s={s()} />
+        </aside>
+      ) : (
+        EMPTY_STRING
+      )}
       <style>{APP_STYLESHEET}</style>
     </>
-  )) as unknown as JSXElement;
+  );
 };

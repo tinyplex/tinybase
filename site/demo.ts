@@ -134,7 +134,7 @@ const getJs = (
     solid && jsx
       ? (transformSync(code, {
           filename: path,
-          presets: ['solid'],
+          presets: [['solid', {delegateEvents: false}]],
         })?.code ?? '')
       : code
   )

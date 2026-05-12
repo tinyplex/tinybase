@@ -47,17 +47,24 @@ export const useCells = (
   customCells: MaybeAccessor<
     Ids | {[cellId: Id]: string | CustomCell | CustomResultCell} | undefined
   >,
-  defaultCellComponent: CellComponent,
+  defaultCellComponent: () => CellComponent,
 ): (() => Cells<any>) =>
   // eslint-disable-next-line solid/reactivity
   createMemo(() => {
-    const cellIds = getValue(customCells) ?? getValue(defaultCellIds);
+    const customCellIds = getValue(customCells);
+    const cellIds =
+      getValue(
+        customCellIds as MaybeAccessor<
+          Ids | {[cellId: Id]: string | CustomCell | CustomResultCell}
+        >,
+      ) ?? getValue(defaultCellIds);
+    const component = defaultCellComponent();
     return objMap(
       isArray(cellIds)
         ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
         : cellIds,
       (labelOrCustomCell, cellId) => ({
-        ...{label: cellId, component: defaultCellComponent},
+        ...{label: cellId, component},
         ...(isString(labelOrCustomCell)
           ? {label: labelOrCustomCell}
           : labelOrCustomCell),

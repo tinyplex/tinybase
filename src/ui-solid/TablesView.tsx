@@ -10,8 +10,7 @@ import {TableView} from './TableView.tsx';
 
 export const TablesView = (props: TablesProps): JSXElement => {
   const tableIds = useTableIds(() => props.store);
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const Table = props.tableComponent ?? TableView;
     return wrap(
       arrayMap(getValue(tableIds) as Id[], (tableId: Id) => (
@@ -24,5 +23,6 @@ export const TablesView = (props: TablesProps): JSXElement => {
       )),
       props.separator,
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

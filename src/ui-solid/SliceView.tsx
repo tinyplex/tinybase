@@ -15,8 +15,7 @@ export const SliceView = (props: SliceProps): JSXElement => {
     () => props.sliceId,
     resolvedIndexes,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const Row = props.rowComponent ?? RowView;
     const [_indexesValue, store, tableId] = getIndexStoreTableId(
       getValue(resolvedIndexes),
@@ -36,5 +35,6 @@ export const SliceView = (props: SliceProps): JSXElement => {
       props.debugIds,
       props.sliceId,
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

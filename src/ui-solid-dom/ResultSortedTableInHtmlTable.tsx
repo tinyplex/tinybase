@@ -44,8 +44,8 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
             () => props.queryId,
             () => props.queries,
           ),
-          props.customCells,
-          ResultCellView,
+          () => props.customCells,
+          () => ResultCellView,
         ),
         getQueriesCellComponentProps(props.queries, props.queryId),
         useResultSortedRowIds(

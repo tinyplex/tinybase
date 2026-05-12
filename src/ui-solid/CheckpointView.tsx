@@ -11,12 +11,14 @@ export const CheckpointView = (props: CheckpointProps): JSXElement => {
     () => props.checkpointId,
     () => props.checkpoints,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() =>
-    wrap(
-      getValue(checkpoint) ?? EMPTY_STRING,
-      undefined,
-      props.debugIds,
-      props.checkpointId,
-    )) as unknown as JSXElement;
+  return (
+    <>
+      {wrap(
+        getValue(checkpoint) ?? EMPTY_STRING,
+        undefined,
+        props.debugIds,
+        props.checkpointId,
+      )}
+    </>
+  );
 };

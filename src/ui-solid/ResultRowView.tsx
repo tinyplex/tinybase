@@ -14,8 +14,7 @@ export const ResultRowView = (props: ResultRowProps): JSXElement => {
     () => props.rowId,
     () => props.queries,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const ResultCell = props.resultCellComponent ?? ResultCellView;
     return wrap(
       arrayMap(getValue(resultCellIds) as Id[], (cellId: Id) => (
@@ -32,5 +31,6 @@ export const ResultRowView = (props: ResultRowProps): JSXElement => {
       props.debugIds,
       props.rowId,
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

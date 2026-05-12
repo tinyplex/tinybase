@@ -47,7 +47,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = (
           () => props.store,
         ),
         () => props.customCells,
-        props.editable === true ? EditableCellView : CellView,
+        () => (props.editable === true ? EditableCellView : CellView),
       ),
       getStoreCellComponentProps(props.store, props.tableId),
       useSortedRowIds(

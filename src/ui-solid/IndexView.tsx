@@ -13,8 +13,7 @@ export const IndexView = (props: IndexProps): JSXElement => {
     () => props.indexId,
     () => props.indexes,
   );
-  // eslint-disable-next-line solid/reactivity
-  return (() => {
+  const content = () => {
     const Slice = props.sliceComponent ?? SliceView;
     return wrap(
       arrayMap(getValue(sliceIds) as Id[], (sliceId: Id) => (
@@ -30,5 +29,6 @@ export const IndexView = (props: IndexProps): JSXElement => {
       props.debugIds,
       props.indexId,
     );
-  }) as unknown as JSXElement;
+  };
+  return <>{content()}</>;
 };

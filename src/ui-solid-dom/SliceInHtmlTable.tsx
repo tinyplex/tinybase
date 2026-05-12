@@ -39,7 +39,7 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = (
           () => details()[1],
         ),
         props.customCells,
-        props.editable ? EditableCellView : CellView,
+        () => (props.editable ? EditableCellView : CellView),
       ),
       getStoreCellComponentProps(details()[1], details()[2] as Id),
       useSliceRowIds(
