@@ -96,6 +96,6 @@ module documentation.
 ## Summary
 
 The ui-solid module mirrors the component model of ui-react, but the reactive
-work underneath uses Solid primitives and Accessors. The final guide in this
-section shows how Provider context keeps TinyBase objects out of your component
-props.
+work underneath uses Solid primitives and Accessors. If you want
+browser-oriented table components next, proceed to the Using Solid DOM
+Components guide.
