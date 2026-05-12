@@ -23,7 +23,7 @@ Let's import the Inspector component:
 -       "tinybase/ui-solid-dom": "https://esm.sh/tinybase/ui-solid-dom@",
 +       "tinybase/ui-solid-inspector": "https://esm.sh/tinybase/ui-solid-inspector@",
        "solid-js": "https://esm.sh/solid-js@",
-              "solid-js/web": "https://esm.sh/solid-js/web@"
+       "solid-js/web": "https://esm.sh/solid-js/web@"
      }
    }
  </script>
@@ -85,7 +85,7 @@ component.
 
 ## Using the Inspector Component
 
-The Inspector component can appear anywhere in the app's virtual DOM and will
+The Inspector component can appear anywhere in the app's component tree and will
 appear as an overlay. It is added to an app like so:
 
 ```diff-jsx
