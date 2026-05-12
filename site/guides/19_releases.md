@@ -5,6 +5,83 @@ highlighted features.
 
 ---
 
+# v8.4
+
+## Solid DOM Components And Inspector
+
+This release completes TinyBase's Solid support with two new additions: the
+ui-solid-dom module and the ui-solid-inspector module.
+
+The ui-solid-dom module provides browser-ready Solid components for rendering
+and editing TinyBase data as HTML tables. They mirror the React DOM components,
+but use Solid components and Accessors throughout.
+
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
+
+Alongside the table components, the new ui-solid-inspector module brings the
+TinyBase development inspector to Solid apps too, making it easy to inspect and
+edit Stores, Indexes, Relationships, and Queries during development:
+
+![Inspector (Solid)](/shots/inspector-solid-demo.png 'Inspector (Solid)')
+
+A small Solid app can use both modules together:
+
+```jsx
+import {render} from 'solid-js/web';
+import {createRoot} from 'solid-js';
+import {createStore} from 'tinybase';
+import {CellView, Provider, useCell} from 'tinybase/ui-solid';
+import {TableInHtmlTable} from 'tinybase/ui-solid-dom';
+import {Inspector} from 'tinybase/ui-solid-inspector';
+
+const domStore = createStore().setTable('pets', {
+  fido: {species: 'dog', color: 'brown'},
+  felix: {species: 'cat', color: 'black'},
+});
+const inspectorStore = createStore().setTable('pets', {
+  fido: {species: 'dog'},
+});
+
+const appSolid = document.createElement('div');
+const disposeAppSolid = render(
+  () => (
+    <>
+      <TableInHtmlTable tableId="pets" store={domStore} editable={true} />
+      <Provider store={inspectorStore}>
+        <Inspector open={true} />
+      </Provider>
+    </>
+  ),
+  appSolid,
+);
+
+console.log(appSolid.querySelectorAll('tbody tr').length);
+// -> 2
+console.log(typeof Inspector);
+// -> 'function'
+
+disposeAppSolid();
+```
+
+Read more in the Using Solid DOM Components guide and the <Inspector /> (Solid)
+demo.
+
+## New Solid Demos
+
+This release also adds a complete set of Solid UI component demos, plus an
+Inspector demo, so you can see the new modules working across Stores, Indexes,
+Relationships, Queries, and editable views.
+
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
+
+These demos intentionally mirror the React set where possible, making it easier
+to compare implementation patterns across frameworks.
+
+There are no intended breaking changes in this release. If you spot any issues
+with the new Solid DOM components or the Solid inspector, please let us know!
+
+---
+
 # v8.3
 
 ## Solid Support
@@ -20,10 +97,6 @@ data immediately, then update the Accessor when the underlying Store data
 changes:
 
 ```js
-import {createRoot} from 'solid-js';
-import {createStore} from 'tinybase';
-import {useCell} from 'tinybase/ui-solid';
-
 const solidStore = createStore().setCell('pets', 'fido', 'color', 'brown');
 
 createRoot((dispose) => {
@@ -41,16 +114,17 @@ can assemble UI directly from TinyBase data while still taking advantage of
 Solid's selective updates:
 
 ```jsx
-import {render} from 'solid-js/web';
-import {CellView} from 'tinybase/ui-solid';
-
 const solidApp = document.createElement('div');
 document.body.appendChild(solidApp);
 
 const disposeSolid = render(
-  () => (
-    <CellView tableId="pets" rowId="fido" cellId="color" store={solidStore} />
-  ),
+  () =>
+    CellView({
+      tableId: 'pets',
+      rowId: 'fido',
+      cellId: 'color',
+      store: solidStore,
+    }),
   solidApp,
 );
 
