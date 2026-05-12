@@ -106,7 +106,7 @@ describe('Inspector', () => {
           (msg: string) =>
             !msg.startsWith('In HTML, %s cannot be a child of <%s>.%s'),
         ),
-      'Unexpected React console.error calls',
+      'Unexpected Solid console.error calls',
     ).toEqual([]);
     consoleError.mockRestore();
     vi.unstubAllGlobals();
