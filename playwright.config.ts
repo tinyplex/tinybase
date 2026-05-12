@@ -6,7 +6,7 @@ export default defineConfig({
   snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}{ext}',
   fullyParallel: false,
   workers: 4,
-  reporter: 'list',
+  reporter: 'line',
   use: {trace: 'on-first-retry'},
   projects: [{name: 'chromium', use: {...devices['Desktop Chrome']}}],
 });

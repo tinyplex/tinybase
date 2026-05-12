@@ -346,16 +346,14 @@ const execute = async (cmd, showOutput = false) => {
   const {spawn} = await import('child_process');
   return new Promise((resolve, reject) => {
     const [command, ...args] = cmd.split(' ');
-    const child = spawn(command, args);
+    const child = spawn(command, args, showOutput ? {stdio: 'inherit'} : {});
     let output = '';
-    child.stdout.on('data', (data) => (output += data.toString()));
-    child.stderr.on('data', (data) => (output += data.toString()));
+    if (!showOutput) {
+      child.stdout.on('data', (data) => (output += data.toString()));
+      child.stderr.on('data', (data) => (output += data.toString()));
+    }
     child.on('close', (code) => {
       if (code === 0) {
-        if (showOutput && output.trim() !== '') {
-          // eslint-disable-next-line no-console
-          console.log(output);
-        }
         resolve();
       } else {
         // eslint-disable-next-line no-console
