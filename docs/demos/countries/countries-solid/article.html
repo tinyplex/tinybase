@@ -16,11 +16,11 @@ import { createComponent as _$createComponent } from &quot;https://esm.sh/solid-
 import { memo as _$memo } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
 import { For, Show } from &quot;https://esm.sh/solid-js@^1.9.12&quot;;
 import { render } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
-import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.4.0&quot;;
-import { createLocalPersister, createSessionPersister } from &quot;https://esm.sh/tinybase@8.4.0/persisters/persister-browser&quot;;
-import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.4.0/persisters/persister-remote&quot;;
-import { CellView, Provider, useCellState, useCreateIndexes, useCreatePersister, useCreateStore, useSetValuesCallback, useSliceIds, useSliceRowIds, useValue } from &quot;https://esm.sh/tinybase@8.4.0/ui-solid&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.4.0/ui-solid-inspector&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.5.0-beta.0&quot;;
+import { createLocalPersister, createSessionPersister } from &quot;https://esm.sh/tinybase@8.5.0-beta.0/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.5.0-beta.0/persisters/persister-remote&quot;;
+import { CellView, Provider, useCellState, useCreateIndexes, useCreatePersister, useCreateStore, useSetValuesCallback, useSliceIds, useSliceRowIds, useValue } from &quot;https://esm.sh/tinybase@8.5.0-beta.0/ui-solid&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.5.0-beta.0/ui-solid-inspector&quot;;
 var _tmpl$ = _$template(`&lt;div id=filters&gt;`);
 var _tmpl$2 = _$template(`&lt;div&gt;&lt;span class=label&gt;&lt;/span&gt;&lt;span class=count&gt;`);
 var _tmpl$3 = _$template(`&lt;div id=countries&gt;`);
@@ -224,11 +224,11 @@ var Country = (props) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we build the same app as the <a href="/demos/countries/countries-react/">Countries (React)</a> demo, but with Solid and the <a href="/api/ui-solid/"><code>ui-solid</code></a> module.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase, the persister modules, the Solid inspector module, and Solid:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/persisters/persister-remote"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-solid"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-solid"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-solid-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-solid-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.0/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.0/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-solid"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.0/ui-solid"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-solid-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.0/ui-solid-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"solid-js"</span><span class="operator">:</span> <span class="string">"https://esm.sh/solid-js@^1.9.12"</span><span class="punctuation">,</span>
       <span class="string-property">"solid-js/web"</span><span class="operator">:</span> <span class="string">"https://esm.sh/solid-js@^1.9.12/web"</span>
     <span class="punctuation">}</span>
