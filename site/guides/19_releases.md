@@ -68,9 +68,9 @@ demo.
 
 ## New Solid Demos
 
-This release also adds a complete set of Solid UI component demos, plus an
-Inspector demo, so you can see the new modules working across Stores, Indexes,
-Relationships, Queries, and editable views.
+This release also adds a complete set of Solid UI component demos, plus a
+Countries demo and an Inspector demo, so you can see the new modules working
+across Stores, Indexes, Relationships, Queries, and editable views.
 
 ![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
 

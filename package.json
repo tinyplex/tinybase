@@ -13,7 +13,9 @@
     "reactive",
     "state",
     "data",
-    "react"
+    "react",
+    "solid",
+    "svelte"
   ],
   "type": "module",
   "browser": {

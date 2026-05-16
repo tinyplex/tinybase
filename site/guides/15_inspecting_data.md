@@ -1,8 +1,8 @@
 # Inspecting Data
 
-If you are using TinyBase in a web application with React or Svelte, you can use
-its web-based inspector, the Inspector component, to reason about the data
-during development.
+If you are using TinyBase in a web application with React, Solid, or Svelte, you
+can use its web-based inspector, the Inspector component, to reason about the
+data during development.
 
 ![Inspector](/inspector.webp 'Inspector')
 
@@ -10,10 +10,10 @@ during development.
 
 ## Usage
 
-The component is available in both the ui-react-inspector module and the
-ui-svelte-inspector module. In each case, add the component inside a Provider
-component that is providing the Store context for the app that you want to
-inspect.
+The component is available in the ui-react-inspector module, the
+ui-solid-inspector module, and the ui-svelte-inspector module. In each case, add
+the component inside a Provider component that is providing the Store context
+for the app that you want to inspect.
 
 With React, the boilerplate will look something like this:
 
@@ -43,7 +43,33 @@ addEventListener('load', () =>
 );
 ```
 
-With Svelte, the pattern is the same:
+For Solid, the pattern is the same:
+
+```jsx ignore
+import {render} from 'solid-js/web';
+import {createStore} from 'tinybase';
+import {Provider, useCreateStore} from 'tinybase/ui-solid';
+import {Inspector} from 'tinybase/ui-solid-inspector';
+
+const App = () => {
+  const store = useCreateStore(() =>
+    createStore().setTable('pets', {
+      fido: {species: 'dog'},
+    }),
+  );
+
+  return (
+    <Provider store={store()}>
+      <h1>My app</h1>
+      <Inspector />
+    </Provider>
+  );
+};
+
+addEventListener('load', () => render(App, document.body));
+```
+
+With Svelte, the pattern is also the same:
 
 ```svelte
 <script>
@@ -81,9 +107,10 @@ Provider component context:
 - Each named Queries: the pair of Tables in each Query
 
 It is hoped that each section is quite self-explanatory. If not, please try it
-out in the <Inspector /> (React) demo or the <Inspector /> (Svelte) demo, or
-indeed in most of the TinyBase demos themselves! The Movie Database demo and
-Countries demo are quite good examples of the inspector in use.
+out in the <Inspector /> (React) demo, the <Inspector /> (Solid) demo, or the
+<Inspector /> (Svelte) demo, or indeed in most of the TinyBase demos themselves!
+The Movie Database demo and Countries demo are quite good examples of the
+inspector in use.
 
 Note that, as of TinyBase v6.6, you can also create, duplicate, and delete
 tables, rows, values, and cells - all directly within the Inspector.

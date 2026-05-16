@@ -308,9 +308,9 @@ store.delListener(listenerId);
 
 > ## Bind to data in UI libraries.
 >
-> If you're using React or Svelte in your application, the optional `ui-react`
-> and `ui-svelte` modules provide hooks and functions to bind to the data in a
-> Store.
+> If you're using React, Solid, or Svelte in your application, the optional
+> `ui-react` module, `ui-solid` module, or `ui-svelte` module provide hooks and
+> functions to bind to the data in a Store.
 >
 > For example, the useCell hook in this example fetches the dog's color. But it
 > also registers a listener on that cell that will fire and re-render the

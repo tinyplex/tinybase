@@ -36,8 +36,8 @@ This tool provides the following templates to get started with:
   detection.
 
 You can also configure these templates with different options, such as using
-TypeScript or JavaScript, adding persistence with SQLite or PGlite, and enabling
-synchronization with a remote server or Durable Objects.
+TypeScript or JavaScript, different UI libraries, adding persistence with SQLite
+or PGlite, and enabling synchronization with a remote server or Durable Objects.
 
 Check out the [create-tinybase
 documentation](https://github.com/tinyplex/create-tinybase) for more details.
