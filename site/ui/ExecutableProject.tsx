@@ -12,6 +12,8 @@ const ESM_SH_PACKAGE_REGEX =
 const ESM_SH_SUBPATH_REGEX =
   /^https:\/\/esm\.sh\/((?:@[^/@]+\/)?[^/@]+)(?:\/.*)?@([^/?]+)(?:[/?].*)?$/;
 
+type Framework = 'none' | 'react' | 'solid' | 'svelte';
+
 const getImportMap = (html: string): {[specifier: string]: string} =>
   Object.assign(
     {},
@@ -110,7 +112,7 @@ const getHtml = (
 const getPackageJson = (
   title: string,
   dependencies: {[dependency: string]: string},
-  framework: 'none' | 'react' | 'svelte',
+  framework: Framework,
   devDependencies: {[dependency: string]: string},
   needsLess: boolean,
 ): string => {
@@ -135,6 +137,10 @@ const getPackageJson = (
     toolDependencies['@sveltejs/vite-plugin-svelte'] =
       devDependencies['@sveltejs/vite-plugin-svelte'];
   }
+  if (framework == 'solid' && devDependencies['vite-plugin-solid'] != null) {
+    toolDependencies['vite-plugin-solid'] =
+      devDependencies['vite-plugin-solid'];
+  }
   return JSON.stringify(
     {
       name: title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-'),
@@ -152,7 +158,7 @@ const getPackageJson = (
 };
 
 const getViteConfig = (
-  framework: 'none' | 'react' | 'svelte',
+  framework: Framework,
   devDependencies: {[dependency: string]: string},
 ): string | undefined =>
   framework == 'react' && devDependencies['@vitejs/plugin-react'] != null
@@ -184,7 +190,21 @@ export default defineConfig({
             {parser: 'babel', singleQuote: true, trailingComma: 'all'},
           )
           .trim()
-      : undefined;
+      : framework == 'solid' && devDependencies['vite-plugin-solid'] != null
+        ? prettier
+            .format(
+              `
+import {defineConfig} from 'vite';
+import solid from 'vite-plugin-solid';
+
+export default defineConfig({
+  plugins: [solid()],
+});
+              `,
+              {parser: 'babel', singleQuote: true, trailingComma: 'all'},
+            )
+            .trim()
+        : undefined;
 
 const getEntryFileName = (files: {
   [path: string]: string;
@@ -210,9 +230,17 @@ export const ExecutableProject: NoPropComponent = (): any => {
     imports.react != null ||
     imports['react-dom/client'] != null ||
     imports['react/jsx-runtime'] != null;
-  const framework = svelte ? 'svelte' : react ? 'react' : 'none';
+  const solid = imports['solid-js'] != null || imports['solid-js/web'] != null;
+  const framework: Framework = svelte
+    ? 'svelte'
+    : react
+      ? 'react'
+      : solid
+        ? 'solid'
+        : 'none';
   const entryFileName =
-    getEntryFileName(files) ?? (react ? 'src/main.jsx' : 'src/main.js');
+    getEntryFileName(files) ??
+    (react || solid ? 'src/main.jsx' : 'src/main.js');
   const styleFileName = less.trim() == '' ? undefined : 'src/index.less';
   const viteConfig = getViteConfig(framework, devDependencies);
   const project = {
