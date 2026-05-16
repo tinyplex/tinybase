@@ -55,18 +55,20 @@ const init = async () => {
     countries: {star: {type: 'boolean'}},
   });
   const starPersister = createLocalPersister(starStore, 'countries/starStore');
-  await starPersister.startAutoLoad([{
-    countries: {
-      GB: {star: true},
-      NZ: {star: true},
-      AU: {star: true},
-      SE: {star: true},
-      IE: {star: true},
-      IN: {star: true},
-      BZ: {star: true},
-      US: {star: true},
+  await starPersister.startAutoLoad([
+    {
+      countries: {
+        GB: {star: true},
+        NZ: {star: true},
+        AU: {star: true},
+        SE: {star: true},
+        IE: {star: true},
+        IN: {star: true},
+        BZ: {star: true},
+        US: {star: true},
+      },
     },
-  }]);
+  ]);
   await starPersister.startAutoSave();
 
   const viewStore = createStore().setValuesSchema({
@@ -133,13 +135,8 @@ blocks:
 
   const STAR = '\u2605';
 
-  let {
-    countryStore,
-    starStore,
-    viewStore,
-    countryIndexes,
-    starIndexes,
-  } = $props();
+  let {countryStore, starStore, viewStore, countryIndexes, starIndexes} =
+    $props();
 
   const currentIndexes = getValue('indexes', viewStore);
   const currentIndexId = getValue('indexId', viewStore);
@@ -236,7 +233,9 @@ which we can get with the `getSliceRowIds` reactive function:
   class:current={selected}
   onclick={() => setCurrentSlice(indexesId, indexId, sliceId)}
 >
-  <span class="label">{label}</span><span class="count">{rowIds.current.length}</span>
+  <span class="label">{label}</span><span class="count"
+    >{rowIds.current.length}</span
+  >
 </div>
 ```
 

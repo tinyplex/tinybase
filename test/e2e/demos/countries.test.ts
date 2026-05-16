@@ -42,6 +42,21 @@ test('countries-react', async ({page}) => {
   await exerciseCountriesDemo(page);
 });
 
+test('countries-solid', async ({page}) => {
+  await expectPage(page, `/demos/countries/countries-solid/`);
+  await expectedElement(page, 'h1', 'Countries (Solid)');
+  await test
+    .expect(
+      page
+        .locator('iframe')
+        .first()
+        .contentFrame()
+        .locator('aside#tinybaseInspector'),
+    )
+    .toHaveCount(1);
+  await exerciseCountriesDemo(page);
+});
+
 test('countries-svelte', async ({page}) => {
   await expectPage(page, `/demos/countries/countries-svelte/`);
   await expectedElement(page, 'h1', 'Countries (Svelte)');

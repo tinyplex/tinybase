@@ -115,6 +115,16 @@ export const DOC_SHOTS: readonly DocShot[] = [
     style: IFRAME_DOC_SHOT_STYLE,
   },
   {
+    asset: 'countries-solid-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/countries/countries-solid/',
+    readySelector: '#countries .country',
+    readyTimeout: 30000,
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
     asset: 'countries-svelte-demo.png',
     framed: false,
     marginRem: 0,
