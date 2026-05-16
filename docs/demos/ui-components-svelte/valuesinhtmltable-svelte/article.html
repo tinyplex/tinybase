@@ -1,4 +1,4 @@
-<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/valuesinhtmltable-svelte/">&lt;ValuesInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/valuesinhtmltable-svelte/" data-id="&lt;VIHTS"><h1>&lt;ValuesInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/valuesinhtmltable-svelte/">&lt;ValuesInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/valuesinhtmltable-svelte/" data-id="&lt;VIHTS2"><h1>&lt;ValuesInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
       &lt;head&gt;
         
         &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
@@ -7,14 +7,14 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.4.0-beta.1&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.4.0&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { Provider } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte&quot;;
-import { ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte-dom&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte&quot;;
+import { ValuesInHtmlTable } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte-dom&quot;;
 var root_1 = $.from_html(`&lt;!&gt; &lt;!&gt;`, 1);
 function App($$anchor, $$props) {
   Provider($$anchor, {
@@ -39,9 +39,9 @@ mount(App, { target: document.body, props: { store } });&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this first demo, we set up a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> containing some sample data, and showcase the <a href="/api/ui-svelte-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a> component from the <a href="/api/ui-svelte-dom/"><code>ui-svelte-dom</code></a> module.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase, the Svelte runtime, and the ui-svelte and <a href="/api/ui-svelte-dom/"><code>ui-svelte-dom</code></a> modules:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte-dom"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-svelte-dom"</span><span class="punctuation">,</span>
       <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.5"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>

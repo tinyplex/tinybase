@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preload" as="image" href="/favicon.svg"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ"></script><link rel="dns-prefetch" href="https://www.googletagmanager.com/"><link href="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ" rel="preload" as="script"><link rel="preload" as="font" href="/fonts/inter.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/inconsolata.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/shantell.woff2" type="font/woff2" crossorigin="anonymous"><title>Countries (Svelte) | TinyBase</title><meta name="description" content="In this demo, we build the same app as the Countries (React) demo, but with Svelte 5 and the ui-svelte module."><meta property="og:type" content="website"><meta property="og:title" content="Countries (Svelte) | TinyBase"><meta property="og:description" content="In this demo, we build the same app as the Countries (React) demo, but with Svelte 5 and the ui-svelte module."><meta property="og:url" content="https://beta.tinybase.org/demos/countries/countries-svelte/"><meta property="og:image" content="https://beta.tinybase.org/favicon_pad.png"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Countries (Svelte) | TinyBase"><meta name="twitter:description" content="In this demo, we build the same app as the Countries (React) demo, but with Svelte 5 and the ui-svelte module."><meta name="twitter:site" content="@tinybasejs"><meta name="twitter:image" content="https://beta.tinybase.org/favicon_pad.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://beta.tinybase.org/demos/countries/countries-svelte/"><link rel="stylesheet" href="/css/index.css"><script src="/js/app.js"></script></head><body><header><a href="/"><img src="/favicon.svg" alt="TinyBase logo"><span>TinyBase <em>β</em></span></a><nav><ul><li><a href="/guides/">Guides</a></li><li><a href="/demos/">Demos</a></li><li><a href="/api/">API</a></li><li><a href="https://github.com/tinyplex/tinybase">GitHub</a></li></ul></nav><span id="dark"></span></header><main><nav><ul><li id="root" class="parent open"><span></span><a href="/">TinyBase</a><ul><li id="G" class="parent"><span></span><a href="/guides/">Guides</a></li><li id="D2" class="parent open"><span></span><a href="/demos/">Demos</a><ul><li id="HW" class="parent"><span></span><a href="/demos/hello-world/">Hello World</a></li><li id="C2" class="parent open"><span></span><a href="/demos/countries/">Countries</a><ul><li id="CR"><span></span><a href="/demos/countries/countries-react/">Countries (React)</a></li><li id="CS" class="current"><span></span><a href="/demos/countries/countries-svelte/">Countries (Svelte)</a></li></ul></li><li id="TA" class="parent"><span></span><a href="/demos/todo-app/">Todo App</a></li><li id="D3"><span></span><a href="/demos/drawing/">Drawing</a></li><li id="CD"><span></span><a href="/demos/city-database/">City Database</a></li><li id="CA"><span></span><a href="/demos/car-analysis/">Car Analysis</a></li><li id="MD"><span></span><a href="/demos/movie-database/">Movie Database</a></li><li id="WF"><span></span><a href="/demos/word-frequencies/">Word Frequencies</a></li><li id="UICR" class="parent"><span></span><a href="/demos/ui-components-react/">UI Components (React)</a></li><li id="UICS" class="parent"><span></span><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li id="UICS2" class="parent"><span></span><a href="/demos/ui-components-solid/">UI Components (Solid)</a></li></ul></li><li id="api" class="parent"><span></span><a href="/api/">API</a></li></ul></li></ul></nav><article><nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/countries/">Countries</a></li><li><a href="/demos/countries/countries-svelte/">Countries (Svelte)</a></li></ul></nav><section class="s1" id="/demos/countries/countries-svelte/" data-id="CS"><h1>Countries (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+<!DOCTYPE html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preload" as="image" href="/favicon.svg"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ"></script><link rel="dns-prefetch" href="https://www.googletagmanager.com/"><link href="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ" rel="preload" as="script"><link rel="preload" as="font" href="/fonts/inter.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/inconsolata.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/shantell.woff2" type="font/woff2" crossorigin="anonymous"><title>Countries (Svelte) | TinyBase</title><meta name="description" content="In this demo, we build the same app as the Countries (React) demo, but with Svelte 5 and the ui-svelte module."><meta property="og:type" content="website"><meta property="og:title" content="Countries (Svelte) | TinyBase"><meta property="og:description" content="In this demo, we build the same app as the Countries (React) demo, but with Svelte 5 and the ui-svelte module."><meta property="og:url" content="https://tinybase.org/demos/countries/countries-svelte/"><meta property="og:image" content="https://tinybase.org/favicon_pad.png"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Countries (Svelte) | TinyBase"><meta name="twitter:description" content="In this demo, we build the same app as the Countries (React) demo, but with Svelte 5 and the ui-svelte module."><meta name="twitter:site" content="@tinybasejs"><meta name="twitter:image" content="https://tinybase.org/favicon_pad.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://tinybase.org/demos/countries/countries-svelte/"><link rel="stylesheet" href="/css/index.css"><script src="/js/app.js"></script></head><body><header><a href="/"><img src="/favicon.svg" alt="TinyBase logo"><span>TinyBase</span></a><nav><ul><li><a href="/guides/">Guides</a></li><li><a href="/demos/">Demos</a></li><li><a href="/api/">API</a></li><li><a href="https://github.com/tinyplex/tinybase">GitHub</a></li></ul></nav><span id="dark"></span></header><main><nav><ul><li id="root" class="parent open"><span></span><a href="/">TinyBase</a><ul><li id="G" class="parent"><span></span><a href="/guides/">Guides</a></li><li id="D2" class="parent open"><span></span><a href="/demos/">Demos</a><ul><li id="HW" class="parent"><span></span><a href="/demos/hello-world/">Hello World</a></li><li id="C2" class="parent open"><span></span><a href="/demos/countries/">Countries</a><ul><li id="CR"><span></span><a href="/demos/countries/countries-react/">Countries (React)</a></li><li id="CS"><span></span><a href="/demos/countries/countries-solid/">Countries (Solid)</a></li><li id="CS2" class="current"><span></span><a href="/demos/countries/countries-svelte/">Countries (Svelte)</a></li></ul></li><li id="TA" class="parent"><span></span><a href="/demos/todo-app/">Todo App</a></li><li id="D3"><span></span><a href="/demos/drawing/">Drawing</a></li><li id="CD"><span></span><a href="/demos/city-database/">City Database</a></li><li id="CA"><span></span><a href="/demos/car-analysis/">Car Analysis</a></li><li id="MD"><span></span><a href="/demos/movie-database/">Movie Database</a></li><li id="WF"><span></span><a href="/demos/word-frequencies/">Word Frequencies</a></li><li id="UICR" class="parent"><span></span><a href="/demos/ui-components-react/">UI Components (React)</a></li><li id="UICS" class="parent"><span></span><a href="/demos/ui-components-solid/">UI Components (Solid)</a></li><li id="UICS2" class="parent"><span></span><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li></ul></li><li id="api" class="parent"><span></span><a href="/api/">API</a></li></ul></li></ul></nav><article><nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/countries/">Countries</a></li><li><a href="/demos/countries/countries-svelte/">Countries (Svelte)</a></li></ul></nav><section class="s1" id="/demos/countries/countries-svelte/" data-id="CS2"><h1>Countries (Svelte)</h1><iframe srcdoc="&lt;html&gt;
       &lt;head&gt;
         
         &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{box-sizing:border-box;display:flex;font-family:Inter,sans-serif;letter-spacing:-0.04rem;margin:0;height:100vh;text-align:center}#filters{overflow-y:scroll;border-right:1px solid #ccc;padding:.5rem}#filters .filter{cursor:pointer}#filters .filter.current{color:#d81b60}#filters .filter .label,#filters .filter .count{display:inline-block;width:2em}#filters .filter .count{color:#777;font-size:.8rem;text-align:left}#countries{flex:1;display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));grid-auto-rows:max-content;gap:.5rem;padding:1rem;overflow-y:scroll}#countries .country{background:#fff;border:1px solid #ccc;padding:.5rem;position:relative;height:fit-content}#countries .country .star{cursor:pointer;display:inline;left:8px;position:absolute;top:5px;user-select:none}#countries .country .flag{font-size:5rem;line-height:1em}#countries .country .name{overflow:hidden;text-overflow:ellipsis;vertical-align:top;white-space:nowrap}&lt;/style&gt;
@@ -7,24 +7,24 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.4.0-beta.1&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.4.0&quot;;
 import {
   createLocalPersister,
   createSessionPersister
-} from &quot;https://esm.sh/tinybase@8.4.0-beta.1/persisters/persister-browser&quot;;
-import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/persisters/persister-remote&quot;;
+} from &quot;https://esm.sh/tinybase@8.4.0/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.4.0/persisters/persister-remote&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $3 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { Provider, getSliceIds, getSliceRowIds as getSliceRowIds2, getValue } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte-inspector&quot;;
+import { Provider, getSliceIds, getSliceRowIds as getSliceRowIds2, getValue } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte-inspector&quot;;
 
 // demo-files:/demo/src/Country.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { CellView, getCell } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte&quot;;
+import { CellView, getCell } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte&quot;;
 var root = $.from_html(`&lt;div class=&quot;country&quot;&gt;&lt;div class=&quot;star&quot;&gt; &lt;/div&gt; &lt;div class=&quot;flag&quot;&gt;&lt;!&gt;&lt;/div&gt; &lt;div class=&quot;name&quot;&gt;&lt;!&gt;&lt;/div&gt;&lt;/div&gt;`);
 function Country($$anchor, $$props) {
   $.push($$props, true);
@@ -72,7 +72,7 @@ $.delegate([&quot;click&quot;]);
 // demo-files:/demo/src/Filter.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $2 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { getSliceRowIds } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte&quot;;
+import { getSliceRowIds } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte&quot;;
 var root2 = $2.from_html(`&lt;div&gt;&lt;span class=&quot;label&quot;&gt; &lt;/span&gt;&lt;span class=&quot;count&quot;&gt; &lt;/span&gt;&lt;/div&gt;`);
 function Filter($$anchor, $$props) {
   $2.push($$props, true);
@@ -209,18 +209,20 @@ var init = async () =&gt; {
     countries: { star: { type: &quot;boolean&quot; } }
   });
   const starPersister = createLocalPersister(starStore, &quot;countries/starStore&quot;);
-  await starPersister.startAutoLoad([{
-    countries: {
-      GB: { star: true },
-      NZ: { star: true },
-      AU: { star: true },
-      SE: { star: true },
-      IE: { star: true },
-      IN: { star: true },
-      BZ: { star: true },
-      US: { star: true }
+  await starPersister.startAutoLoad([
+    {
+      countries: {
+        GB: { star: true },
+        NZ: { star: true },
+        AU: { star: true },
+        SE: { star: true },
+        IE: { star: true },
+        IN: { star: true },
+        BZ: { star: true },
+        US: { star: true }
+      }
     }
-  }]);
+  ]);
   await starPersister.startAutoSave();
   const viewStore = createStore().setValuesSchema({
     indexes: { type: &quot;string&quot;, default: &quot;countryIndexes&quot; },
@@ -258,11 +260,11 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we build the same app as the <a href="/demos/countries/countries-react/">Countries (React)</a> demo, but with Svelte 5 and the <a href="/api/ui-svelte/"><code>ui-svelte</code></a> module.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase, the persister modules, the Svelte inspector module, and Svelte:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/persisters/persister-browser"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/persisters/persister-remote"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-svelte-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.5"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
@@ -289,18 +291,20 @@ window.addEventListener(&quot;load&quot;, init);&lt;/script&gt;
     <span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'boolean'</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">,</span>
   <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="keyword">const</span> starPersister <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/persisting-stores/createlocalpersister/">createLocalPersister</a></span><span class="punctuation">(</span>starStore<span class="punctuation">,</span> <span class="string">'countries/starStore'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-  <span class="keyword">await</span> starPersister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">[</span><span class="punctuation">{</span>
-    <span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="constant">GB</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">NZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">AU</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">SE</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">IE</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">IN</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">BZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="constant">US</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+  <span class="keyword">await</span> starPersister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">[</span>
+    <span class="punctuation">{</span>
+      <span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span>
+        <span class="constant">GB</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">NZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">AU</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">SE</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">IE</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">IN</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">BZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="constant">US</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="punctuation">}</span><span class="punctuation">,</span>
     <span class="punctuation">}</span><span class="punctuation">,</span>
-  <span class="punctuation">}</span><span class="punctuation">]</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="punctuation">]</span><span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="keyword">await</span> starPersister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
   <span class="keyword">const</span> viewStore <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/setvaluesschema/">setValuesSchema</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
@@ -352,13 +356,8 @@ window<span class="punctuation">.</span><span class="function">addEventListener<
 
   <span class="keyword">const</span> <span class="constant">STAR</span> <span class="operator">=</span> <span class="string">'\u2605'</span><span class="punctuation">;</span>
 
-  <span class="keyword">let</span> <span class="punctuation">{</span>
-    countryStore<span class="punctuation">,</span>
-    starStore<span class="punctuation">,</span>
-    viewStore<span class="punctuation">,</span>
-    countryIndexes<span class="punctuation">,</span>
-    starIndexes<span class="punctuation">,</span>
-  <span class="punctuation">}</span> <span class="operator">=</span> <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">let</span> <span class="punctuation">{</span>countryStore<span class="punctuation">,</span> starStore<span class="punctuation">,</span> viewStore<span class="punctuation">,</span> countryIndexes<span class="punctuation">,</span> starIndexes<span class="punctuation">}</span> <span class="operator">=</span>
+    <span class="function">$props</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
   <span class="keyword">const</span> currentIndexes <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/getting-data/getvalue/">getValue</a></span><span class="punctuation">(</span><span class="string">'indexes'</span><span class="punctuation">,</span> viewStore<span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="keyword">const</span> currentIndexId <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/getting-data/getvalue/">getValue</a></span><span class="punctuation">(</span><span class="string">'indexId'</span><span class="punctuation">,</span> viewStore<span class="punctuation">)</span><span class="punctuation">;</span>
@@ -442,7 +441,9 @@ window<span class="punctuation">.</span><span class="function">addEventListener<
   <span class="attr-name"><span class="namespace">class:</span>current=</span><span class="language-javascript"><span class="punctuation">{</span>selected<span class="punctuation">}</span></span>
   <span class="attr-name">onclick=</span><span class="language-javascript"><span class="punctuation">{</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">setCurrentSlice</span><span class="punctuation">(</span>indexesId<span class="punctuation">,</span> indexId<span class="punctuation">,</span> sliceId<span class="punctuation">)</span><span class="punctuation">}</span></span>
 <span class="punctuation">></span></span>
-  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span> <span class="attr-name">class</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>label<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="language-javascript"><span class="punctuation">{</span>label<span class="punctuation">}</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span> <span class="attr-name">class</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>count<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="language-javascript"><span class="punctuation">{</span>rowIds<span class="punctuation">.</span>current<span class="punctuation">.</span>length<span class="punctuation">}</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span> <span class="attr-name">class</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>label<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="language-javascript"><span class="punctuation">{</span>label<span class="punctuation">}</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span> <span class="attr-name">class</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>count<span class="punctuation">"</span></span>
+    <span class="punctuation">></span></span><span class="language-javascript"><span class="punctuation">{</span>rowIds<span class="punctuation">.</span>current<span class="punctuation">.</span>length<span class="punctuation">}</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span>
+  <span class="punctuation">></span></span>
 <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
 </code></pre><h3 id="the-country-component">The <code>Country</code> Component</h3><p>Each country card uses a writable <code>getCell</code> handle for the <code>star</code> cell in the <code>starStore</code>, and <code>CellView</code> components to render the flag and the country name from the <code>countryStore</code>:</p><div class="preFile">src/Country.svelte</div><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="keyword">import</span> <span class="punctuation">{</span>CellView<span class="punctuation">,</span> getCell<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-svelte'</span><span class="punctuation">;</span>

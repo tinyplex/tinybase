@@ -71,10 +71,11 @@ const getCoverageTable = (coverage: any) =>
       <th>Coverage</th>
     </tr>
     ${['lines', 'statements', 'functions', 'branches', 'tests', 'assertions']
-      .map(
-        (type) =>
-          `<tr>
-            <th class='right'>${type[0].toUpperCase() + type.substring(1)}</th>
+      .map((type, t) => {
+        return `<tr>
+            <th class='right'>${
+              t < 4 ? 'Tested ' + type : type[0].toUpperCase() + type.slice(1)
+            }</th>
             ${
               typeof coverage[type] == 'object'
                 ? `<td>${coverage[type].total.toLocaleString()}</td>
@@ -82,8 +83,8 @@ const getCoverageTable = (coverage: any) =>
                     <td>${coverage[type].pct.toFixed(1)}%</td>`
                 : `<td colSpan='3'>${coverage[type].toLocaleString()}</td>`
             }
-          </tr>`,
-      )
+          </tr>`;
+      })
       .join('')}
  </table>`;
 

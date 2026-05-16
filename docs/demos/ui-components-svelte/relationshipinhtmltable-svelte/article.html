@@ -1,4 +1,4 @@
-<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/relationshipinhtmltable-svelte/">&lt;RelationshipInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/relationshipinhtmltable-svelte/" data-id="&lt;RIHTS"><h1>&lt;RelationshipInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li><li><a href="/demos/ui-components-svelte/relationshipinhtmltable-svelte/">&lt;RelationshipInHtmlTable /&gt; (Svelte)</a></li></ul></nav><section class="s1" id="/demos/ui-components-svelte/relationshipinhtmltable-svelte/" data-id="&lt;RIHTS2"><h1>&lt;RelationshipInHtmlTable /&gt; (Svelte)</h1><iframe srcdoc="&lt;html&gt;
       &lt;head&gt;
         
         &lt;style&gt;a{color:inherit}@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{align-items:flex-start;color:#333;display:flex;font-family:Inter,sans-serif;font-size:.8rem;justify-content:space-around;letter-spacing:-0.04rem;line-height:1.5rem;margin:0;min-height:100vh;user-select:none}table{background:white;border-collapse:collapse;box-shadow:0 0 1rem #0004;font-size:inherit;line-height:inherit;margin:2rem;table-layout:fixed}table th,table td{border-color:#eee;border-style:solid;border-width:1px 0;overflow:hidden;padding:.25rem .5rem;text-align:left;white-space:nowrap}table thead th{border-bottom-color:#ccc}table button,table input{border:1px solid #ccc}&lt;/style&gt;
@@ -7,19 +7,19 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.4.0-beta.1&quot;;
+import { createRelationships, createStore } from &quot;https://esm.sh/tinybase@8.4.0&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.5&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $2 from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { Provider } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte&quot;;
-import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte-dom&quot;;
+import { Provider } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte&quot;;
+import { RelationshipInHtmlTable } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte-dom&quot;;
 
 // demo-files:/demo/src/Popularity.svelte
 import &quot;https://esm.sh/svelte@^5.55.5/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.5/internal/client&quot;;
-import { getCell } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-svelte&quot;;
+import { getCell } from &quot;https://esm.sh/tinybase@8.4.0/ui-svelte&quot;;
 var root = $.from_html(`&lt;b&gt; &lt;/b&gt;`);
 function Popularity($$anchor, $$props) {
   $.push($$props, true);

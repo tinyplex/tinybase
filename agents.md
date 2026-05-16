@@ -92,6 +92,10 @@ Optional UI modules provide:
   `useRow`, `useTable`, `useTables`, `useValue`, and component/context support
 - **React DOM Components**: `ui-react-dom` with interactive tables
 - **React Inspector**: `ui-react-inspector` for debugging and editing data
+- **Solid Primitives & Components**: `ui-solid` with primitives like `useCell`,
+  `useRow`, `useTable`, `useTables`, `useValue`, and component/context support
+- **Solid DOM Components**: `ui-solid-dom` with interactive tables
+- **Solid Inspector**: `ui-solid-inspector` for debugging and editing data
 - **Svelte Reactivity & Components**: `ui-svelte` with reactive functions,
   components, and context support
 - **Svelte DOM Components**: `ui-svelte-dom` with interactive tables
@@ -117,6 +121,9 @@ tinybase/synchronizers/synchronizer-* # Sync transports
 tinybase/ui-react     # React hooks
 tinybase/ui-react-dom # React DOM components
 tinybase/ui-react-inspector # DevTools
+tinybase/ui-solid     # Solid primitives
+tinybase/ui-solid-dom # Solid DOM components
+tinybase/ui-solid-inspector # DevTools
 tinybase/ui-svelte    # Svelte reactivity & components
 tinybase/ui-svelte-dom # Svelte DOM components
 tinybase/ui-svelte-inspector # DevTools
@@ -200,6 +207,9 @@ tinybase/
 │   ├── ui-react/          # React hooks
 │   ├── ui-react-dom/      # React DOM components
 │   ├── ui-react-inspector/ # DevTools
+│   ├── ui-solid/          # Solid primitives
+│   ├── ui-solid-dom/      # Solid DOM components
+│   ├── ui-solid-inspector/ # DevTools
 │   ├── ui-svelte/         # Svelte reactivity & components
 │   ├── ui-svelte-dom/     # Svelte DOM components
 │   ├── ui-svelte-inspector/ # DevTools

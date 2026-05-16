@@ -12,8 +12,8 @@ import { setAttribute as _$setAttribute } from &quot;https://esm.sh/solid-js@^1.
 import { createComponent as _$createComponent } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
 import { insert as _$insert } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
 import { render } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.4.0-beta.1&quot;;
-import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.4.0-beta.1/ui-solid&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.4.0&quot;;
+import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.4.0/ui-solid&quot;;
 var _tmpl$ = _$template(`&lt;div id=app&gt;&lt;div id=logos&gt;&lt;/div&gt;&lt;div id=value&gt;`);
 var _tmpl$2 = _$template(`&lt;img&gt;`);
 var store = createStore();
@@ -44,8 +44,8 @@ setInterval(setTime, 1e3);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we use Solid to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change the <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-solid"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0-beta.1/ui-solid"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-solid"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-solid"</span><span class="punctuation">,</span>
       <span class="string-property">"solid-js"</span><span class="operator">:</span> <span class="string">"https://esm.sh/solid-js@^1.9.12"</span><span class="punctuation">,</span>
       <span class="string-property">"solid-js/web"</span><span class="operator">:</span> <span class="string">"https://esm.sh/solid-js@^1.9.12/web"</span>
     <span class="punctuation">}</span>

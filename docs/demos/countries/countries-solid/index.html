@@ -1,0 +1,524 @@
+<!DOCTYPE html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preload" as="image" href="/favicon.svg"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ"></script><link rel="dns-prefetch" href="https://www.googletagmanager.com/"><link href="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ" rel="preload" as="script"><link rel="preload" as="font" href="/fonts/inter.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/inconsolata.woff2" type="font/woff2" crossorigin="anonymous"><link rel="preload" as="font" href="/fonts/shantell.woff2" type="font/woff2" crossorigin="anonymous"><title>Countries (Solid) | TinyBase</title><meta name="description" content="In this demo, we build the same app as the Countries (React) demo, but with Solid and the ui-solid module."><meta property="og:type" content="website"><meta property="og:title" content="Countries (Solid) | TinyBase"><meta property="og:description" content="In this demo, we build the same app as the Countries (React) demo, but with Solid and the ui-solid module."><meta property="og:url" content="https://tinybase.org/demos/countries/countries-solid/"><meta property="og:image" content="https://tinybase.org/favicon_pad.png"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Countries (Solid) | TinyBase"><meta name="twitter:description" content="In this demo, we build the same app as the Countries (React) demo, but with Solid and the ui-solid module."><meta name="twitter:site" content="@tinybasejs"><meta name="twitter:image" content="https://tinybase.org/favicon_pad.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://tinybase.org/demos/countries/countries-solid/"><link rel="stylesheet" href="/css/index.css"><script src="/js/app.js"></script></head><body><header><a href="/"><img src="/favicon.svg" alt="TinyBase logo"><span>TinyBase</span></a><nav><ul><li><a href="/guides/">Guides</a></li><li><a href="/demos/">Demos</a></li><li><a href="/api/">API</a></li><li><a href="https://github.com/tinyplex/tinybase">GitHub</a></li></ul></nav><span id="dark"></span></header><main><nav><ul><li id="root" class="parent open"><span></span><a href="/">TinyBase</a><ul><li id="G" class="parent"><span></span><a href="/guides/">Guides</a></li><li id="D2" class="parent open"><span></span><a href="/demos/">Demos</a><ul><li id="HW" class="parent"><span></span><a href="/demos/hello-world/">Hello World</a></li><li id="C2" class="parent open"><span></span><a href="/demos/countries/">Countries</a><ul><li id="CR"><span></span><a href="/demos/countries/countries-react/">Countries (React)</a></li><li id="CS" class="current"><span></span><a href="/demos/countries/countries-solid/">Countries (Solid)</a></li><li id="CS2"><span></span><a href="/demos/countries/countries-svelte/">Countries (Svelte)</a></li></ul></li><li id="TA" class="parent"><span></span><a href="/demos/todo-app/">Todo App</a></li><li id="D3"><span></span><a href="/demos/drawing/">Drawing</a></li><li id="CD"><span></span><a href="/demos/city-database/">City Database</a></li><li id="CA"><span></span><a href="/demos/car-analysis/">Car Analysis</a></li><li id="MD"><span></span><a href="/demos/movie-database/">Movie Database</a></li><li id="WF"><span></span><a href="/demos/word-frequencies/">Word Frequencies</a></li><li id="UICR" class="parent"><span></span><a href="/demos/ui-components-react/">UI Components (React)</a></li><li id="UICS" class="parent"><span></span><a href="/demos/ui-components-solid/">UI Components (Solid)</a></li><li id="UICS2" class="parent"><span></span><a href="/demos/ui-components-svelte/">UI Components (Svelte)</a></li></ul></li><li id="api" class="parent"><span></span><a href="/api/">API</a></li></ul></li></ul></nav><article><nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/countries/">Countries</a></li><li><a href="/demos/countries/countries-solid/">Countries (Solid)</a></li></ul></nav><section class="s1" id="/demos/countries/countries-solid/" data-id="CS"><h1>Countries (Solid)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{box-sizing:border-box;display:flex;font-family:Inter,sans-serif;letter-spacing:-0.04rem;margin:0;height:100vh;text-align:center}#filters{overflow-y:scroll;border-right:1px solid #ccc;padding:.5rem}#filters .filter{cursor:pointer}#filters .filter.current{color:#d81b60}#filters .filter .label,#filters .filter .count{display:inline-block;width:2em}#filters .filter .count{color:#777;font-size:.8rem;text-align:left}#countries{flex:1;display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));grid-auto-rows:max-content;gap:.5rem;padding:1rem;overflow-y:scroll}#countries .country{background:#fff;border:1px solid #ccc;padding:.5rem;position:relative;height:fit-content}#countries .country .star{cursor:pointer;display:inline;left:8px;position:absolute;top:5px;user-select:none}#countries .country .flag{font-size:5rem;line-height:1em}#countries .country .name{overflow:hidden;text-overflow:ellipsis;vertical-align:top;white-space:nowrap}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
+import { template as _$template } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { className as _$className } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { effect as _$effect } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { addEventListener as _$addEventListener } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { insert as _$insert } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { createComponent as _$createComponent } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { memo as _$memo } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { For, Show } from &quot;https://esm.sh/solid-js@^1.9.12&quot;;
+import { render } from &quot;https://esm.sh/solid-js@^1.9.12/web&quot;;
+import { createIndexes, createStore, defaultSorter } from &quot;https://esm.sh/tinybase@8.4.0&quot;;
+import { createLocalPersister, createSessionPersister } from &quot;https://esm.sh/tinybase@8.4.0/persisters/persister-browser&quot;;
+import { createRemotePersister } from &quot;https://esm.sh/tinybase@8.4.0/persisters/persister-remote&quot;;
+import { CellView, Provider, useCellState, useCreateIndexes, useCreatePersister, useCreateStore, useSetValuesCallback, useSliceIds, useSliceRowIds, useValue } from &quot;https://esm.sh/tinybase@8.4.0/ui-solid&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.4.0/ui-solid-inspector&quot;;
+var _tmpl$ = _$template(`&lt;div id=filters&gt;`);
+var _tmpl$2 = _$template(`&lt;div&gt;&lt;span class=label&gt;&lt;/span&gt;&lt;span class=count&gt;`);
+var _tmpl$3 = _$template(`&lt;div id=countries&gt;`);
+var _tmpl$4 = _$template(`&lt;div class=country&gt;&lt;div class=star&gt;&lt;/div&gt;&lt;div class=flag&gt;&lt;/div&gt;&lt;div class=name&gt;`);
+var STAR = &quot;\u2605&quot;;
+var UNSTAR = &quot;\u2606&quot;;
+var App = () =&gt; {
+  const countryStore = useCreateStore(() =&gt; createStore().setTablesSchema({
+    countries: {
+      emoji: {
+        type: &quot;string&quot;
+      },
+      name: {
+        type: &quot;string&quot;
+      }
+    }
+  }));
+  useCreatePersister(countryStore, (store) =&gt; createRemotePersister(store, &quot;https://tinybase.org/assets/countries.json&quot;), (persister) =&gt; persister.load());
+  const starStore = useCreateStore(() =&gt; createStore().setTablesSchema({
+    countries: {
+      star: {
+        type: &quot;boolean&quot;
+      }
+    }
+  }));
+  useCreatePersister(starStore, (store) =&gt; createLocalPersister(store, &quot;countries/starStore&quot;), async (persister) =&gt; {
+    await persister.startAutoLoad([{
+      countries: {
+        GB: {
+          star: true
+        },
+        NZ: {
+          star: true
+        },
+        AU: {
+          star: true
+        },
+        SE: {
+          star: true
+        },
+        IE: {
+          star: true
+        },
+        IN: {
+          star: true
+        },
+        BZ: {
+          star: true
+        },
+        US: {
+          star: true
+        }
+      }
+    }]);
+    await persister.startAutoSave();
+  });
+  const viewStore = useCreateStore(() =&gt; createStore().setValuesSchema({
+    indexes: {
+      type: &quot;string&quot;,
+      default: &quot;countryIndexes&quot;
+    },
+    indexId: {
+      type: &quot;string&quot;,
+      default: &quot;firstLetter&quot;
+    },
+    sliceId: {
+      type: &quot;string&quot;,
+      default: &quot;A&quot;
+    }
+  }));
+  useCreatePersister(viewStore, (store) =&gt; createSessionPersister(store, &quot;countries/viewStore&quot;), (persister) =&gt; persister.startAutoPersisting());
+  const countryIndexes = useCreateIndexes(countryStore, (store) =&gt; createIndexes(store).setIndexDefinition(&quot;firstLetter&quot;, &quot;countries&quot;, (getCell) =&gt; getCell(&quot;name&quot;)[0], &quot;name&quot;, defaultSorter));
+  const starIndexes = useCreateIndexes(starStore, (store) =&gt; createIndexes(store).setIndexDefinition(&quot;star&quot;, &quot;countries&quot;, &quot;star&quot;));
+  return _$createComponent(Show, {
+    get when() {
+      return _$memo(() =&gt; !!countryIndexes())() &amp;&amp; starIndexes();
+    },
+    get children() {
+      return _$createComponent(Provider, {
+        get storesById() {
+          return {
+            countryStore: countryStore(),
+            starStore: starStore(),
+            viewStore: viewStore()
+          };
+        },
+        get indexesById() {
+          return {
+            countryIndexes: countryIndexes(),
+            starIndexes: starIndexes()
+          };
+        },
+        get children() {
+          return [_$createComponent(Filters, {}), _$createComponent(Countries, {}), _$createComponent(Inspector, {})];
+        }
+      });
+    }
+  });
+};
+window.addEventListener(&quot;load&quot;, () =&gt; render(() =&gt; _$createComponent(App, {}), document.body));
+var useCurrentIndexes = () =&gt; useValue(&quot;indexes&quot;, &quot;viewStore&quot;);
+var useCurrentIndexId = () =&gt; useValue(&quot;indexId&quot;, &quot;viewStore&quot;);
+var useCurrentSliceId = () =&gt; useValue(&quot;sliceId&quot;, &quot;viewStore&quot;);
+var Filters = () =&gt; {
+  const currentIndexes = useCurrentIndexes();
+  const currentIndexId = useCurrentIndexId();
+  const currentSliceId = useCurrentSliceId();
+  const firstLetters = useSliceIds(&quot;firstLetter&quot;, &quot;countryIndexes&quot;);
+  const isCurrent = (indexes, indexId, sliceId) =&gt; currentIndexes() == indexes &amp;&amp; currentIndexId() == indexId &amp;&amp; currentSliceId() == sliceId;
+  return (() =&gt; {
+    var _el$ = _tmpl$();
+    _$insert(_el$, _$createComponent(Filter, {
+      indexes: &quot;starIndexes&quot;,
+      indexId: &quot;star&quot;,
+      sliceId: &quot;true&quot;,
+      label: STAR,
+      get selected() {
+        return isCurrent(&quot;starIndexes&quot;, &quot;star&quot;, &quot;true&quot;);
+      }
+    }), null);
+    _$insert(_el$, _$createComponent(For, {
+      get each() {
+        return firstLetters();
+      },
+      children: (sliceId) =&gt; _$createComponent(Filter, {
+        indexes: &quot;countryIndexes&quot;,
+        indexId: &quot;firstLetter&quot;,
+        sliceId,
+        get selected() {
+          return isCurrent(&quot;countryIndexes&quot;, &quot;firstLetter&quot;, sliceId);
+        }
+      })
+    }), null);
+    return _el$;
+  })();
+};
+var Filter = (props) =&gt; {
+  const rowIds = useSliceRowIds(() =&gt; props.indexId, () =&gt; props.sliceId, () =&gt; props.indexes);
+  const setCurrentSlice = useSetValuesCallback(() =&gt; ({
+    indexes: props.indexes,
+    indexId: props.indexId,
+    sliceId: props.sliceId
+  }), &quot;viewStore&quot;);
+  return (() =&gt; {
+    var _el$2 = _tmpl$2(), _el$3 = _el$2.firstChild, _el$4 = _el$3.nextSibling;
+    _$addEventListener(_el$2, &quot;click&quot;, setCurrentSlice);
+    _$insert(_el$3, () =&gt; props.label ?? props.sliceId);
+    _$insert(_el$4, () =&gt; rowIds().length);
+    _$effect(() =&gt; _$className(_el$2, &quot;filter&quot; + (props.selected ? &quot; current&quot; : &quot;&quot;)));
+    return _el$2;
+  })();
+};
+var Countries = () =&gt; {
+  const currentIndexes = useCurrentIndexes();
+  const currentIndexId = useCurrentIndexId();
+  const currentSliceId = useCurrentSliceId();
+  const rowIds = useSliceRowIds(currentIndexId, currentSliceId, currentIndexes);
+  return (() =&gt; {
+    var _el$5 = _tmpl$3();
+    _$insert(_el$5, _$createComponent(For, {
+      get each() {
+        return rowIds();
+      },
+      children: (rowId) =&gt; _$createComponent(Country, {
+        tableId: &quot;countries&quot;,
+        rowId
+      })
+    }));
+    return _el$5;
+  })();
+};
+var Country = (props) =&gt; {
+  const [star, setStar] = useCellState(() =&gt; props.tableId, () =&gt; props.rowId, &quot;star&quot;, &quot;starStore&quot;);
+  return (() =&gt; {
+    var _el$6 = _tmpl$4(), _el$7 = _el$6.firstChild, _el$8 = _el$7.nextSibling, _el$9 = _el$8.nextSibling;
+    _el$7.addEventListener(&quot;click&quot;, () =&gt; setStar(!star()));
+    _$insert(_el$7, () =&gt; star() ? STAR : UNSTAR);
+    _$insert(_el$8, _$createComponent(CellView, {
+      get tableId() {
+        return props.tableId;
+      },
+      get rowId() {
+        return props.rowId;
+      },
+      cellId: &quot;emoji&quot;,
+      store: &quot;countryStore&quot;
+    }));
+    _$insert(_el$9, _$createComponent(CellView, {
+      get tableId() {
+        return props.tableId;
+      },
+      get rowId() {
+        return props.rowId;
+      },
+      cellId: &quot;name&quot;,
+      store: &quot;countryStore&quot;
+    }));
+    return _el$6;
+  })();
+};&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we build the same app as the <a href="/demos/countries/countries-react/">Countries (React)</a> demo, but with Solid and the <a href="/api/ui-solid/"><code>ui-solid</code></a> module.</p><h3 id="initialization">Initialization</h3><p>First, we create the import aliases for TinyBase, the persister modules, the Solid inspector module, and Solid:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="punctuation">{</span>
+    <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-browser"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/persisters/persister-browser"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/persisters/persister-remote"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/persisters/persister-remote"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-solid"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-solid"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-solid-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.4.0/ui-solid-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"solid-js"</span><span class="operator">:</span> <span class="string">"https://esm.sh/solid-js@^1.9.12"</span><span class="punctuation">,</span>
+      <span class="string-property">"solid-js/web"</span><span class="operator">:</span> <span class="string">"https://esm.sh/solid-js@^1.9.12/web"</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+</code></pre><p>We import the functions, primitives, and components we need:</p><pre><code><span class="keyword">import</span> <span class="punctuation">{</span>For<span class="punctuation">,</span> Show<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'solid-js'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>render<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'solid-js/web'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createIndexes<span class="punctuation">,</span> createStore<span class="punctuation">,</span> defaultSorter<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>
+  createLocalPersister<span class="punctuation">,</span>
+  createSessionPersister<span class="punctuation">,</span>
+<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/persisters/persister-browser'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createRemotePersister<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/persisters/persister-remote'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>
+  CellView<span class="punctuation">,</span>
+  Provider<span class="punctuation">,</span>
+  useCellState<span class="punctuation">,</span>
+  useCreateIndexes<span class="punctuation">,</span>
+  useCreatePersister<span class="punctuation">,</span>
+  useCreateStore<span class="punctuation">,</span>
+  useSetValuesCallback<span class="punctuation">,</span>
+  useSliceIds<span class="punctuation">,</span>
+  useSliceRowIds<span class="punctuation">,</span>
+  useValue<span class="punctuation">,</span>
+<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-solid'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>Inspector<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-solid-inspector'</span><span class="punctuation">;</span>
+</code></pre><p>We also set up some string constants for showing star emojis:</p><pre><code><span class="keyword">const</span> <span class="constant">STAR</span> <span class="operator">=</span> <span class="string">'\u2605'</span><span class="punctuation">;</span>
+<span class="keyword">const</span> <span class="constant">UNSTAR</span> <span class="operator">=</span> <span class="string">'\u2606'</span><span class="punctuation">;</span>
+</code></pre><h3 id="starting-the-app">Starting The App</h3><p>We have a top-level <code>App</code> component, in which we initialize the same three <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> objects as the React and Svelte versions:</p><ul><li><code>countryStore</code> contains a list of the world&#x27;s countries, loaded once from a JSON file using a remote <a href="/api/the-essentials/persisting-stores/persister/"><code>Persister</code></a> object.</li><li><code>starStore</code> contains a list of the countries that the user has starred. This is persisted to the browser&#x27;s local storage and starts with eight default starred countries.</li><li><code>viewStore</code> contains the <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> of an <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object, the <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> of an index, and the <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> of a slice, persisted as keyed values to session storage. These three ids represent the &#x27;current slice&#x27; view the user is looking at and we default the app to start showing the countries starting with the letter &#x27;A&#x27;.</li></ul><pre><code><span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> countryStore <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settablesschema/">setTablesSchema</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
+      <span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">emoji</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">}</span><span class="punctuation">,</span> <span class="literal-property">name</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="function"><a href="/api/ui-react/functions/persister-hooks/usecreatepersister/">useCreatePersister</a></span><span class="punctuation">(</span>
+    countryStore<span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span>
+      <span class="function"><a href="/api/persister-remote/functions/creation/createremotepersister/">createRemotePersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'https://tinybase.org/assets/countries.json'</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">const</span> starStore <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settablesschema/">setTablesSchema</a></span><span class="punctuation">(</span><span class="punctuation">{</span><span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'boolean'</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="function"><a href="/api/ui-react/functions/persister-hooks/usecreatepersister/">useCreatePersister</a></span><span class="punctuation">(</span>
+    starStore<span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/persisting-stores/createlocalpersister/">createLocalPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'countries/starStore'</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">[</span><span class="punctuation">{</span>
+        <span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span>
+          <span class="constant">GB</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">NZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">AU</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">SE</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">IE</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">IN</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">BZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+          <span class="constant">US</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="punctuation">}</span><span class="punctuation">]</span><span class="punctuation">)</span><span class="punctuation">;</span>
+      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+    <span class="punctuation">}</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">const</span> viewStore <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/setvaluesschema/">setValuesSchema</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
+      <span class="literal-property">indexes</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">,</span> <span class="keyword">default</span><span class="operator">:</span> <span class="string">'countryIndexes'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">indexId</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">,</span> <span class="keyword">default</span><span class="operator">:</span> <span class="string">'firstLetter'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">sliceId</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">,</span> <span class="keyword">default</span><span class="operator">:</span> <span class="string">'A'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="function"><a href="/api/ui-react/functions/persister-hooks/usecreatepersister/">useCreatePersister</a></span><span class="punctuation">(</span>
+    viewStore<span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/persisting-stores/createsessionpersister/">createSessionPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'countries/viewStore'</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/lifecycle/startautopersisting/">startAutoPersisting</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="comment">// ...</span>
+</code></pre><p>We also create two <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> objects with the <code>useCreateIndexes</code> primitive:</p><ul><li><code>countryIndexes</code> contains a single <a href="/api/indexes/type-aliases/concept/index/"><code>Index</code></a> of countries in <code>countryStore</code> by their first letter, sorted alphabetically.</li><li><code>starIndexes</code> contains a single <a href="/api/indexes/type-aliases/concept/index/"><code>Index</code></a> of the countries in <code>starStore</code>.</li></ul><p>The code looks like this:</p><pre><code><span class="comment">// ...</span>
+<span class="keyword">const</span> countryIndexes <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/indexes-hooks/usecreateindexes/">useCreateIndexes</a></span><span class="punctuation">(</span>countryStore<span class="punctuation">,</span> <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span>
+  <span class="function"><a href="/api/indexes/functions/creation/createindexes/">createIndexes</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/indexes/interfaces/indexes/indexes/methods/configuration/setindexdefinition/">setIndexDefinition</a></span><span class="punctuation">(</span>
+    <span class="string">'firstLetter'</span><span class="punctuation">,</span>
+    <span class="string">'countries'</span><span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="parameter">getCell</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/getting-data/getcell/">getCell</a></span><span class="punctuation">(</span><span class="string">'name'</span><span class="punctuation">)</span><span class="punctuation">[</span><span class="number">0</span><span class="punctuation">]</span><span class="punctuation">,</span>
+    <span class="string">'name'</span><span class="punctuation">,</span>
+    defaultSorter<span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> starIndexes <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/indexes-hooks/usecreateindexes/">useCreateIndexes</a></span><span class="punctuation">(</span>starStore<span class="punctuation">,</span> <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span>
+  <span class="function"><a href="/api/indexes/functions/creation/createindexes/">createIndexes</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/indexes/interfaces/indexes/indexes/methods/configuration/setindexdefinition/">setIndexDefinition</a></span><span class="punctuation">(</span><span class="string">'star'</span><span class="punctuation">,</span> <span class="string">'countries'</span><span class="punctuation">,</span> <span class="string">'star'</span><span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// ...</span>
+</code></pre><p>To start the app, we render the left-hand side <code>Filter</code> component and the main <code>[Countries](/demos/countries/)</code> component, wrapped in a <a href="/api/the-essentials/using-react/provider/"><code>Provider</code></a> component that references the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> objects and the <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> objects:</p><pre><code>  <span class="comment">// ...</span>
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Show</span></span> <span class="attr-name">when</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">countryIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">&amp;&amp;</span> <span class="function">starIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span>
+        <span class="attr-name">storesById</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">{</span>
+          <span class="literal-property">countryStore</span><span class="operator">:</span> <span class="function">countryStore</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+          <span class="literal-property">starStore</span><span class="operator">:</span> <span class="function">starStore</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+          <span class="literal-property">viewStore</span><span class="operator">:</span> <span class="function">viewStore</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+        <span class="punctuation">}</span><span class="punctuation">}</span></span>
+        <span class="attr-name">indexesById</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">{</span>
+          <span class="literal-property">countryIndexes</span><span class="operator">:</span> <span class="function">countryIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+          <span class="literal-property">starIndexes</span><span class="operator">:</span> <span class="function">starIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+        <span class="punctuation">}</span><span class="punctuation">}</span></span>
+      <span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Filters</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+        </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Countries</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+        </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/the-essentials/using-react/inspector/">Inspector</a></span></span> <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name">Show</span></span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+</code></pre><p>We also added the <a href="/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component at the end there so you can inspect what is going on with the data during this demo. Simply click the TinyBase logo in the corner.</p><p>We also use the same simple grid layout as the React and Svelte versions:</p><pre><code><span class="variable">@accentColor<span class="punctuation">:</span></span> #d81b60<span class="punctuation">;</span>
+<span class="variable">@spacing<span class="punctuation">:</span></span> 0.5rem<span class="punctuation">;</span>
+<span class="variable">@border<span class="punctuation">:</span></span> 1px solid #ccc<span class="punctuation">;</span>
+<span class="atrule">@font-face</span> <span class="punctuation">{</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
+  <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+<span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">box-sizing</span><span class="punctuation">:</span> border<span class="operator">-</span>box<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> flex<span class="punctuation">;</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
+  <span class="property">letter-spacing</span><span class="punctuation">:</span> <span class="operator">-</span>0.04rem<span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+  <span class="property">height</span><span class="punctuation">:</span> 100vh<span class="punctuation">;</span>
+  <span class="property">text-align</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+</code></pre><p>Finally, when the window loads, we render the <code>App</code> component into the demo <code>div</code> to start the app:</p><pre><code>window<span class="punctuation">.</span><span class="function">addEventListener</span><span class="punctuation">(</span><span class="string">'load'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">render</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App</span></span> <span class="punctuation">/></span></span><span class="punctuation">,</span> document<span class="punctuation">.</span>body<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-current-slice">The &#x27;Current <a href="/api/indexes/type-aliases/concept/slice/"><code>Slice</code></a>&#x27;</h3><p>At the heart of this app is the concept of the &#x27;current slice&#x27;: at any one time, the app is displaying the countries present in a specific sliceId of a specific indexId of a specific <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object. We store these three ids in the <code>viewStore</code> as keyed values so they persist between reloads.</p><p>Since both the left-hand and right-hand panels of the app need to read these parameters, we provide three small primitives that get those keyed values out of the <code>viewStore</code>:</p><pre><code><span class="keyword">const</span> <span class="function-variable">useCurrentIndexes</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/using-react/usevalue/">useValue</a></span><span class="punctuation">(</span><span class="string">'indexes'</span><span class="punctuation">,</span> <span class="string">'viewStore'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> <span class="function-variable">useCurrentIndexId</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/using-react/usevalue/">useValue</a></span><span class="punctuation">(</span><span class="string">'indexId'</span><span class="punctuation">,</span> <span class="string">'viewStore'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> <span class="function-variable">useCurrentSliceId</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/the-essentials/using-react/usevalue/">useValue</a></span><span class="punctuation">(</span><span class="string">'sliceId'</span><span class="punctuation">,</span> <span class="string">'viewStore'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-filters-component">The <code>Filters</code> Component</h3><p>This component provides the list of countries&#x27; first letters down the left-hand side of the app. We build this as a <code>For</code> loop over the slice <a href="/api/common/type-aliases/identity/ids/"><code>Ids</code></a> in the <code>countryIndexes</code> index, but also add an explicit item at the top of the list to allow the user to select starred countries from the <code>starIndexes</code> index.</p><p>The current slice primitives are used to determine whether a Filter is selected, and that flag is passed down as the <code>selected</code> prop to each child Filter component:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Filters</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> currentIndexes <span class="operator">=</span> <span class="function">useCurrentIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> currentIndexId <span class="operator">=</span> <span class="function">useCurrentIndexId</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> currentSliceId <span class="operator">=</span> <span class="function">useCurrentSliceId</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> firstLetters <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/indexes-hooks/usesliceids/">useSliceIds</a></span><span class="punctuation">(</span><span class="string">'firstLetter'</span><span class="punctuation">,</span> <span class="string">'countryIndexes'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">const</span> <span class="function-variable">isCurrent</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">indexes<span class="punctuation">,</span> indexId<span class="punctuation">,</span> sliceId</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function">currentIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">==</span> indexes <span class="operator">&amp;&amp;</span>
+    <span class="function">currentIndexId</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">==</span> indexId <span class="operator">&amp;&amp;</span>
+    <span class="function">currentSliceId</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">==</span> sliceId<span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>filters<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Filter</span></span>
+        <span class="attr-name">indexes</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>starIndexes<span class="punctuation">"</span></span>
+        <span class="attr-name">indexId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>star<span class="punctuation">"</span></span>
+        <span class="attr-name">sliceId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>true<span class="punctuation">"</span></span>
+        <span class="attr-name">label</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="constant">STAR</span><span class="punctuation">}</span></span>
+        <span class="attr-name">selected</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">isCurrent</span><span class="punctuation">(</span><span class="string">'starIndexes'</span><span class="punctuation">,</span> <span class="string">'star'</span><span class="punctuation">,</span> <span class="string">'true'</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+      <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">For</span></span> <span class="attr-name">each</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">firstLetters</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="punctuation">{</span><span class="punctuation">(</span><span class="parameter">sliceId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span>
+          <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Filter</span></span>
+            <span class="attr-name">indexes</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>countryIndexes<span class="punctuation">"</span></span>
+            <span class="attr-name">indexId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>firstLetter<span class="punctuation">"</span></span>
+            <span class="attr-name">sliceId</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>sliceId<span class="punctuation">}</span></span>
+            <span class="attr-name">selected</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">isCurrent</span><span class="punctuation">(</span><span class="string">'countryIndexes'</span><span class="punctuation">,</span> <span class="string">'firstLetter'</span><span class="punctuation">,</span> sliceId<span class="punctuation">)</span><span class="punctuation">}</span></span>
+          <span class="punctuation">/></span></span>
+        <span class="punctuation">)</span><span class="punctuation">}</span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name">For</span></span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+</code></pre><p>Each letter in the left hand <code>Filters</code> component is a <code>Filter</code> component, which knows which <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object the app needs to show, along with the index and slice <a href="/api/common/type-aliases/identity/ids/"><code>Ids</code></a>. This is set with the callback returned by the <code>useSetValuesCallback</code> primitive.</p><p>For example, clicking the letter &#x27;N&#x27; will set the current named <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object to be <code>countryIndexes</code>, the current indexId to be <code>firstLetter</code>, and the current sliceId to be &#x27;N&#x27;. Clicking the star at the top of the list will set the current named <a href="/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a> object to be <code>starIndexes</code>, the current indexId to be <code>star</code>, and the current sliceId to be &#x27;true&#x27;.</p><p>We also display the number of countries in the slice of the relevant index. Instead of setting up a <a href="/api/metrics/interfaces/metrics/metrics/"><code>Metrics</code></a> object to track this, it&#x27;s simpler to just use the <code>useSliceRowIds</code> primitive and show the <code>length</code> of the resulting array:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Filter</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">props</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> rowIds <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/indexes-hooks/useslicerowids/">useSliceRowIds</a></span><span class="punctuation">(</span>
+    <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> props<span class="punctuation">.</span>indexId<span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> props<span class="punctuation">.</span>sliceId<span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> props<span class="punctuation">.</span>indexes<span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> setCurrentSlice <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/store-hooks/usesetvaluescallback/">useSetValuesCallback</a></span><span class="punctuation">(</span>
+    <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span><span class="punctuation">{</span>
+      <span class="literal-property">indexes</span><span class="operator">:</span> props<span class="punctuation">.</span>indexes<span class="punctuation">,</span>
+      <span class="literal-property">indexId</span><span class="operator">:</span> props<span class="punctuation">.</span>indexId<span class="punctuation">,</span>
+      <span class="literal-property">sliceId</span><span class="operator">:</span> props<span class="punctuation">.</span>sliceId<span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    <span class="string">'viewStore'</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span>
+      <span class="attr-name">class</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="string">'filter'</span> <span class="operator">+</span> <span class="punctuation">(</span>props<span class="punctuation">.</span>selected <span class="operator">?</span> <span class="string">' current'</span> <span class="operator">:</span> <span class="string">''</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+      <span class="attr-name">onClick</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>setCurrentSlice<span class="punctuation">}</span></span>
+    <span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>label<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="punctuation">{</span>props<span class="punctuation">.</span>label <span class="operator">??</span> props<span class="punctuation">.</span>sliceId<span class="punctuation">}</span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>count<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="punctuation">{</span><span class="function">rowIds</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span>length<span class="punctuation">}</span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+</code></pre><p>These filters also have some straightforward styling:</p><pre><code><span class="selector">#filters</span> <span class="punctuation">{</span>
+  <span class="property">overflow-y</span><span class="punctuation">:</span> scroll<span class="punctuation">;</span>
+  <span class="property">border-right</span><span class="punctuation">:</span> <span class="variable">@border</span><span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> <span class="variable">@spacing</span><span class="punctuation">;</span>
+  <span class="selector">.filter</span> <span class="punctuation">{</span>
+    <span class="property">cursor</span><span class="punctuation">:</span> pointer<span class="punctuation">;</span>
+    <span class="selector">&amp;.current</span> <span class="punctuation">{</span>
+      <span class="property">color</span><span class="punctuation">:</span> <span class="variable">@accentColor</span><span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+    <span class="selector">.label,
+    .count</span> <span class="punctuation">{</span>
+      <span class="property">display</span><span class="punctuation">:</span> inline<span class="operator">-</span>block<span class="punctuation">;</span>
+      <span class="property">width</span><span class="punctuation">:</span> 2em<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+    <span class="selector">.count</span> <span class="punctuation">{</span>
+      <span class="property">color</span><span class="punctuation">:</span> #777<span class="punctuation">;</span>
+      <span class="property">font-size</span><span class="punctuation">:</span> 0.8rem<span class="punctuation">;</span>
+      <span class="property">text-align</span><span class="punctuation">:</span> left<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+</code></pre><h3 id="the-countries-demos-countries-component">The <code>[Countries](/demos/countries/)</code> Component</h3><p>The main right-hand side of the app is a panel that shows the view selected with the left-hand <code>Filters</code> component. We pass the current indexes <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a>, index <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a>, and slice <a href="/api/common/type-aliases/identity/id/"><code>Id</code></a> accessors directly to <code>useSliceRowIds</code>, and then render the country cards with a Solid <code>For</code> loop:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Countries</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> currentIndexes <span class="operator">=</span> <span class="function">useCurrentIndexes</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> currentIndexId <span class="operator">=</span> <span class="function">useCurrentIndexId</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> currentSliceId <span class="operator">=</span> <span class="function">useCurrentSliceId</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> rowIds <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/indexes-hooks/useslicerowids/">useSliceRowIds</a></span><span class="punctuation">(</span>currentIndexId<span class="punctuation">,</span> currentSliceId<span class="punctuation">,</span> currentIndexes<span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">id</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>countries<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">For</span></span> <span class="attr-name">each</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">rowIds</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="punctuation">{</span><span class="punctuation">(</span><span class="parameter">rowId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Country</span></span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>countries<span class="punctuation">"</span></span> <span class="attr-name">rowId</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>rowId<span class="punctuation">}</span></span> <span class="punctuation">/></span></span><span class="punctuation">}</span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name">For</span></span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+</code></pre><p>Each <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> that is present in the specified slice is a country, and the <code>Country</code> component renders a small panel for each.</p><p>As well as rendering the name and flag of the country (from the <code>countryStore</code> store), we also add a small &#x27;star&#x27; at the top of each country panel. Clicking this will toggle the <code>star</code> value to favorite or unfavorite the country:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Country</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">props</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> <span class="punctuation">[</span>star<span class="punctuation">,</span> setStar<span class="punctuation">]</span> <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/state-hooks/usecellstate/">useCellState</a></span><span class="punctuation">(</span>
+    <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> props<span class="punctuation">.</span>tableId<span class="punctuation">,</span>
+    <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> props<span class="punctuation">.</span>rowId<span class="punctuation">,</span>
+    <span class="string">'star'</span><span class="punctuation">,</span>
+    <span class="string">'starStore'</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>country<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>star<span class="punctuation">"</span></span> <span class="attr-name">onClick</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">setStar</span><span class="punctuation">(</span><span class="operator">!</span><span class="function">star</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="punctuation">{</span><span class="function">star</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">?</span> <span class="constant">STAR</span> <span class="operator">:</span> <span class="constant">UNSTAR</span><span class="punctuation">}</span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>flag<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react/functions/store-components/cellview/">CellView</a></span></span>
+          <span class="attr-name">tableId</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>props<span class="punctuation">.</span>tableId<span class="punctuation">}</span></span>
+          <span class="attr-name">rowId</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>props<span class="punctuation">.</span>rowId<span class="punctuation">}</span></span>
+          <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>emoji<span class="punctuation">"</span></span>
+          <span class="attr-name">store</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>countryStore<span class="punctuation">"</span></span>
+        <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>div</span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>name<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react/functions/store-components/cellview/">CellView</a></span></span>
+          <span class="attr-name">tableId</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>props<span class="punctuation">.</span>tableId<span class="punctuation">}</span></span>
+          <span class="attr-name">rowId</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>props<span class="punctuation">.</span>rowId<span class="punctuation">}</span></span>
+          <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>name<span class="punctuation">"</span></span>
+          <span class="attr-name">store</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>countryStore<span class="punctuation">"</span></span>
+        <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+</code></pre><p>The styling for the main panel of the app is the same as the other <a href="/demos/countries/">Countries</a> demos:</p><pre><code><span class="selector">#countries</span> <span class="punctuation">{</span>
+  <span class="property">flex</span><span class="punctuation">:</span> 1<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> grid<span class="punctuation">;</span>
+  <span class="property">grid-template-columns</span><span class="punctuation">:</span> <span class="function">repeat</span><span class="punctuation">(</span>4<span class="punctuation">,</span> <span class="function">minmax</span><span class="punctuation">(</span>0<span class="punctuation">,</span> 1fr<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="property">grid-auto-rows</span><span class="punctuation">:</span> max<span class="operator">-</span>content<span class="punctuation">;</span>
+  <span class="property">gap</span><span class="punctuation">:</span> <span class="variable">@spacing</span><span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> <span class="variable">@spacing</span> <span class="operator">*</span> 2<span class="punctuation">;</span>
+  <span class="property">overflow-y</span><span class="punctuation">:</span> scroll<span class="punctuation">;</span>
+  <span class="selector">.country</span> <span class="punctuation">{</span>
+    <span class="property">background</span><span class="punctuation">:</span> #fff<span class="punctuation">;</span>
+    <span class="property">border</span><span class="punctuation">:</span> <span class="variable">@border</span><span class="punctuation">;</span>
+    <span class="property">padding</span><span class="punctuation">:</span> <span class="variable">@spacing</span><span class="punctuation">;</span>
+    <span class="property">position</span><span class="punctuation">:</span> relative<span class="punctuation">;</span>
+    <span class="property">height</span><span class="punctuation">:</span> fit<span class="operator">-</span>content<span class="punctuation">;</span>
+    <span class="selector">.star</span> <span class="punctuation">{</span>
+      <span class="property">cursor</span><span class="punctuation">:</span> pointer<span class="punctuation">;</span>
+      <span class="property">display</span><span class="punctuation">:</span> inline<span class="punctuation">;</span>
+      <span class="property">left</span><span class="punctuation">:</span> 8px<span class="punctuation">;</span>
+      <span class="property">position</span><span class="punctuation">:</span> absolute<span class="punctuation">;</span>
+      <span class="property">top</span><span class="punctuation">:</span> 5px<span class="punctuation">;</span>
+      <span class="property">user-select</span><span class="punctuation">:</span> none<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+    <span class="selector">.flag</span> <span class="punctuation">{</span>
+      <span class="property">font-size</span><span class="punctuation">:</span> 5rem<span class="punctuation">;</span>
+      <span class="property">line-height</span><span class="punctuation">:</span> 1em<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+    <span class="selector">.name</span> <span class="punctuation">{</span>
+      <span class="property">overflow</span><span class="punctuation">:</span> hidden<span class="punctuation">;</span>
+      <span class="property">text-overflow</span><span class="punctuation">:</span> ellipsis<span class="punctuation">;</span>
+      <span class="property">vertical-align</span><span class="punctuation">:</span> top<span class="punctuation">;</span>
+      <span class="property">white-space</span><span class="punctuation">:</span> nowrap<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+</code></pre><p>And that&#x27;s it: the same country browser, but written idiomatically with Solid primitives, components, and the <a href="/api/ui-solid/"><code>ui-solid</code></a> module.</p></section></article><aside></aside></main><footer><nav><a id="gh" href="https://github.com/tinyplex/tinybase" target="_blank">GitHub</a><a id="bs" href="https://bsky.app/profile/tinybase.bsky.social" target="_blank">Bluesky</a><a id="tw" href="https://x.com/tinybasejs" target="_blank">X / Twitter</a><a id="dc" href="https://discord.com/invite/mGz3mevwP8" target="_blank">Discord</a></nav><nav><a href="/">TinyBase <span id="version"></span></a> © 2022-</nav></footer><script>window.dataLayer=window.dataLayer||[];function g(){dataLayer.push(arguments);}g('js',new Date());g('config','G-D1MGR8VRWJ');</script></body></html>
