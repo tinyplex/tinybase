@@ -63,7 +63,7 @@ console.log(typeof Inspector);
 disposeAppSolid();
 ```
 
-Read more in the Using Solid DOM Components guide and the <Inspector /> (Solid)
+Read more in the Using Solid DOM Components guide and the Inspector (Solid)
 demo.
 
 ## New Solid Demos
