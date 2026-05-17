@@ -48,6 +48,7 @@ const TEXT_OVERFLOW = 'text-overflow';
 const ALIGN_ITEMS = 'align-items';
 const BACKDROP_FILTER = 'backdrop-filter';
 const MARGIN_RIGHT = MARGIN + '-' + RIGHT;
+const Z_INDEX = 'z-index';
 
 const FIXED = 'fixed';
 const REVERT = 'revert';
@@ -74,8 +75,8 @@ export const APP_STYLESHEET = arrayJoin(
         all: 'initial',
         [FONT_SIZE]: rem(0.75),
         [POSITION]: FIXED,
+        [Z_INDEX]: 999999,
         'font-family': 'inter,sans-serif',
-        'z-index': 999999,
         '--bg': oklch(20),
         '--bg2': oklch(15),
         '--bg3': oklch(25),
@@ -184,6 +185,7 @@ export const APP_STYLESHEET = arrayJoin(
         [BACKGROUND]: oklch(30, '% 0.008 var(--hue) / .5'),
         [WIDTH]: 'calc(100% - .5rem)',
         [POSITION]: 'absolute',
+        [Z_INDEX]: 1,
         [BORDER + '-' + BOTTOM]: cssVar(BORDER),
         [ALIGN_ITEMS]: 'center',
         [BACKDROP_FILTER]: 'blur(4px)',
