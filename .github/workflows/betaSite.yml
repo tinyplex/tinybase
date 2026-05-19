@@ -1,3 +1,5 @@
+name: betaSite
+
 on:
   push:
     branches:
