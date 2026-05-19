@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - beta
+    paths:
+      - 'docs/**'
   workflow_dispatch:
       
 jobs:
