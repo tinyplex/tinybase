@@ -62,6 +62,7 @@ const ALL_MODULES = [
   'synchronizers/synchronizer-ws-server-simple',
   'synchronizers/synchronizer-ws-server',
   'ui-react-dom',
+  'ui-react-dom-charts',
   'ui-react-inspector',
   'ui-react',
   'ui-solid-dom',

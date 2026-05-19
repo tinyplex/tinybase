@@ -17,6 +17,7 @@ const internalEsm: string[] = [
   'tinybase/ui-solid',
   'tinybase/ui-svelte',
   'tinybase/ui-react-dom',
+  'tinybase/ui-react-dom-charts',
   'tinybase/ui-solid-dom',
   'tinybase/ui-svelte-dom',
   'tinybase/ui-react-inspector',
@@ -414,6 +415,7 @@ const addApi = (docs: Docs): Docs =>
     )
     .addApiFile('dist/@types/ui-react/index.d.ts')
     .addApiFile('dist/@types/ui-react-dom/index.d.ts')
+    .addApiFile('dist/@types/ui-react-dom-charts/index.d.ts')
     .addApiFile('dist/@types/ui-react-inspector/index.d.ts')
     .addApiFile('dist/@types/ui-solid/index.d.ts')
     .addApiFile('dist/@types/ui-solid-dom/index.d.ts')
