@@ -1,10 +1,41 @@
-// dist/ui-react-inspector/index.js
-import React2 from "https://esm.sh/react@^19.2.6";
-import { Fragment, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+// dist/ui-solid-inspector/index.js
+import {
+  createContext as createContext2,
+  createEffect as createEffect2,
+  createMemo as createMemo2,
+  createRenderEffect as createRenderEffect2,
+  createSignal as createSignal2,
+  ErrorBoundary,
+  onCleanup as onCleanup2,
+  untrack as untrack2,
+  useContext as useContext2
+} from "https://esm.sh/solid-js@^1.9.12";
+import {
+  addEventListener,
+  className,
+  createComponent as createComponent2,
+  effect,
+  insert,
+  memo as memo2,
+  mergeProps as mergeProps2,
+  setAttribute,
+  setStyleProperty,
+  template,
+  use
+} from "https://esm.sh/solid-js@^1.9.12/web";
 
-// dist/ui-react/index.js
-import React from "https://esm.sh/react@^19.2.6";
-import { jsx } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+// dist/ui-solid/index.js
+import {
+  createContext,
+  createEffect,
+  createMemo,
+  createRenderEffect,
+  createSignal,
+  onCleanup,
+  untrack,
+  useContext
+} from "https://esm.sh/solid-js@^1.9.12";
+import { createComponent, memo, mergeProps } from "https://esm.sh/solid-js@^1.9.12/web";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -15,6 +46,7 @@ var RESULT = "Result";
 var GET = "get";
 var SET = "set";
 var ADD = "add";
+var DEL = "del";
 var HAS = "Has";
 var _HAS = "has";
 var IDS = "Ids";
@@ -55,7 +87,6 @@ var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
 var arrayOrValueEqual = (value1, value2) => isArray(value1) && isArray(value2) ? arrayIsEqual(value1, value2) : value1 === value2;
 var arrayMap = (array, cb) => array.map(cb);
-var arrayFilter = (array, cb) => array.filter(cb);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
@@ -78,34 +109,35 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
     ) : isEqual3(value1, obj2[index])
   );
 };
-var jsonString = JSON.stringify;
-var {
-  PureComponent,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore
-} = React;
+var getValue = (value) => isFunction(value) ? value() : value;
 var getProps = (getProps22, ...ids) => isUndefined(getProps22) ? {} : getProps22(...ids);
-var TINYBASE_CONTEXT = TINYBASE + "_uirc";
-var Context = GLOBAL[TINYBASE_CONTEXT] ? (
+var TINYBASE_CONTEXT = TINYBASE + "_uisc";
+var EMPTY_CONTEXT$1 = () => [];
+var EMPTY_CONTEXT_VALUE = { value: EMPTY_CONTEXT$1 };
+var GLOBAL_CONTEXT = GLOBAL;
+var Context = GLOBAL_CONTEXT[TINYBASE_CONTEXT] ? (
   /* istanbul ignore next */
-  GLOBAL[TINYBASE_CONTEXT]
-) : GLOBAL[TINYBASE_CONTEXT] = createContext([]);
+  GLOBAL_CONTEXT[TINYBASE_CONTEXT]
+) : GLOBAL_CONTEXT[TINYBASE_CONTEXT] = createContext(EMPTY_CONTEXT_VALUE);
 var useThing = (id2, offset) => {
-  const contextValue = useContext(Context);
-  return isUndefined(id2) ? contextValue[offset * 2] : isString(id2) ? objGet(contextValue[offset * 2 + 1], id2) : id2;
+  const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT$1;
+  return () => {
+    const resolvedContextValue = contextValue();
+    const resolvedId = getValue(id2);
+    return isUndefined(resolvedId) ? resolvedContextValue[offset * 2] : isString(resolvedId) ? objGet(resolvedContextValue[offset * 2 + 1], resolvedId) : resolvedId;
+  };
 };
 var useThingOrThingById = (thingOrThingId, offset) => {
   const thing = useThing(thingOrThingId, offset);
-  return isUndefined(thingOrThingId) || isString(thingOrThingId) ? thing : thingOrThingId;
+  return () => {
+    const resolvedThingOrThingId = getValue(thingOrThingId);
+    return isUndefined(resolvedThingOrThingId) || isString(resolvedThingOrThingId) ? thing() : resolvedThingOrThingId;
+  };
 };
-var useThingIds = (offset) => objIds(useContext(Context)[offset * 2 + 1] ?? {});
+var useThingIds = (offset) => {
+  const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT$1;
+  return () => objIds(contextValue()[offset * 2 + 1] ?? {});
+};
 var OFFSET_STORE = 0;
 var OFFSET_METRICS = 1;
 var OFFSET_INDEXES = 2;
@@ -123,94 +155,102 @@ var DEFAULTS = [
   false,
   0
 ];
-var cellOrValueEqual = (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2);
 var IS_EQUALS = [
-  (obj1, obj2) => objIsEqual(obj1, obj2, cellOrValueEqual),
+  objIsEqual,
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
-  arrayOrValueEqual,
-  cellOrValueEqual
+  arrayOrValueEqual
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
+var getThing = (thing) => isFunction(thing) ? thing() : thing;
+var EMPTY_LISTENER_ARG_GETTERS = [];
 var addAndDelListener = (thing, listenable, ...args) => {
   const listenerId = thing?.[ADD + listenable + LISTENER]?.(...args);
   return () => thing?.delListener?.(listenerId);
 };
-var useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
-  const lastResultRef = useRef(DEFAULTS[returnType]);
-  const getResult = useCallback(
-    () => {
-      const nextResult = thing?.[(returnType == 6 ? _HAS : GET) + listenable]?.(
-        ...args
-      ) ?? DEFAULTS[returnType];
-      return !(IS_EQUALS[returnType] ?? isEqual)(
-        nextResult,
-        lastResultRef.current
-      ) ? lastResultRef.current = nextResult : lastResultRef.current;
-    },
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, returnType, listenable, ...args]
-  );
-  const subscribe = useCallback(
-    (listener) => addAndDelListener(
-      thing,
+var useListenable = (listenable, thing, returnType, listenerArgGetters = EMPTY_LISTENER_ARG_GETTERS) => {
+  const [result, setResult] = createSignal(DEFAULTS[returnType]);
+  const getListenerArguments = () => arrayMap(listenerArgGetters, getThing);
+  const getResult = () => getThing(thing)?.[(returnType == 6 ? _HAS : GET) + listenable]?.(...getListenerArguments()) ?? DEFAULTS[returnType];
+  const updateResult = () => {
+    const nextResult = getResult();
+    const prevResult = untrack(result);
+    setResult(
+      () => !(IS_EQUALS[returnType] ?? isEqual)(nextResult, prevResult) ? nextResult : prevResult
+    );
+  };
+  createRenderEffect(() => {
+    const resolvedThing = getThing(thing);
+    const listenerArguments = getListenerArguments();
+    updateResult();
+    const cleanup = addAndDelListener(
+      resolvedThing,
       (returnType == 6 ? HAS : EMPTY_STRING) + listenable,
-      ...args,
-      listener
-    ),
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, returnType, listenable, ...args]
-  );
-  return useSyncExternalStore(subscribe, getResult, getResult);
+      ...listenerArguments,
+      updateResult
+    );
+    onCleanup(cleanup);
+  });
+  return result;
 };
-var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, methodPrefix, ...args) => useCallback(
-  (parameter) => ifNotUndefined(
-    storeOrQueries,
-    (obj) => ifNotUndefined(
-      get(parameter, obj),
-      (thing) => then(
-        obj[methodPrefix + settable](
-          ...argsOrGetArgs(args, obj, parameter),
-          thing
-        ),
+var useSetCallback = (storeOrQueries, settable, get, then = getUndefined, methodPrefix, ...args) => (parameter) => ifNotUndefined(
+  getThing(storeOrQueries),
+  (obj) => ifNotUndefined(
+    get(parameter, obj),
+    (thing) => then(
+      obj[methodPrefix + settable](
+        ...argsOrGetArgs(args, obj, parameter),
         thing
-      )
+      ),
+      thing
     )
-  ),
-  /* eslint-disable react-hooks/exhaustive-deps */
-  [
-    storeOrQueries,
-    settable,
-    ...getDeps,
-    ...thenDeps,
-    methodPrefix,
-    ...nonFunctionDeps(args)
-  ]
-  /* eslint-enable react-hooks/exhaustive-deps */
+  )
 );
-var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback(
+var useStoreSetCallback = (storeOrStoreId, settable, get, then, ...args) => useSetCallback(
   useStoreOrStoreById(storeOrStoreId),
   settable,
   get,
-  getDeps,
   then,
-  thenDeps,
   SET,
   ...args
 );
-var argsOrGetArgs = (args, store, parameter) => arrayMap(args, (arg) => isFunction(arg) ? arg(parameter, store) : arg);
-var nonFunctionDeps = (args) => arrayFilter(args, (arg) => !isFunction(arg));
-var useCreateStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
+var argsOrGetArgs = (args, store, parameter) => arrayMap(
+  args,
+  (arg) => isFunction(arg) ? arg.length == 0 ? getThing(arg) : arg(parameter, store) : arg
+);
+var useDel = (storeOrStoreId, deletable, then = getUndefined, ...args) => {
+  const store = useStoreOrStoreById(storeOrStoreId);
+  return (parameter) => {
+    const resolvedStore = getThing(store);
+    ifNotUndefined(
+      resolvedStore,
+      (store2) => then(store2[DEL + deletable](...argsOrGetArgs(args, store2, parameter)))
+    );
+  };
+};
+var useCreateStore = (create) => {
+  const store = createMemo(create);
+  return store;
+};
 var useStoreIds = () => useThingIds(OFFSET_STORE);
 var useStore = (id2) => useThing(id2, OFFSET_STORE);
 var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, OFFSET_STORE);
+var useHasTables = (storeOrStoreId) => useListenable(
+  TABLES,
+  useStoreOrStoreById(storeOrStoreId),
+  6,
+  []
+);
 var useTableIds = (storeOrStoreId) => useListenable(
   TABLE_IDS,
   useStoreOrStoreById(storeOrStoreId),
   1
   /* Array */
 );
+var useTable = (tableId, storeOrStoreId) => useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 0, [
+  tableId
+]);
 var useTableCellIds = (tableId, storeOrStoreId) => useListenable(
   TABLE + CELL_IDS,
   useStoreOrStoreById(storeOrStoreId),
@@ -227,6 +267,12 @@ var useCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(
   useStoreOrStoreById(storeOrStoreId),
   5,
   [tableId, rowId, cellId]
+);
+var useHasValues = (storeOrStoreId) => useListenable(
+  VALUES,
+  useStoreOrStoreById(storeOrStoreId),
+  6,
+  []
 );
 var useValues = (storeOrStoreId) => useListenable(
   VALUES,
@@ -246,26 +292,24 @@ var useValue = (valueId, storeOrStoreId) => useListenable(
   5,
   [valueId]
 );
-var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
+var useSetTableCallback = (tableId, getTable, storeOrStoreId, then) => useStoreSetCallback(storeOrStoreId, TABLE, getTable, then, tableId);
+var useSetRowCallback = (tableId, rowId, getRow, storeOrStoreId, then) => useStoreSetCallback(storeOrStoreId, ROW, getRow, then, tableId, rowId);
+var useSetCellCallback = (tableId, rowId, cellId, getCell, storeOrStoreId, then) => useStoreSetCallback(
   storeOrStoreId,
   CELL,
   getCell,
-  getCellDeps,
   then,
-  thenDeps,
   tableId,
   rowId,
   cellId
 );
-var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
-  storeOrStoreId,
-  VALUE,
-  getValue,
-  getValueDeps,
-  then,
-  thenDeps,
-  valueId
-);
+var useSetValueCallback = (valueId, getValue3, storeOrStoreId, then) => useStoreSetCallback(storeOrStoreId, VALUE, getValue3, then, valueId);
+var useDelTablesCallback = (storeOrStoreId, then) => useDel(storeOrStoreId, TABLES, then);
+var useDelTableCallback = (tableId, storeOrStoreId, then) => useDel(storeOrStoreId, TABLE, then, tableId);
+var useDelRowCallback = (tableId, rowId, storeOrStoreId, then) => useDel(storeOrStoreId, ROW, then, tableId, rowId);
+var useDelCellCallback = (tableId, rowId, cellId, forceDel, storeOrStoreId, then) => useDel(storeOrStoreId, CELL, then, tableId, rowId, cellId, forceDel);
+var useDelValuesCallback = (storeOrStoreId, then) => useDel(storeOrStoreId, VALUES, then);
+var useDelValueCallback = (valueId, storeOrStoreId, then) => useDel(storeOrStoreId, VALUE, then, valueId);
 var useMetricsIds = () => useThingIds(OFFSET_METRICS);
 var useMetrics = (id2) => useThing(id2, OFFSET_METRICS);
 var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, OFFSET_METRICS);
@@ -328,80 +372,119 @@ var useCheckpoint = (checkpointId, checkpointsOrCheckpointsId) => useListenable(
   5,
   [checkpointId]
 );
-var useCreatePersister = (store, create, createDeps = EMPTY_ARRAY, then, thenDeps = EMPTY_ARRAY, destroy, destroyDeps = EMPTY_ARRAY) => {
-  const [, rerender] = useState();
-  const [persister, setPersister] = useState();
-  useEffect(
-    () => {
-      (async () => {
-        const persister2 = store ? await create(store) : void 0;
-        setPersister(persister2);
-        if (persister2 && then) {
-          (async () => {
-            await then(persister2);
-            rerender([]);
-          })();
+var useCreatePersister = (store, create, then, destroy) => {
+  const [persister, setPersister] = createSignal();
+  createEffect(() => {
+    let current = true;
+    let createdPersister;
+    const destroyPersister = (persister2) => {
+      persister2.destroy();
+      destroy?.(persister2);
+    };
+    (async () => {
+      const resolvedStore = getThing(store);
+      createdPersister = resolvedStore ? await create(resolvedStore) : void 0;
+      if (!current) {
+        if (createdPersister) {
+          destroyPersister(createdPersister);
         }
-      })();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, ...createDeps, ...thenDeps]
-  );
-  useEffect(
-    () => () => {
-      if (persister) {
-        persister.destroy();
-        destroy?.(persister);
+        return;
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [persister, ...destroyDeps]
-  );
+      setPersister(() => createdPersister);
+      if (createdPersister && then) {
+        await then(createdPersister);
+      }
+    })();
+    onCleanup(() => {
+      current = false;
+      setPersister(() => void 0);
+      if (createdPersister) {
+        destroyPersister(createdPersister);
+      }
+    });
+  });
   return persister;
 };
-var Wrap = ({ children, separator, debugIds, id: id2 }) => {
+var wrap = (children, separator, encloseWithId, id2) => {
   const separated = isUndefined(separator) || !isArray(children) ? children : arrayMap(children, (child, c) => c > 0 ? [separator, child] : child);
-  return debugIds && !isUndefined(id2) ? [id2, ":{", separated, "}"] : separated;
+  return encloseWithId ? [id2, ":{", separated, "}"] : separated;
 };
-var CheckpointView = ({ checkpoints, checkpointId, debugIds }) => /* @__PURE__ */ jsx(Wrap, {
-  debugIds,
-  id: checkpointId,
-  children: useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING
-});
-var ResultCellView = ({ queryId, rowId, cellId, queries, debugIds }) => /* @__PURE__ */ jsx(Wrap, {
-  debugIds,
-  id: cellId,
-  children: EMPTY_STRING + (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING)
-});
-var CellView = ({ tableId, rowId, cellId, store, debugIds }) => /* @__PURE__ */ jsx(Wrap, {
-  debugIds,
-  id: cellId,
-  children: EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING)
-});
-var getUseCheckpointView = (getCheckpoints) => ({
-  checkpoints,
-  checkpointComponent: Checkpoint = CheckpointView,
-  getCheckpointComponentProps,
-  separator,
-  debugIds
-}) => {
-  const resolvedCheckpoints = useCheckpointsOrCheckpointsById(checkpoints);
-  return /* @__PURE__ */ jsx(Wrap, {
-    separator,
-    children: arrayMap(
-      getCheckpoints(useCheckpointIds(resolvedCheckpoints)),
-      (checkpointId) => /* @__PURE__ */ jsx(
-        Checkpoint,
-        {
-          ...getProps(getCheckpointComponentProps, checkpointId),
-          checkpoints: resolvedCheckpoints,
-          checkpointId,
-          debugIds
-        },
-        checkpointId
-      )
+var CheckpointView = (props) => {
+  const checkpoint = useCheckpoint(
+    () => props.checkpointId,
+    () => props.checkpoints
+  );
+  return memo(
+    () => wrap(
+      getValue(checkpoint) ?? EMPTY_STRING,
+      void 0,
+      props.debugIds,
+      props.checkpointId
     )
-  });
+  );
+};
+var ResultCellView = (props) => {
+  const resultCell = useResultCell(
+    () => props.queryId,
+    () => props.rowId,
+    () => props.cellId,
+    () => props.queries
+  );
+  return memo(
+    () => wrap(
+      EMPTY_STRING + (getValue(resultCell) ?? EMPTY_STRING),
+      void 0,
+      props.debugIds,
+      props.cellId
+    )
+  );
+};
+var CellView = (props) => {
+  const cell = useCell(
+    () => props.tableId,
+    () => props.rowId,
+    () => props.cellId,
+    () => props.store
+  );
+  return memo(
+    () => wrap(
+      EMPTY_STRING + (getValue(cell) ?? EMPTY_STRING),
+      void 0,
+      props.debugIds,
+      props.cellId
+    )
+  );
+};
+var getUseCheckpointView = (getCheckpoints) => (props) => {
+  const resolvedCheckpoints = useCheckpointsOrCheckpointsById(
+    () => props.checkpoints
+  );
+  const checkpointIds = useCheckpointIds(resolvedCheckpoints);
+  const content = () => {
+    const Checkpoint = props.checkpointComponent ?? CheckpointView;
+    return wrap(
+      arrayMap(
+        getCheckpoints(getValue(checkpointIds)),
+        (checkpointId) => createComponent(
+          Checkpoint,
+          mergeProps(
+            () => getProps(props.getCheckpointComponentProps, checkpointId),
+            {
+              get checkpoints() {
+                return getValue(resolvedCheckpoints);
+              },
+              checkpointId,
+              get debugIds() {
+                return props.debugIds;
+              }
+            }
+          )
+        )
+      ),
+      props.separator
+    );
+  };
+  return memo(content);
 };
 var BackwardCheckpointsView = getUseCheckpointView(
   (checkpointIds) => checkpointIds[0]
@@ -412,13 +495,22 @@ var CurrentCheckpointView = getUseCheckpointView(
 var ForwardCheckpointsView = getUseCheckpointView(
   (checkpointIds) => checkpointIds[2]
 );
-var ValueView = ({ valueId, store, debugIds }) => /* @__PURE__ */ jsx(Wrap, {
-  debugIds,
-  id: valueId,
-  children: EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING)
-});
+var ValueView = (props) => {
+  const value = useValue(
+    () => props.valueId,
+    () => props.store
+  );
+  return memo(
+    () => wrap(
+      EMPTY_STRING + (getValue(value) ?? EMPTY_STRING),
+      void 0,
+      props.debugIds,
+      props.valueId
+    )
+  );
+};
 
-// dist/ui-react-inspector/index.js
+// dist/ui-solid-inspector/index.js
 var getTypeOf2 = (thing) => typeof thing;
 var TINYBASE2 = "tinybase";
 var EMPTY_STRING2 = "";
@@ -438,7 +530,6 @@ var RESULT2 = "Result";
 var GET2 = "get";
 var SET2 = "set";
 var ADD2 = "add";
-var DEL = "del";
 var HAS2 = "Has";
 var _HAS2 = "has";
 var IDS2 = "Ids";
@@ -518,7 +609,6 @@ var arrayJoin = (array, sep = EMPTY_STRING2) => array.join(sep);
 var arrayMap2 = (array, cb) => array.map(cb);
 var arrayIsEmpty = (array) => size2(array) == 0;
 var arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
-var arrayFilter2 = (array, cb) => array.filter(cb);
 var arrayClear = (array, to) => array.splice(0, to);
 var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
@@ -568,13 +658,13 @@ var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
   });
   return emptyIsValid ? true : !objIsEmpty(obj);
 };
-var jsonString2 = JSON.stringify;
+var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
-var jsonStringWithMap = (obj) => jsonString2(
+var jsonStringWithMap = (obj) => jsonString(
   obj,
   (_key, value) => isInstanceOf(value, Map) ? object2.fromEntries([...value]) : value
 );
-var jsonStringWithUndefined = (obj) => jsonString2(obj, (_key, value) => isUndefined2(value) ? UNDEFINED : value);
+var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined2(value) ? UNDEFINED : value);
 var jsonParseWithUndefined = (str) => (
   // JSON.parse reviver removes properties with undefined values
   replaceUndefinedString(jsonParse(str))
@@ -596,7 +686,25 @@ var getInitialPosition = (position) => {
   return index == -1 ? 1 : index;
 };
 var getUniqueId = (...args) => jsonStringWithMap(args);
+var getNewIdFromSuggestedId = (suggestedId, has) => {
+  let newId;
+  let suffix = 0;
+  while (has(
+    newId = suggestedId + (suffix > 0 ? " (copy" + (suffix > 1 ? " " + suffix : "") + ")" : "")
+  )) {
+    suffix++;
+  }
+  return newId;
+};
 var sortedIdsMap = (ids, callback) => arrayMap2(arraySort([...ids]), callback);
+var requestInspectorIdleCallback = (callback) => globalThis.requestIdleCallback?.(callback) ?? setTimeout(
+  () => callback({
+    didTimeout: false,
+    timeRemaining: () => 0
+  }),
+  0
+);
+var cancelInspectorIdleCallback = (id2) => globalThis.cancelIdleCallback?.(id2) ?? clearTimeout(id2);
 var img = "data:image/svg+xml,%3csvg viewBox='0 0 680 680' xmlns='http://www.w3.org/2000/svg' style='width:680px%3bheight:680px'%3e %3cpath stroke='white' stroke-width='80' fill='none' d='M340 617a84 241 90 11.01 0zM131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124zm-12-127a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e %3cpath fill='%23d81b60' d='M131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124z' /%3e %3cpath d='M249 619a94 240 90 00308-128 114 289 70 01-308 128zM119 208a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e%3c/svg%3e";
 var PRE_CSS = 'url("';
 var POST_CSS = '")';
@@ -691,6 +799,7 @@ var TEXT_OVERFLOW = "text-overflow";
 var ALIGN_ITEMS = "align-items";
 var BACKDROP_FILTER = "backdrop-filter";
 var MARGIN_RIGHT = MARGIN + "-" + RIGHT;
+var Z_INDEX = "z-index";
 var FIXED = "fixed";
 var REVERT = "revert";
 var UNSET = "unset";
@@ -713,8 +822,8 @@ var APP_STYLESHEET = arrayJoin(
         all: "initial",
         [FONT_SIZE]: rem(0.75),
         [POSITION]: FIXED,
+        [Z_INDEX]: 999999,
         "font-family": "inter,sans-serif",
-        "z-index": 999999,
         "--bg": oklch(20),
         "--bg2": oklch(15),
         "--bg3": oklch(25),
@@ -818,6 +927,7 @@ var APP_STYLESHEET = arrayJoin(
         [BACKGROUND]: oklch(30, "% 0.008 var(--hue) / .5"),
         [WIDTH]: "calc(100% - .5rem)",
         [POSITION]: "absolute",
+        [Z_INDEX]: 1,
         [BORDER + "-" + BOTTOM]: cssVar(BORDER),
         [ALIGN_ITEMS]: "center",
         [BACKDROP_FILTER]: "blur(4px)"
@@ -1072,12 +1182,12 @@ var getWildcardedLeaves = (deepIdSet, path = [EMPTY_STRING2]) => {
   deep(deepIdSet, 0);
   return leaves;
 };
-var getListenerFunctions = (getThing) => {
+var getListenerFunctions = (getThing3) => {
   let thing;
   const [getId, releaseId] = getPoolFunctions();
   const allListeners = mapNew();
   const addListener = (listener, idSetNode, path, pathGetters = [], extraArgsGetter = () => []) => {
-    thing ??= getThing();
+    thing ??= getThing3();
     const id2 = getId(1);
     mapSet(allListeners, id2, [
       listener,
@@ -1389,7 +1499,7 @@ var getCellOrValueType = (cellOrValue) => {
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
 var isJsonType = (type) => type == OBJECT || type == ARRAY;
-var encodeIfJson = (value) => isObject2(value) || isArray2(value) ? JSON_PREFIX + jsonString2(value) : value;
+var encodeIfJson = (value) => isObject2(value) || isArray2(value) ? JSON_PREFIX + jsonString(value) : value;
 var isEncodedJson = (value) => isString2(value) && value[0] == JSON_PREFIX;
 var decodeIfJson = (raw, _id, encoded) => !encoded && isEncodedJson(raw) ? jsonParse(slice(raw, 1)) : raw;
 var getTypeCase = (type, stringCase, numberCase, booleanCase, objectCase, arrayCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : type == BOOLEAN ? booleanCase : type == OBJECT ? objectCase : type == ARRAY ? arrayCase : null;
@@ -1933,7 +2043,7 @@ var createStore = () => {
       decodeIfJson(oldValue),
       decodeIfJson(newValue)
     ],
-    () => [false, ...pairNew(getValue(valueId))]
+    () => [false, ...pairNew(getValue3(valueId))]
   );
   const callInvalidCellListeners = (mutator) => !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator]) ? collForEach(
     mutator ? mapClone3(invalidCells) : invalidCells,
@@ -2222,7 +2332,7 @@ var createStore = () => {
   );
   const getValues = () => mapToObj(valuesMap, decodeIfJson);
   const getValueIds = () => mapKeys(valuesMap);
-  const getValue = (valueId) => decodeIfJson(mapGet(valuesMap, id(valueId)));
+  const getValue3 = (valueId) => decodeIfJson(mapGet(valuesMap, id(valueId)));
   const hasTables = () => !collIsEmpty(tablesMap);
   const hasTable = (tableId) => collHas(tablesMap, id(tableId));
   const hasTableCell = (tableId, cellId) => collHas(mapGet(tableCellIds, id(tableId)), id(cellId));
@@ -2343,7 +2453,7 @@ var createStore = () => {
     (valueId2) => ifNotUndefined2(
       getValidatedValue(
         valueId2,
-        isFunction2(value) ? value(getValue(valueId2)) : value
+        isFunction2(value) ? value(getValue3(valueId2)) : value
       ),
       (validValue) => setValidValue(valueId2, validValue, skipMiddleware)
     ),
@@ -2705,7 +2815,7 @@ var createStore = () => {
     getCell,
     getValues,
     getValueIds,
-    getValue,
+    getValue: getValue3,
     hasTables,
     hasTable,
     hasTableCell,
@@ -2832,7 +2942,7 @@ var createStore = () => {
         1,
         valueListeners,
         [getValueIds],
-        (ids) => pairNew(getValue(ids[0]))
+        (ids) => pairNew(getValue3(ids[0]))
       ],
       InvalidValue: [1, invalidValueListeners]
     },
@@ -2848,35 +2958,7 @@ var createStore = () => {
   );
   return objFreeze(store);
 };
-var Nub = ({ s }) => {
-  const position = useValue(POSITION_VALUE, s) ?? 1;
-  const handleOpen = useSetValueCallback(OPEN_VALUE, () => true, [], s);
-  return useValue(OPEN_VALUE, s) ? null : /* @__PURE__ */ jsx2("img", {
-    onClick: handleOpen,
-    title: TITLE,
-    "data-position": position
-  });
-};
-var requestInspectorIdleCallback = (callback) => globalThis.requestIdleCallback?.(callback) ?? setTimeout(
-  () => callback({
-    didTimeout: false,
-    timeRemaining: () => 0
-  }),
-  0
-);
-var cancelInspectorIdleCallback = (id2) => globalThis.cancelIdleCallback?.(id2) ?? clearTimeout(id2);
-var {
-  PureComponent: PureComponent2,
-  createContext: createContext2,
-  useCallback: useCallback2,
-  useContext: useContext2,
-  useEffect: useEffect2,
-  useLayoutEffect: useLayoutEffect2,
-  useMemo: useMemo2,
-  useRef: useRef2,
-  useState: useState2,
-  useSyncExternalStore: useSyncExternalStore2
-} = React2;
+var getValue2 = (value) => isFunction2(value) ? value() : value;
 var getProps2 = (getProps22, ...ids) => isUndefined2(getProps22) ? {} : getProps22(...ids);
 var getRelationshipsStoreTableIds = (relationships, relationshipId) => [
   relationships,
@@ -2889,18 +2971,28 @@ var getIndexStoreTableId = (indexes, indexId) => [
   indexes?.getStore(),
   indexes?.getTableId(indexId)
 ];
-var TINYBASE_CONTEXT2 = TINYBASE2 + "_uirc";
-var Context2 = GLOBAL2[TINYBASE_CONTEXT2] ? (
+var TINYBASE_CONTEXT2 = TINYBASE2 + "_uisc";
+var EMPTY_CONTEXT = () => [];
+var EMPTY_CONTEXT_VALUE2 = { value: EMPTY_CONTEXT };
+var GLOBAL_CONTEXT2 = GLOBAL2;
+var Context2 = GLOBAL_CONTEXT2[TINYBASE_CONTEXT2] ? (
   /* istanbul ignore next */
-  GLOBAL2[TINYBASE_CONTEXT2]
-) : GLOBAL2[TINYBASE_CONTEXT2] = createContext2([]);
+  GLOBAL_CONTEXT2[TINYBASE_CONTEXT2]
+) : GLOBAL_CONTEXT2[TINYBASE_CONTEXT2] = createContext2(EMPTY_CONTEXT_VALUE2);
 var useThing2 = (id2, offset) => {
-  const contextValue = useContext2(Context2);
-  return isUndefined2(id2) ? contextValue[offset * 2] : isString2(id2) ? objGet2(contextValue[offset * 2 + 1], id2) : id2;
+  const contextValue = useContext2(Context2)?.value ?? EMPTY_CONTEXT;
+  return () => {
+    const resolvedContextValue = contextValue();
+    const resolvedId = getValue2(id2);
+    return isUndefined2(resolvedId) ? resolvedContextValue[offset * 2] : isString2(resolvedId) ? objGet2(resolvedContextValue[offset * 2 + 1], resolvedId) : resolvedId;
+  };
 };
 var useThingOrThingById2 = (thingOrThingId, offset) => {
   const thing = useThing2(thingOrThingId, offset);
-  return isUndefined2(thingOrThingId) || isString2(thingOrThingId) ? thing : thingOrThingId;
+  return () => {
+    const resolvedThingOrThingId = getValue2(thingOrThingId);
+    return isUndefined2(resolvedThingOrThingId) || isString2(resolvedThingOrThingId) ? thing() : resolvedThingOrThingId;
+  };
 };
 var OFFSET_STORE2 = 0;
 var OFFSET_INDEXES2 = 2;
@@ -2917,92 +3009,70 @@ var DEFAULTS2 = [
   false,
   0
 ];
-var cellOrValueEqual2 = (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2);
 var IS_EQUALS2 = [
-  (obj1, obj2) => objIsEqual2(obj1, obj2, cellOrValueEqual2),
+  objIsEqual2,
   arrayIsEqual2,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual2(paramValues1, paramValues2, arrayOrValueEqual2),
-  arrayOrValueEqual2,
-  cellOrValueEqual2
+  arrayOrValueEqual2
 ];
 var isEqual2 = (thing1, thing2) => thing1 === thing2;
+var getThing2 = (thing) => isFunction2(thing) ? thing() : thing;
+var EMPTY_LISTENER_ARG_GETTERS2 = [];
 var addAndDelListener2 = (thing, listenable, ...args) => {
   const listenerId = thing?.[ADD2 + listenable + LISTENER2]?.(...args);
   return () => thing?.delListener?.(listenerId);
 };
-var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
-  const lastResultRef = useRef2(DEFAULTS2[returnType]);
-  const getResult = useCallback2(
-    () => {
-      const nextResult = thing?.[(returnType == 6 ? _HAS2 : GET2) + listenable]?.(
-        ...args
-      ) ?? DEFAULTS2[returnType];
-      return !(IS_EQUALS2[returnType] ?? isEqual2)(
-        nextResult,
-        lastResultRef.current
-      ) ? lastResultRef.current = nextResult : lastResultRef.current;
-    },
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, returnType, listenable, ...args]
-  );
-  const subscribe = useCallback2(
-    (listener) => addAndDelListener2(
-      thing,
+var useListenable2 = (listenable, thing, returnType, listenerArgGetters = EMPTY_LISTENER_ARG_GETTERS2) => {
+  const [result, setResult] = createSignal2(DEFAULTS2[returnType]);
+  const getListenerArguments = () => arrayMap2(listenerArgGetters, getThing2);
+  const getResult = () => getThing2(thing)?.[(returnType == 6 ? _HAS2 : GET2) + listenable]?.(...getListenerArguments()) ?? DEFAULTS2[returnType];
+  const updateResult = () => {
+    const nextResult = getResult();
+    const prevResult = untrack2(result);
+    setResult(
+      () => !(IS_EQUALS2[returnType] ?? isEqual2)(nextResult, prevResult) ? nextResult : prevResult
+    );
+  };
+  createRenderEffect2(() => {
+    const resolvedThing = getThing2(thing);
+    const listenerArguments = getListenerArguments();
+    updateResult();
+    const cleanup = addAndDelListener2(
+      resolvedThing,
       (returnType == 6 ? HAS2 : EMPTY_STRING2) + listenable,
-      ...args,
-      listener
-    ),
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, returnType, listenable, ...args]
-  );
-  return useSyncExternalStore2(subscribe, getResult, getResult);
+      ...listenerArguments,
+      updateResult
+    );
+    onCleanup2(cleanup);
+  });
+  return result;
 };
-var useSetCallback2 = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined2, thenDeps = EMPTY_ARRAY2, methodPrefix, ...args) => useCallback2(
-  (parameter) => ifNotUndefined2(
-    storeOrQueries,
-    (obj) => ifNotUndefined2(
-      get(parameter, obj),
-      (thing) => then(
-        obj[methodPrefix + settable](
-          ...argsOrGetArgs2(args, obj, parameter),
-          thing
-        ),
+var useSetCallback2 = (storeOrQueries, settable, get, then = getUndefined2, methodPrefix, ...args) => (parameter) => ifNotUndefined2(
+  getThing2(storeOrQueries),
+  (obj) => ifNotUndefined2(
+    get(parameter, obj),
+    (thing) => then(
+      obj[methodPrefix + settable](
+        ...argsOrGetArgs2(args, obj, parameter),
         thing
-      )
+      ),
+      thing
     )
-  ),
-  /* eslint-disable react-hooks/exhaustive-deps */
-  [
-    storeOrQueries,
-    settable,
-    ...getDeps,
-    ...thenDeps,
-    methodPrefix,
-    ...nonFunctionDeps2(args)
-  ]
-  /* eslint-enable react-hooks/exhaustive-deps */
+  )
 );
-var useStoreSetCallback2 = (storeOrStoreId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback2(
+var useStoreSetCallback2 = (storeOrStoreId, settable, get, then, ...args) => useSetCallback2(
   useStoreOrStoreById2(storeOrStoreId),
   settable,
   get,
-  getDeps,
   then,
-  thenDeps,
   SET2,
   ...args
 );
-var argsOrGetArgs2 = (args, store, parameter) => arrayMap2(args, (arg) => isFunction2(arg) ? arg(parameter, store) : arg);
-var nonFunctionDeps2 = (args) => arrayFilter2(args, (arg) => !isFunction2(arg));
-var useDel = (storeOrStoreId, deletable, then = getUndefined2, thenDeps = EMPTY_ARRAY2, ...args) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  return useCallback2(
-    (parameter) => then(store?.[DEL + deletable](...argsOrGetArgs2(args, store, parameter))),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, deletable, ...thenDeps, ...nonFunctionDeps2(args)]
-  );
-};
+var argsOrGetArgs2 = (args, store, parameter) => arrayMap2(
+  args,
+  (arg) => isFunction2(arg) ? arg.length == 0 ? getThing2(arg) : arg(parameter, store) : arg
+);
 var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable2(
   SORTED_ROW_IDS2,
   useStoreOrStoreById2(storeOrStoreId),
@@ -3010,12 +3080,6 @@ var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrSt
   [tableId, cellId, descending, offset, limit]
 );
 var useStoreOrStoreById2 = (storeOrStoreId) => useThingOrThingById2(storeOrStoreId, OFFSET_STORE2);
-var useHasTables = (storeOrStoreId) => useListenable2(
-  TABLES2,
-  useStoreOrStoreById2(storeOrStoreId),
-  6,
-  []
-);
 var useTableCellIds2 = (tableId, storeOrStoreId) => useListenable2(
   TABLE2 + CELL_IDS2,
   useStoreOrStoreById2(storeOrStoreId),
@@ -3031,22 +3095,20 @@ var useRowCount = (tableId, storeOrStoreId) => useListenable2(
 var useRowIds = (tableId, storeOrStoreId) => useListenable2(ROW_IDS2, useStoreOrStoreById2(storeOrStoreId), 1, [
   tableId
 ]);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => useSortedRowIdsImpl(
-  ...isObject2(tableIdOrArgs) ? [
-    tableIdOrArgs.tableId,
-    tableIdOrArgs.cellId,
-    tableIdOrArgs.descending ?? false,
-    tableIdOrArgs.offset ?? 0,
-    tableIdOrArgs.limit,
-    cellIdOrStoreOrStoreId
-  ] : [
-    tableIdOrArgs,
-    cellIdOrStoreOrStoreId,
-    descending,
-    offset,
-    limit,
-    storeOrStoreId
-  ]
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => isObject2(tableIdOrArgs) ? useSortedRowIdsImpl(
+  tableIdOrArgs.tableId,
+  tableIdOrArgs.cellId,
+  tableIdOrArgs.descending ?? false,
+  tableIdOrArgs.offset ?? 0,
+  tableIdOrArgs.limit,
+  cellIdOrStoreOrStoreId
+) : useSortedRowIdsImpl(
+  tableIdOrArgs,
+  cellIdOrStoreOrStoreId,
+  descending,
+  offset,
+  limit,
+  storeOrStoreId
 );
 var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(
   CELL2,
@@ -3056,14 +3118,8 @@ var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(
 );
 var useCellState = (tableId, rowId, cellId, storeOrStoreId) => [
   useCell2(tableId, rowId, cellId, storeOrStoreId),
-  useSetCellCallback2(tableId, rowId, cellId, getArg, [], storeOrStoreId)
+  useSetCellCallback2(tableId, rowId, cellId, getArg, storeOrStoreId)
 ];
-var useHasValues = (storeOrStoreId) => useListenable2(
-  VALUES2,
-  useStoreOrStoreById2(storeOrStoreId),
-  6,
-  []
-);
 var useValueIds2 = (storeOrStoreId) => useListenable2(
   VALUE_IDS2,
   useStoreOrStoreById2(storeOrStoreId),
@@ -3078,62 +3134,18 @@ var useValue2 = (valueId, storeOrStoreId) => useListenable2(
 );
 var useValueState = (valueId, storeOrStoreId) => [
   useValue2(valueId, storeOrStoreId),
-  useSetValueCallback2(valueId, getArg, [], storeOrStoreId)
+  useSetValueCallback2(valueId, getArg, storeOrStoreId)
 ];
-var useSetTableCallback = (tableId, getTable, getTableDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback2(
-  storeOrStoreId,
-  TABLE2,
-  getTable,
-  getTableDeps,
-  then,
-  thenDeps,
-  tableId
-);
-var useSetRowCallback = (tableId, rowId, getRow, getRowDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback2(
-  storeOrStoreId,
-  ROW2,
-  getRow,
-  getRowDeps,
-  then,
-  thenDeps,
-  tableId,
-  rowId
-);
-var useSetCellCallback2 = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback2(
+var useSetCellCallback2 = (tableId, rowId, cellId, getCell, storeOrStoreId, then) => useStoreSetCallback2(
   storeOrStoreId,
   CELL2,
   getCell,
-  getCellDeps,
   then,
-  thenDeps,
   tableId,
   rowId,
   cellId
 );
-var useSetValueCallback2 = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback2(
-  storeOrStoreId,
-  VALUE2,
-  getValue,
-  getValueDeps,
-  then,
-  thenDeps,
-  valueId
-);
-var useDelTablesCallback = (storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, TABLES2, then, thenDeps);
-var useDelTableCallback = (tableId, storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, TABLE2, then, thenDeps, tableId);
-var useDelRowCallback = (tableId, rowId, storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, ROW2, then, thenDeps, tableId, rowId);
-var useDelCellCallback = (tableId, rowId, cellId, forceDel, storeOrStoreId, then, thenDeps) => useDel(
-  storeOrStoreId,
-  CELL2,
-  then,
-  thenDeps,
-  tableId,
-  rowId,
-  cellId,
-  forceDel
-);
-var useDelValuesCallback = (storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, VALUES2, then, thenDeps);
-var useDelValueCallback = (valueId, storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, VALUE2, then, thenDeps, valueId);
+var useSetValueCallback2 = (valueId, getValue3, storeOrStoreId, then) => useStoreSetCallback2(storeOrStoreId, VALUE2, getValue3, then, valueId);
 var useIndexesOrIndexesById2 = (indexesOrIndexesId) => useThingOrThingById2(indexesOrIndexesId, OFFSET_INDEXES2);
 var useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) => useListenable2(
   SLICE2 + ROW_IDS2,
@@ -3167,353 +3179,444 @@ var useResultSortedRowIds = (queryId, cellId, descending, offset = 0, limit, que
   1,
   [queryId, cellId, descending, offset, limit]
 );
-var useStoreCellComponentProps = (store, tableId) => useMemo2(() => ({ store, tableId }), [store, tableId]);
-var useQueriesCellComponentProps = (queries, queryId) => useMemo2(() => ({ queries, queryId }), [queries, queryId]);
-var useCallbackOrUndefined = (callback, deps, test2) => {
-  const returnCallback = useCallback2(callback, deps);
-  return test2 ? returnCallback : void 0;
-};
-var useParams = (...args) => useMemo2(
-  () => args,
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  args
+var getStoreCellComponentProps = (store, tableId) => ({
+  store,
+  tableId
+});
+var getQueriesCellComponentProps = (queries, queryId) => ({
+  queries,
+  queryId
+});
+var getCallbackOrUndefined = (callback, test2) => test2 ? callback : void 0;
+var getParams = (...args) => args;
+var useCells = (defaultCellIds, customCells, defaultCellComponent) => (
+  // eslint-disable-next-line solid/reactivity
+  createMemo2(() => {
+    const customCellIds = getValue2(customCells);
+    const cellIds = getValue2(customCellIds) ?? getValue2(defaultCellIds);
+    const component = defaultCellComponent();
+    return objMap(
+      isArray2(cellIds) ? objNew(arrayMap2(cellIds, (cellId) => [cellId, cellId])) : cellIds,
+      (labelOrCustomCell, cellId) => ({
+        ...{
+          label: cellId,
+          component
+        },
+        ...isString2(labelOrCustomCell) ? {
+          label: labelOrCustomCell
+        } : labelOrCustomCell
+      })
+    );
+  })
 );
-var useCells = (defaultCellIds, customCells, defaultCellComponent) => useMemo2(() => {
-  const cellIds = customCells ?? defaultCellIds;
-  return objMap(
-    isArray2(cellIds) ? objNew(arrayMap2(cellIds, (cellId) => [cellId, cellId])) : cellIds,
-    (labelOrCustomCell, cellId) => ({
-      ...{ label: cellId, component: defaultCellComponent },
-      ...isString2(labelOrCustomCell) ? { label: labelOrCustomCell } : labelOrCustomCell
-    })
-  );
-}, [customCells, defaultCellComponent, defaultCellIds]);
+var _tmpl$$5 = /* @__PURE__ */ template(`<td>`);
+var _tmpl$2$5 = /* @__PURE__ */ template(`<th>`);
 var UP_ARROW = "\u2191";
 var DOWN_ARROW = "\u2193";
 var EDITABLE = "editable";
-var extraRowCells = (extraRowCells2 = [], extraRowCellProps, after = 0) => arrayMap2(
-  extraRowCells2,
-  ({ component: Component }, index) => /* @__PURE__ */ jsx2(
-    "td",
-    {
-      className: EXTRA,
-      children: /* @__PURE__ */ jsx2(Component, { ...extraRowCellProps })
-    },
-    extraKey(index, after)
-  )
-);
-var extraKey = (index, after) => (after ? ">" : "<") + index;
-var extraHeaders = (extraCells = [], after = 0) => arrayMap2(
-  extraCells,
-  ({ label }, index) => /* @__PURE__ */ jsx2(
-    "th",
-    { className: EXTRA, children: label },
-    extraKey(index, after)
-  )
-);
-var HtmlHeaderCell = ({
-  cellId,
-  sort: [sortCellId, sortDescending],
-  label = cellId ?? EMPTY_STRING2,
-  onClick
-}) => /* @__PURE__ */ jsxs("th", {
-  onClick: useCallbackOrUndefined(
-    () => onClick?.(cellId),
-    [onClick, cellId],
-    onClick
-  ),
-  className: isUndefined2(sortDescending) || sortCellId != cellId ? void 0 : `sorted ${sortDescending ? "de" : "a"}scending`,
-  children: [
-    isUndefined2(sortDescending) || sortCellId != cellId ? null : (sortDescending ? DOWN_ARROW : UP_ARROW) + " ",
-    label
-  ]
+var extraRowCells = (extraRowCells2 = [], extraRowCellProps) => arrayMap2(getValue2(extraRowCells2) ?? [], (extraRowCell) => {
+  const Component = extraRowCell.component;
+  return (() => {
+    var _el$ = _tmpl$$5();
+    className(_el$, EXTRA);
+    insert(_el$, createComponent2(Component, extraRowCellProps));
+    return _el$;
+  })();
 });
-var HtmlTable = ({
-  className,
-  headerRow,
-  idColumn,
-  params: [
-    cells,
-    cellComponentProps,
-    rowIds,
-    extraCellsBefore,
-    extraCellsAfter,
-    sortAndOffset,
-    handleSort,
-    paginatorComponent
-  ]
-}) => /* @__PURE__ */ jsxs("table", {
-  className,
-  children: [
-    paginatorComponent ? /* @__PURE__ */ jsx2("caption", { children: paginatorComponent }) : null,
-    headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
-      children: /* @__PURE__ */ jsxs("tr", {
-        children: [
-          extraHeaders(extraCellsBefore),
-          idColumn === false ? null : /* @__PURE__ */ jsx2(HtmlHeaderCell, {
-            sort: sortAndOffset ?? [],
-            label: "Id",
-            onClick: handleSort
-          }),
-          objToArray(
-            cells,
-            ({ label }, cellId) => /* @__PURE__ */ jsx2(
-              HtmlHeaderCell,
-              {
-                cellId,
-                label,
-                sort: sortAndOffset ?? [],
-                onClick: handleSort
-              },
-              cellId
-            )
-          ),
-          extraHeaders(extraCellsAfter, 1)
-        ]
-      })
-    }),
-    /* @__PURE__ */ jsx2("tbody", {
-      children: arrayMap2(rowIds, (rowId) => {
-        const rowProps = { ...cellComponentProps, rowId };
-        return /* @__PURE__ */ jsxs(
-          "tr",
-          {
-            children: [
-              extraRowCells(extraCellsBefore, rowProps),
-              isFalse(idColumn) ? null : /* @__PURE__ */ jsx2("th", { title: rowId, children: rowId }),
-              objToArray(
-                cells,
-                ({ component: CellView2, getComponentProps }, cellId) => /* @__PURE__ */ jsx2(
-                  "td",
-                  {
-                    children: /* @__PURE__ */ jsx2(CellView2, {
-                      ...getProps2(getComponentProps, rowId, cellId),
-                      ...rowProps,
-                      cellId
-                    })
-                  },
-                  cellId
-                )
+var extraHeaders = (extraCells = []) => arrayMap2(
+  getValue2(extraCells) ?? [],
+  (extraCell) => (() => {
+    var _el$2 = _tmpl$2$5();
+    className(_el$2, EXTRA);
+    insert(_el$2, () => extraCell.label);
+    return _el$2;
+  })()
+);
+var _tmpl$$4 = /* @__PURE__ */ template(`<th>`);
+var _tmpl$2$4 = /* @__PURE__ */ template(`<table><tbody>`);
+var _tmpl$3$3 = /* @__PURE__ */ template(`<caption>`);
+var _tmpl$4$3 = /* @__PURE__ */ template(`<thead><tr>`);
+var _tmpl$5$3 = /* @__PURE__ */ template(`<tr>`);
+var _tmpl$6$3 = /* @__PURE__ */ template(`<td>`);
+var _tmpl$7$1 = /* @__PURE__ */ template(`<input>`);
+var _tmpl$8$1 = /* @__PURE__ */ template(`<input type=number>`);
+var _tmpl$9$1 = /* @__PURE__ */ template(`<input type=checkbox>`);
+var _tmpl$0$1 = /* @__PURE__ */ template(`<div>`);
+var _tmpl$1$1 = /* @__PURE__ */ template(`<button>`);
+var HtmlHeaderCell = (props) => {
+  const sortDescending = props.sort[1];
+  const cellId = props.cellId;
+  return (() => {
+    var _el$ = _tmpl$$4();
+    addEventListener(
+      _el$,
+      "click",
+      getCallbackOrUndefined(() => props.onClick?.(cellId), props.onClick)
+    );
+    insert(
+      _el$,
+      () => isUndefined2(sortDescending) || props.sort[0] != cellId ? null : (sortDescending ? DOWN_ARROW : UP_ARROW) + " ",
+      null
+    );
+    insert(_el$, () => props.label ?? cellId ?? EMPTY_STRING2, null);
+    effect(
+      () => className(
+        _el$,
+        isUndefined2(sortDescending) || props.sort[0] != cellId ? void 0 : `sorted ${sortDescending ? "de" : "a"}scending`
+      )
+    );
+    return _el$;
+  })();
+};
+var HtmlTable = (props) => {
+  const content = () => {
+    const [
+      cells,
+      cellComponentProps,
+      rowIds,
+      extraCellsBefore,
+      extraCellsAfter,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent
+    ] = props.params;
+    const sort = sortAndOffset == null ? [] : getValue2(sortAndOffset);
+    const paginator = getValue2(paginatorComponent);
+    return (() => {
+      var _el$2 = _tmpl$2$4(), _el$3 = _el$2.firstChild;
+      insert(
+        _el$2,
+        paginator ? (() => {
+          var _el$4 = _tmpl$3$3();
+          insert(_el$4, paginator);
+          return _el$4;
+        })() : null,
+        _el$3
+      );
+      insert(
+        _el$2,
+        (() => {
+          var _c$ = memo2(() => props.headerRow === false);
+          return () => _c$() ? null : (() => {
+            var _el$5 = _tmpl$4$3(), _el$6 = _el$5.firstChild;
+            insert(_el$6, () => extraHeaders(extraCellsBefore), null);
+            insert(
+              _el$6,
+              (() => {
+                var _c$2 = memo2(() => props.idColumn === false);
+                return () => _c$2() ? null : HtmlHeaderCell({
+                  sort,
+                  label: "Id",
+                  onClick: handleSort
+                });
+              })(),
+              null
+            );
+            insert(
+              _el$6,
+              () => objToArray(
+                getValue2(cells),
+                ({ label }, cellId) => HtmlHeaderCell({
+                  cellId,
+                  label,
+                  sort,
+                  onClick: handleSort
+                })
               ),
-              extraRowCells(extraCellsAfter, rowProps, 1)
-            ]
-          },
-          rowId
-        );
-      })
-    })
-  ]
-});
-var EditableThing = ({
-  thing,
-  onThingChange,
-  className,
-  hasSchema,
-  showType = true
-}) => {
-  const [thingType, setThingType] = useState2();
-  const [currentThing, setCurrentThing] = useState2();
-  const [stringThing, setStringThing] = useState2();
-  const [numberThing, setNumberThing] = useState2();
-  const [booleanThing, setBooleanThing] = useState2();
-  const [objectThing, setObjectThing] = useState2("{}");
-  const [arrayThing, setArrayThing] = useState2("[]");
-  const [objectClassName, setObjectClassName] = useState2("");
-  const [arrayClassName, setArrayClassName] = useState2("");
-  if (currentThing !== thing) {
-    setThingType(getCellOrValueType(thing));
-    setCurrentThing(thing);
-    if (isObject2(thing)) {
-      setObjectThing(jsonString2(thing));
-    } else if (isArray2(thing)) {
-      setArrayThing(jsonString2(thing));
-    } else {
-      setStringThing(String(thing));
-      setNumberThing(Number(thing) || 0);
-      setBooleanThing(Boolean(thing));
-    }
-  }
-  const handleThingChange = useCallback2(
-    (thing2, setTypedThing) => {
-      setTypedThing(thing2);
-      setCurrentThing(thing2);
-      onThingChange(thing2);
-    },
-    [onThingChange]
-  );
-  const handleJsonThingChange = useCallback2(
-    (value, setTypedThing, isThing, setTypedClassName) => {
-      setTypedThing(value);
-      try {
-        const object3 = jsonParse(value);
-        if (isThing(object3)) {
-          setCurrentThing(object3);
-          onThingChange(object3);
-          setTypedClassName("");
-        }
-      } catch {
-        setTypedClassName("invalid");
+              null
+            );
+            insert(_el$6, () => extraHeaders(extraCellsAfter), null);
+            return _el$5;
+          })();
+        })(),
+        _el$3
+      );
+      insert(
+        _el$3,
+        () => arrayMap2(getValue2(rowIds), (rowId) => {
+          const rowProps = {
+            ...cellComponentProps,
+            rowId
+          };
+          return (() => {
+            var _el$7 = _tmpl$5$3();
+            insert(
+              _el$7,
+              () => extraRowCells(extraCellsBefore, rowProps),
+              null
+            );
+            insert(
+              _el$7,
+              (() => {
+                var _c$3 = memo2(() => !!isFalse(props.idColumn));
+                return () => _c$3() ? null : (() => {
+                  var _el$8 = _tmpl$$4();
+                  setAttribute(_el$8, "title", rowId);
+                  insert(_el$8, rowId);
+                  return _el$8;
+                })();
+              })(),
+              null
+            );
+            insert(
+              _el$7,
+              () => objToArray(
+                getValue2(cells),
+                ({ component: CellView2, getComponentProps }, cellId) => (() => {
+                  var _el$9 = _tmpl$6$3();
+                  insert(
+                    _el$9,
+                    createComponent2(
+                      CellView2,
+                      mergeProps2(
+                        () => getProps2(getComponentProps, rowId, cellId),
+                        rowProps,
+                        {
+                          cellId
+                        }
+                      )
+                    )
+                  );
+                  return _el$9;
+                })()
+              ),
+              null
+            );
+            insert(_el$7, () => extraRowCells(extraCellsAfter, rowProps), null);
+            return _el$7;
+          })();
+        })
+      );
+      effect(() => className(_el$2, props.className));
+      return _el$2;
+    })();
+  };
+  return memo2(content);
+};
+var EditableThing = (props) => {
+  const [thingType, setThingType] = createSignal2();
+  const [currentThing, setCurrentThing] = createSignal2();
+  const [stringThing, setStringThing] = createSignal2();
+  const [numberThing, setNumberThing] = createSignal2();
+  const [booleanThing, setBooleanThing] = createSignal2();
+  const [objectThing, setObjectThing] = createSignal2("{}");
+  const [arrayThing, setArrayThing] = createSignal2("[]");
+  const [objectClassName, setObjectClassName] = createSignal2("");
+  const [arrayClassName, setArrayClassName] = createSignal2("");
+  createRenderEffect2(() => {
+    const thing = props.thing;
+    if (untrack2(currentThing) !== thing) {
+      setThingType(getCellOrValueType(thing));
+      setCurrentThing(() => thing);
+      if (isObject2(thing)) {
+        setObjectThing(jsonString(thing));
+      } else if (isArray2(thing)) {
+        setArrayThing(jsonString(thing));
+      } else {
+        setStringThing(String(thing));
+        setNumberThing(Number(thing) || 0);
+        setBooleanThing(Boolean(thing));
       }
-    },
-    [onThingChange]
-  );
-  const handleTypeChange = useCallback2(() => {
-    if (!hasSchema?.()) {
+    }
+  });
+  const handleThingChange = (thing, setTypedThing) => {
+    setTypedThing(thing);
+    setCurrentThing(() => thing);
+    props.onThingChange(thing);
+  };
+  const handleJsonThingChange = (value, setTypedThing, isThing, setTypedClassName) => {
+    setTypedThing(value);
+    try {
+      const object3 = jsonParse(value);
+      if (isThing(object3)) {
+        setCurrentThing(() => object3);
+        props.onThingChange(object3);
+        setTypedClassName("");
+      }
+    } catch {
+      setTypedClassName("invalid");
+    }
+  };
+  const handleTypeChange = () => {
+    if (!props.hasSchema?.()) {
       const nextType = getTypeCase(
-        thingType,
+        thingType(),
         NUMBER,
         BOOLEAN,
         OBJECT,
         ARRAY,
         STRING2
       );
-      const thing2 = getTypeCase(
+      const thing = getTypeCase(
         nextType,
-        stringThing,
-        numberThing,
-        booleanThing,
-        tryReturn(() => jsonParse(objectThing), {}),
-        tryReturn(() => jsonParse(arrayThing), [])
+        stringThing(),
+        numberThing(),
+        booleanThing(),
+        tryReturn(() => jsonParse(objectThing()), {}),
+        tryReturn(() => jsonParse(arrayThing()), [])
       );
       setThingType(nextType);
-      setCurrentThing(thing2);
-      onThingChange(thing2);
+      setCurrentThing(() => thing);
+      props.onThingChange(thing);
     }
-  }, [
-    hasSchema,
-    onThingChange,
-    stringThing,
-    numberThing,
-    booleanThing,
-    objectThing,
-    arrayThing,
-    thingType
-  ]);
-  const widget = getTypeCase(
-    thingType,
-    /* @__PURE__ */ jsx2(
-      "input",
-      {
-        value: stringThing,
-        onChange: useCallback2(
-          (event) => handleThingChange(
-            String(event[CURRENT_TARGET][_VALUE]),
-            setStringThing
-          ),
-          [handleThingChange]
+  };
+  const widget = () => getTypeCase(
+    thingType(),
+    (() => {
+      var _el$0 = _tmpl$7$1();
+      _el$0.addEventListener(
+        "input",
+        (event) => handleThingChange(
+          String(event[CURRENT_TARGET][_VALUE]),
+          setStringThing
         )
-      },
-      thingType
-    ),
-    /* @__PURE__ */ jsx2(
-      "input",
-      {
-        type: "number",
-        value: numberThing,
-        onChange: useCallback2(
-          (event) => handleThingChange(
-            Number(event[CURRENT_TARGET][_VALUE] || 0),
-            setNumberThing
-          ),
-          [handleThingChange]
+      );
+      effect(() => _el$0.value = stringThing());
+      return _el$0;
+    })(),
+    (() => {
+      var _el$1 = _tmpl$8$1();
+      _el$1.addEventListener(
+        "input",
+        (event) => handleThingChange(
+          Number(event[CURRENT_TARGET][_VALUE] || 0),
+          setNumberThing
         )
-      },
-      thingType
-    ),
-    /* @__PURE__ */ jsx2(
-      "input",
-      {
-        type: "checkbox",
-        checked: booleanThing,
-        onChange: useCallback2(
-          (event) => handleThingChange(
-            Boolean(event[CURRENT_TARGET].checked),
-            setBooleanThing
-          ),
-          [handleThingChange]
+      );
+      effect(() => _el$1.value = numberThing());
+      return _el$1;
+    })(),
+    (() => {
+      var _el$10 = _tmpl$9$1();
+      _el$10.addEventListener(
+        "input",
+        (event) => handleThingChange(
+          Boolean(event[CURRENT_TARGET].checked),
+          setBooleanThing
         )
-      },
-      thingType
-    ),
-    /* @__PURE__ */ jsx2(
-      "input",
-      {
-        value: objectThing,
-        className: objectClassName,
-        onChange: useCallback2(
-          (event) => handleJsonThingChange(
-            event[CURRENT_TARGET][_VALUE],
-            setObjectThing,
-            isObject2,
-            setObjectClassName
-          ),
-          [handleJsonThingChange]
+      );
+      effect(() => _el$10.checked = booleanThing());
+      return _el$10;
+    })(),
+    (() => {
+      var _el$11 = _tmpl$7$1();
+      _el$11.addEventListener(
+        "input",
+        (event) => handleJsonThingChange(
+          event[CURRENT_TARGET][_VALUE],
+          setObjectThing,
+          isObject2,
+          setObjectClassName
         )
-      },
-      thingType
-    ),
-    /* @__PURE__ */ jsx2(
-      "input",
-      {
-        value: arrayThing,
-        className: arrayClassName,
-        onChange: useCallback2(
-          (event) => handleJsonThingChange(
-            event[CURRENT_TARGET][_VALUE],
-            setArrayThing,
-            isArray2,
-            setArrayClassName
-          ),
-          [handleJsonThingChange]
+      );
+      effect(() => className(_el$11, objectClassName()));
+      effect(() => _el$11.value = objectThing());
+      return _el$11;
+    })(),
+    (() => {
+      var _el$12 = _tmpl$7$1();
+      _el$12.addEventListener(
+        "input",
+        (event) => handleJsonThingChange(
+          event[CURRENT_TARGET][_VALUE],
+          setArrayThing,
+          isArray2,
+          setArrayClassName
         )
-      },
-      thingType
-    )
+      );
+      effect(() => className(_el$12, arrayClassName()));
+      effect(() => _el$12.value = arrayThing());
+      return _el$12;
+    })()
   );
-  return /* @__PURE__ */ jsxs("div", {
-    className,
-    children: [
-      showType && widget ? /* @__PURE__ */ jsx2("button", {
-        title: thingType,
-        className: thingType,
-        onClick: handleTypeChange,
-        children: thingType
-      }) : null,
-      widget
-    ]
-  });
+  const content = () => {
+    const currentWidget = widget();
+    return (() => {
+      var _el$13 = _tmpl$0$1();
+      insert(
+        _el$13,
+        (() => {
+          var _c$4 = memo2(() => !!(props.showType !== false && currentWidget));
+          return () => _c$4() ? (() => {
+            var _el$14 = _tmpl$1$1();
+            _el$14.addEventListener("click", handleTypeChange);
+            insert(_el$14, thingType);
+            effect(
+              (_p$) => {
+                var _v$ = thingType(), _v$2 = thingType();
+                _v$ !== _p$.e && setAttribute(_el$14, "title", _p$.e = _v$);
+                _v$2 !== _p$.t && className(_el$14, _p$.t = _v$2);
+                return _p$;
+              },
+              {
+                e: void 0,
+                t: void 0
+              }
+            );
+            return _el$14;
+          })() : null;
+        })(),
+        null
+      );
+      insert(_el$13, currentWidget, null);
+      effect(() => className(_el$13, props.class));
+      return _el$13;
+    })();
+  };
+  return memo2(content);
 };
-var EditableCellView = ({
-  tableId,
-  rowId,
-  cellId,
-  store,
-  className,
-  showType
-}) => {
-  const [cell, setCell] = useCellState(tableId, rowId, cellId, store);
-  return /* @__PURE__ */ jsx2(EditableThing, {
-    thing: cell,
+var EditableCellView = (props) => {
+  const [cell, setCell] = useCellState(
+    () => props.tableId,
+    () => props.rowId,
+    () => props.cellId,
+    () => props.store
+  );
+  const store = useStoreOrStoreById2(() => props.store);
+  return EditableThing({
+    get thing() {
+      return cell();
+    },
     onThingChange: setCell,
-    className: className ?? EDITABLE + CELL2,
-    showType,
-    hasSchema: useStoreOrStoreById2(store)?.hasTablesSchema
+    class: props.className ?? EDITABLE + CELL2,
+    showType: props.showType,
+    hasSchema: () => !!store()?.hasTablesSchema()
   });
 };
-var EditableValueView = ({ valueId, store, className, showType }) => {
-  const [value, setValue] = useValueState(valueId, store);
-  return /* @__PURE__ */ jsx2(EditableThing, {
-    thing: value,
+var EditableValueView = (props) => {
+  const [value, setValue] = useValueState(
+    () => props.valueId,
+    () => props.store
+  );
+  const store = useStoreOrStoreById2(() => props.store);
+  return EditableThing({
+    get thing() {
+      return value();
+    },
     onThingChange: setValue,
-    className: className ?? EDITABLE + VALUE2,
-    showType,
-    hasSchema: useStoreOrStoreById2(store)?.hasValuesSchema
+    class: props.className ?? EDITABLE + VALUE2,
+    showType: props.showType,
+    hasSchema: () => !!store()?.hasValuesSchema()
   });
 };
-var useDottedCellIds = (tableId, store) => arrayMap2(useTableCellIds2(tableId, store), (cellId) => tableId + DOT + cellId);
-var RelationshipInHtmlRow = ({
-  localRowId,
-  params: [
+var _tmpl$$3 = /* @__PURE__ */ template(`<tr>`);
+var _tmpl$2$3 = /* @__PURE__ */ template(`<th>`);
+var _tmpl$3$2 = /* @__PURE__ */ template(`<td>`);
+var _tmpl$4$2 = /* @__PURE__ */ template(`<table><tbody>`);
+var _tmpl$5$2 = /* @__PURE__ */ template(`<thead><tr>`);
+var _tmpl$6$2 = /* @__PURE__ */ template(`<th>.Id`);
+var useDottedCellIds = (tableId, store) => {
+  const cellIds = useTableCellIds2(
+    () => getValue2(tableId),
+    () => getValue2(store)
+  );
+  const dottedCellIds = createMemo2(
+    () => arrayMap2(cellIds(), (cellId) => getValue2(tableId) + DOT + cellId)
+  );
+  return dottedCellIds;
+};
+var RelationshipInHtmlRow = (props) => {
+  const [
     idColumn,
     cells,
     localTableId,
@@ -3523,1116 +3626,1496 @@ var RelationshipInHtmlRow = ({
     store,
     extraCellsBefore,
     extraCellsAfter
-  ]
-}) => {
-  const remoteRowId = useRemoteRowId(relationshipId, localRowId, relationships);
+  ] = props.params;
+  const remoteRowId = useRemoteRowId(
+    () => relationshipId,
+    () => props.localRowId,
+    () => relationships
+  );
   const rowProps = {
     tableId: localTableId ?? "",
-    rowId: localRowId,
+    rowId: props.localRowId,
     store
   };
-  return /* @__PURE__ */ jsxs("tr", {
-    children: [
-      extraRowCells(extraCellsBefore, rowProps),
-      isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment, {
-        children: [
-          /* @__PURE__ */ jsx2("th", {
-            title: localRowId,
-            children: localRowId
-          }),
-          /* @__PURE__ */ jsx2("th", {
-            title: remoteRowId,
-            children: remoteRowId
-          })
-        ]
-      }),
-      objToArray(
-        cells,
+  return (() => {
+    var _el$ = _tmpl$$3();
+    insert(_el$, () => extraRowCells(extraCellsBefore, rowProps), null);
+    insert(
+      _el$,
+      (() => {
+        var _c$ = memo2(() => !!isFalse(idColumn));
+        return () => _c$() ? null : [
+          (() => {
+            var _el$2 = _tmpl$2$3();
+            insert(_el$2, () => props.localRowId);
+            effect(() => setAttribute(_el$2, "title", props.localRowId));
+            return _el$2;
+          })(),
+          (() => {
+            var _el$3 = _tmpl$2$3();
+            insert(_el$3, remoteRowId);
+            effect(() => setAttribute(_el$3, "title", remoteRowId()));
+            return _el$3;
+          })()
+        ];
+      })(),
+      null
+    );
+    insert(
+      _el$,
+      () => objToArray(
+        getValue2(cells),
         ({ component: CellView2, getComponentProps }, compoundCellId) => {
           const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
-          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : void 0;
-          return isUndefined2(rowId) ? null : /* @__PURE__ */ jsx2(
-            "td",
-            {
-              children: /* @__PURE__ */ jsx2(CellView2, {
-                ...getProps2(getComponentProps, rowId, cellId),
-                store,
-                tableId,
-                rowId,
-                cellId
-              })
-            },
-            compoundCellId
-          );
+          const rowId = tableId === localTableId ? props.localRowId : tableId === remoteTableId ? remoteRowId() : void 0;
+          return isUndefined2(rowId) ? null : (() => {
+            var _el$4 = _tmpl$3$2();
+            insert(
+              _el$4,
+              createComponent2(
+                CellView2,
+                mergeProps2(
+                  () => getProps2(getComponentProps, rowId, cellId),
+                  {
+                    store,
+                    tableId,
+                    rowId,
+                    cellId
+                  }
+                )
+              )
+            );
+            return _el$4;
+          })();
         }
       ),
-      extraRowCells(extraCellsAfter, rowProps, 1)
-    ]
-  });
+      null
+    );
+    insert(_el$, () => extraRowCells(extraCellsAfter, rowProps), null);
+    return _el$;
+  })();
 };
-var RelationshipInHtmlTable = ({
-  relationshipId,
-  relationships,
-  editable,
-  customCells,
-  extraCellsBefore,
-  extraCellsAfter,
-  className,
-  headerRow,
-  idColumn = true
-}) => {
-  const [resolvedRelationships, store, localTableId, remoteTableId] = getRelationshipsStoreTableIds(
-    useRelationshipsOrRelationshipsById2(relationships),
-    relationshipId
+var RelationshipInHtmlTable = (props) => {
+  const resolvedRelationships = useRelationshipsOrRelationshipsById2(
+    () => props.relationships
   );
-  const cells = useCells(
-    [
-      ...useDottedCellIds(localTableId, store),
-      ...useDottedCellIds(remoteTableId, store)
-    ],
-    customCells,
-    editable ? EditableCellView : CellView
-  );
-  const params = useParams(
-    idColumn,
-    cells,
-    localTableId,
-    remoteTableId,
-    relationshipId,
-    resolvedRelationships,
-    store,
-    extraCellsBefore,
-    extraCellsAfter
-  );
-  return /* @__PURE__ */ jsxs("table", {
-    className,
-    children: [
-      isFalse(headerRow) ? null : /* @__PURE__ */ jsx2("thead", {
-        children: /* @__PURE__ */ jsxs("tr", {
-          children: [
-            extraHeaders(extraCellsBefore),
-            isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment, {
-              children: [
-                /* @__PURE__ */ jsxs("th", {
-                  children: [localTableId, ".Id"]
-                }),
-                /* @__PURE__ */ jsxs("th", {
-                  children: [remoteTableId, ".Id"]
-                })
-              ]
-            }),
-            objToArray(
-              cells,
-              ({ label }, cellId) => /* @__PURE__ */ jsx2("th", { children: label }, cellId)
-            ),
-            extraHeaders(extraCellsAfter, 1)
-          ]
-        })
-      }),
-      /* @__PURE__ */ jsx2("tbody", {
-        children: arrayMap2(
-          useRowIds(localTableId, store),
-          (localRowId) => /* @__PURE__ */ jsx2(
-            RelationshipInHtmlRow,
-            {
-              localRowId,
-              params
-            },
-            localRowId
-          )
-        )
-      })
-    ]
-  });
-};
-var LEFT_ARROW = "\u2190";
-var RIGHT_ARROW = "\u2192";
-var useSortingAndPagination = (cellId, descending = false, sortOnClick, offset = 0, limit, total, paginator, onChange) => {
-  const [[currentCellId, currentDescending, currentOffset], setState] = useState2([cellId, descending, offset]);
-  const setStateAndChange = useCallback2(
-    (sortAndOffset) => {
-      setState(sortAndOffset);
-      onChange?.(sortAndOffset);
-    },
-    [onChange]
-  );
-  const handleSort = useCallbackOrUndefined(
-    (cellId2) => setStateAndChange([
-      cellId2,
-      cellId2 == currentCellId ? !currentDescending : false,
-      currentOffset
-    ]),
-    [setStateAndChange, currentCellId, currentDescending, currentOffset],
-    sortOnClick
-  );
-  const handleChangeOffset = useCallback2(
-    (offset2) => setStateAndChange([currentCellId, currentDescending, offset2]),
-    [setStateAndChange, currentCellId, currentDescending]
-  );
-  const PaginatorComponent = isTrue(paginator) ? SortedTablePaginator : paginator;
-  return [
-    [currentCellId, currentDescending, currentOffset],
-    handleSort,
-    useMemo2(
-      () => isFalse(paginator) ? null : /* @__PURE__ */ jsx2(PaginatorComponent, {
-        offset: currentOffset,
-        limit,
-        total,
-        onChange: handleChangeOffset
-      }),
-      [
-        paginator,
-        PaginatorComponent,
-        currentOffset,
-        limit,
-        total,
-        handleChangeOffset
-      ]
+  const details = createMemo2(
+    () => getRelationshipsStoreTableIds(
+      resolvedRelationships(),
+      props.relationshipId
     )
-  ];
+  );
+  const localCellIds = useDottedCellIds(
+    () => details()[2],
+    () => details()[1]
+  );
+  const remoteCellIds = useDottedCellIds(
+    () => details()[3],
+    () => details()[1]
+  );
+  const cellIds = createMemo2(() => [...localCellIds(), ...remoteCellIds()]);
+  const cells = useCells(
+    cellIds,
+    () => props.customCells,
+    () => props.editable ? EditableCellView : CellView
+  );
+  const rowIds = useRowIds(
+    () => details()[2],
+    () => details()[1]
+  );
+  const content = () => {
+    const [relationships, store, localTableId, remoteTableId] = details();
+    const params = getParams(
+      props.idColumn ?? true,
+      cells,
+      localTableId,
+      remoteTableId,
+      props.relationshipId,
+      relationships,
+      store,
+      props.extraCellsBefore,
+      props.extraCellsAfter
+    );
+    return (() => {
+      var _el$5 = _tmpl$4$2(), _el$6 = _el$5.firstChild;
+      insert(
+        _el$5,
+        (() => {
+          var _c$2 = memo2(() => !!isFalse(props.headerRow));
+          return () => _c$2() ? null : (() => {
+            var _el$7 = _tmpl$5$2(), _el$8 = _el$7.firstChild;
+            insert(
+              _el$8,
+              () => extraHeaders(props.extraCellsBefore),
+              null
+            );
+            insert(
+              _el$8,
+              (() => {
+                var _c$3 = memo2(() => !!isFalse(props.idColumn));
+                return () => _c$3() ? null : [
+                  (() => {
+                    var _el$9 = _tmpl$6$2(), _el$0 = _el$9.firstChild;
+                    insert(_el$9, localTableId, _el$0);
+                    return _el$9;
+                  })(),
+                  (() => {
+                    var _el$1 = _tmpl$6$2(), _el$10 = _el$1.firstChild;
+                    insert(_el$1, remoteTableId, _el$10);
+                    return _el$1;
+                  })()
+                ];
+              })(),
+              null
+            );
+            insert(
+              _el$8,
+              () => objToArray(
+                cells(),
+                (cell) => (() => {
+                  var _el$11 = _tmpl$2$3();
+                  insert(_el$11, () => cell.label);
+                  return _el$11;
+                })()
+              ),
+              null
+            );
+            insert(
+              _el$8,
+              () => extraHeaders(props.extraCellsAfter),
+              null
+            );
+            return _el$7;
+          })();
+        })(),
+        _el$6
+      );
+      insert(
+        _el$6,
+        () => arrayMap2(
+          rowIds(),
+          (localRowId) => RelationshipInHtmlRow({
+            localRowId,
+            params
+          })
+        )
+      );
+      effect(() => className(_el$5, props.className));
+      return _el$5;
+    })();
+  };
+  return memo2(content);
 };
-var SortedTablePaginator = ({
-  onChange,
-  total,
-  offset = 0,
-  limit = total,
-  singular = "row",
-  plural = singular + "s"
-}) => {
-  if (offset > total || offset < 0) {
-    offset = 0;
-    onChange(0);
-  }
-  const handlePrevClick = useCallbackOrUndefined(
-    () => onChange(offset - limit),
-    [onChange, offset, limit],
-    offset > 0
+var _tmpl$$2 = /* @__PURE__ */ template(`<button class=previous>\u2190`);
+var _tmpl$2$2 = /* @__PURE__ */ template(`<button class=next>\u2192`);
+var useSortingAndPagination = (cellId, descending, sortOnClick, offset, limit, total, paginator, onChange) => {
+  const [sortAndOffset, setSortAndOffset] = createSignal2([
+    getValue2(cellId),
+    !!getValue2(descending),
+    getValue2(offset) ?? 0
+  ]);
+  createEffect2(
+    () => setSortAndOffset([
+      getValue2(cellId),
+      !!getValue2(descending),
+      getValue2(offset) ?? 0
+    ])
   );
-  const handleNextClick = useCallbackOrUndefined(
-    () => onChange(offset + limit),
-    [onChange, offset, limit],
-    offset + limit < total
-  );
-  return /* @__PURE__ */ jsxs(Fragment, {
-    children: [
-      total > limit && /* @__PURE__ */ jsxs(Fragment, {
-        children: [
-          /* @__PURE__ */ jsx2("button", {
-            className: "previous",
-            disabled: offset == 0,
-            onClick: handlePrevClick,
-            children: LEFT_ARROW
-          }),
-          /* @__PURE__ */ jsx2("button", {
-            className: "next",
-            disabled: offset + limit >= total,
-            onClick: handleNextClick,
-            children: RIGHT_ARROW
-          }),
+  const setStateAndChange = (sortAndOffset2) => {
+    setSortAndOffset(sortAndOffset2);
+    getValue2(onChange)?.(sortAndOffset2);
+  };
+  const handleSort = (cellId2) => {
+    if (getValue2(sortOnClick)) {
+      const [currentCellId, currentDescending, currentOffset] = sortAndOffset();
+      setStateAndChange([
+        cellId2,
+        cellId2 == currentCellId ? !currentDescending : false,
+        currentOffset
+      ]);
+    }
+  };
+  const handleChangeOffset = (offset2) => {
+    const [currentCellId, currentDescending] = sortAndOffset();
+    setStateAndChange([currentCellId, currentDescending, offset2]);
+  };
+  const paginatorComponent = createMemo2(() => {
+    const resolvedPaginator = getValue2(paginator);
+    const [_, __, currentOffset] = sortAndOffset();
+    const PaginatorComponent = isTrue(resolvedPaginator) ? SortedTablePaginator : resolvedPaginator;
+    return isFalse(resolvedPaginator) ? null : createComponent2(PaginatorComponent, {
+      offset: currentOffset,
+      get limit() {
+        return getValue2(limit);
+      },
+      get total() {
+        return getValue2(total);
+      },
+      onChange: handleChangeOffset
+    });
+  });
+  return [sortAndOffset, handleSort, paginatorComponent];
+};
+var SortedTablePaginator = (props) => {
+  const content = () => {
+    let offset = props.offset ?? 0;
+    const limit = props.limit ?? props.total;
+    if (offset > props.total || offset < 0) {
+      offset = 0;
+      props.onChange(0);
+    }
+    const singular = props.singular ?? "row";
+    const plural = props.plural ?? singular + "s";
+    return [
+      memo2(
+        () => memo2(() => props.total > limit)() && [
+          (() => {
+            var _el$ = _tmpl$$2();
+            addEventListener(
+              _el$,
+              "click",
+              getCallbackOrUndefined(
+                () => props.onChange(offset - limit),
+                offset > 0
+              )
+            );
+            _el$.disabled = offset == 0;
+            return _el$;
+          })(),
+          (() => {
+            var _el$2 = _tmpl$2$2();
+            addEventListener(
+              _el$2,
+              "click",
+              getCallbackOrUndefined(
+                () => props.onChange(offset + limit),
+                offset + limit < props.total
+              )
+            );
+            effect(() => _el$2.disabled = offset + limit >= props.total);
+            return _el$2;
+          })(),
           offset + 1,
           " to ",
-          mathMin(total, offset + limit),
+          memo2(() => mathMin(props.total, offset + limit)),
           " of "
         ]
-      }),
-      total,
+      ),
+      memo2(() => props.total),
       " ",
-      total != 1 ? plural : singular
-    ]
-  });
+      memo2(() => props.total != 1 ? plural : singular)
+    ];
+  };
+  return memo2(content);
 };
-var ResultSortedTableInHtmlTable = ({
-  queryId,
-  cellId,
-  descending,
-  offset,
-  limit,
-  queries,
-  sortOnClick,
-  paginator = false,
-  customCells,
-  extraCellsBefore,
-  extraCellsAfter,
-  onChange,
-  ...props
-}) => {
+var ResultSortedTableInHtmlTable = (props) => {
   const [sortAndOffset, handleSort, paginatorComponent] = useSortingAndPagination(
-    cellId,
-    descending,
-    sortOnClick,
-    offset,
-    limit,
-    useResultRowCount(queryId, queries),
-    paginator,
-    onChange
+    () => props.cellId,
+    () => props.descending,
+    () => props.sortOnClick,
+    () => props.offset,
+    () => props.limit,
+    useResultRowCount(
+      () => props.queryId,
+      () => props.queries
+    ),
+    () => props.paginator ?? false,
+    () => props.onChange
   );
-  return /* @__PURE__ */ jsx2(HtmlTable, {
+  return HtmlTable({
     ...props,
-    params: useParams(
+    params: getParams(
       useCells(
-        useResultTableCellIds(queryId, queries),
-        customCells,
-        ResultCellView
+        useResultTableCellIds(
+          () => props.queryId,
+          () => props.queries
+        ),
+        () => props.customCells,
+        () => ResultCellView
       ),
-      useQueriesCellComponentProps(queries, queryId),
-      useResultSortedRowIds(queryId, ...sortAndOffset, limit, queries),
-      extraCellsBefore,
-      extraCellsAfter,
+      getQueriesCellComponentProps(props.queries, props.queryId),
+      useResultSortedRowIds(
+        () => props.queryId,
+        () => sortAndOffset()[0],
+        () => sortAndOffset()[1],
+        () => sortAndOffset()[2],
+        () => props.limit,
+        () => props.queries
+      ),
+      props.extraCellsBefore,
+      props.extraCellsAfter,
       sortAndOffset,
       handleSort,
       paginatorComponent
     )
   });
 };
-var SliceInHtmlTable = ({
-  indexId,
-  sliceId,
-  indexes,
-  editable,
-  customCells,
-  extraCellsBefore,
-  extraCellsAfter,
-  ...props
-}) => {
-  const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
-    useIndexesOrIndexesById2(indexes),
-    indexId
+var SliceInHtmlTable = (props) => {
+  const resolvedIndexes = useIndexesOrIndexesById2(() => props.indexes);
+  const details = createMemo2(
+    () => getIndexStoreTableId(resolvedIndexes(), props.indexId)
   );
-  return /* @__PURE__ */ jsx2(HtmlTable, {
+  return HtmlTable({
     ...props,
-    params: useParams(
+    params: getParams(
       useCells(
-        useTableCellIds2(tableId, store),
-        customCells,
-        editable ? EditableCellView : CellView
+        useTableCellIds2(
+          () => details()[2],
+          () => details()[1]
+        ),
+        props.customCells,
+        () => props.editable ? EditableCellView : CellView
       ),
-      useStoreCellComponentProps(store, tableId),
-      useSliceRowIds(indexId, sliceId, resolvedIndexes),
-      extraCellsBefore,
-      extraCellsAfter
+      getStoreCellComponentProps(details()[1], details()[2]),
+      useSliceRowIds(
+        () => props.indexId,
+        () => props.sliceId,
+        resolvedIndexes
+      ),
+      props.extraCellsBefore,
+      props.extraCellsAfter
     )
   });
 };
-var SortedTableInHtmlTable = ({
-  tableId,
-  cellId,
-  descending,
-  offset,
-  limit,
-  store,
-  editable,
-  sortOnClick,
-  paginator = false,
-  onChange,
-  customCells,
-  extraCellsBefore,
-  extraCellsAfter,
-  ...props
-}) => {
+var SortedTableInHtmlTable = (props) => {
   const [sortAndOffset, handleSort, paginatorComponent] = useSortingAndPagination(
-    cellId,
-    descending,
-    sortOnClick,
-    offset,
-    limit,
-    useRowCount(tableId, store),
-    paginator,
-    onChange
+    () => props.cellId,
+    () => props.descending,
+    () => props.sortOnClick,
+    () => props.offset,
+    () => props.limit,
+    useRowCount(
+      () => props.tableId,
+      () => props.store
+    ),
+    () => props.paginator ?? false,
+    () => props.onChange
   );
-  return /* @__PURE__ */ jsx2(HtmlTable, {
+  return HtmlTable({
     ...props,
-    params: useParams(
+    params: getParams(
       useCells(
-        useTableCellIds2(tableId, store),
-        customCells,
-        editable ? EditableCellView : CellView
+        useTableCellIds2(
+          () => props.tableId,
+          () => props.store
+        ),
+        () => props.customCells,
+        () => props.editable === true ? EditableCellView : CellView
       ),
-      useStoreCellComponentProps(store, tableId),
-      useSortedRowIds(tableId, ...sortAndOffset, limit, store),
-      extraCellsBefore,
-      extraCellsAfter,
+      getStoreCellComponentProps(props.store, props.tableId),
+      useSortedRowIds(
+        () => props.tableId,
+        () => sortAndOffset()[0],
+        () => sortAndOffset()[1],
+        () => sortAndOffset()[2],
+        () => props.limit,
+        () => props.store
+      ),
+      props.extraCellsBefore,
+      props.extraCellsAfter,
       sortAndOffset,
       handleSort,
       paginatorComponent
     )
   });
 };
-var extraValueCells = (extraValueCells2 = [], extraValueCellProps, after = 0) => arrayMap2(
-  extraValueCells2,
-  ({ component: Component }, index) => /* @__PURE__ */ jsx2(
-    "td",
-    {
-      className: EXTRA,
-      children: /* @__PURE__ */ jsx2(Component, { ...extraValueCellProps })
-    },
-    extraKey(index, after)
-  )
-);
-var ValuesInHtmlTable = ({
-  store,
-  editable = false,
-  valueComponent: Value = editable ? EditableValueView : ValueView,
-  getValueComponentProps,
-  extraCellsBefore,
-  extraCellsAfter,
-  className,
-  headerRow,
-  idColumn
-}) => /* @__PURE__ */ jsxs("table", {
-  className,
-  children: [
-    headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
-      children: /* @__PURE__ */ jsxs("tr", {
-        children: [
-          extraHeaders(extraCellsBefore),
-          idColumn === false ? null : /* @__PURE__ */ jsx2("th", { children: "Id" }),
-          /* @__PURE__ */ jsx2("th", { children: VALUE2 }),
-          extraHeaders(extraCellsAfter, 1)
-        ]
-      })
-    }),
-    /* @__PURE__ */ jsx2("tbody", {
-      children: arrayMap2(useValueIds2(store), (valueId) => {
-        const valueProps = { valueId, store };
-        return /* @__PURE__ */ jsxs(
-          "tr",
-          {
-            children: [
-              extraValueCells(extraCellsBefore, valueProps),
-              isFalse(idColumn) ? null : /* @__PURE__ */ jsx2("th", {
-                title: valueId,
-                children: valueId
-              }),
-              /* @__PURE__ */ jsx2("td", {
-                children: /* @__PURE__ */ jsx2(Value, {
-                  ...getProps2(getValueComponentProps, valueId),
-                  ...valueProps
-                })
-              }),
-              extraValueCells(extraCellsAfter, valueProps, 1)
-            ]
-          },
-          valueId
-        );
-      })
-    })
-  ]
+var _tmpl$$1 = /* @__PURE__ */ template(`<td>`);
+var _tmpl$2$1 = /* @__PURE__ */ template(`<table><tbody>`);
+var _tmpl$3$1 = /* @__PURE__ */ template(`<thead><tr><th>`);
+var _tmpl$4$1 = /* @__PURE__ */ template(`<th>Id`);
+var _tmpl$5$1 = /* @__PURE__ */ template(`<tr><td>`);
+var _tmpl$6$1 = /* @__PURE__ */ template(`<th>`);
+var extraValueCells = (extraValueCells2 = [], extraValueCellProps) => arrayMap2(getValue2(extraValueCells2) ?? [], (extraValueCell) => {
+  const Component = extraValueCell.component;
+  return (() => {
+    var _el$ = _tmpl$$1();
+    className(_el$, EXTRA);
+    insert(_el$, createComponent2(Component, extraValueCellProps));
+    return _el$;
+  })();
 });
-var Details = ({ uniqueId, title, editable, handleEditable, children, s }) => {
-  const open2 = !!useCell(STATE_TABLE, uniqueId, OPEN_CELL, s);
-  const handleToggle = useSetCellCallback(
-    STATE_TABLE,
-    uniqueId,
-    OPEN_CELL,
-    (event) => event[CURRENT_TARGET].open,
-    [],
-    s
-  );
-  return /* @__PURE__ */ jsxs("details", {
-    open: open2,
-    onToggle: handleToggle,
-    children: [
-      /* @__PURE__ */ jsxs("summary", {
-        children: [
-          /* @__PURE__ */ jsx2("span", { children: title }),
-          handleEditable ? /* @__PURE__ */ jsx2("img", {
-            onClick: handleEditable,
-            className: editable ? "done" : "edit",
-            title: editable ? "Done editing" : "Edit"
-          }) : null
-        ]
-      }),
-      /* @__PURE__ */ jsx2("div", { children })
-    ]
-  });
-};
-var useEditable = (uniqueId, s) => [
-  !!useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s),
-  useCallback2(
-    (event) => {
-      s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, (editable) => !editable);
-      event.preventDefault();
-    },
-    [s, uniqueId]
-  )
-];
-var IndexView = ({ indexes, indexesId, indexId, s }) => /* @__PURE__ */ jsx2(Details, {
-  uniqueId: getUniqueId("i", indexesId, indexId),
-  title: "Index: " + indexId,
-  s,
-  children: arrayMap2(
-    useSliceIds(indexId, indexes),
-    (sliceId) => /* @__PURE__ */ jsx2(
-      SliceView,
-      {
-        indexes,
-        indexesId,
-        indexId,
-        sliceId,
-        s
-      },
-      sliceId
-    )
-  )
-});
-var SliceView = ({ indexes, indexesId, indexId, sliceId, s }) => {
-  const uniqueId = getUniqueId("i", indexesId, indexId, sliceId);
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  return /* @__PURE__ */ jsx2(Details, {
-    uniqueId,
-    title: "Slice: " + sliceId,
-    editable,
-    handleEditable,
-    s,
-    children: /* @__PURE__ */ jsx2(SliceInHtmlTable, {
-      sliceId,
-      indexId,
-      indexes,
-      editable
-    })
-  });
-};
-var IndexesView = ({ indexesId, s }) => {
-  const indexes = useIndexes(indexesId);
-  const indexIds = useIndexIds(indexes);
-  return isUndefined2(indexes) ? null : /* @__PURE__ */ jsx2(Details, {
-    uniqueId: getUniqueId("i", indexesId),
-    title: "Indexes: " + (indexesId ?? DEFAULT),
-    s,
-    children: arrayIsEmpty(indexIds) ? "No indexes defined" : sortedIdsMap(
-      indexIds,
-      (indexId) => /* @__PURE__ */ jsx2(
-        IndexView,
-        {
-          indexes,
-          indexesId,
-          indexId,
-          s
-        },
-        indexId
-      )
-    )
-  });
-};
-var MetricRow = ({ metrics, metricId }) => /* @__PURE__ */ jsxs("tr", {
-  children: [
-    /* @__PURE__ */ jsx2("th", { title: metricId, children: metricId }),
-    /* @__PURE__ */ jsx2("td", { children: metrics?.getTableId(metricId) }),
-    /* @__PURE__ */ jsx2("td", { children: useMetric(metricId, metrics) })
-  ]
-});
-var MetricsView = ({ metricsId, s }) => {
-  const metrics = useMetrics(metricsId);
-  const metricIds = useMetricIds(metrics);
-  return isUndefined2(metrics) ? null : /* @__PURE__ */ jsx2(Details, {
-    uniqueId: getUniqueId("m", metricsId),
-    title: "Metrics: " + (metricsId ?? DEFAULT),
-    s,
-    children: arrayIsEmpty(metricIds) ? "No metrics defined" : /* @__PURE__ */ jsxs("table", {
-      children: [
-        /* @__PURE__ */ jsxs("thead", {
-          children: [
-            /* @__PURE__ */ jsx2("th", { children: "Metric Id" }),
-            /* @__PURE__ */ jsx2("th", { children: "Table Id" }),
-            /* @__PURE__ */ jsx2("th", { children: "Metric" })
-          ]
-        }),
-        /* @__PURE__ */ jsx2("tbody", {
-          children: arrayMap2(
-            metricIds,
-            (metricId) => /* @__PURE__ */ jsx2(
-              MetricRow,
-              { metrics, metricId },
-              metricId
+var ValuesInHtmlTable = (props) => {
+  const valueIds = useValueIds2(() => props.store);
+  return (() => {
+    var _el$2 = _tmpl$2$1(), _el$3 = _el$2.firstChild;
+    insert(
+      _el$2,
+      (() => {
+        var _c$ = memo2(() => props.headerRow === false);
+        return () => _c$() ? null : (() => {
+          var _el$4 = _tmpl$3$1(), _el$5 = _el$4.firstChild, _el$6 = _el$5.firstChild;
+          insert(
+            _el$5,
+            () => extraHeaders(props.extraCellsBefore),
+            _el$6
+          );
+          insert(
+            _el$5,
+            (() => {
+              var _c$2 = memo2(() => props.idColumn === false);
+              return () => _c$2() ? null : _tmpl$4$1();
+            })(),
+            _el$6
+          );
+          insert(_el$6, VALUE2);
+          insert(_el$5, () => extraHeaders(props.extraCellsAfter), null);
+          return _el$4;
+        })();
+      })(),
+      _el$3
+    );
+    insert(
+      _el$3,
+      () => arrayMap2(valueIds(), (valueId) => {
+        const valueProps = {
+          valueId,
+          store: props.store
+        };
+        const Value = props.valueComponent ?? (getValue2(props.editable) === true ? EditableValueView : ValueView);
+        return (() => {
+          var _el$8 = _tmpl$5$1(), _el$9 = _el$8.firstChild;
+          insert(
+            _el$8,
+            () => extraValueCells(props.extraCellsBefore, valueProps),
+            _el$9
+          );
+          insert(
+            _el$8,
+            (() => {
+              var _c$3 = memo2(() => !!isFalse(props.idColumn));
+              return () => _c$3() ? null : (() => {
+                var _el$0 = _tmpl$6$1();
+                setAttribute(_el$0, "title", valueId);
+                insert(_el$0, valueId);
+                return _el$0;
+              })();
+            })(),
+            _el$9
+          );
+          insert(
+            _el$9,
+            createComponent2(
+              Value,
+              mergeProps2(
+                () => getProps2(props.getValueComponentProps, valueId),
+                valueProps
+              )
             )
-          )
-        })
-      ]
-    })
-  });
+          );
+          insert(
+            _el$8,
+            () => extraValueCells(props.extraCellsAfter, valueProps),
+            null
+          );
+          return _el$8;
+        })();
+      })
+    );
+    effect(() => className(_el$2, props.className));
+    return _el$2;
+  })();
 };
-var QueryView = ({ queries, queriesId, queryId, s }) => {
-  const uniqueId = getUniqueId("q", queriesId, queryId);
-  const [cellId, descending, offset] = jsonParse(
-    useCell(STATE_TABLE, uniqueId, SORT_CELL, s) ?? "[]"
-  );
-  const handleChange = useSetCellCallback(
-    STATE_TABLE,
-    uniqueId,
-    SORT_CELL,
-    jsonStringWithMap,
-    [],
-    s
-  );
-  return /* @__PURE__ */ jsx2(Details, {
-    uniqueId,
-    title: "Query: " + queryId,
-    s,
-    children: /* @__PURE__ */ jsx2(ResultSortedTableInHtmlTable, {
-      queryId,
-      queries,
-      cellId,
-      descending,
-      offset,
-      limit: 10,
-      paginator: true,
-      sortOnClick: true,
-      onChange: handleChange
-    })
-  });
-};
-var QueriesView = ({ queriesId, s }) => {
-  const queries = useQueries(queriesId);
-  const queryIds = useQueryIds(queries);
-  return isUndefined2(queries) ? null : /* @__PURE__ */ jsx2(Details, {
-    uniqueId: getUniqueId("q", queriesId),
-    title: "Queries: " + (queriesId ?? DEFAULT),
-    s,
-    children: arrayIsEmpty(queryIds) ? "No queries defined" : sortedIdsMap(
-      queryIds,
-      (queryId) => /* @__PURE__ */ jsx2(
-        QueryView,
-        {
-          queries,
-          queriesId,
-          queryId,
-          s
-        },
-        queryId
-      )
-    )
-  });
-};
-var RelationshipView = ({
-  relationships,
-  relationshipsId,
-  relationshipId,
-  s
-}) => {
-  const uniqueId = getUniqueId("r", relationshipsId, relationshipId);
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  return /* @__PURE__ */ jsx2(Details, {
-    uniqueId,
-    title: "Relationship: " + relationshipId,
+var _tmpl$ = /* @__PURE__ */ template(
+  `<details><summary><span></span></summary><div>`
+);
+var _tmpl$2 = /* @__PURE__ */ template(`<img>`);
+var _tmpl$3 = /* @__PURE__ */ template(`<img title=Cancel class=cancel>`);
+var _tmpl$4 = /* @__PURE__ */ template(`<input type=text autofocus>`);
+var _tmpl$5 = /* @__PURE__ */ template(`<img title=Confirm class=ok>`);
+var _tmpl$6 = /* @__PURE__ */ template(`<div class=actions><div></div><div>`);
+var _tmpl$7 = /* @__PURE__ */ template(`<p>No values.`);
+var _tmpl$8 = /* @__PURE__ */ template(`<p>No tables.`);
+var _tmpl$9 = /* @__PURE__ */ template(`<tr><th></th><td></td><td>`);
+var _tmpl$0 = /* @__PURE__ */ template(
+  `<table><thead><tr><th>Metric Id</th><th>Table Id</th><th>Metric</th></tr></thead><tbody>`
+);
+var _tmpl$1 = /* @__PURE__ */ template(
+  `<header><img class=flat><span></span><img class=flat title=Close>`
+);
+var _tmpl$10 = /* @__PURE__ */ template(`<span class=warn>`);
+var _tmpl$11 = /* @__PURE__ */ template(`<article>`);
+var _tmpl$12 = /* @__PURE__ */ template(`<main>`);
+var _tmpl$13 = /* @__PURE__ */ template(`<style>`);
+var _tmpl$14 = /* @__PURE__ */ template(`<aside>`);
+var useEditable = (uniqueId, s) => {
+  const storedEditable = useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s);
+  const [editable, setEditable] = createSignal2(false);
+  createEffect2(() => setEditable(!!storedEditable()));
+  return [
     editable,
-    handleEditable,
-    s,
-    children: /* @__PURE__ */ jsx2(RelationshipInHtmlTable, {
-      relationshipId,
-      relationships,
-      editable
-    })
-  });
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextEditable = !editable();
+      setEditable(nextEditable);
+      s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, nextEditable);
+    }
+  ];
 };
-var RelationshipsView = ({ relationshipsId, s }) => {
-  const relationships = useRelationships(relationshipsId);
-  const relationshipIds = useRelationshipIds(relationships);
-  return isUndefined2(relationships) ? null : /* @__PURE__ */ jsx2(Details, {
-    uniqueId: getUniqueId("r", relationshipsId),
-    title: "Relationships: " + (relationshipsId ?? DEFAULT),
-    s,
-    children: arrayIsEmpty(relationshipIds) ? "No relationships defined" : sortedIdsMap(
-      relationshipIds,
-      (relationshipId) => /* @__PURE__ */ jsx2(
-        RelationshipView,
-        {
-          relationships,
-          relationshipsId,
-          relationshipId,
-          s
-        },
-        relationshipId
-      )
-    )
-  });
+var useHasTableCallback = (storeOrStoreId) => {
+  const store = useStoreOrStoreById(storeOrStoreId);
+  return (tableId) => store()?.hasTable(tableId) ?? false;
 };
-var getNewIdFromSuggestedId = (suggestedId, has) => {
-  let newId;
-  let suffix = 0;
-  while (has(
-    newId = suggestedId + (suffix > 0 ? " (copy" + (suffix > 1 ? " " + suffix : "") + ")" : "")
-  )) {
-    suffix++;
-  }
-  return newId;
+var useHasRowCallback = (storeOrStoreId, tableId) => {
+  const store = useStoreOrStoreById(storeOrStoreId);
+  return (rowId) => store()?.hasRow(tableId, rowId) ?? false;
 };
-var ConfirmableActions = ({ actions, ...props }) => {
-  const [confirming, setConfirming] = useState2();
-  const handleDone = useCallback2(() => setConfirming(void 0), []);
-  useEffect2(() => {
-    if (!isUndefined2(confirming)) {
-      const handleKeyDown = (e) => {
-        if (!isUndefined2(confirming) && e.key === "Escape") {
-          e.preventDefault();
+var useHasValueCallback = (storeOrStoreId) => {
+  const store = useStoreOrStoreById(storeOrStoreId);
+  return (valueId) => store()?.hasValue(valueId) ?? false;
+};
+var Details = (props) => {
+  const open2 = useCell(STATE_TABLE, props.uniqueId, OPEN_CELL, props.s);
+  const handleToggle = (event) => props.s.setCell(
+    STATE_TABLE,
+    props.uniqueId,
+    OPEN_CELL,
+    event.currentTarget.open
+  );
+  return (() => {
+    var _el$ = _tmpl$(), _el$2 = _el$.firstChild, _el$3 = _el$2.firstChild, _el$4 = _el$2.nextSibling;
+    _el$.addEventListener("toggle", handleToggle);
+    insert(_el$3, () => props.title);
+    insert(
+      _el$2,
+      (() => {
+        var _c$ = memo2(() => !!props.handleEditable);
+        return () => _c$() ? (() => {
+          var _el$5 = _tmpl$2();
+          addEventListener(_el$5, "click", props.handleEditable);
+          effect(
+            (_p$) => {
+              var _v$ = props.editable?.() ? "done" : "edit", _v$2 = props.editable?.() ? "Done editing" : "Edit";
+              _v$ !== _p$.e && className(_el$5, _p$.e = _v$);
+              _v$2 !== _p$.t && setAttribute(_el$5, "title", _p$.t = _v$2);
+              return _p$;
+            },
+            {
+              e: void 0,
+              t: void 0
+            }
+          );
+          return _el$5;
+        })() : EMPTY_STRING2;
+      })(),
+      null
+    );
+    insert(_el$4, () => props.children);
+    effect(() => _el$.open = !!open2());
+    return _el$;
+  })();
+};
+var ConfirmableActions = (props) => {
+  const [confirming, setConfirming] = createSignal2();
+  const handleDone = () => setConfirming(void 0);
+  createEffect2(() => {
+    if (!isUndefined2(confirming())) {
+      const handleKeyDown = (event) => {
+        if (!isUndefined2(confirming()) && event.key == "Escape") {
+          event.preventDefault();
           handleDone();
         }
       };
       document.addEventListener("keydown", handleKeyDown);
-      return () => document.removeEventListener("keydown", handleKeyDown);
+      onCleanup2(() => document.removeEventListener("keydown", handleKeyDown));
     }
-  }, [confirming, handleDone]);
-  if (!isUndefined2(confirming)) {
-    const [, , Component] = actions[confirming];
-    return /* @__PURE__ */ jsxs(Fragment, {
-      children: [
-        /* @__PURE__ */ jsx2(Component, { onDone: handleDone, ...props }),
-        /* @__PURE__ */ jsx2("img", {
-          onClick: handleDone,
-          title: "Cancel",
-          className: "cancel"
-        })
-      ]
-    });
-  } else {
-    return actions.map(
-      ([icon, title], index) => /* @__PURE__ */ jsx2(
-        "img",
-        {
-          title,
-          className: icon,
-          onClick: () => setConfirming(index)
-        },
-        index
+  });
+  const content = () => {
+    const confirmingIndex = confirming();
+    const Component = isUndefined2(confirmingIndex) ? void 0 : props.actions[confirmingIndex][2];
+    return memo2(
+      () => Component ? [
+        memo2(
+          () => Component({
+            ...props,
+            onDone: handleDone
+          })
+        ),
+        (() => {
+          var _el$6 = _tmpl$3();
+          _el$6.addEventListener("click", handleDone);
+          return _el$6;
+        })()
+      ] : arrayMap2(
+        props.actions,
+        ([icon, title], index) => (() => {
+          var _el$7 = _tmpl$2();
+          _el$7.addEventListener("click", () => setConfirming(index));
+          setAttribute(_el$7, "title", title);
+          className(_el$7, icon);
+          return _el$7;
+        })()
       )
     );
-  }
-};
-var NewId = ({ onDone, suggestedId, has, set, prompt = "New Id" }) => {
-  const [newId, setNewId] = useState2(suggestedId);
-  const [newIdOk, setNewIdOk] = useState2(true);
-  const [previousSuggestedId, setPreviousSuggestedNewId] = useState2(suggestedId);
-  const handleNewIdChange = (e) => {
-    setNewId(e.target.value);
-    setNewIdOk(!has(e.target.value));
   };
-  const handleClick = useCallback2(() => {
-    if (has(newId)) {
+  return memo2(content);
+};
+var NewId = (props) => {
+  const [newId, setNewId] = createSignal2(props.suggestedId);
+  const [newIdOk, setNewIdOk] = createSignal2(true);
+  const [previousSuggestedId, setPreviousSuggestedNewId] = createSignal2(
+    props.suggestedId
+  );
+  const handleNewIdChange = (event) => {
+    const id2 = event.currentTarget.value;
+    setNewId(id2);
+    setNewIdOk(!props.has(id2));
+  };
+  const handleClick = () => {
+    const id2 = newId();
+    if (props.has(id2)) {
       setNewIdOk(false);
     } else {
-      set(newId);
-      onDone();
+      props.set(id2);
+      props.onDone();
     }
-  }, [onDone, setNewIdOk, has, set, newId]);
-  const handleKeyDown = useCallback2(
-    (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleClick();
-      }
-    },
-    [handleClick]
-  );
-  if (suggestedId != previousSuggestedId) {
-    setNewId(suggestedId);
-    setPreviousSuggestedNewId(suggestedId);
-  }
-  return /* @__PURE__ */ jsxs(Fragment, {
-    children: [
-      prompt + ": ",
-      /* @__PURE__ */ jsx2("input", {
-        type: "text",
-        value: newId,
-        onChange: handleNewIdChange,
-        onKeyDown: handleKeyDown,
-        autoFocus: true
-      }),
-      " ",
-      /* @__PURE__ */ jsx2("img", {
-        onClick: handleClick,
-        title: newIdOk ? "Confirm" : "Id already exists",
-        className: newIdOk ? "ok" : "okDis"
-      })
-    ]
+  };
+  const handleKeyDown = (event) => {
+    if (event.key == "Enter") {
+      event.preventDefault();
+      handleClick();
+    }
+  };
+  createEffect2(() => {
+    if (props.suggestedId != previousSuggestedId()) {
+      setNewId(props.suggestedId);
+      setPreviousSuggestedNewId(props.suggestedId);
+    }
   });
+  return [
+    memo2(() => (props.prompt ?? "New Id") + ": "),
+    (() => {
+      var _el$8 = _tmpl$4();
+      _el$8.addEventListener("keydown", handleKeyDown);
+      _el$8.addEventListener("input", handleNewIdChange);
+      effect(() => _el$8.value = newId());
+      return _el$8;
+    })(),
+    " ",
+    (() => {
+      var _el$9 = _tmpl$2();
+      _el$9.addEventListener("click", handleClick);
+      effect(
+        (_p$) => {
+          var _v$3 = newIdOk() ? "Confirm" : "Id already exists", _v$4 = newIdOk() ? "ok" : "okDis";
+          _v$3 !== _p$.e && setAttribute(_el$9, "title", _p$.e = _v$3);
+          _v$4 !== _p$.t && className(_el$9, _p$.t = _v$4);
+          return _p$;
+        },
+        {
+          e: void 0,
+          t: void 0
+        }
+      );
+      return _el$9;
+    })()
+  ];
 };
-var Delete = ({ onClick, prompt = "Delete" }) => {
-  const handleKeyDown = useCallback2(
-    (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        onClick();
-      }
-    },
-    [onClick]
-  );
-  useEffect2(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
-  return /* @__PURE__ */ jsxs(Fragment, {
-    children: [
-      prompt,
-      "? ",
-      /* @__PURE__ */ jsx2("img", { onClick, title: "Confirm", className: "ok" })
-    ]
-  });
+var Delete = (props) => {
+  const handleKeyDown = (event) => {
+    if (event.key == "Enter") {
+      event.preventDefault();
+      props.onClick();
+    }
+  };
+  document.addEventListener("keydown", handleKeyDown);
+  onCleanup2(() => document.removeEventListener("keydown", handleKeyDown));
+  return [
+    memo2(() => (props.prompt ?? "Delete") + "? "),
+    (() => {
+      var _el$0 = _tmpl$5();
+      addEventListener(_el$0, "click", props.onClick);
+      return _el$0;
+    })()
+  ];
 };
-var Actions = ({ left, right }) => /* @__PURE__ */ jsxs("div", {
-  className: "actions",
-  children: [
-    /* @__PURE__ */ jsx2("div", { children: left }),
-    /* @__PURE__ */ jsx2("div", { children: right })
-  ]
-});
-var useHasTableCallback = (storeOrStoreId) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  return useCallback2((tableId) => store?.hasTable(tableId) ?? false, [store]);
-};
-var AddTable = ({ onDone, store }) => {
-  const has = useHasTableCallback(store);
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
+var Actions = (props) => (() => {
+  var _el$1 = _tmpl$6(), _el$10 = _el$1.firstChild, _el$11 = _el$10.nextSibling;
+  insert(_el$10, () => props.left);
+  insert(_el$11, () => props.right);
+  return _el$1;
+})();
+var AddTable = (props) => {
+  const has = useHasTableCallback(props.store);
+  return NewId({
+    onDone: props.onDone,
     suggestedId: getNewIdFromSuggestedId("table", has),
     has,
     set: useSetTableCallback(
       (newId) => newId,
-      () => ({ row: { cell: "" } }),
-      [],
-      store
+      () => ({
+        row: {
+          cell: ""
+        }
+      }),
+      props.store
     ),
     prompt: "Add table"
   });
 };
-var DeleteTables = ({ onDone, store }) => /* @__PURE__ */ jsx2(Delete, {
-  onClick: useDelTablesCallback(store, onDone),
+var DeleteTables = (props) => Delete({
+  onClick: useDelTablesCallback(props.store, props.onDone),
   prompt: "Delete all tables"
 });
-var TablesActions = ({ store }) => /* @__PURE__ */ jsx2(Actions, {
-  left: /* @__PURE__ */ jsx2(ConfirmableActions, {
+var TablesActions = (props) => Actions({
+  left: ConfirmableActions({
     actions: [["add", "Add table", AddTable]],
-    store
+    store: props.store
   }),
-  right: useHasTables(store) ? /* @__PURE__ */ jsx2(ConfirmableActions, {
+  right: useHasTables(props.store)() ? ConfirmableActions({
     actions: [["delete", "Delete all tables", DeleteTables]],
-    store
-  }) : null
+    store: props.store
+  }) : EMPTY_STRING2
 });
-var AddRow = ({ onDone, tableId, store }) => {
-  const has = useHasRowCallback(store, tableId);
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
+var AddRow = (props) => {
+  const has = useHasRowCallback(props.store, props.tableId);
+  return NewId({
+    onDone: props.onDone,
     suggestedId: getNewIdFromSuggestedId("row", has),
     has,
     set: useSetRowCallback(
-      tableId,
+      props.tableId,
       (newId) => newId,
-      (_, store2) => objNew(
-        arrayMap2(store2.getTableCellIds(tableId), (cellId) => [cellId, ""])
+      (_, store) => objNew(
+        arrayMap2(store.getTableCellIds(props.tableId), (cellId) => [
+          cellId,
+          ""
+        ])
       )
     ),
     prompt: "Add row"
   });
 };
-var CloneTable = ({ onDone, tableId, store: storeOrStoreId }) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
+var CloneTable = (props) => {
+  const store = useStoreOrStoreById(props.store)();
   const has = useHasTableCallback(store);
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
-    suggestedId: getNewIdFromSuggestedId(tableId, has),
+  return NewId({
+    onDone: props.onDone,
+    suggestedId: getNewIdFromSuggestedId(props.tableId, has),
     has,
     set: useSetTableCallback(
-      (tableId2) => tableId2,
-      (_, store2) => store2.getTable(tableId)
+      (tableId) => tableId,
+      (_, store2) => store2.getTable(props.tableId),
+      store
     ),
     prompt: "Clone table to"
   });
 };
-var DeleteTable = ({ onDone, tableId, store }) => /* @__PURE__ */ jsx2(Delete, {
-  onClick: useDelTableCallback(tableId, store, onDone),
+var DeleteTable = (props) => Delete({
+  onClick: useDelTableCallback(props.tableId, props.store, props.onDone),
   prompt: "Delete table"
 });
-var TableActions1 = ({ tableId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+var TableActions1 = (props) => ConfirmableActions({
   actions: [["add", "Add row", AddRow]],
-  store,
-  tableId
+  store: props.store,
+  tableId: props.tableId
 });
-var TableActions2 = ({ tableId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+var TableActions2 = (props) => ConfirmableActions({
   actions: [
     ["clone", "Clone table", CloneTable],
     ["delete", "Delete table", DeleteTable]
   ],
-  store,
-  tableId
+  store: props.store,
+  tableId: props.tableId
 });
-var useHasRowCallback = (storeOrStoreId, tableId) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  return useCallback2(
-    (rowId) => store?.hasRow(tableId, rowId) ?? false,
-    [store, tableId]
-  );
-};
-var AddCell = ({ onDone, tableId, rowId, store: storeOrStoreId }) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  const has = useCallback2(
-    (cellId) => store.hasCell(tableId, rowId, cellId),
-    [store, tableId, rowId]
-  );
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
+var AddCell = (props) => {
+  const store = useStoreOrStoreById(props.store)();
+  const has = (cellId) => store?.hasCell(props.tableId, props.rowId, cellId) ?? false;
+  return NewId({
+    onDone: props.onDone,
     suggestedId: getNewIdFromSuggestedId("cell", has),
     has,
-    set: useSetCellCallback2(
-      tableId,
-      rowId,
+    set: useSetCellCallback(
+      props.tableId,
+      props.rowId,
       (newId) => newId,
       () => "",
-      [],
       store
     ),
     prompt: "Add cell"
   });
 };
-var CloneRow = ({ onDone, tableId, rowId, store: storeOrStoreId }) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  const has = useHasRowCallback(store, tableId);
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
-    suggestedId: getNewIdFromSuggestedId(rowId, has),
+var CloneRow = (props) => {
+  const store = useStoreOrStoreById(props.store)();
+  const has = useHasRowCallback(store, props.tableId);
+  return NewId({
+    onDone: props.onDone,
+    suggestedId: getNewIdFromSuggestedId(props.rowId, has),
     has,
     set: useSetRowCallback(
-      tableId,
+      props.tableId,
       (newId) => newId,
-      (_, store2) => store2.getRow(tableId, rowId),
-      [rowId]
+      (_, store2) => store2.getRow(props.tableId, props.rowId),
+      store
     ),
     prompt: "Clone row to"
   });
 };
-var DeleteRow = ({ onDone, tableId, rowId, store }) => /* @__PURE__ */ jsx2(Delete, {
-  onClick: useDelRowCallback(tableId, rowId, store, onDone),
+var DeleteRow = (props) => Delete({
+  onClick: useDelRowCallback(
+    props.tableId,
+    props.rowId,
+    props.store,
+    props.onDone
+  ),
   prompt: "Delete row"
 });
-var RowActions = ({ tableId, rowId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+var RowActions = (props) => ConfirmableActions({
   actions: [
     ["add", "Add cell", AddCell],
     ["clone", "Clone row", CloneRow],
     ["delete", "Delete row", DeleteRow]
   ],
-  store,
-  tableId,
-  rowId
+  store: props.store,
+  tableId: props.tableId,
+  rowId: props.rowId
 });
-var CellDelete = ({ onDone, tableId, rowId, cellId, store }) => /* @__PURE__ */ jsx2(Delete, {
-  onClick: useDelCellCallback(tableId, rowId, cellId, true, store, onDone),
+var CellDelete = (props) => Delete({
+  onClick: useDelCellCallback(
+    props.tableId,
+    props.rowId,
+    props.cellId,
+    true,
+    props.store,
+    props.onDone
+  ),
   prompt: "Delete cell"
 });
-var CellActions = ({ tableId, rowId, cellId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+var CellActions = (props) => ConfirmableActions({
   actions: [["delete", "Delete cell", CellDelete]],
-  store,
-  tableId,
-  rowId,
-  cellId
+  store: props.store,
+  tableId: props.tableId,
+  rowId: props.rowId,
+  cellId: props.cellId
 });
-var rowActions = [{ label: "", component: RowActions }];
-var EditableCellViewWithActions = (props) => /* @__PURE__ */ jsxs(Fragment, {
-  children: [
-    /* @__PURE__ */ jsx2(EditableCellView, { ...props }),
-    useHasCell(props.tableId, props.rowId, props.cellId, props.store) && /* @__PURE__ */ jsx2(CellActions, { ...props })
-  ]
+var AddValue = (props) => {
+  const has = useHasValueCallback(props.store);
+  return NewId({
+    onDone: props.onDone,
+    suggestedId: getNewIdFromSuggestedId("value", has),
+    has,
+    set: useSetValueCallback(
+      (newId) => newId,
+      () => "",
+      props.store
+    ),
+    prompt: "Add value"
+  });
+};
+var DeleteValues = (props) => Delete({
+  onClick: useDelValuesCallback(props.store, props.onDone),
+  prompt: "Delete all values"
 });
-var TableView = ({ tableId, store, storeId, s }) => {
-  const uniqueId = getUniqueId("t", storeId, tableId);
-  const [cellId, descending, offset] = jsonParse(
-    useCell(STATE_TABLE, uniqueId, SORT_CELL, s) ?? "[]"
-  );
+var ValuesActions = (props) => Actions({
+  left: ConfirmableActions({
+    actions: [["add", "Add value", AddValue]],
+    store: props.store
+  }),
+  right: useHasValues(props.store)() ? ConfirmableActions({
+    actions: [["delete", "Delete all values", DeleteValues]],
+    store: props.store
+  }) : EMPTY_STRING2
+});
+var CloneValue = (props) => {
+  const has = useHasValueCallback(props.store);
+  return NewId({
+    onDone: props.onDone,
+    suggestedId: getNewIdFromSuggestedId(props.valueId, has),
+    has,
+    set: useSetValueCallback(
+      (newId) => newId,
+      (_, store) => store.getValue(props.valueId) ?? "",
+      props.store
+    ),
+    prompt: "Clone value to"
+  });
+};
+var DeleteValue = (props) => Delete({
+  onClick: useDelValueCallback(props.valueId, props.store, props.onDone),
+  prompt: "Delete value"
+});
+var ValueActions = (props) => ConfirmableActions({
+  actions: [
+    ["clone", "Clone value", CloneValue],
+    ["delete", "Delete value", DeleteValue]
+  ],
+  store: props.store,
+  valueId: props.valueId
+});
+var valueActions = [
+  {
+    label: "",
+    component: ValueActions
+  }
+];
+var rowActions = [
+  {
+    label: "",
+    component: RowActions
+  }
+];
+var EditableCellViewWithActions = (props) => [
+  createComponent2(EditableCellView, props),
+  memo2(
+    () => memo2(
+      () => !!useHasCell(props.tableId, props.rowId, props.cellId, props.store)()
+    )() ? createComponent2(CellActions, props) : EMPTY_STRING2
+  )
+];
+var ValuesView = (props) => {
+  const uniqueId = getUniqueId("v", props.storeId);
+  const [editable, handleEditable] = useEditable(uniqueId, props.s);
+  const valueIds = useValueIds(props.store);
+  return Details({
+    uniqueId,
+    title: VALUES2,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      return [
+        memo2(
+          () => memo2(() => !!arrayIsEmpty(valueIds()))() ? _tmpl$7() : createComponent2(ValuesInHtmlTable, {
+            get store() {
+              return props.store;
+            },
+            get editable() {
+              return editable();
+            },
+            extraCellsAfter: () => editable() ? valueActions : []
+          })
+        ),
+        memo2(
+          () => memo2(() => !!editable())() ? createComponent2(ValuesActions, {
+            get store() {
+              return props.store;
+            }
+          }) : EMPTY_STRING2
+        )
+      ];
+    }
+  });
+};
+var TableView = (props) => {
+  const uniqueId = getUniqueId("t", props.storeId, props.tableId);
+  const sort = useCell(STATE_TABLE, uniqueId, SORT_CELL, props.s);
   const handleChange = useSetCellCallback(
     STATE_TABLE,
     uniqueId,
     SORT_CELL,
     jsonStringWithMap,
-    [],
-    s
+    props.s
   );
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  const CellComponent = editable ? EditableCellViewWithActions : CellView;
-  return /* @__PURE__ */ jsxs(Details, {
+  const [editable, handleEditable] = useEditable(uniqueId, props.s);
+  const cellIds = useTableCellIds(props.tableId, props.store);
+  return Details({
     uniqueId,
-    title: TABLE2 + ": " + tableId,
+    title: TABLE2 + ": " + props.tableId,
     editable,
     handleEditable,
-    s,
-    children: [
-      /* @__PURE__ */ jsx2(SortedTableInHtmlTable, {
-        tableId,
-        store,
-        cellId,
-        descending,
-        offset,
-        limit: 10,
-        paginator: true,
-        sortOnClick: true,
-        onChange: handleChange,
-        editable,
-        extraCellsAfter: editable ? rowActions : [],
-        customCells: objNew(
-          arrayMap2(useTableCellIds(tableId, store), (cellId2) => [
-            cellId2,
-            { label: cellId2, component: CellComponent }
-          ])
+    s: props.s,
+    get children() {
+      const [cellId, descending, offset] = jsonParse(sort() ?? "[]");
+      return [
+        createComponent2(SortedTableInHtmlTable, {
+          get tableId() {
+            return props.tableId;
+          },
+          get store() {
+            return props.store;
+          },
+          cellId,
+          descending,
+          offset,
+          limit: 10,
+          paginator: true,
+          sortOnClick: true,
+          onChange: handleChange,
+          get editable() {
+            return editable();
+          },
+          extraCellsAfter: () => editable() ? rowActions : [],
+          customCells: () => {
+            const CellComponent = editable() ? EditableCellViewWithActions : CellView;
+            return objNew(
+              arrayMap2(cellIds(), (cellId2) => [
+                cellId2,
+                {
+                  label: cellId2,
+                  component: CellComponent
+                }
+              ])
+            );
+          }
+        }),
+        memo2(
+          () => memo2(() => !!editable())() ? (() => {
+            var _el$13 = _tmpl$6(), _el$14 = _el$13.firstChild, _el$15 = _el$14.nextSibling;
+            insert(
+              _el$14,
+              createComponent2(TableActions1, {
+                get tableId() {
+                  return props.tableId;
+                },
+                get store() {
+                  return props.store;
+                }
+              })
+            );
+            insert(
+              _el$15,
+              createComponent2(TableActions2, {
+                get tableId() {
+                  return props.tableId;
+                },
+                get store() {
+                  return props.store;
+                }
+              })
+            );
+            return _el$13;
+          })() : EMPTY_STRING2
         )
-      }),
-      editable ? /* @__PURE__ */ jsxs("div", {
-        className: "actions",
-        children: [
-          /* @__PURE__ */ jsx2("div", {
-            children: /* @__PURE__ */ jsx2(TableActions1, { tableId, store })
-          }),
-          /* @__PURE__ */ jsx2("div", {
-            children: /* @__PURE__ */ jsx2(TableActions2, { tableId, store })
-          })
-        ]
-      }) : null
-    ]
+      ];
+    }
   });
 };
-var TablesView = ({ store, storeId, s }) => {
-  const uniqueId = getUniqueId("ts", storeId);
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  const tableIds = useTableIds(store);
-  return /* @__PURE__ */ jsxs(Details, {
+var TablesView = (props) => {
+  const uniqueId = getUniqueId("ts", props.storeId);
+  const [editable, handleEditable] = useEditable(uniqueId, props.s);
+  const tableIds = useTableIds(props.store);
+  return Details({
     uniqueId,
     title: TABLES2,
     editable,
     handleEditable,
-    s,
-    children: [
-      arrayIsEmpty(tableIds) ? /* @__PURE__ */ jsx2("p", { children: "No tables." }) : sortedIdsMap(
-        tableIds,
-        (tableId) => /* @__PURE__ */ jsx2(
-          TableView,
-          {
-            store,
-            storeId,
-            tableId,
-            s
-          },
-          tableId
+    s: props.s,
+    get children() {
+      return [
+        memo2(
+          () => memo2(() => !!arrayIsEmpty(tableIds()))() ? _tmpl$8() : sortedIdsMap(
+            tableIds(),
+            (tableId) => createComponent2(TableView, {
+              get store() {
+                return props.store;
+              },
+              get storeId() {
+                return props.storeId;
+              },
+              tableId,
+              get s() {
+                return props.s;
+              }
+            })
+          )
+        ),
+        memo2(
+          () => memo2(() => !!editable())() ? createComponent2(TablesActions, {
+            get store() {
+              return props.store;
+            }
+          }) : EMPTY_STRING2
         )
-      ),
-      editable ? /* @__PURE__ */ jsx2(TablesActions, { store }) : null
-    ]
+      ];
+    }
   });
 };
-var useHasValueCallback = (storeOrStoreId) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  return useCallback2((valueId) => store?.hasValue(valueId) ?? false, [store]);
+var StoreView = (props) => {
+  const store = useStore(props.storeId);
+  return memo2(
+    () => memo2(() => !!isUndefined2(store()))() ? EMPTY_STRING2 : createComponent2(Details, {
+      get uniqueId() {
+        return getUniqueId("s", props.storeId);
+      },
+      get title() {
+        return (store().isMergeable() ? "Mergeable" : "") + "Store: " + (props.storeId ?? DEFAULT);
+      },
+      get s() {
+        return props.s;
+      },
+      get children() {
+        return [
+          createComponent2(ValuesView, {
+            get storeId() {
+              return props.storeId;
+            },
+            get store() {
+              return store();
+            },
+            get s() {
+              return props.s;
+            }
+          }),
+          createComponent2(TablesView, {
+            get storeId() {
+              return props.storeId;
+            },
+            get store() {
+              return store();
+            },
+            get s() {
+              return props.s;
+            }
+          })
+        ];
+      }
+    })
+  );
 };
-var AddValue = ({ onDone, store }) => {
-  const has = useHasValueCallback(store);
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
-    suggestedId: getNewIdFromSuggestedId("value", has),
-    has,
-    set: useSetValueCallback2(
-      (newId) => newId,
-      () => "",
-      [],
-      store
-    ),
-    prompt: "Add value"
-  });
+var MetricRow = (props) => (() => {
+  var _el$17 = _tmpl$9(), _el$18 = _el$17.firstChild, _el$19 = _el$18.nextSibling, _el$20 = _el$19.nextSibling;
+  insert(_el$18, () => props.metricId);
+  insert(_el$19, () => props.metrics?.getTableId(props.metricId));
+  insert(_el$20, () => useMetric(props.metricId, props.metrics)());
+  effect(() => setAttribute(_el$18, "title", props.metricId));
+  return _el$17;
+})();
+var MetricsView = (props) => {
+  const metrics = useMetrics(props.metricsId);
+  const metricIds = useMetricIds(metrics);
+  return memo2(
+    () => memo2(() => !!isUndefined2(metrics()))() ? EMPTY_STRING2 : createComponent2(Details, {
+      get uniqueId() {
+        return getUniqueId("m", props.metricsId);
+      },
+      get title() {
+        return "Metrics: " + (props.metricsId ?? DEFAULT);
+      },
+      get s() {
+        return props.s;
+      },
+      get children() {
+        return memo2(() => !!arrayIsEmpty(metricIds()))() ? "No metrics defined" : (() => {
+          var _el$21 = _tmpl$0(), _el$22 = _el$21.firstChild, _el$23 = _el$22.nextSibling;
+          insert(
+            _el$23,
+            () => arrayMap2(
+              metricIds(),
+              (metricId) => createComponent2(MetricRow, {
+                get metrics() {
+                  return metrics();
+                },
+                metricId
+              })
+            )
+          );
+          return _el$21;
+        })();
+      }
+    })
+  );
 };
-var DeleteValues = ({ onDone, store }) => /* @__PURE__ */ jsx2(Delete, {
-  onClick: useDelValuesCallback(store, onDone),
-  prompt: "Delete all values"
-});
-var ValuesActions = ({ store }) => /* @__PURE__ */ jsx2(Actions, {
-  left: /* @__PURE__ */ jsx2(ConfirmableActions, {
-    actions: [["add", "Add value", AddValue]],
-    store
-  }),
-  right: useHasValues(store) ? /* @__PURE__ */ jsx2(ConfirmableActions, {
-    actions: [["delete", "Delete all values", DeleteValues]],
-    store
-  }) : null
-});
-var CloneValue = ({ onDone, valueId, store }) => {
-  const has = useHasValueCallback(store);
-  return /* @__PURE__ */ jsx2(NewId, {
-    onDone,
-    suggestedId: getNewIdFromSuggestedId(valueId, has),
-    has,
-    set: useSetValueCallback2(
-      (newId) => newId,
-      (_, store2) => store2.getValue(valueId) ?? "",
-      [valueId],
-      store
-    ),
-    prompt: "Clone value to"
-  });
-};
-var DeleteValue = ({ onDone, valueId, store }) => /* @__PURE__ */ jsx2(Delete, {
-  onClick: useDelValueCallback(valueId, store, onDone),
-  prompt: "Delete value"
-});
-var ValueActions = ({ valueId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
-  actions: [
-    ["clone", "Clone value", CloneValue],
-    ["delete", "Delete value", DeleteValue]
-  ],
-  store,
-  valueId
-});
-var valueActions = [{ label: "", component: ValueActions }];
-var ValuesView = ({ store, storeId, s }) => {
-  const uniqueId = getUniqueId("v", storeId);
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  return /* @__PURE__ */ jsxs(Details, {
+var SliceView = (props) => {
+  const uniqueId = getUniqueId(
+    "i",
+    props.indexesId,
+    props.indexId,
+    props.sliceId
+  );
+  const [editable, handleEditable] = useEditable(uniqueId, props.s);
+  return Details({
     uniqueId,
-    title: VALUES2,
+    title: "Slice: " + props.sliceId,
     editable,
     handleEditable,
-    s,
-    children: [
-      arrayIsEmpty(useValueIds(store)) ? /* @__PURE__ */ jsx2("p", { children: "No values." }) : /* @__PURE__ */ jsx2(ValuesInHtmlTable, {
-        store,
-        editable,
-        extraCellsAfter: editable ? valueActions : []
-      }),
-      editable ? /* @__PURE__ */ jsx2(ValuesActions, { store }) : null
-    ]
+    s: props.s,
+    get children() {
+      return createComponent2(SliceInHtmlTable, {
+        get sliceId() {
+          return props.sliceId;
+        },
+        get indexId() {
+          return props.indexId;
+        },
+        get indexes() {
+          return props.indexes;
+        },
+        get editable() {
+          return editable();
+        }
+      });
+    }
   });
 };
-var StoreView = ({ storeId, s }) => {
-  const store = useStore(storeId);
-  return isUndefined2(store) ? null : /* @__PURE__ */ jsxs(Details, {
-    uniqueId: getUniqueId("s", storeId),
-    title: (store.isMergeable() ? "Mergeable" : "") + "Store: " + (storeId ?? DEFAULT),
-    s,
-    children: [
-      /* @__PURE__ */ jsx2(ValuesView, { storeId, store, s }),
-      /* @__PURE__ */ jsx2(TablesView, { storeId, store, s })
-    ]
+var IndexView = (props) => createComponent2(Details, {
+  get uniqueId() {
+    return getUniqueId("i", props.indexesId, props.indexId);
+  },
+  get title() {
+    return "Index: " + props.indexId;
+  },
+  get s() {
+    return props.s;
+  },
+  get children() {
+    return arrayMap2(
+      useSliceIds(props.indexId, props.indexes)(),
+      (sliceId) => createComponent2(SliceView, {
+        get indexes() {
+          return props.indexes;
+        },
+        get indexesId() {
+          return props.indexesId;
+        },
+        get indexId() {
+          return props.indexId;
+        },
+        sliceId,
+        get s() {
+          return props.s;
+        }
+      })
+    );
+  }
+});
+var IndexesView = (props) => {
+  const indexes = useIndexes(props.indexesId);
+  const indexIds = useIndexIds(indexes);
+  return memo2(
+    () => memo2(() => !!isUndefined2(indexes()))() ? EMPTY_STRING2 : createComponent2(Details, {
+      get uniqueId() {
+        return getUniqueId("i", props.indexesId);
+      },
+      get title() {
+        return "Indexes: " + (props.indexesId ?? DEFAULT);
+      },
+      get s() {
+        return props.s;
+      },
+      get children() {
+        return memo2(() => !!arrayIsEmpty(indexIds()))() ? "No indexes defined" : sortedIdsMap(
+          indexIds(),
+          (indexId) => createComponent2(IndexView, {
+            get indexes() {
+              return indexes();
+            },
+            get indexesId() {
+              return props.indexesId;
+            },
+            indexId,
+            get s() {
+              return props.s;
+            }
+          })
+        );
+      }
+    })
+  );
+};
+var QueryView = (props) => {
+  const uniqueId = getUniqueId("q", props.queriesId, props.queryId);
+  const sort = useCell(STATE_TABLE, uniqueId, SORT_CELL, props.s);
+  const sortProps = createMemo2(() => jsonParse(sort() ?? "[]"));
+  const handleChange = useSetCellCallback(
+    STATE_TABLE,
+    uniqueId,
+    SORT_CELL,
+    jsonStringWithMap,
+    props.s
+  );
+  return createComponent2(Details, {
+    uniqueId,
+    get title() {
+      return "Query: " + props.queryId;
+    },
+    get s() {
+      return props.s;
+    },
+    get children() {
+      return createComponent2(ResultSortedTableInHtmlTable, {
+        get queryId() {
+          return props.queryId;
+        },
+        get queries() {
+          return props.queries;
+        },
+        get cellId() {
+          return sortProps()[0];
+        },
+        get descending() {
+          return sortProps()[1];
+        },
+        get offset() {
+          return sortProps()[2];
+        },
+        limit: 10,
+        paginator: true,
+        sortOnClick: true,
+        onChange: handleChange
+      });
+    }
   });
 };
-var Body = ({ s }) => {
-  const articleRef = useRef2(null);
-  const idleCallbackRef = useRef2(0);
-  const [scrolled, setScrolled] = useState2(false);
-  const { scrollLeft, scrollTop } = useValues(s);
-  useLayoutEffect2(() => {
-    const article = articleRef.current;
-    if (article && !scrolled) {
+var QueriesView = (props) => {
+  const queries = useQueries(props.queriesId);
+  const queryIds = useQueryIds(queries);
+  return memo2(
+    () => memo2(() => !!isUndefined2(queries()))() ? EMPTY_STRING2 : createComponent2(Details, {
+      get uniqueId() {
+        return getUniqueId("q", props.queriesId);
+      },
+      get title() {
+        return "Queries: " + (props.queriesId ?? DEFAULT);
+      },
+      get s() {
+        return props.s;
+      },
+      get children() {
+        return memo2(() => !!arrayIsEmpty(queryIds()))() ? "No queries defined" : sortedIdsMap(
+          queryIds(),
+          (queryId) => createComponent2(QueryView, {
+            get queries() {
+              return queries();
+            },
+            get queriesId() {
+              return props.queriesId;
+            },
+            queryId,
+            get s() {
+              return props.s;
+            }
+          })
+        );
+      }
+    })
+  );
+};
+var RelationshipView = (props) => {
+  const uniqueId = getUniqueId(
+    "r",
+    props.relationshipsId,
+    props.relationshipId
+  );
+  const [editable, handleEditable] = useEditable(uniqueId, props.s);
+  return Details({
+    uniqueId,
+    title: "Relationship: " + props.relationshipId,
+    editable,
+    handleEditable,
+    s: props.s,
+    get children() {
+      return createComponent2(RelationshipInHtmlTable, {
+        get relationshipId() {
+          return props.relationshipId;
+        },
+        get relationships() {
+          return props.relationships;
+        },
+        get editable() {
+          return editable();
+        }
+      });
+    }
+  });
+};
+var RelationshipsView = (props) => {
+  const relationships = useRelationships(props.relationshipsId);
+  const relationshipIds = useRelationshipIds(relationships);
+  return memo2(
+    () => memo2(() => !!isUndefined2(relationships()))() ? EMPTY_STRING2 : createComponent2(Details, {
+      get uniqueId() {
+        return getUniqueId("r", props.relationshipsId);
+      },
+      get title() {
+        return "Relationships: " + (props.relationshipsId ?? DEFAULT);
+      },
+      get s() {
+        return props.s;
+      },
+      get children() {
+        return memo2(() => !!arrayIsEmpty(relationshipIds()))() ? "No relationships defined" : sortedIdsMap(
+          relationshipIds(),
+          (relationshipId) => createComponent2(RelationshipView, {
+            get relationships() {
+              return relationships();
+            },
+            get relationshipsId() {
+              return props.relationshipsId;
+            },
+            relationshipId,
+            get s() {
+              return props.s;
+            }
+          })
+        );
+      }
+    })
+  );
+};
+var Header = (props) => {
+  const position = useValue(POSITION_VALUE, props.s);
+  const handleClick = () => open("https://tinybase.org", "_blank");
+  const handleClose = () => props.s.setValue(OPEN_VALUE, false);
+  const handleDock = (event) => props.s.setValue(POSITION_VALUE, Number(event.currentTarget.dataset.id));
+  return (() => {
+    var _el$24 = _tmpl$1(), _el$25 = _el$24.firstChild, _el$26 = _el$25.nextSibling, _el$27 = _el$26.nextSibling;
+    _el$25.addEventListener("click", handleClick);
+    setAttribute(_el$25, "title", TITLE);
+    insert(_el$26, TITLE);
+    insert(
+      _el$24,
+      () => arrayMap2(
+        POSITIONS,
+        (name, p) => p == (position() ?? 1) ? EMPTY_STRING2 : (() => {
+          var _el$28 = _tmpl$2();
+          _el$28.addEventListener("click", handleDock);
+          setAttribute(_el$28, "data-id", p);
+          setAttribute(_el$28, "title", "Dock to " + name);
+          return _el$28;
+        })()
+      ),
+      _el$27
+    );
+    _el$27.addEventListener("click", handleClose);
+    return _el$24;
+  })();
+};
+var Nub = (props) => {
+  const position = useValue(POSITION_VALUE, props.s);
+  const open2 = useValue(OPEN_VALUE, props.s);
+  const handleOpen = () => props.s.setValue(OPEN_VALUE, true);
+  return memo2(
+    () => memo2(() => !!open2())() ? EMPTY_STRING2 : (() => {
+      var _el$29 = _tmpl$2();
+      _el$29.addEventListener("click", handleOpen);
+      setAttribute(_el$29, "title", TITLE);
+      effect(() => setAttribute(_el$29, "data-position", position() ?? 1));
+      return _el$29;
+    })()
+  );
+};
+var Body = (props) => {
+  let article;
+  let idleCallback = 0;
+  const [scrolled, setScrolled] = createSignal2(false);
+  const state = useTable(STATE_TABLE, props.s);
+  const scrollValues = useValues(props.s);
+  createEffect2(() => {
+    const { scrollLeft, scrollTop } = scrollValues();
+    if (article && !scrolled()) {
       const observer = new MutationObserver(() => {
-        if (article.scrollWidth >= mathFloor(scrollLeft) + article.clientWidth && article.scrollHeight >= mathFloor(scrollTop) + article.clientHeight) {
+        if (article && article.scrollWidth >= mathFloor(scrollLeft) + article.clientWidth && article.scrollHeight >= mathFloor(scrollTop) + article.clientHeight) {
           article.scrollTo(scrollLeft, scrollTop);
         }
       });
-      observer.observe(article, { childList: true, subtree: true });
-      return () => observer.disconnect();
-    }
-  }, [scrolled, scrollLeft, scrollTop]);
-  const handleScroll = useCallback2(
-    (event) => {
-      const { scrollLeft: scrollLeft2, scrollTop: scrollTop2 } = event[CURRENT_TARGET];
-      cancelInspectorIdleCallback(idleCallbackRef.current);
-      idleCallbackRef.current = requestInspectorIdleCallback(() => {
-        setScrolled(true);
-        s.setPartialValues({ scrollLeft: scrollLeft2, scrollTop: scrollTop2 });
+      observer.observe(article, {
+        childList: true,
+        subtree: true
       });
-    },
-    [s]
-  );
+      onCleanup2(() => observer.disconnect());
+    }
+  });
+  const handleScroll = (event) => {
+    const { scrollLeft, scrollTop } = event.currentTarget;
+    cancelInspectorIdleCallback(idleCallback);
+    idleCallback = requestInspectorIdleCallback(() => {
+      setScrolled(true);
+      props.s.setPartialValues({
+        scrollLeft,
+        scrollTop
+      });
+    });
+  };
   const store = useStore();
   const storeIds = useStoreIds();
   const metrics = useMetrics();
@@ -4643,148 +5126,226 @@ var Body = ({ s }) => {
   const relationshipsIds = useRelationshipsIds();
   const queries = useQueries();
   const queriesIds = useQueriesIds();
-  return isUndefined2(store) && arrayIsEmpty(storeIds) && isUndefined2(metrics) && arrayIsEmpty(metricsIds) && isUndefined2(indexes) && arrayIsEmpty(indexesIds) && isUndefined2(relationships) && arrayIsEmpty(relationshipsIds) && isUndefined2(queries) && arrayIsEmpty(queriesIds) ? /* @__PURE__ */ jsx2("span", {
-    className: "warn",
-    children: NO_PROVIDED_OBJECTS_MESSAGE
-  }) : /* @__PURE__ */ jsxs("article", {
-    ref: articleRef,
-    onScroll: handleScroll,
-    children: [
-      /* @__PURE__ */ jsx2(StoreView, { s }),
-      arrayMap2(
-        storeIds,
-        (storeId) => /* @__PURE__ */ jsx2(StoreView, { storeId, s }, storeId)
-      ),
-      /* @__PURE__ */ jsx2(MetricsView, { s }),
-      arrayMap2(
-        metricsIds,
-        (metricsId) => /* @__PURE__ */ jsx2(MetricsView, { metricsId, s }, metricsId)
-      ),
-      /* @__PURE__ */ jsx2(IndexesView, { s }),
-      arrayMap2(
-        indexesIds,
-        (indexesId) => /* @__PURE__ */ jsx2(IndexesView, { indexesId, s }, indexesId)
-      ),
-      /* @__PURE__ */ jsx2(RelationshipsView, { s }),
-      arrayMap2(
-        relationshipsIds,
-        (relationshipsId) => /* @__PURE__ */ jsx2(
-          RelationshipsView,
-          {
+  return memo2(
+    () => memo2(
+      () => !!(state() && isUndefined2(store()) && arrayIsEmpty(storeIds()) && isUndefined2(metrics()) && arrayIsEmpty(metricsIds()) && isUndefined2(indexes()) && arrayIsEmpty(indexesIds()) && isUndefined2(relationships()) && arrayIsEmpty(relationshipsIds()) && isUndefined2(queries()) && arrayIsEmpty(queriesIds()))
+    )() ? (() => {
+      var _el$30 = _tmpl$10();
+      insert(_el$30, NO_PROVIDED_OBJECTS_MESSAGE);
+      return _el$30;
+    })() : (() => {
+      var _el$31 = _tmpl$11();
+      _el$31.addEventListener("scroll", handleScroll);
+      var _ref$ = article;
+      typeof _ref$ === "function" ? use(_ref$, _el$31) : article = _el$31;
+      insert(
+        _el$31,
+        createComponent2(StoreView, {
+          get s() {
+            return props.s;
+          }
+        }),
+        null
+      );
+      insert(
+        _el$31,
+        () => arrayMap2(
+          storeIds(),
+          (storeId) => createComponent2(StoreView, {
+            storeId,
+            get s() {
+              return props.s;
+            }
+          })
+        ),
+        null
+      );
+      insert(
+        _el$31,
+        createComponent2(MetricsView, {
+          get s() {
+            return props.s;
+          }
+        }),
+        null
+      );
+      insert(
+        _el$31,
+        () => arrayMap2(
+          metricsIds(),
+          (metricsId) => createComponent2(MetricsView, {
+            metricsId,
+            get s() {
+              return props.s;
+            }
+          })
+        ),
+        null
+      );
+      insert(
+        _el$31,
+        createComponent2(IndexesView, {
+          get s() {
+            return props.s;
+          }
+        }),
+        null
+      );
+      insert(
+        _el$31,
+        () => arrayMap2(
+          indexesIds(),
+          (indexesId) => createComponent2(IndexesView, {
+            indexesId,
+            get s() {
+              return props.s;
+            }
+          })
+        ),
+        null
+      );
+      insert(
+        _el$31,
+        createComponent2(RelationshipsView, {
+          get s() {
+            return props.s;
+          }
+        }),
+        null
+      );
+      insert(
+        _el$31,
+        () => arrayMap2(
+          relationshipsIds(),
+          (relationshipsId) => createComponent2(RelationshipsView, {
             relationshipsId,
-            s
-          },
-          relationshipsId
-        )
-      ),
-      /* @__PURE__ */ jsx2(QueriesView, { s }),
-      arrayMap2(
-        queriesIds,
-        (queriesId) => /* @__PURE__ */ jsx2(QueriesView, { queriesId, s }, queriesId)
-      )
-    ]
-  });
-};
-var ErrorBoundary = class extends PureComponent2 {
-  constructor(props) {
-    super(props);
-    this.state = { e: 0 };
-  }
-  static getDerivedStateFromError() {
-    return { e: 1 };
-  }
-  // eslint-disable-next-line react/no-arrow-function-lifecycle
-  componentDidCatch = (error, info) => (
-    // eslint-disable-next-line no-console
-    console.error(error, info.componentStack)
+            get s() {
+              return props.s;
+            }
+          })
+        ),
+        null
+      );
+      insert(
+        _el$31,
+        createComponent2(QueriesView, {
+          get s() {
+            return props.s;
+          }
+        }),
+        null
+      );
+      insert(
+        _el$31,
+        () => arrayMap2(
+          queriesIds(),
+          (queriesId) => createComponent2(QueriesView, {
+            queriesId,
+            get s() {
+              return props.s;
+            }
+          })
+        ),
+        null
+      );
+      return _el$31;
+    })()
   );
-  render() {
-    return this.state.e ? /* @__PURE__ */ jsx2("span", {
-      className: "warn",
-      children: INSPECTOR_ERROR_MESSAGE
-    }) : this.props.children;
-  }
 };
-var Header = ({ s }) => {
-  const position = useValue(POSITION_VALUE, s) ?? 1;
-  const handleClick = () => open("https://tinybase.org", "_blank");
-  const handleClose = useSetValueCallback(OPEN_VALUE, () => false, [], s);
-  const handleDock = useSetValueCallback(
-    POSITION_VALUE,
-    (event) => Number(event[CURRENT_TARGET].dataset.id),
-    [],
-    s
-  );
-  return /* @__PURE__ */ jsxs("header", {
-    children: [
-      /* @__PURE__ */ jsx2("img", {
-        className: "flat",
-        title: TITLE,
-        onClick: handleClick
-      }),
-      /* @__PURE__ */ jsx2("span", { children: TITLE }),
-      arrayMap2(
-        POSITIONS,
-        (name, p) => p == position ? null : /* @__PURE__ */ jsx2(
-          "img",
-          {
-            onClick: handleDock,
-            "data-id": p,
-            title: "Dock to " + name
+var Panel = (props) => {
+  const position = useValue(POSITION_VALUE, props.s);
+  const open2 = useValue(OPEN_VALUE, props.s);
+  return memo2(
+    () => memo2(() => !!open2())() ? (() => {
+      var _el$32 = _tmpl$12();
+      insert(
+        _el$32,
+        createComponent2(Header, {
+          get s() {
+            return props.s;
+          }
+        }),
+        null
+      );
+      insert(
+        _el$32,
+        createComponent2(ErrorBoundary, {
+          get fallback() {
+            return (() => {
+              var _el$33 = _tmpl$10();
+              insert(_el$33, INSPECTOR_ERROR_MESSAGE);
+              return _el$33;
+            })();
           },
-          p
-        )
-      ),
-      /* @__PURE__ */ jsx2("img", {
-        className: "flat",
-        onClick: handleClose,
-        title: "Close"
-      })
-    ]
-  });
+          get children() {
+            return createComponent2(Body, {
+              get s() {
+                return props.s;
+              }
+            });
+          }
+        }),
+        null
+      );
+      effect(() => setAttribute(_el$32, "data-position", position() ?? 1));
+      return _el$32;
+    })() : EMPTY_STRING2
+  );
 };
-var Panel = ({ s }) => {
-  const position = useValue(POSITION_VALUE, s) ?? 1;
-  return useValue(OPEN_VALUE, s) ? /* @__PURE__ */ jsxs("main", {
-    "data-position": position,
-    children: [
-      /* @__PURE__ */ jsx2(Header, { s }),
-      /* @__PURE__ */ jsx2(ErrorBoundary, {
-        children: /* @__PURE__ */ jsx2(Body, { s })
-      })
-    ]
-  }) : null;
-};
-var Inspector = ({ position = "right", open: open2 = false, hue = 270 }) => {
+var Inspector = (props) => {
+  const position = props.position ?? "right";
+  const open2 = props.open ?? false;
+  const values = {
+    position: getInitialPosition(position),
+    open: !!open2
+  };
   const s = useCreateStore(createStore);
+  const [ready, setReady] = createSignal2(false);
   useCreatePersister(
     s,
     (s2) => createSessionPersister(s2, UNIQUE_ID),
-    void 0,
     async (persister) => {
-      await persister.load([
-        {},
-        {
-          position: getInitialPosition(position),
-          open: !!open2
-        }
-      ]);
+      await persister.load([{}, values]);
       await persister.startAutoSave();
-    }
+      setReady(true);
+    },
+    (persister) => persister.destroy()
   );
-  return /* @__PURE__ */ jsxs(Fragment, {
-    children: [
-      /* @__PURE__ */ jsxs("aside", {
-        id: UNIQUE_ID,
-        style: { "--hue": hue },
-        children: [
-          /* @__PURE__ */ jsx2(Nub, { s }),
-          /* @__PURE__ */ jsx2(Panel, { s })
-        ]
-      }),
-      /* @__PURE__ */ jsx2("style", { children: APP_STYLESHEET })
-    ]
-  });
+  return [
+    memo2(
+      () => memo2(() => !!ready())() ? (() => {
+        var _el$35 = _tmpl$14();
+        setAttribute(_el$35, "id", UNIQUE_ID);
+        insert(
+          _el$35,
+          createComponent2(Nub, {
+            get s() {
+              return s();
+            }
+          }),
+          null
+        );
+        insert(
+          _el$35,
+          createComponent2(Panel, {
+            get s() {
+              return s();
+            }
+          }),
+          null
+        );
+        effect(
+          (_$p) => setStyleProperty(_el$35, "--hue", props.hue ?? 270)
+        );
+        return _el$35;
+      })() : EMPTY_STRING2
+    ),
+    (() => {
+      var _el$34 = _tmpl$13();
+      insert(_el$34, APP_STYLESHEET);
+      return _el$34;
+    })()
+  ];
 };
 export {
   Inspector
