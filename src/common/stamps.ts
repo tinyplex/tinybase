@@ -7,8 +7,8 @@ import type {
 import {getHash} from './hash.ts';
 import {IdMap, mapNew, mapToObj} from './map.ts';
 import {IdObj, objNew} from './obj.ts';
-import {isArray, isFiniteNumber, isString, size} from './other.ts';
-import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
+import {isArray, isFiniteNumber, isNumber, isString, size} from './other.ts';
+import {EMPTY_STRING} from './strings.ts';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
 
@@ -82,6 +82,6 @@ export const stampValidate = (
   isArray(stamp) &&
   size(stamp) == 3 &&
   isString(stamp[1]) &&
-  getTypeOf(stamp[2]) == NUMBER &&
+  isNumber(stamp[2]) &&
   isFiniteNumber(stamp[2]) &&
   validateThing(stamp[0]);

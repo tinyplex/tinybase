@@ -1,4 +1,4 @@
-import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings.ts';
+import {BOOLEAN, FUNCTION, NUMBER, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
 
@@ -67,6 +67,9 @@ export const isTypeStringOrBoolean = (
 
 export const isString = (thing: unknown): thing is string =>
   getTypeOf(thing) == STRING;
+
+export const isNumber = (thing: unknown): thing is number =>
+  getTypeOf(thing) == NUMBER;
 
 export const isFunction = (thing: unknown): thing is (...args: any[]) => any =>
   getTypeOf(thing) == FUNCTION;
