@@ -52,6 +52,7 @@ import * as TinyBaseSynchronizerWsServer from 'tinybase/synchronizers/synchroniz
 import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/synchronizer-ws-server-simple';
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
+import * as TinyBaseUiReactDomCharts from 'tinybase/ui-react-dom-charts';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
 import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
@@ -122,6 +123,7 @@ const TinyBaseForTest = {
   tinybase: TinyBaseForTest,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
+  'tinybase/ui-react-dom-charts': TinyBaseUiReactDomCharts,
   'tinybase/ui-solid': TinyBaseUiSolid,
   'tinybase/ui-solid-dom': TinyBaseUiSolidDom,
   'tinybase/ui-solid-inspector': TinyBaseUiSolidInspector,

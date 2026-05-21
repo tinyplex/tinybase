@@ -144,12 +144,81 @@
  * The LineChart component renders a line chart from TinyBase data.
  * @category Store components
  * @since v8.5.0
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The LineChart component then renders an SVG chart from Cells in the
+ * `pets` Table.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {Provider} from 'tinybase/ui-react';
+ * import {LineChart} from 'tinybase/ui-react-dom-charts';
+ *
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <LineChart
+ *       tableId="pets"
+ *       xCellId="order"
+ *       yCellId="sold"
+ *       className="sales"
+ *     />
+ *   </Provider>
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   hamsters: {order: 1, sold: 12},
+ *   rabbits: {order: 2, sold: 9},
+ * });
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.firstChild?.nodeName.toLowerCase());
+ * // -> 'svg'
+ * console.log(app.firstChild?.getAttribute('class'));
+ * // -> 'sales'
+ * ```
  */
 /// LineChart
 /**
  * The BarChart component renders a bar chart from TinyBase data.
  * @category Store components
  * @since v8.5.0
+ * @example
+ * This example creates a Queries object and provides it through Provider
+ * context. The BarChart component then renders an SVG chart from Cells in the
+ * `bySpecies` query.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider} from 'tinybase/ui-react';
+ * import {BarChart} from 'tinybase/ui-react-dom-charts';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <BarChart queryId="bySpecies" xCellId="species" yCellId="sold" />
+ *   </Provider>
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   hamsters: {species: 'hamster', sold: 12},
+ *   rabbits: {species: 'rabbit', sold: 9},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'bySpecies',
+ *   'pets',
+ *   ({select}) => {
+ *     select('species');
+ *     select('sold');
+ *   },
+ * );
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.firstChild?.nodeName.toLowerCase());
+ * // -> 'svg'
+ * ```
  */
 /// BarChart
 /**
