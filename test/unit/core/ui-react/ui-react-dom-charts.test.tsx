@@ -11,66 +11,189 @@ const CHARTS = [
 ] as const;
 
 describe.each(CHARTS)('%s', (_chartName, Chart) => {
-  test('binds to a Table from a Store', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
-      r2: {x: 2, y: 5},
-      r3: {x: 3, y: 'bad'},
+  describe('Table', () => {
+    test('binds to a Table from a Store', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+        r2: {x: 2, y: 5},
+        r3: {x: 3, y: 'bad'},
+      });
+      const {container, unmount} = render(
+        <Chart store={store} tableId="t1" xCellId="x" yCellId="y" />,
+      );
+
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
     });
-    const {container, unmount} = render(
-      <Chart store={store} tableId="t1" xCellId="x" yCellId="y" />,
-    );
 
-    expect(container.innerHTML).toMatchSnapshot();
+    test('binds to a Table from Provider context', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+        r2: {x: 2, y: 5},
+      });
+      const {container, unmount} = render(
+        <Provider store={store}>
+          <Chart tableId="t1" xCellId="x" yCellId="y" limit={1} />
+        </Provider>,
+      );
 
-    unmount();
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
+    });
+
+    test('binds to a Table from Provider context by Store Id', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+        r2: {x: 2, y: 5},
+      });
+      const {container, unmount} = render(
+        <Provider storesById={{s1: store}}>
+          <Chart store="s1" tableId="t1" xCellId="x" yCellId="y" />
+        </Provider>,
+      );
+
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
+    });
+
+    test('updates when a Table Cell changes', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+      });
+      const {container, unmount} = render(
+        <Chart store={store} tableId="t1" xCellId="x" yCellId="y" />,
+      );
+
+      expect(container.innerHTML).toMatchSnapshot();
+      act(() => store.setCell('t1', 'r1', 'y', 4));
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
+    });
+
+    test('renders an empty chart without a matching Store', () => {
+      const {container, unmount} = render(
+        <Chart tableId="t1" xCellId="x" yCellId="y" />,
+      );
+
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
+    });
   });
 
-  test('binds to a Table from Provider context', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
-      r2: {x: 2, y: 5},
+  describe('Query', () => {
+    test('binds to a Query from a Queries object', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+        r2: {x: 2, y: 5},
+      });
+      const queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => {
+          select('x');
+          select('y');
+        },
+      );
+      const {container, unmount} = render(
+        <Chart queries={queries} queryId="q1" xCellId="x" yCellId="y" />,
+      );
+
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
     });
-    const {container, unmount} = render(
-      <Provider store={store}>
-        <Chart tableId="t1" xCellId="x" yCellId="y" limit={1} />
-      </Provider>,
-    );
 
-    expect(container.innerHTML).toMatchSnapshot();
+    test('binds to a Query from Provider context', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+        r2: {x: 2, y: 5},
+      });
+      const queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => {
+          select('x');
+          select('y');
+        },
+      );
+      const {container, unmount} = render(
+        <Provider queries={queries}>
+          <Chart
+            queryId="q1"
+            xCellId="x"
+            yCellId="y"
+            descending={true}
+            sortCellId="y"
+          />
+        </Provider>,
+      );
 
-    unmount();
-  });
+      expect(container.innerHTML).toMatchSnapshot();
 
-  test('binds to a Table from Provider context by Store Id', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
-      r2: {x: 2, y: 5},
+      unmount();
     });
-    const {container, unmount} = render(
-      <Provider storesById={{s1: store}}>
-        <Chart store="s1" tableId="t1" xCellId="x" yCellId="y" />
-      </Provider>,
-    );
 
-    expect(container.innerHTML).toMatchSnapshot();
+    test('binds to a Query from Provider context by Queries Id', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+        r2: {x: 2, y: 5},
+      });
+      const queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => {
+          select('x');
+          select('y');
+        },
+      );
+      const {container, unmount} = render(
+        <Provider queriesById={{q: queries}}>
+          <Chart queries="q" queryId="q1" xCellId="x" yCellId="y" />
+        </Provider>,
+      );
 
-    unmount();
-  });
+      expect(container.innerHTML).toMatchSnapshot();
 
-  test('updates when a Table Cell changes', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
+      unmount();
     });
-    const {container, unmount} = render(
-      <Chart store={store} tableId="t1" xCellId="x" yCellId="y" />,
-    );
 
-    expect(container.innerHTML).toMatchSnapshot();
-    act(() => store.setCell('t1', 'r1', 'y', 4));
-    expect(container.innerHTML).toMatchSnapshot();
+    test('updates when a Query result Cell changes', () => {
+      const store = createStore().setTable('t1', {
+        r1: {x: 1, y: 3},
+      });
+      const queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => {
+          select('x');
+          select('y');
+        },
+      );
+      const {container, unmount} = render(
+        <Chart queries={queries} queryId="q1" xCellId="x" yCellId="y" />,
+      );
 
-    unmount();
+      expect(container.innerHTML).toMatchSnapshot();
+      act(() => store.setCell('t1', 'r1', 'y', 4));
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
+    });
+
+    test('renders an empty chart without a matching Queries object', () => {
+      const {container, unmount} = render(
+        <Chart queryId="q1" xCellId="x" yCellId="y" />,
+      );
+
+      expect(container.innerHTML).toMatchSnapshot();
+
+      unmount();
+    });
   });
 
   test('uses the Table when both a tableId and queryId are provided', () => {
@@ -98,106 +221,9 @@ describe.each(CHARTS)('%s', (_chartName, Chart) => {
     unmount();
   });
 
-  test('renders an empty chart without a matching Store', () => {
-    const {container, unmount} = render(
-      <Chart tableId="t1" xCellId="x" yCellId="y" />,
-    );
-
-    expect(container.innerHTML).toMatchSnapshot();
-
-    unmount();
-  });
-
   test('renders an empty chart without source Id props', () => {
     const props: any = {xCellId: 'x', yCellId: 'y'};
     const {container, unmount} = render(<Chart {...props} />);
-
-    expect(container.innerHTML).toMatchSnapshot();
-
-    unmount();
-  });
-
-  test('binds to a Query from Provider context', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
-      r2: {x: 2, y: 5},
-    });
-    const queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => {
-        select('x');
-        select('y');
-      },
-    );
-    const {container, unmount} = render(
-      <Provider queries={queries}>
-        <Chart
-          queryId="q1"
-          xCellId="x"
-          yCellId="y"
-          descending={true}
-          sortCellId="y"
-        />
-      </Provider>,
-    );
-
-    expect(container.innerHTML).toMatchSnapshot();
-
-    unmount();
-  });
-
-  test('binds to a Query from Provider context by Queries Id', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
-      r2: {x: 2, y: 5},
-    });
-    const queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => {
-        select('x');
-        select('y');
-      },
-    );
-    const {container, unmount} = render(
-      <Provider queriesById={{q: queries}}>
-        <Chart queries="q" queryId="q1" xCellId="x" yCellId="y" />
-      </Provider>,
-    );
-
-    expect(container.innerHTML).toMatchSnapshot();
-
-    unmount();
-  });
-
-  test('updates when a Query result Cell changes', () => {
-    const store = createStore().setTable('t1', {
-      r1: {x: 1, y: 3},
-    });
-    const queries = createQueries(store).setQueryDefinition(
-      'q1',
-      't1',
-      ({select}) => {
-        select('x');
-        select('y');
-      },
-    );
-    const {container, unmount} = render(
-      <Chart queries={queries} queryId="q1" xCellId="x" yCellId="y" />,
-    );
-
-    expect(container.innerHTML).toMatchSnapshot();
-    act(() => store.setCell('t1', 'r1', 'y', 4));
-    expect(container.innerHTML).toMatchSnapshot();
-
-    unmount();
-  });
-
-  test('renders an empty chart without a matching Queries object', () => {
-    const {container, unmount} = render(
-      <Chart queryId="q1" xCellId="x" yCellId="y" />,
-    );
 
     expect(container.innerHTML).toMatchSnapshot();
 
