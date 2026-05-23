@@ -38,7 +38,7 @@ And finally, we need to add some styling for the bars:
  .chart .point {
    fill: #fff;
    stroke: #2f6f73;
-   stroke-width: 0.015;
+   stroke-width: 1.5;
  }
 +
 +.chart .bar {

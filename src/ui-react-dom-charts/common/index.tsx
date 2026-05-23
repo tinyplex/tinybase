@@ -22,8 +22,9 @@ import {
   getChartDataPoints,
   getChartScaledPoints,
   type ChartKind,
+  type ChartSize,
 } from './data.ts';
-import {getChartGroup} from './svg.tsx';
+import {ChartSvg, getChartGroup} from './svg.tsx';
 
 export const Chart = ({
   className,
@@ -35,15 +36,27 @@ export const Chart = ({
 }: (ChartTableSourceProps | ChartQuerySourceProps) &
   ChartBindingProps &
   ChartProps & {readonly kind: ChartKind}) => (
-  <svg className={className} data-chart={props.kind} viewBox="0 0 1 1">
-    {isUndefined(tableId) ? (
-      isUndefined(queryId) ? null : (
-        <QueryChart {...props} queriesOrQueriesId={queries} queryId={queryId} />
+  <ChartSvg className={className} kind={props.kind}>
+    {(chartSize) =>
+      isUndefined(tableId) ? (
+        isUndefined(queryId) ? null : (
+          <QueryChart
+            {...props}
+            chartSize={chartSize}
+            queriesOrQueriesId={queries}
+            queryId={queryId}
+          />
+        )
+      ) : (
+        <TableChart
+          {...props}
+          chartSize={chartSize}
+          storeOrStoreId={store}
+          tableId={tableId}
+        />
       )
-    ) : (
-      <TableChart {...props} storeOrStoreId={store} tableId={tableId} />
-    )}
-  </svg>
+    }
+  </ChartSvg>
 );
 
 const TableChart = ({
@@ -51,6 +64,7 @@ const TableChart = ({
   kind,
   limit,
   offset,
+  chartSize,
   sortCellId,
   storeOrStoreId,
   tableId,
@@ -58,6 +72,7 @@ const TableChart = ({
   yCellId,
 }: Omit<ChartTableSourceProps, 'store'> &
   ChartBindingProps & {
+    readonly chartSize: ChartSize;
     readonly kind: ChartKind;
     readonly storeOrStoreId: ChartTableSourceProps['store'];
   }) => {
@@ -73,6 +88,7 @@ const TableChart = ({
   const [handleChange, points, bounds] = useChartData(
     kind,
     rowIds,
+    chartSize,
     (rowId) => store?.getCell(tableId, rowId, xCellId),
     (rowId) => store?.getCell(tableId, rowId, yCellId),
   );
@@ -96,7 +112,7 @@ const TableChart = ({
     storeOrStoreId,
   );
 
-  return getChartGroup(kind, points, bounds);
+  return getChartGroup(kind, points, bounds, chartSize);
 };
 
 const QueryChart = ({
@@ -104,6 +120,7 @@ const QueryChart = ({
   kind,
   limit,
   offset,
+  chartSize,
   queriesOrQueriesId,
   queryId,
   sortCellId,
@@ -111,6 +128,7 @@ const QueryChart = ({
   yCellId,
 }: Omit<ChartQuerySourceProps, 'queries'> &
   ChartBindingProps & {
+    readonly chartSize: ChartSize;
     readonly kind: ChartKind;
     readonly queriesOrQueriesId: ChartQuerySourceProps['queries'];
   }) => {
@@ -126,6 +144,7 @@ const QueryChart = ({
   const [handleChange, points, bounds] = useChartData(
     kind,
     rowIds,
+    chartSize,
     (rowId) => queries?.getResultCell(queryId, rowId, xCellId),
     (rowId) => queries?.getResultCell(queryId, rowId, yCellId),
   );
@@ -147,12 +166,13 @@ const QueryChart = ({
     queries,
   );
 
-  return getChartGroup(kind, points, bounds);
+  return getChartGroup(kind, points, bounds, chartSize);
 };
 
 const useChartData = (
   kind: ChartKind,
   rowIds: string[],
+  chartSize: ChartSize,
   getXCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
   getYCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
 ) => {
@@ -163,5 +183,9 @@ const useChartData = (
   );
   const bounds = getChartBounds(kind, points);
 
-  return [handleChange, getChartScaledPoints(points, bounds), bounds] as const;
+  return [
+    handleChange,
+    getChartScaledPoints(points, bounds, chartSize),
+    bounds,
+  ] as const;
 };

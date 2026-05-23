@@ -29,6 +29,7 @@ export type ChartBounds = readonly [
   yMin?: number,
   yMax?: number,
 ];
+export type ChartSize = readonly [width: number, height: number];
 
 type Domain = readonly [min: number, max: number];
 type ChartXValue = number | string;
@@ -63,6 +64,7 @@ export const getChartDataPoint = (
 export const getChartScaledPoints = (
   points: ChartDataPoint[],
   [xMin, xMax, yMin, yMax]: ChartBounds,
+  [width, height]: ChartSize,
 ): ChartScaledPoint[] => {
   const numericX = arrayIsEmpty(
     arrayFilter(points, ([, xValue]) => !isNumber(xValue)),
@@ -81,8 +83,8 @@ export const getChartScaledPoints = (
     rowId,
     xValue,
     yValue,
-    getChartX(xValue, numericX, xDomain, xCategories),
-    getChartY(yValue, yDomain),
+    getChartX(xValue, numericX, xDomain, xCategories, width),
+    getChartY(yValue, yDomain, height),
   ]);
 };
 
@@ -91,16 +93,26 @@ const getChartX = (
   numericX: boolean,
   [xMin, xMax]: Domain,
   xCategories: Map<ChartXValue, number>,
+  width: number,
 ) =>
   numericX
-    ? getChartScale(xValue as number, xMin, xMax)
-    : getChartScale(xCategories.get(xValue) ?? 0, 0, collSize(xCategories) - 1);
+    ? getChartScale(xValue as number, xMin, xMax, width)
+    : getChartScale(
+        xCategories.get(xValue) ?? 0,
+        0,
+        collSize(xCategories) - 1,
+        width,
+      );
 
-const getChartY = (yValue: number, [yMin, yMax]: Domain) =>
-  1 - getChartScale(yValue, yMin, yMax);
+const getChartY = (yValue: number, [yMin, yMax]: Domain, height: number) =>
+  height - getChartScale(yValue, yMin, yMax, height);
 
-export const getChartScale = (value: number, min: number, max: number) =>
-  min == max ? 0.5 : getRounded((value - min) / (max - min));
+export const getChartScale = (
+  value: number,
+  min: number,
+  max: number,
+  size: number,
+) => (min == max ? size / 2 : getRounded((size * (value - min)) / (max - min)));
 
 export const getChartBounds = (
   kind: ChartKind,

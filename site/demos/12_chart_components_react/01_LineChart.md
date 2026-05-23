@@ -115,13 +115,13 @@ main {
   stroke: #2f6f73;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 0.025;
+  stroke-width: 2;
 }
 
 .chart .point {
   fill: #fff;
   stroke: #2f6f73;
-  stroke-width: 0.015;
+  stroke-width: 1.5;
 }
 
 @media (max-width: 40rem) {
