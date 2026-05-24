@@ -29,6 +29,14 @@ export type ChartBounds = readonly [
   yMin?: number,
   yMax?: number,
 ];
+export type ChartStyle = readonly [
+  tickSize: number,
+  tickGap: number,
+  barWidth: number,
+  xAxisHeight: number,
+  yAxisWidth: number,
+  inset: number,
+];
 export type ChartSize = readonly [width: number, height: number];
 
 type Domain = readonly [min: number, max: number];
@@ -62,13 +70,14 @@ export const getChartDataPoint = (
 };
 
 export const getChartScaledPoints = (
+  kind: ChartKind,
   points: ChartDataPoint[],
   [xMin, xMax, yMin, yMax]: ChartBounds,
   [width, height]: ChartSize,
 ): ChartScaledPoint[] => {
-  const numericX = arrayIsEmpty(
-    arrayFilter(points, ([, xValue]) => !isNumber(xValue)),
-  );
+  const numericX =
+    kind == 'line' &&
+    arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
   const xDomain: Domain = numericX ? [xMin as number, xMax as number] : [0, 0];
   const yDomain: Domain = [yMin ?? 0, yMax ?? 0];
   const xCategories = new Map<ChartXValue, number>();
@@ -83,7 +92,7 @@ export const getChartScaledPoints = (
     rowId,
     xValue,
     yValue,
-    getChartX(xValue, numericX, xDomain, xCategories, width),
+    getChartX(xValue, numericX, xDomain, xCategories, width, kind),
     getChartY(yValue, yDomain, height),
   ]);
 };
@@ -94,15 +103,18 @@ const getChartX = (
   [xMin, xMax]: Domain,
   xCategories: Map<ChartXValue, number>,
   width: number,
+  kind: ChartKind,
 ) =>
   numericX
     ? getChartScale(xValue as number, xMin, xMax, width)
-    : getChartScale(
-        xCategories.get(xValue) ?? 0,
-        0,
-        collSize(xCategories) - 1,
-        width,
-      );
+    : kind == 'bar'
+      ? (width * ((xCategories.get(xValue) ?? 0) + 0.5)) / collSize(xCategories)
+      : getChartScale(
+          xCategories.get(xValue) ?? 0,
+          0,
+          collSize(xCategories) - 1,
+          width,
+        );
 
 const getChartY = (yValue: number, [yMin, yMax]: Domain, height: number) =>
   height - getChartScale(yValue, yMin, yMax, height);

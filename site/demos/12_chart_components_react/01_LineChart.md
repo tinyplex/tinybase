@@ -49,7 +49,11 @@ const App = () => {
     }),
   );
 
-  return <Provider store={store}><Body /></Provider>;
+  return (
+    <Provider store={store}>
+      <Body />
+    </Provider>
+  );
 };
 
 addEventListener('load', () => createRoot(document.body).render(<App />));
@@ -78,7 +82,7 @@ bound to a Queries ResultTable using a `queryId` prop.)
 
 ## Styling
 
-The chart components emit SVG elements with simple class names, so its visual
+The chart components emit an SVG element with simple class names, so its visual
 treatment is entirely created with CSS:
 
 ```less
@@ -106,6 +110,8 @@ main {
 .chart {
   border: 1px solid #eee;
   box-shadow: 0 0 1rem #0004;
+  display: block;
+  font-size: 12px;
   height: 21rem;
   width: 100%;
 }
@@ -122,6 +128,17 @@ main {
   fill: #fff;
   stroke: #2f6f73;
   stroke-width: 1.5;
+}
+
+.chart .axis-line,
+.chart .tick-line {
+  stroke: #ddd;
+  stroke-width: 1;
+}
+
+.chart .tick-label {
+  fill: #777;
+  stroke: none;
 }
 
 @media (max-width: 40rem) {
