@@ -29,8 +29,8 @@ import {
 } from './data.ts';
 import {
   getChartLabelSize,
-  getChartGroup,
   getChartPlotSize,
+  useChartGroup,
   useChartLayout,
 } from './svg.tsx';
 
@@ -70,7 +70,7 @@ const EmptyChart = ({
   xCellId,
   yCellId,
 }: ChartBindingProps & ChartProps & {readonly kind: ChartKind}) =>
-  getChartGroup(
+  useChartGroup(
     className,
     kind,
     [],
@@ -137,7 +137,7 @@ const TableChart = ({
     storeOrStoreId,
   );
 
-  return getChartGroup(
+  return useChartGroup(
     className,
     kind,
     points,
@@ -203,7 +203,7 @@ const QueryChart = ({
     queries,
   );
 
-  return getChartGroup(
+  return useChartGroup(
     className,
     kind,
     points,

@@ -33,8 +33,12 @@ type PlotFrame = readonly [x: number, y: number, width: number, height: number];
 const DEFAULT_CHART_SIZE: ChartSize = [1000, 1000];
 const DEFAULT_CHART_FONT_SIZE = 12;
 const DEFAULT_CHART_STYLE: ChartStyle = [0.5, 0.5, 0.5, 1, 3.5, 4, 1, 1];
+const TOOLTIP_WIDTH = 160;
+const TOOLTIP_HEIGHT = 60;
+const TOOLTIP_GAP = 12;
+const TOOLTIP_PADDING = 12;
 
-export const getChartGroup = (
+export const useChartGroup = (
   className: string | undefined,
   kind: ChartKind,
   points: ChartScaledPoint[],
@@ -47,6 +51,10 @@ export const getChartGroup = (
 ) => {
   const [width, height] = chartSize;
   const plotFrame = getPlotFrame(chartSize, chartStyle);
+  const [, , plotWidth, plotHeight] = plotFrame;
+  const [tooltipPoint, setTooltipPoint] = useState<
+    ChartScaledPoint | undefined
+  >();
 
   return (
     <svg
@@ -82,9 +90,17 @@ export const getChartGroup = (
           data-y-min={yMin}
         >
           {kind == 'line'
-            ? getChartLine(points)
-            : getChartBars(points, plotFrame, chartStyle, yMin, yMax)}
+            ? getChartLine(points, setTooltipPoint)
+            : getChartBars(
+                points,
+                plotFrame,
+                chartStyle,
+                setTooltipPoint,
+                yMin,
+                yMax,
+              )}
         </g>
+        {getChartTooltip(tooltipPoint, plotWidth, plotHeight, xLabel, yLabel)}
       </g>
     </svg>
   );
@@ -148,12 +164,19 @@ const getPlotFrame = (
   return [plotX, plotY, mathMax(width - plotX - plotRight, 0), plotHeight];
 };
 
-const getChartLine = (points: ChartScaledPoint[]) => (
+const getChartLine = (
+  points: ChartScaledPoint[],
+  setTooltipPoint: (point: ChartScaledPoint | undefined) => void,
+) => (
   <>
     <path className="line" d={getChartLinePath(points)} />
-    {getChartMarks(points, ([, , , x, y]) => (
-      <circle className="point" cx={x} cy={y} r={5} />
-    ))}
+    {getChartMarks(
+      points,
+      ([, , , x, y]) => (
+        <circle className="point" cx={x} cy={y} r={5} />
+      ),
+      setTooltipPoint,
+    )}
   </>
 );
 
@@ -221,6 +244,7 @@ const getChartBars = (
   points: ChartScaledPoint[],
   [, , width, height]: PlotFrame,
   [, , , barRatio]: ChartStyle,
+  setTooltipPoint: (point: ChartScaledPoint | undefined) => void,
   yMin = 0,
   yMax = 0,
 ) => {
@@ -228,18 +252,60 @@ const getChartBars = (
   const pointsSize = size(points);
   const barWidth = arrayIsEmpty(points) ? 0 : (barRatio * width) / pointsSize;
 
-  return getChartMarks(points, ([, , , x, pointY]) => {
-    const y = mathMin(pointY, baselineY);
-    return (
-      <rect
-        className="bar"
-        x={x - barWidth / 2}
-        y={y}
-        width={barWidth}
-        height={mathAbs(baselineY - pointY)}
-      />
-    );
-  });
+  return getChartMarks(
+    points,
+    ([, , , x, pointY]) => {
+      const y = mathMin(pointY, baselineY);
+      return (
+        <rect
+          className="bar"
+          x={x - barWidth / 2}
+          y={y}
+          width={barWidth}
+          height={mathAbs(baselineY - pointY)}
+        />
+      );
+    },
+    setTooltipPoint,
+  );
+};
+
+const getChartTooltip = (
+  point: ChartScaledPoint | undefined,
+  width: number,
+  height: number,
+  xLabel: string,
+  yLabel: string,
+) => {
+  if (isNullish(point)) {
+    return null;
+  }
+
+  const [, xValue, yValue, x, y] = point;
+  const tooltipX =
+    x + TOOLTIP_GAP + TOOLTIP_WIDTH > width
+      ? x - TOOLTIP_GAP - TOOLTIP_WIDTH
+      : x + TOOLTIP_GAP;
+  const tooltipY = mathMax(
+    mathMin(y - TOOLTIP_GAP - TOOLTIP_HEIGHT, height - TOOLTIP_HEIGHT),
+    0,
+  );
+
+  return (
+    <>
+      <path className="x-tooltip-line" d={`M${x},0v${height}`} />
+      <path className="y-tooltip-line" d={`M0,${y}h${width}`} />
+      <g className="tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
+        <rect width={TOOLTIP_WIDTH} height={TOOLTIP_HEIGHT} rx={4} />
+        <text x={TOOLTIP_PADDING} y={22}>
+          {xLabel}: {xValue}
+        </text>
+        <text x={TOOLTIP_PADDING} y={46}>
+          {yLabel}: {yValue}
+        </text>
+      </g>
+    </>
+  );
 };
 
 const getChartXAxis = (
@@ -253,10 +319,11 @@ const getChartXAxis = (
 ) => (
   <g className="x-axis">
     {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax)
-      ? getChartMarks(points, ([, xValue, , x]) => (
+      ? arrayMap(points, ([rowId, xValue, , x]) => (
           <text
             className="tick-label"
             dominantBaseline="hanging"
+            key={rowId}
             textAnchor="middle"
             x={plotX + x}
             y={plotY + plotHeight + tickSize + tickGap}
@@ -349,12 +416,15 @@ const getChartYTick = (
 const getChartMarks = (
   points: ChartScaledPoint[],
   getMark: (point: ChartScaledPoint, index: number) => ReactNode,
+  setTooltipPoint: (point: ChartScaledPoint | undefined) => void,
 ) =>
   arrayMap(points, (point, index) => {
     const [rowId, xValue, yValue] = point;
     return (
       <g
         key={rowId}
+        onPointerEnter={() => setTooltipPoint(point)}
+        onPointerLeave={() => setTooltipPoint(undefined)}
         data-row-id={rowId}
         data-x-value={xValue}
         data-y-value={yValue}
