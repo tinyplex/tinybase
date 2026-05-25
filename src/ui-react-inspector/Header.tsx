@@ -7,6 +7,7 @@ import {
   TITLE,
 } from '../common/inspector/common.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
+import {number} from '../common/other.ts';
 import {CURRENT_TARGET} from '../common/strings.ts';
 import {useSetValueCallback, useValue} from '../ui-react/index.ts';
 
@@ -17,7 +18,7 @@ export const Header = ({s}: StoreProp) => {
   const handleDock = useSetValueCallback(
     POSITION_VALUE,
     (event: MouseEvent<HTMLImageElement>) =>
-      Number(event[CURRENT_TARGET].dataset.id),
+      number(event[CURRENT_TARGET].dataset.id),
     [],
     s,
   );

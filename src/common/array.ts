@@ -9,6 +9,9 @@ export const arrayNew = <Value>(
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);
 
+export const arrayIndexOf = <Value>(array: Value[], value: Value): number =>
+  array.indexOf(value);
+
 export const arrayEvery = <Value>(
   array: Value[],
   cb: (value: Value, index: number) => boolean | 0 | 1,

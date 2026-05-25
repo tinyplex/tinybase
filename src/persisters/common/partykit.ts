@@ -2,7 +2,7 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import {isString, size, slice} from '../../common/other.ts';
+import {isString, size, slice, string} from '../../common/other.ts';
 import {T, V, strStartsWith} from '../../common/strings.ts';
 
 type MessageType = typeof SET_CHANGES;
@@ -31,7 +31,7 @@ export const deconstruct = (
   return strStartsWith(message, prefix)
     ? [
         message[prefixSize] as MessageType | StorageKeyType,
-        (stringified ? jsonParseWithUndefined : String)(
+        (stringified ? jsonParseWithUndefined : string)(
           slice(message, prefixSize + 1),
         ),
       ]

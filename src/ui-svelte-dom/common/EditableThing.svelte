@@ -4,7 +4,13 @@
   import {getCellOrValueType, getTypeCase} from '../../common/cell.ts';
   import {jsonParse, jsonString} from '../../common/json.ts';
   import {isObject} from '../../common/obj.ts';
-  import {isArray, tryReturn} from '../../common/other.ts';
+  import {
+    boolean,
+    isArray,
+    number,
+    string,
+    tryReturn,
+  } from '../../common/other.ts';
   import {
     ARRAY,
     BOOLEAN,
@@ -43,9 +49,9 @@
   let arrayClassName = $state(EMPTY_STRING);
 
   const getThingKey = (thing: Cell | Value | undefined): string =>
-    `${getCellOrValueType(thing)}:${
-      isObject(thing) || isArray(thing) ? jsonString(thing) : String(thing)
-    }`;
+    `${getCellOrValueType(thing)}:${(isObject(thing) || isArray(thing)
+      ? jsonString
+      : string)(thing)}`;
 
   $effect(() => {
     const thingKey = getThingKey(thing);
@@ -57,9 +63,9 @@
       } else if (isArray(thing)) {
         arrayThing = jsonString(thing);
       } else {
-        stringThing = String(thing);
-        numberThing = Number(thing) || 0;
-        booleanThing = Boolean(thing);
+        stringThing = string(thing);
+        numberThing = number(thing) || 0;
+        booleanThing = boolean(thing);
       }
     }
   });
@@ -128,7 +134,7 @@
       value={stringThing}
       oninput={(event) =>
         handleThingChange(
-          String((event.currentTarget as HTMLInputElement).value),
+          string((event.currentTarget as HTMLInputElement).value),
           (value) => (stringThing = value),
         )}
     />
@@ -138,7 +144,7 @@
       value={numberThing}
       oninput={(event) =>
         handleThingChange(
-          Number((event.currentTarget as HTMLInputElement).value || 0),
+          number((event.currentTarget as HTMLInputElement).value || 0),
           (value) => (numberThing = value),
         )}
     />
@@ -148,7 +154,7 @@
       checked={booleanThing}
       onchange={(event) =>
         handleThingChange(
-          Boolean((event.currentTarget as HTMLInputElement).checked),
+          boolean((event.currentTarget as HTMLInputElement).checked),
           (value) => (booleanThing = value),
         )}
     />

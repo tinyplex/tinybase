@@ -47,7 +47,7 @@ import {APP_STYLESHEET} from '../common/inspector/style.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
-import {isUndefined, mathFloor} from '../common/other.ts';
+import {isUndefined, mathFloor, number} from '../common/other.ts';
 import {
   DEFAULT,
   EMPTY_STRING,
@@ -1015,7 +1015,7 @@ const Header = (props: StoreProp) => {
   const handleClick = () => open('https://tinybase.org', '_blank');
   const handleClose = () => props.s.setValue(OPEN_VALUE, false);
   const handleDock = (event: MouseEvent & {currentTarget: HTMLImageElement}) =>
-    props.s.setValue(POSITION_VALUE, Number(event.currentTarget.dataset.id));
+    props.s.setValue(POSITION_VALUE, number(event.currentTarget.dataset.id));
 
   return (
     <header>

@@ -1,6 +1,7 @@
 import {BOOLEAN, FUNCTION, NUMBER, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
+const math = Math;
 
 const getIfNotFunction =
   (predicate: (value: unknown) => value is unknown) =>
@@ -14,6 +15,10 @@ const getIfNotFunction =
 export const GLOBAL = globalThis;
 export const WINDOW = GLOBAL.window;
 export const THOUSAND = 1000;
+
+export const number = Number;
+export const string = String;
+export const boolean = Boolean;
 
 export const startInterval = (
   callback: () => void,
@@ -31,10 +36,17 @@ export const startTimeout = (callback: () => void, sec: number = 0) =>
   setTimeout(callback, sec * THOUSAND);
 export const stopTimeout = clearTimeout;
 
-export const math = Math;
 export const mathMax = math.max;
 export const mathMin = math.min;
+export const mathCeil = math.ceil;
 export const mathFloor = math.floor;
+export const mathPow = math.pow;
+export const mathRound = math.round;
+export const mathAbs = math.abs;
+export const mathLog10 = math.log10;
+export const mathRandom = math.random;
+export const infinity = Infinity;
+export const epsilon = Number.EPSILON;
 
 export const isFiniteNumber: (num: any) => boolean = isFinite;
 

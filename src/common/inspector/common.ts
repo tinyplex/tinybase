@@ -1,5 +1,5 @@
 import type {Id, Ids} from '../../@types/common/index.d.ts';
-import {arrayMap, arraySort} from '../array.ts';
+import {arrayIndexOf, arrayMap, arraySort} from '../array.ts';
 import {jsonStringWithMap} from '../json.ts';
 
 export const UNIQUE_ID = 'tinybaseInspector';
@@ -20,7 +20,7 @@ export const INSPECTOR_ERROR_MESSAGE =
   'Inspector error: please see console for details.';
 
 export const getInitialPosition = (position: string) => {
-  const index = POSITIONS.indexOf(position);
+  const index = arrayIndexOf(POSITIONS, position);
   return index == -1 ? 1 : index;
 };
 

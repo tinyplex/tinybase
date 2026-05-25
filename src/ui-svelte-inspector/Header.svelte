@@ -7,6 +7,7 @@
     TITLE,
   } from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
+  import {number} from '../common/other.ts';
 
   let {s}: StoreProp = $props();
 
@@ -20,7 +21,7 @@
   const handleDock = (event: MouseEvent) =>
     s.setValue(
       POSITION_VALUE,
-      Number((event.currentTarget as HTMLImageElement).dataset.id),
+      number((event.currentTarget as HTMLImageElement).dataset.id),
     );
   const onKeyDown = (event: KeyboardEvent, handle: () => void) => {
     if (event.key == 'Enter' || event.key == ' ') {

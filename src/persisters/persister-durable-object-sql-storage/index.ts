@@ -18,7 +18,7 @@ import type {
   DurableObjectSqlStoragePersister,
 } from '../../@types/persisters/persister-durable-object-sql-storage/index.d.ts';
 import {IdObj, objEnsure, objForEach} from '../../common/obj.ts';
-import {noop} from '../../common/other.ts';
+import {noop, number, string} from '../../common/other.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
@@ -114,13 +114,13 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
     // Load tables data
     const tablesResult = sqlStorage.exec(`SELECT * FROM ${tablesTable}`);
     for (const row of tablesResult.toArray()) {
-      const type = String(row.type);
-      const table_id = row.table_id ? String(row.table_id) : null;
-      const row_id = row.row_id ? String(row.row_id) : null;
-      const cell_id = row.cell_id ? String(row.cell_id) : null;
-      const value_data = String(row.value_data);
-      const timestamp = String(row.timestamp);
-      const hash = Number(row.hash);
+      const type = string(row.type);
+      const table_id = row.table_id ? string(row.table_id) : null;
+      const row_id = row.row_id ? string(row.row_id) : null;
+      const cell_id = row.cell_id ? string(row.cell_id) : null;
+      const value_data = string(row.value_data);
+      const timestamp = string(row.timestamp);
+      const hash = number(row.hash);
 
       const [zeroOrCellOrValue] = JSON.parse(value_data);
 
@@ -169,10 +169,10 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
     // Load values data
     const valuesResult = sqlStorage.exec(`SELECT * FROM ${valuesTable}`);
     for (const row of valuesResult.toArray()) {
-      const value_id = row.value_id ? String(row.value_id) : null;
-      const value_data = String(row.value_data);
-      const timestamp = String(row.timestamp);
-      const hash = Number(row.hash);
+      const value_id = row.value_id ? string(row.value_id) : null;
+      const value_data = string(row.value_data);
+      const timestamp = string(row.timestamp);
+      const hash = number(row.hash);
 
       const [zeroOrCellOrValue] = JSON.parse(value_data);
 

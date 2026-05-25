@@ -1,10 +1,20 @@
-import {mathMax, mathMin, size} from '../../common/other.ts';
-
-type WilkinsonTicks = readonly [ticks: number[], score: number];
+import {arrayIndexOf, arrayPush} from '../../common/array.ts';
+import {
+  epsilon,
+  infinity,
+  mathAbs,
+  mathCeil,
+  mathFloor,
+  mathLog10,
+  mathMax,
+  mathMin,
+  mathPow,
+  mathRound,
+  size,
+} from '../../common/other.ts';
 
 const WILKINSON_NICE_NUMBERS = [1, 5, 2, 2.5, 4, 3];
 const WILKINSON_WEIGHTS = [0.25, 0.2, 0.5, 0.05];
-const EPSILON = Number.EPSILON * 100;
 
 export const getWilkinsonTicks = (
   min: number,
@@ -17,7 +27,7 @@ export const getWilkinsonTicks = (
   let bestScore = -2;
   const range = max - min;
 
-  for (let j = 1; j < Infinity; j++) {
+  for (let j = 1; j < infinity; j++) {
     for (const niceNumber of WILKINSON_NICE_NUMBERS) {
       const simplicityMax = getWilkinsonSimplicityMax(niceNumber, j);
       if (
@@ -30,7 +40,7 @@ export const getWilkinsonTicks = (
         return bestTicks;
       }
 
-      for (let tickCount = 2; tickCount < Infinity; tickCount++) {
+      for (let tickCount = 2; tickCount < infinity; tickCount++) {
         const densityMax = getWilkinsonDensityMax(tickCount, targetTickCount);
         if (
           WILKINSON_WEIGHTS[0] * simplicityMax +
@@ -42,22 +52,19 @@ export const getWilkinsonTicks = (
           break;
         }
 
-        const delta = range / (tickCount + 1) / j / niceNumber;
         for (
-          let exponent = Math.ceil(Math.log10(delta));
-          exponent < Infinity;
+          let exponent = mathCeil(
+            mathLog10(range / (tickCount + 1) / j / niceNumber),
+          );
+          exponent < infinity;
           exponent++
         ) {
-          const step = j * niceNumber * Math.pow(10, exponent);
-          const coverageMax = getWilkinsonCoverageMax(
-            min,
-            max,
-            step * (tickCount - 1),
-          );
+          const step = j * niceNumber * mathPow(10, exponent);
 
           if (
             WILKINSON_WEIGHTS[0] * simplicityMax +
-              WILKINSON_WEIGHTS[1] * coverageMax +
+              WILKINSON_WEIGHTS[1] *
+                getWilkinsonCoverageMax(min, max, step * (tickCount - 1)) +
               WILKINSON_WEIGHTS[2] * densityMax +
               WILKINSON_WEIGHTS[3] <
             bestScore
@@ -65,25 +72,38 @@ export const getWilkinsonTicks = (
             break;
           }
 
-          const minStart = Math.floor(max / step) * j - (tickCount - 1) * j;
-          const maxStart = Math.ceil(min / step) * j;
+          const minStart = mathFloor(max / step) * j - (tickCount - 1) * j;
+          const maxStart = mathCeil(min / step) * j;
 
-          if (minStart <= maxStart) {
-            [bestTicks, bestScore] = getBestWilkinsonTicks(
-              min,
-              max,
-              targetTickCount,
-              niceNumber,
-              j,
-              tickCount,
-              labelSize,
-              axisSize,
-              step,
-              minStart,
-              maxStart,
-              bestTicks,
-              bestScore,
-            );
+          for (let start = minStart; start <= maxStart; start++) {
+            const tickMin = start * (step / j);
+            const tickMax = tickMin + step * (tickCount - 1);
+            const density = (tickCount - 1) / (tickMax - tickMin);
+            const targetDensity =
+              (targetTickCount - 1) /
+              (mathMax(tickMax, max) - mathMin(min, tickMin));
+            const spacing = axisSize / (tickCount - 1);
+            const score =
+              WILKINSON_WEIGHTS[0] *
+                (1 -
+                  arrayIndexOf(WILKINSON_NICE_NUMBERS, niceNumber) /
+                    mathMax(size(WILKINSON_NICE_NUMBERS) - 1, 1) -
+                  j +
+                  (isMultipleOf(tickMin, step) && tickMin <= 0 && tickMax >= 0
+                    ? 1
+                    : 0)) +
+              WILKINSON_WEIGHTS[1] *
+                getWilkinsonCoverage(min, max, tickMin, tickMax) +
+              WILKINSON_WEIGHTS[2] *
+                (2 -
+                  mathMax(density / targetDensity, targetDensity / density)) +
+              WILKINSON_WEIGHTS[3] *
+                (spacing < labelSize * 1.2 ? -infinity : mathMin(spacing, 1));
+
+            if (score > bestScore) {
+              bestTicks = getWilkinsonTickValues(tickMin, tickMax, step);
+              bestScore = score;
+            }
           }
         }
       }
@@ -93,83 +113,21 @@ export const getWilkinsonTicks = (
   return bestTicks;
 };
 
-const getBestWilkinsonTicks = (
-  min: number,
-  max: number,
-  targetTickCount: number,
-  niceNumber: number,
-  j: number,
-  tickCount: number,
-  labelSize: number,
-  axisSize: number,
-  step: number,
-  minStart: number,
-  maxStart: number,
-  bestTicks: number[],
-  bestScore: number,
-): WilkinsonTicks => {
-  for (let start = minStart; start <= maxStart; start++) {
-    const tickMin = start * (step / j);
-    const tickMax = tickMin + step * (tickCount - 1);
-    const score =
-      WILKINSON_WEIGHTS[0] *
-        getWilkinsonSimplicity(niceNumber, j, tickMin, tickMax, step) +
-      WILKINSON_WEIGHTS[1] * getWilkinsonCoverage(min, max, tickMin, tickMax) +
-      WILKINSON_WEIGHTS[2] *
-        getWilkinsonDensity(
-          tickCount,
-          targetTickCount,
-          min,
-          max,
-          tickMin,
-          tickMax,
-        ) +
-      WILKINSON_WEIGHTS[3] *
-        getWilkinsonLegibility(tickCount, labelSize, axisSize);
-
-    if (score > bestScore) {
-      bestTicks = getWilkinsonTickValues(tickMin, tickMax, step);
-      bestScore = score;
-    }
-  }
-
-  return [bestTicks, bestScore];
-};
-
 const getWilkinsonTickValues = (
   min: number,
   max: number,
   step: number,
 ): number[] => {
-  const ticks = [];
+  const ticks: number[] = [];
   for (let tick = min; tick <= max + step / 2; tick += step) {
-    ticks.push(getRounded(tick));
+    arrayPush(ticks, mathRound(tick * 1000000) / 1000000);
   }
   return ticks;
 };
 
-const getWilkinsonSimplicity = (
-  niceNumber: number,
-  j: number,
-  tickMin: number,
-  tickMax: number,
-  step: number,
-) => {
-  const niceIndex = WILKINSON_NICE_NUMBERS.indexOf(niceNumber);
-  const isZeroIncluded =
-    isMultipleOf(tickMin, step) && tickMin <= 0 && tickMax >= 0;
-
-  return (
-    1 -
-    niceIndex / mathMax(size(WILKINSON_NICE_NUMBERS) - 1, 1) -
-    j +
-    (isZeroIncluded ? 1 : 0)
-  );
-};
-
 const getWilkinsonSimplicityMax = (niceNumber: number, j: number) =>
   1 -
-  WILKINSON_NICE_NUMBERS.indexOf(niceNumber) /
+  arrayIndexOf(WILKINSON_NICE_NUMBERS, niceNumber) /
     mathMax(size(WILKINSON_NICE_NUMBERS) - 1, 1) -
   j +
   1;
@@ -179,57 +137,20 @@ const getWilkinsonCoverage = (
   max: number,
   tickMin: number,
   tickMax: number,
-) => {
-  const range = max - min;
-  return (
-    1 -
-    (Math.pow(max - tickMax, 2) + Math.pow(min - tickMin, 2)) /
-      (2 * Math.pow(0.1 * range, 2))
-  );
-};
+) =>
+  1 -
+  (mathPow(max - tickMax, 2) + mathPow(min - tickMin, 2)) /
+    (2 * mathPow(0.1 * (max - min), 2));
 
-const getWilkinsonCoverageMax = (min: number, max: number, span: number) => {
-  const range = max - min;
-  if (span <= range) {
-    return 1;
-  }
-
-  const half = (span - range) / 2;
-  return 1 - (half * half) / Math.pow(0.1 * range, 2);
-};
-
-const getWilkinsonDensity = (
-  tickCount: number,
-  targetTickCount: number,
-  min: number,
-  max: number,
-  tickMin: number,
-  tickMax: number,
-) => {
-  const density = (tickCount - 1) / (tickMax - tickMin);
-  const targetDensity =
-    (targetTickCount - 1) / (mathMax(tickMax, max) - mathMin(min, tickMin));
-
-  return 2 - mathMax(density / targetDensity, targetDensity / density);
-};
+const getWilkinsonCoverageMax = (min: number, max: number, span: number) =>
+  span <= max - min
+    ? 1
+    : 1 - mathPow((span - (max - min)) / 2, 2) / mathPow(0.1 * (max - min), 2);
 
 const getWilkinsonDensityMax = (tickCount: number, targetTickCount: number) =>
   tickCount >= targetTickCount
     ? 2 - (tickCount - 1) / (targetTickCount - 1)
     : 1;
 
-const getWilkinsonLegibility = (
-  tickCount: number,
-  labelSize: number,
-  axisSize: number,
-) => {
-  const spacing = axisSize / (tickCount - 1);
-  const requiredSpacing = labelSize * 1.2;
-
-  return spacing < requiredSpacing ? -Infinity : mathMin(spacing, 1);
-};
-
 const isMultipleOf = (value: number, step: number) =>
-  Math.abs(value / step - Math.round(value / step)) < EPSILON;
-
-const getRounded = (value: number) => Math.round(value * 1000000) / 1000000;
+  mathAbs(value / step - mathRound(value / step)) < epsilon * 100;

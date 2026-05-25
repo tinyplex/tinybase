@@ -7,7 +7,7 @@
   } from '../common/inspector/idle.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
   import {arrayIsEmpty} from '../common/array.ts';
-  import {isUndefined, mathFloor} from '../common/other.ts';
+  import {isUndefined, mathFloor, number} from '../common/other.ts';
   import {
     getIndexes,
     getIndexesIds,
@@ -53,11 +53,11 @@
       const observer = new MutationObserver(() => {
         if (
           articleElement.scrollWidth >=
-            mathFloor(Number(scrollLeft)) + articleElement.clientWidth &&
+            mathFloor(number(scrollLeft)) + articleElement.clientWidth &&
           articleElement.scrollHeight >=
-            mathFloor(Number(scrollTop)) + articleElement.clientHeight
+            mathFloor(number(scrollTop)) + articleElement.clientHeight
         ) {
-          articleElement.scrollTo(Number(scrollLeft), Number(scrollTop));
+          articleElement.scrollTo(number(scrollLeft), number(scrollTop));
         }
       });
       observer.observe(articleElement, {childList: true, subtree: true});

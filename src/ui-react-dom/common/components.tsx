@@ -9,7 +9,15 @@ import {
 } from '../../common/cell.ts';
 import {jsonParse, jsonString} from '../../common/json.ts';
 import {isObject, objToArray} from '../../common/obj.ts';
-import {isArray, isFalse, isUndefined, tryReturn} from '../../common/other.ts';
+import {
+  boolean,
+  isArray,
+  isFalse,
+  isUndefined,
+  number,
+  string,
+  tryReturn,
+} from '../../common/other.ts';
 import {getProps, useCallback, useState} from '../../common/react.ts';
 import {
   _VALUE,
@@ -163,9 +171,9 @@ export const EditableThing = ({
     } else if (isArray(thing)) {
       setArrayThing(jsonString(thing));
     } else {
-      setStringThing(String(thing));
-      setNumberThing(Number(thing) || 0);
-      setBooleanThing(Boolean(thing));
+      setStringThing(string(thing));
+      setNumberThing(number(thing) || 0);
+      setBooleanThing(boolean(thing));
     }
   }
 
@@ -241,7 +249,7 @@ export const EditableThing = ({
       onChange={useCallback(
         (event: FormEvent<HTMLInputElement>) =>
           handleThingChange(
-            String(event[CURRENT_TARGET][_VALUE]),
+            string(event[CURRENT_TARGET][_VALUE]),
             setStringThing,
           ),
         [handleThingChange],
@@ -254,7 +262,7 @@ export const EditableThing = ({
       onChange={useCallback(
         (event: FormEvent<HTMLInputElement>) =>
           handleThingChange(
-            Number(event[CURRENT_TARGET][_VALUE] || 0),
+            number(event[CURRENT_TARGET][_VALUE] || 0),
             setNumberThing,
           ),
         [handleThingChange],
@@ -267,7 +275,7 @@ export const EditableThing = ({
       onChange={useCallback(
         (event: FormEvent<HTMLInputElement>) =>
           handleThingChange(
-            Boolean(event[CURRENT_TARGET].checked),
+            boolean(event[CURRENT_TARGET].checked),
             setBooleanThing,
           ),
         [handleThingChange],

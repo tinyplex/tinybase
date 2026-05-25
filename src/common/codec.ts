@@ -2,7 +2,7 @@ import type {getUniqueId as getUniqueIdDecl} from '../@types/common/index.d.ts';
 import type {Id} from '../@types/index.d.ts';
 import {arrayMap, arrayReduce} from './array.ts';
 import {mapGet, mapNew} from './map.ts';
-import {GLOBAL, math, mathFloor} from './other.ts';
+import {GLOBAL, mathFloor, mathRandom} from './other.ts';
 import {EMPTY_STRING, strSplit} from './strings.ts';
 
 const MASK6 = 63;
@@ -24,7 +24,7 @@ export const getRandomValues = GLOBAL.crypto
       GLOBAL.crypto.getRandomValues(array as any) as Array
   : /*! istanbul ignore next */
     <Array extends Uint8Array>(array: Array): Array =>
-      arrayMap(array as any, () => mathFloor(math.random() * 256)) as any;
+      arrayMap(array as any, () => mathFloor(mathRandom() * 256)) as any;
 
 export const getUniqueId: typeof getUniqueIdDecl = (length = 16): Id =>
   arrayReduce<number, Id>(

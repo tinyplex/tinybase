@@ -11,7 +11,15 @@ import {
 } from '../../common/cell.ts';
 import {jsonParse, jsonString} from '../../common/json.ts';
 import {isObject, objToArray} from '../../common/obj.ts';
-import {isArray, isFalse, isUndefined, tryReturn} from '../../common/other.ts';
+import {
+  boolean,
+  isArray,
+  isFalse,
+  isUndefined,
+  number,
+  string,
+  tryReturn,
+} from '../../common/other.ts';
 import {getProps, getValue} from '../../common/solid.ts';
 import {
   _VALUE,
@@ -163,9 +171,9 @@ export const EditableThing = (props: {
       } else if (isArray(thing)) {
         setArrayThing(jsonString(thing));
       } else {
-        setStringThing(String(thing));
-        setNumberThing(Number(thing) || 0);
-        setBooleanThing(Boolean(thing));
+        setStringThing(string(thing));
+        setNumberThing(number(thing) || 0);
+        setBooleanThing(boolean(thing));
       }
     }
   });
@@ -229,7 +237,7 @@ export const EditableThing = (props: {
         value={stringThing()}
         onInput={(event) =>
           handleThingChange(
-            String(event[CURRENT_TARGET][_VALUE]),
+            string(event[CURRENT_TARGET][_VALUE]),
             setStringThing,
           )
         }
@@ -239,7 +247,7 @@ export const EditableThing = (props: {
         value={numberThing()}
         onInput={(event) =>
           handleThingChange(
-            Number(event[CURRENT_TARGET][_VALUE] || 0),
+            number(event[CURRENT_TARGET][_VALUE] || 0),
             setNumberThing,
           )
         }
@@ -249,7 +257,7 @@ export const EditableThing = (props: {
         checked={booleanThing()}
         onInput={(event) =>
           handleThingChange(
-            Boolean(event[CURRENT_TARGET].checked),
+            boolean(event[CURRENT_TARGET].checked),
             setBooleanThing,
           )
         }
