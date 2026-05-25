@@ -2,6 +2,8 @@ import type {ReactNode, RefObject} from 'react';
 import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
 import {
   isFiniteNumber,
+  isNull,
+  isNullish,
   isNumber,
   mathAbs,
   mathMax,
@@ -60,6 +62,17 @@ export const getChartGroup = (
         className="plot"
         transform={`translate(${plotFrame[0]} ${plotFrame[1]})`}
       >
+        {getChartGrid(
+          points,
+          xTicks,
+          xMin,
+          xMax,
+          yTicks,
+          yMin,
+          yMax,
+          plotFrame,
+          chartStyle,
+        )}
         <g
           className={kind}
           data-x-max={xMax}
@@ -84,7 +97,7 @@ export const useChartLayout = (): ChartLayout => {
 
   useLayoutEffect(() => {
     const svg = svgRef.current;
-    if (svg == null) {
+    if (isNull(svg)) {
       return;
     }
 
@@ -131,12 +144,7 @@ const getPlotFrame = (
     0,
   );
 
-  return [
-    plotX,
-    plotY,
-    mathMax(width - plotX - plotRight, 0),
-    plotHeight,
-  ];
+  return [plotX, plotY, mathMax(width - plotX - plotRight, 0), plotHeight];
 };
 
 const getChartLine = (points: ChartScaledPoint[]) => (
@@ -146,6 +154,59 @@ const getChartLine = (points: ChartScaledPoint[]) => (
       <circle className="point" cx={x} cy={y} r={5} />
     ))}
   </>
+);
+
+const getChartGrid = (
+  points: ChartScaledPoint[],
+  xTicks: ChartTicks,
+  xMin: number | string | undefined,
+  xMax: number | string | undefined,
+  yTicks: ChartTicks,
+  yMin: number | undefined,
+  yMax: number | undefined,
+  [, , width, height]: PlotFrame,
+  [tickSize]: ChartStyle,
+) => (
+  <g className="grid">
+    {isNullish(yMin) || isNullish(yMax) ? null : (
+      <path
+        className="y-grid-line"
+        d={arrayJoin(
+          arrayMap(
+            yTicks,
+            (tick) =>
+              `M${-tickSize},${
+                height - getChartScale(tick, yMin, yMax, height)
+              }h${width + tickSize}`,
+          ),
+          ' ',
+        )}
+      />
+    )}
+    {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax) ? (
+      <path
+        className="x-grid-line"
+        d={arrayJoin(
+          arrayMap(points, ([, , , x]) => `M${x},0v${height + tickSize}`),
+          ' ',
+        )}
+      />
+    ) : (
+      <path
+        className="x-grid-line"
+        d={arrayJoin(
+          arrayMap(
+            xTicks,
+            (tick) =>
+              `M${getChartScale(tick, xMin, xMax, width)},0v${
+                height + tickSize
+              }`,
+          ),
+          ' ',
+        )}
+      />
+    )}
+  </g>
 );
 
 const getChartBars = (
@@ -182,71 +243,44 @@ const getChartXAxis = (
   [plotX, plotY, plotWidth, plotHeight]: PlotFrame,
   [tickSize, tickGap, axisLabelGap, , , , , fontSize]: ChartStyle,
 ) => (
-  <g className="x-axis axis">
-    <line
-      className="axis-line x-axis-line"
-      x1={plotX}
-      x2={plotX + plotWidth}
-      y1={plotY + plotHeight}
-      y2={plotY + plotHeight}
+  <g className="x-axis">
+    <path
+      className="x-axis-line"
+      d={`M${plotX},${plotY + plotHeight}h${plotWidth}`}
     />
     {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax)
       ? getChartMarks(points, ([, xValue, , x]) => (
-          <g className="tick x-tick" data-value={xValue}>
-            <line
-              className="tick-line"
-              x1={plotX + x}
-              x2={plotX + x}
-              y1={plotY + plotHeight}
-              y2={plotY + plotHeight + tickSize}
-            />
-            <text
-              className="tick-label"
-              dominantBaseline="hanging"
-              textAnchor="middle"
-              x={plotX + x}
-              y={plotY + plotHeight + tickSize + tickGap}
-            >
-              {xValue}
-            </text>
-          </g>
+          <text
+            className="tick-label"
+            dominantBaseline="hanging"
+            textAnchor="middle"
+            x={plotX + x}
+            y={plotY + plotHeight + tickSize + tickGap}
+          >
+            {xValue}
+          </text>
         ))
       : arrayMap(xTicks, (tick) => {
           const x = getChartScale(tick, xMin, xMax, plotWidth);
           return (
-            <g className="tick x-tick" data-value={tick} key={tick}>
-              <line
-                className="tick-line"
-                x1={plotX + x}
-                x2={plotX + x}
-                y1={plotY + plotHeight}
-                y2={plotY + plotHeight + tickSize}
-              />
-              <text
-                className="tick-label"
-                dominantBaseline="hanging"
-                textAnchor="middle"
-                x={plotX + x}
-                y={plotY + plotHeight + tickSize + tickGap}
-              >
-                {tick}
-              </text>
-            </g>
+            <text
+              className="tick-label"
+              dominantBaseline="hanging"
+              key={tick}
+              textAnchor="middle"
+              x={plotX + x}
+              y={plotY + plotHeight + tickSize + tickGap}
+            >
+              {tick}
+            </text>
           );
         })}
     <text
-      className="axis-label x-axis-label"
+      className="x-axis-label"
       dominantBaseline="hanging"
       textAnchor="middle"
       x={plotX + plotWidth / 2}
-      y={
-        plotY +
-        plotHeight +
-        tickSize +
-        tickGap +
-        fontSize +
-        axisLabelGap
-      }
+      y={plotY + plotHeight + tickSize + tickGap + fontSize + axisLabelGap}
     >
       {xLabel}
     </text>
@@ -261,8 +295,8 @@ const getChartYAxis = (
   plotFrame: PlotFrame,
   chartStyle: ChartStyle,
 ) =>
-  yMin == null || yMax == null ? null : (
-    <g className="y-axis axis">
+  isNullish(yMin) || isNullish(yMax) ? null : (
+    <g className="y-axis">
       {arrayMap(yTicks, (tick) =>
         getChartYTick(
           tick,
@@ -271,12 +305,9 @@ const getChartYAxis = (
           plotFrame[3] - getChartScale(tick, yMin, yMax, plotFrame[3]),
         ),
       )}
-      <line
-        className="axis-line y-axis-line"
-        x1={plotFrame[0]}
-        x2={plotFrame[0]}
-        y1={plotFrame[1]}
-        y2={plotFrame[1] + plotFrame[3]}
+      <path
+        className="y-axis-line"
+        d={`M${plotFrame[0]},${plotFrame[1]}v${plotFrame[3]}`}
       />
       {getChartYAxisLabel(yLabel, plotFrame, chartStyle)}
     </g>
@@ -288,7 +319,7 @@ const getChartYAxisLabel = (
   [, , , , , , inset]: ChartStyle,
 ) => (
   <text
-    className="axis-label y-axis-label"
+    className="y-axis-label"
     dominantBaseline="text-before-edge"
     textAnchor="middle"
     transform={`translate(${inset} ${plotY + plotHeight / 2}) rotate(-90)`}
@@ -303,24 +334,16 @@ const getChartYTick = (
   [tickSize, tickGap]: ChartStyle,
   y: number,
 ) => (
-  <g className="tick y-tick" data-value={value} key={value}>
-    <line
-      className="tick-line"
-      x1={plotX - tickSize}
-      x2={plotX}
-      y1={plotY + y}
-      y2={plotY + y}
-    />
-    <text
-      className="tick-label"
-      dominantBaseline="middle"
-      textAnchor="end"
-      x={plotX - tickSize - tickGap}
-      y={plotY + y}
-    >
-      {value}
-    </text>
-  </g>
+  <text
+    className="tick-label"
+    dominantBaseline="middle"
+    key={value}
+    textAnchor="end"
+    x={plotX - tickSize - tickGap}
+    y={plotY + y}
+  >
+    {value}
+  </text>
 );
 
 const getChartMarks = (
