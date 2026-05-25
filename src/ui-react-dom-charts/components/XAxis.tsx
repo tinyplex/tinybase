@@ -38,6 +38,8 @@ export const XAxis = ({
             <text
               className="tick-label"
               dominantBaseline="hanging"
+              fill="currentColor"
+              fillOpacity={0.75}
               key={rowId}
               textAnchor="middle"
               x={plotX + x}
@@ -52,6 +54,8 @@ export const XAxis = ({
               <text
                 className="tick-label"
                 dominantBaseline="hanging"
+                fill="currentColor"
+                fillOpacity={0.75}
                 key={tick}
                 textAnchor="middle"
                 x={plotX + x}
@@ -64,6 +68,8 @@ export const XAxis = ({
       <text
         className="x-axis-label"
         dominantBaseline="hanging"
+        fill="currentColor"
+        fillOpacity={0.85}
         textAnchor="middle"
         x={plotX + plotWidth / 2}
         y={plotY + plotHeight + tickSize + tickGap + fontSize + axisLabelGap}

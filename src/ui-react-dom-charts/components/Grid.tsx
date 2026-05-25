@@ -44,6 +44,9 @@ export const Grid = ({
             ),
             ' ',
           )}
+          stroke="currentColor"
+          strokeOpacity={0.18}
+          strokeWidth={0.5}
         />
       )}
       {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax) ? (
@@ -53,6 +56,9 @@ export const Grid = ({
             arrayMap(points, ([, , , x]) => `M${x},0v${height + tickSize}`),
             ' ',
           )}
+          stroke="currentColor"
+          strokeOpacity={0.18}
+          strokeWidth={0.5}
         />
       ) : (
         <path
@@ -67,6 +73,9 @@ export const Grid = ({
             ),
             ' ',
           )}
+          stroke="currentColor"
+          strokeOpacity={0.18}
+          strokeWidth={0.5}
         />
       )}
     </g>

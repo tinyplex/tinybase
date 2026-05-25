@@ -39,6 +39,7 @@ export const Bars = ({
         return (
           <rect
             className="bar"
+            fill="currentColor"
             x={x - barWidth / 2}
             y={y}
             width={barWidth}

@@ -35,14 +35,34 @@ export const Tooltip = ({
 
   return (
     <>
-      <path className="x-tooltip-line" d={`M${x},0v${height}`} />
-      <path className="y-tooltip-line" d={`M0,${y}h${width}`} />
+      <path
+        className="x-tooltip-line"
+        d={`M${x},0v${height}`}
+        pointerEvents="none"
+        stroke="currentColor"
+        strokeOpacity={0.3}
+        strokeWidth={1}
+      />
+      <path
+        className="y-tooltip-line"
+        d={`M0,${y}h${width}`}
+        pointerEvents="none"
+        stroke="currentColor"
+        strokeOpacity={0.3}
+        strokeWidth={1}
+      />
       <g className="tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
-        <rect width={TOOLTIP_WIDTH} height={TOOLTIP_HEIGHT} rx={4} />
-        <text x={TOOLTIP_PADDING} y={22}>
+        <rect
+          fill="currentColor"
+          fillOpacity={0.12}
+          width={TOOLTIP_WIDTH}
+          height={TOOLTIP_HEIGHT}
+          rx={4}
+        />
+        <text fill="currentColor" x={TOOLTIP_PADDING} y={22}>
           {xLabel}: {xValue}
         </text>
-        <text x={TOOLTIP_PADDING} y={46}>
+        <text fill="currentColor" x={TOOLTIP_PADDING} y={46}>
           {yLabel}: {yValue}
         </text>
       </g>

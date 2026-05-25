@@ -31,6 +31,8 @@ export const YAxis = ({
           <text
             className="tick-label"
             dominantBaseline="middle"
+            fill="currentColor"
+            fillOpacity={0.75}
             key={tick}
             textAnchor="end"
             x={plotX - tickSize - tickGap}
@@ -43,6 +45,8 @@ export const YAxis = ({
       <text
         className="y-axis-label"
         dominantBaseline="text-before-edge"
+        fill="currentColor"
+        fillOpacity={0.85}
         textAnchor="middle"
         transform={`translate(${inset} ${
           plotFrame[1] + plotFrame[3] / 2

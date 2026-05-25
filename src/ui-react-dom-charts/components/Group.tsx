@@ -99,7 +99,11 @@ export const Group = ({
           data-y-min={yMin}
         >
           {kind == 'line' ? (
-            <Line points={points} setTooltipPoint={setTooltipPoint} />
+            <Line
+              height={plotHeight}
+              points={points}
+              setTooltipPoint={setTooltipPoint}
+            />
           ) : (
             <Bars
               points={points}
