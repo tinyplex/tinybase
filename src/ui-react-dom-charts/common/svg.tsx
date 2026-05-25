@@ -73,6 +73,7 @@ export const getChartGroup = (
           plotFrame,
           chartStyle,
         )}
+        {getChartAxes(plotFrame)}
         <g
           className={kind}
           data-x-max={xMax}
@@ -209,6 +210,13 @@ const getChartGrid = (
   </g>
 );
 
+const getChartAxes = ([, , width, height]: PlotFrame) => (
+  <>
+    <path className="x-axis-line" d={`M0,${height}h${width}`} />
+    <path className="y-axis-line" d={`M0,0v${height}`} />
+  </>
+);
+
 const getChartBars = (
   points: ChartScaledPoint[],
   [, , width, height]: PlotFrame,
@@ -244,10 +252,6 @@ const getChartXAxis = (
   [tickSize, tickGap, axisLabelGap, , , , , fontSize]: ChartStyle,
 ) => (
   <g className="x-axis">
-    <path
-      className="x-axis-line"
-      d={`M${plotX},${plotY + plotHeight}h${plotWidth}`}
-    />
     {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax)
       ? getChartMarks(points, ([, xValue, , x]) => (
           <text
@@ -305,10 +309,6 @@ const getChartYAxis = (
           plotFrame[3] - getChartScale(tick, yMin, yMax, plotFrame[3]),
         ),
       )}
-      <path
-        className="y-axis-line"
-        d={`M${plotFrame[0]},${plotFrame[1]}v${plotFrame[3]}`}
-      />
       {getChartYAxisLabel(yLabel, plotFrame, chartStyle)}
     </g>
   );
