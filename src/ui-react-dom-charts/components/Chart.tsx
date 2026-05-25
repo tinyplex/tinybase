@@ -1,5 +1,3 @@
-import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
-import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import type {
   ChartBindingProps,
   ChartProps,
@@ -7,7 +5,6 @@ import type {
   ChartTableSourceProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
 import {isUndefined} from '../../common/other.ts';
-import {useCallback, useState} from '../../common/react.ts';
 import {
   useCellListener,
   useQueriesOrQueriesById,
@@ -16,23 +13,14 @@ import {
   useSortedRowIds,
   useStoreOrStoreById,
 } from '../../ui-react/index.ts';
-import {
-  getChartBounds,
-  getChartDataPoint,
-  getChartDataPoints,
-  getChartScaledPoints,
-  getChartTickBounds,
-  getChartXTicks,
-  getChartYTicks,
-  type ChartKind,
-  type ChartSize,
-} from './data.ts';
+import type {ChartKind} from '../common/data.ts';
+import {useChartData} from '../common/hooks.ts';
 import {
   getChartLabelSize,
   getChartPlotSize,
-  useChartGroup,
   useChartLayout,
-} from './svg.tsx';
+} from '../common/svg.ts';
+import {Group} from './Group.tsx';
 
 export const Chart = ({
   className,
@@ -69,18 +57,22 @@ const EmptyChart = ({
   kind,
   xCellId,
   yCellId,
-}: ChartBindingProps & ChartProps & {readonly kind: ChartKind}) =>
-  useChartGroup(
-    className,
-    kind,
-    [],
-    [],
-    xCellId,
-    yCellId,
-    [],
-    [],
-    useChartLayout(),
+}: ChartBindingProps & ChartProps & {readonly kind: ChartKind}) => {
+  const chartLayout = useChartLayout();
+  return (
+    <Group
+      className={className}
+      kind={kind}
+      points={[]}
+      bounds={[]}
+      xLabel={xCellId}
+      yLabel={yCellId}
+      xTicks={[]}
+      yTicks={[]}
+      chartLayout={chartLayout}
+    />
   );
+};
 
 const TableChart = ({
   descending,
@@ -137,16 +129,18 @@ const TableChart = ({
     storeOrStoreId,
   );
 
-  return useChartGroup(
-    className,
-    kind,
-    points,
-    bounds,
-    xCellId,
-    yCellId,
-    xTicks,
-    yTicks,
-    chartLayout,
+  return (
+    <Group
+      className={className}
+      kind={kind}
+      points={points}
+      bounds={bounds}
+      xLabel={xCellId}
+      yLabel={yCellId}
+      xTicks={xTicks}
+      yTicks={yTicks}
+      chartLayout={chartLayout}
+    />
   );
 };
 
@@ -203,42 +197,17 @@ const QueryChart = ({
     queries,
   );
 
-  return useChartGroup(
-    className,
-    kind,
-    points,
-    bounds,
-    xCellId,
-    yCellId,
-    xTicks,
-    yTicks,
-    chartLayout,
+  return (
+    <Group
+      className={className}
+      kind={kind}
+      points={points}
+      bounds={bounds}
+      xLabel={xCellId}
+      yLabel={yCellId}
+      xTicks={xTicks}
+      yTicks={yTicks}
+      chartLayout={chartLayout}
+    />
   );
-};
-
-const useChartData = (
-  kind: ChartKind,
-  rowIds: string[],
-  chartSize: ChartSize,
-  labelSize: number,
-  getXCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
-  getYCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
-) => {
-  const [, rerender] = useState<[]>();
-  const handleChange = useCallback(() => rerender([]), [rerender]);
-  const points = getChartDataPoints(rowIds, (rowId) =>
-    getChartDataPoint(rowId, getXCell(rowId), getYCell(rowId)),
-  );
-  const dataBounds = getChartBounds(kind, points);
-  const xTicks = getChartXTicks(kind, dataBounds, chartSize, labelSize);
-  const yTicks = getChartYTicks(dataBounds, chartSize, labelSize);
-  const bounds = getChartTickBounds(dataBounds, xTicks, yTicks);
-
-  return [
-    handleChange,
-    getChartScaledPoints(kind, points, bounds, chartSize),
-    bounds,
-    xTicks,
-    yTicks,
-  ] as const;
 };
