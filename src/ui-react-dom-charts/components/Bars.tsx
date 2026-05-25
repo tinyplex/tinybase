@@ -1,8 +1,10 @@
 import {arrayIsEmpty} from '../../common/array.ts';
-import {mathAbs, mathMin, size} from '../../common/other.ts';
+import {mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
 import {getChartScale, type ChartScaledPoint} from '../common/data.ts';
 import type {PlotFrame, SetTooltipPoint} from '../common/types.ts';
 import {Marks} from './Marks.tsx';
+
+const BAR_GAP_RATIO = 0.02;
 
 export const Bars = ({
   points,
@@ -22,7 +24,12 @@ export const Bars = ({
   const [, , width, height] = plotFrame;
   const baselineY = height - getChartScale(0, yMin, yMax, height);
   const pointsSize = size(points);
-  const barWidth = arrayIsEmpty(points) ? 0 : (barRatio * width) / pointsSize;
+  const fullBarWidth = arrayIsEmpty(points)
+    ? 0
+    : (barRatio * width) / pointsSize;
+  const barWidth = arrayIsEmpty(points)
+    ? 0
+    : mathMax(fullBarWidth * (1 - BAR_GAP_RATIO), 0);
 
   return (
     <Marks
