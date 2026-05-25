@@ -1,6 +1,14 @@
 import type {ReactNode, RefObject} from 'react';
 import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
-import {isFiniteNumber, mathMax, mathMin, size} from '../../common/other.ts';
+import {
+  isFiniteNumber,
+  isNumber,
+  mathAbs,
+  mathMax,
+  mathMin,
+  mathRound,
+  size,
+} from '../../common/other.ts';
 import {useLayoutEffect, useRef, useState} from '../../common/react.ts';
 import {
   getChartScale,
@@ -9,7 +17,7 @@ import {
   type ChartScaledPoint,
   type ChartSize,
   type ChartStyle,
-  type ChartYTicks,
+  type ChartTicks,
 } from './data.ts';
 
 type ChartLayout = readonly [
@@ -29,7 +37,8 @@ export const getChartGroup = (
   kind: ChartKind,
   points: ChartScaledPoint[],
   [xMin, xMax, yMin, yMax]: ChartBounds,
-  yTicks: ChartYTicks,
+  xTicks: ChartTicks,
+  yTicks: ChartTicks,
   [svgRef, chartSize, chartStyle]: ChartLayout,
 ) => {
   const [width, height] = chartSize;
@@ -44,7 +53,7 @@ export const getChartGroup = (
       viewBox={`0 0 ${width} ${height}`}
     >
       {getChartYAxis(yTicks, yMin, yMax, plotFrame, chartStyle)}
-      {getChartXAxis(points, plotFrame, chartStyle)}
+      {getChartXAxis(points, xTicks, xMin, xMax, plotFrame, chartStyle)}
       <g
         className="plot"
         transform={`translate(${plotFrame[0]} ${plotFrame[1]})`}
@@ -102,18 +111,28 @@ export const getChartPlotSize = ([, chartSize, chartStyle]: ChartLayout) => {
   return [width, height] as const;
 };
 
-export const getChartYLabelSize = ([, , chartStyle]: ChartLayout) =>
+export const getChartLabelSize = ([, , chartStyle]: ChartLayout) =>
   chartStyle[6];
 
 const getPlotFrame = (
   [width, height]: ChartSize,
   [, , , xAxisHeight, yAxisWidth, inset]: ChartStyle,
-): PlotFrame => [
-  inset + yAxisWidth,
-  inset,
-  mathMax(width - yAxisWidth - 2 * inset, 0),
-  mathMax(height - xAxisHeight - 2 * inset, 0),
-];
+): PlotFrame => {
+  const plotX = inset + mathMax(mathMin(yAxisWidth, width / 2 - 2 * inset), 0);
+  const plotHeight = mathMax(
+    height -
+      mathMax(mathMin(xAxisHeight, height / 2 - 2 * inset), 0) -
+      2 * inset,
+    0,
+  );
+
+  return [
+    plotX,
+    inset,
+    mathMax(width - plotX - inset, 0),
+    plotHeight,
+  ];
+};
 
 const getChartLine = (points: ChartScaledPoint[]) => (
   <>
@@ -143,7 +162,7 @@ const getChartBars = (
         x={x - barWidth / 2}
         y={y}
         width={barWidth}
-        height={Math.abs(baselineY - pointY)}
+        height={mathAbs(baselineY - pointY)}
       />
     );
   });
@@ -151,6 +170,9 @@ const getChartBars = (
 
 const getChartXAxis = (
   points: ChartScaledPoint[],
+  xTicks: ChartTicks,
+  xMin: number | string | undefined,
+  xMax: number | string | undefined,
   [plotX, plotY, plotWidth, plotHeight]: PlotFrame,
   [tickSize, tickGap]: ChartStyle,
 ) => (
@@ -162,31 +184,55 @@ const getChartXAxis = (
       y1={plotY + plotHeight}
       y2={plotY + plotHeight}
     />
-    {getChartMarks(points, ([, xValue, , x]) => (
-      <g className="tick x-tick" data-value={xValue}>
-        <line
-          className="tick-line"
-          x1={plotX + x}
-          x2={plotX + x}
-          y1={plotY + plotHeight}
-          y2={plotY + plotHeight + tickSize}
-        />
-        <text
-          className="tick-label"
-          dominantBaseline="hanging"
-          textAnchor="middle"
-          x={plotX + x}
-          y={plotY + plotHeight + tickSize + tickGap}
-        >
-          {xValue}
-        </text>
-      </g>
-    ))}
+    {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax)
+      ? getChartMarks(points, ([, xValue, , x]) => (
+          <g className="tick x-tick" data-value={xValue}>
+            <line
+              className="tick-line"
+              x1={plotX + x}
+              x2={plotX + x}
+              y1={plotY + plotHeight}
+              y2={plotY + plotHeight + tickSize}
+            />
+            <text
+              className="tick-label"
+              dominantBaseline="hanging"
+              textAnchor="middle"
+              x={plotX + x}
+              y={plotY + plotHeight + tickSize + tickGap}
+            >
+              {xValue}
+            </text>
+          </g>
+        ))
+      : arrayMap(xTicks, (tick) => {
+          const x = getChartScale(tick, xMin, xMax, plotWidth);
+          return (
+            <g className="tick x-tick" data-value={tick} key={tick}>
+              <line
+                className="tick-line"
+                x1={plotX + x}
+                x2={plotX + x}
+                y1={plotY + plotHeight}
+                y2={plotY + plotHeight + tickSize}
+              />
+              <text
+                className="tick-label"
+                dominantBaseline="hanging"
+                textAnchor="middle"
+                x={plotX + x}
+                y={plotY + plotHeight + tickSize + tickGap}
+              >
+                {tick}
+              </text>
+            </g>
+          );
+        })}
   </g>
 );
 
 const getChartYAxis = (
-  yTicks: ChartYTicks,
+  yTicks: ChartTicks,
   yMin: number | undefined,
   yMax: number | undefined,
   plotFrame: PlotFrame,
@@ -240,9 +286,9 @@ const getChartYTick = (
 
 const getChartMarks = (
   points: ChartScaledPoint[],
-  getMark: (point: ChartScaledPoint) => ReactNode,
+  getMark: (point: ChartScaledPoint, index: number) => ReactNode,
 ) =>
-  arrayMap(points, (point) => {
+  arrayMap(points, (point, index) => {
     const [rowId, xValue, yValue] = point;
     return (
       <g
@@ -251,7 +297,7 @@ const getChartMarks = (
         data-x-value={xValue}
         data-y-value={yValue}
       >
-        {getMark(point)}
+        {getMark(point, index)}
       </g>
     );
   });
@@ -283,8 +329,8 @@ const getChartStyle = (style: CSSStyleDeclaration | undefined): ChartStyle => {
 };
 
 const getSvgSize = ({width, height}: DOMRectReadOnly): ChartSize => [
-  Math.round(width) || DEFAULT_CHART_SIZE[0],
-  Math.round(height) || DEFAULT_CHART_SIZE[1],
+  mathRound(width) || DEFAULT_CHART_SIZE[0],
+  mathRound(height) || DEFAULT_CHART_SIZE[1],
 ];
 
 const isChartLayoutEqual = (

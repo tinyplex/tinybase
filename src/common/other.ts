@@ -49,6 +49,7 @@ export const infinity = Infinity;
 export const epsilon = Number.EPSILON;
 
 export const isFiniteNumber: (num: any) => boolean = isFinite;
+export const isInteger = number.isInteger;
 
 export const isInstanceOf = (
   thing: unknown,

@@ -21,14 +21,15 @@ import {
   getChartDataPoint,
   getChartDataPoints,
   getChartScaledPoints,
-  getChartYBounds,
+  getChartTickBounds,
+  getChartXTicks,
   getChartYTicks,
   type ChartKind,
   type ChartSize,
 } from './data.ts';
 import {
+  getChartLabelSize,
   getChartGroup,
-  getChartYLabelSize,
   getChartPlotSize,
   useChartLayout,
 } from './svg.tsx';
@@ -67,7 +68,7 @@ const EmptyChart = ({
   className,
   kind,
 }: ChartProps & {readonly kind: ChartKind}) =>
-  getChartGroup(className, kind, [], [], [], useChartLayout());
+  getChartGroup(className, kind, [], [], [], [], useChartLayout());
 
 const TableChart = ({
   descending,
@@ -96,11 +97,11 @@ const TableChart = ({
     limit,
     storeOrStoreId,
   );
-  const [handleChange, points, bounds, yTicks] = useChartData(
+  const [handleChange, points, bounds, xTicks, yTicks] = useChartData(
     kind,
     rowIds,
     getChartPlotSize(chartLayout),
-    getChartYLabelSize(chartLayout),
+    getChartLabelSize(chartLayout),
     (rowId) => store?.getCell(tableId, rowId, xCellId),
     (rowId) => store?.getCell(tableId, rowId, yCellId),
   );
@@ -124,7 +125,15 @@ const TableChart = ({
     storeOrStoreId,
   );
 
-  return getChartGroup(className, kind, points, bounds, yTicks, chartLayout);
+  return getChartGroup(
+    className,
+    kind,
+    points,
+    bounds,
+    xTicks,
+    yTicks,
+    chartLayout,
+  );
 };
 
 const QueryChart = ({
@@ -154,11 +163,11 @@ const QueryChart = ({
     limit,
     queriesOrQueriesId,
   );
-  const [handleChange, points, bounds, yTicks] = useChartData(
+  const [handleChange, points, bounds, xTicks, yTicks] = useChartData(
     kind,
     rowIds,
     getChartPlotSize(chartLayout),
-    getChartYLabelSize(chartLayout),
+    getChartLabelSize(chartLayout),
     (rowId) => queries?.getResultCell(queryId, rowId, xCellId),
     (rowId) => queries?.getResultCell(queryId, rowId, yCellId),
   );
@@ -180,14 +189,22 @@ const QueryChart = ({
     queries,
   );
 
-  return getChartGroup(className, kind, points, bounds, yTicks, chartLayout);
+  return getChartGroup(
+    className,
+    kind,
+    points,
+    bounds,
+    xTicks,
+    yTicks,
+    chartLayout,
+  );
 };
 
 const useChartData = (
   kind: ChartKind,
   rowIds: string[],
   chartSize: ChartSize,
-  yLabelSize: number,
+  labelSize: number,
   getXCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
   getYCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
 ) => {
@@ -197,13 +214,15 @@ const useChartData = (
     getChartDataPoint(rowId, getXCell(rowId), getYCell(rowId)),
   );
   const dataBounds = getChartBounds(kind, points);
-  const yTicks = getChartYTicks(dataBounds, chartSize, yLabelSize);
-  const bounds = getChartYBounds(dataBounds, yTicks);
+  const xTicks = getChartXTicks(kind, dataBounds, chartSize, labelSize);
+  const yTicks = getChartYTicks(dataBounds, chartSize, labelSize);
+  const bounds = getChartTickBounds(dataBounds, xTicks, yTicks);
 
   return [
     handleChange,
     getChartScaledPoints(kind, points, bounds, chartSize),
     bounds,
+    xTicks,
     yTicks,
   ] as const;
 };
