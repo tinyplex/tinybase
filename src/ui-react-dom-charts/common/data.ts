@@ -16,6 +16,7 @@ import {
   mathMin,
   size,
 } from '../../common/other.ts';
+import {getWilkinsonTicks} from './wilkinson.ts';
 
 export type ChartKind = 'bar' | 'line';
 export type ChartScaledPoint = readonly [
@@ -36,8 +37,10 @@ export type ChartStyle = readonly [
   xAxisHeight: number,
   yAxisWidth: number,
   inset: number,
+  fontSize: number,
 ];
 export type ChartSize = readonly [width: number, height: number];
+export type ChartYTicks = number[];
 
 type Domain = readonly [min: number, max: number];
 type ChartXValue = number | string;
@@ -46,6 +49,7 @@ type ChartDataPoint = readonly [
   xValue: ChartXValue,
   yValue: number,
 ];
+const TARGET_Y_TICKS = 10;
 
 export const getChartDataPoints = (
   rowIds: string[],
@@ -144,6 +148,34 @@ export const getChartBounds = (
 
   return [points[0]?.[1], points[size(points) - 1]?.[1], yMin, yMax];
 };
+
+export const getChartYTicks = (
+  [, , yMin, yMax]: ChartBounds,
+  [, height]: ChartSize,
+  labelSize: number,
+): ChartYTicks => {
+  if (isUndefined(yMin) || isUndefined(yMax)) {
+    return [];
+  }
+  if (yMin == yMax) {
+    return [yMin];
+  }
+
+  return getWilkinsonTicks(yMin, yMax, TARGET_Y_TICKS, labelSize, height);
+};
+
+export const getChartYBounds = (
+  [xMin, xMax, yMin, yMax]: ChartBounds,
+  yTicks: ChartYTicks,
+): ChartBounds =>
+  arrayIsEmpty(yTicks)
+    ? [xMin, xMax, yMin, yMax]
+    : [
+        xMin,
+        xMax,
+        mathMin(yMin ?? Infinity, yTicks[0]),
+        mathMax(yMax ?? -Infinity, yTicks[size(yTicks) - 1]),
+      ];
 
 export const getYDomain = (
   points: (ChartDataPoint | ChartScaledPoint)[],

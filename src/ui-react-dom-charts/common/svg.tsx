@@ -4,12 +4,12 @@ import {isFiniteNumber, mathMax, mathMin, size} from '../../common/other.ts';
 import {useLayoutEffect, useRef, useState} from '../../common/react.ts';
 import {
   getChartScale,
-  getYDomain,
   type ChartBounds,
   type ChartKind,
   type ChartScaledPoint,
   type ChartSize,
   type ChartStyle,
+  type ChartYTicks,
 } from './data.ts';
 
 type ChartLayout = readonly [
@@ -22,13 +22,14 @@ type PlotFrame = readonly [x: number, y: number, width: number, height: number];
 
 const DEFAULT_CHART_SIZE: ChartSize = [1000, 1000];
 const DEFAULT_CHART_FONT_SIZE = 12;
-const DEFAULT_CHART_STYLE: ChartStyle = [0.5, 0.5, 1, 2, 4, 1];
+const DEFAULT_CHART_STYLE: ChartStyle = [0.5, 0.5, 1, 2, 4, 1, 1];
 
 export const getChartGroup = (
   className: string | undefined,
   kind: ChartKind,
   points: ChartScaledPoint[],
   [xMin, xMax, yMin, yMax]: ChartBounds,
+  yTicks: ChartYTicks,
   [svgRef, chartSize, chartStyle]: ChartLayout,
 ) => {
   const [width, height] = chartSize;
@@ -42,7 +43,7 @@ export const getChartGroup = (
       ref={svgRef}
       viewBox={`0 0 ${width} ${height}`}
     >
-      {getChartYAxis(yMin, yMax, plotFrame, chartStyle)}
+      {getChartYAxis(yTicks, yMin, yMax, plotFrame, chartStyle)}
       {getChartXAxis(points, plotFrame, chartStyle)}
       <g
         className="plot"
@@ -57,7 +58,7 @@ export const getChartGroup = (
         >
           {kind == 'line'
             ? getChartLine(points)
-            : getChartBars(points, plotFrame, chartStyle)}
+            : getChartBars(points, plotFrame, chartStyle, yMin, yMax)}
         </g>
       </g>
     </svg>
@@ -101,6 +102,9 @@ export const getChartPlotSize = ([, chartSize, chartStyle]: ChartLayout) => {
   return [width, height] as const;
 };
 
+export const getChartYLabelSize = ([, , chartStyle]: ChartLayout) =>
+  chartStyle[6];
+
 const getPlotFrame = (
   [width, height]: ChartSize,
   [, , , xAxisHeight, yAxisWidth, inset]: ChartStyle,
@@ -124,8 +128,10 @@ const getChartBars = (
   points: ChartScaledPoint[],
   [, , width, height]: PlotFrame,
   [, , barRatio]: ChartStyle,
+  yMin = 0,
+  yMax = 0,
 ) => {
-  const baselineY = height - getChartScale(0, ...getYDomain(points), height);
+  const baselineY = height - getChartScale(0, yMin, yMax, height);
   const pointsSize = size(points);
   const barWidth = arrayIsEmpty(points) ? 0 : (barRatio * width) / pointsSize;
 
@@ -180,6 +186,7 @@ const getChartXAxis = (
 );
 
 const getChartYAxis = (
+  yTicks: ChartYTicks,
   yMin: number | undefined,
   yMax: number | undefined,
   plotFrame: PlotFrame,
@@ -187,8 +194,14 @@ const getChartYAxis = (
 ) =>
   yMin == null || yMax == null ? null : (
     <g className="y-axis axis">
-      {getChartYTick(yMin, plotFrame, chartStyle, plotFrame[3])}
-      {yMax == yMin ? null : getChartYTick(yMax, plotFrame, chartStyle, 0)}
+      {arrayMap(yTicks, (tick) =>
+        getChartYTick(
+          tick,
+          plotFrame,
+          chartStyle,
+          plotFrame[3] - getChartScale(tick, yMin, yMax, plotFrame[3]),
+        ),
+      )}
       <line
         className="axis-line y-axis-line"
         x1={plotFrame[0]}
@@ -259,6 +272,7 @@ const getDefaultChartStyle = (fontSize: number): ChartStyle => [
   fontSize * DEFAULT_CHART_STYLE[3],
   fontSize * DEFAULT_CHART_STYLE[4],
   fontSize * DEFAULT_CHART_STYLE[5],
+  fontSize * DEFAULT_CHART_STYLE[6],
 ];
 
 const getChartStyle = (style: CSSStyleDeclaration | undefined): ChartStyle => {
@@ -293,6 +307,7 @@ const isChartStyleEqual = (
     xAxisHeight1,
     yAxisWidth1,
     inset1,
+    fontSize1,
   ]: ChartStyle,
   [
     tickSize2,
@@ -301,6 +316,7 @@ const isChartStyleEqual = (
     xAxisHeight2,
     yAxisWidth2,
     inset2,
+    fontSize2,
   ]: ChartStyle,
 ) =>
   tickSize1 == tickSize2 &&
@@ -308,4 +324,5 @@ const isChartStyleEqual = (
   barWidth1 == barWidth2 &&
   xAxisHeight1 == xAxisHeight2 &&
   yAxisWidth1 == yAxisWidth2 &&
-  inset1 == inset2;
+  inset1 == inset2 &&
+  fontSize1 == fontSize2;
