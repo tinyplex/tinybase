@@ -67,8 +67,20 @@ export const Chart = ({
 const EmptyChart = ({
   className,
   kind,
-}: ChartProps & {readonly kind: ChartKind}) =>
-  getChartGroup(className, kind, [], [], [], [], useChartLayout());
+  xCellId,
+  yCellId,
+}: ChartBindingProps & ChartProps & {readonly kind: ChartKind}) =>
+  getChartGroup(
+    className,
+    kind,
+    [],
+    [],
+    xCellId,
+    yCellId,
+    [],
+    [],
+    useChartLayout(),
+  );
 
 const TableChart = ({
   descending,
@@ -130,6 +142,8 @@ const TableChart = ({
     kind,
     points,
     bounds,
+    xCellId,
+    yCellId,
     xTicks,
     yTicks,
     chartLayout,
@@ -194,6 +208,8 @@ const QueryChart = ({
     kind,
     points,
     bounds,
+    xCellId,
+    yCellId,
     xTicks,
     yTicks,
     chartLayout,

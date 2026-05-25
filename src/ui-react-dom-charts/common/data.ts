@@ -36,6 +36,7 @@ export type ChartBounds = readonly [
 export type ChartStyle = readonly [
   tickSize: number,
   tickGap: number,
+  axisLabelGap: number,
   barWidth: number,
   xAxisHeight: number,
   yAxisWidth: number,

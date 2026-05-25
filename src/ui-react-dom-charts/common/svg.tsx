@@ -30,13 +30,15 @@ type PlotFrame = readonly [x: number, y: number, width: number, height: number];
 
 const DEFAULT_CHART_SIZE: ChartSize = [1000, 1000];
 const DEFAULT_CHART_FONT_SIZE = 12;
-const DEFAULT_CHART_STYLE: ChartStyle = [0.5, 0.5, 1, 2, 4, 1, 1];
+const DEFAULT_CHART_STYLE: ChartStyle = [0.5, 0.5, 0.5, 1, 3.5, 4, 1, 1];
 
 export const getChartGroup = (
   className: string | undefined,
   kind: ChartKind,
   points: ChartScaledPoint[],
   [xMin, xMax, yMin, yMax]: ChartBounds,
+  xLabel: string,
+  yLabel: string,
   xTicks: ChartTicks,
   yTicks: ChartTicks,
   [svgRef, chartSize, chartStyle]: ChartLayout,
@@ -52,8 +54,8 @@ export const getChartGroup = (
       ref={svgRef}
       viewBox={`0 0 ${width} ${height}`}
     >
-      {getChartYAxis(yTicks, yMin, yMax, plotFrame, chartStyle)}
-      {getChartXAxis(points, xTicks, xMin, xMax, plotFrame, chartStyle)}
+      {getChartYAxis(yTicks, yMin, yMax, yLabel, plotFrame, chartStyle)}
+      {getChartXAxis(points, xTicks, xMin, xMax, xLabel, plotFrame, chartStyle)}
       <g
         className="plot"
         transform={`translate(${plotFrame[0]} ${plotFrame[1]})`}
@@ -112,24 +114,27 @@ export const getChartPlotSize = ([, chartSize, chartStyle]: ChartLayout) => {
 };
 
 export const getChartLabelSize = ([, , chartStyle]: ChartLayout) =>
-  chartStyle[6];
+  chartStyle[7];
 
 const getPlotFrame = (
   [width, height]: ChartSize,
-  [, , , xAxisHeight, yAxisWidth, inset]: ChartStyle,
+  [, , , , xAxisHeight, yAxisWidth, inset, fontSize]: ChartStyle,
 ): PlotFrame => {
   const plotX = inset + mathMax(mathMin(yAxisWidth, width / 2 - 2 * inset), 0);
+  const plotY = inset + fontSize / 2;
+  const plotRight = inset + fontSize / 2;
   const plotHeight = mathMax(
     height -
-      mathMax(mathMin(xAxisHeight, height / 2 - 2 * inset), 0) -
-      2 * inset,
+      plotY -
+      mathMax(mathMin(xAxisHeight, height / 2 - plotY - inset), 0) -
+      inset,
     0,
   );
 
   return [
     plotX,
-    inset,
-    mathMax(width - plotX - inset, 0),
+    plotY,
+    mathMax(width - plotX - plotRight, 0),
     plotHeight,
   ];
 };
@@ -146,7 +151,7 @@ const getChartLine = (points: ChartScaledPoint[]) => (
 const getChartBars = (
   points: ChartScaledPoint[],
   [, , width, height]: PlotFrame,
-  [, , barRatio]: ChartStyle,
+  [, , , barRatio]: ChartStyle,
   yMin = 0,
   yMax = 0,
 ) => {
@@ -173,8 +178,9 @@ const getChartXAxis = (
   xTicks: ChartTicks,
   xMin: number | string | undefined,
   xMax: number | string | undefined,
+  xLabel: string,
   [plotX, plotY, plotWidth, plotHeight]: PlotFrame,
-  [tickSize, tickGap]: ChartStyle,
+  [tickSize, tickGap, axisLabelGap, , , , , fontSize]: ChartStyle,
 ) => (
   <g className="x-axis axis">
     <line
@@ -228,6 +234,22 @@ const getChartXAxis = (
             </g>
           );
         })}
+    <text
+      className="axis-label x-axis-label"
+      dominantBaseline="hanging"
+      textAnchor="middle"
+      x={plotX + plotWidth / 2}
+      y={
+        plotY +
+        plotHeight +
+        tickSize +
+        tickGap +
+        fontSize +
+        axisLabelGap
+      }
+    >
+      {xLabel}
+    </text>
   </g>
 );
 
@@ -235,6 +257,7 @@ const getChartYAxis = (
   yTicks: ChartTicks,
   yMin: number | undefined,
   yMax: number | undefined,
+  yLabel: string,
   plotFrame: PlotFrame,
   chartStyle: ChartStyle,
 ) =>
@@ -255,8 +278,24 @@ const getChartYAxis = (
         y1={plotFrame[1]}
         y2={plotFrame[1] + plotFrame[3]}
       />
+      {getChartYAxisLabel(yLabel, plotFrame, chartStyle)}
     </g>
   );
+
+const getChartYAxisLabel = (
+  value: string,
+  [, plotY, , plotHeight]: PlotFrame,
+  [, , , , , , inset]: ChartStyle,
+) => (
+  <text
+    className="axis-label y-axis-label"
+    dominantBaseline="text-before-edge"
+    textAnchor="middle"
+    transform={`translate(${inset} ${plotY + plotHeight / 2}) rotate(-90)`}
+  >
+    {value}
+  </text>
+);
 
 const getChartYTick = (
   value: number,
@@ -314,11 +353,12 @@ const getChartLinePath = (points: ChartScaledPoint[]) =>
 const getDefaultChartStyle = (fontSize: number): ChartStyle => [
   fontSize * DEFAULT_CHART_STYLE[0],
   fontSize * DEFAULT_CHART_STYLE[1],
-  DEFAULT_CHART_STYLE[2],
-  fontSize * DEFAULT_CHART_STYLE[3],
+  fontSize * DEFAULT_CHART_STYLE[2],
+  DEFAULT_CHART_STYLE[3],
   fontSize * DEFAULT_CHART_STYLE[4],
   fontSize * DEFAULT_CHART_STYLE[5],
   fontSize * DEFAULT_CHART_STYLE[6],
+  fontSize * DEFAULT_CHART_STYLE[7],
 ];
 
 const getChartStyle = (style: CSSStyleDeclaration | undefined): ChartStyle => {
@@ -349,6 +389,7 @@ const isChartStyleEqual = (
   [
     tickSize1,
     tickGap1,
+    axisLabelGap1,
     barWidth1,
     xAxisHeight1,
     yAxisWidth1,
@@ -358,6 +399,7 @@ const isChartStyleEqual = (
   [
     tickSize2,
     tickGap2,
+    axisLabelGap2,
     barWidth2,
     xAxisHeight2,
     yAxisWidth2,
@@ -367,6 +409,7 @@ const isChartStyleEqual = (
 ) =>
   tickSize1 == tickSize2 &&
   tickGap1 == tickGap2 &&
+  axisLabelGap1 == axisLabelGap2 &&
   barWidth1 == barWidth2 &&
   xAxisHeight1 == xAxisHeight2 &&
   yAxisWidth1 == yAxisWidth2 &&
