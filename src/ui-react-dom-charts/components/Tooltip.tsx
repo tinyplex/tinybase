@@ -1,5 +1,5 @@
 import {isNullish, mathMax, mathMin} from '../../common/other.ts';
-import type {ChartScaledPoint} from '../common/data.ts';
+import type {PlotFrame, ScaledPoint} from '../common/types.ts';
 
 const TOOLTIP_WIDTH = 160;
 const TOOLTIP_HEIGHT = 60;
@@ -10,20 +10,21 @@ export const Tooltip = ({
   point,
   width,
   height,
-  xLabel,
-  yLabel,
+  plotFrame,
+  titles: [xTitle, yTitle],
 }: {
-  readonly point: ChartScaledPoint | undefined;
+  readonly point: ScaledPoint | undefined;
   readonly width: number;
   readonly height: number;
-  readonly xLabel: string;
-  readonly yLabel: string;
+  readonly plotFrame: PlotFrame;
+  readonly titles: readonly [xTitle: string, yTitle: string];
 }) => {
   if (isNullish(point)) {
     return null;
   }
 
   const [, xValue, yValue, x, y] = point;
+  const [plotX, plotY] = plotFrame;
   const tooltipX =
     x + TOOLTIP_GAP + TOOLTIP_WIDTH > width
       ? x - TOOLTIP_GAP - TOOLTIP_WIDTH
@@ -36,34 +37,29 @@ export const Tooltip = ({
   return (
     <>
       <path
-        className="x-tooltip-line"
-        d={`M${x},0v${height}`}
+        className="tooltip-lines"
         pointerEvents="none"
         stroke="currentColor"
-        strokeOpacity={0.3}
+        strokeOpacity={0.25}
         strokeWidth={1}
+        d={`M${plotX + x},${plotY}v${height}M${plotX},${plotY + y}h${width}`}
       />
-      <path
-        className="y-tooltip-line"
-        d={`M0,${y}h${width}`}
-        pointerEvents="none"
-        stroke="currentColor"
-        strokeOpacity={0.3}
-        strokeWidth={1}
-      />
-      <g className="tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
+      <g
+        className="tooltip"
+        transform={`translate(${plotX + tooltipX} ${plotY + tooltipY})`}
+        fill="currentColor"
+      >
         <rect
-          fill="currentColor"
-          fillOpacity={0.12}
+          fillOpacity={0.25}
           width={TOOLTIP_WIDTH}
           height={TOOLTIP_HEIGHT}
           rx={4}
         />
-        <text fill="currentColor" x={TOOLTIP_PADDING} y={22}>
-          {xLabel}: {xValue}
+        <text x={TOOLTIP_PADDING} y={22}>
+          {xTitle}: {xValue}
         </text>
-        <text fill="currentColor" x={TOOLTIP_PADDING} y={46}>
-          {yLabel}: {yValue}
+        <text x={TOOLTIP_PADDING} y={46}>
+          {yTitle}: {yValue}
         </text>
       </g>
     </>

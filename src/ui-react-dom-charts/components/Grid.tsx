@@ -1,81 +1,81 @@
-import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
-import {isNullish, isNumber} from '../../common/other.ts';
 import {
-  getChartScale,
-  type ChartScaledPoint,
-  type ChartTicks,
-} from '../common/data.ts';
-import type {PlotFrame} from '../common/types.ts';
+  arrayFilter,
+  arrayIsEmpty,
+  arrayJoin,
+  arrayMap,
+} from '../../common/array.ts';
+import {isNullish, isNumber} from '../../common/other.ts';
+import {getScale} from '../common/data.ts';
+import type {Bounds, PlotFrame, ScaledPoint, Ticks} from '../common/types.ts';
 
 export const Grid = ({
   points,
   xTicks,
-  xMin,
-  xMax,
   yTicks,
-  yMin,
-  yMax,
+  bounds: [xMin, xMax, yMin, yMax],
   plotFrame,
   tickSize,
 }: {
-  readonly points: ChartScaledPoint[];
-  readonly xTicks: ChartTicks;
-  readonly xMin: number | string | undefined;
-  readonly xMax: number | string | undefined;
-  readonly yTicks: ChartTicks;
-  readonly yMin: number | undefined;
-  readonly yMax: number | undefined;
+  readonly points: ScaledPoint[];
+  readonly xTicks: Ticks;
+  readonly yTicks: Ticks;
+  readonly bounds: Bounds;
   readonly plotFrame: PlotFrame;
   readonly tickSize: number;
 }) => {
-  const [, , width, height] = plotFrame;
+  const [plotX, plotY, width, height] = plotFrame;
   return (
-    <g className="grid">
+    <g
+      className="grid"
+      stroke="currentColor"
+      strokeOpacity={0.75}
+      strokeWidth={0.5}
+    >
       {isNullish(yMin) || isNullish(yMax) ? null : (
         <path
-          className="y-grid-line"
+          className="y"
           d={arrayJoin(
             arrayMap(
-              yTicks,
+              arrayFilter(
+                yTicks,
+                (tick) => getScale(tick, yMin, yMax, height) != 0,
+              ),
               (tick) =>
-                `M${-tickSize},${
-                  height - getChartScale(tick, yMin, yMax, height)
+                `M${plotX - tickSize},${
+                  plotY + height - getScale(tick, yMin, yMax, height)
                 }h${width + tickSize}`,
             ),
             ' ',
           )}
-          stroke="currentColor"
-          strokeOpacity={0.18}
-          strokeWidth={0.5}
         />
       )}
       {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax) ? (
         <path
-          className="x-grid-line"
-          d={arrayJoin(
-            arrayMap(points, ([, , , x]) => `M${x},0v${height + tickSize}`),
-            ' ',
-          )}
-          stroke="currentColor"
-          strokeOpacity={0.18}
-          strokeWidth={0.5}
-        />
-      ) : (
-        <path
-          className="x-grid-line"
+          className="x"
           d={arrayJoin(
             arrayMap(
-              xTicks,
-              (tick) =>
-                `M${getChartScale(tick, xMin, xMax, width)},0v${
-                  height + tickSize
-                }`,
+              arrayFilter(points, ([, , , x]) => x != 0),
+              ([, , , x]) => `M${plotX + x},${plotY}v${height + tickSize}`,
             ),
             ' ',
           )}
-          stroke="currentColor"
-          strokeOpacity={0.18}
-          strokeWidth={0.5}
+        />
+      ) : (
+        <path
+          className="x"
+          d={arrayJoin(
+            arrayMap(
+              arrayFilter(
+                xTicks,
+                (tick) => getScale(tick, xMin, xMax, width) != 0,
+              ),
+              (tick) =>
+                `M${
+                  plotX + getScale(tick, xMin, xMax, width)
+                },${plotY}v${height + tickSize}`,
+            ),
+            ' ',
+          )}
         />
       )}
     </g>

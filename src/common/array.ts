@@ -13,11 +13,14 @@ export const arrayIndexOf = <Value>(array: Value[], value: Value): number =>
   array.indexOf(value);
 
 export const arrayEvery = <Value>(
-  array: Value[],
+  array: readonly Value[],
   cb: (value: Value, index: number) => boolean | 0 | 1,
 ): boolean => array.every(cb);
 
-export const arrayIsEqual = (array1: unknown[], array2: unknown[]): boolean =>
+export const arrayIsEqual = (
+  array1: readonly unknown[],
+  array2: readonly unknown[],
+): boolean =>
   size(array1) === size(array2) &&
   arrayEvery(array1, (value1, index) => array2[index] === value1);
 
@@ -49,8 +52,8 @@ export const arrayJoin = (array: (string | number)[], sep = EMPTY_STRING) =>
   array.join(sep);
 
 export const arrayMap = <Value, Return>(
-  array: Value[],
-  cb: (value: Value, index: number, array: Value[]) => Return,
+  array: readonly Value[],
+  cb: (value: Value, index: number, array: readonly Value[]) => Return,
 ): Return[] => array.map(cb);
 
 export const arraySum = (array: number[]): number =>

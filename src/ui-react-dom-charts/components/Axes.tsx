@@ -1,23 +1,50 @@
-import type {PlotFrame} from '../common/types.ts';
+import type {Bounds, PlotFrame, ScaledPoint, Ticks} from '../common/types.ts';
+import {XAxis} from './XAxis.tsx';
+import {YAxis} from './YAxis.tsx';
 
-export const Axes = ({plotFrame}: {readonly plotFrame: PlotFrame}) => {
-  const [, , width, height] = plotFrame;
+export const Axes = ({
+  points,
+  xTicks,
+  yTicks,
+  bounds: [xMin, xMax, yMin, yMax],
+  titles: [xTitle, yTitle],
+  xAxisHeight,
+  inset,
+  fontSize,
+  ...sharedProps
+}: {
+  readonly points: ScaledPoint[];
+  readonly xTicks: Ticks;
+  readonly yTicks: Ticks;
+  readonly bounds: Bounds;
+  readonly titles: readonly [xTitle: string, yTitle: string];
+  readonly plotFrame: PlotFrame;
+  readonly tickSize: number;
+  readonly tickGap: number;
+  readonly xAxisHeight: number;
+  readonly inset: number;
+  readonly fontSize: number;
+}) => {
   return (
-    <>
-      <path
-        className="x-axis-line"
-        d={`M0,${height}h${width}`}
-        stroke="currentColor"
-        strokeOpacity={0.45}
-        strokeWidth={1}
+    <g className="axes" fill="currentColor" fillOpacity={0.75}>
+      <YAxis
+        {...sharedProps}
+        yTicks={yTicks}
+        yMin={yMin}
+        yMax={yMax}
+        yTitle={yTitle}
+        inset={inset}
       />
-      <path
-        className="y-axis-line"
-        d={`M0,0v${height}`}
-        stroke="currentColor"
-        strokeOpacity={0.45}
-        strokeWidth={1}
+      <XAxis
+        {...sharedProps}
+        points={points}
+        xTicks={xTicks}
+        xMin={xMin}
+        xMax={xMax}
+        xTitle={xTitle}
+        axisHeight={xAxisHeight}
+        fontSize={fontSize}
       />
-    </>
+    </g>
   );
 };

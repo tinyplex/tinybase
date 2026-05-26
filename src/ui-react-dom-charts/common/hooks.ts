@@ -2,38 +2,37 @@ import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
 import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import {useCallback, useState} from '../../common/react.ts';
 import {
-  getChartBounds,
-  getChartDataPoint,
-  getChartDataPoints,
-  getChartScaledPoints,
-  getChartTickBounds,
-  getChartXTicks,
-  getChartYTicks,
-  type ChartKind,
-  type ChartSize,
+  getBounds,
+  getDataPoint,
+  getDataPoints,
+  getScaledPoints,
+  getTickBounds,
+  getXTicks,
+  getYTicks,
 } from './data.ts';
+import type {Kind, Size} from './types.ts';
 
-export const useChartData = (
-  kind: ChartKind,
+export const useData = (
+  kind: Kind,
   rowIds: string[],
-  chartSize: ChartSize,
+  chartSize: Size,
   labelSize: number,
   getXCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
   getYCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
 ) => {
   const [, rerender] = useState<[]>();
   const handleChange = useCallback(() => rerender([]), [rerender]);
-  const points = getChartDataPoints(rowIds, (rowId) =>
-    getChartDataPoint(rowId, getXCell(rowId), getYCell(rowId)),
+  const points = getDataPoints(rowIds, (rowId) =>
+    getDataPoint(rowId, getXCell(rowId), getYCell(rowId)),
   );
-  const dataBounds = getChartBounds(kind, points);
-  const xTicks = getChartXTicks(kind, dataBounds, chartSize, labelSize);
-  const yTicks = getChartYTicks(dataBounds, chartSize, labelSize);
-  const bounds = getChartTickBounds(dataBounds, xTicks, yTicks);
+  const dataBounds = getBounds(kind, points);
+  const xTicks = getXTicks(kind, dataBounds, chartSize, labelSize);
+  const yTicks = getYTicks(dataBounds, chartSize, labelSize);
+  const bounds = getTickBounds(dataBounds, xTicks, yTicks);
 
   return [
     handleChange,
-    getChartScaledPoints(kind, points, bounds, chartSize),
+    getScaledPoints(kind, points, bounds, chartSize),
     bounds,
     xTicks,
     yTicks,

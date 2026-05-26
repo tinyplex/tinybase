@@ -1,62 +1,71 @@
 import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
 import {size} from '../../common/other.ts';
-import type {ChartScaledPoint} from '../common/data.ts';
-import type {SetTooltipPoint} from '../common/types.ts';
-import {Marks} from './Marks.tsx';
+import type {PlotFrame, ScaledPoint, SetTooltipPoint} from '../common/types.ts';
 
 export const Line = ({
-  height,
+  plotFrame,
   points,
   setTooltipPoint,
 }: {
-  readonly height: number;
-  readonly points: ChartScaledPoint[];
+  readonly plotFrame: PlotFrame;
+  readonly points: ScaledPoint[];
   readonly setTooltipPoint: SetTooltipPoint;
-}) => (
-  <>
-    <path
-      className="area"
-      d={getAreaPath(points, height)}
-      fill="currentColor"
-      fillOpacity={0}
-      stroke="none"
-    />
-    <path
-      className="line"
-      d={getLinePath(points)}
-      fill="none"
-      stroke="currentColor"
-      strokeOpacity={0.8}
-      strokeWidth={2}
-    />
-    <Marks
-      points={points}
-      getMark={([, , , x, y]) => (
-        <circle
-          className="point"
-          cx={x}
-          cy={y}
-          fill="currentColor"
-          r={5}
-        />
-      )}
-      setTooltipPoint={setTooltipPoint}
-    />
-  </>
-);
+}) => {
+  const [plotX, plotY, , height] = plotFrame;
+  return (
+    <>
+      <path
+        className="area"
+        d={getAreaPath(points, plotX, plotY, height)}
+        fill="currentColor"
+        fillOpacity={0.25}
+        stroke="none"
+      />
+      <path
+        className="line"
+        d={getLinePath(points, plotX, plotY)}
+        fill="none"
+        stroke="currentColor"
+        strokeOpacity={0.75}
+        strokeWidth={2}
+      />
+      <g className="points" fill="currentColor">
+        {arrayMap(points, (point) => {
+          const [rowId, , , x, y] = point;
+          return (
+            <circle
+              key={rowId}
+              cx={plotX + x}
+              cy={plotY + y}
+              onPointerEnter={() => setTooltipPoint(point)}
+              onPointerLeave={() => setTooltipPoint(undefined)}
+              r={5}
+            />
+          );
+        })}
+      </g>
+    </>
+  );
+};
 
-const getLinePath = (points: ChartScaledPoint[]) =>
+const getLinePath = (points: ScaledPoint[], plotX: number, plotY: number) =>
   arrayJoin(
     arrayMap(
       points,
-      ([, , , x, y], index) => `${index == 0 ? 'M' : 'L'}${x},${y}`,
+      ([, , , x, y], index) =>
+        `${index == 0 ? 'M' : 'L'}${plotX + x},${plotY + y}`,
     ),
     ' ',
   );
 
-const getAreaPath = (points: ChartScaledPoint[], height: number) =>
+const getAreaPath = (
+  points: ScaledPoint[],
+  plotX: number,
+  plotY: number,
+  height: number,
+) =>
   arrayIsEmpty(points)
     ? ''
-    : `${getLinePath(points)} L${points[size(points) - 1][3]},${height} L${
-        points[0][3]
-      },${height} Z`;
+    : `${getLinePath(points, plotX, plotY)} L${
+        plotX + points[size(points) - 1][3]
+      },${plotY + height} L${plotX + points[0][3]},${plotY + height} Z`;

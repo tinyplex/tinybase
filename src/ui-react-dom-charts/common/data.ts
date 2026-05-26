@@ -8,87 +8,65 @@ import {
 } from '../../common/array.ts';
 import {collSize} from '../../common/coll.ts';
 import {
+  infinity,
   isFiniteNumber,
   isInteger,
   isNumber,
   isString,
   isUndefined,
-  infinity,
   mathMax,
   mathMin,
   mathRound,
   size,
 } from '../../common/other.ts';
+import type {
+  Bounds,
+  DataPoint,
+  Kind,
+  ScaledPoint,
+  Size,
+  Ticks,
+  XValue,
+} from './types.ts';
 import {getTicks} from './wilkinson.ts';
 
-export type ChartKind = 'bar' | 'line';
-export type ChartScaledPoint = readonly [
-  ...ChartDataPoint,
-  x: number,
-  y: number,
-];
-export type ChartBounds = readonly [
-  xMin?: ChartXValue,
-  xMax?: ChartXValue,
-  yMin?: number,
-  yMax?: number,
-];
-export type ChartStyle = readonly [
-  tickSize: number,
-  tickGap: number,
-  axisLabelGap: number,
-  barWidth: number,
-  xAxisHeight: number,
-  yAxisWidth: number,
-  inset: number,
-  fontSize: number,
-];
-export type ChartSize = readonly [width: number, height: number];
-export type ChartTicks = number[];
-
 type Domain = readonly [min: number, max: number];
-type ChartXValue = number | string;
-type ChartDataPoint = readonly [
-  rowId: string,
-  xValue: ChartXValue,
-  yValue: number,
-];
 const TARGET_TICKS = 10;
 
-export const getChartDataPoints = (
+export const getDataPoints = (
   rowIds: string[],
-  getPoint: (rowId: string) => ChartDataPoint | undefined,
+  getPoint: (rowId: string) => DataPoint | undefined,
 ) =>
   arrayFilter(
     arrayMap(rowIds, getPoint),
-    (point): point is ChartDataPoint => !isUndefined(point),
-  ) as ChartDataPoint[];
+    (point): point is DataPoint => !isUndefined(point),
+  ) as DataPoint[];
 
-export const getChartDataPoint = (
+export const getDataPoint = (
   rowId: string,
   xCell: CellOrUndefined | ResultCellOrUndefined,
   yCell: CellOrUndefined | ResultCellOrUndefined,
-): ChartDataPoint | undefined => {
-  const xValue = getChartXValue(xCell);
-  const yValue = getChartYValue(yCell);
+): DataPoint | undefined => {
+  const xValue = getXValue(xCell);
+  const yValue = getYValue(yCell);
 
   return isUndefined(xValue) || isUndefined(yValue)
     ? undefined
     : [rowId, xValue, yValue];
 };
 
-export const getChartScaledPoints = (
-  kind: ChartKind,
-  points: ChartDataPoint[],
-  [xMin, xMax, yMin, yMax]: ChartBounds,
-  [width, height]: ChartSize,
-): ChartScaledPoint[] => {
+export const getScaledPoints = (
+  kind: Kind,
+  points: DataPoint[],
+  [xMin, xMax, yMin, yMax]: Bounds,
+  [width, height]: Size,
+): ScaledPoint[] => {
   const numericX =
     kind == 'line' &&
     arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
   const xDomain: Domain = numericX ? [xMin as number, xMax as number] : [0, 0];
   const yDomain: Domain = [yMin ?? 0, yMax ?? 0];
-  const xCategories = new Map<ChartXValue, number>();
+  const xCategories = new Map<XValue, number>();
 
   arrayForEach(points, ([, xValue]) => {
     if (!xCategories.has(xValue)) {
@@ -100,51 +78,48 @@ export const getChartScaledPoints = (
     rowId,
     xValue,
     yValue,
-    getChartX(xValue, numericX, xDomain, xCategories, width, kind),
-    getChartY(yValue, yDomain, height),
+    getX(xValue, numericX, xDomain, xCategories, width, kind),
+    getY(yValue, yDomain, height),
   ]);
 };
 
-const getChartX = (
-  xValue: ChartXValue,
+const getX = (
+  xValue: XValue,
   numericX: boolean,
   [xMin, xMax]: Domain,
-  xCategories: Map<ChartXValue, number>,
+  xCategories: Map<XValue, number>,
   width: number,
-  kind: ChartKind,
+  kind: Kind,
 ) =>
   numericX
-    ? getChartScale(xValue as number, xMin, xMax, width)
+    ? getScale(xValue as number, xMin, xMax, width)
     : kind == 'bar'
       ? (width * ((xCategories.get(xValue) ?? 0) + 0.5)) / collSize(xCategories)
-      : getChartScale(
+      : getScale(
           xCategories.get(xValue) ?? 0,
           0,
           collSize(xCategories) - 1,
           width,
         );
 
-const getChartY = (yValue: number, [yMin, yMax]: Domain, height: number) =>
-  height - getChartScale(yValue, yMin, yMax, height);
+const getY = (yValue: number, [yMin, yMax]: Domain, height: number) =>
+  height - getScale(yValue, yMin, yMax, height);
 
-export const getChartScale = (
+export const getScale = (
   value: number,
   min: number,
   max: number,
   size: number,
 ) => (min == max ? size / 2 : getRounded((size * (value - min)) / (max - min)));
 
-export const getChartBounds = (
-  kind: ChartKind,
-  points: ChartDataPoint[],
-): ChartBounds => {
+export const getBounds = (kind: Kind, points: DataPoint[]): Bounds => {
   if (arrayIsEmpty(points)) {
     return [];
   }
   const [yMin, yMax] = getYDomain(points, kind);
 
   if (arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)))) {
-    const [xMin, xMax] = getChartDomain(
+    const [xMin, xMax] = getDomain(
       arrayMap(points, ([, xValue]) => xValue as number),
     );
     return [xMin, xMax, yMin, yMax];
@@ -153,11 +128,11 @@ export const getChartBounds = (
   return [points[0]?.[1], points[size(points) - 1]?.[1], yMin, yMax];
 };
 
-export const getChartYTicks = (
-  [, , yMin, yMax]: ChartBounds,
-  [, height]: ChartSize,
+export const getYTicks = (
+  [, , yMin, yMax]: Bounds,
+  [, height]: Size,
   labelSize: number,
-): ChartTicks => {
+): Ticks => {
   if (isUndefined(yMin) || isUndefined(yMax)) {
     return [];
   }
@@ -175,12 +150,12 @@ export const getChartYTicks = (
   );
 };
 
-export const getChartXTicks = (
-  kind: ChartKind,
-  [xMin, xMax]: ChartBounds,
-  [width]: ChartSize,
+export const getXTicks = (
+  kind: Kind,
+  [xMin, xMax]: Bounds,
+  [width]: Size,
   labelSize: number,
-): ChartTicks =>
+): Ticks =>
   kind == 'line' && isNumber(xMin) && isNumber(xMax) && xMin != xMax
     ? getTicks(
         xMin,
@@ -192,41 +167,40 @@ export const getChartXTicks = (
       )
     : [];
 
-export const getChartTickBounds = (
-  [xMin, xMax, yMin, yMax]: ChartBounds,
-  xTicks: ChartTicks,
-  yTicks: ChartTicks,
-): ChartBounds =>
-  [
-    arrayIsEmpty(xTicks) ? xMin : mathMin(xMin as number, xTicks[0]),
-    arrayIsEmpty(xTicks)
-      ? xMax
-      : mathMax(xMax as number, xTicks[size(xTicks) - 1]),
-    arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
-    arrayIsEmpty(yTicks)
-      ? yMax
-      : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1]),
-  ];
+export const getTickBounds = (
+  [xMin, xMax, yMin, yMax]: Bounds,
+  xTicks: Ticks,
+  yTicks: Ticks,
+): Bounds => [
+  arrayIsEmpty(xTicks) ? xMin : mathMin(xMin as number, xTicks[0]),
+  arrayIsEmpty(xTicks)
+    ? xMax
+    : mathMax(xMax as number, xTicks[size(xTicks) - 1]),
+  arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
+  arrayIsEmpty(yTicks)
+    ? yMax
+    : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1]),
+];
 
 export const getYDomain = (
-  points: (ChartDataPoint | ChartScaledPoint)[],
-  kind: ChartKind = 'bar',
+  points: (DataPoint | ScaledPoint)[],
+  kind: Kind = 'bar',
 ): Domain =>
-  getChartDomain([
+  getDomain([
     ...(kind == 'bar' ? [0] : []),
     ...arrayMap(points, ([, , yValue]) => yValue),
   ]);
 
-const getChartDomain = (values: number[]): Domain => {
+const getDomain = (values: number[]): Domain => {
   const min = mathMin(...values);
   return min == infinity ? [0, 0] : [min, mathMax(...values)];
 };
 
 const getRounded = (value: number) => mathRound(value * 1000000) / 1000000;
 
-const getChartXValue = (
+const getXValue = (
   cell: CellOrUndefined | ResultCellOrUndefined,
-): ChartXValue | undefined =>
+): XValue | undefined =>
   isNumber(cell)
     ? isFiniteNumber(cell)
       ? cell
@@ -235,7 +209,7 @@ const getChartXValue = (
       ? cell
       : undefined;
 
-const getChartYValue = (
+const getYValue = (
   cell: CellOrUndefined | ResultCellOrUndefined,
 ): number | undefined =>
   isNumber(cell) && isFiniteNumber(cell) ? cell : undefined;

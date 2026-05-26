@@ -1,58 +1,58 @@
 import {arrayMap} from '../../common/array.ts';
 import {isNullish} from '../../common/other.ts';
-import {getChartScale, type ChartTicks} from '../common/data.ts';
-import type {PlotFrame} from '../common/types.ts';
+import {getScale} from '../common/data.ts';
+import type {PlotFrame, Ticks} from '../common/types.ts';
 
 export const YAxis = ({
   yTicks,
   yMin,
   yMax,
-  yLabel,
+  yTitle,
   plotFrame,
   tickSize,
   tickGap,
   inset,
 }: {
-  readonly yTicks: ChartTicks;
+  readonly yTicks: Ticks;
   readonly yMin: number | undefined;
   readonly yMax: number | undefined;
-  readonly yLabel: string;
+  readonly yTitle: string;
   readonly plotFrame: PlotFrame;
   readonly tickSize: number;
   readonly tickGap: number;
   readonly inset: number;
-}) =>
-  isNullish(yMin) || isNullish(yMax) ? null : (
-    <g className="y-axis">
-      {arrayMap(yTicks, (tick) => {
-        const [plotX, plotY, , plotHeight] = plotFrame;
-        const y = plotHeight - getChartScale(tick, yMin, yMax, plotHeight);
-        return (
-          <text
-            className="tick-label"
-            dominantBaseline="middle"
-            fill="currentColor"
-            fillOpacity={0.75}
-            key={tick}
-            textAnchor="end"
-            x={plotX - tickSize - tickGap}
-            y={plotY + y}
-          >
-            {tick}
-          </text>
-        );
-      })}
+}) => {
+  const [plotX, plotY, , plotHeight] = plotFrame;
+  return isNullish(yMin) || isNullish(yMax) ? null : (
+    <g className="y">
+      <path
+        className="line"
+        d={`M${plotX},${plotY}v${plotHeight}`}
+        fill="none"
+        stroke="currentColor"
+        strokeOpacity={0.5}
+        strokeWidth={1}
+      />
+      <g className="ticks" dominantBaseline="middle" textAnchor="end">
+        {arrayMap(yTicks, (tick) => {
+          const y = plotHeight - getScale(tick, yMin, yMax, plotHeight);
+          return (
+            <text key={tick} x={plotX - tickSize - tickGap} y={plotY + y}>
+              {tick}
+            </text>
+          );
+        })}
+      </g>
       <text
-        className="y-axis-label"
+        className="title"
         dominantBaseline="text-before-edge"
-        fill="currentColor"
-        fillOpacity={0.85}
         textAnchor="middle"
         transform={`translate(${inset} ${
           plotFrame[1] + plotFrame[3] / 2
         }) rotate(-90)`}
       >
-        {yLabel}
+        {yTitle}
       </text>
     </g>
   );
+};

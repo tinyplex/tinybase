@@ -1,35 +1,29 @@
 import {arrayIsEmpty} from '../../common/array.ts';
 import {mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
-import {getChartScale, type ChartScaledPoint} from '../common/data.ts';
-import type {PlotFrame, SetTooltipPoint} from '../common/types.ts';
+import {getScale} from '../common/data.ts';
+import type {PlotFrame, ScaledPoint, SetTooltipPoint} from '../common/types.ts';
 import {Marks} from './Marks.tsx';
-
-const BAR_GAP_RATIO = 0.02;
 
 export const Bars = ({
   points,
   plotFrame,
-  barRatio,
+  barGap,
   setTooltipPoint,
   yMin = 0,
   yMax = 0,
 }: {
-  readonly points: ChartScaledPoint[];
+  readonly points: ScaledPoint[];
   readonly plotFrame: PlotFrame;
-  readonly barRatio: number;
+  readonly barGap: number;
   readonly setTooltipPoint: SetTooltipPoint;
   readonly yMin: number | undefined;
   readonly yMax: number | undefined;
 }) => {
-  const [, , width, height] = plotFrame;
-  const baselineY = height - getChartScale(0, yMin, yMax, height);
+  const [plotX, plotY, width, height] = plotFrame;
+  const baselineY = height - getScale(0, yMin, yMax, height);
   const pointsSize = size(points);
-  const fullBarWidth = arrayIsEmpty(points)
-    ? 0
-    : (barRatio * width) / pointsSize;
-  const barWidth = arrayIsEmpty(points)
-    ? 0
-    : mathMax(fullBarWidth * (1 - BAR_GAP_RATIO), 0);
+  const fullBarWidth = arrayIsEmpty(points) ? 0 : width / pointsSize;
+  const barWidth = arrayIsEmpty(points) ? 0 : mathMax(fullBarWidth - barGap, 0);
 
   return (
     <Marks
@@ -40,8 +34,8 @@ export const Bars = ({
           <rect
             className="bar"
             fill="currentColor"
-            x={x - barWidth / 2}
-            y={y}
+            x={plotX + x - barWidth / 2}
+            y={plotY + y}
             width={barWidth}
             height={mathAbs(baselineY - pointY)}
           />

@@ -1,10 +1,29 @@
 import type {RefObject} from 'react';
-import type {ChartScaledPoint, ChartSize, ChartStyle} from './data.ts';
 
-export type ChartLayout = readonly [
+export type Kind = 'bar' | 'line';
+export type ScaledPoint = readonly [...DataPoint, x: number, y: number];
+export type Bounds = readonly [
+  xMin?: XValue,
+  xMax?: XValue,
+  yMin?: number,
+  yMax?: number,
+];
+export type Style = readonly [
+  tickSize: number,
+  tickGap: number,
+  barGap: number,
+  xAxisHeight: number,
+  yAxisWidth: number,
+  inset: number,
+  fontSize: number,
+];
+export type Size = readonly [width: number, height: number];
+export type Ticks = number[];
+
+export type RefAndLayout = readonly [
   svgRef: RefObject<SVGSVGElement | null>,
-  chartSize: ChartSize,
-  chartStyle: ChartStyle,
+  size: Size,
+  style: Style,
 ];
 
 export type PlotFrame = readonly [
@@ -14,6 +33,11 @@ export type PlotFrame = readonly [
   height: number,
 ];
 
-export type SetTooltipPoint = (
-  point: ChartScaledPoint | undefined,
-) => void;
+export type SetTooltipPoint = (point: ScaledPoint | undefined) => void;
+
+export type XValue = number | string;
+export type DataPoint = readonly [
+  rowId: string,
+  xValue: XValue,
+  yValue: number,
+];
