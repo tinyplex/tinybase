@@ -1,4 +1,10 @@
-import type {Bounds, PlotFrame, ScaledPoint, Ticks} from '../common/types.ts';
+import {
+  CURRENT_COLOR,
+  type Bounds,
+  type PlotFrame,
+  type ScaledPoint,
+  type Ticks,
+} from '../common/types.ts';
 import {XAxis} from './XAxis.tsx';
 import {YAxis} from './YAxis.tsx';
 
@@ -9,7 +15,7 @@ export const Axes = ({
   bounds: [xMin, xMax, yMin, yMax],
   titles: [xTitle, yTitle],
   xAxisHeight,
-  inset,
+  yAxisWidth,
   fontSize,
   ...sharedProps
 }: {
@@ -22,18 +28,18 @@ export const Axes = ({
   readonly tickSize: number;
   readonly tickGap: number;
   readonly xAxisHeight: number;
-  readonly inset: number;
+  readonly yAxisWidth: number;
   readonly fontSize: number;
 }) => {
   return (
-    <g className="axes" fill="currentColor" fillOpacity={0.75}>
+    <g className="axes" fill={CURRENT_COLOR} fillOpacity={0.75}>
       <YAxis
         {...sharedProps}
         yTicks={yTicks}
         yMin={yMin}
         yMax={yMax}
         yTitle={yTitle}
-        inset={inset}
+        axisWidth={yAxisWidth}
       />
       <XAxis
         {...sharedProps}

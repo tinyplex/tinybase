@@ -6,7 +6,13 @@ import {
 } from '../../common/array.ts';
 import {isNullish, isNumber} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
-import type {Bounds, PlotFrame, ScaledPoint, Ticks} from '../common/types.ts';
+import {
+  CURRENT_COLOR,
+  type Bounds,
+  type PlotFrame,
+  type ScaledPoint,
+  type Ticks,
+} from '../common/types.ts';
 
 export const Grid = ({
   points,
@@ -27,7 +33,7 @@ export const Grid = ({
   return (
     <g
       className="grid"
-      stroke="currentColor"
+      stroke={CURRENT_COLOR}
       strokeOpacity={0.75}
       strokeWidth={0.5}
     >

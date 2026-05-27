@@ -1,7 +1,12 @@
 import {arrayIsEmpty} from '../../common/array.ts';
 import {mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
-import type {PlotFrame, ScaledPoint, SetTooltipPoint} from '../common/types.ts';
+import {
+  CURRENT_COLOR,
+  type PlotFrame,
+  type ScaledPoint,
+  type SetTooltipPoint,
+} from '../common/types.ts';
 import {Marks} from './Marks.tsx';
 
 export const Bars = ({
@@ -33,7 +38,7 @@ export const Bars = ({
         return (
           <rect
             className="bar"
-            fill="currentColor"
+            fill={CURRENT_COLOR}
             x={plotX + x - barWidth / 2}
             y={plotY + y}
             width={barWidth}

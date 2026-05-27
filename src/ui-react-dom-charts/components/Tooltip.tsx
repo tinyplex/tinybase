@@ -1,5 +1,9 @@
 import {isNullish, mathMax, mathMin} from '../../common/other.ts';
-import type {PlotFrame, ScaledPoint} from '../common/types.ts';
+import {
+  CURRENT_COLOR,
+  type PlotFrame,
+  type ScaledPoint,
+} from '../common/types.ts';
 
 const TOOLTIP_WIDTH = 160;
 const TOOLTIP_HEIGHT = 60;
@@ -39,7 +43,7 @@ export const Tooltip = ({
       <path
         className="tooltip-lines"
         pointerEvents="none"
-        stroke="currentColor"
+        stroke={CURRENT_COLOR}
         strokeOpacity={0.25}
         strokeWidth={1}
         d={`M${plotX + x},${plotY}v${height}M${plotX},${plotY + y}h${width}`}
@@ -47,7 +51,7 @@ export const Tooltip = ({
       <g
         className="tooltip"
         transform={`translate(${plotX + tooltipX} ${plotY + tooltipY})`}
-        fill="currentColor"
+        fill={CURRENT_COLOR}
       >
         <rect
           fillOpacity={0.25}

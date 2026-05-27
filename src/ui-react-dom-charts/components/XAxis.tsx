@@ -1,7 +1,12 @@
 import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
 import {isNumber, mathMax} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
-import type {PlotFrame, ScaledPoint, Ticks} from '../common/types.ts';
+import {
+  CURRENT_COLOR,
+  type PlotFrame,
+  type ScaledPoint,
+  type Ticks,
+} from '../common/types.ts';
 
 export const XAxis = ({
   points,
@@ -34,7 +39,7 @@ export const XAxis = ({
         className="line"
         d={`M${plotX},${plotY + plotHeight}h${plotWidth}`}
         fill="none"
-        stroke="currentColor"
+        stroke={CURRENT_COLOR}
         strokeOpacity={0.5}
         strokeWidth={1}
       />

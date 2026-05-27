@@ -31,7 +31,7 @@ export const Layout = ({
   const [width, height] = chartSize;
   const plotFrame = getPlotFrame(chartSize, chartStyle);
   const [, , plotWidth, plotHeight] = plotFrame;
-  const [tickSize, tickGap, barGap, xAxisHeight, , inset, fontSize] =
+  const [tickSize, tickGap, barGap, xAxisHeight, yAxisWidth, , fontSize] =
     chartStyle;
   const [tooltipPoint, setTooltipPoint] = useState<ScaledPoint | undefined>();
   const chartProps = {...sharedProps, plotFrame};
@@ -50,7 +50,7 @@ export const Layout = ({
         tickSize={tickSize}
         tickGap={tickGap}
         xAxisHeight={xAxisHeight}
-        inset={inset}
+        yAxisWidth={yAxisWidth}
         fontSize={fontSize}
       />
       <Plot

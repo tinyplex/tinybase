@@ -1,5 +1,7 @@
 import type {RefObject} from 'react';
 
+export const CURRENT_COLOR = 'currentColor';
+
 export type Kind = 'bar' | 'line';
 export type ScaledPoint = readonly [...DataPoint, x: number, y: number];
 export type Bounds = readonly [

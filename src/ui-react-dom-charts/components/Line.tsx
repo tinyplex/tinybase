@@ -1,6 +1,11 @@
 import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
 import {size} from '../../common/other.ts';
-import type {PlotFrame, ScaledPoint, SetTooltipPoint} from '../common/types.ts';
+import {
+  CURRENT_COLOR,
+  type PlotFrame,
+  type ScaledPoint,
+  type SetTooltipPoint,
+} from '../common/types.ts';
 
 export const Line = ({
   plotFrame,
@@ -17,7 +22,7 @@ export const Line = ({
       <path
         className="area"
         d={getAreaPath(points, plotX, plotY, height)}
-        fill="currentColor"
+        fill={CURRENT_COLOR}
         fillOpacity={0.25}
         stroke="none"
       />
@@ -25,11 +30,11 @@ export const Line = ({
         className="line"
         d={getLinePath(points, plotX, plotY)}
         fill="none"
-        stroke="currentColor"
+        stroke={CURRENT_COLOR}
         strokeOpacity={0.75}
         strokeWidth={2}
       />
-      <g className="points" fill="currentColor">
+      <g className="points" fill={CURRENT_COLOR}>
         {arrayMap(points, (point) => {
           const [rowId, , , x, y] = point;
           return (

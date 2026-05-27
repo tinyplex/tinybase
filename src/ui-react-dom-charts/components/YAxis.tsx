@@ -1,7 +1,7 @@
 import {arrayMap} from '../../common/array.ts';
 import {isNullish} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
-import type {PlotFrame, Ticks} from '../common/types.ts';
+import {CURRENT_COLOR, type PlotFrame, type Ticks} from '../common/types.ts';
 
 export const YAxis = ({
   yTicks,
@@ -11,7 +11,7 @@ export const YAxis = ({
   plotFrame,
   tickSize,
   tickGap,
-  inset,
+  axisWidth,
 }: {
   readonly yTicks: Ticks;
   readonly yMin: number | undefined;
@@ -20,7 +20,7 @@ export const YAxis = ({
   readonly plotFrame: PlotFrame;
   readonly tickSize: number;
   readonly tickGap: number;
-  readonly inset: number;
+  readonly axisWidth: number;
 }) => {
   const [plotX, plotY, , plotHeight] = plotFrame;
   return isNullish(yMin) || isNullish(yMax) ? null : (
@@ -29,7 +29,7 @@ export const YAxis = ({
         className="line"
         d={`M${plotX},${plotY}v${plotHeight}`}
         fill="none"
-        stroke="currentColor"
+        stroke={CURRENT_COLOR}
         strokeOpacity={0.5}
         strokeWidth={1}
       />
@@ -47,7 +47,7 @@ export const YAxis = ({
         className="title"
         dominantBaseline="text-before-edge"
         textAnchor="middle"
-        transform={`translate(${inset} ${
+        transform={`translate(${plotX - axisWidth} ${
           plotFrame[1] + plotFrame[3] / 2
         }) rotate(-90)`}
       >
