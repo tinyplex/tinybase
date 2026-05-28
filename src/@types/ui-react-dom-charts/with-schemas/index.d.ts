@@ -66,23 +66,31 @@ export type ChartBindingProps<CellId extends Id = Id> = {
   readonly limit?: number;
 };
 
+type ChartTableBindingProps<
+  Schemas extends OptionalSchemas,
+  TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
+    Schemas[0]
+  >,
+> = TableIds extends infer TableId
+  ? TableId extends TableIdFromSchema<Schemas[0]>
+    ? ChartTableSourceProps<Schemas, TableId> &
+        ChartBindingProps<CellIdFromSchema<Schemas[0], TableId>>
+    : never
+  : never;
+
 /// WithSchemas
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// LineChart
-  LineChart: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  LineChart: (
     props:
-      | (ChartTableSourceProps<Schemas, TableId> &
-          ChartBindingProps<CellIdFromSchema<Schemas[0], TableId>> &
-          ChartProps)
+      | (ChartTableBindingProps<Schemas> & ChartProps)
       | (ChartQuerySourceProps<Schemas> & ChartBindingProps & ChartProps),
   ) => ComponentReturnType;
 
   /// BarChart
-  BarChart: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  BarChart: (
     props:
-      | (ChartTableSourceProps<Schemas, TableId> &
-          ChartBindingProps<CellIdFromSchema<Schemas[0], TableId>> &
-          ChartProps)
+      | (ChartTableBindingProps<Schemas> & ChartProps)
       | (ChartQuerySourceProps<Schemas> & ChartBindingProps & ChartProps),
   ) => ComponentReturnType;
 };

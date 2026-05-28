@@ -3024,6 +3024,24 @@ exports[`Types in ui-react-dom.tsx > 166:46 1`] = `"Type '"c2"' is not assignabl
 
 exports[`Types in ui-react-dom.tsx > 171:23 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
 
+exports[`Types in ui-react-dom-charts.tsx > 29:5 1`] = `"Type '{ tableId: string; queryId: string; xCellId: string; yCellId: string; }' is not assignable to type 'IntrinsicAttributes & ((ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps)'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 30:5 1`] = `"Type '{ queryId: string; tableId: string; xCellId: string; yCellId: string; }' is not assignable to type 'IntrinsicAttributes & ((ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps)'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 47:26 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1" | undefined'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 48:5 1`] = `"Type '{ tableId: "t1"; xCellId: "c2"; yCellId: "c1"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; readonly queries?: undefine...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 49:5 1`] = `"Type '{ tableId: "t1"; xCellId: "c0"; yCellId: "c1"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; readonly queries?: undefine...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 50:5 1`] = `"Type '{ tableId: "t1"; xCellId: "c1"; yCellId: "c0"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; readonly queries?: undefine...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 51:5 1`] = `"Type '{ tableId: "t1"; xCellId: "c1"; yCellId: "c1d"; sortCellId: "c0"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; readonly queries?: undefine...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 52:5 1`] = `"Type '{ tableId: "t1"; queryId: string; xCellId: "c1"; yCellId: "c1d"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; readonly queries?: undefine...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 53:38 1`] = `"Type 'string' is not assignable to type '"t0" | "t1" | undefined'."`;
+
 exports[`Types in ui-react-inspector.tsx > 5:6 1`] = `"Cannot assign to 'position' because it is a read-only property."`;
 
 exports[`Types in ui-react-inspector.tsx > 6:6 1`] = `"Cannot assign to 'open' because it is a read-only property."`;
