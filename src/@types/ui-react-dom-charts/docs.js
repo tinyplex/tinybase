@@ -6,6 +6,9 @@
  * The components in this module use the react-dom module and so are not
  * appropriate for environments like React Native (although those in the
  * lower-level ui-react module are).
+ *
+ * For a full list of SVG class names that can be styled with CSS, see the
+ * Using Charts guide.
  * @packageDocumentation
  * @module ui-react-dom-charts
  * @since v8.5.0
@@ -21,7 +24,8 @@
 {
   /**
    * An optional string that will be used as the class attribute of the chart's
-   * chart element.
+   * SVG element. This can be used as the root selector for styling chart
+   * internals, as shown in the Using Charts guide.
    * @category Prop
    * @since v8.5.0
    */

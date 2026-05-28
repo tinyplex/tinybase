@@ -131,5 +131,5 @@ console.log(app.innerHTML);
 We have covered the main parts of the ui-react module, including its hooks and
 components, and the way it supports context to make Store objects available.
 
-For the Solid equivalents, proceed to the
-[Building UIs With Solid](/guides/building-uis-with-solid/) guides.
+Finally, let's look at how to render TinyBase data visually in the Using Charts
+guide.
