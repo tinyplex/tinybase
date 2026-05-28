@@ -5,6 +5,68 @@ highlighted features.
 
 ---
 
+# v8.5
+
+## React Chart Components
+
+This release adds the new ui-react-dom-charts module, providing reactive SVG
+chart components for React apps.
+
+The first components are LineChart and BarChart. They can render data directly
+from a Store Table, or from a Queries ResultTable, using the same Provider
+context patterns as the rest of the React UI modules.
+
+![LineChart (React)](/shots/styled-chart-react-demo.png 'LineChart (React)')
+
+A chart can be bound to a Table with just the Table Id and the Cell Ids to use
+for the x and y values:
+
+```jsx
+import React from 'react';
+import {createRoot as createReactRoot} from 'react-dom/client';
+import {createStore} from 'tinybase';
+import {LineChart} from 'tinybase/ui-react-dom-charts';
+
+{
+  const App = ({store}) => (
+    <LineChart
+      tableId="sales"
+      store={store}
+      xCellId="month"
+      yCellId="revenue"
+      sortCellId="order"
+    />
+  );
+
+  const store = createStore().setTable('sales', {
+    jan: {month: 'Jan', order: 1, revenue: 12},
+    feb: {month: 'Feb', order: 2, revenue: 18},
+    mar: {month: 'Mar', order: 3, revenue: 15},
+  });
+
+  const app = document.createElement('div');
+  const root = createReactRoot(app);
+  root.render(<App store={store} />); // !act
+
+  console.log(app.firstChild?.nodeName.toLowerCase());
+  // -> 'svg'
+
+  root.unmount(); // !act
+}
+```
+
+Chart presentation is handled with CSS. The chart components emit stable SVG
+class names for grid lines, axes, data marks, and tooltips, so you can keep data
+binding in props and visual styling in stylesheets.
+
+Read more in the Using Charts guide and the Chart Components (React) demos.
+
+There are no intended breaking changes in this release. Please try the new
+chart components and let us know which chart types or styling hooks would be
+most useful next.
+
+---
+
 # v8.4
 
 ## Solid DOM Components And Inspector
@@ -29,7 +91,6 @@ A small Solid app can use both modules together:
 ```jsx
 import {render} from 'solid-js/web';
 import {createRoot} from 'solid-js';
-import {createStore} from 'tinybase';
 import {CellView, Provider, useCell} from 'tinybase/ui-solid';
 import {TableInHtmlTable} from 'tinybase/ui-solid-dom';
 import {Inspector} from 'tinybase/ui-solid-inspector';
@@ -1928,8 +1989,6 @@ Using them should be very familiar if you have used the more abstract ui-react
 module:
 
 ```jsx
-import React from 'react';
-import {createRoot as createReactRoot} from 'react-dom/client';
 import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 
 const App = ({store}) => (

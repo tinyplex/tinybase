@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v8-4'><em>NEW!</em> v8.4 release</a>
+<a href='/guides/releases/#v8-5'><em>NEW!</em> v8.5 release</a>
 
-<span id="one-with">"The one with Solid components!"</span>
+<span id="one-with">"The one with charts!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -36,9 +36,10 @@
 > TinyBase lets you [listen to changes](#register-granular-listeners) made to
 > any part of your data. This means your app will be fast, since you only spend
 > rendering cycles on things that change. The optional [bindings to
-> React](#call-hooks-to-bind-to-data) and [pre-built
-> components](#pre-built-reactive-components) let you easily build fully
-> reactive UIs on top of TinyBase. You even get a built-in [undo
+> React](#call-hooks-to-bind-to-data), [pre-built
+> components](#pre-built-reactive-components), and
+> [charts](#pre-built-reactive-components) let you easily build fully reactive
+> UIs on top of TinyBase. You even get a built-in [undo
 > stack](#set-checkpoints-for-an-undo-stack), and [developer
 > tools](#an-inspector-for-your-data)!
 
@@ -347,15 +348,17 @@ root.unmount(); // !act
 
 > ## Pre-built reactive components.
 >
-> The UI modules also provides bare React and Svelte components that let you
-> build up a fully reactive user interface based on a Store.
+> The UI modules also provide bare React, Solid, and Svelte components that let
+> you build up a fully reactive user interface based on a Store.
 >
-> For React (in the ui-react-dom module) and Svelte (in the ui-svelte-dom
-> module), these provide tabular display of your data, with lots of
+> For React, these include HTML table components in the ui-react-dom module and
+> SVG chart components in the ui-react-dom-charts module. Solid and Svelte also
+> provide DOM components for tabular display of your data, with lots of
 > customization and interactivity options.
 >
-> Try them out in the UI Components (React) demos and UI Components (Svelte)
-> demos, and read more in the Building UIs guides.
+> Try them out in the UI Components (React), Chart Components (React), UI
+> Components (Solid), and UI Components (Svelte) demos, and read more in the
+> Building UIs guides.
 
 <img src='/ui-react-dom.webp' />
 
