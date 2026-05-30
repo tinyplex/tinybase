@@ -1,8 +1,8 @@
 // dist/ui-svelte-inspector/index.js
-import { getContext, onDestroy, onMount } from "https://esm.sh/svelte@^5.55.5";
-import * as $ from "https://esm.sh/svelte@^5.55.5/internal/client";
-import "https://esm.sh/svelte@^5.55.5/internal/disclose-version";
-import { createSubscriber } from "https://esm.sh/svelte@^5.55.5/reactivity";
+import { getContext, onDestroy, onMount } from "https://esm.sh/svelte@^5.56.0";
+import * as $ from "https://esm.sh/svelte@^5.56.0/internal/client";
+import "https://esm.sh/svelte@^5.56.0/internal/disclose-version";
+import { createSubscriber } from "https://esm.sh/svelte@^5.56.0/reactivity";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -2771,7 +2771,7 @@ var getRelationshipsStoreTableIds = (relationshipsOrId, relationshipId) => {
     }
   };
 };
-var root_1$e = $.from_html(`<img tabindex="0" alt=""/>`);
+var root$m = $.from_html(`<img tabindex="0" alt=""/>`);
 function Nub($$anchor, $$props) {
   $.push($$props, true);
   const position = getValue(
@@ -2793,7 +2793,7 @@ function Nub($$anchor, $$props) {
   var node = $.first_child(fragment);
   {
     var consequent = ($$anchor2) => {
-      var img2 = root_1$e();
+      var img2 = root$m();
       $.template_effect(() => {
         $.set_attribute(img2, "title", TITLE);
         $.set_attribute(img2, "data-position", position.current ?? 1);
@@ -2818,8 +2818,8 @@ var requestInspectorIdleCallback = (callback) => globalThis.requestIdleCallback?
   0
 );
 var cancelInspectorIdleCallback = (id2) => globalThis.cancelIdleCallback?.(id2) ?? clearTimeout(id2);
-var root_1$d = $.from_html(`<img tabindex="0" alt=""/>`);
-var root$c = $.from_html(
+var root$l = $.from_html(`<img tabindex="0" alt=""/>`);
+var root_1$c = $.from_html(
   `<details><summary><span> </span> <!></summary> <div><!></div></details>`
 );
 function Details($$anchor, $$props) {
@@ -2840,7 +2840,7 @@ function Details($$anchor, $$props) {
       $$props.handleEditable?.(event2);
     }
   };
-  var details = root$c();
+  var details = root_1$c();
   var summary = $.child(details);
   var span = $.child(summary);
   var text2 = $.child(span, true);
@@ -2848,7 +2848,7 @@ function Details($$anchor, $$props) {
   var node = $.sibling(span, 2);
   {
     var consequent = ($$anchor2) => {
-      var img2 = root_1$d();
+      var img2 = root$l();
       $.template_effect(() => {
         $.set_class(img2, 1, $.clsx(editable() ? "done" : "edit"));
         $.set_attribute(img2, "title", editable() ? "Done editing" : "Edit");
@@ -2878,13 +2878,11 @@ function Details($$anchor, $$props) {
   $.pop();
 }
 $.delegate(["click", "keydown"]);
-var root_1$c = $.from_html(`<button> </button>`);
-var root_2$9 = $.from_html(`<input/>`);
-var root_3$3 = $.from_html(`<input type="number"/>`);
-var root_4$5 = $.from_html(`<input type="checkbox"/>`);
-var root_5$5 = $.from_html(`<input/>`);
-var root_6$2 = $.from_html(`<input/>`);
-var root$b = $.from_html(`<div><!><!></div>`);
+var root$k = $.from_html(`<button> </button>`);
+var root_1$b = $.from_html(`<input/>`);
+var root_2$4 = $.from_html(`<input type="number"/>`);
+var root_3$3 = $.from_html(`<input type="checkbox"/>`);
+var root_4$2 = $.from_html(`<div><!><!></div>`);
 function EditableThing($$anchor, $$props) {
   $.push($$props, true);
   let showType = $.prop($$props, "showType", 3, true);
@@ -2960,11 +2958,11 @@ function EditableThing($$anchor, $$props) {
   const hasWidget = $.derived(
     () => getTypeCase($.get(thingType), 1, 1, 1, 1, 1) == 1
   );
-  var div = root$b();
+  var div = root_4$2();
   var node = $.child(div);
   {
     var consequent = ($$anchor2) => {
-      var button = root_1$c();
+      var button = root$k();
       var text2 = $.child(button, true);
       $.reset(button);
       $.template_effect(() => {
@@ -2982,7 +2980,7 @@ function EditableThing($$anchor, $$props) {
   var node_1 = $.sibling(node);
   {
     var consequent_1 = ($$anchor2) => {
-      var input = root_2$9();
+      var input = root_1$b();
       $.remove_input_defaults(input);
       $.template_effect(() => $.set_value(input, $.get(stringThing)));
       $.delegated(
@@ -2996,7 +2994,7 @@ function EditableThing($$anchor, $$props) {
       $.append($$anchor2, input);
     };
     var consequent_2 = ($$anchor2) => {
-      var input_1 = root_3$3();
+      var input_1 = root_2$4();
       $.remove_input_defaults(input_1);
       $.template_effect(() => $.set_value(input_1, $.get(numberThing)));
       $.delegated(
@@ -3010,7 +3008,7 @@ function EditableThing($$anchor, $$props) {
       $.append($$anchor2, input_1);
     };
     var consequent_3 = ($$anchor2) => {
-      var input_2 = root_4$5();
+      var input_2 = root_3$3();
       $.remove_input_defaults(input_2);
       $.template_effect(() => $.set_checked(input_2, $.get(booleanThing)));
       $.delegated(
@@ -3024,7 +3022,7 @@ function EditableThing($$anchor, $$props) {
       $.append($$anchor2, input_2);
     };
     var consequent_4 = ($$anchor2) => {
-      var input_3 = root_5$5();
+      var input_3 = root_1$b();
       $.remove_input_defaults(input_3);
       $.template_effect(() => {
         $.set_value(input_3, $.get(objectThing));
@@ -3043,7 +3041,7 @@ function EditableThing($$anchor, $$props) {
       $.append($$anchor2, input_3);
     };
     var consequent_5 = ($$anchor2) => {
-      var input_4 = root_6$2();
+      var input_4 = root_1$b();
       $.remove_input_defaults(input_4);
       $.template_effect(() => {
         $.set_value(input_4, $.get(arrayThing));
@@ -3163,11 +3161,9 @@ function CellView($$anchor, $$props) {
   $.append($$anchor, text2);
   $.pop();
 }
-var root_1$b = $.from_html(`<td><!></td>`);
-var root_2$8 = $.from_html(`<th> </th> <th> </th>`, 1);
-var root_4$4 = $.from_html(`<td><!></td>`);
-var root_5$4 = $.from_html(`<td><!></td>`);
-var root$a = $.from_html(`<tr><!><!><!><!></tr>`);
+var root$j = $.from_html(`<td><!></td>`);
+var root_1$a = $.from_html(`<th> </th> <th> </th>`, 1);
+var root_2$3 = $.from_html(`<tr><!><!><!><!></tr>`);
 function RelationshipInHtmlRow($$anchor, $$props) {
   $.push($$props, true);
   let extraCellsBefore = $.prop($$props, "extraCellsBefore", 19, () => []), extraCellsAfter = $.prop($$props, "extraCellsAfter", 19, () => []);
@@ -3182,7 +3178,7 @@ function RelationshipInHtmlRow($$anchor, $$props) {
     rowId: $$props.localRowId,
     store: $$props.store
   }));
-  var tr = root$a();
+  var tr = root_2$3();
   var node = $.child(tr);
   $.each(
     node,
@@ -3191,7 +3187,7 @@ function RelationshipInHtmlRow($$anchor, $$props) {
     (extraCell, index2) => extraKey(index2, 0),
     ($$anchor2, extraCell) => {
       const ExtraCell = $.derived(() => $.get(extraCell).component);
-      var td = root_1$b();
+      var td = root$j();
       var node_1 = $.child(td);
       $.component(
         node_1,
@@ -3211,7 +3207,7 @@ function RelationshipInHtmlRow($$anchor, $$props) {
   var node_2 = $.sibling(node);
   {
     var consequent = ($$anchor2) => {
-      var fragment = root_2$8();
+      var fragment = root_1$a();
       var th = $.first_child(fragment);
       var text2 = $.child(th, true);
       $.reset(th);
@@ -3252,7 +3248,7 @@ function RelationshipInHtmlRow($$anchor, $$props) {
       var node_4 = $.first_child(fragment_1);
       {
         var consequent_1 = ($$anchor3) => {
-          var td_1 = root_4$4();
+          var td_1 = root$j();
           var node_5 = $.child(td_1);
           {
             let $0 = $.derived(
@@ -3305,7 +3301,7 @@ function RelationshipInHtmlRow($$anchor, $$props) {
     (extraCell, index2) => extraKey(index2, 1),
     ($$anchor2, extraCell) => {
       const ExtraCell = $.derived(() => $.get(extraCell).component);
-      var td_2 = root_5$4();
+      var td_2 = root$j();
       var node_7 = $.child(td_2);
       $.component(
         node_7,
@@ -3326,12 +3322,10 @@ function RelationshipInHtmlRow($$anchor, $$props) {
   $.append($$anchor, tr);
   $.pop();
 }
-var root_2$7 = $.from_html(`<th> </th>`);
-var root_3$2 = $.from_html(`<th> </th> <th> </th>`, 1);
-var root_4$3 = $.from_html(`<th> </th>`);
-var root_5$3 = $.from_html(`<th> </th>`);
-var root_1$a = $.from_html(`<thead><tr><!><!><!><!></tr></thead>`);
-var root$9 = $.from_html(`<table><!><tbody></tbody></table>`);
+var root$i = $.from_html(`<th> </th>`);
+var root_1$9 = $.from_html(`<th> </th> <th> </th>`, 1);
+var root_2$2 = $.from_html(`<thead><tr><!><!><!><!></tr></thead>`);
+var root_3$2 = $.from_html(`<table><!><tbody></tbody></table>`);
 function RelationshipInHtmlTable($$anchor, $$props) {
   $.push($$props, true);
   let extraCellsBefore = $.prop($$props, "extraCellsBefore", 19, () => []), extraCellsAfter = $.prop($$props, "extraCellsAfter", 19, () => []), idColumn = $.prop($$props, "idColumn", 3, true);
@@ -3377,11 +3371,11 @@ function RelationshipInHtmlTable($$anchor, $$props) {
   const extraHeadersAfter = $.derived(
     () => getExtraHeaders(extraCellsAfter(), 1)
   );
-  var table = root$9();
+  var table = root_3$2();
   var node = $.child(table);
   {
     var consequent_1 = ($$anchor2) => {
-      var thead = root_1$a();
+      var thead = root_2$2();
       var tr = $.child(thead);
       var node_1 = $.child(tr);
       $.each(
@@ -3390,7 +3384,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         () => $.get(extraHeadersBefore),
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
-          var th = root_2$7();
+          var th = root$i();
           var text2 = $.child(th, true);
           $.reset(th);
           $.template_effect(() => {
@@ -3403,7 +3397,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
       var node_2 = $.sibling(node_1);
       {
         var consequent = ($$anchor3) => {
-          var fragment = root_3$2();
+          var fragment = root_1$9();
           var th_1 = $.first_child(fragment);
           var text_1 = $.child(th_1);
           $.reset(th_1);
@@ -3428,7 +3422,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         () => $.get(cellEntries),
         (entry) => entry[0],
         ($$anchor3, entry) => {
-          var th_3 = root_4$3();
+          var th_3 = root$i();
           var text_3 = $.child(th_3, true);
           $.reset(th_3);
           $.template_effect(() => $.set_text(text_3, $.get(entry)[1].label));
@@ -3442,7 +3436,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         () => $.get(extraHeadersAfter),
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
-          var th_4 = root_5$3();
+          var th_4 = root$i();
           var text_4 = $.child(th_4, true);
           $.reset(th_4);
           $.template_effect(() => {
@@ -3525,18 +3519,14 @@ function ResultCellView($$anchor, $$props) {
   $.append($$anchor, text2);
   $.pop();
 }
-var root_1$9 = $.from_html(`<caption><!></caption>`);
-var root_3$1 = $.from_html(`<th> </th>`);
-var root_4$2 = $.from_html(`<th><!> Id</th>`);
-var root_6$1 = $.from_html(`<th><!> </th>`);
-var root_8$1 = $.from_html(`<th> </th>`);
-var root_2$6 = $.from_html(`<thead><tr><!><!><!><!></tr></thead>`);
-var root_10 = $.from_html(`<td><!></td>`);
-var root_11 = $.from_html(`<th> </th>`);
-var root_12 = $.from_html(`<td><!></td>`);
-var root_13 = $.from_html(`<td><!></td>`);
-var root_9 = $.from_html(`<tr><!><!><!><!></tr>`);
-var root$8 = $.from_html(`<table><!><!><tbody></tbody></table>`);
+var root$h = $.from_html(`<caption><!></caption>`);
+var root_1$8 = $.from_html(`<th> </th>`);
+var root_2$1 = $.from_html(`<th><!> Id</th>`);
+var root_3$1 = $.from_html(`<th><!> </th>`);
+var root_4$1 = $.from_html(`<thead><tr><!><!><!><!></tr></thead>`);
+var root_5$1 = $.from_html(`<td><!></td>`);
+var root_6 = $.from_html(`<tr><!><!><!><!></tr>`);
+var root_7 = $.from_html(`<table><!><!><tbody></tbody></table>`);
 function HtmlTable($$anchor, $$props) {
   $.push($$props, true);
   let extraCellsBefore = $.prop($$props, "extraCellsBefore", 19, () => []), extraCellsAfter = $.prop($$props, "extraCellsAfter", 19, () => []);
@@ -3549,11 +3539,11 @@ function HtmlTable($$anchor, $$props) {
   );
   const PaginatorComponent = $.derived(() => $$props.paginator?.component);
   const paginatorProps = $.derived(() => $$props.paginator?.props);
-  var table = root$8();
+  var table = root_7();
   var node = $.child(table);
   {
     var consequent = ($$anchor2) => {
-      var caption = root_1$9();
+      var caption = root$h();
       var node_1 = $.child(caption);
       $.component(
         node_1,
@@ -3576,7 +3566,7 @@ function HtmlTable($$anchor, $$props) {
   var node_2 = $.sibling(node);
   {
     var consequent_4 = ($$anchor2) => {
-      var thead = root_2$6();
+      var thead = root_4$1();
       var tr = $.child(thead);
       var node_3 = $.child(tr);
       $.each(
@@ -3585,7 +3575,7 @@ function HtmlTable($$anchor, $$props) {
         () => $.get(extraHeadersBefore),
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
-          var th = root_3$1();
+          var th = root_1$8();
           var text2 = $.child(th, true);
           $.reset(th);
           $.template_effect(() => {
@@ -3598,7 +3588,7 @@ function HtmlTable($$anchor, $$props) {
       var node_4 = $.sibling(node_3);
       {
         var consequent_2 = ($$anchor3) => {
-          var th_1 = root_4$2();
+          var th_1 = root_2$1();
           var node_5 = $.child(th_1);
           {
             var consequent_1 = ($$anchor4) => {
@@ -3644,7 +3634,7 @@ function HtmlTable($$anchor, $$props) {
         ($$anchor3, entry) => {
           const cellId = $.derived(() => $.get(entry)[0]);
           const cell = $.derived(() => $.get(entry)[1]);
-          var th_2 = root_6$1();
+          var th_2 = root_3$1();
           var node_7 = $.child(th_2);
           {
             var consequent_3 = ($$anchor4) => {
@@ -3688,7 +3678,7 @@ function HtmlTable($$anchor, $$props) {
         () => $.get(extraHeadersAfter),
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
-          var th_3 = root_8$1();
+          var th_3 = root_1$8();
           var text_4 = $.child(th_3, true);
           $.reset(th_3);
           $.template_effect(() => {
@@ -3717,7 +3707,7 @@ function HtmlTable($$anchor, $$props) {
         ...$$props.cellComponentProps,
         rowId
       }));
-      var tr_1 = root_9();
+      var tr_1 = root_6();
       var node_9 = $.child(tr_1);
       $.each(
         node_9,
@@ -3726,7 +3716,7 @@ function HtmlTable($$anchor, $$props) {
         (extraCell, index2) => extraKey(index2, 0),
         ($$anchor3, extraCell) => {
           const ExtraCell = $.derived(() => $.get(extraCell).component);
-          var td = root_10();
+          var td = root_5$1();
           var node_10 = $.child(td);
           $.component(
             node_10,
@@ -3746,7 +3736,7 @@ function HtmlTable($$anchor, $$props) {
       var node_11 = $.sibling(node_9);
       {
         var consequent_5 = ($$anchor3) => {
-          var th_4 = root_11();
+          var th_4 = root_1$8();
           var text_5 = $.child(th_4, true);
           $.reset(th_4);
           $.template_effect(() => {
@@ -3770,7 +3760,7 @@ function HtmlTable($$anchor, $$props) {
           const cellId = $.derived(() => $.get(entry)[0]);
           const cell = $.derived(() => $.get(entry)[1]);
           const CellComponent = $.derived(() => $.get(cell).component);
-          var td_1 = root_12();
+          var td_1 = root_5$1();
           var node_13 = $.child(td_1);
           {
             let $0 = $.derived(
@@ -3807,7 +3797,7 @@ function HtmlTable($$anchor, $$props) {
         (extraCell, index2) => extraKey(index2, 1),
         ($$anchor3, extraCell) => {
           const ExtraCell = $.derived(() => $.get(extraCell).component);
-          var td_2 = root_13();
+          var td_2 = root_5$1();
           var node_15 = $.child(td_2);
           $.component(
             node_15,
@@ -3835,14 +3825,15 @@ function HtmlTable($$anchor, $$props) {
   $.pop();
 }
 $.delegate(["click"]);
-var root_1$8 = $.from_html(
+var rest_excludes$3 = /* @__PURE__ */ new Set(["$$slots", "$$events", "$$legacy"]);
+var root$g = $.from_html(
   `<button class="previous"></button><button class="next"></button> `,
   1
 );
-var root$7 = $.from_html(`<!> `, 1);
+var root_1$7 = $.from_html(`<!> `, 1);
 function SortedTablePaginator($$anchor, $$props) {
   $.push($$props, true);
-  $.rest_props($$props, ["$$slots", "$$events", "$$legacy"]);
+  $.rest_props($$props, rest_excludes$3);
   const offset = $.derived(
     () => $$props.offset == null || $$props.offset > $$props.total || $$props.offset < 0 ? 0 : $$props.offset
   );
@@ -3860,11 +3851,11 @@ function SortedTablePaginator($$anchor, $$props) {
       $$props.onChange(0);
     }
   });
-  var fragment = root$7();
+  var fragment = root_1$7();
   var node = $.first_child(fragment);
   {
     var consequent = ($$anchor2) => {
-      var fragment_1 = root_1$8();
+      var fragment_1 = root$g();
       var button = $.first_child(fragment_1);
       button.textContent = "\u2190";
       var button_1 = $.sibling(button);
@@ -3939,25 +3930,26 @@ var createSortingAndPagination = (getCellId, getDescending, getSortOnClick, getO
     }
   };
 };
+var rest_excludes$2 = /* @__PURE__ */ new Set([
+  "$$slots",
+  "$$events",
+  "$$legacy",
+  "queryId",
+  "cellId",
+  "descending",
+  "offset",
+  "limit",
+  "queries",
+  "sortOnClick",
+  "paginator",
+  "customCells",
+  "extraCellsBefore",
+  "extraCellsAfter",
+  "onChange"
+]);
 function ResultSortedTableInHtmlTable($$anchor, $$props) {
   $.push($$props, true);
-  let paginator = $.prop($$props, "paginator", 3, false), props = $.rest_props($$props, [
-    "$$slots",
-    "$$events",
-    "$$legacy",
-    "queryId",
-    "cellId",
-    "descending",
-    "offset",
-    "limit",
-    "queries",
-    "sortOnClick",
-    "paginator",
-    "customCells",
-    "extraCellsBefore",
-    "extraCellsAfter",
-    "onChange"
-  ]);
+  let paginator = $.prop($$props, "paginator", 3, false), props = $.rest_props($$props, rest_excludes$2);
   const defaultCellIds = getResultTableCellIds(
     () => $$props.queryId,
     () => $$props.queries
@@ -4022,20 +4014,21 @@ function ResultSortedTableInHtmlTable($$anchor, $$props) {
   );
   $.pop();
 }
+var rest_excludes$1 = /* @__PURE__ */ new Set([
+  "$$slots",
+  "$$events",
+  "$$legacy",
+  "indexId",
+  "sliceId",
+  "indexes",
+  "editable",
+  "customCells",
+  "extraCellsBefore",
+  "extraCellsAfter"
+]);
 function SliceInHtmlTable($$anchor, $$props) {
   $.push($$props, true);
-  let props = $.rest_props($$props, [
-    "$$slots",
-    "$$events",
-    "$$legacy",
-    "indexId",
-    "sliceId",
-    "indexes",
-    "editable",
-    "customCells",
-    "extraCellsBefore",
-    "extraCellsAfter"
-  ]);
+  let props = $.rest_props($$props, rest_excludes$1);
   const index2 = getIndexStoreTableId(
     () => $$props.indexes,
     () => $$props.indexId
@@ -4085,26 +4078,27 @@ function SliceInHtmlTable($$anchor, $$props) {
   );
   $.pop();
 }
+var rest_excludes = /* @__PURE__ */ new Set([
+  "$$slots",
+  "$$events",
+  "$$legacy",
+  "tableId",
+  "cellId",
+  "descending",
+  "offset",
+  "limit",
+  "store",
+  "editable",
+  "sortOnClick",
+  "paginator",
+  "onChange",
+  "customCells",
+  "extraCellsBefore",
+  "extraCellsAfter"
+]);
 function SortedTableInHtmlTable($$anchor, $$props) {
   $.push($$props, true);
-  let paginator = $.prop($$props, "paginator", 3, false), props = $.rest_props($$props, [
-    "$$slots",
-    "$$events",
-    "$$legacy",
-    "tableId",
-    "cellId",
-    "descending",
-    "offset",
-    "limit",
-    "store",
-    "editable",
-    "sortOnClick",
-    "paginator",
-    "onChange",
-    "customCells",
-    "extraCellsBefore",
-    "extraCellsAfter"
-  ]);
+  let paginator = $.prop($$props, "paginator", 3, false), props = $.rest_props($$props, rest_excludes);
   const defaultCellIds = getTableCellIds(
     () => $$props.tableId,
     () => $$props.store
@@ -4192,15 +4186,12 @@ function ValueView($$anchor, $$props) {
   $.append($$anchor, text2);
   $.pop();
 }
-var root_2$5 = $.from_html(`<th> </th>`);
-var root_3 = $.from_html(`<th>Id</th>`);
-var root_4$1 = $.from_html(`<th> </th>`);
-var root_1$7 = $.from_html(`<thead><tr><!><!><th> </th><!></tr></thead>`);
-var root_6 = $.from_html(`<td><!></td>`);
-var root_7 = $.from_html(`<th> </th>`);
-var root_8 = $.from_html(`<td><!></td>`);
-var root_5$2 = $.from_html(`<tr><!><!><td><!></td><!></tr>`);
-var root$6 = $.from_html(`<table><!><tbody></tbody></table>`);
+var root$f = $.from_html(`<th> </th>`);
+var root_1$6 = $.from_html(`<th>Id</th>`);
+var root_2 = $.from_html(`<thead><tr><!><!><th> </th><!></tr></thead>`);
+var root_3 = $.from_html(`<td><!></td>`);
+var root_4 = $.from_html(`<tr><!><!><td><!></td><!></tr>`);
+var root_5 = $.from_html(`<table><!><tbody></tbody></table>`);
 function ValuesInHtmlTable($$anchor, $$props) {
   $.push($$props, true);
   let editable = $.prop($$props, "editable", 3, false), extraCellsBefore = $.prop($$props, "extraCellsBefore", 19, () => []), extraCellsAfter = $.prop($$props, "extraCellsAfter", 19, () => []);
@@ -4214,11 +4205,11 @@ function ValuesInHtmlTable($$anchor, $$props) {
   const extraHeadersAfter = $.derived(
     () => getExtraHeaders(extraCellsAfter(), 1)
   );
-  var table = root$6();
+  var table = root_5();
   var node = $.child(table);
   {
     var consequent_1 = ($$anchor2) => {
-      var thead = root_1$7();
+      var thead = root_2();
       var tr = $.child(thead);
       var node_1 = $.child(tr);
       $.each(
@@ -4227,7 +4218,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         () => $.get(extraHeadersBefore),
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
-          var th = root_2$5();
+          var th = root$f();
           var text2 = $.child(th, true);
           $.reset(th);
           $.template_effect(() => {
@@ -4240,7 +4231,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
       var node_2 = $.sibling(node_1);
       {
         var consequent = ($$anchor3) => {
-          var th_1 = root_3();
+          var th_1 = root_1$6();
           $.append($$anchor3, th_1);
         };
         $.if(node_2, ($$render) => {
@@ -4257,7 +4248,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         () => $.get(extraHeadersAfter),
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
-          var th_3 = root_4$1();
+          var th_3 = root$f();
           var text_2 = $.child(th_3, true);
           $.reset(th_3);
           $.template_effect(() => {
@@ -4284,7 +4275,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
     (valueId) => valueId,
     ($$anchor2, valueId) => {
       const valueProps = $.derived(() => ({ valueId, store: $$props.store }));
-      var tr_1 = root_5$2();
+      var tr_1 = root_4();
       var node_4 = $.child(tr_1);
       $.each(
         node_4,
@@ -4293,7 +4284,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         (extraCell, index2) => extraKey(index2, 0),
         ($$anchor3, extraCell) => {
           const ExtraCell = $.derived(() => $.get(extraCell).component);
-          var td = root_6();
+          var td = root_3();
           var node_5 = $.child(td);
           $.component(
             node_5,
@@ -4313,7 +4304,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
       var node_6 = $.sibling(node_4);
       {
         var consequent_2 = ($$anchor3) => {
-          var th_4 = root_7();
+          var th_4 = root$f();
           var text_3 = $.child(th_4, true);
           $.reset(th_4);
           $.template_effect(() => {
@@ -4356,7 +4347,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         (extraCell, index2) => extraKey(index2, 1),
         ($$anchor3, extraCell) => {
           const ExtraCell = $.derived(() => $.get(extraCell).component);
-          var td_2 = root_8();
+          var td_2 = root_3();
           var node_9 = $.child(td_2);
           $.component(
             node_9,
@@ -4594,8 +4585,8 @@ function MetricView($$anchor, $$props) {
   $.append($$anchor, text2);
   $.pop();
 }
-var root_5$1 = $.from_html(`<tr><th> </th><td> </td><td><!></td></tr>`);
-var root_4 = $.from_html(
+var root$e = $.from_html(`<tr><th> </th><td> </td><td><!></td></tr>`);
+var root_1$5 = $.from_html(
   `<table><thead><tr><th>Metric Id</th><th>Table Id</th><th>Metric</th></tr></thead><tbody></tbody></table>`
 );
 function MetricsView($$anchor, $$props) {
@@ -4629,7 +4620,7 @@ function MetricsView($$anchor, $$props) {
               };
               var d = $.derived(() => arrayIsEmpty(metricIds.current));
               var alternate = ($$anchor4) => {
-                var table = root_4();
+                var table = root_1$5();
                 var tbody = $.sibling($.child(table));
                 $.each(
                   tbody,
@@ -4637,7 +4628,7 @@ function MetricsView($$anchor, $$props) {
                   () => metricIds.current,
                   (metricId) => metricId,
                   ($$anchor5, metricId) => {
-                    var tr = root_5$1();
+                    var tr = root$e();
                     var th = $.child(tr);
                     var text_1 = $.child(th, true);
                     $.reset(th);
@@ -4948,11 +4939,11 @@ function RelationshipsView($$anchor, $$props) {
   $.append($$anchor, fragment);
   $.pop();
 }
-var root$5 = $.from_html(
+var root$d = $.from_html(
   `<div class="actions"><div><!></div> <div><!></div></div>`
 );
 function Actions($$anchor, $$props) {
-  var div = root$5();
+  var div = root$d();
   var div_1 = $.child(div);
   var node = $.child(div_1);
   $.snippet(node, () => $$props.left ?? $.noop);
@@ -4964,7 +4955,7 @@ function Actions($$anchor, $$props) {
   $.reset(div);
   $.append($$anchor, div);
 }
-var root$4 = $.from_html(` <img title="Confirm" class="ok" alt=""/>`, 1);
+var root$c = $.from_html(` <img title="Confirm" class="ok" alt=""/>`, 1);
 function Delete($$anchor, $$props) {
   $.push($$props, true);
   let prompt = $.prop($$props, "prompt", 3, "Delete");
@@ -4985,7 +4976,7 @@ function Delete($$anchor, $$props) {
     }
   });
   $.next();
-  var fragment = root$4();
+  var fragment = root$c();
   var text2 = $.first_child(fragment);
   var img2 = $.sibling(text2);
   $.template_effect(() => $.set_text(text2, `${prompt() ?? ""}?  `));
@@ -4994,7 +4985,7 @@ function Delete($$anchor, $$props) {
   $.pop();
 }
 $.delegate(["click"]);
-var root$3 = $.from_html(` <input type="text"/>  <img alt=""/>`, 1);
+var root$b = $.from_html(` <input type="text"/>  <img alt=""/>`, 1);
 function NewId($$anchor, $$props) {
   $.push($$props, true);
   let prompt = $.prop($$props, "prompt", 3, "New Id");
@@ -5034,7 +5025,7 @@ function NewId($$anchor, $$props) {
     }
   };
   $.next();
-  var fragment = root$3();
+  var fragment = root$b();
   var text2 = $.first_child(fragment);
   var input_1 = $.sibling(text2);
   $.remove_input_defaults(input_1);
@@ -5062,11 +5053,8 @@ function NewId($$anchor, $$props) {
 }
 $.delegate(["input", "keydown", "click"]);
 var isNewIdAction = (action) => "set" in action;
-var root_1$6 = $.from_html(
-  `<!>  <img title="Cancel" class="cancel" alt=""/>`,
-  1
-);
-var root_5 = $.from_html(`<img alt=""/>`);
+var root$a = $.from_html(`<!>  <img title="Cancel" class="cancel" alt=""/>`, 1);
+var root_1$4 = $.from_html(`<img alt=""/>`);
 function ConfirmableActions($$anchor, $$props) {
   $.push($$props, true);
   let confirming = $.state(void 0);
@@ -5090,7 +5078,7 @@ function ConfirmableActions($$anchor, $$props) {
   {
     var consequent_1 = ($$anchor2) => {
       const action = $.derived(() => $$props.actions[$.get(confirming)]);
-      var fragment_1 = root_1$6();
+      var fragment_1 = root$a();
       var node_1 = $.first_child(fragment_1);
       {
         var consequent = ($$anchor3) => {
@@ -5141,7 +5129,7 @@ function ConfirmableActions($$anchor, $$props) {
         () => $$props.actions,
         $.index,
         ($$anchor3, action, index2) => {
-          var img_1 = root_5();
+          var img_1 = root_1$4();
           $.template_effect(() => {
             $.set_attribute(img_1, "title", $.get(action).title);
             $.set_class(img_1, 1, $.clsx($.get(action).icon));
@@ -5367,7 +5355,7 @@ function CellActions($$anchor, $$props) {
   });
   $.pop();
 }
-var root$2 = $.from_html(`<!> <!>`, 1);
+var root$9 = $.from_html(`<!> <!>`, 1);
 function EditableCellViewWithActions($$anchor, $$props) {
   $.push($$props, true);
   const cellExists = hasCell(
@@ -5376,7 +5364,7 @@ function EditableCellViewWithActions($$anchor, $$props) {
     () => $$props.cellId,
     () => $$props.store
   );
-  var fragment = root$2();
+  var fragment = root$9();
   var node = $.first_child(fragment);
   EditableCellView(node, {
     get tableId() {
@@ -5417,7 +5405,7 @@ function EditableCellViewWithActions($$anchor, $$props) {
   $.append($$anchor, fragment);
   $.pop();
 }
-var root_1$5 = $.from_html(`<!> <!>`, 1);
+var root$8 = $.from_html(`<!> <!>`, 1);
 function TableView($$anchor, $$props) {
   $.push($$props, true);
   const uniqueId = $.derived(
@@ -5471,7 +5459,7 @@ function TableView($$anchor, $$props) {
       return $$props.s;
     },
     children: ($$anchor2, $$slotProps) => {
-      var fragment_1 = root_1$5();
+      var fragment_1 = root$8();
       var node = $.first_child(fragment_1);
       {
         let $0 = $.derived(() => editable.current ? rowActions : []);
@@ -5543,8 +5531,8 @@ function TableView($$anchor, $$props) {
   });
   $.pop();
 }
-var root_2$4 = $.from_html(`<p>No tables.</p>`);
-var root_1$4 = $.from_html(`<!> <!>`, 1);
+var root$7 = $.from_html(`<p>No tables.</p>`);
+var root_1$3 = $.from_html(`<!> <!>`, 1);
 function TablesView($$anchor, $$props) {
   $.push($$props, true);
   const uniqueId = $.derived(() => getUniqueId("ts", $$props.storeId));
@@ -5573,11 +5561,11 @@ function TablesView($$anchor, $$props) {
       return $$props.s;
     },
     children: ($$anchor2, $$slotProps) => {
-      var fragment_1 = root_1$4();
+      var fragment_1 = root_1$3();
       var node = $.first_child(fragment_1);
       {
         var consequent = ($$anchor3) => {
-          var p = root_2$4();
+          var p = root$7();
           $.append($$anchor3, p);
         };
         var d = $.derived(() => arrayIsEmpty(tableIds.current));
@@ -5723,8 +5711,8 @@ function ValuesActions($$anchor, $$props) {
   }
   $.pop();
 }
-var root_2$3 = $.from_html(`<p>No values.</p>`);
-var root_1$3 = $.from_html(`<!> <!>`, 1);
+var root$6 = $.from_html(`<p>No values.</p>`);
+var root_1$2 = $.from_html(`<!> <!>`, 1);
 function ValuesView($$anchor, $$props) {
   $.push($$props, true);
   const uniqueId = $.derived(() => getUniqueId("v", $$props.storeId));
@@ -5751,11 +5739,11 @@ function ValuesView($$anchor, $$props) {
       return $$props.s;
     },
     children: ($$anchor2, $$slotProps) => {
-      var fragment_1 = root_1$3();
+      var fragment_1 = root_1$2();
       var node = $.first_child(fragment_1);
       {
         var consequent = ($$anchor3) => {
-          var p = root_2$3();
+          var p = root$6();
           $.append($$anchor3, p);
         };
         var d = $.derived(() => arrayIsEmpty(valueIds.current));
@@ -5799,7 +5787,7 @@ function ValuesView($$anchor, $$props) {
   });
   $.pop();
 }
-var root_2$2 = $.from_html(`<!> <!>`, 1);
+var root$5 = $.from_html(`<!> <!>`, 1);
 function StoreView($$anchor, $$props) {
   $.push($$props, true);
   const store = $.derived(() => getStore($$props.storeId));
@@ -5823,7 +5811,7 @@ function StoreView($$anchor, $$props) {
             return $$props.s;
           },
           children: ($$anchor3, $$slotProps) => {
-            var fragment_2 = root_2$2();
+            var fragment_2 = root$5();
             var node_1 = $.first_child(fragment_2);
             ValuesView(node_1, {
               get store() {
@@ -5862,8 +5850,8 @@ function StoreView($$anchor, $$props) {
   $.append($$anchor, fragment);
   $.pop();
 }
-var root_1$2 = $.from_html(`<span class="warn"> </span>`);
-var root_2$1 = $.from_html(
+var root$4 = $.from_html(`<span class="warn"> </span>`);
+var root_1$1 = $.from_html(
   `<article><!> <!> <!> <!> <!> <!> <!> <!> <!> <!></article>`
 );
 function Body($$anchor, $$props) {
@@ -5911,14 +5899,14 @@ function Body($$anchor, $$props) {
   var node = $.first_child(fragment);
   {
     var consequent = ($$anchor2) => {
-      var span = root_1$2();
+      var span = root$4();
       var text2 = $.child(span, true);
       $.reset(span);
       $.template_effect(() => $.set_text(text2, NO_PROVIDED_OBJECTS_MESSAGE));
       $.append($$anchor2, span);
     };
     var alternate = ($$anchor2) => {
-      var article_1 = root_2$1();
+      var article_1 = root_1$1();
       var node_1 = $.child(article_1);
       StoreView(node_1, {
         get s() {
@@ -6051,14 +6039,14 @@ function Body($$anchor, $$props) {
   $.append($$anchor, fragment);
   $.pop();
 }
-var root_1$1 = $.from_html(`<span class="warn"> </span>`);
+var root$3 = $.from_html(`<span class="warn"> </span>`);
 function ErrorBoundary($$anchor, $$props) {
   const handleError = (error) => console.error(error);
   var fragment = $.comment();
   var node = $.first_child(fragment);
   {
     const failed = ($$anchor2, _error = $.noop, _reset = $.noop) => {
-      var span = root_1$1();
+      var span = root$3();
       var text2 = $.child(span, true);
       $.reset(span);
       $.template_effect(() => $.set_text(text2, INSPECTOR_ERROR_MESSAGE));
@@ -6073,8 +6061,8 @@ function ErrorBoundary($$anchor, $$props) {
   }
   $.append($$anchor, fragment);
 }
-var root_2 = $.from_html(`<img tabindex="0" alt=""/>`);
-var root$1 = $.from_html(
+var root$2 = $.from_html(`<img tabindex="0" alt=""/>`);
+var root_1 = $.from_html(
   `<header><img class="flat" tabindex="0" alt=""/> <span> </span> <!>  <img class="flat" title="Close" tabindex="0" alt=""/></header>`
 );
 function Header($$anchor, $$props) {
@@ -6092,7 +6080,7 @@ function Header($$anchor, $$props) {
       handle();
     }
   };
-  var header = root$1();
+  var header = root_1();
   var img2 = $.child(header);
   var span = $.sibling(img2, 2);
   var text2 = $.child(span, true);
@@ -6108,7 +6096,7 @@ function Header($$anchor, $$props) {
       var node_1 = $.first_child(fragment);
       {
         var consequent = ($$anchor3) => {
-          var img_1 = root_2();
+          var img_1 = root$2();
           $.set_attribute(img_1, "data-id", p);
           $.template_effect(
             () => $.set_attribute(img_1, "title", "Dock to " + $.get(name))
@@ -6142,7 +6130,7 @@ function Header($$anchor, $$props) {
   $.pop();
 }
 $.delegate(["click", "keydown"]);
-var root_1 = $.from_html(`<main><!> <!></main>`);
+var root$1 = $.from_html(`<main><!> <!></main>`);
 function Panel($$anchor, $$props) {
   $.push($$props, true);
   const position = getValue(
@@ -6157,7 +6145,7 @@ function Panel($$anchor, $$props) {
   var node = $.first_child(fragment);
   {
     var consequent = ($$anchor2) => {
-      var main = root_1();
+      var main = root$1();
       var node_1 = $.child(main);
       Header(node_1, {
         get s() {

@@ -1,8 +1,8 @@
 // dist/ui-svelte/index.js
-import { getContext, setContext, untrack } from "https://esm.sh/svelte@^5.55.5";
-import * as $ from "https://esm.sh/svelte@^5.55.5/internal/client";
-import "https://esm.sh/svelte@^5.55.5/internal/disclose-version";
-import { createSubscriber } from "https://esm.sh/svelte@^5.55.5/reactivity";
+import { getContext, setContext, untrack } from "https://esm.sh/svelte@^5.56.0";
+import * as $ from "https://esm.sh/svelte@^5.56.0/internal/client";
+import "https://esm.sh/svelte@^5.56.0/internal/disclose-version";
+import { createSubscriber } from "https://esm.sh/svelte@^5.56.0/reactivity";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -874,11 +874,11 @@ function CheckpointView($$anchor, $$props) {
   $.append($$anchor, text2);
   $.pop();
 }
-var root_2 = $.from_html(`<!><!>`, 1);
-var root$1 = $.from_html(`<!><!><!>`, 1);
+var root$1 = $.from_html(`<!><!>`, 1);
+var root_1 = $.from_html(`<!><!><!>`, 1);
 function Wrap($$anchor, $$props) {
   $.push($$props, true);
-  var fragment = root$1();
+  var fragment = root_1();
   var node = $.first_child(fragment);
   {
     var consequent = ($$anchor2) => {
@@ -898,7 +898,7 @@ function Wrap($$anchor, $$props) {
     () => $$props.ids,
     (itemId) => itemId,
     ($$anchor2, itemId, i) => {
-      var fragment_2 = root_2();
+      var fragment_2 = root$1();
       var node_2 = $.first_child(fragment_2);
       {
         var consequent_1 = ($$anchor3) => {

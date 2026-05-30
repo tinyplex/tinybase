@@ -8,8 +8,8 @@ import {
   onCleanup,
   untrack,
   useContext
-} from "https://esm.sh/solid-js@^1.9.12";
-import { createComponent, memo, mergeProps } from "https://esm.sh/solid-js@^1.9.12/web";
+} from "https://esm.sh/solid-js@^1.9.13";
+import { createComponent, memo, mergeProps } from "https://esm.sh/solid-js@^1.9.13/web";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
