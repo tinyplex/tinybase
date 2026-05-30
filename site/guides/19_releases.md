@@ -27,32 +27,30 @@ import {createRoot as createReactRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
 import {LineChart} from 'tinybase/ui-react-dom-charts';
 
-{
-  const App = ({store}) => (
-    <LineChart
-      tableId="sales"
-      store={store}
-      xCellId="month"
-      yCellId="revenue"
-      sortCellId="order"
-    />
-  );
+const store = createStore();
+const app = document.createElement('div');
+const root = createReactRoot(app);
 
-  const store = createStore().setTable('sales', {
-    jan: {month: 'Jan', order: 1, revenue: 12},
-    feb: {month: 'Feb', order: 2, revenue: 18},
-    mar: {month: 'Mar', order: 3, revenue: 15},
-  });
+store.setTable('sales', {
+  jan: {month: 'Jan', order: 1, revenue: 12},
+  feb: {month: 'Feb', order: 2, revenue: 18},
+  mar: {month: 'Mar', order: 3, revenue: 15},
+});
 
-  const app = document.createElement('div');
-  const root = createReactRoot(app);
-  root.render(<App store={store} />); // !act
+const MyChart = () => (
+  <LineChart
+    tableId="sales"
+    store={store}
+    xCellId="month"
+    yCellId="revenue"
+    sortCellId="order"
+  />
+);
 
-  console.log(app.firstChild?.nodeName.toLowerCase());
-  // -> 'svg'
+root.render(<MyChart />); // !act
 
-  root.unmount(); // !act
-}
+console.log(app.firstChild?.nodeName.toLowerCase());
+// -> 'svg'
 ```
 
 Chart presentation is handled with CSS. The chart components emit stable SVG
@@ -437,7 +435,7 @@ Previously, TinyBase supported `string`, `number`, `boolean`, and (since v7.0)
 directly in a Store.
 
 ```js
-const store = createStore().setRow('pets', 'fido', {
+store.delTables().setRow('pets', 'fido', {
   species: 'dog',
   traits: {friendly: true, energetic: true},
   vaccinations: ['rabies', 'distemper', 'parvovirus'],
@@ -2001,8 +1999,6 @@ store.setTables({
     felix: {species: 'cat'},
   },
 });
-const app = document.createElement('div');
-const root = createReactRoot(app);
 root.render(<App store={store} />); // !act
 
 console.log(app.innerHTML);

@@ -6,32 +6,30 @@ import {createRoot as createReactRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
 import {LineChart} from 'tinybase/ui-react-dom-charts';
 
-{
-  const App = ({store}) => (
-    <LineChart
-      tableId="sales"
-      store={store}
-      xCellId="month"
-      yCellId="revenue"
-      sortCellId="order"
-    />
-  );
+const store = createStore();
+const app = document.createElement('div');
+const root = createReactRoot(app);
 
-  const store = createStore().setTable('sales', {
-    jan: {month: 'Jan', order: 1, revenue: 12},
-    feb: {month: 'Feb', order: 2, revenue: 18},
-    mar: {month: 'Mar', order: 3, revenue: 15},
-  });
+store.setTable('sales', {
+  jan: {month: 'Jan', order: 1, revenue: 12},
+  feb: {month: 'Feb', order: 2, revenue: 18},
+  mar: {month: 'Mar', order: 3, revenue: 15},
+});
 
-  const app = document.createElement('div');
-  const root = createReactRoot(app);
-  root.render(<App store={store} />);
+const MyChart = () => (
+  <LineChart
+    tableId="sales"
+    store={store}
+    xCellId="month"
+    yCellId="revenue"
+    sortCellId="order"
+  />
+);
 
-  console.log(app.firstChild?.nodeName.toLowerCase());
-  // -> 'svg'
+root.render(<MyChart />);
 
-  root.unmount();
-}
+console.log(app.firstChild?.nodeName.toLowerCase());
+// -> 'svg'
 ```
 
 <p>Chart presentation is handled with CSS. The chart components emit stable SVG class names for grid lines, axes, data marks, and tooltips, so you can keep data binding in props and visual styling in stylesheets.</p><p>Read more in the <a href="https://beta.tinybase.org/guides/building-uis-with-react/using-charts/">Using Charts</a> guide and the <a href="https://beta.tinybase.org/demos/chart-components-react/">Chart Components (React)</a> demos.</p><p>There are no intended breaking changes in this release. Please try the new chart components and let us know which chart types or styling hooks would be most useful next.</p><hr><h1 id="v8-4">v8.4</h1><h2 id="solid-dom-components-and-inspector">Solid DOM Components And Inspector</h2><p>This release completes TinyBase&#x27;s Solid support with two new additions: the <a href="https://beta.tinybase.org/api/ui-solid-dom/"><code>ui-solid-dom</code></a> module and the <a href="https://beta.tinybase.org/api/ui-solid-inspector/"><code>ui-solid-inspector</code></a> module.</p><p>The <a href="https://beta.tinybase.org/api/ui-solid-dom/"><code>ui-solid-dom</code></a> module provides browser-ready Solid components for rendering and editing TinyBase data as HTML tables. They mirror the React DOM components, but use Solid components and Accessors throughout.</p><p><img src="https://beta.tinybase.org/shots/sortedtableinhtmltable-solid-demo.png" alt="SortedTableInHtmlTable (Solid)" title="SortedTableInHtmlTable (Solid)"></p><p>Alongside the table components, the new <a href="https://beta.tinybase.org/api/ui-solid-inspector/"><code>ui-solid-inspector</code></a> module brings the TinyBase development inspector to Solid apps too, making it easy to inspect and edit Stores, <a href="https://beta.tinybase.org/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a>, <a href="https://beta.tinybase.org/api/relationships/interfaces/relationships/relationships/"><code>Relationships</code></a>, and <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a> during development:</p><p><img src="https://beta.tinybase.org/shots/inspector-solid-demo.png" alt="Inspector (Solid)" title="Inspector (Solid)"></p><p>A small Solid app can use both modules together:</p>
@@ -217,7 +215,7 @@ import {useCell, Provider} from 'tinybase/ui-react';
 <p>(Sorry about that!)</p><h2 id="we-need-your-help">We need your help</h2><p>We hope you enjoy exploring this early new Svelte support. But we really need feedback on how it works and whether or not you find it easy and idiomatic to work with! Please let us know in the issues, discussions, or on social media. Thanks and good luck!</p><hr><h1 id="v8-0">v8.0</h1><h2 id="object-and-array-types">Object And Array Types</h2><p>This release extends the range of types that a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> or <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> can hold. Previously, TinyBase supported <code>string</code>, <code>number</code>, <code>boolean</code>, and (since v7.0) <code>null</code>. Now you can also store plain JavaScript <strong>objects</strong> and <strong>arrays</strong> directly in a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</p>
 
 ```js
-const store = createStore().setRow('pets', 'fido', {
+store.delTables().setRow('pets', 'fido', {
   species: 'dog',
   traits: {friendly: true, energetic: true},
   vaccinations: ['rabies', 'distemper', 'parvovirus'],
@@ -826,8 +824,6 @@ store.setTables({
     felix: {species: 'cat'},
   },
 });
-const app = document.createElement('div');
-const root = createReactRoot(app);
 root.render(<App store={store} />);
 
 console.log(app.innerHTML);
