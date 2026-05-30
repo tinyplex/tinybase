@@ -1,0 +1,121 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/chart-components-react/">Chart Components (React)</a></li><li><a href="/demos/chart-components-react/linechart/">&lt;LineChart /&gt;</a></li></ul></nav><section class="s1" id="/demos/chart-components-react/linechart/" data-id="&lt;LC"><h1>&lt;LineChart /&gt;</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{background:white;font-family:Inter,sans-serif;margin:0}main{margin:2rem auto;max-width:52rem;padding:0 2rem}.chart{display:block;font-size:12px;height:20rem;width:100%}@media (max-width:40rem){main{padding:0 1rem}}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
+import { jsx } from &quot;https://esm.sh/react@^19.2.6/jsx-runtime&quot;;
+import React from &quot;https://esm.sh/react@^19.2.6&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.6/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.1&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.1/ui-react&quot;;
+import { LineChart } from &quot;https://esm.sh/tinybase@8.5.0-beta.1/ui-react-dom-charts&quot;;
+var App = () =&gt; {
+  const store = useCreateStore(
+    () =&gt; createStore().setTable(&quot;sales&quot;, {
+      jan: { month: &quot;Jan&quot;, order: 1, revenue: 12 },
+      feb: { month: &quot;Feb&quot;, order: 2, revenue: 18 },
+      mar: { month: &quot;Mar&quot;, order: 3, revenue: 15 },
+      apr: { month: &quot;Apr&quot;, order: 4, revenue: 24 },
+      may: { month: &quot;May&quot;, order: 5, revenue: 21 },
+      jun: { month: &quot;Jun&quot;, order: 6, revenue: 28 }
+    })
+  );
+  return jsx(Provider, { store, children: jsx(Body, {}) });
+};
+addEventListener(&quot;load&quot;, () =&gt; createRoot(document.body).render(jsx(App, {})));
+var Body = () =&gt; jsx(&quot;main&quot;, { children: jsx(
+  LineChart,
+  {
+    className: &quot;chart&quot;,
+    tableId: &quot;sales&quot;,
+    xCellId: &quot;month&quot;,
+    yCellId: &quot;revenue&quot;,
+    sortCellId: &quot;order&quot;
+  }
+) });&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we render a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> with the <a href="/api/ui-react-dom-charts/functions/store-components/linechart/"><code>LineChart</code></a> component from the <a href="/api/ui-react-dom-charts/"><code>ui-react-dom-charts</code></a> module.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="punctuation">{</span>
+    <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.1"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.1/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.1/ui-react-dom-charts"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.6/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.6/client"</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+</code></pre><p>We need a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> and the chart component:</p><pre><code><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createRoot<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'react-dom/client'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">,</span> useCreateStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>LineChart<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react-dom-charts'</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-app">The App</h3><p>This top-level component creates a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> and puts it into a Provider context:</p><pre><code><span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'sales'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+      <span class="literal-property">jan</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">month</span><span class="operator">:</span> <span class="string">'Jan'</span><span class="punctuation">,</span> <span class="literal-property">order</span><span class="operator">:</span> <span class="number">1</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">12</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">feb</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">month</span><span class="operator">:</span> <span class="string">'Feb'</span><span class="punctuation">,</span> <span class="literal-property">order</span><span class="operator">:</span> <span class="number">2</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">18</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">mar</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">month</span><span class="operator">:</span> <span class="string">'Mar'</span><span class="punctuation">,</span> <span class="literal-property">order</span><span class="operator">:</span> <span class="number">3</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">15</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">apr</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">month</span><span class="operator">:</span> <span class="string">'Apr'</span><span class="punctuation">,</span> <span class="literal-property">order</span><span class="operator">:</span> <span class="number">4</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">24</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">may</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">month</span><span class="operator">:</span> <span class="string">'May'</span><span class="punctuation">,</span> <span class="literal-property">order</span><span class="operator">:</span> <span class="number">5</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">21</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">jun</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">month</span><span class="operator">:</span> <span class="string">'Jun'</span><span class="punctuation">,</span> <span class="literal-property">order</span><span class="operator">:</span> <span class="number">6</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">28</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span> <span class="attr-name">store</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Body</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+
+<span class="function">addEventListener</span><span class="punctuation">(</span><span class="string">'load'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">createRoot</span><span class="punctuation">(</span>document<span class="punctuation">.</span>body<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App</span></span> <span class="punctuation">/></span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-chart">The Chart</h3><p>The component gets its <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> from Provider context. A table source uses <code>tableId</code>, and the chart reads x and y values from the named Cells:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Body</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>main</span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/linechart/">LineChart</a></span></span>
+      <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>chart<span class="punctuation">"</span></span>
+      <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>sales<span class="punctuation">"</span></span>
+      <span class="attr-name">xCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>month<span class="punctuation">"</span></span>
+      <span class="attr-name">yCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>revenue<span class="punctuation">"</span></span>
+      <span class="attr-name">sortCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>order<span class="punctuation">"</span></span>
+    <span class="punctuation">/></span></span><span class="plain-text">
+  </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>main</span><span class="punctuation">></span></span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><p>(Chart components can also be bound to a <a href="/api/queries/interfaces/queries/queries/"><code>Queries</code></a> <a href="/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a> using a <code>queryId</code> prop instead of a <code>tableId</code> prop.)</p><h3 id="styling">Styling</h3><p>The chart components emit an SVG element. The only required CSS is enough layout to give that SVG a visible size:</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
+  <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">*</span> <span class="punctuation">{</span>
+  <span class="property">box-sizing</span><span class="punctuation">:</span> border<span class="operator">-</span>box<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">main</span> <span class="punctuation">{</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 2rem auto<span class="punctuation">;</span>
+  <span class="property">max-width</span><span class="punctuation">:</span> 52rem<span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> 0 2rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart</span> <span class="punctuation">{</span>
+  <span class="property">display</span><span class="punctuation">:</span> block<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> 12px<span class="punctuation">;</span>
+  <span class="property">height</span><span class="punctuation">:</span> 20rem<span class="punctuation">;</span>
+  <span class="property">width</span><span class="punctuation">:</span> 100%<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="atrule">@media <span class="punctuation">(</span>max-width<span class="punctuation">:</span> 40rem<span class="punctuation">)</span></span> <span class="punctuation">{</span>
+  <span class="selector">main</span> <span class="punctuation">{</span>
+    <span class="property">padding</span><span class="punctuation">:</span> 0 1rem<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+</code></pre><p>This produces a functional chart using the component&#x27;s default SVG styles.</p><p>Let&#x27;s move on to the Styled Chart (React) demo to see how the same chart can be customized with CSS.</p></section>

@@ -1,0 +1,97 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/chart-components-react/">Chart Components (React)</a></li><li><a href="/demos/chart-components-react/linechart-styled/">&lt;LineChart /&gt; (Styled)</a></li></ul></nav><section class="s1" id="/demos/chart-components-react/linechart-styled/" data-id="&lt;LCS"><h1>&lt;LineChart /&gt; (Styled)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{background:white;font-family:Inter,sans-serif;margin:0}main{margin:2rem auto;max-width:52rem;padding:0 2rem}.chart{background:#f6f8fb;border:1px solid #d9e2ec;border-radius:.5rem;box-shadow:0 .75rem 2rem #26364a1a;color:#1f2937;display:block;font-size:12px;height:20rem;padding:1rem;width:100%}@media (max-width:40rem){main{padding:0 1rem}}.chart .grid{color:#d8e1eb;stroke-dasharray:4 6}.chart .axes{color:#677489}.chart .axes .title{fill:#1f2937;font-weight:700}.chart .plot .area{fill:#0ea5e9;fill-opacity:.12}.chart .plot .line{stroke:#0284c7;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-width:3}.chart .points{fill:white;stroke:#0284c7;stroke-width:2}.chart .tooltip-lines{stroke:#0284c7;stroke-dasharray:3 3;stroke-opacity:.35}.chart .tooltip rect{fill:#172033;fill-opacity:.92}.chart .tooltip text{fill:white}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
+import { jsx } from &quot;https://esm.sh/react@^19.2.6/jsx-runtime&quot;;
+import React from &quot;https://esm.sh/react@^19.2.6&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.6/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.1&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.1/ui-react&quot;;
+import { LineChart } from &quot;https://esm.sh/tinybase@8.5.0-beta.1/ui-react-dom-charts&quot;;
+var App = () =&gt; {
+  const store = useCreateStore(
+    () =&gt; createStore().setTable(&quot;sales&quot;, {
+      jan: { month: &quot;Jan&quot;, order: 1, revenue: 12 },
+      feb: { month: &quot;Feb&quot;, order: 2, revenue: 18 },
+      mar: { month: &quot;Mar&quot;, order: 3, revenue: 15 },
+      apr: { month: &quot;Apr&quot;, order: 4, revenue: 24 },
+      may: { month: &quot;May&quot;, order: 5, revenue: 21 },
+      jun: { month: &quot;Jun&quot;, order: 6, revenue: 28 }
+    })
+  );
+  return jsx(Provider, { store, children: jsx(Body, {}) });
+};
+addEventListener(&quot;load&quot;, () =&gt; createRoot(document.body).render(jsx(App, {})));
+var Body = () =&gt; jsx(&quot;main&quot;, { children: jsx(
+  LineChart,
+  {
+    className: &quot;chart&quot;,
+    tableId: &quot;sales&quot;,
+    xCellId: &quot;month&quot;,
+    yCellId: &quot;revenue&quot;,
+    sortCellId: &quot;order&quot;
+  }
+) });&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we apply CSS to a LineChart to show how all its visual aspects can be styled.</p><p>Rather than building the whole demo and boilerplate from scratch, we&#x27;re making changes to the <a href="/demos/chart-components-react/linechart/">&lt;LineChart /&gt;</a> demo to show how the SVG output can be customized.</p><h3 id="styling-the-chart-frame">Styling The Chart Frame</h3><p>First, we make the page feel a little more like a focused data panel:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="selector">.chart</span> <span class="punctuation">{</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="property">background</span><span class="punctuation">:</span> #f6f8fb<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">border</span><span class="punctuation">:</span> 1px solid #d9e2ec<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">border-radius</span><span class="punctuation">:</span> 0.5rem<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">box-shadow</span><span class="punctuation">:</span> 0 0.75rem 2rem #26364a1a<span class="punctuation">;</span>
+<span class="prefix">+</span>  <span class="property">color</span><span class="punctuation">:</span> #1f2937<span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span>  <span class="property">display</span><span class="punctuation">:</span> block<span class="punctuation">;</span>
+<span class="prefix"> </span>  <span class="property">font-size</span><span class="punctuation">:</span> 12px<span class="punctuation">;</span>
+<span class="prefix"> </span>  <span class="property">height</span><span class="punctuation">:</span> 20rem<span class="punctuation">;</span>
+</span><span class="inserted-sign"><span class="prefix">+</span>  <span class="property">padding</span><span class="punctuation">:</span> 1rem<span class="punctuation">;</span>
+</span><span class="unchanged"><span class="prefix"> </span>  <span class="property">width</span><span class="punctuation">:</span> 100%<span class="punctuation">;</span>
+<span class="prefix"> </span><span class="punctuation">}</span>
+</span></code></pre><h3 id="styling-axes-and-grid-lines">Styling Axes And Grid Lines</h3><p>Chart components use <code>currentColor</code> by default, so setting <code>color</code> on the chart affects most of the SVG. More specific selectors can then tune grid lines, axes, tick labels, and axis titles:</p><pre><code><span class="selector">.chart .grid</span> <span class="punctuation">{</span>
+  <span class="property">color</span><span class="punctuation">:</span> #d8e1eb<span class="punctuation">;</span>
+  <span class="property">stroke-dasharray</span><span class="punctuation">:</span> 4 6<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart .axes</span> <span class="punctuation">{</span>
+  <span class="property">color</span><span class="punctuation">:</span> #677489<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart .axes .title</span> <span class="punctuation">{</span>
+  <span class="property">fill</span><span class="punctuation">:</span> #1f2937<span class="punctuation">;</span>
+  <span class="property">font-weight</span><span class="punctuation">:</span> 700<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+</code></pre><h3 id="styling-the-data">Styling The Data</h3><p>The plotted data also uses regular SVG class names. For a line chart, that means we can style the filled area, line, and point markers independently:</p><pre><code><span class="selector">.chart .plot .area</span> <span class="punctuation">{</span>
+  <span class="property">fill</span><span class="punctuation">:</span> #0ea5e9<span class="punctuation">;</span>
+  <span class="property">fill-opacity</span><span class="punctuation">:</span> 0.12<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart .plot .line</span> <span class="punctuation">{</span>
+  <span class="property">stroke</span><span class="punctuation">:</span> #0284c7<span class="punctuation">;</span>
+  <span class="property">stroke-linecap</span><span class="punctuation">:</span> round<span class="punctuation">;</span>
+  <span class="property">stroke-linejoin</span><span class="punctuation">:</span> round<span class="punctuation">;</span>
+  <span class="property">stroke-opacity</span><span class="punctuation">:</span> 1<span class="punctuation">;</span>
+  <span class="property">stroke-width</span><span class="punctuation">:</span> 3<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart .points</span> <span class="punctuation">{</span>
+  <span class="property">fill</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+  <span class="property">stroke</span><span class="punctuation">:</span> #0284c7<span class="punctuation">;</span>
+  <span class="property">stroke-width</span><span class="punctuation">:</span> 2<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+</code></pre><h3 id="styling-the-tooltip">Styling The Tooltip</h3><p>Hover over points in the chart and a tooltip appears. That is just more SVG, and can be styled too:</p><pre><code><span class="selector">.chart .tooltip-lines</span> <span class="punctuation">{</span>
+  <span class="property">stroke</span><span class="punctuation">:</span> #0284c7<span class="punctuation">;</span>
+  <span class="property">stroke-dasharray</span><span class="punctuation">:</span> 3 3<span class="punctuation">;</span>
+  <span class="property">stroke-opacity</span><span class="punctuation">:</span> 0.35<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart .tooltip rect</span> <span class="punctuation">{</span>
+  <span class="property">fill</span><span class="punctuation">:</span> #172033<span class="punctuation">;</span>
+  <span class="property">fill-opacity</span><span class="punctuation">:</span> 0.92<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart .tooltip text</span> <span class="punctuation">{</span>
+  <span class="property">fill</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+</code></pre><p>And that&#x27;s a styled chart with no additional chart props. The component handles reactive data and geometry, while CSS handles the presentation.</p></section>
