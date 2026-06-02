@@ -145,6 +145,96 @@
   /// ChartBindingProps.limit
 }
 /**
+ * The ChartSeriesProps type describes the props that bind a chart series to
+ * Cell values in TinyBase data.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// ChartSeriesProps
+{
+  /**
+   * The Id of the Cell that provides each data point's x value.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.xCellId
+  /**
+   * The Id of the Cell that provides each data point's y value.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.yCellId
+  /**
+   * The Id of the Cell used to sort the charted rows.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.sortCellId
+  /**
+   * Whether the charted rows should be sorted in descending order.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.descending
+  /**
+   * The number of sorted rows to skip before charting.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.offset
+  /**
+   * The maximum number of sorted rows to chart.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.limit
+}
+/**
+ * The CartesianChart component renders a chart frame and provides TinyBase
+ * data to child series components.
+ * @category Store components
+ * @since v8.5.0
+ * @example
+ * This example creates a Store and renders two LineSeries components in a
+ * CartesianChart.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {CartesianChart, LineSeries} from 'tinybase/ui-react-dom-charts';
+ *
+ * const store = createStore().setTable('pets', {
+ *   hamsters: {order: 1, sold: 12, returned: 1},
+ *   rabbits: {order: 2, sold: 9, returned: 2},
+ * });
+ * const App = () => (
+ *   <CartesianChart store={store} tableId="pets">
+ *     <LineSeries xCellId="order" yCellId="sold" />
+ *     <LineSeries xCellId="order" yCellId="returned" />
+ *   </CartesianChart>
+ * );
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ * console.log(app.firstChild?.nodeName.toLowerCase());
+ * // -> 'svg'
+ * ```
+ */
+/// CartesianChart
+/**
+ * The LineSeries component renders a line series in a CartesianChart
+ * component.
+ * @category Store components
+ * @since v8.5.0
+ */
+/// LineSeries
+/**
+ * The BarSeries component renders a bar series in a CartesianChart component.
+ * @category Store components
+ * @since v8.5.0
+ */
+/// BarSeries
+/**
  * The LineChart component renders a line chart from TinyBase data.
  * @category Store components
  * @since v8.5.0

@@ -1,4 +1,5 @@
 /// ui-react-dom-charts
+import type {ReactNode} from 'react';
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
@@ -66,6 +67,22 @@ export type ChartBindingProps<CellId extends Id = Id> = {
   readonly limit?: number;
 };
 
+/// ChartSeriesProps
+export type ChartSeriesProps<CellId extends Id = Id> = {
+  /// ChartSeriesProps.xCellId
+  readonly xCellId: CellId;
+  /// ChartSeriesProps.yCellId
+  readonly yCellId: CellId;
+  /// ChartSeriesProps.sortCellId
+  readonly sortCellId?: CellId;
+  /// ChartSeriesProps.descending
+  readonly descending?: boolean;
+  /// ChartSeriesProps.offset
+  readonly offset?: number;
+  /// ChartSeriesProps.limit
+  readonly limit?: number;
+};
+
 type ChartTableBindingProps<
   Schemas extends OptionalSchemas,
   TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
@@ -80,6 +97,24 @@ type ChartTableBindingProps<
 
 /// WithSchemas
 export type WithSchemas<Schemas extends OptionalSchemas> = {
+  /// CartesianChart
+  CartesianChart: {
+    (
+      props: ChartTableSourceProps<Schemas> &
+        ChartProps & {readonly children?: ReactNode},
+    ): ComponentReturnType;
+    (
+      props: ChartQuerySourceProps<Schemas> &
+        ChartProps & {readonly children?: ReactNode},
+    ): ComponentReturnType;
+  };
+
+  /// LineSeries
+  LineSeries: (props: ChartSeriesProps) => ComponentReturnType;
+
+  /// BarSeries
+  BarSeries: (props: ChartSeriesProps) => ComponentReturnType;
+
   /// LineChart
   LineChart: (
     props:

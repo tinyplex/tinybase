@@ -1,4 +1,5 @@
 /// ui-react-dom-charts
+import type {ReactNode} from 'react';
 import type {Id} from '../common/index.d.ts';
 import type {
   ComponentReturnType,
@@ -51,6 +52,34 @@ export type ChartBindingProps = {
   /// ChartBindingProps.limit
   readonly limit?: number;
 };
+
+/// ChartSeriesProps
+export type ChartSeriesProps = {
+  /// ChartSeriesProps.xCellId
+  readonly xCellId: Id;
+  /// ChartSeriesProps.yCellId
+  readonly yCellId: Id;
+  /// ChartSeriesProps.sortCellId
+  readonly sortCellId?: Id;
+  /// ChartSeriesProps.descending
+  readonly descending?: boolean;
+  /// ChartSeriesProps.offset
+  readonly offset?: number;
+  /// ChartSeriesProps.limit
+  readonly limit?: number;
+};
+
+/// CartesianChart
+export function CartesianChart(
+  props: (ChartTableSourceProps | ChartQuerySourceProps) &
+    ChartProps & {readonly children?: ReactNode},
+): ComponentReturnType;
+
+/// LineSeries
+export function LineSeries(props: ChartSeriesProps): ComponentReturnType;
+
+/// BarSeries
+export function BarSeries(props: ChartSeriesProps): ComponentReturnType;
 
 /// LineChart
 export function LineChart(
