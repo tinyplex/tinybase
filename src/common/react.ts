@@ -7,8 +7,11 @@ import {IdObj} from './obj.ts';
 import {isUndefined} from './other.ts';
 
 export const {
+  Children,
+  Fragment,
   PureComponent,
   createContext,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
