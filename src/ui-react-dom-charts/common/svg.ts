@@ -15,6 +15,10 @@ const DEFAULT_STYLE: Style = [0.5, 0.5, 0.25, 3.5, 4, 1, 1];
 
 export const useLayout = (): RefAndLayout => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const chartLayoutRef = useRef<readonly [Size, Style]>([
+    DEFAULT_SIZE,
+    getDefaultStyle(DEFAULT_FONT_SIZE),
+  ]);
   const [chartLayout, setChartLayout] = useState<readonly [Size, Style]>([
     DEFAULT_SIZE,
     getDefaultStyle(DEFAULT_FONT_SIZE),
@@ -29,9 +33,10 @@ export const useLayout = (): RefAndLayout => {
     const updateLayout = ({contentRect}: ResizeObserverEntry) => {
       const style = svg.ownerDocument.defaultView?.getComputedStyle(svg);
       const nextLayout = [getSvgSize(contentRect), getStyle(style)] as const;
-      setChartLayout((chartLayout) =>
-        isLayoutEqual(chartLayout, nextLayout) ? chartLayout : nextLayout,
-      );
+      if (!isLayoutEqual(chartLayoutRef.current, nextLayout)) {
+        chartLayoutRef.current = nextLayout;
+        setChartLayout(nextLayout);
+      }
     };
 
     const observer = new ResizeObserver(([entry]) => updateLayout(entry));

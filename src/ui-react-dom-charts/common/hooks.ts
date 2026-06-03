@@ -1,3 +1,4 @@
+import type {Id} from '../../@types/common/index.d.ts';
 import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
 import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import {useCallback, useState} from '../../common/react.ts';
@@ -17,6 +18,8 @@ export const useData = (
   rowIds: string[],
   chartSize: Size,
   labelSize: number,
+  xCellId: Id,
+  yCellId: Id,
   getXCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
   getYCell: (rowId: string) => CellOrUndefined | ResultCellOrUndefined,
 ) => {
@@ -32,7 +35,15 @@ export const useData = (
 
   return [
     handleChange,
-    getScaledPoints(kind, points, bounds, chartSize),
+    getScaledPoints(
+      kind,
+      points,
+      bounds,
+      chartSize,
+      undefined,
+      xCellId,
+      yCellId,
+    ),
     bounds,
     xTicks,
     yTicks,

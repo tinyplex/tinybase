@@ -1,10 +1,13 @@
+import type {Id} from '../../@types/common/index.d.ts';
 import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
 import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import {
   arrayFilter,
   arrayForEach,
+  arrayHas,
   arrayIsEmpty,
   arrayMap,
+  arrayPush,
 } from '../../common/array.ts';
 import {collSize} from '../../common/coll.ts';
 import {
@@ -22,15 +25,17 @@ import {
 import type {
   Bounds,
   DataPoint,
+  Domain,
+  DomainState,
   Kind,
   ScaledPoint,
+  SeriesSummary,
   Size,
   Ticks,
   XValue,
 } from './types.ts';
 import {getTicks} from './wilkinson.ts';
 
-type Domain = readonly [min: number, max: number];
 const TARGET_TICKS = 10;
 
 export const getDataPoints = (
@@ -60,6 +65,9 @@ export const getScaledPoints = (
   points: DataPoint[],
   [xMin, xMax, yMin, yMax]: Bounds,
   [width, height]: Size,
+  xValues?: XValue[],
+  xTitle?: Id,
+  yTitle?: Id,
 ): ScaledPoint[] => {
   const numericX =
     kind == 'line' &&
@@ -68,11 +76,14 @@ export const getScaledPoints = (
   const yDomain: Domain = [yMin ?? 0, yMax ?? 0];
   const xCategories = new Map<XValue, number>();
 
-  arrayForEach(points, ([, xValue]) => {
-    if (!xCategories.has(xValue)) {
-      xCategories.set(xValue, collSize(xCategories));
-    }
-  });
+  arrayForEach(
+    xValues ?? arrayMap(points, ([, xValue]) => xValue),
+    (xValue) => {
+      if (!xCategories.has(xValue)) {
+        xCategories.set(xValue, collSize(xCategories));
+      }
+    },
+  );
 
   return arrayMap(points, ([rowId, xValue, yValue]) => [
     rowId,
@@ -80,6 +91,8 @@ export const getScaledPoints = (
     yValue,
     getX(xValue, numericX, xDomain, xCategories, width, kind),
     getY(yValue, yDomain, height),
+    xTitle,
+    yTitle,
   ]);
 };
 
@@ -181,6 +194,71 @@ export const getTickBounds = (
     ? yMax
     : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1]),
 ];
+
+export const getSeriesSummary = (
+  kind: Kind,
+  points: DataPoint[],
+  xCellId?: Id,
+  yCellId?: Id,
+): SeriesSummary => {
+  const [xMin, xMax, yMin, yMax] = getBounds(kind, points);
+  const xValues: XValue[] = [];
+  const continuousX =
+    kind == 'line' &&
+    arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
+
+  arrayForEach(points, ([, xValue]) => {
+    if (!arrayHas(xValues, xValue)) {
+      arrayPush(xValues, xValue);
+    }
+  });
+
+  return {continuousX, xCellId, xMin, xMax, yMin, yMax, yCellId, xValues};
+};
+
+export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
+  const xValues: XValue[] = [];
+  const xMins: number[] = [];
+  const xMaxs: number[] = [];
+  const yMins: number[] = [];
+  const yMaxs: number[] = [];
+  let continuousX = true;
+  let xMin: XValue | undefined;
+  let xMax: XValue | undefined;
+
+  arrayForEach(summaries, (summary) => {
+    continuousX &&= summary.continuousX;
+    arrayForEach(summary.xValues, (xValue) => {
+      if (!arrayHas(xValues, xValue)) {
+        arrayPush(xValues, xValue);
+      }
+    });
+    if (isNumber(summary.xMin) && isNumber(summary.xMax)) {
+      xMins.push(summary.xMin);
+      xMaxs.push(summary.xMax);
+    } else {
+      xMin ??= summary.xMin;
+      xMax = summary.xMax ?? xMax;
+    }
+    if (!isUndefined(summary.yMin)) {
+      yMins.push(summary.yMin);
+    }
+    if (!isUndefined(summary.yMax)) {
+      yMaxs.push(summary.yMax);
+    }
+  });
+
+  return {
+    bounds: [
+      arrayIsEmpty(xMins) ? xMin : mathMin(...xMins),
+      arrayIsEmpty(xMaxs) ? xMax : mathMax(...xMaxs),
+      arrayIsEmpty(yMins) ? undefined : mathMin(...yMins),
+      arrayIsEmpty(yMaxs) ? undefined : mathMax(...yMaxs),
+    ],
+    continuousX: !arrayIsEmpty(summaries) && continuousX,
+    xValues,
+  };
+};
 
 export const getYDomain = (
   points: (DataPoint | ScaledPoint)[],
