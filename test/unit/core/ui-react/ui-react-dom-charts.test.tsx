@@ -1,8 +1,14 @@
-import {render} from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 import {act} from 'react';
 import {createQueries, createStore} from 'tinybase';
 import {Provider} from 'tinybase/ui-react';
-import {BarChart, LineChart} from 'tinybase/ui-react-dom-charts';
+import {
+  BarChart,
+  BarSeries,
+  CartesianChart,
+  LineChart,
+  LineSeries,
+} from 'tinybase/ui-react-dom-charts';
 import {describe, expect, test} from 'vitest';
 
 const CHARTS = [
@@ -226,6 +232,119 @@ describe.each(CHARTS)('%s', (_chartName, Chart) => {
     const {container, unmount} = render(<Chart {...props} />);
 
     expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
+  });
+});
+
+describe('CartesianChart', () => {
+  test('renders a LineSeries from Table props', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y: 3},
+      r2: {x: 2, y: 5},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <LineSeries xCellId="x" yCellId="y" />
+      </CartesianChart>,
+    );
+
+    expect(container.querySelectorAll('.plot .line')).toHaveLength(1);
+    expect(container.querySelectorAll('.plot circle')).toHaveLength(2);
+    expect(container.innerHTML).toContain('>y<');
+
+    unmount();
+  });
+
+  test('ignores non-series children', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y: 3},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <span>Ignored</span>
+        <>
+          <span>Also ignored</span>
+          <LineSeries xCellId="x" yCellId="y" />
+        </>
+      </CartesianChart>,
+    );
+
+    expect(container.querySelector('span')).toBeNull();
+    expect(container.querySelectorAll('.plot .line')).toHaveLength(1);
+
+    unmount();
+  });
+
+  test('renders multiple LineSeries with shared bounds', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y1: 3, y2: 8},
+      r2: {x: 2, y1: 5, y2: 6},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <LineSeries xCellId="x" yCellId="y1" />
+        <LineSeries xCellId="x" yCellId="y2" />
+      </CartesianChart>,
+    );
+
+    expect(container.querySelectorAll('.plot .line')).toHaveLength(2);
+    expect(container.innerHTML).toContain('>8<');
+    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+
+    act(() => store.setCell('t1', 'r1', 'y2', 4));
+
+    expect(container.innerHTML).not.toContain('>8<');
+    expect(container.innerHTML).toContain('>5<');
+
+    unmount();
+  });
+
+  test('renders a BarSeries from Query props', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y: 3},
+      r2: {x: 2, y: 5},
+    });
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('x');
+        select('y');
+      },
+    );
+    const {container, unmount} = render(
+      <CartesianChart queries={queries} queryId="q1">
+        <BarSeries xCellId="x" yCellId="y" />
+      </CartesianChart>,
+    );
+
+    expect(container.querySelectorAll('.plot .bar')).toHaveLength(2);
+
+    unmount();
+  });
+
+  test('renders multiple BarSeries side-by-side', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 'a', y1: 3, y2: 4},
+      r2: {x: 'b', y1: 5, y2: 6},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <BarSeries xCellId="x" yCellId="y1" />
+        <BarSeries xCellId="x" yCellId="y2" />
+      </CartesianChart>,
+    );
+    const bars = container.querySelectorAll('.bar');
+
+    expect(bars).toHaveLength(4);
+    expect(bars[0].getAttribute('x')).not.toEqual(bars[2].getAttribute('x'));
+    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+
+    fireEvent.pointerEnter(bars[2].parentElement as Element);
+
+    expect(container.innerHTML).toContain('>y2: 4<');
+    expect(container.innerHTML).not.toContain('>y1 &amp; y2: 4<');
 
     unmount();
   });
