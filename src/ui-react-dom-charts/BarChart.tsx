@@ -1,6 +1,41 @@
 import type {BarChart as BarChartDecl} from '../@types/ui-react-dom-charts/index.d.ts';
-import {Chart} from './components/Chart.tsx';
+import {BarSeries} from './BarSeries.tsx';
+import {CartesianChart} from './components/CartesianChart.tsx';
+import {useInitialSeriesSummary} from './components/summary.ts';
 
-export const BarChart: typeof BarChartDecl = (props) => (
-  <Chart {...props} kind="bar" />
-);
+type BarChartProps = Parameters<typeof BarChartDecl>[0];
+
+export const BarChart: typeof BarChartDecl = (props) => {
+  const initialSummary = useInitialSeriesSummary('bar', props);
+
+  return (
+    <CartesianChart {...getSourceProps(props)} initialSummary={initialSummary}>
+      <BarSeries {...getSeriesProps(props)} />
+    </CartesianChart>
+  );
+};
+
+const getSourceProps = (props: BarChartProps) =>
+  props.tableId == null
+    ? {
+        className: props.className,
+        queries: props.queries,
+        queryId: props.queryId,
+      }
+    : {className: props.className, store: props.store, tableId: props.tableId};
+
+const getSeriesProps = ({
+  descending,
+  limit,
+  offset,
+  sortCellId,
+  xCellId,
+  yCellId,
+}: BarChartProps) => ({
+  descending,
+  limit,
+  offset,
+  sortCellId,
+  xCellId,
+  yCellId,
+});
