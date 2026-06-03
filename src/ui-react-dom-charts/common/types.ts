@@ -1,15 +1,38 @@
 import type {RefObject} from 'react';
+import type {Id} from '../../@types/common/index.d.ts';
 
 export const CURRENT_COLOR = 'currentColor';
 
 export type Kind = 'bar' | 'line';
-export type ScaledPoint = readonly [...DataPoint, x: number, y: number];
+export type ScaledPoint = readonly [
+  ...DataPoint,
+  x: number,
+  y: number,
+  xTitle?: Id,
+  yTitle?: Id,
+];
 export type Bounds = readonly [
   xMin?: XValue,
   xMax?: XValue,
   yMin?: number,
   yMax?: number,
 ];
+export type Domain = readonly [min: number, max: number];
+export type SeriesSummary = {
+  readonly continuousX: boolean;
+  readonly xCellId?: Id;
+  readonly xMin?: XValue;
+  readonly xMax?: XValue;
+  readonly yMin?: number;
+  readonly yMax?: number;
+  readonly yCellId?: Id;
+  readonly xValues: XValue[];
+};
+export type DomainState = {
+  readonly bounds: Bounds;
+  readonly continuousX: boolean;
+  readonly xValues: XValue[];
+};
 export type Style = readonly [
   tickSize: number,
   tickGap: number,
