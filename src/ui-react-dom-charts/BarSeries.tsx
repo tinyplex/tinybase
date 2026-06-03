@@ -4,22 +4,44 @@ import type {
 } from '../@types/ui-react-dom-charts/index.d.ts';
 import {useLayoutEffect} from '../common/react.ts';
 import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
+import {getScaledPoints, getSeriesSummary} from './common/data.ts';
 import {Bars} from './components/Bars.tsx';
-import {useSeries} from './components/series.ts';
+import {useSeriesData} from './components/series.ts';
 
 export const BarSeries = ((props: ChartSeriesProps) => {
   const {
     barSeriesCount,
-    bounds: [, , yMin, yMax],
+    bounds,
     getBarSeriesIndex,
     layout: [, , [, , barGap]],
     plotFrame,
+    plotSize,
     registerBarSeries,
     releaseBarSeries,
+    setSeriesSummary,
     setTooltipPoint,
+    xValues,
   } = useCartesianChartContext();
-  const [seriesId, points] = useSeries('bar', props);
+  const {xCellId, yCellId} = props;
+  const [seriesId, rawPoints] = useSeriesData(props);
   const barSeriesIndex = getBarSeriesIndex(seriesId);
+  const [, , yMin, yMax] = bounds;
+  const points = getScaledPoints(
+    'bar',
+    rawPoints,
+    bounds,
+    plotSize,
+    xValues,
+    xCellId,
+    yCellId,
+  );
+
+  useLayoutEffect(() => {
+    setSeriesSummary(
+      seriesId,
+      getSeriesSummary('bar', rawPoints, xCellId, yCellId),
+    );
+  });
 
   useLayoutEffect(() => {
     registerBarSeries(seriesId);

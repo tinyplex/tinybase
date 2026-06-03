@@ -10,36 +10,31 @@ import {
   useSortedRowIds,
 } from '../../ui-react/index.ts';
 import {useCartesianChartContext} from '../common/context.ts';
-import {
-  getDataPoint,
-  getDataPoints,
-  getScaledPoints,
-  getSeriesSummary,
-} from '../common/data.ts';
-import type {Kind, ScaledPoint} from '../common/types.ts';
+import {getDataPoint, getDataPoints} from '../common/data.ts';
+import type {DataPoint} from '../common/types.ts';
 
 const EMPTY_ID = '';
 
-export const useSeries = (
-  kind: Kind,
-  {descending, limit, offset, sortCellId, xCellId, yCellId}: ChartSeriesProps,
-): readonly [Id, ScaledPoint[]] => {
+export const useSeriesData = ({
+  descending,
+  limit,
+  offset,
+  sortCellId,
+  xCellId,
+  yCellId,
+}: ChartSeriesProps): readonly [Id, DataPoint[]] => {
   const [, rerender] = useState<[]>();
   const context = useCartesianChartContext();
   const {
-    bounds,
     getSeriesId,
-    plotSize,
     queries,
     queriesOrQueriesId,
     queryId,
     releaseSeriesId,
-    setSeriesSummary,
     sourceType,
     store,
     storeOrStoreId,
     tableId,
-    xValues,
   } = context;
   const [seriesId] = useState(getSeriesId);
   const handleChange = useCallback(() => rerender([]), [rerender]);
@@ -122,21 +117,12 @@ export const useSeries = (
     queriesOrQueriesId,
   );
 
-  useLayoutEffect(() => {
-    setSeriesSummary(
-      seriesId,
-      getSeriesSummary(kind, points, xCellId, yCellId),
-    );
-  });
   useLayoutEffect(
     () => () => releaseSeriesId(seriesId),
     [releaseSeriesId, seriesId],
   );
 
-  return [
-    seriesId,
-    getScaledPoints(kind, points, bounds, plotSize, xValues, xCellId, yCellId),
-  ];
+  return [seriesId, points];
 };
 
 const getCell = (
