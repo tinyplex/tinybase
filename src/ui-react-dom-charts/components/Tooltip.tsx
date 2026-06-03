@@ -27,7 +27,7 @@ export const Tooltip = ({
     return null;
   }
 
-  const [, xValue, yValue, x, y] = point;
+  const [, xValue, yValue, x, y, pointXTitle, pointYTitle] = point;
   const [plotX, plotY] = plotFrame;
   const tooltipX =
     x + TOOLTIP_GAP + TOOLTIP_WIDTH > width
@@ -60,10 +60,10 @@ export const Tooltip = ({
           rx={4}
         />
         <text x={TOOLTIP_PADDING} y={22}>
-          {xTitle}: {xValue}
+          {pointXTitle ?? xTitle}: {xValue}
         </text>
         <text x={TOOLTIP_PADDING} y={46}>
-          {yTitle}: {yValue}
+          {pointYTitle ?? yTitle}: {yValue}
         </text>
       </g>
     </>

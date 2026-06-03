@@ -45,6 +45,8 @@ export const TableChart = ({
     rowIds,
     getPlotSize(layout),
     getLabelSize(layout),
+    xCellId,
+    yCellId,
     (rowId) => store?.getCell(tableId, rowId, xCellId),
     (rowId) => store?.getCell(tableId, rowId, yCellId),
   );

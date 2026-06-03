@@ -33,6 +33,8 @@ export const Plot = ({
           {...sharedProps}
           plotFrame={plotFrame}
           barGap={barGap}
+          barSeriesCount={1}
+          barSeriesIndex={0}
           yMin={yMin}
           yMax={yMax}
         />

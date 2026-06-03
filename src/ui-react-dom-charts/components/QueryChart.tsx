@@ -45,6 +45,8 @@ export const QueryChart = ({
     rowIds,
     getPlotSize(layout),
     getLabelSize(layout),
+    xCellId,
+    yCellId,
     (rowId) => queries?.getResultCell(queryId, rowId, xCellId),
     (rowId) => queries?.getResultCell(queryId, rowId, yCellId),
   );
