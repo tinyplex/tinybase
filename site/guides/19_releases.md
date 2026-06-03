@@ -27,11 +27,11 @@ import {createRoot as createReactRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
 import {LineChart} from 'tinybase/ui-react-dom-charts';
 
-const store = createStore();
+const chartStore = createStore();
 const app = document.createElement('div');
 const root = createReactRoot(app);
 
-store.setTable('sales', {
+chartStore.setTable('sales', {
   jan: {month: 'Jan', order: 1, revenue: 12},
   feb: {month: 'Feb', order: 2, revenue: 18},
   mar: {month: 'Mar', order: 3, revenue: 15},
@@ -40,7 +40,7 @@ store.setTable('sales', {
 const MyChart = () => (
   <LineChart
     tableId="sales"
-    store={store}
+    store={chartStore}
     xCellId="month"
     yCellId="revenue"
     sortCellId="order"
@@ -435,6 +435,8 @@ Previously, TinyBase supported `string`, `number`, `boolean`, and (since v7.0)
 directly in a Store.
 
 ```js
+const store = createStore();
+
 store.delTables().setRow('pets', 'fido', {
   species: 'dog',
   traits: {friendly: true, energetic: true},
