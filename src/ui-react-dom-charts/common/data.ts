@@ -66,8 +66,8 @@ export const getScaledPoints = (
   [xMin, xMax, yMin, yMax]: Bounds,
   [width, height]: Size,
   xValues?: XValue[],
-  xTitle?: Id,
-  yTitle?: Id,
+  xTitle?: string,
+  yTitle?: string,
 ): ScaledPoint[] => {
   const numericX =
     kind == 'line' &&
@@ -200,6 +200,7 @@ export const getSeriesSummary = (
   points: DataPoint[],
   xCellId?: Id,
   yCellId?: Id,
+  yLabel?: string,
 ): SeriesSummary => {
   const [xMin, xMax, yMin, yMax] = getBounds(kind, points);
   const xValues: XValue[] = [];
@@ -213,7 +214,17 @@ export const getSeriesSummary = (
     }
   });
 
-  return {continuousX, xCellId, xMin, xMax, yMin, yMax, yCellId, xValues};
+  return {
+    continuousX,
+    xCellId,
+    xMin,
+    xMax,
+    yMin,
+    yMax,
+    yCellId,
+    yLabel,
+    xValues,
+  };
 };
 
 export const getDomainState = (summaries: SeriesSummary[]): DomainState => {

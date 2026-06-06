@@ -52,6 +52,28 @@ const _App = () => {
     xCellId: 'c1',
     yCellId: 'c1d',
   });
+  LineChart({
+    // !
+    tableId: 't',
+    queryId: 'q',
+    xCellId: 'x',
+    yCellId: 'y',
+  });
+  BarChart({
+    // !
+    queryId: 'q',
+    tableId: 't',
+    xCellId: 'x',
+    yCellId: 'y',
+  });
+  LineChart({
+    tableId: 't',
+    xCellId: 'x',
+    yCellId: 'y',
+    xDomain: [0, 1], // !
+  });
+  CartesianChart({tableId: 't', xCellId: 'x'}); // !
+  CartesianChart({tableId: 't', xDomain: [0, 1]}); // !
 
   return (
     <>
@@ -59,25 +81,10 @@ const _App = () => {
       <BarChart queryId="q1" xCellId="c1" yCellId="c1d" />
       <CartesianChart tableId="t1">
         <span />
-        <LineSeries xCellId="c1" yCellId="c1d" />
+        <LineSeries className="sold" label="Sold" xCellId="c1" yCellId="c1d" />
       </CartesianChart>
       <LineSeries yCellId="c1d" /> {/* ! */}
       <LineSeries tableId="t1" xCellId="c1" yCellId="c1d" /> {/* ! */}
-      {/* eslint-disable max-len */}
-      <LineChart
-        className="// !"
-        tableId="t1"
-        queryId="q1"
-        xCellId="c1"
-        yCellId="c1d"
-      />
-      {/* prettier-ignore */}
-      <BarChart className="// !" queryId="q1" tableId="t1" xCellId="c1" yCellId="c1d" />
-      {/* prettier-ignore */}
-      <LineChart className="// !" tableId="t1" xCellId="c1" yCellId="c1d" xDomain={[0, 1]} />
-      {/* prettier-ignore */}
-      <CartesianChart className="// !" tableId="t1" xCellId="c1" xDomain={[0, 1]} />
-      {/* eslint-enable max-len */}
       {/*
     
     */}
@@ -93,10 +100,20 @@ const _App = () => {
         className="sales"
       />
       <CartesianChartWithSchemas tableId="t1">
-        <LineSeriesWithSchemas xCellId="c1" yCellId="c1d" />
+        <LineSeriesWithSchemas
+          className="sold"
+          label="Sold"
+          xCellId="c1"
+          yCellId="c1d"
+        />
       </CartesianChartWithSchemas>
       <CartesianChartWithSchemas queryId="q1">
-        <BarSeriesWithSchemas xCellId="c1" yCellId="c1d" />
+        <BarSeriesWithSchemas
+          className="sold"
+          label="Sold"
+          xCellId="c1"
+          yCellId="c1d"
+        />
       </CartesianChartWithSchemas>
       <LineSeriesWithSchemas xCellId="c1" yCellId="c2" />
       <LineSeriesWithSchemas tableId="t1" xCellId="c1" yCellId="c1" /> {/* ! */}

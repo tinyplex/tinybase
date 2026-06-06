@@ -69,10 +69,14 @@ export type ChartBindingProps<CellId extends Id = Id> = {
 
 /// ChartSeriesProps
 export type ChartSeriesProps<CellId extends Id = Id> = {
+  /// ChartSeriesProps.className
+  readonly className?: string;
   /// ChartSeriesProps.xCellId
   readonly xCellId: CellId;
   /// ChartSeriesProps.yCellId
   readonly yCellId: CellId;
+  /// ChartSeriesProps.label
+  readonly label?: string;
   /// ChartSeriesProps.sortCellId
   readonly sortCellId?: CellId;
   /// ChartSeriesProps.descending

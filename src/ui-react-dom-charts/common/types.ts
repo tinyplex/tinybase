@@ -8,8 +8,8 @@ export type ScaledPoint = readonly [
   ...DataPoint,
   x: number,
   y: number,
-  xTitle?: Id,
-  yTitle?: Id,
+  xTitle?: string,
+  yTitle?: string,
 ];
 export type Bounds = readonly [
   xMin?: XValue,
@@ -26,6 +26,7 @@ export type SeriesSummary = {
   readonly yMin?: number;
   readonly yMax?: number;
   readonly yCellId?: Id;
+  readonly yLabel?: string;
   readonly xValues: XValue[];
 };
 export type DomainState = {

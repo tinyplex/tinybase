@@ -125,6 +125,11 @@ export const useSeriesData = ({
   return [seriesId, points];
 };
 
+export const getSeriesClassName = (
+  baseClassName: string,
+  className?: string,
+) => (className == null ? baseClassName : `${baseClassName} ${className}`);
+
 const getCell = (
   sourceType: SourceType,
   store: {getCell: (...args: any[]) => CellOrUndefined} | undefined,

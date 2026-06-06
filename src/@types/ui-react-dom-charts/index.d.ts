@@ -55,10 +55,14 @@ export type ChartBindingProps = {
 
 /// ChartSeriesProps
 export type ChartSeriesProps = {
+  /// ChartSeriesProps.className
+  readonly className?: string;
   /// ChartSeriesProps.xCellId
   readonly xCellId: Id;
   /// ChartSeriesProps.yCellId
   readonly yCellId: Id;
+  /// ChartSeriesProps.label
+  readonly label?: string;
   /// ChartSeriesProps.sortCellId
   readonly sortCellId?: Id;
   /// ChartSeriesProps.descending

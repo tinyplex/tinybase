@@ -283,14 +283,26 @@ describe('CartesianChart', () => {
     });
     const {container, unmount} = render(
       <CartesianChart store={store} tableId="t1">
-        <LineSeries xCellId="x" yCellId="y1" />
-        <LineSeries xCellId="x" yCellId="y2" />
+        <LineSeries
+          className="revenue-series"
+          label="Revenue"
+          xCellId="x"
+          yCellId="y1"
+        />
+        <LineSeries
+          className="profit-series"
+          label="Profit"
+          xCellId="x"
+          yCellId="y2"
+        />
       </CartesianChart>,
     );
 
     expect(container.querySelectorAll('.plot .line')).toHaveLength(2);
+    expect(container.querySelectorAll('.revenue-series')).toHaveLength(1);
+    expect(container.querySelectorAll('.profit-series')).toHaveLength(1);
     expect(container.innerHTML).toContain('>8<');
-    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+    expect(container.innerHTML).toContain('>Revenue &amp; Profit<');
 
     act(() => store.setCell('t1', 'r1', 'y2', 4));
 
@@ -331,20 +343,32 @@ describe('CartesianChart', () => {
     });
     const {container, unmount} = render(
       <CartesianChart store={store} tableId="t1">
-        <BarSeries xCellId="x" yCellId="y1" />
-        <BarSeries xCellId="x" yCellId="y2" />
+        <BarSeries
+          className="orders-series"
+          label="Orders"
+          xCellId="x"
+          yCellId="y1"
+        />
+        <BarSeries
+          className="profit-series"
+          label="Profit"
+          xCellId="x"
+          yCellId="y2"
+        />
       </CartesianChart>,
     );
     const bars = container.querySelectorAll('.bar');
 
     expect(bars).toHaveLength(4);
+    expect(container.querySelectorAll('.orders-series')).toHaveLength(1);
+    expect(container.querySelectorAll('.profit-series')).toHaveLength(1);
     expect(bars[0].getAttribute('x')).not.toEqual(bars[2].getAttribute('x'));
-    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+    expect(container.innerHTML).toContain('>Orders &amp; Profit<');
 
     fireEvent.pointerEnter(bars[2].parentElement as Element);
 
-    expect(container.innerHTML).toContain('>y2: 4<');
-    expect(container.innerHTML).not.toContain('>y1 &amp; y2: 4<');
+    expect(container.innerHTML).toContain('>Profit: 4<');
+    expect(container.innerHTML).not.toContain('>Orders &amp; Profit: 4<');
 
     unmount();
   });

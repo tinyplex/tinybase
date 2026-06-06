@@ -153,6 +153,13 @@
 /// ChartSeriesProps
 {
   /**
+   * An optional string that will be added to the class attribute of the series'
+   * SVG group element.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.className
+  /**
    * The Id of the Cell that provides each data point's x value.
    * @category Prop
    * @since v8.5.0
@@ -164,6 +171,13 @@
    * @since v8.5.0
    */
   /// ChartSeriesProps.yCellId
+  /**
+   * An optional label to use for the series in axis titles and tooltips,
+   * defaulting to the y Cell Id.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// ChartSeriesProps.label
   /**
    * The Id of the Cell used to sort the charted rows.
    * @category Prop
@@ -210,8 +224,18 @@
  * });
  * const App = () => (
  *   <CartesianChart store={store} tableId="pets">
- *     <LineSeries xCellId="order" yCellId="sold" />
- *     <LineSeries xCellId="order" yCellId="returned" />
+ *     <LineSeries
+ *       className="sold"
+ *       label="Sold pets"
+ *       xCellId="order"
+ *       yCellId="sold"
+ *     />
+ *     <LineSeries
+ *       className="returned"
+ *       label="Returned pets"
+ *       xCellId="order"
+ *       yCellId="returned"
+ *     />
  *   </CartesianChart>
  * );
  * const app = document.createElement('div');

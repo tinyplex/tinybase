@@ -6,7 +6,7 @@ import {useLayoutEffect} from '../common/react.ts';
 import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
 import {Bars} from './components/Bars.tsx';
-import {useSeriesData} from './components/series.ts';
+import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
 export const BarSeries = ((props: ChartSeriesProps) => {
   const {
@@ -22,7 +22,7 @@ export const BarSeries = ((props: ChartSeriesProps) => {
     setTooltipPoint,
     xValues,
   } = useCartesianChartContext();
-  const {xCellId, yCellId} = props;
+  const {className, label, xCellId, yCellId} = props;
   const [seriesId, rawPoints] = useSeriesData(props);
   const barSeriesIndex = getBarSeriesIndex(seriesId);
   const [, , yMin, yMax] = bounds;
@@ -33,13 +33,13 @@ export const BarSeries = ((props: ChartSeriesProps) => {
     plotSize,
     xValues,
     xCellId,
-    yCellId,
+    label ?? yCellId,
   );
 
   useLayoutEffect(() => {
     setSeriesSummary(
       seriesId,
-      getSeriesSummary('bar', rawPoints, xCellId, yCellId),
+      getSeriesSummary('bar', rawPoints, xCellId, yCellId, label),
     );
   });
 
@@ -49,7 +49,7 @@ export const BarSeries = ((props: ChartSeriesProps) => {
   }, [registerBarSeries, releaseBarSeries, seriesId]);
 
   return (
-    <g className="bar-series">
+    <g className={getSeriesClassName('bar-series', className)}>
       <Bars
         barGap={barGap}
         barSeriesCount={barSeriesCount}

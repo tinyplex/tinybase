@@ -1,5 +1,4 @@
 import type {ReactNode} from 'react';
-import type {Id} from '../../@types/common/index.d.ts';
 import type {
   ChartProps,
   ChartQuerySourceProps,
@@ -389,14 +388,17 @@ const getTitle = (
   summaryById: SummaryById,
   cellIdType: 'xCellId' | 'yCellId',
 ): string => {
-  const cellIds: Id[] = [];
+  const titles: string[] = [];
   arrayForEach(objValues(summaryById), (summary) => {
-    const cellId = summary[cellIdType];
-    if (cellId != null && !arrayHas(cellIds, cellId)) {
-      arrayPush(cellIds, cellId);
+    const title =
+      cellIdType == 'yCellId'
+        ? (summary.yLabel ?? summary.yCellId)
+        : summary.xCellId;
+    if (title != null && !arrayHas(titles, title)) {
+      arrayPush(titles, title);
     }
   });
-  return arrayIsEmpty(cellIds) ? '' : cellIds.join(' & ');
+  return arrayIsEmpty(titles) ? '' : titles.join(' & ');
 };
 
 const getChartChildren = (children: ReactNode): ReactNode[] => {

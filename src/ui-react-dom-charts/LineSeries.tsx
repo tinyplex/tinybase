@@ -6,7 +6,7 @@ import {useLayoutEffect} from '../common/react.ts';
 import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
 import {Line} from './components/Line.tsx';
-import {useSeriesData} from './components/series.ts';
+import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
 export const LineSeries = ((props: ChartSeriesProps) => {
   const {
@@ -17,7 +17,7 @@ export const LineSeries = ((props: ChartSeriesProps) => {
     setTooltipPoint,
     xValues,
   } = useCartesianChartContext();
-  const {xCellId, yCellId} = props;
+  const {className, label, xCellId, yCellId} = props;
   const [seriesId, rawPoints] = useSeriesData(props);
   const points = getScaledPoints(
     'line',
@@ -26,18 +26,18 @@ export const LineSeries = ((props: ChartSeriesProps) => {
     plotSize,
     xValues,
     xCellId,
-    yCellId,
+    label ?? yCellId,
   );
 
   useLayoutEffect(() => {
     setSeriesSummary(
       seriesId,
-      getSeriesSummary('line', rawPoints, xCellId, yCellId),
+      getSeriesSummary('line', rawPoints, xCellId, yCellId, label),
     );
   });
 
   return (
-    <g className="line-series">
+    <g className={getSeriesClassName('line-series', className)}>
       <Line
         plotFrame={plotFrame}
         points={points}
