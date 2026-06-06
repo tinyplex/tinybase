@@ -33,7 +33,7 @@ import {
 import {
   CartesianChartContext,
   isChartSeriesComponent,
-  type SourceType,
+  SourceType,
 } from '../common/context.ts';
 import {
   getDomainState,
@@ -90,8 +90,12 @@ export const CartesianChart = ({
   const labelSize = getLabelSize(layout);
   const storeObject = useStoreOrStoreById(store);
   const queriesObject = useQueriesOrQueriesById(queries);
-  const sourceType: SourceType =
-    tableId == null ? (queryId == null ? 'none' : 'query') : 'table';
+  const sourceType =
+    tableId == null
+      ? queryId == null
+        ? SourceType.None
+        : SourceType.Query
+      : SourceType.Table;
   const initialSummaries: SummaryById =
     initialSummary == null ? {} : {0: initialSummary};
   const initialDomainState =

@@ -18,7 +18,11 @@ import type {
   XValue,
 } from './types.ts';
 
-export type SourceType = 'none' | 'query' | 'table';
+export const enum SourceType {
+  None = 0,
+  Query = 1,
+  Table = 2,
+}
 
 export const CHART_SERIES = '_tinybaseChartSeries';
 

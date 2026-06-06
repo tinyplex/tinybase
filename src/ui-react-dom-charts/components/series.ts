@@ -9,7 +9,7 @@ import {
   useResultSortedRowIds,
   useSortedRowIds,
 } from '../../ui-react/index.ts';
-import {useCartesianChartContext} from '../common/context.ts';
+import {SourceType, useCartesianChartContext} from '../common/context.ts';
 import {getDataPoint, getDataPoints} from '../common/data.ts';
 import type {DataPoint} from '../common/types.ts';
 
@@ -54,7 +54,7 @@ export const useSeriesData = ({
     limit,
     queriesOrQueriesId,
   );
-  const rowIds = sourceType == 'table' ? tableRowIds : queryRowIds;
+  const rowIds = sourceType == SourceType.Table ? tableRowIds : queryRowIds;
   const points =
     yCellId == null
       ? []
@@ -83,7 +83,7 @@ export const useSeriesData = ({
         );
 
   useCellListener(
-    sourceType == 'table' ? (tableId ?? null) : null,
+    sourceType == SourceType.Table ? (tableId ?? null) : null,
     null,
     xCellId,
     handleChange,
@@ -92,7 +92,7 @@ export const useSeriesData = ({
     storeOrStoreId,
   );
   useCellListener(
-    sourceType == 'table' ? (tableId ?? null) : null,
+    sourceType == SourceType.Table ? (tableId ?? null) : null,
     null,
     yCellId ?? null,
     handleChange,
@@ -101,7 +101,7 @@ export const useSeriesData = ({
     storeOrStoreId,
   );
   useResultCellListener(
-    sourceType == 'query' ? (queryId ?? null) : null,
+    sourceType == SourceType.Query ? (queryId ?? null) : null,
     null,
     xCellId,
     handleChange,
@@ -109,7 +109,7 @@ export const useSeriesData = ({
     queriesOrQueriesId,
   );
   useResultCellListener(
-    sourceType == 'query' ? (queryId ?? null) : null,
+    sourceType == SourceType.Query ? (queryId ?? null) : null,
     null,
     yCellId ?? null,
     handleChange,
@@ -126,7 +126,7 @@ export const useSeriesData = ({
 };
 
 const getCell = (
-  sourceType: string,
+  sourceType: SourceType,
   store: {getCell: (...args: any[]) => CellOrUndefined} | undefined,
   queries:
     | {getResultCell: (...args: any[]) => ResultCellOrUndefined}
@@ -136,6 +136,6 @@ const getCell = (
   rowId: Id,
   cellId: Id,
 ) =>
-  sourceType == 'table'
+  sourceType == SourceType.Table
     ? store?.getCell(tableId as Id, rowId, cellId)
     : queries?.getResultCell(queryId as Id, rowId, cellId);
