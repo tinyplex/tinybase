@@ -332,6 +332,7 @@ describe('CartesianChart', () => {
     );
 
     expect(container.querySelectorAll('.plot .bar')).toHaveLength(2);
+    expect(container.innerHTML).not.toContain('Infinity');
 
     unmount();
   });
@@ -360,6 +361,7 @@ describe('CartesianChart', () => {
     const bars = container.querySelectorAll('.bar');
 
     expect(bars).toHaveLength(4);
+    expect(container.innerHTML).not.toContain('Infinity');
     expect(container.querySelectorAll('.orders-series')).toHaveLength(1);
     expect(container.querySelectorAll('.profit-series')).toHaveLength(1);
     expect(bars[0].getAttribute('x')).not.toEqual(bars[2].getAttribute('x'));

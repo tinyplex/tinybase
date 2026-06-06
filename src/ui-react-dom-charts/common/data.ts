@@ -77,7 +77,9 @@ export const getScaledPoints = (
   const xCategories = new Map<XValue, number>();
 
   arrayForEach(
-    xValues ?? arrayMap(points, ([, xValue]) => xValue),
+    xValues == null || arrayIsEmpty(xValues)
+      ? arrayMap(points, ([, xValue]) => xValue)
+      : xValues,
     (xValue) => {
       if (!xCategories.has(xValue)) {
         xCategories.set(xValue, collSize(xCategories));
