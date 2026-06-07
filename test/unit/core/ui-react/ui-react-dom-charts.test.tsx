@@ -312,6 +312,41 @@ describe('CartesianChart', () => {
     unmount();
   });
 
+  test('uses y Cell Ids for multiple unlabelled series titles', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y1: 3, y2: 8},
+      r2: {x: 2, y1: 5, y2: 6},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <LineSeries xCellId="x" yCellId="y1" />
+        <LineSeries xCellId="x" yCellId="y2" />
+      </CartesianChart>,
+    );
+
+    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+
+    unmount();
+  });
+
+  test('uses all y Cell Ids for three unlabelled series titles', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y1: 3, y2: 8, y3: 13},
+      r2: {x: 2, y1: 5, y2: 6, y3: 10},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <LineSeries xCellId="x" yCellId="y1" />
+        <LineSeries xCellId="x" yCellId="y2" />
+        <LineSeries xCellId="x" yCellId="y3" />
+      </CartesianChart>,
+    );
+
+    expect(container.innerHTML).toContain('>y1 &amp; y2 &amp; y3<');
+
+    unmount();
+  });
+
   test('renders a BarSeries from Query props', () => {
     const store = createStore().setTable('t1', {
       r1: {x: 1, y: 3},
