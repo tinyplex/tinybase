@@ -5,6 +5,7 @@ import type {
 import {useLayoutEffect} from '../common/react.ts';
 import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
+import {CURRENT_COLOR} from './common/types.ts';
 import {Bars} from './components/Bars.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
@@ -49,7 +50,10 @@ export const BarSeries = ((props: ChartSeriesProps) => {
   }, [registerBarSeries, releaseBarSeries, seriesId]);
 
   return (
-    <g className={getSeriesClassName('bar-series', className)}>
+    <g
+      className={getSeriesClassName('bar-series', className)}
+      fill={CURRENT_COLOR}
+    >
       <Bars
         barGap={barGap}
         barSeriesCount={barSeriesCount}

@@ -1,13 +1,11 @@
-import {arrayIsEmpty} from '../../common/array.ts';
+import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
 import {mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {
-  CURRENT_COLOR,
   type PlotFrame,
   type ScaledPoint,
   type SetTooltipPoint,
 } from '../common/types.ts';
-import {Marks} from './Marks.tsx';
 
 export const Bars = ({
   points,
@@ -40,23 +38,20 @@ export const Bars = ({
     0,
   );
 
-  return (
-    <Marks
-      points={points}
-      getMark={([, , , x, pointY]) => {
-        const y = mathMin(pointY, baselineY);
-        return (
-          <rect
-            className="bar"
-            fill={CURRENT_COLOR}
-            x={plotX + x - barGroupWidth / 2 + (barWidth + barGap) * barIndex}
-            y={plotY + y}
-            width={barWidth}
-            height={mathAbs(baselineY - pointY)}
-          />
-        );
-      }}
-      setTooltipPoint={setTooltipPoint}
-    />
-  );
+  return arrayMap(points, (point) => {
+    const [rowId, , , x, pointY] = point;
+    const y = mathMin(pointY, baselineY);
+    return (
+      <rect
+        className="bar"
+        height={mathAbs(baselineY - pointY)}
+        key={rowId}
+        onPointerEnter={() => setTooltipPoint(point)}
+        onPointerLeave={() => setTooltipPoint(undefined)}
+        width={barWidth}
+        x={plotX + x - barGroupWidth / 2 + (barWidth + barGap) * barIndex}
+        y={plotY + y}
+      />
+    );
+  });
 };

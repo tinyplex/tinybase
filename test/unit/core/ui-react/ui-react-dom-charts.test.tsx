@@ -362,12 +362,17 @@ describe('CartesianChart', () => {
 
     expect(bars).toHaveLength(4);
     expect(container.innerHTML).not.toContain('Infinity');
+    expect(container.querySelector('.bar-series > g > .bar')).toBeNull();
+    expect(container.querySelector('.bar-series')?.getAttribute('fill')).toBe(
+      'currentColor',
+    );
+    expect(bars[0].getAttribute('fill')).toBeNull();
     expect(container.querySelectorAll('.orders-series')).toHaveLength(1);
     expect(container.querySelectorAll('.profit-series')).toHaveLength(1);
     expect(bars[0].getAttribute('x')).not.toEqual(bars[2].getAttribute('x'));
     expect(container.innerHTML).toContain('>Orders &amp; Profit<');
 
-    fireEvent.pointerEnter(bars[2].parentElement as Element);
+    fireEvent.pointerEnter(bars[2]);
 
     expect(container.innerHTML).toContain('>Profit: 4<');
     expect(container.innerHTML).not.toContain('>Orders &amp; Profit: 4<');
