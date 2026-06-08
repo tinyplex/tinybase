@@ -52,13 +52,17 @@ export type ChartQuerySourceProps<Schemas extends OptionalSchemas> = {
 };
 
 /// ChartBindingProps
-export type ChartBindingProps<CellId extends Id = Id> = {
+export type ChartBindingProps<
+  XCellId extends Id = Id,
+  YCellId extends Id = Id,
+  SortCellId extends Id = XCellId,
+> = {
   /// ChartBindingProps.xCellId
-  readonly xCellId: CellId;
+  readonly xCellId: XCellId;
   /// ChartBindingProps.yCellId
-  readonly yCellId: CellId;
+  readonly yCellId: YCellId;
   /// ChartBindingProps.sortCellId
-  readonly sortCellId?: CellId;
+  readonly sortCellId?: SortCellId;
   /// ChartBindingProps.descending
   readonly descending?: boolean;
   /// ChartBindingProps.offset
@@ -87,6 +91,18 @@ export type ChartSeriesProps<CellId extends Id = Id> = {
   readonly limit?: number;
 };
 
+type NumericCellIdFromSchema<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+> = {
+  [CellId in CellIdFromSchema<
+    Schemas[0],
+    TableId
+  >]: Schemas[0][TableId][CellId] extends {type: 'any' | 'number'}
+    ? CellId
+    : never;
+}[CellIdFromSchema<Schemas[0], TableId>];
+
 type ChartTableBindingProps<
   Schemas extends OptionalSchemas,
   TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
@@ -95,7 +111,11 @@ type ChartTableBindingProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? ChartTableSourceProps<Schemas, TableId> &
-        ChartBindingProps<CellIdFromSchema<Schemas[0], TableId>>
+        ChartBindingProps<
+          CellIdFromSchema<Schemas[0], TableId>,
+          NumericCellIdFromSchema<Schemas, TableId>,
+          CellIdFromSchema<Schemas[0], TableId>
+        >
     : never
   : never;
 

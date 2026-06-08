@@ -11,6 +11,7 @@ const _tablesSchema = {
   t0: {c0: {type: 'number'}},
   t1: {
     c1: {type: 'number'},
+    c1b: {type: 'boolean', default: false},
     c1d: {type: 'string', default: ''},
   },
 } as const;
@@ -88,12 +89,21 @@ const _App = () => {
       {/*
     
     */}
-      <LineChartWithSchemas tableId="t1" xCellId="c1" yCellId="c1d" />
+      <LineChartWithSchemas tableId="t1" xCellId="c1" yCellId="c1" />
+      <LineChartWithSchemas tableId="t1" xCellId="c1b" yCellId="c1" />
+      {/* prettier-ignore */}
+      <LineChartWithSchemas tableId="t1" xCellId="c1b" yCellId="c1b" /> {/* ! */}
+      <BarChartWithSchemas
+        tableId="t1"
+        xCellId="c1b"
+        yCellId="c1"
+        sortCellId="c1d"
+      />
       <LineChartWithSchemas
         tableId="t1"
         xCellId="c1"
-        yCellId="c1d"
-        sortCellId="c1"
+        yCellId="c1"
+        sortCellId="c1d"
         descending={true}
         offset={1}
         limit={2}
