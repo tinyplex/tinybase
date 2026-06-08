@@ -1,5 +1,7 @@
 # Composing Charts
 
+![Composing Charts](/shots/composing-charts-react-demo.png)
+
 This demo shows how CartesianChart can render multiple child series from the
 same Table. Each child series owns its own Cell bindings, while the parent chart
 coordinates the shared axes and layout.

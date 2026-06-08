@@ -1,5 +1,7 @@
 # Sorting And Types
 
+![Sorting And Types](/shots/sorting-and-types-react-demo.png)
+
 This demo shows how chart components handle common x value shapes: continuous
 numeric values, ordered category labels, and boolean categories. In each case,
 y values must be finite numbers.
