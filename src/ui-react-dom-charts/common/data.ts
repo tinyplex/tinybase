@@ -234,9 +234,9 @@ export const getSeriesSummary = (
 export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
   const xValues: XValue[] = [];
   const xMins: number[] = [];
-  const xMaxs: number[] = [];
+  const xMaxes: number[] = [];
   const yMins: number[] = [];
-  const yMaxs: number[] = [];
+  const yMaxes: number[] = [];
   let continuousX = true;
   let xMin: XValue | undefined;
   let xMax: XValue | undefined;
@@ -250,7 +250,7 @@ export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
     });
     if (isNumber(summary.xMin) && isNumber(summary.xMax)) {
       xMins.push(summary.xMin);
-      xMaxs.push(summary.xMax);
+      xMaxes.push(summary.xMax);
     } else {
       xMin ??= summary.xMin;
       xMax = summary.xMax ?? xMax;
@@ -259,16 +259,16 @@ export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
       yMins.push(summary.yMin);
     }
     if (!isUndefined(summary.yMax)) {
-      yMaxs.push(summary.yMax);
+      yMaxes.push(summary.yMax);
     }
   });
 
   return {
     bounds: [
       arrayIsEmpty(xMins) ? xMin : mathMin(...xMins),
-      arrayIsEmpty(xMaxs) ? xMax : mathMax(...xMaxs),
+      arrayIsEmpty(xMaxes) ? xMax : mathMax(...xMaxes),
       arrayIsEmpty(yMins) ? undefined : mathMin(...yMins),
-      arrayIsEmpty(yMaxs) ? undefined : mathMax(...yMaxs),
+      arrayIsEmpty(yMaxes) ? undefined : mathMax(...yMaxes),
     ],
     continuousX: !arrayIsEmpty(summaries) && continuousX,
     xValues,
