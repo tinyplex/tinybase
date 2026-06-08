@@ -9,6 +9,8 @@ const TOOLTIP_WIDTH = 160;
 const TOOLTIP_HEIGHT = 60;
 const TOOLTIP_GAP = 12;
 const TOOLTIP_PADDING = 12;
+const TOOLTIP_BACKGROUND = '#111827';
+const TOOLTIP_TEXT = '#fff';
 
 export const Tooltip = ({
   point,
@@ -51,18 +53,21 @@ export const Tooltip = ({
       <g
         className="tooltip"
         transform={`translate(${plotX + tooltipX} ${plotY + tooltipY})`}
-        fill={CURRENT_COLOR}
+        fontFamily="sans-serif"
+        fontWeight={600}
+        pointerEvents="none"
       >
         <rect
-          fillOpacity={0.25}
+          fill={TOOLTIP_BACKGROUND}
+          fillOpacity={0.9}
           width={TOOLTIP_WIDTH}
           height={TOOLTIP_HEIGHT}
-          rx={4}
+          rx={6}
         />
-        <text x={TOOLTIP_PADDING} y={22}>
+        <text fill={TOOLTIP_TEXT} x={TOOLTIP_PADDING} y={22}>
           {pointXTitle ?? xTitle}: {string(xValue)}
         </text>
-        <text x={TOOLTIP_PADDING} y={46}>
+        <text fill={TOOLTIP_TEXT} x={TOOLTIP_PADDING} y={46}>
           {pointYTitle ?? yTitle}: {yValue}
         </text>
       </g>

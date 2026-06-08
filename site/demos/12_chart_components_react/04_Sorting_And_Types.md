@@ -84,12 +84,7 @@ and boolean x values are categories, and can be ordered with `sortCellId`:
 ```jsx
 const Body = () => (
   <main>
-    <header>
-      <p>Sorting And Types</p>
-      <h1>Numeric, string, and boolean x values</h1>
-    </header>
     <section>
-      <h2>Continuous Numbers</h2>
       <LineChart
         className="chart chart-numbers"
         tableId="measurements"
@@ -98,7 +93,6 @@ const Body = () => (
       />
     </section>
     <section>
-      <h2>Sorted Categories</h2>
       <BarChart
         className="chart chart-categories"
         tableId="channels"
@@ -108,7 +102,6 @@ const Body = () => (
       />
     </section>
     <section>
-      <h2>Boolean Categories</h2>
       <CartesianChart className="chart chart-booleans" tableId="flags">
         <BarSeries
           className="series-accounts"
@@ -138,10 +131,6 @@ The same CSS structure works across all three examples:
 }
 
 body {
-  background:
-    radial-gradient(circle at 8% 10%, #d7f4e8 0 10rem, transparent 16rem),
-    linear-gradient(135deg, #f8fbff, #e9f0f8);
-  color: #172033;
   font-family: Inter, sans-serif;
   margin: 0;
 }
@@ -150,93 +139,63 @@ main {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding: 1.5rem;
-}
+  margin: 2rem auto;
+  max-width: 72rem;
+  padding: 0 2rem;
 
-header {
-  grid-column: 1 / -1;
-}
-
-h1,
-h2,
-p {
-  margin: 0;
-}
-
-h1 {
-  font-size: clamp(2rem, 5vw, 4rem);
-  letter-spacing: -0.06em;
-}
-
-h2 {
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-}
-
-p {
-  color: #2b8c67;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-section {
-  background: #fffffff2;
-  border: 1px solid #d9e3df;
-  border-radius: 0.9rem;
-  box-shadow: 0 1rem 2rem #17203314;
-  min-width: 0;
-  padding: 1rem;
+  section {
+    min-width: 0;
+  }
 }
 
 .chart {
   display: block;
   font-size: 12px;
-  height: 19rem;
-  padding: 0.75rem;
+  height: 14rem;
   width: 100%;
-}
 
-.chart .grid {
-  color: #dfe8e3;
-  stroke-dasharray: 3 5;
-}
+  .grid {
+    color: #d8e1eb;
+    stroke-dasharray: 4 6;
+  }
 
-.chart .axes {
-  color: #7b8d82;
-}
+  .axes {
+    color: #677489;
 
-.chart .axes .title {
-  fill: #172033;
-  font-weight: 700;
-}
+    .title {
+      fill: #1f2937;
+      font-weight: 700;
+    }
+  }
 
-.chart .area {
-  fill: #2b8c67;
-  fill-opacity: 0.12;
-}
+  .area {
+    fill: #2b8c67;
+    fill-opacity: 0.12;
+  }
 
-.chart .line {
-  fill: none;
-  stroke: #2b8c67;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
-}
+  .line {
+    fill: none;
+    stroke: #2b8c67;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+  }
 
-.chart .points {
-  fill: white;
-  stroke: #2b8c67;
-  stroke-width: 2;
-}
+  .points {
+    fill: white;
+    stroke: #2b8c67;
+    stroke-width: 2;
+  }
 
-.chart .bar {
-  fill: #5367c9;
-}
+  .bar {
+    fill: #5367c9;
+  }
 
-.chart-booleans .bar {
-  fill: #d16b3f;
+  &-booleans {
+    .bar {
+      fill: #d16b3f;
+    }
+  }
 }
 
 @media (max-width: 52rem) {

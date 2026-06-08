@@ -74,12 +74,7 @@ CSS classes:
 ```jsx
 const Body = () => (
   <main>
-    <header>
-      <p>Composition</p>
-      <h1>One source, multiple series</h1>
-    </header>
     <section>
-      <h2>Two Lines</h2>
       <CartesianChart className="chart chart-lines" tableId="sales">
         <LineSeries
           className="series-revenue"
@@ -98,7 +93,6 @@ const Body = () => (
       </CartesianChart>
     </section>
     <section>
-      <h2>Grouped Bars</h2>
       <CartesianChart className="chart chart-bars" tableId="sales">
         <BarSeries
           className="series-orders"
@@ -117,7 +111,6 @@ const Body = () => (
       </CartesianChart>
     </section>
     <section>
-      <h2>Bars With A Line</h2>
       <CartesianChart className="chart chart-mixed" tableId="sales">
         <BarSeries
           className="series-orders"
@@ -154,8 +147,6 @@ Because every series has a className, CSS can style each series independently:
 }
 
 body {
-  background: #f6f1e7;
-  color: #1f2937;
   font-family: Inter, sans-serif;
   margin: 0;
 }
@@ -164,116 +155,94 @@ main {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding: 1.5rem;
-}
+  margin: 2rem auto;
+  max-width: 72rem;
+  padding: 0 2rem;
 
-header {
-  grid-column: 1 / -1;
-}
-
-h1,
-h2,
-p {
-  margin: 0;
-}
-
-h1 {
-  font-size: clamp(2rem, 5vw, 4rem);
-  letter-spacing: -0.06em;
-}
-
-h2 {
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-}
-
-p {
-  color: #c05f35;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-section {
-  background: white;
-  border: 1px solid #eadfce;
-  border-radius: 0.9rem;
-  box-shadow: 0 1rem 2rem #1f29371a;
-  min-width: 0;
-  padding: 1rem;
+  section {
+    min-width: 0;
+  }
 }
 
 .chart {
   display: block;
   font-size: 12px;
-  height: 19rem;
-  padding: 0.75rem;
+  height: 14rem;
   width: 100%;
+
+  .grid {
+    color: #d8e1eb;
+    stroke-dasharray: 4 6;
+  }
+
+  .axes {
+    color: #677489;
+
+    .title {
+      fill: #1f2937;
+      font-weight: 700;
+    }
+  }
+
+  .area {
+    fill-opacity: 0.1;
+  }
+
+  .line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+  }
+
+  .points {
+    fill: white;
+    stroke-width: 2;
+  }
 }
 
-.chart .grid {
-  color: #e1d7c7;
-  stroke-dasharray: 3 5;
+.series-revenue {
+  .area {
+    fill: #2b8c67;
+  }
+
+  .line,
+  .points {
+    stroke: #2b8c67;
+  }
 }
 
-.chart .axes {
-  color: #8b8173;
+.series-profit {
+  .area {
+    fill: #d16b3f;
+  }
+
+  .line,
+  .points {
+    stroke: #d16b3f;
+  }
+
+  .bar {
+    fill: #d16b3f;
+  }
 }
 
-.chart .axes .title {
-  fill: #1f2937;
-  font-weight: 700;
+.series-orders {
+  .bar {
+    fill: #5367c9;
+  }
 }
 
-.chart .area {
-  fill-opacity: 0.1;
-}
+.chart-mixed {
+  .series-revenue {
+    .area {
+      fill: none;
+    }
 
-.chart .line {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
-}
-
-.chart .points {
-  fill: white;
-  stroke-width: 2;
-}
-
-.series-revenue .area {
-  fill: #2b8c67;
-}
-
-.series-revenue .line,
-.series-revenue .points {
-  stroke: #2b8c67;
-}
-
-.series-profit .area {
-  fill: #d16b3f;
-}
-
-.series-profit .line,
-.series-profit .points {
-  stroke: #d16b3f;
-}
-
-.series-profit .bar {
-  fill: #d16b3f;
-}
-
-.series-orders .bar {
-  fill: #5367c9;
-}
-
-.chart-mixed .series-revenue .area {
-  fill: none;
-}
-
-.chart-mixed .series-revenue .line {
-  stroke-width: 4;
+    .line {
+      stroke-width: 4;
+    }
+  }
 }
 
 @media (max-width: 52rem) {

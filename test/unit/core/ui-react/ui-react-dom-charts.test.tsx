@@ -500,6 +500,15 @@ describe('CartesianChart', () => {
 
     fireEvent.pointerEnter(bars[0]);
 
+    expect(container.querySelector('.tooltip rect')?.getAttribute('fill')).toBe(
+      '#111827',
+    );
+    expect(
+      container.querySelector('.tooltip rect')?.getAttribute('fill-opacity'),
+    ).toBe('0.9');
+    expect(
+      container.querySelector('.tooltip')?.getAttribute('font-weight'),
+    ).toBe('600');
     expect(container.innerHTML).toContain('>x: true<');
     expect(container.innerHTML).toContain('>y: 3<');
 

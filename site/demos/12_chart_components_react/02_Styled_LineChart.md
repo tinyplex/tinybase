@@ -36,18 +36,20 @@ affects most of the SVG. More specific selectors can then tune grid lines, axes,
 tick labels, and axis titles:
 
 ```less
-.chart .grid {
-  color: #d8e1eb;
-  stroke-dasharray: 4 6;
-}
+.chart {
+  .grid {
+    color: #d8e1eb;
+    stroke-dasharray: 4 6;
+  }
 
-.chart .axes {
-  color: #677489;
-}
+  .axes {
+    color: #677489;
 
-.chart .axes .title {
-  fill: #1f2937;
-  font-weight: 700;
+    .title {
+      fill: #1f2937;
+      font-weight: 700;
+    }
+  }
 }
 ```
 
@@ -57,23 +59,27 @@ The plotted data also uses regular SVG class names. For a line chart, that
 means we can style the filled area, line, and point markers independently:
 
 ```less
-.chart .plot .area {
-  fill: #0ea5e9;
-  fill-opacity: 0.12;
-}
+.chart {
+  .plot {
+    .area {
+      fill: #0ea5e9;
+      fill-opacity: 0.12;
+    }
 
-.chart .plot .line {
-  stroke: #0284c7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-opacity: 1;
-  stroke-width: 3;
-}
+    .line {
+      stroke: #0284c7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-opacity: 1;
+      stroke-width: 3;
+    }
 
-.chart .points {
-  fill: white;
-  stroke: #0284c7;
-  stroke-width: 2;
+    .points {
+      fill: white;
+      stroke: #0284c7;
+      stroke-width: 2;
+    }
+  }
 }
 ```
 
@@ -83,19 +89,25 @@ Hover over points in the chart and a tooltip appears. That is just more SVG,
 and can be styled too:
 
 ```less
-.chart .tooltip-lines {
-  stroke: #0284c7;
-  stroke-dasharray: 3 3;
-  stroke-opacity: 0.35;
-}
+.chart {
+  .tooltip-lines {
+    stroke: #0284c7;
+    stroke-dasharray: 3 3;
+    stroke-opacity: 0.35;
+  }
 
-.chart .tooltip rect {
-  fill: #172033;
-  fill-opacity: 0.92;
-}
+  .tooltip {
+    font-weight: 700;
 
-.chart .tooltip text {
-  fill: white;
+    rect {
+      fill: #172033;
+      fill-opacity: 0.94;
+    }
+
+    text {
+      fill: white;
+    }
+  }
 }
 ```
 
