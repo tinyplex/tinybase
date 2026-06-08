@@ -16,6 +16,20 @@ const CHARTS = [
   ['BarChart', BarChart],
 ] as const;
 
+const getXAxisTickLabels = (container: HTMLElement): (string | null)[] =>
+  Array.from(
+    container.querySelectorAll('.axes .x .ticks text'),
+    (text) => text.textContent,
+  );
+
+const getLinePathXs = (container: HTMLElement): number[][] =>
+  Array.from(container.querySelectorAll('.plot .line-series .line'), (path) =>
+    Array.from(
+      path.getAttribute('d')?.matchAll(/[ML]([^,]+)/g) ?? [],
+      ([, x]) => Number(x),
+    ),
+  );
+
 describe.each(CHARTS)('%s', (_chartName, Chart) => {
   describe('Table', () => {
     test('binds to a Table from a Store', () => {
@@ -347,6 +361,74 @@ describe('CartesianChart', () => {
     unmount();
   });
 
+  test('renders LineSeries with different x Cell Ids and sort orders', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x1: 'Feb', x2: 'Beta', y1: 3, y2: 8, z1: 2, z2: 2},
+      r2: {x1: 'Jan', x2: 'Alpha', y1: 5, y2: 6, z1: 1, z2: 1},
+      r3: {x1: 'Mar', x2: 'Gamma', y1: 4, y2: 9, z1: 3, z2: 3},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <LineSeries xCellId="x1" yCellId="y1" sortCellId="z1" />
+        <LineSeries
+          descending={true}
+          xCellId="x2"
+          yCellId="y2"
+          sortCellId="z2"
+        />
+      </CartesianChart>,
+    );
+
+    expect(container.querySelectorAll('.plot .line')).toHaveLength(2);
+    expect(container.querySelectorAll('.plot circle')).toHaveLength(6);
+    expect(getXAxisTickLabels(container)).toEqual([
+      'Jan',
+      'Feb',
+      'Mar',
+      'Gamma',
+      'Beta',
+      'Alpha',
+    ]);
+    expect(container.innerHTML).toContain('>x1 &amp; x2<');
+    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+    expect(container.innerHTML).not.toContain('Infinity');
+
+    unmount();
+  });
+
+  test('renders numeric LineSeries with different x sort orders', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x1: 1, x2: 7, y1: 2, y2: 6, z1: 1, z2: 1},
+      r2: {x1: 3, x2: 4, y1: 4, y2: 4, z1: 2, z2: 2},
+      r3: {x1: 5, x2: 2, y1: 6, y2: 2, z1: 3, z2: 3},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <LineSeries xCellId="x1" yCellId="y1" sortCellId="z1" />
+        <LineSeries xCellId="x2" yCellId="y2" sortCellId="z2" />
+      </CartesianChart>,
+    );
+    const tickLabels = getXAxisTickLabels(container);
+    const [firstLineXs, secondLineXs] = getLinePathXs(container);
+
+    expect(container.querySelectorAll('.plot .line')).toHaveLength(2);
+    expect(container.querySelectorAll('.plot circle')).toHaveLength(6);
+    expect(tickLabels).toContain('1');
+    expect(tickLabels).toContain('6');
+    expect(tickLabels).toContain('7');
+    expect(firstLineXs).toHaveLength(3);
+    expect(secondLineXs).toHaveLength(3);
+    expect(firstLineXs[0]).toBeLessThan(firstLineXs[1]);
+    expect(firstLineXs[1]).toBeLessThan(firstLineXs[2]);
+    expect(secondLineXs[0]).toBeGreaterThan(secondLineXs[1]);
+    expect(secondLineXs[1]).toBeGreaterThan(secondLineXs[2]);
+    expect(container.innerHTML).toContain('>x1 &amp; x2<');
+    expect(container.innerHTML).toContain('>y1 &amp; y2<');
+    expect(container.innerHTML).not.toContain('Infinity');
+
+    unmount();
+  });
+
   test('renders a BarSeries from Query props', () => {
     const store = createStore().setTable('t1', {
       r1: {x: 1, y: 3},
@@ -367,6 +449,33 @@ describe('CartesianChart', () => {
     );
 
     expect(container.querySelectorAll('.plot .bar')).toHaveLength(2);
+    expect(container.innerHTML).not.toContain('Infinity');
+
+    unmount();
+  });
+
+  test('renders BarSeries with sparse x Cell Ids and sort orders', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x1: 'A', x2: 'C', y1: 3, y2: 9, z1: 1, z2: 3},
+      r2: {x1: 'B', x2: 'A', y1: 5, y2: 4, z1: 2, z2: 1},
+      r3: {x1: 'D', x2: 'E', y1: 7, y2: 6, z1: 4, z2: 5},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <BarSeries xCellId="x1" yCellId="y1" sortCellId="z1" />
+        <BarSeries
+          descending={true}
+          xCellId="x2"
+          yCellId="y2"
+          sortCellId="z2"
+        />
+      </CartesianChart>,
+    );
+
+    expect(container.querySelectorAll('.plot .bar')).toHaveLength(6);
+    expect(getXAxisTickLabels(container)).toEqual(['A', 'B', 'D', 'E', 'C']);
+    expect(container.innerHTML).toContain('>x1 &amp; x2<');
+    expect(container.innerHTML).toContain('>y1 &amp; y2<');
     expect(container.innerHTML).not.toContain('Infinity');
 
     unmount();
