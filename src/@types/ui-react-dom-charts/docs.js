@@ -100,9 +100,9 @@
   /// ChartQuerySourceProps.store
 }
 /**
- * The ChartBindingProps type describes the props that bind a chart to Cell
- * values in TinyBase data. An x Cell value can be a finite number, string, or
- * boolean. A y Cell value must be a finite number.
+ * The ChartBindingProps type describes the props that bind a LineChart or
+ * BarChart component to Cell values in TinyBase data. An x Cell value can be a
+ * finite number, string, or boolean. A y Cell value must be a finite number.
  * @category Configuration
  * @since v8.5.0
  */
@@ -217,7 +217,9 @@
 }
 /**
  * The CartesianChart component renders a chart frame and provides TinyBase
- * data to child series components.
+ * source and layout context to child LineSeries and BarSeries components.
+ *
+ * The series children declare their own xCellId and yCellId bindings.
  * @category Store components
  * @since v8.5.0
  * @example

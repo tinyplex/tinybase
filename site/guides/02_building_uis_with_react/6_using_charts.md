@@ -153,10 +153,10 @@ Inside it, the following class names are used:
 | `.axes .ticks`   | Groups containing tick label text elements.              |
 | `.axes .title`   | Axis title text elements, from `xCellId` and `yCellId`.  |
 | `.plot`          | Group containing the charted data marks.                 |
-| `.plot .area`    | Filled area under a LineChart line.                      |
-| `.plot .line`    | LineChart line path.                                     |
-| `.plot .points`  | Group containing LineChart point circles.                |
-| `.plot .bar`     | BarChart bar rectangle.                                  |
+| `.plot .area`    | Filled area under a line series.                         |
+| `.plot .line`    | Line series path.                                        |
+| `.plot .points`  | Group containing line series point circles.              |
+| `.plot .bar`     | Bar series rectangle.                                    |
 | `.tooltip-lines` | Crosshair lines shown for the hovered data point.        |
 | `.tooltip`       | Group containing the tooltip rectangle and text.         |
 
