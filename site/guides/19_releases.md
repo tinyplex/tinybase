@@ -12,9 +12,10 @@ highlighted features.
 This release adds the new ui-react-dom-charts module, providing reactive SVG
 chart components for React apps.
 
-The first components are LineChart and BarChart. They can render data directly
-from a Store Table, or from a Queries ResultTable, using the same Provider
-context patterns as the rest of the React UI modules.
+The LineChart and BarChart components can render data directly from a Store
+Table, or from a Queries ResultTable, using the same Provider context patterns
+as the rest of the React UI modules. For more complex charts, the CartesianChart
+component can compose multiple LineSeries and BarSeries children in one SVG.
 
 ![LineChart (React)](/shots/styled-chart-react-demo.png 'LineChart (React)')
 
@@ -25,16 +26,20 @@ for the x and y values:
 import React from 'react';
 import {createRoot as createReactRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
-import {LineChart} from 'tinybase/ui-react-dom-charts';
+import {
+  CartesianChart,
+  LineChart,
+  LineSeries,
+} from 'tinybase/ui-react-dom-charts';
 
 const chartStore = createStore();
 const app = document.createElement('div');
 const root = createReactRoot(app);
 
 chartStore.setTable('sales', {
-  jan: {month: 'Jan', order: 1, revenue: 12},
-  feb: {month: 'Feb', order: 2, revenue: 18},
-  mar: {month: 'Mar', order: 3, revenue: 15},
+  jan: {month: 'Jan', order: 1, profit: 4, revenue: 12},
+  feb: {month: 'Feb', order: 2, profit: 7, revenue: 18},
+  mar: {month: 'Mar', order: 3, profit: 5, revenue: 15},
 });
 
 const MyChart = () => (
@@ -51,6 +56,35 @@ root.render(<MyChart />); // !act
 
 console.log(app.firstChild?.nodeName.toLowerCase());
 // -> 'svg'
+```
+
+To plot multiple series in the same chart, use CartesianChart as the shared
+frame and declare each child series explicitly:
+
+```jsx
+const MyCompositeChart = () => (
+  <CartesianChart tableId="sales" store={chartStore}>
+    <LineSeries
+      className="revenue"
+      label="Revenue"
+      xCellId="month"
+      yCellId="revenue"
+      sortCellId="order"
+    />
+    <LineSeries
+      className="profit"
+      label="Profit"
+      xCellId="month"
+      yCellId="profit"
+      sortCellId="order"
+    />
+  </CartesianChart>
+);
+
+const compositeChartApp = document.createElement('div');
+createReactRoot(compositeChartApp).render(<MyCompositeChart />); // !act
+console.log(compositeChartApp.querySelectorAll('.line-series').length);
+// -> 2
 ```
 
 Chart presentation is handled with CSS. The chart components emit stable SVG
