@@ -481,6 +481,31 @@ describe('CartesianChart', () => {
     unmount();
   });
 
+  test('renders boolean x values as categories', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: true, y: 3, z: 1},
+      r2: {x: false, y: 5, z: 2},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <BarSeries xCellId="x" yCellId="y" sortCellId="z" />
+      </CartesianChart>,
+    );
+    const bars = container.querySelectorAll('.plot .bar');
+
+    expect(bars).toHaveLength(2);
+    expect(getXAxisTickLabels(container)).toEqual(['true', 'false']);
+    expect(container.innerHTML).toContain('>x<');
+    expect(container.innerHTML).not.toContain('Infinity');
+
+    fireEvent.pointerEnter(bars[0]);
+
+    expect(container.innerHTML).toContain('>x: true<');
+    expect(container.innerHTML).toContain('>y: 3<');
+
+    unmount();
+  });
+
   test('renders multiple BarSeries side-by-side', () => {
     const store = createStore().setTable('t1', {
       r1: {x: 'a', y1: 3, y2: 4},

@@ -12,10 +12,12 @@ import {
 import {collSize} from '../../common/coll.ts';
 import {
   infinity,
+  isFalse,
   isFiniteNumber,
   isInteger,
   isNumber,
   isString,
+  isTrue,
   isUndefined,
   mathMax,
   mathMin,
@@ -298,7 +300,9 @@ const getXValue = (
       : undefined
     : isString(cell)
       ? cell
-      : undefined;
+      : isTrue(cell) || isFalse(cell)
+        ? cell
+        : undefined;
 
 const getYValue = (
   cell: CellOrUndefined | ResultCellOrUndefined,

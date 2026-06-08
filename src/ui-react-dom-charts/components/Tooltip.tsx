@@ -1,4 +1,4 @@
-import {isNullish, mathMax, mathMin} from '../../common/other.ts';
+import {isNullish, mathMax, mathMin, string} from '../../common/other.ts';
 import {
   CURRENT_COLOR,
   type PlotFrame,
@@ -60,7 +60,7 @@ export const Tooltip = ({
           rx={4}
         />
         <text x={TOOLTIP_PADDING} y={22}>
-          {pointXTitle ?? xTitle}: {xValue}
+          {pointXTitle ?? xTitle}: {string(xValue)}
         </text>
         <text x={TOOLTIP_PADDING} y={46}>
           {pointYTitle ?? yTitle}: {yValue}

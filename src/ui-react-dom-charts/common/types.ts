@@ -61,7 +61,7 @@ export type PlotFrame = readonly [
 
 export type SetTooltipPoint = (point: ScaledPoint | undefined) => void;
 
-export type XValue = number | string;
+export type XValue = boolean | number | string;
 export type DataPoint = readonly [
   rowId: string,
   xValue: XValue,

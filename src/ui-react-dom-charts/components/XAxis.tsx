@@ -1,5 +1,5 @@
 import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
-import {isNumber, mathMax} from '../../common/other.ts';
+import {isNumber, mathMax, string} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {
   CURRENT_COLOR,
@@ -22,8 +22,8 @@ export const XAxis = ({
 }: {
   readonly points: ScaledPoint[];
   readonly xTicks: Ticks;
-  readonly xMin: number | string | undefined;
-  readonly xMax: number | string | undefined;
+  readonly xMin: boolean | number | string | undefined;
+  readonly xMax: boolean | number | string | undefined;
   readonly xTitle: string;
   readonly plotFrame: PlotFrame;
   readonly tickSize: number;
@@ -51,7 +51,7 @@ export const XAxis = ({
                 x={plotX + x}
                 y={plotY + plotHeight + tickSize + tickGap}
               >
-                {xValue}
+                {string(xValue)}
               </text>
             ))
           : arrayMap(xTicks, (tick) => {
