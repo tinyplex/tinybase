@@ -100,9 +100,9 @@
   /// ChartQuerySourceProps.store
 }
 /**
- * The ChartBindingProps type describes the props that bind a LineChart or
- * BarChart component to Cell values in TinyBase data. An x Cell value can be a
- * finite number, string, or boolean. A y Cell value must be a finite number.
+ * The ChartBindingProps type describes the props that bind a LineChart component
+ * or BarChart component to Cell values in TinyBase data. An x Cell value can be
+ * a finite number, string, or boolean. A y Cell value must be a finite number.
  * @category Configuration
  * @since v8.5.0
  */
@@ -217,14 +217,15 @@
 }
 /**
  * The CartesianChart component renders a chart frame and provides TinyBase
- * source and layout context to child LineSeries and BarSeries components.
+ * source and layout context to LineSeries component and BarSeries component
+ * children.
  *
  * The series children declare their own xCellId and yCellId bindings.
  * @category Store components
  * @since v8.5.0
  * @example
- * This example creates a Store and renders two LineSeries components in a
- * CartesianChart.
+ * This example creates a Store and renders two LineSeries component children
+ * in a CartesianChart component.
  *
  * ```jsx
  * import React from 'react';
@@ -260,11 +261,11 @@
  */
 /// CartesianChart
 /**
- * The LineSeries component renders a line series in a CartesianChart
- * component. If every x value in every series is a finite number, the x axis is
- * rendered as a continuous numeric scale. If any x value is a string or
- * boolean, the x axis is rendered categorically. When sortCellId is omitted,
- * rows are sorted by xCellId.
+ * The LineSeries component renders a line series in a CartesianChart component.
+ * If every x value in every series is a finite number, the x axis is rendered
+ * as a continuous numeric scale. If any x value is a string or boolean, the x
+ * axis is rendered categorically. When sortCellId is omitted, rows are sorted
+ * by xCellId.
  * @category Store components
  * @since v8.5.0
  */

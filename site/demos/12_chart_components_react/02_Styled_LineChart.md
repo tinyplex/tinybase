@@ -2,7 +2,8 @@
 
 ![Styled Chart](/shots/styled-chart-react-demo.png)
 
-In this demo, we apply CSS to a LineChart to show how all its visual aspects can be styled.
+In this demo, we apply CSS to a LineChart component to show how all its visual
+aspects can be styled.
 
 Rather than building the whole demo and boilerplate from scratch, we're making
 changes to the <LineChart /> demo to show how the SVG output can be
@@ -115,4 +116,4 @@ And that's a styled chart with no additional chart props. The component handles
 reactive data and geometry, while CSS handles the presentation.
 
 Next, the [Composing Charts](/demos/chart-components-react/composing-charts/)
-demo shows how CartesianChart can combine multiple series in one SVG.
+demo shows how CartesianChart component can combine multiple series in one SVG.

@@ -80,8 +80,9 @@ addEventListener('load', () => createRoot(document.body).render(<App />));
 
 ## The Chart Gallery
 
-When the x values are all numbers, a LineChart uses a continuous x axis. String
-and boolean x values are categories, and can be ordered with `sortCellId`:
+When the x values are all numbers, a LineChart component uses a continuous x
+axis. String and boolean x values are categories, and can be ordered with
+`sortCellId`:
 
 ```jsx
 const Body = () => (

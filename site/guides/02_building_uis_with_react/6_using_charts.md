@@ -9,7 +9,7 @@ you can usually bind a chart to data with just a few props.
 
 For example, a small sales Table can be rendered as a line chart:
 
-![LineChart example](/shots/basic-chart-react-demo.png 'LineChart example')
+![LineChart component example](/shots/basic-chart-react-demo.png 'LineChart component example')
 
 ## Rendering A Line Chart
 
@@ -165,12 +165,12 @@ prefer scoped selectors such as `.chart .plot .line` or `.chart .axes .title`.
 
 For complete examples, see the Chart Components (React) demos:
 
-| Demo              | Purpose                                      |                   |
-| ----------------- | -------------------------------------------- | ----------------- |
-| LineChart         | Renders x and y Cells from a Table.          | [demo][linechart] |
-| Styled LineChart  | Styles the chart SVG with regular CSS rules. | [demo][styled]    |
-| Composing Charts  | Combines multiple series in one chart.       | [demo][composing] |
-| Sorting And Types | Shows sorting and x value types.             | [demo][sorting]   |
+| Demo                       | Purpose                                      |                   |
+| -------------------------- | -------------------------------------------- | ----------------- |
+| LineChart component        | Renders x and y Cells from a Table.          | [demo][linechart] |
+| Styled LineChart component | Styles the chart SVG with regular CSS rules. | [demo][styled]    |
+| Composing Charts           | Combines multiple series in one chart.       | [demo][composing] |
+| Sorting And Types          | Shows sorting and x value types.             | [demo][sorting]   |
 
 [linechart]: /demos/chart-components-react/linechart/
 [styled]: /demos/chart-components-react/linechart-styled/

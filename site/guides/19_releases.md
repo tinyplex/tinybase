@@ -12,12 +12,13 @@ highlighted features.
 This release adds the new ui-react-dom-charts module, providing reactive SVG
 chart components for React apps.
 
-The LineChart and BarChart components can render data directly from a Store
-Table, or from a Queries ResultTable, using the same Provider context patterns
-as the rest of the React UI modules. For more complex charts, the CartesianChart
-component can compose multiple LineSeries and BarSeries children in one SVG.
+The LineChart component and BarChart component can render data directly from a
+Store Table, or from a Queries ResultTable, using the same Provider context
+patterns as the rest of the React UI modules. For more complex charts, the
+CartesianChart component can compose multiple LineSeries component children and
+BarSeries component children in one SVG.
 
-![LineChart (React)](/shots/styled-chart-react-demo.png 'LineChart (React)')
+![LineChart component (React)](/shots/styled-chart-react-demo.png 'LineChart component (React)')
 
 A chart can be bound to a Table with just the Table Id and the Cell Ids to use
 for the x and y values:
@@ -58,8 +59,8 @@ console.log(app.firstChild?.nodeName.toLowerCase());
 // -> 'svg'
 ```
 
-To plot multiple series in the same chart, use CartesianChart as the shared
-frame and declare each child series explicitly:
+To plot multiple series in the same chart, use the CartesianChart component as
+the shared frame and declare each child series explicitly:
 
 ```jsx
 const MyCompositeChart = () => (

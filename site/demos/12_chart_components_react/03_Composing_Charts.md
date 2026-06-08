@@ -2,9 +2,9 @@
 
 ![Composing Charts](/shots/composing-charts-react-demo.png)
 
-This demo shows how CartesianChart can render multiple child series from the
-same Table. Each child series owns its own Cell bindings, while the parent chart
-coordinates the shared axes and layout.
+This demo shows how CartesianChart component can render multiple child series
+from the same Table. Each child series owns its own Cell bindings, while the
+parent chart coordinates the shared axes and layout.
 
 ## Boilerplate
 
@@ -69,9 +69,9 @@ addEventListener('load', () => createRoot(document.body).render(<App />));
 
 ## The Chart Gallery
 
-Each CartesianChart supplies the source and frame. LineSeries and BarSeries
-children then declare their own `xCellId`, `yCellId`, `sortCellId`, labels, and
-CSS classes:
+Each CartesianChart component supplies the source and frame. The child
+LineSeries component and BarSeries component declarations then set their own
+`xCellId`, `yCellId`, `sortCellId`, labels, and CSS classes:
 
 ```jsx
 const Body = () => (

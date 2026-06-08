@@ -7,12 +7,12 @@ Queries ResultTables as simple SVG charts.
 
 The set is organized as a small gallery of chart themes:
 
-| Theme       | Demo                          |
-| ----------- | ----------------------------- |
-| Basics      | [LineChart][linechart]        |
-| Styling     | [Styled LineChart][styled]    |
-| Composition | [Composing Charts][composing] |
-| Data        | [Sorting And Types][sorting]  |
+| Theme       | Demo                                 |
+| ----------- | ------------------------------------ |
+| Basics      | [LineChart component][linechart]     |
+| Styling     | [Styled LineChart component][styled] |
+| Composition | [Composing Charts][composing]        |
+| Data        | [Sorting And Types][sorting]         |
 
 [linechart]: /demos/chart-components-react/linechart/
 [styled]: /demos/chart-components-react/linechart-styled/
