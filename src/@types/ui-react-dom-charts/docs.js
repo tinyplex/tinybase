@@ -101,20 +101,26 @@
 }
 /**
  * The ChartBindingProps type describes the props that bind a chart to Cell
- * values in TinyBase data.
+ * values in TinyBase data. An x Cell value can be a finite number, string, or
+ * boolean. A y Cell value must be a finite number.
  * @category Configuration
  * @since v8.5.0
  */
 /// ChartBindingProps
 {
   /**
-   * The Id of the Cell that provides each data point's x value.
+   * The Id of the Cell that provides each data point's x value. Finite numbers
+   * can be used as continuous x values in line charts, while strings and
+   * booleans are used as category values. Boolean category labels are rendered
+   * as `true` and `false`.
    * @category Prop
    * @since v8.5.0
    */
   /// ChartBindingProps.xCellId
   /**
-   * The Id of the Cell that provides each data point's y value.
+   * The Id of the Cell that provides each data point's y value. Only finite
+   * numbers are charted; rows with missing, non-numeric, or non-finite y values
+   * are ignored.
    * @category Prop
    * @since v8.5.0
    */
@@ -146,7 +152,8 @@
 }
 /**
  * The ChartSeriesProps type describes the props that bind a chart series to
- * Cell values in TinyBase data.
+ * Cell values in TinyBase data. An x Cell value can be a finite number,
+ * string, or boolean. A y Cell value must be a finite number.
  * @category Configuration
  * @since v8.5.0
  */
@@ -160,13 +167,18 @@
    */
   /// ChartSeriesProps.className
   /**
-   * The Id of the Cell that provides each data point's x value.
+   * The Id of the Cell that provides each data point's x value. Finite numbers
+   * can be used as continuous x values in line series, while strings and
+   * booleans are used as category values. Boolean category labels are rendered
+   * as `true` and `false`.
    * @category Prop
    * @since v8.5.0
    */
   /// ChartSeriesProps.xCellId
   /**
-   * The Id of the Cell that provides each data point's y value.
+   * The Id of the Cell that provides each data point's y value. Only finite
+   * numbers are charted; rows with missing, non-numeric, or non-finite y values
+   * are ignored.
    * @category Prop
    * @since v8.5.0
    */
@@ -247,19 +259,27 @@
 /// CartesianChart
 /**
  * The LineSeries component renders a line series in a CartesianChart
- * component.
+ * component. If every x value in every series is a finite number, the x axis is
+ * rendered as a continuous numeric scale. If any x value is a string or
+ * boolean, the x axis is rendered categorically. When sortCellId is omitted,
+ * rows are sorted by xCellId.
  * @category Store components
  * @since v8.5.0
  */
 /// LineSeries
 /**
  * The BarSeries component renders a bar series in a CartesianChart component.
+ * Its x values are always rendered categorically, even when they are finite
+ * numbers. Boolean category labels are rendered as `true` and `false`.
  * @category Store components
  * @since v8.5.0
  */
 /// BarSeries
 /**
- * The LineChart component renders a line chart from TinyBase data.
+ * The LineChart component renders a line chart from TinyBase data. If every x
+ * value is a finite number, the x axis is rendered as a continuous numeric
+ * scale. If any x value is a string or boolean, the x axis is rendered
+ * categorically. When sortCellId is omitted, rows are sorted by xCellId.
  * @category Store components
  * @since v8.5.0
  * @example
@@ -299,7 +319,9 @@
  */
 /// LineChart
 /**
- * The BarChart component renders a bar chart from TinyBase data.
+ * The BarChart component renders a bar chart from TinyBase data. Its x values
+ * are always rendered categorically, even when they are finite numbers. Boolean
+ * category labels are rendered as `true` and `false`.
  * @category Store components
  * @since v8.5.0
  * @example
