@@ -1,25 +1,29 @@
-<link rel="preload" as="image" href="https://beta.tinybase.org/shots/styled-chart-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-svelte-full-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/car-analysis-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/movie-database-demo.png"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v8-5">v8.5</h1><h2 id="react-chart-components">React Chart Components</h2><p>This release adds the new <a href="https://beta.tinybase.org/api/ui-react-dom-charts/"><code>ui-react-dom-charts</code></a> module, providing reactive SVG chart components for React apps.</p><p>The first components are LineChart and BarChart. They can render data directly from a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>, or from a <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a> <a href="https://beta.tinybase.org/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a>, using the same Provider context patterns as the rest of the React UI modules.</p><p><img src="https://beta.tinybase.org/shots/styled-chart-react-demo.png" alt="LineChart (React)" title="LineChart (React)"></p><p>A chart can be bound to a <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> with just the <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id/"><code>Id</code></a> and the <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> to use for the x and y values:</p>
+<link rel="preload" as="image" href="https://beta.tinybase.org/shots/styled-chart-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-svelte-full-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/car-analysis-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/movie-database-demo.png"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v8-5">v8.5</h1><h2 id="react-chart-components">React Chart Components</h2><p>This release adds the new <a href="https://beta.tinybase.org/api/ui-react-dom-charts/"><code>ui-react-dom-charts</code></a> module, providing reactive SVG chart components for React apps.</p><p>The LineChart and <a href="https://beta.tinybase.org/api/ui-react-dom-charts/functions/store-components/barchart/"><code>BarChart</code></a> components can render data directly from a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>, or from a <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a> <a href="https://beta.tinybase.org/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a>, using the same Provider context patterns as the rest of the React UI modules. For more complex charts, the <a href="https://beta.tinybase.org/api/ui-react-dom-charts/functions/store-components/cartesianchart/"><code>CartesianChart</code></a> component can compose multiple LineSeries and BarSeries children in one SVG.</p><p><img src="https://beta.tinybase.org/shots/styled-chart-react-demo.png" alt="LineChart (React)" title="LineChart (React)"></p><p>A chart can be bound to a <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> with just the <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id/"><code>Id</code></a> and the <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> to use for the x and y values:</p>
 
 ```jsx
 import React from 'react';
 import {createRoot as createReactRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
-import {LineChart} from 'tinybase/ui-react-dom-charts';
+import {
+  CartesianChart,
+  LineChart,
+  LineSeries,
+} from 'tinybase/ui-react-dom-charts';
 
-const store = createStore();
+const chartStore = createStore();
 const app = document.createElement('div');
 const root = createReactRoot(app);
 
-store.setTable('sales', {
-  jan: {month: 'Jan', order: 1, revenue: 12},
-  feb: {month: 'Feb', order: 2, revenue: 18},
-  mar: {month: 'Mar', order: 3, revenue: 15},
+chartStore.setTable('sales', {
+  jan: {month: 'Jan', order: 1, profit: 4, revenue: 12},
+  feb: {month: 'Feb', order: 2, profit: 7, revenue: 18},
+  mar: {month: 'Mar', order: 3, profit: 5, revenue: 15},
 });
 
 const MyChart = () => (
   <LineChart
     tableId="sales"
-    store={store}
+    store={chartStore}
     xCellId="month"
     yCellId="revenue"
     sortCellId="order"
@@ -30,6 +34,34 @@ root.render(<MyChart />);
 
 console.log(app.firstChild?.nodeName.toLowerCase());
 // -> 'svg'
+```
+
+<p>To plot multiple series in the same chart, use CartesianChart as the shared frame and declare each child series explicitly:</p>
+
+```jsx
+const MyCompositeChart = () => (
+  <CartesianChart tableId="sales" store={chartStore}>
+    <LineSeries
+      className="revenue"
+      label="Revenue"
+      xCellId="month"
+      yCellId="revenue"
+      sortCellId="order"
+    />
+    <LineSeries
+      className="profit"
+      label="Profit"
+      xCellId="month"
+      yCellId="profit"
+      sortCellId="order"
+    />
+  </CartesianChart>
+);
+
+const compositeChartApp = document.createElement('div');
+createReactRoot(compositeChartApp).render(<MyCompositeChart />);
+console.log(compositeChartApp.querySelectorAll('.line-series').length);
+// -> 2
 ```
 
 <p>Chart presentation is handled with CSS. The chart components emit stable SVG class names for grid lines, axes, data marks, and tooltips, so you can keep data binding in props and visual styling in stylesheets.</p><p>Read more in the <a href="https://beta.tinybase.org/guides/building-uis-with-react/using-charts/">Using Charts</a> guide and the <a href="https://beta.tinybase.org/demos/chart-components-react/">Chart Components (React)</a> demos.</p><p>There are no intended breaking changes in this release. Please try the new chart components and let us know which chart types or styling hooks would be most useful next.</p><hr><h1 id="v8-4">v8.4</h1><h2 id="solid-dom-components-and-inspector">Solid DOM Components And Inspector</h2><p>This release completes TinyBase&#x27;s Solid support with two new additions: the <a href="https://beta.tinybase.org/api/ui-solid-dom/"><code>ui-solid-dom</code></a> module and the <a href="https://beta.tinybase.org/api/ui-solid-inspector/"><code>ui-solid-inspector</code></a> module.</p><p>The <a href="https://beta.tinybase.org/api/ui-solid-dom/"><code>ui-solid-dom</code></a> module provides browser-ready Solid components for rendering and editing TinyBase data as HTML tables. They mirror the React DOM components, but use Solid components and Accessors throughout.</p><p><img src="https://beta.tinybase.org/shots/sortedtableinhtmltable-solid-demo.png" alt="SortedTableInHtmlTable (Solid)" title="SortedTableInHtmlTable (Solid)"></p><p>Alongside the table components, the new <a href="https://beta.tinybase.org/api/ui-solid-inspector/"><code>ui-solid-inspector</code></a> module brings the TinyBase development inspector to Solid apps too, making it easy to inspect and edit Stores, <a href="https://beta.tinybase.org/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a>, <a href="https://beta.tinybase.org/api/relationships/interfaces/relationships/relationships/"><code>Relationships</code></a>, and <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a> during development:</p><p><img src="https://beta.tinybase.org/shots/inspector-solid-demo.png" alt="Inspector (Solid)" title="Inspector (Solid)"></p><p>A small Solid app can use both modules together:</p>
@@ -215,6 +247,8 @@ import {useCell, Provider} from 'tinybase/ui-react';
 <p>(Sorry about that!)</p><h2 id="we-need-your-help">We need your help</h2><p>We hope you enjoy exploring this early new Svelte support. But we really need feedback on how it works and whether or not you find it easy and idiomatic to work with! Please let us know in the issues, discussions, or on social media. Thanks and good luck!</p><hr><h1 id="v8-0">v8.0</h1><h2 id="object-and-array-types">Object And Array Types</h2><p>This release extends the range of types that a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> or <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> can hold. Previously, TinyBase supported <code>string</code>, <code>number</code>, <code>boolean</code>, and (since v7.0) <code>null</code>. Now you can also store plain JavaScript <strong>objects</strong> and <strong>arrays</strong> directly in a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</p>
 
 ```js
+const store = createStore();
+
 store.delTables().setRow('pets', 'fido', {
   species: 'dog',
   traits: {friendly: true, energetic: true},

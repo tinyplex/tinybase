@@ -118,7 +118,8 @@ export const CartesianChart = ({
   const [tooltipPoint, setTooltipPoint] = useState<ScaledPoint | undefined>();
   const xValues = domainState.xValues;
   const dataBounds = domainState.bounds;
-  const axisKind = domainState.continuousX ? 'line' : 'bar';
+  const axisKind =
+    domainState.continuousX || arrayIsEmpty(barSeriesIds) ? 'line' : 'bar';
   const xTicks = getXTicks(axisKind, dataBounds, plotSize, labelSize);
   const yTicks = getYTicks(dataBounds, plotSize, labelSize);
   const tickBounds = getTickBounds(dataBounds, xTicks, yTicks);

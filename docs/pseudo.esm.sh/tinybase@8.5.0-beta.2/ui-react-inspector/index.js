@@ -1,10 +1,10 @@
 // dist/ui-react-inspector/index.js
-import React2 from "https://esm.sh/react@^19.2.6";
-import { Fragment, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+import React2 from "https://esm.sh/react@^19.2.7";
+import { Fragment as Fragment$1, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.7/jsx-runtime";
 
 // dist/ui-react/index.js
-import React from "https://esm.sh/react@^19.2.6";
-import { jsx } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+import React from "https://esm.sh/react@^19.2.7";
+import { jsx } from "https://esm.sh/react@^19.2.7/jsx-runtime";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -80,8 +80,11 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
 };
 var jsonString = JSON.stringify;
 var {
+  Children,
+  Fragment,
   PureComponent,
   createContext,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
@@ -2872,8 +2875,11 @@ var requestInspectorIdleCallback = (callback) => globalThis.requestIdleCallback?
 );
 var cancelInspectorIdleCallback = (id2) => globalThis.cancelIdleCallback?.(id2) ?? clearTimeout(id2);
 var {
+  Children: Children2,
+  Fragment: Fragment2,
   PureComponent: PureComponent2,
   createContext: createContext2,
+  isValidElement: isValidElement2,
   useCallback: useCallback2,
   useContext: useContext2,
   useEffect: useEffect2,
@@ -3540,7 +3546,7 @@ var RelationshipInHtmlRow = ({
   return /* @__PURE__ */ jsxs("tr", {
     children: [
       extraRowCells(extraCellsBefore, rowProps),
-      isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment, {
+      isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment$1, {
         children: [
           /* @__PURE__ */ jsx2("th", {
             title: localRowId,
@@ -3617,7 +3623,7 @@ var RelationshipInHtmlTable = ({
         children: /* @__PURE__ */ jsxs("tr", {
           children: [
             extraHeaders(extraCellsBefore),
-            isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment, {
+            isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment$1, {
               children: [
                 /* @__PURE__ */ jsxs("th", {
                   children: [localTableId, ".Id"]
@@ -3719,9 +3725,9 @@ var SortedTablePaginator = ({
     [onChange, offset, limit],
     offset + limit < total
   );
-  return /* @__PURE__ */ jsxs(Fragment, {
+  return /* @__PURE__ */ jsxs(Fragment$1, {
     children: [
-      total > limit && /* @__PURE__ */ jsxs(Fragment, {
+      total > limit && /* @__PURE__ */ jsxs(Fragment$1, {
         children: [
           /* @__PURE__ */ jsx2("button", {
             className: "previous",
@@ -4179,7 +4185,7 @@ var ConfirmableActions = ({ actions, ...props }) => {
   }, [confirming, handleDone]);
   if (!isUndefined2(confirming)) {
     const [, , Component] = actions[confirming];
-    return /* @__PURE__ */ jsxs(Fragment, {
+    return /* @__PURE__ */ jsxs(Fragment$1, {
       children: [
         /* @__PURE__ */ jsx2(Component, { onDone: handleDone, ...props }),
         /* @__PURE__ */ jsx2("img", {
@@ -4232,7 +4238,7 @@ var NewId = ({ onDone, suggestedId, has, set, prompt = "New Id" }) => {
     setNewId(suggestedId);
     setPreviousSuggestedNewId(suggestedId);
   }
-  return /* @__PURE__ */ jsxs(Fragment, {
+  return /* @__PURE__ */ jsxs(Fragment$1, {
     children: [
       prompt + ": ",
       /* @__PURE__ */ jsx2("input", {
@@ -4265,7 +4271,7 @@ var Delete = ({ onClick, prompt = "Delete" }) => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
-  return /* @__PURE__ */ jsxs(Fragment, {
+  return /* @__PURE__ */ jsxs(Fragment$1, {
     children: [
       prompt,
       "? ",
@@ -4430,7 +4436,7 @@ var CellActions = ({ tableId, rowId, cellId, store }) => /* @__PURE__ */ jsx2(Co
   cellId
 });
 var rowActions = [{ label: "", component: RowActions }];
-var EditableCellViewWithActions = (props) => /* @__PURE__ */ jsxs(Fragment, {
+var EditableCellViewWithActions = (props) => /* @__PURE__ */ jsxs(Fragment$1, {
   children: [
     /* @__PURE__ */ jsx2(EditableCellView, { ...props }),
     useHasCell(props.tableId, props.rowId, props.cellId, props.store) && /* @__PURE__ */ jsx2(CellActions, { ...props })
@@ -4778,7 +4784,7 @@ var Inspector = ({ position = "right", open: open2 = false, hue = 270 }) => {
       await persister.startAutoSave();
     }
   );
-  return /* @__PURE__ */ jsxs(Fragment, {
+  return /* @__PURE__ */ jsxs(Fragment$1, {
     children: [
       /* @__PURE__ */ jsxs("aside", {
         id: UNIQUE_ID,

@@ -1,10 +1,10 @@
 // dist/ui-react-dom/index.js
-import React2 from "https://esm.sh/react@^19.2.6";
-import { Fragment, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+import React2 from "https://esm.sh/react@^19.2.7";
+import { Fragment as Fragment$1, jsx as jsx2, jsxs } from "https://esm.sh/react@^19.2.7/jsx-runtime";
 
 // dist/ui-react/index.js
-import React from "https://esm.sh/react@^19.2.6";
-import { jsx } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+import React from "https://esm.sh/react@^19.2.7";
+import { jsx } from "https://esm.sh/react@^19.2.7/jsx-runtime";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -71,8 +71,11 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
 };
 var jsonString = JSON.stringify;
 var {
+  Children,
+  Fragment,
   PureComponent,
   createContext,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
@@ -342,8 +345,11 @@ var objIsEqual2 = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2)
 var jsonString2 = JSON.stringify;
 var jsonParse = JSON.parse;
 var {
+  Children: Children2,
+  Fragment: Fragment2,
   PureComponent: PureComponent2,
   createContext: createContext2,
+  isValidElement: isValidElement2,
   useCallback: useCallback2,
   useContext: useContext2,
   useEffect: useEffect2,
@@ -976,7 +982,7 @@ var RelationshipInHtmlRow = ({
   return /* @__PURE__ */ jsxs("tr", {
     children: [
       extraRowCells(extraCellsBefore, rowProps),
-      isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment, {
+      isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment$1, {
         children: [
           /* @__PURE__ */ jsx2("th", {
             title: localRowId,
@@ -1053,7 +1059,7 @@ var RelationshipInHtmlTable = ({
         children: /* @__PURE__ */ jsxs("tr", {
           children: [
             extraHeaders(extraCellsBefore),
-            isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment, {
+            isFalse(idColumn) ? null : /* @__PURE__ */ jsxs(Fragment$1, {
               children: [
                 /* @__PURE__ */ jsxs("th", {
                   children: [localTableId, ".Id"]
@@ -1155,9 +1161,9 @@ var SortedTablePaginator = ({
     [onChange, offset, limit],
     offset + limit < total
   );
-  return /* @__PURE__ */ jsxs(Fragment, {
+  return /* @__PURE__ */ jsxs(Fragment$1, {
     children: [
-      total > limit && /* @__PURE__ */ jsxs(Fragment, {
+      total > limit && /* @__PURE__ */ jsxs(Fragment$1, {
         children: [
           /* @__PURE__ */ jsx2("button", {
             className: "previous",

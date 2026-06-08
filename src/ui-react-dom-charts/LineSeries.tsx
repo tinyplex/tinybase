@@ -10,7 +10,9 @@ import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
 export const LineSeries = ((props: ChartSeriesProps) => {
   const {
+    barSeriesCount,
     bounds,
+    domainState,
     plotFrame,
     plotSize,
     setSeriesSummary,
@@ -20,7 +22,7 @@ export const LineSeries = ((props: ChartSeriesProps) => {
   const {className, label, xCellId, yCellId} = props;
   const [seriesId, rawPoints] = useSeriesData(props);
   const points = getScaledPoints(
-    'line',
+    domainState.continuousX || barSeriesCount == 0 ? 'line' : 'bar',
     rawPoints,
     bounds,
     plotSize,

@@ -22,6 +22,11 @@ const getXAxisTickLabels = (container: HTMLElement): (string | null)[] =>
     (text) => text.textContent,
   );
 
+const getXAxisTickXs = (container: HTMLElement): number[] =>
+  Array.from(container.querySelectorAll('.axes .x .ticks text'), (text) =>
+    Number(text.getAttribute('x')),
+  );
+
 const getLinePathXs = (container: HTMLElement): number[][] =>
   Array.from(container.querySelectorAll('.plot .line-series .line'), (path) =>
     Array.from(
@@ -252,6 +257,22 @@ describe.each(CHARTS)('%s', (_chartName, Chart) => {
 });
 
 describe('CartesianChart', () => {
+  test('aligns categorical LineChart x-axis labels with points', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 'A', y: 3},
+      r2: {x: 'B', y: 5},
+      r3: {x: 'C', y: 4},
+    });
+    const {container, unmount} = render(
+      <LineChart store={store} tableId="t1" xCellId="x" yCellId="y" />,
+    );
+
+    expect(getXAxisTickLabels(container)).toEqual(['A', 'B', 'C']);
+    expect(getXAxisTickXs(container)).toEqual(getLinePathXs(container)[0]);
+
+    unmount();
+  });
+
   test('renders a LineSeries from Table props', () => {
     const store = createStore().setTable('t1', {
       r1: {x: 1, y: 3},

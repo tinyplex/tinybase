@@ -53,15 +53,15 @@ const _App = () => {
     xCellId: 'c1',
     yCellId: 'c1d',
   });
-  LineChart({
-    // !
+  // prettier-ignore
+  LineChart({ // !
     tableId: 't',
     queryId: 'q',
     xCellId: 'x',
     yCellId: 'y',
   });
-  BarChart({
-    // !
+  // prettier-ignore
+  BarChart({ // !
     queryId: 'q',
     tableId: 't',
     xCellId: 'x',

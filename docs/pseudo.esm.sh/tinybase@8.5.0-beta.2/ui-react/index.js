@@ -1,6 +1,6 @@
 // dist/ui-react/index.js
-import React from "https://esm.sh/react@^19.2.6";
-import { jsx } from "https://esm.sh/react@^19.2.6/jsx-runtime";
+import React from "https://esm.sh/react@^19.2.7";
+import { jsx } from "https://esm.sh/react@^19.2.7/jsx-runtime";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -92,8 +92,11 @@ var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) 
 };
 var jsonString = JSON.stringify;
 var {
+  Children,
+  Fragment,
   PureComponent,
   createContext,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
