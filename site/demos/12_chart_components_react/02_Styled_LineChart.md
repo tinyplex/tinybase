@@ -101,3 +101,6 @@ and can be styled too:
 
 And that's a styled chart with no additional chart props. The component handles
 reactive data and geometry, while CSS handles the presentation.
+
+Next, the [Composing Charts](/demos/chart-components-react/composing-charts/)
+demo shows how CartesianChart can combine multiple series in one SVG.

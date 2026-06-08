@@ -14,7 +14,7 @@ For example, a small sales Table can be rendered as a line chart:
 ## Rendering A Line Chart
 
 The LineChart component renders a series from Cells in a Table. The x Cell can
-contain numbers or strings, and the y Cell should contain numbers:
+contain numbers, strings, or booleans, and the y Cell should contain numbers:
 
 ```jsx
 import React from 'react';
@@ -165,10 +165,17 @@ prefer scoped selectors such as `.chart .plot .line` or `.chart .axes .title`.
 
 For complete examples, see the Chart Components (React) demos:
 
-| Demo             | Purpose                                      |                                                         |
-| ---------------- | -------------------------------------------- | ------------------------------------------------------- |
-| LineChart        | Renders x and y Cells from a Table.          | [demo](/demos/chart-components-react/linechart/)        |
-| Styled LineChart | Styles the chart SVG with regular CSS rules. | [demo](/demos/chart-components-react/linechart-styled/) |
+| Demo              | Purpose                                      |                   |
+| ----------------- | -------------------------------------------- | ----------------- |
+| LineChart         | Renders x and y Cells from a Table.          | [demo][linechart] |
+| Styled LineChart  | Styles the chart SVG with regular CSS rules. | [demo][styled]    |
+| Composing Charts  | Combines multiple series in one chart.       | [demo][composing] |
+| Sorting And Types | Shows sorting and x value types.             | [demo][sorting]   |
+
+[linechart]: /demos/chart-components-react/linechart/
+[styled]: /demos/chart-components-react/linechart-styled/
+[composing]: /demos/chart-components-react/composing-charts/
+[sorting]: /demos/chart-components-react/sorting-and-types/
 
 ## Summary
 

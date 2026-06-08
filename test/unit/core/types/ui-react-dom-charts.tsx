@@ -75,6 +75,8 @@ const _App = () => {
   });
   CartesianChart({tableId: 't', xCellId: 'x'}); // !
   CartesianChart({tableId: 't', xDomain: [0, 1]}); // !
+  // prettier-ignore
+  LineChartWithSchemas({tableId: 't1', xCellId: 'c1b', yCellId: 'c1b'}); // !
 
   return (
     <>
@@ -88,11 +90,9 @@ const _App = () => {
       <LineSeries tableId="t1" xCellId="c1" yCellId="c1d" /> {/* ! */}
       {/*
     
-    */}
+      */}
       <LineChartWithSchemas tableId="t1" xCellId="c1" yCellId="c1" />
       <LineChartWithSchemas tableId="t1" xCellId="c1b" yCellId="c1" />
-      {/* prettier-ignore */}
-      <LineChartWithSchemas tableId="t1" xCellId="c1b" yCellId="c1b" /> {/* ! */}
       <BarChartWithSchemas
         tableId="t1"
         xCellId="c1b"
