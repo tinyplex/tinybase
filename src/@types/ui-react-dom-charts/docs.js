@@ -220,6 +220,11 @@
  * source and layout context to LineSeries component and BarSeries component
  * children.
  *
+ * See the Composing Charts (React) demo for this component in action:
+ *
+ * ![CartesianChart component example](/shots/composing-charts-react-demo.png
+ * "CartesianChart component example")
+ *
  * The series children declare their own xCellId and yCellId bindings.
  * @category Store components
  * @since v8.5.0
@@ -266,6 +271,12 @@
  * as a continuous numeric scale. If any x value is a string or boolean, the x
  * axis is rendered categorically. When sortCellId is omitted, rows are sorted
  * by xCellId.
+ *
+ * See the Composing Charts (React) demo for this component in action:
+ *
+ * ![LineSeries component example](/shots/composing-charts-react-demo.png
+ * "LineSeries component example")
+ *
  * @category Store components
  * @since v8.5.0
  */
@@ -274,6 +285,12 @@
  * The BarSeries component renders a bar series in a CartesianChart component.
  * Its x values are always rendered categorically, even when they are finite
  * numbers. Boolean category labels are rendered as `true` and `false`.
+ *
+ * See the Composing Charts (React) demo for this component in action:
+ *
+ * ![BarSeries component example](/shots/composing-charts-react-demo.png
+ * "BarSeries component example")
+ *
  * @category Store components
  * @since v8.5.0
  */
@@ -283,6 +300,12 @@
  * value is a finite number, the x axis is rendered as a continuous numeric
  * scale. If any x value is a string or boolean, the x axis is rendered
  * categorically. When sortCellId is omitted, rows are sorted by xCellId.
+ *
+ * See the <LineChart /> (React) demo for this component in action:
+ *
+ * ![LineChart component example](/shots/basic-chart-react-demo.png
+ * "LineChart component example")
+ *
  * @category Store components
  * @since v8.5.0
  * @example
@@ -325,6 +348,12 @@
  * The BarChart component renders a bar chart from TinyBase data. Its x values
  * are always rendered categorically, even when they are finite numbers. Boolean
  * category labels are rendered as `true` and `false`.
+ *
+ * See the Sorting And Types (React) demo for this component in action:
+ *
+ * ![BarChart component example](/shots/sorting-and-types-react-demo.png
+ * "BarChart component example")
+ *
  * @category Store components
  * @since v8.5.0
  * @example
