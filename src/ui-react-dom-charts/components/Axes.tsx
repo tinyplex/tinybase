@@ -1,4 +1,8 @@
 import {
+  type XAxisProps,
+  type YAxisProps,
+} from '../../@types/ui-react-dom-charts/index.d.ts';
+import {
   CURRENT_COLOR,
   type Bounds,
   type PlotFrame,
@@ -9,6 +13,8 @@ import {XAxis} from './XAxis.tsx';
 import {YAxis} from './YAxis.tsx';
 
 export const Axes = ({
+  xAxis,
+  yAxis,
   points,
   xTicks,
   yTicks,
@@ -19,6 +25,8 @@ export const Axes = ({
   fontSize,
   ...sharedProps
 }: {
+  readonly xAxis?: XAxisProps;
+  readonly yAxis?: YAxisProps;
   readonly points: ScaledPoint[];
   readonly xTicks: Ticks;
   readonly yTicks: Ticks;
@@ -35,6 +43,8 @@ export const Axes = ({
     <g className="axes" fill={CURRENT_COLOR} fillOpacity={0.75}>
       <YAxis
         {...sharedProps}
+        className={yAxis?.className}
+        tickFormatter={yAxis?.tickFormatter}
         yTicks={yTicks}
         yMin={yMin}
         yMax={yMax}
@@ -43,7 +53,9 @@ export const Axes = ({
       />
       <XAxis
         {...sharedProps}
+        className={xAxis?.className}
         points={points}
+        tickFormatter={xAxis?.tickFormatter}
         xTicks={xTicks}
         xMin={xMin}
         xMax={xMax}

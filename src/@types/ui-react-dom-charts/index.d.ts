@@ -53,24 +53,60 @@ export type ChartBindingProps = {
   readonly limit?: number;
 };
 
-/// ChartSeriesProps
-export type ChartSeriesProps = {
-  /// ChartSeriesProps.className
+/// SeriesProps
+export type SeriesProps = {
+  /// SeriesProps.className
   readonly className?: string;
-  /// ChartSeriesProps.xCellId
+  /// SeriesProps.xCellId
   readonly xCellId: Id;
-  /// ChartSeriesProps.yCellId
+  /// SeriesProps.yCellId
   readonly yCellId: Id;
-  /// ChartSeriesProps.label
+  /// SeriesProps.label
   readonly label?: string;
-  /// ChartSeriesProps.sortCellId
+  /// SeriesProps.sortCellId
   readonly sortCellId?: Id;
-  /// ChartSeriesProps.descending
+  /// SeriesProps.descending
   readonly descending?: boolean;
-  /// ChartSeriesProps.offset
+  /// SeriesProps.offset
   readonly offset?: number;
-  /// ChartSeriesProps.limit
+  /// SeriesProps.limit
   readonly limit?: number;
+};
+
+/// XAxisProps
+export type XAxisProps = {
+  /// XAxisProps.className
+  readonly className?: string;
+  /// XAxisProps.title
+  readonly title?: string;
+  /// XAxisProps.min
+  readonly min?: number;
+  /// XAxisProps.max
+  readonly max?: number;
+  /// XAxisProps.ticks
+  readonly ticks?: readonly number[];
+  /// XAxisProps.tickCount
+  readonly tickCount?: number;
+  /// XAxisProps.tickFormatter
+  readonly tickFormatter?: (tick: boolean | number | string) => string;
+};
+
+/// YAxisProps
+export type YAxisProps = {
+  /// YAxisProps.className
+  readonly className?: string;
+  /// YAxisProps.title
+  readonly title?: string;
+  /// YAxisProps.min
+  readonly min?: number;
+  /// YAxisProps.max
+  readonly max?: number;
+  /// YAxisProps.ticks
+  readonly ticks?: readonly number[];
+  /// YAxisProps.tickCount
+  readonly tickCount?: number;
+  /// YAxisProps.tickFormatter
+  readonly tickFormatter?: (tick: number) => string;
 };
 
 /// CartesianChart
@@ -79,11 +115,17 @@ export function CartesianChart(
     ChartProps & {readonly children?: ReactNode},
 ): ComponentReturnType;
 
+/// XAxis
+export function XAxis(props: XAxisProps): ComponentReturnType;
+
+/// YAxis
+export function YAxis(props: YAxisProps): ComponentReturnType;
+
 /// LineSeries
-export function LineSeries(props: ChartSeriesProps): ComponentReturnType;
+export function LineSeries(props: SeriesProps): ComponentReturnType;
 
 /// BarSeries
-export function BarSeries(props: ChartSeriesProps): ComponentReturnType;
+export function BarSeries(props: SeriesProps): ComponentReturnType;
 
 /// LineChart
 export function LineChart(

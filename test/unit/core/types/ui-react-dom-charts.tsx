@@ -4,6 +4,8 @@ import {
   CartesianChart,
   LineChart,
   LineSeries,
+  XAxis,
+  YAxis,
 } from 'tinybase/ui-react-dom-charts';
 import * as UiReactDomCharts from 'tinybase/ui-react-dom-charts/with-schemas';
 
@@ -73,6 +75,8 @@ const _App = () => {
     yCellId: 'y',
     xDomain: [0, 1], // !
   });
+  XAxis({min: '0'}); // !
+  YAxis({tickFormatter: (tick: string) => tick}); // !
   CartesianChart({tableId: 't', xCellId: 'x'}); // !
   CartesianChart({tableId: 't', xDomain: [0, 1]}); // !
   // prettier-ignore
@@ -83,6 +87,24 @@ const _App = () => {
       <LineChart tableId="t1" xCellId="c1" yCellId="c1d" />
       <BarChart queryId="q1" xCellId="c1" yCellId="c1d" />
       <CartesianChart tableId="t1">
+        <XAxis
+          className="x"
+          max={10}
+          min={0}
+          tickCount={3}
+          tickFormatter={(tick) => String(tick)}
+          ticks={[0, 5, 10]}
+          title="X"
+        />
+        <YAxis
+          className="y"
+          max={10}
+          min={0}
+          tickCount={3}
+          tickFormatter={(tick) => tick.toFixed(0)}
+          ticks={[0, 5, 10]}
+          title="Y"
+        />
         <span />
         <LineSeries className="sold" label="Sold" xCellId="c1" yCellId="c1d" />
       </CartesianChart>
@@ -110,6 +132,8 @@ const _App = () => {
         className="sales"
       />
       <CartesianChartWithSchemas tableId="t1">
+        <UiReactDomChartsWithSchemas.XAxis title="Schema X" />
+        <UiReactDomChartsWithSchemas.YAxis title="Schema Y" />
         <LineSeriesWithSchemas
           className="sold"
           label="Sold"

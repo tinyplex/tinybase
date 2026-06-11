@@ -3024,37 +3024,41 @@ exports[`Types in ui-react-dom.tsx > 166:46 1`] = `"Type '"c2"' is not assignabl
 
 exports[`Types in ui-react-dom.tsx > 171:23 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 36:23 1`] = `"Argument of type '{ tableId: "t1"; xCellId: "c1"; yCellId: "c1d"; sortCellId: "c0"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
+exports[`Types in ui-react-dom-charts.tsx > 38:23 1`] = `"Argument of type '{ tableId: "t1"; xCellId: "c1"; yCellId: "c1d"; sortCellId: "c0"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 43:22 1`] = `"Argument of type '{ tableId: "t1"; queryId: string; xCellId: "c1"; yCellId: "c1d"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
+exports[`Types in ui-react-dom-charts.tsx > 45:22 1`] = `"Argument of type '{ tableId: "t1"; queryId: string; xCellId: "c1"; yCellId: "c1d"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 51:4 1`] = `"Type 'string' is not assignable to type '"t0" | "t1" | undefined'."`;
+exports[`Types in ui-react-dom-charts.tsx > 53:4 1`] = `"Type 'string' is not assignable to type '"t0" | "t1" | undefined'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 56:12 1`] = `"Argument of type '{ tableId: string; queryId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 58:12 1`] = `"Argument of type '{ tableId: string; queryId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 63:11 1`] = `"Argument of type '{ queryId: string; tableId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 65:11 1`] = `"Argument of type '{ queryId: string; tableId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 73:4 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'ChartTableSourceProps & ChartBindingProps & ChartProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 75:4 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'ChartTableSourceProps & ChartBindingProps & ChartProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 75:32 1`] = `"Object literal may only specify known properties, and 'xCellId' does not exist in type 'ChartTableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
+exports[`Types in ui-react-dom-charts.tsx > 77:9 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 76:32 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'ChartTableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
+exports[`Types in ui-react-dom-charts.tsx > 78:9 1`] = `"Type '(tick: string) => string' is not assignable to type '(tick: number) => string'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 78:23 1`] = `"Argument of type '{ tableId: "t1"; xCellId: "c1b"; yCellId: "c1b"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
+exports[`Types in ui-react-dom-charts.tsx > 79:32 1`] = `"Object literal may only specify known properties, and 'xCellId' does not exist in type 'ChartTableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 88:7 1`] = `"Property 'xCellId' is missing in type '{ yCellId: string; }' but required in type 'ChartSeriesProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 80:32 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'ChartTableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 89:18 1`] = `"Type '{ tableId: string; xCellId: string; yCellId: string; }' is not assignable to type 'IntrinsicAttributes & ChartSeriesProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 82:23 1`] = `"Argument of type '{ tableId: "t1"; xCellId: "c1b"; yCellId: "c1b"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 128:29 1`] = `"Type '{ tableId: string; xCellId: string; yCellId: string; }' is not assignable to type 'IntrinsicAttributes & ChartSeriesProps<string>'."`;
+exports[`Types in ui-react-dom-charts.tsx > 110:7 1`] = `"Property 'xCellId' is missing in type '{ yCellId: string; }' but required in type 'SeriesProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 131:28 1`] = `"Type 'string' is not assignable to type '"t0" | "t1" | undefined'."`;
+exports[`Types in ui-react-dom-charts.tsx > 111:18 1`] = `"Type '{ tableId: string; xCellId: string; yCellId: string; }' is not assignable to type 'IntrinsicAttributes & SeriesProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 132:7 1`] = `"Type '{ tableId: "t1"; xCellId: "c2"; yCellId: "c1"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { ...; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; rea...'."`;
+exports[`Types in ui-react-dom-charts.tsx > 152:29 1`] = `"Type '{ tableId: string; xCellId: string; yCellId: string; }' is not assignable to type 'IntrinsicAttributes & SeriesProps<string>'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 133:7 1`] = `"Type '{ tableId: "t1"; xCellId: "c0"; yCellId: "c1"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { ...; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; rea...'."`;
+exports[`Types in ui-react-dom-charts.tsx > 155:28 1`] = `"Type 'string' is not assignable to type '"t0" | "t1" | undefined'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 134:7 1`] = `"Type '{ tableId: "t1"; xCellId: "c1"; yCellId: "c0"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { ...; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; rea...'."`;
+exports[`Types in ui-react-dom-charts.tsx > 156:7 1`] = `"Type '{ tableId: "t1"; xCellId: "c2"; yCellId: "c1"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { ...; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; rea...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 157:7 1`] = `"Type '{ tableId: "t1"; xCellId: "c0"; yCellId: "c1"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { ...; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; rea...'."`;
+
+exports[`Types in ui-react-dom-charts.tsx > 158:7 1`] = `"Type '{ tableId: "t1"; xCellId: "c1"; yCellId: "c0"; }' is not assignable to type 'IntrinsicAttributes & (((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { ...; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly queryId?: undefined; rea...'."`;
 
 exports[`Types in ui-react-inspector.tsx > 5:6 1`] = `"Cannot assign to 'position' because it is a read-only property."`;
 

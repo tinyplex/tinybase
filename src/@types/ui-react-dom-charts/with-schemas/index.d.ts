@@ -71,24 +71,60 @@ export type ChartBindingProps<
   readonly limit?: number;
 };
 
-/// ChartSeriesProps
-export type ChartSeriesProps<CellId extends Id = Id> = {
-  /// ChartSeriesProps.className
+/// SeriesProps
+export type SeriesProps<CellId extends Id = Id> = {
+  /// SeriesProps.className
   readonly className?: string;
-  /// ChartSeriesProps.xCellId
+  /// SeriesProps.xCellId
   readonly xCellId: CellId;
-  /// ChartSeriesProps.yCellId
+  /// SeriesProps.yCellId
   readonly yCellId: CellId;
-  /// ChartSeriesProps.label
+  /// SeriesProps.label
   readonly label?: string;
-  /// ChartSeriesProps.sortCellId
+  /// SeriesProps.sortCellId
   readonly sortCellId?: CellId;
-  /// ChartSeriesProps.descending
+  /// SeriesProps.descending
   readonly descending?: boolean;
-  /// ChartSeriesProps.offset
+  /// SeriesProps.offset
   readonly offset?: number;
-  /// ChartSeriesProps.limit
+  /// SeriesProps.limit
   readonly limit?: number;
+};
+
+/// XAxisProps
+export type XAxisProps = {
+  /// XAxisProps.className
+  readonly className?: string;
+  /// XAxisProps.title
+  readonly title?: string;
+  /// XAxisProps.min
+  readonly min?: number;
+  /// XAxisProps.max
+  readonly max?: number;
+  /// XAxisProps.ticks
+  readonly ticks?: readonly number[];
+  /// XAxisProps.tickCount
+  readonly tickCount?: number;
+  /// XAxisProps.tickFormatter
+  readonly tickFormatter?: (tick: boolean | number | string) => string;
+};
+
+/// YAxisProps
+export type YAxisProps = {
+  /// YAxisProps.className
+  readonly className?: string;
+  /// YAxisProps.title
+  readonly title?: string;
+  /// YAxisProps.min
+  readonly min?: number;
+  /// YAxisProps.max
+  readonly max?: number;
+  /// YAxisProps.ticks
+  readonly ticks?: readonly number[];
+  /// YAxisProps.tickCount
+  readonly tickCount?: number;
+  /// YAxisProps.tickFormatter
+  readonly tickFormatter?: (tick: number) => string;
 };
 
 type NumericCellIdFromSchema<
@@ -133,11 +169,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     ): ComponentReturnType;
   };
 
+  /// XAxis
+  XAxis: (props: XAxisProps) => ComponentReturnType;
+
+  /// YAxis
+  YAxis: (props: YAxisProps) => ComponentReturnType;
+
   /// LineSeries
-  LineSeries: (props: ChartSeriesProps) => ComponentReturnType;
+  LineSeries: (props: SeriesProps) => ComponentReturnType;
 
   /// BarSeries
-  BarSeries: (props: ChartSeriesProps) => ComponentReturnType;
+  BarSeries: (props: SeriesProps) => ComponentReturnType;
 
   /// LineChart
   LineChart: (

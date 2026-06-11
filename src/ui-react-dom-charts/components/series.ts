@@ -1,7 +1,7 @@
 import type {Id} from '../../@types/common/index.d.ts';
 import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
 import type {CellOrUndefined} from '../../@types/store/index.d.ts';
-import type {ChartSeriesProps} from '../../@types/ui-react-dom-charts/index.d.ts';
+import type {SeriesProps} from '../../@types/ui-react-dom-charts/index.d.ts';
 import {useCallback, useLayoutEffect, useState} from '../../common/react.ts';
 import {
   useCellListener,
@@ -22,7 +22,7 @@ export const useSeriesData = ({
   sortCellId,
   xCellId,
   yCellId,
-}: ChartSeriesProps): readonly [Id, DataPoint[]] => {
+}: SeriesProps): readonly [Id, DataPoint[]] => {
   const [, rerender] = useState<[]>();
   const context = useCartesianChartContext();
   const {

@@ -8,6 +8,8 @@ import {
   CartesianChart,
   LineChart,
   LineSeries,
+  XAxis,
+  YAxis,
 } from 'tinybase/ui-react-dom-charts';
 import {describe, expect, test} from 'vitest';
 
@@ -25,6 +27,12 @@ const getXAxisTickLabels = (container: HTMLElement): (string | null)[] =>
 const getXAxisTickXs = (container: HTMLElement): number[] =>
   Array.from(container.querySelectorAll('.axes .x .ticks text'), (text) =>
     Number(text.getAttribute('x')),
+  );
+
+const getYAxisTickLabels = (container: HTMLElement): (string | null)[] =>
+  Array.from(
+    container.querySelectorAll('.axes .y .ticks text'),
+    (text) => text.textContent,
   );
 
 const getLinePathXs = (container: HTMLElement): number[][] =>
@@ -257,6 +265,81 @@ describe.each(CHARTS)('%s', (_chartName, Chart) => {
 });
 
 describe('CartesianChart', () => {
+  test('uses XAxis and YAxis child configuration', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1, y: 3},
+      r2: {x: 3, y: 7},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <XAxis
+          className="time-axis"
+          max={4}
+          min={0}
+          tickFormatter={(tick) => `D${tick}`}
+          ticks={[0, 2, 4]}
+          title="Day"
+        />
+        <YAxis
+          className="money-axis"
+          max={10}
+          min={0}
+          tickFormatter={(tick) => `$${tick}`}
+          ticks={[0, 5, 10]}
+          title="Revenue"
+        />
+        <LineSeries xCellId="x" yCellId="y" />
+      </CartesianChart>,
+    );
+
+    expect(container.querySelectorAll('.axes .x.time-axis')).toHaveLength(1);
+    expect(container.querySelectorAll('.axes .y.money-axis')).toHaveLength(1);
+    expect(getXAxisTickLabels(container)).toEqual(['D0', 'D2', 'D4']);
+    expect(getYAxisTickLabels(container)).toEqual(['$0', '$5', '$10']);
+    expect(container.innerHTML).toContain('>Day<');
+    expect(container.innerHTML).toContain('>Revenue<');
+    expect(container.innerHTML).not.toContain('>x<');
+    expect(container.innerHTML).not.toContain('>y<');
+    expect(container.querySelectorAll('.plot .line')).toHaveLength(1);
+
+    unmount();
+  });
+
+  test('uses XAxis tick formatting for categorical labels', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: true, y: 3, z: 1},
+      r2: {x: false, y: 5, z: 2},
+    });
+    const {container, unmount} = render(
+      <CartesianChart store={store} tableId="t1">
+        <XAxis tickFormatter={(tick) => String(tick).toUpperCase()} />
+        <BarSeries xCellId="x" yCellId="y" sortCellId="z" />
+      </CartesianChart>,
+    );
+
+    expect(getXAxisTickLabels(container)).toEqual(['TRUE', 'FALSE']);
+    expect(container.querySelectorAll('.plot .bar')).toHaveLength(2);
+
+    unmount();
+  });
+
+  test('uses explicit axis definitions before series data exists', () => {
+    const {container, unmount} = render(
+      <CartesianChart tableId="t1">
+        <XAxis max={2} min={0} ticks={[0, 1, 2]} title="X" />
+        <YAxis ticks={[0, 10]} title="Y" />
+      </CartesianChart>,
+    );
+
+    expect(getXAxisTickLabels(container)).toEqual(['0', '1', '2']);
+    expect(getYAxisTickLabels(container)).toEqual(['0', '10']);
+    expect(container.innerHTML).toContain('>X<');
+    expect(container.innerHTML).toContain('>Y<');
+    expect(container.querySelectorAll('.plot *')).toHaveLength(0);
+
+    unmount();
+  });
+
   test('aligns categorical LineChart x-axis labels with points', () => {
     const store = createStore().setTable('t1', {
       r1: {x: 'A', y: 3},

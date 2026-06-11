@@ -1,9 +1,11 @@
 import {arrayMap} from '../../common/array.ts';
-import {isNullish} from '../../common/other.ts';
+import {isNullish, string} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {CURRENT_COLOR, type PlotFrame, type Ticks} from '../common/types.ts';
 
 export const YAxis = ({
+  className,
+  tickFormatter,
   yTicks,
   yMin,
   yMax,
@@ -13,6 +15,8 @@ export const YAxis = ({
   tickGap,
   axisWidth,
 }: {
+  readonly className?: string;
+  readonly tickFormatter?: (tick: number) => string;
   readonly yTicks: Ticks;
   readonly yMin: number | undefined;
   readonly yMax: number | undefined;
@@ -24,7 +28,7 @@ export const YAxis = ({
 }) => {
   const [plotX, plotY, , plotHeight] = plotFrame;
   return isNullish(yMin) || isNullish(yMax) ? null : (
-    <g className="y">
+    <g className={getAxisClassName('y', className)}>
       <path
         className="line"
         d={`M${plotX},${plotY}v${plotHeight}`}
@@ -38,7 +42,7 @@ export const YAxis = ({
           const y = plotHeight - getScale(tick, yMin, yMax, plotHeight);
           return (
             <text key={tick} x={plotX - tickSize - tickGap} y={plotY + y}>
-              {tick}
+              {tickFormatter?.(tick) ?? string(tick)}
             </text>
           );
         })}
@@ -56,3 +60,6 @@ export const YAxis = ({
     </g>
   );
 };
+
+const getAxisClassName = (baseClassName: string, className?: string) =>
+  className == null ? baseClassName : `${baseClassName} ${className}`;

@@ -1,6 +1,6 @@
 import type {
-  ChartSeriesProps,
   LineSeries as LineSeriesDecl,
+  SeriesProps,
 } from '../@types/ui-react-dom-charts/index.d.ts';
 import {useLayoutEffect} from '../common/react.ts';
 import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
@@ -8,7 +8,7 @@ import {getScaledPoints, getSeriesSummary} from './common/data.ts';
 import {Line} from './components/Line.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
-export const LineSeries = ((props: ChartSeriesProps) => {
+export const LineSeries = ((props: SeriesProps) => {
   const {
     barSeriesCount,
     bounds,

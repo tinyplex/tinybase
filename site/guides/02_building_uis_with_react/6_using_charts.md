@@ -9,7 +9,8 @@ you can usually bind a chart to data with just a few props.
 
 For example, a small sales Table can be rendered as a line chart:
 
-![LineChart component example](/shots/basic-chart-react-demo.png 'LineChart component example')
+![LineChart component example](/shots/basic-chart-react-demo.png 'LineChart
+component example')
 
 ## Rendering A Line Chart
 
@@ -21,7 +22,14 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {createQueries, createStore} from 'tinybase';
 import {Provider} from 'tinybase/ui-react';
-import {BarChart, LineChart} from 'tinybase/ui-react-dom-charts';
+import {
+  BarChart,
+  CartesianChart,
+  LineChart,
+  LineSeries,
+  XAxis,
+  YAxis,
+} from 'tinybase/ui-react-dom-charts';
 
 const salesStore = createStore().setTable('sales', {
   jan: {month: 'Jan', order: 1, revenue: 12},
@@ -94,6 +102,38 @@ console.log(barChartApp.firstChild?.nodeName.toLowerCase());
 
 The `offset`, `limit`, and `descending` props let you chart a sorted subset of
 rows without creating another Table.
+
+## Configuring Axes
+
+The CartesianChart component can contain an XAxis component and a YAxis
+component. These are configuration children, like series components, and let you
+set axis-specific props without crowding the chart itself:
+
+```jsx
+const AxisChartApp = () => (
+  <Provider store={salesStore}>
+    <CartesianChart tableId="sales">
+      <XAxis
+        min={0}
+        max={7}
+        tickCount={4}
+        tickFormatter={(tick) => `Month ${tick}`}
+        title="Month number"
+      />
+      <YAxis min={0} tickFormatter={(tick) => `$${tick}k`} title="Revenue" />
+      <LineSeries xCellId="order" yCellId="revenue" />
+    </CartesianChart>
+  </Provider>
+);
+
+const axisChartApp = document.createElement('div');
+createRoot(axisChartApp).render(<AxisChartApp />); // !act
+console.log(axisChartApp.firstChild?.nodeName.toLowerCase());
+// -> 'svg'
+```
+
+If you omit these components, the chart infers axis titles, bounds, and ticks
+from the series.
 
 ## Styling With CSS
 
@@ -182,5 +222,5 @@ For complete examples, see the Chart Components (React) demos:
 The ui-react-dom-charts module lets you use Store and Queries data directly in
 React charts, while CSS controls presentation.
 
-For the Solid equivalents of the React guides, proceed to the
-[Building UIs With Solid](/guides/building-uis-with-solid/) guides.
+For the Solid equivalents of the React guides, proceed to the [Building UIs With
+Solid](/guides/building-uis-with-solid/) guides.

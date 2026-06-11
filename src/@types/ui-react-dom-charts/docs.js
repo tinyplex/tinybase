@@ -1,22 +1,22 @@
 /**
- * The ui-react-dom-charts module of the TinyBase project provides components
- * to make it easy to create web-based reactive charts with Store and Queries
+ * The ui-react-dom-charts module of the TinyBase project provides components to
+ * make it easy to create web-based reactive charts with Store and Queries
  * objects.
  *
  * The components in this module use the react-dom module and so are not
  * appropriate for environments like React Native (although those in the
  * lower-level ui-react module are).
  *
- * For a full list of SVG class names that can be styled with CSS, see the
- * Using Charts guide.
+ * For a full list of SVG class names that can be styled with CSS, see the Using
+ * Charts guide.
  * @packageDocumentation
  * @module ui-react-dom-charts
  * @since v8.5.0
  */
 /// ui-react-dom-charts
 /**
- * The ChartProps type describes the props that are used to configure the
- * chart element that renders a chart.
+ * The ChartProps type describes the props that are used to configure the chart
+ * element that renders a chart.
  * @category Configuration
  * @since v8.5.0
  */
@@ -100,9 +100,10 @@
   /// ChartQuerySourceProps.store
 }
 /**
- * The ChartBindingProps type describes the props that bind a LineChart component
- * or BarChart component to Cell values in TinyBase data. An x Cell value can be
- * a finite number, string, or boolean. A y Cell value must be a finite number.
+ * The ChartBindingProps type describes the props that bind a LineChart
+ * component or BarChart component to Cell values in TinyBase data. An x Cell
+ * value can be a finite number, string, or boolean. A y Cell value must be a
+ * finite number.
  * @category Configuration
  * @since v8.5.0
  */
@@ -151,13 +152,13 @@
   /// ChartBindingProps.limit
 }
 /**
- * The ChartSeriesProps type describes the props that bind a chart series to
- * Cell values in TinyBase data. An x Cell value can be a finite number,
- * string, or boolean. A y Cell value must be a finite number.
+ * The SeriesProps type describes the props that bind a chart series to Cell
+ * values in TinyBase data. An x Cell value can be a finite number, string, or
+ * boolean. A y Cell value must be a finite number.
  * @category Configuration
  * @since v8.5.0
  */
-/// ChartSeriesProps
+/// SeriesProps
 {
   /**
    * An optional string that will be added to the class attribute of the series'
@@ -165,7 +166,7 @@
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.className
+  /// SeriesProps.className
   /**
    * The Id of the Cell that provides each data point's x value. Finite numbers
    * can be used as continuous x values in line series, while strings and
@@ -174,7 +175,7 @@
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.xCellId
+  /// SeriesProps.xCellId
   /**
    * The Id of the Cell that provides each data point's y value. Only finite
    * numbers are charted; rows with missing, non-numeric, or non-finite y values
@@ -182,38 +183,168 @@
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.yCellId
+  /// SeriesProps.yCellId
   /**
    * An optional label to use for the series in axis titles and tooltips,
    * defaulting to the y Cell Id.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.label
+  /// SeriesProps.label
   /**
    * The Id of the Cell used to sort the charted rows.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.sortCellId
+  /// SeriesProps.sortCellId
   /**
    * Whether the charted rows should be sorted in descending order.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.descending
+  /// SeriesProps.descending
   /**
    * The number of sorted rows to skip before charting.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.offset
+  /// SeriesProps.offset
   /**
    * The maximum number of sorted rows to chart.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartSeriesProps.limit
+  /// SeriesProps.limit
+}
+/**
+ * The XAxisProps type describes the props that configure the x axis of a
+ * CartesianChart component.
+ *
+ * The x axis is inferred by default. Use an XAxis component child when you want
+ * to override its title, numeric bounds, tick values, tick count, tick labels,
+ * or SVG class name.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// XAxisProps
+{
+  /**
+   * An optional string that will be added to the class attribute of the x-axis
+   * SVG group element.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.className
+  /**
+   * An optional title to use for the x axis, defaulting to the x Cell Id, or to
+   * a combined title when multiple series use different x Cell Ids.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.title
+  /**
+   * An optional minimum x-axis bound for continuous numeric x values.
+   *
+   * This prop is ignored when the x axis is categorical.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.min
+  /**
+   * An optional maximum x-axis bound for continuous numeric x values.
+   *
+   * This prop is ignored when the x axis is categorical.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.max
+  /**
+   * Optional numeric tick values to use for a continuous x axis.
+   *
+   * This prop is ignored when the x axis is categorical.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.ticks
+  /**
+   * An optional preferred number of ticks to render on a continuous x axis.
+   *
+   * The actual number of ticks may vary so that labels remain readable.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.tickCount
+  /**
+   * An optional function for formatting x-axis tick labels.
+   *
+   * It receives the original tick value, which can be a finite number, string,
+   * or boolean.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.tickFormatter
+}
+/**
+ * The YAxisProps type describes the props that configure the y axis of a
+ * CartesianChart component.
+ *
+ * The y axis is inferred by default. Use a YAxis component child when you want
+ * to override its title, numeric bounds, tick values, tick count, tick labels,
+ * or SVG class name.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// YAxisProps
+{
+  /**
+   * An optional string that will be added to the class attribute of the y-axis
+   * SVG group element.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.className
+  /**
+   * An optional title to use for the y axis, defaulting to the y Cell Id, y
+   * series label, or a combined title when multiple series use different y Cell
+   * Ids or labels.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.title
+  /**
+   * An optional minimum y-axis bound.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.min
+  /**
+   * An optional maximum y-axis bound.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.max
+  /**
+   * Optional numeric tick values to use for the y axis.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.ticks
+  /**
+   * An optional preferred number of ticks to render on the y axis.
+   *
+   * The actual number of ticks may vary so that labels remain readable.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.tickCount
+  /**
+   * An optional function for formatting y-axis tick labels.
+   *
+   * It receives the numeric tick value.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// YAxisProps.tickFormatter
 }
 /**
  * The CartesianChart component renders a chart frame and provides TinyBase
@@ -225,7 +356,9 @@
  * ![CartesianChart component example](/shots/composing-charts-react-demo.png
  * "CartesianChart component example")
  *
- * The series children declare their own xCellId and yCellId bindings.
+ * The series children declare their own xCellId and yCellId bindings. The
+ * optional XAxis component and YAxis component children can be used to
+ * configure axis titles, bounds, ticks, and tick formatting.
  * @category Store components
  * @since v8.5.0
  * @example
@@ -266,6 +399,26 @@
  */
 /// CartesianChart
 /**
+ * The XAxis component configures the x axis of a CartesianChart component.
+ *
+ * It is a configuration child rather than a separately rendered SVG element:
+ * include zero or one XAxis component in a CartesianChart component's children.
+ * If omitted, the x axis is inferred from the chart's series.
+ * @category Store components
+ * @since v8.5.0
+ */
+/// XAxis
+/**
+ * The YAxis component configures the y axis of a CartesianChart component.
+ *
+ * It is a configuration child rather than a separately rendered SVG element:
+ * include zero or one YAxis component in a CartesianChart component's children.
+ * If omitted, the y axis is inferred from the chart's series.
+ * @category Store components
+ * @since v8.5.0
+ */
+/// YAxis
+/**
  * The LineSeries component renders a line series in a CartesianChart component.
  * If every x value in every series is a finite number, the x axis is rendered
  * as a continuous numeric scale. If any x value is a string or boolean, the x
@@ -276,7 +429,6 @@
  *
  * ![LineSeries component example](/shots/composing-charts-react-demo.png
  * "LineSeries component example")
- *
  * @category Store components
  * @since v8.5.0
  */
@@ -290,7 +442,6 @@
  *
  * ![BarSeries component example](/shots/composing-charts-react-demo.png
  * "BarSeries component example")
- *
  * @category Store components
  * @since v8.5.0
  */
@@ -303,9 +454,8 @@
  *
  * See the <LineChart /> (React) demo for this component in action:
  *
- * ![LineChart component example](/shots/basic-chart-react-demo.png
- * "LineChart component example")
- *
+ * ![LineChart component example](/shots/basic-chart-react-demo.png "LineChart
+ * component example")
  * @category Store components
  * @since v8.5.0
  * @example
@@ -353,7 +503,6 @@
  *
  * ![BarChart component example](/shots/sorting-and-types-react-demo.png
  * "BarChart component example")
- *
  * @category Store components
  * @since v8.5.0
  * @example

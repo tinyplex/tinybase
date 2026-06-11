@@ -25,14 +25,28 @@ export const enum SourceType {
 }
 
 export const CHART_SERIES = '_tinybaseChartSeries';
+export const CHART_X_AXIS = '_tinybaseChartXAxis';
+export const CHART_Y_AXIS = '_tinybaseChartYAxis';
 
 export type ChartSeriesComponent = {
   [CHART_SERIES]?: true;
+};
+export type ChartXAxisComponent = {
+  [CHART_X_AXIS]?: true;
+};
+export type ChartYAxisComponent = {
+  [CHART_Y_AXIS]?: true;
 };
 
 export const isChartSeriesComponent = (component: unknown): boolean =>
   typeof component == 'function' &&
   (component as ChartSeriesComponent)[CHART_SERIES] === true;
+export const isChartXAxisComponent = (component: unknown): boolean =>
+  typeof component == 'function' &&
+  (component as ChartXAxisComponent)[CHART_X_AXIS] === true;
+export const isChartYAxisComponent = (component: unknown): boolean =>
+  typeof component == 'function' &&
+  (component as ChartYAxisComponent)[CHART_Y_AXIS] === true;
 
 export type CartesianChartContextValue = {
   readonly bounds: Bounds;

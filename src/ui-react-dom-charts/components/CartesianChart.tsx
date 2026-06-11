@@ -3,6 +3,8 @@ import type {
   ChartProps,
   ChartQuerySourceProps,
   ChartTableSourceProps,
+  XAxisProps,
+  YAxisProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
 import {
   arrayFilter,
@@ -12,9 +14,16 @@ import {
   arrayIsEmpty,
   arrayIsEqual,
   arrayPush,
+  arraySort,
 } from '../../common/array.ts';
 import {objValues} from '../../common/obj.ts';
-import {isNumber, mathMax, mathMin, size} from '../../common/other.ts';
+import {
+  isFiniteNumber,
+  isNumber,
+  mathMax,
+  mathMin,
+  size,
+} from '../../common/other.ts';
 import {getPoolFunctions} from '../../common/pool.ts';
 import {
   Children,
@@ -32,6 +41,8 @@ import {
 import {
   CartesianChartContext,
   isChartSeriesComponent,
+  isChartXAxisComponent,
+  isChartYAxisComponent,
   SourceType,
 } from '../common/context.ts';
 import {
@@ -52,6 +63,7 @@ import type {
   DomainState,
   ScaledPoint,
   SeriesSummary,
+  Ticks,
   XValue,
 } from '../common/types.ts';
 import {Axes} from './Axes.tsx';
@@ -60,6 +72,14 @@ import {Tooltip} from './Tooltip.tsx';
 
 type SummaryById = {[seriesId: string]: SeriesSummary};
 type ElementWithChildren = {readonly props: {readonly children?: ReactNode}};
+type ElementWithProps<Props> = {
+  readonly props: Props & {readonly children?: ReactNode};
+};
+type ChartContent = readonly [
+  children: ReactNode[],
+  xAxis?: XAxisProps,
+  yAxis?: YAxisProps,
+];
 type CartesianChartProps = (ChartTableSourceProps | ChartQuerySourceProps) &
   ChartProps & {
     readonly children?: ReactNode;
@@ -116,12 +136,21 @@ export const CartesianChart = ({
   const barSeriesIdsRef = useRef<string[]>([]);
   const [barSeriesIds, setBarSeriesIds] = useState<string[]>([]);
   const [tooltipPoint, setTooltipPoint] = useState<ScaledPoint | undefined>();
+  const [chartChildren, xAxis, yAxis] = getChartContent(children);
   const xValues = domainState.xValues;
-  const dataBounds = domainState.bounds;
-  const axisKind =
-    domainState.continuousX || arrayIsEmpty(barSeriesIds) ? 'line' : 'bar';
-  const xTicks = getXTicks(axisKind, dataBounds, plotSize, labelSize);
-  const yTicks = getYTicks(dataBounds, plotSize, labelSize);
+  const numericX =
+    domainState.continuousX ||
+    (arrayIsEmpty(xValues) && hasNumericXAxisDefinition(xAxis));
+  const dataBounds = getAxisBounds(domainState.bounds, numericX, xAxis, yAxis);
+  const axisKind = numericX || arrayIsEmpty(barSeriesIds) ? 'line' : 'bar';
+  const xTicks =
+    numericX && xAxis?.ticks != null
+      ? getAxisTicks(xAxis.ticks)
+      : getXTicks(axisKind, dataBounds, plotSize, labelSize, xAxis?.tickCount);
+  const yTicks =
+    yAxis?.ticks == null
+      ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount)
+      : getAxisTicks(yAxis.ticks);
   const tickBounds = getTickBounds(dataBounds, xTicks, yTicks);
   const axisPoints = getScaledPoints(
     axisKind,
@@ -315,18 +344,20 @@ export const CartesianChart = ({
           plotFrame={plotFrame}
           tickGap={tickGap}
           tickSize={tickSize}
-          titles={[xTitle, yTitle]}
+          titles={[xAxis?.title ?? xTitle, yAxis?.title ?? yTitle]}
+          xAxis={xAxis}
           xAxisHeight={xAxisHeight}
           xTicks={xTicks}
+          yAxis={yAxis}
           yAxisWidth={yAxisWidth}
           yTicks={yTicks}
         />
-        <g className="plot">{getChartChildren(children)}</g>
+        <g className="plot">{chartChildren}</g>
         <Tooltip
           height={plotSize[1]}
           point={tooltipPoint}
           plotFrame={plotFrame}
-          titles={[xTitle, yTitle]}
+          titles={[xAxis?.title ?? xTitle, yAxis?.title ?? yTitle]}
           width={plotSize[0]}
         />
       </svg>
@@ -402,19 +433,61 @@ const getTitle = (
   return arrayIsEmpty(titles) ? '' : titles.join(' & ');
 };
 
-const getChartChildren = (children: ReactNode): ReactNode[] => {
+const getAxisBounds = (
+  [xMin, xMax, yMin, yMax]: Bounds,
+  numericX: boolean,
+  xAxis?: XAxisProps,
+  yAxis?: YAxisProps,
+): Bounds => [
+  numericX ? getAxisBound(xAxis?.min, xMin) : xMin,
+  numericX ? getAxisBound(xAxis?.max, xMax) : xMax,
+  getNumberAxisBound(yAxis?.min, yMin),
+  getNumberAxisBound(yAxis?.max, yMax),
+];
+
+const getAxisBound = (
+  value: number | undefined,
+  bound: XValue | undefined,
+): XValue | undefined => (isFiniteNumber(value) ? (value as number) : bound);
+
+const getNumberAxisBound = (
+  value: number | undefined,
+  bound: number | undefined,
+): number | undefined => (isFiniteNumber(value) ? value : bound);
+
+const getAxisTicks = (ticks: readonly number[]): Ticks =>
+  arraySort(arrayFilter([...ticks], isFiniteNumber), (tick1, tick2) => {
+    return tick1 - tick2;
+  });
+
+const hasNumericXAxisDefinition = (xAxis?: XAxisProps): boolean =>
+  isFiniteNumber(xAxis?.min) ||
+  isFiniteNumber(xAxis?.max) ||
+  xAxis?.ticks != null;
+
+const getChartContent = (children: ReactNode): ChartContent => {
   const chartChildren: ReactNode[] = [];
+  let xAxis: XAxisProps | undefined;
+  let yAxis: YAxisProps | undefined;
   Children.forEach(children, (child) => {
     if (isValidElement(child)) {
       if (child.type === Fragment) {
-        arrayForEach(
-          getChartChildren((child as ElementWithChildren).props.children),
-          (chartChild) => arrayPush(chartChildren, chartChild),
+        const [childChildren, childXAxis, childYAxis] = getChartContent(
+          (child as ElementWithChildren).props.children,
         );
+        arrayForEach(childChildren, (chartChild) =>
+          arrayPush(chartChildren, chartChild),
+        );
+        xAxis ??= childXAxis;
+        yAxis ??= childYAxis;
       } else if (isChartSeriesComponent(child.type)) {
         arrayPush(chartChildren, child);
+      } else if (xAxis == null && isChartXAxisComponent(child.type)) {
+        xAxis = (child as ElementWithProps<XAxisProps>).props;
+      } else if (yAxis == null && isChartYAxisComponent(child.type)) {
+        yAxis = (child as ElementWithProps<YAxisProps>).props;
       }
     }
   });
-  return chartChildren;
+  return [chartChildren, xAxis, yAxis];
 };

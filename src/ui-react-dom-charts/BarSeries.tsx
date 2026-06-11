@@ -1,6 +1,6 @@
 import type {
   BarSeries as BarSeriesDecl,
-  ChartSeriesProps,
+  SeriesProps,
 } from '../@types/ui-react-dom-charts/index.d.ts';
 import {useLayoutEffect} from '../common/react.ts';
 import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
@@ -9,7 +9,7 @@ import {CURRENT_COLOR} from './common/types.ts';
 import {Bars} from './components/Bars.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
-export const BarSeries = ((props: ChartSeriesProps) => {
+export const BarSeries = ((props: SeriesProps) => {
   const {
     barSeriesCount,
     bounds,

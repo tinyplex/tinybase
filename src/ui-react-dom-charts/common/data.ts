@@ -149,6 +149,7 @@ export const getYTicks = (
   [, , yMin, yMax]: Bounds,
   [, height]: Size,
   labelSize: number,
+  tickCount?: number,
 ): Ticks => {
   if (isUndefined(yMin) || isUndefined(yMax)) {
     return [];
@@ -160,7 +161,7 @@ export const getYTicks = (
   return getTicks(
     yMin,
     yMax,
-    TARGET_TICKS,
+    getTickCount(tickCount),
     labelSize,
     height,
     isInteger(yMin) && isInteger(yMax),
@@ -172,12 +173,13 @@ export const getXTicks = (
   [xMin, xMax]: Bounds,
   [width]: Size,
   labelSize: number,
+  tickCount?: number,
 ): Ticks =>
   kind == 'line' && isNumber(xMin) && isNumber(xMax) && xMin != xMax
     ? getTicks(
         xMin,
         xMax,
-        TARGET_TICKS,
+        getTickCount(tickCount),
         labelSize,
         width,
         isInteger(xMin) && isInteger(xMax),
@@ -189,10 +191,8 @@ export const getTickBounds = (
   xTicks: Ticks,
   yTicks: Ticks,
 ): Bounds => [
-  arrayIsEmpty(xTicks) ? xMin : mathMin(xMin as number, xTicks[0]),
-  arrayIsEmpty(xTicks)
-    ? xMax
-    : mathMax(xMax as number, xTicks[size(xTicks) - 1]),
+  arrayIsEmpty(xTicks) ? xMin : getMinTickBound(xMin, xTicks[0]),
+  arrayIsEmpty(xTicks) ? xMax : getMaxTickBound(xMax, xTicks[size(xTicks) - 1]),
   arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
   arrayIsEmpty(yTicks)
     ? yMax
@@ -288,6 +288,15 @@ const getDomain = (values: number[]): Domain => {
   const min = mathMin(...values);
   return min == infinity ? [0, 0] : [min, mathMax(...values)];
 };
+
+const getMinTickBound = (bound: XValue | undefined, tick: number) =>
+  isNumber(bound) ? mathMin(bound, tick) : tick;
+
+const getMaxTickBound = (bound: XValue | undefined, tick: number) =>
+  isNumber(bound) ? mathMax(bound, tick) : tick;
+
+const getTickCount = (tickCount = TARGET_TICKS) =>
+  isFiniteNumber(tickCount) ? mathMax(mathRound(tickCount), 1) : TARGET_TICKS;
 
 const getRounded = (value: number) => mathRound(value * 1000000) / 1000000;
 

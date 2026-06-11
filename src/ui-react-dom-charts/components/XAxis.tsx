@@ -6,10 +6,13 @@ import {
   type PlotFrame,
   type ScaledPoint,
   type Ticks,
+  type XValue,
 } from '../common/types.ts';
 
 export const XAxis = ({
+  className,
   points,
+  tickFormatter,
   xTicks,
   xMin,
   xMax,
@@ -20,7 +23,9 @@ export const XAxis = ({
   axisHeight,
   fontSize,
 }: {
+  readonly className?: string;
   readonly points: ScaledPoint[];
+  readonly tickFormatter?: (tick: XValue) => string;
   readonly xTicks: Ticks;
   readonly xMin: boolean | number | string | undefined;
   readonly xMax: boolean | number | string | undefined;
@@ -34,7 +39,11 @@ export const XAxis = ({
   const [plotX, plotY, plotWidth, plotHeight] = plotFrame;
   const titleGap = mathMax(axisHeight - tickSize - tickGap - 2 * fontSize, 0);
   return (
-    <g className="x" dominantBaseline="hanging" textAnchor="middle">
+    <g
+      className={getAxisClassName('x', className)}
+      dominantBaseline="hanging"
+      textAnchor="middle"
+    >
       <path
         className="line"
         d={`M${plotX},${plotY + plotHeight}h${plotWidth}`}
@@ -51,7 +60,7 @@ export const XAxis = ({
                 x={plotX + x}
                 y={plotY + plotHeight + tickSize + tickGap}
               >
-                {string(xValue)}
+                {getTickLabel(xValue, tickFormatter)}
               </text>
             ))
           : arrayMap(xTicks, (tick) => {
@@ -62,7 +71,7 @@ export const XAxis = ({
                   x={plotX + x}
                   y={plotY + plotHeight + tickSize + tickGap}
                 >
-                  {tick}
+                  {getTickLabel(tick, tickFormatter)}
                 </text>
               );
             })}
@@ -77,3 +86,11 @@ export const XAxis = ({
     </g>
   );
 };
+
+const getAxisClassName = (baseClassName: string, className?: string) =>
+  className == null ? baseClassName : `${baseClassName} ${className}`;
+
+const getTickLabel = (
+  tick: XValue,
+  tickFormatter: ((tick: XValue) => string) | undefined,
+) => tickFormatter?.(tick) ?? string(tick);
