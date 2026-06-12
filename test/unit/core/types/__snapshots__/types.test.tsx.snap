@@ -3030,19 +3030,19 @@ exports[`Types in ui-react-dom-charts.tsx > 45:22 1`] = `"Argument of type '{ ta
 
 exports[`Types in ui-react-dom-charts.tsx > 53:4 1`] = `"Type 'string' is not assignable to type '"t0" | "t1" | undefined'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 58:12 1`] = `"Argument of type '{ tableId: string; queryId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 58:12 1`] = `"Argument of type '{ tableId: string; queryId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(TableSourceProps | QuerySourceProps) & BindingProps & ChartProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 65:11 1`] = `"Argument of type '{ queryId: string; tableId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(ChartTableSourceProps | ChartQuerySourceProps) & ChartBindingProps & ChartProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 65:11 1`] = `"Argument of type '{ queryId: string; tableId: string; xCellId: string; yCellId: string; }' is not assignable to parameter of type '(TableSourceProps | QuerySourceProps) & BindingProps & ChartProps'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 75:4 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'ChartTableSourceProps & ChartBindingProps & ChartProps'."`;
+exports[`Types in ui-react-dom-charts.tsx > 75:4 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'TableSourceProps & BindingProps & ChartProps'."`;
 
 exports[`Types in ui-react-dom-charts.tsx > 77:9 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
 exports[`Types in ui-react-dom-charts.tsx > 78:9 1`] = `"Type '(tick: string) => string' is not assignable to type '(tick: number) => string'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 79:32 1`] = `"Object literal may only specify known properties, and 'xCellId' does not exist in type 'ChartTableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
+exports[`Types in ui-react-dom-charts.tsx > 79:32 1`] = `"Object literal may only specify known properties, and 'xCellId' does not exist in type 'TableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
 
-exports[`Types in ui-react-dom-charts.tsx > 80:32 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'ChartTableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
+exports[`Types in ui-react-dom-charts.tsx > 80:32 1`] = `"Object literal may only specify known properties, and 'xDomain' does not exist in type 'TableSourceProps & ChartProps & { readonly children?: ReactNode; }'."`;
 
 exports[`Types in ui-react-dom-charts.tsx > 82:23 1`] = `"Argument of type '{ tableId: "t1"; xCellId: "c1b"; yCellId: "c1b"; }' is not assignable to parameter of type '((({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1b: { readonly type: "boolean"; readonly default: false; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; readonly q...'."`;
 

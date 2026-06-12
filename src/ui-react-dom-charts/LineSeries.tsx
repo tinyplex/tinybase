@@ -3,7 +3,7 @@ import type {
   SeriesProps,
 } from '../@types/ui-react-dom-charts/index.d.ts';
 import {useLayoutEffect} from '../common/react.ts';
-import {CHART_SERIES, useCartesianChartContext} from './common/context.ts';
+import {SERIES, useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
 import {Line} from './components/Line.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
@@ -47,6 +47,6 @@ export const LineSeries = ((props: SeriesProps) => {
       />
     </g>
   );
-}) as typeof LineSeriesDecl & {[CHART_SERIES]?: true};
+}) as typeof LineSeriesDecl & {[SERIES]?: true};
 
-LineSeries[CHART_SERIES] = true;
+LineSeries[SERIES] = true;

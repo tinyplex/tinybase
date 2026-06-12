@@ -13,43 +13,43 @@ export type ChartProps = {
   readonly className?: string;
 };
 
-/// ChartTableSourceProps
-export type ChartTableSourceProps = {
-  /// ChartTableSourceProps.tableId
+/// TableSourceProps
+export type TableSourceProps = {
+  /// TableSourceProps.tableId
   readonly tableId: Id;
-  /// ChartTableSourceProps.store
+  /// TableSourceProps.store
   readonly store?: StoreOrStoreId;
-  /// ChartTableSourceProps.queryId
+  /// TableSourceProps.queryId
   readonly queryId?: never;
-  /// ChartTableSourceProps.queries
+  /// TableSourceProps.queries
   readonly queries?: never;
 };
 
-/// ChartQuerySourceProps
-export type ChartQuerySourceProps = {
-  /// ChartQuerySourceProps.queryId
+/// QuerySourceProps
+export type QuerySourceProps = {
+  /// QuerySourceProps.queryId
   readonly queryId: Id;
-  /// ChartQuerySourceProps.queries
+  /// QuerySourceProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ChartQuerySourceProps.tableId
+  /// QuerySourceProps.tableId
   readonly tableId?: never;
-  /// ChartQuerySourceProps.store
+  /// QuerySourceProps.store
   readonly store?: never;
 };
 
-/// ChartBindingProps
-export type ChartBindingProps = {
-  /// ChartBindingProps.xCellId
+/// BindingProps
+export type BindingProps = {
+  /// BindingProps.xCellId
   readonly xCellId: Id;
-  /// ChartBindingProps.yCellId
+  /// BindingProps.yCellId
   readonly yCellId: Id;
-  /// ChartBindingProps.sortCellId
+  /// BindingProps.sortCellId
   readonly sortCellId?: Id;
-  /// ChartBindingProps.descending
+  /// BindingProps.descending
   readonly descending?: boolean;
-  /// ChartBindingProps.offset
+  /// BindingProps.offset
   readonly offset?: number;
-  /// ChartBindingProps.limit
+  /// BindingProps.limit
   readonly limit?: number;
 };
 
@@ -111,7 +111,7 @@ export type YAxisProps = {
 
 /// CartesianChart
 export function CartesianChart(
-  props: (ChartTableSourceProps | ChartQuerySourceProps) &
+  props: (TableSourceProps | QuerySourceProps) &
     ChartProps & {readonly children?: ReactNode},
 ): ComponentReturnType;
 
@@ -129,14 +129,10 @@ export function BarSeries(props: SeriesProps): ComponentReturnType;
 
 /// LineChart
 export function LineChart(
-  props: (ChartTableSourceProps | ChartQuerySourceProps) &
-    ChartBindingProps &
-    ChartProps,
+  props: (TableSourceProps | QuerySourceProps) & BindingProps & ChartProps,
 ): ComponentReturnType;
 
 /// BarChart
 export function BarChart(
-  props: (ChartTableSourceProps | ChartQuerySourceProps) &
-    ChartBindingProps &
-    ChartProps,
+  props: (TableSourceProps | QuerySourceProps) & BindingProps & ChartProps,
 ): ComponentReturnType;

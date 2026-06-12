@@ -1,8 +1,8 @@
 import type {
-  ChartBindingProps,
+  BindingProps,
   ChartProps,
-  ChartQuerySourceProps,
-  ChartTableSourceProps,
+  QuerySourceProps,
+  TableSourceProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
 import {useMemo} from '../../common/react.ts';
 import {
@@ -12,8 +12,8 @@ import {
 import {getDataPoint, getDataPoints, getSeriesSummary} from '../common/data.ts';
 import type {Kind, SeriesSummary} from '../common/types.ts';
 
-type ChartAliasProps = (ChartTableSourceProps | ChartQuerySourceProps) &
-  ChartBindingProps &
+type AliasProps = (TableSourceProps | QuerySourceProps) &
+  BindingProps &
   ChartProps;
 
 export const useInitialSeriesSummary = (
@@ -29,7 +29,7 @@ export const useInitialSeriesSummary = (
     tableId,
     xCellId,
     yCellId,
-  }: ChartAliasProps,
+  }: AliasProps,
 ): SeriesSummary | undefined => {
   const storeObject = useStoreOrStoreById(store);
   const queriesObject = useQueriesOrQueriesById(queries);

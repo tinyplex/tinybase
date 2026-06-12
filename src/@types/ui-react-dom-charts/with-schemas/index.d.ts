@@ -18,8 +18,8 @@ export type ChartProps = {
   readonly className?: string;
 };
 
-/// ChartTableSourceProps
-export type ChartTableSourceProps<
+/// TableSourceProps
+export type TableSourceProps<
   Schemas extends OptionalSchemas,
   TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
     Schemas[0]
@@ -27,47 +27,47 @@ export type ChartTableSourceProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// ChartTableSourceProps.tableId
+        /// TableSourceProps.tableId
         readonly tableId: TableId;
-        /// ChartTableSourceProps.store
+        /// TableSourceProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// ChartTableSourceProps.queryId
+        /// TableSourceProps.queryId
         readonly queryId?: never;
-        /// ChartTableSourceProps.queries
+        /// TableSourceProps.queries
         readonly queries?: never;
       }
     : never
   : never;
 
-/// ChartQuerySourceProps
-export type ChartQuerySourceProps<Schemas extends OptionalSchemas> = {
-  /// ChartQuerySourceProps.queryId
+/// QuerySourceProps
+export type QuerySourceProps<Schemas extends OptionalSchemas> = {
+  /// QuerySourceProps.queryId
   readonly queryId: Id;
-  /// ChartQuerySourceProps.queries
+  /// QuerySourceProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ChartQuerySourceProps.tableId
+  /// QuerySourceProps.tableId
   readonly tableId?: never;
-  /// ChartQuerySourceProps.store
+  /// QuerySourceProps.store
   readonly store?: never;
 };
 
-/// ChartBindingProps
-export type ChartBindingProps<
+/// BindingProps
+export type BindingProps<
   XCellId extends Id = Id,
   YCellId extends Id = Id,
   SortCellId extends Id = XCellId,
 > = {
-  /// ChartBindingProps.xCellId
+  /// BindingProps.xCellId
   readonly xCellId: XCellId;
-  /// ChartBindingProps.yCellId
+  /// BindingProps.yCellId
   readonly yCellId: YCellId;
-  /// ChartBindingProps.sortCellId
+  /// BindingProps.sortCellId
   readonly sortCellId?: SortCellId;
-  /// ChartBindingProps.descending
+  /// BindingProps.descending
   readonly descending?: boolean;
-  /// ChartBindingProps.offset
+  /// BindingProps.offset
   readonly offset?: number;
-  /// ChartBindingProps.limit
+  /// BindingProps.limit
   readonly limit?: number;
 };
 
@@ -139,15 +139,15 @@ type NumericCellIdFromSchema<
     : never;
 }[CellIdFromSchema<Schemas[0], TableId>];
 
-type ChartTableBindingProps<
+type TableBindingProps<
   Schemas extends OptionalSchemas,
   TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
     Schemas[0]
   >,
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
-    ? ChartTableSourceProps<Schemas, TableId> &
-        ChartBindingProps<
+    ? TableSourceProps<Schemas, TableId> &
+        BindingProps<
           CellIdFromSchema<Schemas[0], TableId>,
           NumericCellIdFromSchema<Schemas, TableId>,
           CellIdFromSchema<Schemas[0], TableId>
@@ -160,11 +160,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// CartesianChart
   CartesianChart: {
     (
-      props: ChartTableSourceProps<Schemas> &
+      props: TableSourceProps<Schemas> &
         ChartProps & {readonly children?: ReactNode},
     ): ComponentReturnType;
     (
-      props: ChartQuerySourceProps<Schemas> &
+      props: QuerySourceProps<Schemas> &
         ChartProps & {readonly children?: ReactNode},
     ): ComponentReturnType;
   };
@@ -184,14 +184,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// LineChart
   LineChart: (
     props:
-      | (ChartTableBindingProps<Schemas> & ChartProps)
-      | (ChartQuerySourceProps<Schemas> & ChartBindingProps & ChartProps),
+      | (TableBindingProps<Schemas> & ChartProps)
+      | (QuerySourceProps<Schemas> & BindingProps & ChartProps),
   ) => ComponentReturnType;
 
   /// BarChart
   BarChart: (
     props:
-      | (ChartTableBindingProps<Schemas> & ChartProps)
-      | (ChartQuerySourceProps<Schemas> & ChartBindingProps & ChartProps),
+      | (TableBindingProps<Schemas> & ChartProps)
+      | (QuerySourceProps<Schemas> & BindingProps & ChartProps),
   ) => ComponentReturnType;
 };

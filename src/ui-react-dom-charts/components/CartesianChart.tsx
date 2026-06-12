@@ -1,8 +1,8 @@
 import type {ReactNode} from 'react';
 import type {
   ChartProps,
-  ChartQuerySourceProps,
-  ChartTableSourceProps,
+  QuerySourceProps,
+  TableSourceProps,
   XAxisProps,
   YAxisProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
@@ -40,9 +40,9 @@ import {
 } from '../../ui-react/index.ts';
 import {
   CartesianChartContext,
-  isChartSeriesComponent,
-  isChartXAxisComponent,
-  isChartYAxisComponent,
+  isSeriesComponent,
+  isXAxisComponent,
+  isYAxisComponent,
   SourceType,
 } from '../common/context.ts';
 import {
@@ -75,12 +75,12 @@ type ElementWithChildren = {readonly props: {readonly children?: ReactNode}};
 type ElementWithProps<Props> = {
   readonly props: Props & {readonly children?: ReactNode};
 };
-type ChartContent = readonly [
+type ParsedChildren = readonly [
   children: ReactNode[],
   xAxis?: XAxisProps,
   yAxis?: YAxisProps,
 ];
-type CartesianChartProps = (ChartTableSourceProps | ChartQuerySourceProps) &
+type CartesianChartProps = (TableSourceProps | QuerySourceProps) &
   ChartProps & {
     readonly children?: ReactNode;
     readonly initialSummary?: SeriesSummary;
@@ -136,7 +136,7 @@ export const CartesianChart = ({
   const barSeriesIdsRef = useRef<string[]>([]);
   const [barSeriesIds, setBarSeriesIds] = useState<string[]>([]);
   const [tooltipPoint, setTooltipPoint] = useState<ScaledPoint | undefined>();
-  const [chartChildren, xAxis, yAxis] = getChartContent(children);
+  const [chartChildren, xAxis, yAxis] = getParsedChildren(children);
   const xValues = domainState.xValues;
   const numericX =
     domainState.continuousX ||
@@ -465,14 +465,14 @@ const hasNumericXAxisDefinition = (xAxis?: XAxisProps): boolean =>
   isFiniteNumber(xAxis?.max) ||
   xAxis?.ticks != null;
 
-const getChartContent = (children: ReactNode): ChartContent => {
+const getParsedChildren = (children: ReactNode): ParsedChildren => {
   const chartChildren: ReactNode[] = [];
   let xAxis: XAxisProps | undefined;
   let yAxis: YAxisProps | undefined;
   Children.forEach(children, (child) => {
     if (isValidElement(child)) {
       if (child.type === Fragment) {
-        const [childChildren, childXAxis, childYAxis] = getChartContent(
+        const [childChildren, childXAxis, childYAxis] = getParsedChildren(
           (child as ElementWithChildren).props.children,
         );
         arrayForEach(childChildren, (chartChild) =>
@@ -480,11 +480,11 @@ const getChartContent = (children: ReactNode): ChartContent => {
         );
         xAxis ??= childXAxis;
         yAxis ??= childYAxis;
-      } else if (isChartSeriesComponent(child.type)) {
+      } else if (isSeriesComponent(child.type)) {
         arrayPush(chartChildren, child);
-      } else if (xAxis == null && isChartXAxisComponent(child.type)) {
+      } else if (xAxis == null && isXAxisComponent(child.type)) {
         xAxis = (child as ElementWithProps<XAxisProps>).props;
-      } else if (yAxis == null && isChartYAxisComponent(child.type)) {
+      } else if (yAxis == null && isYAxisComponent(child.type)) {
         yAxis = (child as ElementWithProps<YAxisProps>).props;
       }
     }

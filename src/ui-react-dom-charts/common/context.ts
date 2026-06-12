@@ -2,8 +2,8 @@ import type {Id} from '../../@types/common/index.d.ts';
 import type {Queries} from '../../@types/queries/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import type {
-  ChartQuerySourceProps,
-  ChartTableSourceProps,
+  QuerySourceProps,
+  TableSourceProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
 import {createContext, useContext} from '../../common/react.ts';
 import type {
@@ -24,29 +24,29 @@ export const enum SourceType {
   Table = 2,
 }
 
-export const CHART_SERIES = '_tinybaseChartSeries';
-export const CHART_X_AXIS = '_tinybaseChartXAxis';
-export const CHART_Y_AXIS = '_tinybaseChartYAxis';
+export const SERIES = '_tinybaseChartSeries';
+export const X_AXIS = '_tinybaseChartXAxis';
+export const Y_AXIS = '_tinybaseChartYAxis';
 
-export type ChartSeriesComponent = {
-  [CHART_SERIES]?: true;
+export type SeriesComponent = {
+  [SERIES]?: true;
 };
-export type ChartXAxisComponent = {
-  [CHART_X_AXIS]?: true;
+export type XAxisComponent = {
+  [X_AXIS]?: true;
 };
-export type ChartYAxisComponent = {
-  [CHART_Y_AXIS]?: true;
+export type YAxisComponent = {
+  [Y_AXIS]?: true;
 };
 
-export const isChartSeriesComponent = (component: unknown): boolean =>
+export const isSeriesComponent = (component: unknown): boolean =>
   typeof component == 'function' &&
-  (component as ChartSeriesComponent)[CHART_SERIES] === true;
-export const isChartXAxisComponent = (component: unknown): boolean =>
+  (component as SeriesComponent)[SERIES] === true;
+export const isXAxisComponent = (component: unknown): boolean =>
   typeof component == 'function' &&
-  (component as ChartXAxisComponent)[CHART_X_AXIS] === true;
-export const isChartYAxisComponent = (component: unknown): boolean =>
+  (component as XAxisComponent)[X_AXIS] === true;
+export const isYAxisComponent = (component: unknown): boolean =>
   typeof component == 'function' &&
-  (component as ChartYAxisComponent)[CHART_Y_AXIS] === true;
+  (component as YAxisComponent)[Y_AXIS] === true;
 
 export type CartesianChartContextValue = {
   readonly bounds: Bounds;
@@ -59,7 +59,7 @@ export type CartesianChartContextValue = {
   readonly plotSize: Size;
   readonly queryId?: Id;
   readonly queries?: Queries;
-  readonly queriesOrQueriesId?: ChartQuerySourceProps['queries'];
+  readonly queriesOrQueriesId?: QuerySourceProps['queries'];
   readonly releaseSeriesId: (seriesId: Id) => void;
   readonly registerBarSeries: (seriesId: Id) => void;
   readonly releaseBarSeries: (seriesId: Id) => void;
@@ -70,7 +70,7 @@ export type CartesianChartContextValue = {
   readonly setTooltipPoint: SetTooltipPoint;
   readonly sourceType: SourceType;
   readonly store?: Store;
-  readonly storeOrStoreId?: ChartTableSourceProps['store'];
+  readonly storeOrStoreId?: TableSourceProps['store'];
   readonly tableId?: Id;
   readonly xTicks: Ticks;
   readonly xValues: XValue[];

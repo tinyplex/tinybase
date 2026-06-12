@@ -32,82 +32,82 @@
   /// ChartProps.className
 }
 /**
- * The ChartTableSourceProps type describes the props that bind a chart to a
+ * The TableSourceProps type describes the props that bind a chart to a
  * Table in a Store.
  * @category Configuration
  * @since v8.5.0
  */
-/// ChartTableSourceProps
+/// TableSourceProps
 {
   /**
    * The Id of the Table in the Store to chart.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartTableSourceProps.tableId
+  /// TableSourceProps.tableId
   /**
    * The Store to chart, or the Id of a Store that is registered with the
    * Provider component.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartTableSourceProps.store
+  /// TableSourceProps.store
   /**
    * This prop is not used when binding a chart to a Table.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartTableSourceProps.queryId
+  /// TableSourceProps.queryId
   /**
    * This prop is not used when binding a chart to a Table.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartTableSourceProps.queries
+  /// TableSourceProps.queries
 }
 /**
- * The ChartQuerySourceProps type describes the props that bind a chart to a
+ * The QuerySourceProps type describes the props that bind a chart to a
  * Query in a Queries object.
  * @category Configuration
  * @since v8.5.0
  */
-/// ChartQuerySourceProps
+/// QuerySourceProps
 {
   /**
    * The Id of the query in the Queries object to chart.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartQuerySourceProps.queryId
+  /// QuerySourceProps.queryId
   /**
    * The Queries object to chart, or the Id of a Queries object that is
    * registered with the Provider component.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartQuerySourceProps.queries
+  /// QuerySourceProps.queries
   /**
    * This prop is not used when binding a chart to a Query.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartQuerySourceProps.tableId
+  /// QuerySourceProps.tableId
   /**
    * This prop is not used when binding a chart to a Query.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartQuerySourceProps.store
+  /// QuerySourceProps.store
 }
 /**
- * The ChartBindingProps type describes the props that bind a LineChart
+ * The BindingProps type describes the props that bind a LineChart
  * component or BarChart component to Cell values in TinyBase data. An x Cell
  * value can be a finite number, string, or boolean. A y Cell value must be a
  * finite number.
  * @category Configuration
  * @since v8.5.0
  */
-/// ChartBindingProps
+/// BindingProps
 {
   /**
    * The Id of the Cell that provides each data point's x value. Finite numbers
@@ -117,7 +117,7 @@
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartBindingProps.xCellId
+  /// BindingProps.xCellId
   /**
    * The Id of the Cell that provides each data point's y value. Only finite
    * numbers are charted; rows with missing, non-numeric, or non-finite y values
@@ -125,31 +125,31 @@
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartBindingProps.yCellId
+  /// BindingProps.yCellId
   /**
    * The Id of the Cell used to sort the charted rows.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartBindingProps.sortCellId
+  /// BindingProps.sortCellId
   /**
    * Whether the charted rows should be sorted in descending order.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartBindingProps.descending
+  /// BindingProps.descending
   /**
    * The number of sorted rows to skip before charting.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartBindingProps.offset
+  /// BindingProps.offset
   /**
    * The maximum number of sorted rows to chart.
    * @category Prop
    * @since v8.5.0
    */
-  /// ChartBindingProps.limit
+  /// BindingProps.limit
 }
 /**
  * The SeriesProps type describes the props that bind a chart series to Cell
