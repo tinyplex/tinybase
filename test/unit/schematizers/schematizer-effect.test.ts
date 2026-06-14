@@ -52,7 +52,7 @@ describe('Effect Schematizer', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: S.Struct({
-            rating: S.Literal('up', 'down'),
+            rating: S.Literals(['up', 'down']),
           }),
         }),
       ).toEqual({
@@ -103,7 +103,7 @@ describe('Effect Schematizer', () => {
         schematizer.toTablesSchema({
           t1: S.Struct({
             c1: S.String,
-            c2: S.DateFromSelf,
+            c2: S.Date,
           }),
         }),
       ).toEqual({
@@ -151,7 +151,7 @@ describe('Effect Schematizer', () => {
     test('converts Effect object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          v1: S.Record({key: S.String, value: S.String}),
+          v1: S.Record(S.String, S.String),
           v2: S.Array(S.String),
         }),
       ).toEqual({
@@ -175,7 +175,7 @@ describe('Effect Schematizer', () => {
     test('converts Effect string literal values', () => {
       expect(
         schematizer.toValuesSchema({
-          rating: S.Literal('up', 'down'),
+          rating: S.Literals(['up', 'down']),
         }),
       ).toEqual({
         rating: {type: 'string'},

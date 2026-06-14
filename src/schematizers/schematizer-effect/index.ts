@@ -1,12 +1,12 @@
 import type {createEffectSchematizer as createEffectSchematizerDecl} from '../../@types/schematizers/schematizer-effect/index.d.ts';
 import {arrayFind} from '../../common/array.ts';
-import {isNull} from '../../common/other.ts';
 import {
   ARRAY,
   BOOLEAN,
   BOOLEAN_KEYWORD,
   EMPTY_STRING,
   LITERAL,
+  NULL_KEYWORD,
   NUMBER,
   NUMBER_KEYWORD,
   OBJECT,
@@ -33,16 +33,12 @@ const unwrapSchema = (
     const types = ast.types;
     const nonNullType = arrayFind(
       types,
-      (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
+      (t: TypeNode) => t._tag !== NULL_KEYWORD,
     );
     return [
       {[TYPE]: getSimpleType(nonNullType)},
       defaultValue,
-      allowNull ||
-        !!arrayFind(
-          types,
-          (t: TypeNode) => t._tag === LITERAL && isNull(t.literal),
-        ),
+      allowNull || !!arrayFind(types, (t: TypeNode) => t._tag === NULL_KEYWORD),
     ];
   }
 

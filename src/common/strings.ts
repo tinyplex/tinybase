@@ -87,11 +87,12 @@ export const LITERAL = 'Literal';
 export const PROPERTY_SIGNATURES = 'propertySignatures';
 export const RECORD = 'record';
 export const SEQUENCE = 'sequence';
-export const STRING_KEYWORD = 'StringKeyword';
-export const NUMBER_KEYWORD = 'NumberKeyword';
-export const BOOLEAN_KEYWORD = 'BooleanKeyword';
-export const TUPLE_TYPE = 'TupleType';
-export const TYPE_LITERAL = 'TypeLiteral';
+export const STRING_KEYWORD = 'String';
+export const NUMBER_KEYWORD = 'Number';
+export const BOOLEAN_KEYWORD = 'Boolean';
+export const TUPLE_TYPE = 'Arrays';
+export const TYPE_LITERAL = 'Objects';
+export const NULL_KEYWORD = 'Null';
 export const UNION = 'Union';
 
 export const T = 't';

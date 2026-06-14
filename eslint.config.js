@@ -34,7 +34,7 @@ export default tsLint.config(
     settings: {
       react: {version: 'detect'},
       'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
-      'import/core-modules': ['expo-sqlite', 'svelte'],
+      'import/core-modules': ['effect/Schema', 'expo-sqlite', 'svelte'],
     },
 
     languageOptions: {globals: {...globals.node, ...globals.browser}},
