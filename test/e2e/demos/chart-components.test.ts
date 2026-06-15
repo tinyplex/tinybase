@@ -32,4 +32,22 @@ describe('chart-components', () => {
     await expectedFramedElement(page, 'svg.chart-booleans text', 'true');
     await expectedFramedElement(page, 'svg.chart-booleans text', 'false');
   });
+
+  test('Axis Overrides', async ({page}) => {
+    await expectPage(page, `/demos/chart-components-react/axis-overrides/`);
+    await expectedElement(page, 'h1', 'Axis Overrides');
+    await expectedFramedElement(page, 'svg.chart-axes .plot .line');
+    await expectedFramedElement(page, 'svg.chart-axes .axis-dates', 'Jan 3');
+    await expectedFramedElement(
+      page,
+      'svg.chart-axes .axis-dates',
+      'Sale date',
+    );
+    await expectedFramedElement(page, 'svg.chart-axes .axis-revenue', '$40k');
+    await expectedFramedElement(
+      page,
+      'svg.chart-axes .axis-revenue',
+      'Revenue',
+    );
+  });
 });

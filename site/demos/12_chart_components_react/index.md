@@ -13,8 +13,10 @@ The set is organized as a small gallery of chart themes:
 | Styling     | [Styled LineChart component][styled] |
 | Composition | [Composing Charts][composing]        |
 | Data        | [Sorting And Types][sorting]         |
+| Axes        | [Axis Overrides][axes]               |
 
 [linechart]: /demos/chart-components-react/linechart/
 [styled]: /demos/chart-components-react/linechart-styled/
 [composing]: /demos/chart-components-react/composing-charts/
 [sorting]: /demos/chart-components-react/sorting-and-types/
+[axes]: /demos/chart-components-react/axis-overrides/

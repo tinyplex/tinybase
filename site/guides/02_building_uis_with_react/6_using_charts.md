@@ -211,11 +211,13 @@ For complete examples, see the Chart Components (React) demos:
 | Styled LineChart component | Styles the chart SVG with regular CSS rules. | [demo][styled]    |
 | Composing Charts           | Combines multiple series in one chart.       | [demo][composing] |
 | Sorting And Types          | Shows sorting and x value types.             | [demo][sorting]   |
+| Axis Overrides             | Sets axis bounds, ticks, and labels.         | [demo][axes]      |
 
 [linechart]: /demos/chart-components-react/linechart/
 [styled]: /demos/chart-components-react/linechart-styled/
 [composing]: /demos/chart-components-react/composing-charts/
 [sorting]: /demos/chart-components-react/sorting-and-types/
+[axes]: /demos/chart-components-react/axis-overrides/
 
 ## Summary
 

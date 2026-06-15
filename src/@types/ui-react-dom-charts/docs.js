@@ -404,6 +404,11 @@
  * It is a configuration child rather than a separately rendered SVG element:
  * include zero or one XAxis component in a CartesianChart component's children.
  * If omitted, the x axis is inferred from the chart's series.
+ *
+ * See the Axis Overrides (React) demo for this component in action:
+ *
+ * ![XAxis component example](/shots/axis-overrides-react-demo.png
+ * "XAxis component example")
  * @category Store components
  * @since v8.5.0
  */
@@ -414,6 +419,11 @@
  * It is a configuration child rather than a separately rendered SVG element:
  * include zero or one YAxis component in a CartesianChart component's children.
  * If omitted, the y axis is inferred from the chart's series.
+ *
+ * See the Axis Overrides (React) demo for this component in action:
+ *
+ * ![YAxis component example](/shots/axis-overrides-react-demo.png
+ * "YAxis component example")
  * @category Store components
  * @since v8.5.0
  */

@@ -283,6 +283,15 @@ export const DOC_SHOTS: readonly DocShot[] = [
     style: IFRAME_DOC_SHOT_STYLE,
   },
   {
+    asset: 'axis-overrides-react-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/chart-components-react/axis-overrides/',
+    readySelector: 'svg.chart-axes .plot .line',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
     asset: 'editablecellview-react-demo.png',
     framed: true,
     marginRem: 0,
