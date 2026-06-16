@@ -88,6 +88,17 @@ console.log(compositeChartApp.querySelectorAll('.line-series').length);
 // -> 2
 ```
 
+The same CartesianChart frame can include zero or one XAxis component and YAxis
+component child. These configuration children let you override inferred axis
+titles, numeric bounds, explicit ticks, tick counts, tick formatters, and
+axis-specific class names without adding more top-level chart props.
+
+![Axis Overrides demo (React)](/shots/axis-overrides-react-demo.png 'Axis Overrides demo (React)')
+
+The Axis Overrides demo shows this pattern with numeric timestamps formatted as
+dates on the x axis, and revenue ticks formatted as dollar amounts on the y
+axis.
+
 Chart presentation is handled with CSS. The chart components emit stable SVG
 class names for grid lines, axes, data marks, and tooltips, so you can keep data
 binding in props and visual styling in stylesheets.
