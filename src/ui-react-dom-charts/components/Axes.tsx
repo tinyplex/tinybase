@@ -1,6 +1,6 @@
-import {
-  type XAxisProps,
-  type YAxisProps,
+import type {
+  XAxisProps,
+  YAxisProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
 import {
   CURRENT_COLOR,
