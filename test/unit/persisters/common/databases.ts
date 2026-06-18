@@ -355,7 +355,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       const existingName = sqlClientsAndName?.[2];
       const name = existingName ?? 'tinybase_' + getUniqueId();
       if (!existingName) {
-        const adminSql = postgres('postgres://localhost:5432/');
+        const adminSql = postgres('postgres://localhost:5432/postgres');
         await adminSql`CREATE DATABASE ${adminSql(name)}`;
         await adminSql.end({timeout: 0.1});
       }
@@ -387,7 +387,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       cmdSql.release();
       await sql.end({timeout: 0.1});
 
-      const adminSql = postgres('postgres://localhost:5432/', {
+      const adminSql = postgres('postgres://localhost:5432/postgres', {
         connection: {client_min_messages: 'warning'},
       });
       await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)} WITH (FORCE)`;
