@@ -2,6 +2,7 @@ import type {Id} from '../../@types/common/index.d.ts';
 import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
 import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import type {SeriesProps} from '../../@types/ui-react-dom-charts/index.d.ts';
+import {isNullish} from '../../common/other.ts';
 import {useCallback, useLayoutEffect, useState} from '../../common/react.ts';
 import {
   useCellListener,
@@ -128,7 +129,7 @@ export const useSeriesData = ({
 export const getSeriesClassName = (
   baseClassName: string,
   className?: string,
-) => (className == null ? baseClassName : `${baseClassName} ${className}`);
+) => (isNullish(className) ? baseClassName : `${baseClassName} ${className}`);
 
 const getCell = (
   sourceType: SourceType,

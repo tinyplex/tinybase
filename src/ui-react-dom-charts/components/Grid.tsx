@@ -6,8 +6,8 @@ import {
 } from '../../common/array.ts';
 import {isNullish, isNumber} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
+import {CURRENT_COLOR} from '../common/strings.ts';
 import {
-  CURRENT_COLOR,
   type Bounds,
   type PlotFrame,
   type ScaledPoint,

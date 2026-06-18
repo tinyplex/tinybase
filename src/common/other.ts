@@ -2,6 +2,7 @@ import {BOOLEAN, FUNCTION, NUMBER, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
 const math = Math;
+const date = Date;
 
 const getIfNotFunction =
   (predicate: (value: unknown) => value is unknown) =>
@@ -45,11 +46,14 @@ export const mathRound = math.round;
 export const mathAbs = math.abs;
 export const mathLog10 = math.log10;
 export const mathRandom = math.random;
+export const dateUtc = date.UTC;
 export const infinity = Infinity;
 export const epsilon = Number.EPSILON;
 
 export const isFiniteNumber: (num: any) => boolean = isFinite;
 export const isInteger = number.isInteger;
+
+export const isZero = (thing: number): boolean => thing == 0;
 
 export const isInstanceOf = (
   thing: unknown,
@@ -61,6 +65,26 @@ export const isNullish = (thing: unknown): thing is undefined | null =>
 
 export const isUndefined = (thing: unknown): thing is undefined =>
   thing === undefined;
+
+export const dateNew = (value?: any): Date =>
+  isUndefined(value) ? new date() : new date(value);
+
+export const dateGetUTCFullYear = (dateObj: Date): number =>
+  dateObj.getUTCFullYear();
+
+export const dateGetUTCMonth = (dateObj: Date): number => dateObj.getUTCMonth();
+
+export const dateGetUTCDate = (dateObj: Date): number => dateObj.getUTCDate();
+
+export const dateGetUTCDay = (dateObj: Date): number => dateObj.getUTCDay();
+
+export const dateGetUTCHours = (dateObj: Date): number => dateObj.getUTCHours();
+
+export const dateGetUTCMinutes = (dateObj: Date): number =>
+  dateObj.getUTCMinutes();
+
+export const dateGetUTCSeconds = (dateObj: Date): number =>
+  dateObj.getUTCSeconds();
 
 export const hasWindow = (): boolean => !isUndefined(GLOBAL.window);
 

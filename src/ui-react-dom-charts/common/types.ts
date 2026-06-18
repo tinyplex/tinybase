@@ -1,9 +1,16 @@
 import type {RefObject} from 'react';
 import type {Id} from '../../@types/common/index.d.ts';
+import {
+  BAR,
+  CATEGORY,
+  LINE,
+  LINEAR,
+  MILLISECOND,
+  SECOND_UNIT,
+  TIME,
+} from './strings.ts';
 
-export const CURRENT_COLOR = 'currentColor';
-
-export type Kind = 'bar' | 'line';
+export type Kind = typeof BAR | typeof LINE;
 export type ScaledPoint = readonly [
   ...DataPoint,
   x: number,
@@ -34,8 +41,8 @@ export type DomainState = {
   readonly continuousX: boolean;
   readonly xValues: XValue[];
 };
-export type XScale = 'category' | 'linear' | 'time';
-export type TimestampUnit = 'millisecond' | 'second';
+export type XScale = typeof CATEGORY | typeof LINEAR | typeof TIME;
+export type TimestampUnit = typeof MILLISECOND | typeof SECOND_UNIT;
 export type Style = readonly [
   tickSize: number,
   tickGap: number,

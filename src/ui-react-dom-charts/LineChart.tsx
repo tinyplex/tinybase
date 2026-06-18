@@ -1,4 +1,5 @@
 import type {LineChart as LineChartDecl} from '../@types/ui-react-dom-charts/index.d.ts';
+import {LINE} from './common/strings.ts';
 import {CartesianChart} from './components/CartesianChart.tsx';
 import {useInitialSeriesSummary} from './components/summary.ts';
 import {LineSeries} from './LineSeries.tsx';
@@ -7,7 +8,7 @@ type LineChartProps = Parameters<typeof LineChartDecl>[0];
 
 // eslint-disable-next-line react/prop-types
 export const LineChart: typeof LineChartDecl = ({children, ...props}) => {
-  const initialSummary = useInitialSeriesSummary('line', props);
+  const initialSummary = useInitialSeriesSummary(LINE, props);
 
   return (
     <CartesianChart {...getSourceProps(props)} initialSummary={initialSummary}>

@@ -1,12 +1,14 @@
 import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
-import {isNumber, mathMax, string} from '../../common/other.ts';
 import {
-  getScale,
-  getTimeTickLabel,
-  normalizeTimeValue,
-} from '../common/data.ts';
+  dateNew,
+  isNullish,
+  isNumber,
+  mathMax,
+  string,
+} from '../../common/other.ts';
+import {getScale, normalizeTimeValue} from '../common/data.ts';
+import {CURRENT_COLOR, MILLISECOND, TIME} from '../common/strings.ts';
 import {
-  CURRENT_COLOR,
   type PlotFrame,
   type ScaledPoint,
   type Ticks,
@@ -14,6 +16,7 @@ import {
   type XScale,
   type XValue,
 } from '../common/types.ts';
+import {getTimeTickLabel} from '../common/wilkinson.ts';
 
 type TickFormatter = (tick: any, timestamp: any) => string;
 
@@ -52,7 +55,7 @@ export const XAxis = ({
   const titleGap = mathMax(axisHeight - tickSize - tickGap - 2 * fontSize, 0);
   return (
     <g
-      className={getAxisClassName('x', className)}
+      className={isNullish(className) ? 'x' : `x ${className}`}
       dominantBaseline="hanging"
       textAnchor="middle"
     >
@@ -87,7 +90,7 @@ export const XAxis = ({
                     tick,
                     tickFormatter,
                     xScale,
-                    'millisecond',
+                    MILLISECOND,
                     xTicks,
                   )}
                 </text>
@@ -105,9 +108,6 @@ export const XAxis = ({
   );
 };
 
-const getAxisClassName = (baseClassName: string, className?: string) =>
-  className == null ? baseClassName : `${baseClassName} ${className}`;
-
 const getTickLabel = (
   tick: XValue | Date,
   tickFormatter: TickFormatter | undefined,
@@ -116,9 +116,9 @@ const getTickLabel = (
   ticks: Ticks = [],
 ) => {
   const timestamp =
-    xScale == 'time' ? normalizeTimeValue(tick, timestampUnit) : undefined;
+    xScale == TIME ? normalizeTimeValue(tick, timestampUnit) : undefined;
   return isNumber(timestamp)
-    ? (tickFormatter?.(new Date(timestamp), timestamp) ??
+    ? (tickFormatter?.(dateNew(timestamp), timestamp) ??
         getTimeTickLabel(timestamp, ticks))
     : (tickFormatter?.(tick, undefined) ?? string(tick));
 };

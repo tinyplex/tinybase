@@ -2,8 +2,8 @@ import type {
   XAxisProps,
   YAxisProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
+import {CURRENT_COLOR} from '../common/strings.ts';
 import {
-  CURRENT_COLOR,
   type Bounds,
   type PlotFrame,
   type ScaledPoint,

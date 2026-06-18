@@ -1,7 +1,7 @@
 import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
 import {size} from '../../common/other.ts';
+import {CURRENT_COLOR} from '../common/strings.ts';
 import {
-  CURRENT_COLOR,
   type PlotFrame,
   type ScaledPoint,
   type SetTooltipPoint,

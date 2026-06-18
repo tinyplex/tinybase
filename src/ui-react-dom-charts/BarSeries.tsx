@@ -2,10 +2,11 @@ import type {
   BarSeries as BarSeriesDecl,
   SeriesProps,
 } from '../@types/ui-react-dom-charts/index.d.ts';
+import {arrayMap} from '../common/array.ts';
 import {useLayoutEffect} from '../common/react.ts';
 import {SERIES, useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
-import {CURRENT_COLOR} from './common/types.ts';
+import {BAR, CATEGORY, CURRENT_COLOR, LINE} from './common/strings.ts';
 import {Bars, getContinuousBarWidth} from './components/Bars.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
@@ -30,11 +31,11 @@ export const BarSeries = ((props: SeriesProps) => {
   const barSeriesIndex = getBarSeriesIndex(seriesId);
   const [, , yMin, yMax] = bounds;
   const axisPoints =
-    xScale == 'category'
+    xScale == CATEGORY
       ? undefined
       : getScaledPoints(
-          'line',
-          xValues.map((xValue, index) => [`${index}`, xValue, 0]),
+          LINE,
+          arrayMap(xValues, (xValue, index) => [`${index}`, xValue, 0]),
           bounds,
           plotSize,
           xValues,
@@ -42,7 +43,7 @@ export const BarSeries = ((props: SeriesProps) => {
           timestampUnit,
         );
   const points = getScaledPoints(
-    'bar',
+    BAR,
     rawPoints,
     bounds,
     plotSize,
@@ -56,7 +57,7 @@ export const BarSeries = ((props: SeriesProps) => {
   useLayoutEffect(() => {
     setSeriesSummary(
       seriesId,
-      getSeriesSummary('bar', rawPoints, xCellId, yCellId, label),
+      getSeriesSummary(BAR, rawPoints, xCellId, yCellId, label),
     );
   });
 

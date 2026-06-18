@@ -10,8 +10,10 @@ import {
   arrayMap,
   arrayPush,
 } from '../../common/array.ts';
-import {collSize} from '../../common/coll.ts';
+import {collHas, collSize} from '../../common/coll.ts';
+import {mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {
+  dateNew,
   infinity,
   isFalse,
   isFiniteNumber,
@@ -20,79 +22,38 @@ import {
   isString,
   isTrue,
   isUndefined,
-  mathAbs,
   mathFloor,
   mathMax,
   mathMin,
   mathRound,
   size,
 } from '../../common/other.ts';
-import type {
-  Bounds,
-  DataPoint,
-  Domain,
-  DomainState,
-  Kind,
-  ScaledPoint,
-  SeriesSummary,
-  Size,
-  Ticks,
-  TimestampUnit,
-  XScale,
-  XValue,
+import {
+  BAR,
+  CATEGORY,
+  LINE,
+  LINEAR,
+  MILLISECOND,
+  SECOND_UNIT,
+  TIME,
+} from './strings.ts';
+import {
+  type Bounds,
+  type DataPoint,
+  type Domain,
+  type DomainState,
+  type Kind,
+  type ScaledPoint,
+  type SeriesSummary,
+  type Size,
+  type Ticks,
+  type TimestampUnit,
+  type XScale,
+  type XValue,
 } from './types.ts';
-import {getTicks} from './wilkinson.ts';
+import {getTickCount, getTicks} from './wilkinson.ts';
 
-const TARGET_TICKS = 10;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:$|T)/;
-const SECOND = 1000;
-const MINUTE = 60 * SECOND;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-const MONTH = 30 * DAY;
-const YEAR = 365 * DAY;
-const TIME_TICK_WEIGHTS = [0.25, 0.2, 0.5, 0.05];
-const TIME_INTERVALS: TimeInterval[] = [
-  ['second', 1],
-  ['second', 5],
-  ['second', 10],
-  ['second', 15],
-  ['second', 30],
-  ['minute', 1],
-  ['minute', 5],
-  ['minute', 10],
-  ['minute', 15],
-  ['minute', 30],
-  ['hour', 1],
-  ['hour', 3],
-  ['hour', 6],
-  ['hour', 12],
-  ['day', 1],
-  ['day', 2],
-  ['week', 1],
-  ['month', 1],
-  ['month', 2],
-  ['quarter', 1],
-  ['month', 6],
-  ['year', 1],
-  ['year', 2],
-  ['year', 5],
-  ['year', 10],
-  ['year', 25],
-  ['year', 50],
-  ['year', 100],
-];
-
-type TimeUnit =
-  | 'second'
-  | 'minute'
-  | 'hour'
-  | 'day'
-  | 'week'
-  | 'month'
-  | 'quarter'
-  | 'year';
-type TimeInterval = readonly [unit: TimeUnit, step: number];
 
 export const getDataPoints = (
   rowIds: string[],
@@ -122,27 +83,26 @@ export const getScaledPoints = (
   [xMin, xMax, yMin, yMax]: Bounds,
   [width, height]: Size,
   xValues?: XValue[],
-  xScale: XScale = 'category',
-  timestampUnit: TimestampUnit = 'millisecond',
+  xScale: XScale = CATEGORY,
+  timestampUnit: TimestampUnit = MILLISECOND,
   xTitle?: string,
   yTitle?: string,
 ): ScaledPoint[] => {
-  const continuousX = xScale != 'category';
+  const continuousX = xScale != CATEGORY;
   const xDomain: Domain = continuousX
     ? [xMin as number, xMax as number]
     : [0, 0];
   const yDomain: Domain = [yMin ?? 0, yMax ?? 0];
-  const xCategories = new Map<XValue, number>();
+  const xCategories = mapNew<XValue, number>();
 
   arrayForEach(
     xValues == null || arrayIsEmpty(xValues)
       ? arrayMap(points, ([, xValue]) => xValue)
       : xValues,
-    (xValue) => {
-      if (!xCategories.has(xValue)) {
-        xCategories.set(xValue, collSize(xCategories));
-      }
-    },
+    (xValue) =>
+      collHas(xCategories, xValue)
+        ? 0
+        : mapSet(xCategories, xValue, collSize(xCategories)),
   );
 
   return arrayFilter(
@@ -163,7 +123,7 @@ export const getScaledPoints = (
             xValue,
             yValue,
             x,
-            getY(yValue, yDomain, height),
+            height - getScale(yValue, yDomain[0], yDomain[1], height),
             xTitle,
             yTitle,
           ];
@@ -182,29 +142,30 @@ const getX = (
   kind: Kind,
 ): number | undefined => {
   const continuousValue = getContinuousXValue(xValue, xScale, timestampUnit);
-  return xScale != 'category'
+  return xScale != CATEGORY
     ? isUndefined(continuousValue)
       ? undefined
       : getScale(continuousValue, xMin, xMax, width)
-    : kind == 'bar'
-      ? (width * ((xCategories.get(xValue) ?? 0) + 0.5)) / collSize(xCategories)
+    : kind == BAR
+      ? (width * ((mapGet(xCategories, xValue) ?? 0) + 0.5)) /
+        collSize(xCategories)
       : getScale(
-          xCategories.get(xValue) ?? 0,
+          mapGet(xCategories, xValue) ?? 0,
           0,
           collSize(xCategories) - 1,
           width,
         );
 };
 
-const getY = (yValue: number, [yMin, yMax]: Domain, height: number) =>
-  height - getScale(yValue, yMin, yMax, height);
-
 export const getScale = (
   value: number,
   min: number,
   max: number,
   size: number,
-) => (min == max ? size / 2 : getRounded((size * (value - min)) / (max - min)));
+) =>
+  min == max
+    ? size / 2
+    : mathRound(((size * (value - min)) / (max - min)) * 1000000) / 1000000;
 
 export const getBounds = (kind: Kind, points: DataPoint[]): Bounds => {
   if (arrayIsEmpty(points)) {
@@ -252,7 +213,7 @@ export const getXTicks = (
   labelSize: number,
   tickCount?: number,
 ): Ticks =>
-  kind == 'line' && isNumber(xMin) && isNumber(xMax) && xMin != xMax
+  kind == LINE && isNumber(xMin) && isNumber(xMax) && xMin != xMax
     ? getTicks(
         xMin,
         xMax,
@@ -263,76 +224,24 @@ export const getXTicks = (
       )
     : [];
 
-export const getTimeTicks = (
-  [xMin, xMax]: Bounds,
-  [width]: Size,
-  labelSize: number,
-  tickCount?: number,
-): Ticks => {
-  if (!isNumber(xMin) || !isNumber(xMax) || xMin == xMax) {
-    return [];
-  }
-
-  const min = mathMin(xMin, xMax);
-  const max = mathMax(xMin, xMax);
-  const targetTickCount = getTickCount(tickCount);
-  let bestTicks: Ticks = [min, max];
-  let bestScore = -infinity;
-
-  arrayForEach(TIME_INTERVALS, (interval, index) => {
-    const ticks = getTimeIntervalTicks(min, max, interval);
-    const score = getTimeTickScore(
-      ticks,
-      index,
-      min,
-      max,
-      targetTickCount,
-      labelSize,
-      width,
-    );
-    if (score > bestScore) {
-      bestTicks = ticks;
-      bestScore = score;
-    }
-  });
-
-  return bestTicks;
-};
-
-export const getTimeTickLabel = (timestamp: number, ticks: Ticks): string => {
-  const date = new Date(timestamp);
-  const year = `${date.getUTCFullYear()}`;
-  const month = getPadded(date.getUTCMonth() + 1);
-  const day = getPadded(date.getUTCDate());
-  const hour = getPadded(date.getUTCHours());
-  const minute = getPadded(date.getUTCMinutes());
-  const second = getPadded(date.getUTCSeconds());
-  const dateLabel = `${year}-${month}-${day}`;
-  const minDiff = getTimeTickLabelDiff(date, getTimeTickMinDiff(ticks));
-
-  return minDiff < MINUTE
-    ? `${dateLabel} ${hour}:${minute}:${second}`
-    : minDiff < DAY
-      ? `${dateLabel} ${hour}:${minute}`
-      : minDiff < MONTH
-        ? dateLabel
-        : minDiff < YEAR
-          ? `${year}-${month}`
-          : year;
-};
-
 export const getResolvedXScale = (
   xAxisScale: 'auto' | XScale | undefined,
   {continuousX, xValues}: DomainState,
   hasLinearAxisDefinition: boolean,
 ): XScale =>
-  xAxisScale == 'category' || xAxisScale == 'linear' || xAxisScale == 'time'
+  xAxisScale == CATEGORY || xAxisScale == LINEAR || xAxisScale == TIME
     ? xAxisScale
     : continuousX || (arrayIsEmpty(xValues) && hasLinearAxisDefinition)
-      ? 'linear'
-      : hasTimeStringXValues(xValues)
-        ? 'time'
-        : 'category';
+      ? LINEAR
+      : !arrayIsEmpty(xValues) &&
+          arrayEvery(
+            xValues,
+            (xValue) =>
+              isString(xValue) &&
+              isFiniteNumber(normalizeTimeValue(xValue, MILLISECOND)),
+          )
+        ? TIME
+        : CATEGORY;
 
 export const getXScaleDomain = (
   [xMin, xMax]: Bounds,
@@ -340,23 +249,18 @@ export const getXScaleDomain = (
   xScale: XScale,
   timestampUnit: TimestampUnit,
 ): readonly [xMin?: XValue, xMax?: XValue] => {
-  if (xScale == 'linear') {
-    return [
-      isNumber(xMin) ? xMin : undefined,
-      isNumber(xMax) ? xMax : undefined,
-    ];
-  }
-  if (xScale == 'time') {
-    const timestamps: number[] = [];
-    arrayForEach(xValues, (xValue) => {
-      const timestamp = normalizeTimeValue(xValue, timestampUnit);
-      if (isFiniteNumber(timestamp)) {
-        arrayPush(timestamps, timestamp as number);
-      }
-    });
-    return arrayIsEmpty(timestamps) ? [] : getDomain(timestamps);
-  }
-  return [xMin, xMax];
+  const timestamps: number[] = [];
+  return xScale == LINEAR
+    ? [isNumber(xMin) ? xMin : undefined, isNumber(xMax) ? xMax : undefined]
+    : xScale == TIME
+      ? (arrayForEach(xValues, (xValue) => {
+          const timestamp = normalizeTimeValue(xValue, timestampUnit);
+          if (isFiniteNumber(timestamp)) {
+            arrayPush(timestamps, timestamp as number);
+          }
+        }),
+        arrayIsEmpty(timestamps) ? [] : getDomain(timestamps))
+      : [xMin, xMax];
 };
 
 export const normalizeTimeValue = (
@@ -364,7 +268,7 @@ export const normalizeTimeValue = (
   timestampUnit: TimestampUnit,
 ): number | undefined => {
   const timestamp = isNumber(value)
-    ? timestampUnit == 'second'
+    ? timestampUnit == SECOND_UNIT
       ? value * 1000
       : value
     : isString(value) && ISO_DATE.test(value)
@@ -380,8 +284,16 @@ export const getTickBounds = (
   xTicks: Ticks,
   yTicks: Ticks,
 ): Bounds => [
-  arrayIsEmpty(xTicks) ? xMin : getMinTickBound(xMin, xTicks[0]),
-  arrayIsEmpty(xTicks) ? xMax : getMaxTickBound(xMax, xTicks[size(xTicks) - 1]),
+  arrayIsEmpty(xTicks)
+    ? xMin
+    : isNumber(xMin)
+      ? mathMin(xMin, xTicks[0])
+      : xTicks[0],
+  arrayIsEmpty(xTicks)
+    ? xMax
+    : isNumber(xMax)
+      ? mathMax(xMax, xTicks[size(xTicks) - 1])
+      : xTicks[size(xTicks) - 1],
   arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
   arrayIsEmpty(yTicks)
     ? yMax
@@ -398,7 +310,7 @@ export const getSeriesSummary = (
   const [xMin, xMax, yMin, yMax] = getBounds(kind, points);
   const xValues: XValue[] = [];
   const continuousX =
-    kind == 'line' &&
+    kind == LINE &&
     arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
 
   arrayForEach(points, ([, xValue]) => {
@@ -438,17 +350,17 @@ export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
       }
     });
     if (isNumber(summary.xMin) && isNumber(summary.xMax)) {
-      xMins.push(summary.xMin);
-      xMaxes.push(summary.xMax);
+      arrayPush(xMins, summary.xMin);
+      arrayPush(xMaxes, summary.xMax);
     } else {
       xMin ??= summary.xMin;
       xMax = summary.xMax ?? xMax;
     }
     if (!isUndefined(summary.yMin)) {
-      yMins.push(summary.yMin);
+      arrayPush(yMins, summary.yMin);
     }
     if (!isUndefined(summary.yMax)) {
-      yMaxes.push(summary.yMax);
+      arrayPush(yMaxes, summary.yMax);
     }
   });
 
@@ -466,10 +378,10 @@ export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
 
 export const getYDomain = (
   points: (DataPoint | ScaledPoint)[],
-  kind: Kind = 'bar',
+  kind: Kind = BAR,
 ): Domain =>
   getDomain([
-    ...(kind == 'bar' ? [0] : []),
+    ...(kind == BAR ? [0] : []),
     ...arrayMap(points, ([, , yValue]) => yValue),
   ]);
 
@@ -483,168 +395,18 @@ const getContinuousXValue = (
   xScale: XScale,
   timestampUnit: TimestampUnit,
 ): number | undefined =>
-  xScale == 'linear'
+  xScale == LINEAR
     ? isNumber(xValue)
       ? xValue
       : undefined
-    : xScale == 'time'
+    : xScale == TIME
       ? normalizeTimeValue(xValue, timestampUnit)
       : undefined;
 
-const hasTimeStringXValues = (xValues: XValue[]): boolean =>
-  !arrayIsEmpty(xValues) &&
-  arrayEvery(
-    xValues,
-    (xValue) =>
-      isString(xValue) &&
-      isFiniteNumber(normalizeTimeValue(xValue, 'millisecond')),
-  );
-
 const getTime = (value: string | Date): number | undefined => {
-  const time = +new Date(value);
+  const time = +dateNew(value);
   return isFiniteNumber(time) ? mathFloor(time) : undefined;
 };
-
-const getTimeIntervalTicks = (
-  min: number,
-  max: number,
-  interval: TimeInterval,
-): Ticks => {
-  const ticks: Ticks = [];
-  for (
-    let tick = floorTime(min, interval), count = 0;
-    tick <= max && count < 1000;
-    tick = addTime(tick, interval), count++
-  ) {
-    arrayPush(ticks, tick);
-  }
-
-  const lastTick = ticks[size(ticks) - 1];
-  if (isUndefined(lastTick) || lastTick < max) {
-    arrayPush(ticks, addTime(lastTick ?? floorTime(min, interval), interval));
-  }
-  return ticks;
-};
-
-const getTimeTickScore = (
-  ticks: Ticks,
-  intervalIndex: number,
-  min: number,
-  max: number,
-  targetTickCount: number,
-  labelSize: number,
-  width: number,
-): number => {
-  const tickCount = size(ticks);
-  if (tickCount < 2) {
-    return -infinity;
-  }
-
-  const tickMin = ticks[0];
-  const tickMax = ticks[tickCount - 1];
-  const range = max - min;
-  const target = mathMax(targetTickCount, 2);
-  const spacing = width / (tickCount - 1);
-  const simplicity = 1 - intervalIndex / mathMax(size(TIME_INTERVALS) - 1, 1);
-  const coverage =
-    1 - (mathAbs(min - tickMin) + mathAbs(tickMax - max)) / range;
-  const density = 2 - mathMax(tickCount / target, target / tickCount);
-  const legibility =
-    spacing < labelSize * 1.2 ? -infinity : mathMin(spacing / labelSize, 1);
-
-  return (
-    TIME_TICK_WEIGHTS[0] * simplicity +
-    TIME_TICK_WEIGHTS[1] * coverage +
-    TIME_TICK_WEIGHTS[2] * density +
-    TIME_TICK_WEIGHTS[3] * legibility
-  );
-};
-
-const floorTime = (timestamp: number, [unit, step]: TimeInterval): number => {
-  if (unit == 'year') {
-    const date = new Date(timestamp);
-    return Date.UTC(mathFloor(date.getUTCFullYear() / step) * step, 0, 1);
-  }
-  if (unit == 'quarter' || unit == 'month') {
-    const date = new Date(timestamp);
-    const monthStep = unit == 'quarter' ? step * 3 : step;
-    const monthIndex = date.getUTCFullYear() * 12 + date.getUTCMonth();
-    const flooredMonthIndex = mathFloor(monthIndex / monthStep) * monthStep;
-    return Date.UTC(
-      mathFloor(flooredMonthIndex / 12),
-      flooredMonthIndex % 12,
-      1,
-    );
-  }
-  if (unit == 'week') {
-    const date = new Date(timestamp);
-    const dayStart = Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-    );
-    return dayStart - ((date.getUTCDay() + 6) % 7) * DAY;
-  }
-  const interval = getFixedInterval(unit, step);
-  return mathFloor(timestamp / interval) * interval;
-};
-
-const addTime = (timestamp: number, [unit, step]: TimeInterval): number => {
-  const date = new Date(timestamp);
-  return unit == 'year'
-    ? Date.UTC(date.getUTCFullYear() + step, 0, 1)
-    : unit == 'quarter'
-      ? Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + step * 3, 1)
-      : unit == 'month'
-        ? Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + step, 1)
-        : timestamp + getFixedInterval(unit, step);
-};
-
-const getFixedInterval = (unit: TimeUnit, step: number): number =>
-  unit == 'week'
-    ? step * 7 * DAY
-    : unit == 'day'
-      ? step * DAY
-      : unit == 'hour'
-        ? step * HOUR
-        : unit == 'minute'
-          ? step * MINUTE
-          : step * SECOND;
-
-const getTimeTickMinDiff = (ticks: Ticks): number => {
-  let minDiff = infinity;
-  arrayForEach(ticks, (tick, index) => {
-    if (index > 0) {
-      minDiff = mathMin(minDiff, tick - ticks[index - 1]);
-    }
-  });
-  return minDiff;
-};
-
-const getTimeTickLabelDiff = (date: Date, minDiff: number): number =>
-  minDiff == infinity
-    ? date.getUTCHours() == 0 &&
-      date.getUTCMinutes() == 0 &&
-      date.getUTCSeconds() == 0
-      ? DAY
-      : date.getUTCSeconds() == 0
-        ? HOUR
-        : SECOND
-    : minDiff;
-
-const getPadded = (value: number): string =>
-  value < 10 ? `0${value}` : `${value}`;
-
-const getMinTickBound = (bound: XValue | undefined, tick: number) =>
-  isNumber(bound) ? mathMin(bound, tick) : tick;
-
-const getMaxTickBound = (bound: XValue | undefined, tick: number) =>
-  isNumber(bound) ? mathMax(bound, tick) : tick;
-
-const getTickCount = (tickCount = TARGET_TICKS) =>
-  isFiniteNumber(tickCount) ? mathMax(mathRound(tickCount), 1) : TARGET_TICKS;
-
-const getRounded = (value: number) => mathRound(value * 1000000) / 1000000;
 
 const getXValue = (
   cell: CellOrUndefined | ResultCellOrUndefined,

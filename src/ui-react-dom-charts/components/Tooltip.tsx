@@ -1,9 +1,6 @@
 import {isNullish, mathMax, mathMin, string} from '../../common/other.ts';
-import {
-  CURRENT_COLOR,
-  type PlotFrame,
-  type ScaledPoint,
-} from '../common/types.ts';
+import {CURRENT_COLOR} from '../common/strings.ts';
+import type {PlotFrame, ScaledPoint} from '../common/types.ts';
 
 const TOOLTIP_WIDTH = 160;
 const TOOLTIP_HEIGHT = 60;

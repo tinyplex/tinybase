@@ -1,7 +1,8 @@
 import {arrayMap} from '../../common/array.ts';
 import {isNullish, string} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
-import {CURRENT_COLOR, type PlotFrame, type Ticks} from '../common/types.ts';
+import {CURRENT_COLOR} from '../common/strings.ts';
+import type {PlotFrame, Ticks} from '../common/types.ts';
 
 export const YAxis = ({
   className,
@@ -62,4 +63,4 @@ export const YAxis = ({
 };
 
 const getAxisClassName = (baseClassName: string, className?: string) =>
-  className == null ? baseClassName : `${baseClassName} ${className}`;
+  isNullish(className) ? baseClassName : `${baseClassName} ${className}`;
