@@ -292,6 +292,15 @@ export const DOC_SHOTS: readonly DocShot[] = [
     style: IFRAME_DOC_SHOT_STYLE,
   },
   {
+    asset: 'time-axes-react-demo.png',
+    framed: false,
+    marginRem: 0,
+    page: '/demos/chart-components-react/time-axes/',
+    readySelector: 'svg.chart-unix .plot .line',
+    selector: 'iframe',
+    style: IFRAME_DOC_SHOT_STYLE,
+  },
+  {
     asset: 'editablecellview-react-demo.png',
     framed: true,
     marginRem: 0,

@@ -50,4 +50,18 @@ describe('chart-components', () => {
       'Revenue',
     );
   });
+
+  test('Time Axes', async ({page}) => {
+    await expectPage(page, `/demos/chart-components-react/time-axes/`);
+    await expectedElement(page, 'h1', 'Time Axes');
+    await expectedFramedElement(page, 'svg.chart-iso .plot .line');
+    await expectedFramedElement(page, 'svg.chart-iso .axes .x', 'day');
+    await expectedFramedElement(page, 'svg.chart-unix .plot .line');
+    await expectedFramedElement(page, 'svg.chart-unix .axis-unix', 'Jan 5');
+    await expectedFramedElement(
+      page,
+      'svg.chart-unix .axis-unix',
+      'Order date',
+    );
+  });
 });

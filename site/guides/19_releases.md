@@ -99,6 +99,10 @@ The Axis Overrides demo shows this pattern with numeric timestamps formatted as
 dates on the x axis, and revenue ticks formatted as dollar amounts on the y
 axis.
 
+The Time Axes demo focuses on date handling directly, showing ISO date strings
+that infer a time scale and Unix second timestamps that use `scale="time"` and
+`timestampUnit="second"`.
+
 Chart presentation is handled with CSS. The chart components emit stable SVG
 class names for grid lines, axes, data marks, and tooltips, so you can keep data
 binding in props and visual styling in stylesheets.

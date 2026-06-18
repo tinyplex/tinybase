@@ -262,12 +262,14 @@ For complete examples, see the Chart Components (React) demos:
 | Composing Charts           | Combines multiple series in one chart.       | [demo][composing] |
 | Sorting And Types          | Shows sorting and x value types.             | [demo][sorting]   |
 | Axis Overrides             | Sets axis bounds, ticks, and labels.         | [demo][axes]      |
+| Time Axes                  | Shows ISO dates and Unix timestamps.         | [demo][time]      |
 
 [linechart]: /demos/chart-components-react/linechart/
 [styled]: /demos/chart-components-react/linechart-styled/
 [composing]: /demos/chart-components-react/composing-charts/
 [sorting]: /demos/chart-components-react/sorting-and-types/
 [axes]: /demos/chart-components-react/axis-overrides/
+[time]: /demos/chart-components-react/time-axes/
 
 ## Summary
 
