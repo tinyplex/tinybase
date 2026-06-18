@@ -217,6 +217,66 @@
   /// SeriesProps.limit
 }
 /**
+ * The XAxisScale type describes how x-axis values should be interpreted.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// XAxisScale
+/**
+ * The TimestampUnit type describes the unit used by numeric timestamp values on
+ * a time x axis.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// TimestampUnit
+/**
+ * The TimeValue type describes values that can be used for explicit bounds and
+ * ticks on a time x axis.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// TimeValue
+/**
+ * The BaseXAxisProps type describes props shared by all x-axis configurations.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// BaseXAxisProps
+{
+  /// XAxisProps.className
+  /// XAxisProps.title
+  /// XAxisProps.tickCount
+}
+/**
+ * The LinearXAxisProps type describes x-axis configuration for automatically
+ * inferred, categorical, and linear axes.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// LinearXAxisProps
+{
+  /// XAxisProps.scale
+  /// XAxisProps.timestampUnit
+  /// XAxisProps.min
+  /// XAxisProps.max
+  /// XAxisProps.ticks
+  /// XAxisProps.tickFormatter
+}
+/**
+ * The TimeXAxisProps type describes x-axis configuration for time axes.
+ * @category Configuration
+ * @since v8.5.0
+ */
+/// TimeXAxisProps
+{
+  /// XAxisProps.scale
+  /// XAxisProps.timestampUnit
+  /// XAxisProps.min
+  /// XAxisProps.max
+  /// XAxisProps.ticks
+  /// XAxisProps.tickFormatter
+}
+/**
  * The XAxisProps type describes the props that configure the x axis of a
  * CartesianChart component.
  *
@@ -243,7 +303,24 @@
    */
   /// XAxisProps.title
   /**
-   * An optional minimum x-axis bound for continuous numeric x values.
+   * An optional scale to use for the x axis.
+   *
+   * The default `auto` scale infers linear axes from numeric line-series x
+   * values, time axes from ISO date strings, and category axes otherwise.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.scale
+  /**
+   * The unit for numeric timestamp values on a time x axis.
+   *
+   * This prop is ignored unless the scale prop is `time`.
+   * @category Prop
+   * @since v8.5.0
+   */
+  /// XAxisProps.timestampUnit
+  /**
+   * An optional minimum x-axis bound for continuous numeric or time x values.
    *
    * This prop is ignored when the x axis is categorical.
    * @category Prop
@@ -251,7 +328,7 @@
    */
   /// XAxisProps.min
   /**
-   * An optional maximum x-axis bound for continuous numeric x values.
+   * An optional maximum x-axis bound for continuous numeric or time x values.
    *
    * This prop is ignored when the x axis is categorical.
    * @category Prop
@@ -259,7 +336,7 @@
    */
   /// XAxisProps.max
   /**
-   * Optional numeric tick values to use for a continuous x axis.
+   * Optional tick values to use for a continuous numeric or time x axis.
    *
    * This prop is ignored when the x axis is categorical.
    * @category Prop
@@ -277,8 +354,8 @@
   /**
    * An optional function for formatting x-axis tick labels.
    *
-   * It receives the original tick value, which can be a finite number, string,
-   * or boolean.
+   * It receives the original tick value for category axes, the numeric tick
+   * value for linear axes, or a Date object for time axes.
    * @category Prop
    * @since v8.5.0
    */

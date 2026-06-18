@@ -91,23 +91,59 @@ export type SeriesProps<CellId extends Id = Id> = {
   readonly limit?: number;
 };
 
-/// XAxisProps
-export type XAxisProps = {
+/// XAxisScale
+export type XAxisScale = 'auto' | 'category' | 'linear' | 'time';
+
+/// TimestampUnit
+export type TimestampUnit = 'millisecond' | 'second';
+
+/// TimeValue
+export type TimeValue = number | string | Date;
+
+/// BaseXAxisProps
+export type BaseXAxisProps = {
   /// XAxisProps.className
   readonly className?: string;
   /// XAxisProps.title
   readonly title?: string;
+  /// XAxisProps.tickCount
+  readonly tickCount?: number;
+};
+
+/// LinearXAxisProps
+export type LinearXAxisProps = BaseXAxisProps & {
+  /// XAxisProps.scale
+  readonly scale?: 'auto' | 'category' | 'linear';
+  /// XAxisProps.timestampUnit
+  readonly timestampUnit?: never;
   /// XAxisProps.min
   readonly min?: number;
   /// XAxisProps.max
   readonly max?: number;
   /// XAxisProps.ticks
   readonly ticks?: readonly number[];
-  /// XAxisProps.tickCount
-  readonly tickCount?: number;
   /// XAxisProps.tickFormatter
   readonly tickFormatter?: (tick: boolean | number | string) => string;
 };
+
+/// TimeXAxisProps
+export type TimeXAxisProps = BaseXAxisProps & {
+  /// XAxisProps.scale
+  readonly scale: 'time';
+  /// XAxisProps.timestampUnit
+  readonly timestampUnit?: TimestampUnit;
+  /// XAxisProps.min
+  readonly min?: TimeValue;
+  /// XAxisProps.max
+  readonly max?: TimeValue;
+  /// XAxisProps.ticks
+  readonly ticks?: readonly TimeValue[];
+  /// XAxisProps.tickFormatter
+  readonly tickFormatter?: (tick: Date, timestamp: number) => string;
+};
+
+/// XAxisProps
+export type XAxisProps = LinearXAxisProps | TimeXAxisProps;
 
 /// YAxisProps
 export type YAxisProps = {

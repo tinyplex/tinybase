@@ -76,6 +76,17 @@ const _App = () => {
     xDomain: [0, 1], // !
   });
   XAxis({min: '0'}); // !
+  XAxis({scale: 'time', timestampUnit: 'second'});
+  XAxis({
+    max: '2026-01-02T00:00:00Z',
+    min: new Date('2026-01-01T00:00:00Z'),
+    scale: 'time',
+    ticks: [new Date('2026-01-01T00:00:00Z'), '2026-01-02T00:00:00Z'],
+    tickFormatter: (tick) => (tick instanceof Date ? tick.toISOString() : ''),
+  });
+  XAxis({scale: 'log'}); // !
+  XAxis({timestampUnit: 'minute'}); // !
+  XAxis({min: {}}); // !
   YAxis({tickFormatter: (tick: string) => tick}); // !
   CartesianChart({tableId: 't', xCellId: 'x'}); // !
   CartesianChart({tableId: 't', xDomain: [0, 1]}); // !
@@ -98,6 +109,7 @@ const _App = () => {
           className="x"
           max={10}
           min={0}
+          scale="linear"
           tickCount={3}
           tickFormatter={(tick) => String(tick)}
           ticks={[0, 5, 10]}

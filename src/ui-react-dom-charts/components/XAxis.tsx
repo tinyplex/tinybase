@@ -9,6 +9,8 @@ import {
   type XValue,
 } from '../common/types.ts';
 
+type TickFormatter = (tick: XValue | Date, timestamp?: number) => string;
+
 export const XAxis = ({
   className,
   points,
@@ -25,7 +27,7 @@ export const XAxis = ({
 }: {
   readonly className?: string;
   readonly points: ScaledPoint[];
-  readonly tickFormatter?: (tick: XValue) => string;
+  readonly tickFormatter?: TickFormatter;
   readonly xTicks: Ticks;
   readonly xMin: boolean | number | string | undefined;
   readonly xMax: boolean | number | string | undefined;
@@ -91,6 +93,6 @@ const getAxisClassName = (baseClassName: string, className?: string) =>
   className == null ? baseClassName : `${baseClassName} ${className}`;
 
 const getTickLabel = (
-  tick: XValue,
-  tickFormatter: ((tick: XValue) => string) | undefined,
+  tick: XValue | Date,
+  tickFormatter: TickFormatter | undefined,
 ) => tickFormatter?.(tick) ?? string(tick);

@@ -3,6 +3,7 @@ import type {
   ChartProps,
   QuerySourceProps,
   TableSourceProps,
+  TimeValue,
   XAxisProps,
   YAxisProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
@@ -446,7 +447,7 @@ const getAxisBounds = (
 ];
 
 const getAxisBound = (
-  value: number | undefined,
+  value: TimeValue | undefined,
   bound: XValue | undefined,
 ): XValue | undefined => (isFiniteNumber(value) ? (value as number) : bound);
 
@@ -455,7 +456,7 @@ const getNumberAxisBound = (
   bound: number | undefined,
 ): number | undefined => (isFiniteNumber(value) ? value : bound);
 
-const getAxisTicks = (ticks: readonly number[]): Ticks =>
+const getAxisTicks = (ticks: readonly TimeValue[]): Ticks =>
   arraySort(arrayFilter([...ticks], isFiniteNumber), (tick1, tick2) => {
     return tick1 - tick2;
   });
