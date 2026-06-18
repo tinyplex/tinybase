@@ -1,5 +1,10 @@
-import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
-import {mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
+import {
+  arrayForEach,
+  arrayIsEmpty,
+  arrayMap,
+  arraySort,
+} from '../../common/array.ts';
+import {infinity, mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {
   type PlotFrame,
@@ -13,6 +18,7 @@ export const Bars = ({
   barGap,
   barSeriesCount,
   barSeriesIndex,
+  fullBarWidth,
   setTooltipPoint,
   yMin = 0,
   yMax = 0,
@@ -22,6 +28,7 @@ export const Bars = ({
   readonly barGap: number;
   readonly barSeriesCount: number;
   readonly barSeriesIndex: number;
+  readonly fullBarWidth?: number;
   readonly setTooltipPoint: SetTooltipPoint;
   readonly yMin: number | undefined;
   readonly yMax: number | undefined;
@@ -29,10 +36,11 @@ export const Bars = ({
   const [plotX, plotY, width, height] = plotFrame;
   const baselineY = height - getScale(0, yMin, yMax, height);
   const pointsSize = size(points);
-  const fullBarWidth = arrayIsEmpty(points) ? 0 : width / pointsSize;
+  const resolvedFullBarWidth =
+    fullBarWidth ?? (arrayIsEmpty(points) ? 0 : width / pointsSize);
   const barCount = mathMax(barSeriesCount, 1);
   const barIndex = mathMax(barSeriesIndex, 0);
-  const barGroupWidth = mathMax(fullBarWidth - barGap, 0);
+  const barGroupWidth = mathMax(resolvedFullBarWidth - barGap, 0);
   const barWidth = mathMax(
     (barGroupWidth - barGap * (barCount - 1)) / barCount,
     0,
@@ -54,4 +62,23 @@ export const Bars = ({
       />
     );
   });
+};
+
+export const getContinuousBarWidth = (
+  points: ScaledPoint[],
+  fallbackWidth: number,
+): number => {
+  const xs = arraySort(
+    arrayMap(points, ([, , , x]) => x),
+    (x1, x2) => x1 - x2,
+  );
+  let barWidth = infinity;
+
+  arrayForEach(xs, (x, index) => {
+    if (index > 0 && x > xs[index - 1]) {
+      barWidth = mathMin(barWidth, x - xs[index - 1]);
+    }
+  });
+
+  return barWidth == infinity ? fallbackWidth : barWidth;
 };

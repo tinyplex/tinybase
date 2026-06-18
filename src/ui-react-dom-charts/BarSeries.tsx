@@ -6,7 +6,7 @@ import {useLayoutEffect} from '../common/react.ts';
 import {SERIES, useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
 import {CURRENT_COLOR} from './common/types.ts';
-import {Bars} from './components/Bars.tsx';
+import {Bars, getContinuousBarWidth} from './components/Bars.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
 export const BarSeries = ((props: SeriesProps) => {
@@ -29,6 +29,18 @@ export const BarSeries = ((props: SeriesProps) => {
   const [seriesId, rawPoints] = useSeriesData(props);
   const barSeriesIndex = getBarSeriesIndex(seriesId);
   const [, , yMin, yMax] = bounds;
+  const axisPoints =
+    xScale == 'category'
+      ? undefined
+      : getScaledPoints(
+          'line',
+          xValues.map((xValue, index) => [`${index}`, xValue, 0]),
+          bounds,
+          plotSize,
+          xValues,
+          xScale,
+          timestampUnit,
+        );
   const points = getScaledPoints(
     'bar',
     rawPoints,
@@ -62,6 +74,11 @@ export const BarSeries = ((props: SeriesProps) => {
         barGap={barGap}
         barSeriesCount={barSeriesCount}
         barSeriesIndex={barSeriesIndex}
+        fullBarWidth={
+          axisPoints == null
+            ? undefined
+            : getContinuousBarWidth(axisPoints, plotSize[0])
+        }
         plotFrame={plotFrame}
         points={points}
         setTooltipPoint={setTooltipPoint}

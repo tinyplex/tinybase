@@ -43,6 +43,18 @@ const getLinePathXs = (container: HTMLElement): number[][] =>
     ),
   );
 
+const getBarCenters = (container: HTMLElement): number[] =>
+  Array.from(container.querySelectorAll('.plot .bar'), (bar) => {
+    return (
+      Number(bar.getAttribute('x')) + Number(bar.getAttribute('width')) / 2
+    );
+  });
+
+const getBarWidths = (container: HTMLElement): number[] =>
+  Array.from(container.querySelectorAll('.plot .bar'), (bar) =>
+    Number(bar.getAttribute('width')),
+  );
+
 const getTimeAxisLabels = (
   min: string,
   max: string,
@@ -519,6 +531,89 @@ describe('CartesianChart', () => {
       '2026-10',
       '2027-01',
     ]);
+  });
+
+  test('keeps BarChart x values categorical by default', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 0, y: 3, z: 1},
+      r2: {x: 5, y: 5, z: 2},
+      r3: {x: 20, y: 4, z: 3},
+    });
+    const {container, unmount} = render(
+      <BarChart
+        store={store}
+        tableId="t1"
+        xCellId="x"
+        yCellId="y"
+        sortCellId="z"
+      />,
+    );
+    const [firstX, secondX, thirdX] = getBarCenters(container);
+
+    expect(secondX - firstX).toBeCloseTo(thirdX - secondX);
+
+    unmount();
+  });
+
+  test('uses continuous x positioning for linear BarChart axes', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 0, y: 3, z: 1},
+      r2: {x: 5, y: 5, z: 2},
+      r3: {x: 20, y: 4, z: 3},
+    });
+    const {container, unmount} = render(
+      <BarChart
+        store={store}
+        tableId="t1"
+        xCellId="x"
+        yCellId="y"
+        sortCellId="z"
+      >
+        <XAxis max={20} min={0} scale="linear" ticks={[0, 5, 20]} />
+      </BarChart>,
+    );
+    const centers = getBarCenters(container);
+    const tickXs = getXAxisTickXs(container);
+
+    centers.forEach((center, index) => {
+      expect(center).toBeCloseTo(tickXs[index]);
+    });
+    expect(getBarWidths(container)[0]).toBeLessThan(centers[1] - centers[0]);
+
+    unmount();
+  });
+
+  test('uses continuous x positioning for time BarChart axes', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: '2026-01-01', y: 3, z: 1},
+      r2: {x: '2026-01-02', y: 5, z: 2},
+      r3: {x: '2026-01-11', y: 4, z: 3},
+    });
+    const {container, unmount} = render(
+      <BarChart
+        store={store}
+        tableId="t1"
+        xCellId="x"
+        yCellId="y"
+        sortCellId="z"
+      >
+        <XAxis
+          max="2026-01-11"
+          min="2026-01-01"
+          scale="time"
+          ticks={['2026-01-01', '2026-01-02', '2026-01-11']}
+        />
+      </BarChart>,
+    );
+    const centers = getBarCenters(container);
+    const tickXs = getXAxisTickXs(container);
+
+    centers.forEach((center, index) => {
+      expect(center).toBeCloseTo(tickXs[index]);
+    });
+    expect(getBarWidths(container)[0]).toBeLessThan(centers[1] - centers[0]);
+
+    unmount();
   });
 
   test('renders a LineSeries from Table props', () => {
