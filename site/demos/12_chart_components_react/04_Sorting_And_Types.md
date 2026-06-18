@@ -3,8 +3,8 @@
 ![Sorting And Types](/shots/sorting-and-types-react-demo.png)
 
 This demo shows how chart components handle common x value shapes: continuous
-numeric values, ordered category labels, and boolean categories. In each case,
-y values must be finite numbers.
+numeric values, ISO date strings, ordered category labels, and boolean
+categories. In each case, y values must be finite numbers.
 
 ## Boilerplate
 
@@ -56,6 +56,12 @@ const App = () => {
         second: {x: 2, score: 13},
         fourth: {x: 4, score: 22},
       })
+      .setTable('daily', {
+        d1: {day: '2026-01-01', signups: 11},
+        d2: {day: '2026-01-02', signups: 17},
+        d3: {day: '2026-01-05', signups: 21},
+        d4: {day: '2026-01-08', signups: 28},
+      })
       .setTable('channels', {
         organic: {channel: 'Organic', rank: 1, visits: 39},
         referral: {channel: 'Referral', rank: 3, visits: 24},
@@ -80,9 +86,9 @@ addEventListener('load', () => createRoot(document.body).render(<App />));
 
 ## The Chart Gallery
 
-When the x values are all numbers, a LineChart component uses a continuous x
-axis. String and boolean x values are categories, and can be ordered with
-`sortCellId`:
+When the x values are all numbers, a LineChart component uses a continuous
+linear x axis. ISO date strings use a time x axis. Other strings and boolean x
+values are categories, and can be ordered with `sortCellId`:
 
 ```jsx
 const Body = () => (
@@ -93,6 +99,14 @@ const Body = () => (
         tableId="measurements"
         xCellId="x"
         yCellId="score"
+      />
+    </section>
+    <section>
+      <LineChart
+        className="chart chart-dates"
+        tableId="daily"
+        xCellId="day"
+        yCellId="signups"
       />
     </section>
     <section>
@@ -141,9 +155,9 @@ body {
 main {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 2rem auto;
-  max-width: 72rem;
+  max-width: 88rem;
   padding: 0 2rem;
 
   section {
@@ -209,4 +223,5 @@ main {
 ```
 
 Numbers become a continuous x scale for line charts. Strings and booleans become
-ordered categories, with boolean labels rendered as `true` and `false`.
+ordered categories, with boolean labels rendered as `true` and `false`. ISO
+date strings become a time scale with UTC tick labels.

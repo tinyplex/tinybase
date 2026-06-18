@@ -42,14 +42,14 @@ import {
 
 ## The App
 
-The Store keeps dates as numeric timestamps so the x axis can remain continuous.
-The XAxis component formats those numbers as readable dates:
+The Store keeps dates as Unix second timestamps. The XAxis component marks them
+as a time scale and formats the Date objects it receives:
 
 ```jsx
-const date = (day) => Date.UTC(2026, 0, day);
+const timestamp = (day) => Date.UTC(2026, 0, day) / 1000;
 
-const formatDate = (timestamp) =>
-  new Date(timestamp).toLocaleDateString('en-US', {
+const formatDate = (date) =>
+  date.toLocaleDateString('en-US', {
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
@@ -58,13 +58,13 @@ const formatDate = (timestamp) =>
 const App = () => {
   const store = useCreateStore(() =>
     createStore().setTable('sales', {
-      d1: {date: date(1), revenue: 18},
-      d2: {date: date(2), revenue: 26},
-      d3: {date: date(3), revenue: 22},
-      d4: {date: date(4), revenue: 39},
-      d5: {date: date(5), revenue: 44},
-      d6: {date: date(6), revenue: 41},
-      d7: {date: date(7), revenue: 53},
+      d1: {date: timestamp(1), revenue: 18},
+      d2: {date: timestamp(2), revenue: 26},
+      d3: {date: timestamp(3), revenue: 22},
+      d4: {date: timestamp(4), revenue: 39},
+      d5: {date: timestamp(5), revenue: 44},
+      d6: {date: timestamp(6), revenue: 41},
+      d7: {date: timestamp(7), revenue: 53},
     }),
   );
 
@@ -90,10 +90,12 @@ const Body = () => (
     <CartesianChart className="chart chart-axes" tableId="sales">
       <XAxis
         className="axis-dates"
-        max={date(7)}
-        min={date(1)}
+        max={timestamp(7)}
+        min={timestamp(1)}
+        scale="time"
         tickFormatter={formatDate}
-        ticks={[date(1), date(3), date(5), date(7)]}
+        ticks={[timestamp(1), timestamp(3), timestamp(5), timestamp(7)]}
+        timestampUnit="second"
         title="Sale date"
       />
       <YAxis

@@ -111,9 +111,10 @@
 {
   /**
    * The Id of the Cell that provides each data point's x value. Finite numbers
-   * can be used as continuous x values in line charts, while strings and
-   * booleans are used as category values. Boolean category labels are rendered
-   * as `true` and `false`.
+   * can be used as continuous linear x values in line charts, ISO date strings
+   * can be used as time x values, and other strings and booleans are used as
+   * category values. Boolean category labels are rendered as `true` and
+   * `false`.
    * @category Prop
    * @since v8.5.0
    */
@@ -169,9 +170,10 @@
   /// SeriesProps.className
   /**
    * The Id of the Cell that provides each data point's x value. Finite numbers
-   * can be used as continuous x values in line series, while strings and
-   * booleans are used as category values. Boolean category labels are rendered
-   * as `true` and `false`.
+   * can be used as continuous linear x values in line series, ISO date strings
+   * can be used as time x values, and other strings and booleans are used as
+   * category values. Boolean category labels are rendered as `true` and
+   * `false`.
    * @category Prop
    * @since v8.5.0
    */
@@ -217,21 +219,22 @@
   /// SeriesProps.limit
 }
 /**
- * The XAxisScale type describes how x-axis values should be interpreted.
+ * The XAxisScale type describes how x-axis values should be interpreted: `auto`,
+ * `category`, `linear`, or `time`.
  * @category Configuration
  * @since v8.5.0
  */
 /// XAxisScale
 /**
  * The TimestampUnit type describes the unit used by numeric timestamp values on
- * a time x axis.
+ * a time x axis: `millisecond` or `second`.
  * @category Configuration
  * @since v8.5.0
  */
 /// TimestampUnit
 /**
  * The TimeValue type describes values that can be used for explicit bounds and
- * ticks on a time x axis.
+ * ticks on a time x axis: numbers, ISO date strings, or Date objects.
  * @category Configuration
  * @since v8.5.0
  */
@@ -278,11 +281,11 @@
 }
 /**
  * The XAxisProps type describes the props that configure the x axis of a
- * CartesianChart component.
+ * CartesianChart component, LineChart component, or BarChart component.
  *
  * The x axis is inferred by default. Use an XAxis component child when you want
- * to override its title, numeric bounds, tick values, tick count, tick labels,
- * or SVG class name.
+ * to override its title, scale, continuous bounds, tick values, tick count, tick
+ * labels, or SVG class name.
  * @category Configuration
  * @since v8.5.0
  */
@@ -306,7 +309,8 @@
    * An optional scale to use for the x axis.
    *
    * The default `auto` scale infers linear axes from numeric line-series x
-   * values, time axes from ISO date strings, and category axes otherwise.
+   * values, time axes from ISO date strings, and category axes otherwise. Use
+   * `time` explicitly for numeric Unix timestamp values.
    * @category Prop
    * @since v8.5.0
    */
@@ -314,7 +318,8 @@
   /**
    * The unit for numeric timestamp values on a time x axis.
    *
-   * This prop is ignored unless the scale prop is `time`.
+   * This prop is ignored unless the scale prop is `time`, and defaults to
+   * `millisecond`.
    * @category Prop
    * @since v8.5.0
    */
@@ -355,7 +360,8 @@
    * An optional function for formatting x-axis tick labels.
    *
    * It receives the original tick value for category axes, the numeric tick
-   * value for linear axes, or a Date object for time axes.
+   * value for linear axes, or a Date object for time axes. For time axes, the
+   * normalized epoch millisecond timestamp is provided as a second argument.
    * @category Prop
    * @since v8.5.0
    */
@@ -476,11 +482,12 @@
  */
 /// CartesianChart
 /**
- * The XAxis component configures the x axis of a CartesianChart component.
+ * The XAxis component configures the x axis of a CartesianChart component,
+ * LineChart component, or BarChart component.
  *
  * It is a configuration child rather than a separately rendered SVG element:
- * include zero or one XAxis component in a CartesianChart component's children.
- * If omitted, the x axis is inferred from the chart's series.
+ * include zero or one XAxis component in a chart's children. If omitted, the x
+ * axis is inferred from the chart's series.
  *
  * See the Axis Overrides (React) demo for this component in action:
  *
@@ -508,9 +515,9 @@
 /**
  * The LineSeries component renders a line series in a CartesianChart component.
  * If every x value in every series is a finite number, the x axis is rendered
- * as a continuous numeric scale. If any x value is a string or boolean, the x
- * axis is rendered categorically. When sortCellId is omitted, rows are sorted
- * by xCellId.
+ * as a continuous linear scale. ISO date strings are inferred as a time scale.
+ * Other strings and booleans are rendered categorically. When sortCellId is
+ * omitted, rows are sorted by xCellId.
  *
  * See the Composing Charts (React) demo for this component in action:
  *
@@ -522,8 +529,10 @@
 /// LineSeries
 /**
  * The BarSeries component renders a bar series in a CartesianChart component.
- * Its x values are always rendered categorically, even when they are finite
- * numbers. Boolean category labels are rendered as `true` and `false`.
+ * Its x values are rendered categorically by default, even when they are finite
+ * numbers. Add an XAxis component with a `linear` or `time` scale to position
+ * bars continuously. Boolean category labels are rendered as `true` and
+ * `false`.
  *
  * See the Composing Charts (React) demo for this component in action:
  *
@@ -535,9 +544,11 @@
 /// BarSeries
 /**
  * The LineChart component renders a line chart from TinyBase data. If every x
- * value is a finite number, the x axis is rendered as a continuous numeric
- * scale. If any x value is a string or boolean, the x axis is rendered
- * categorically. When sortCellId is omitted, rows are sorted by xCellId.
+ * value is a finite number, the x axis is rendered as a continuous linear
+ * scale. ISO date strings are inferred as a time scale. Other strings and
+ * booleans are rendered categorically. Add XAxis component and YAxis component
+ * children to override axis configuration. When sortCellId is omitted, rows are
+ * sorted by xCellId.
  *
  * See the <LineChart /> (React) demo for this component in action:
  *
@@ -583,8 +594,9 @@
 /// LineChart
 /**
  * The BarChart component renders a bar chart from TinyBase data. Its x values
- * are always rendered categorically, even when they are finite numbers. Boolean
- * category labels are rendered as `true` and `false`.
+ * are rendered categorically by default, even when they are finite numbers. Add
+ * an XAxis component with a `linear` or `time` scale to position bars
+ * continuously. Boolean category labels are rendered as `true` and `false`.
  *
  * See the Sorting And Types (React) demo for this component in action:
  *

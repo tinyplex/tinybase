@@ -135,6 +135,56 @@ console.log(axisChartApp.firstChild?.nodeName.toLowerCase());
 If you omit these components, the chart infers axis titles, bounds, and ticks
 from the series.
 
+## Using Time X Axes
+
+Line charts infer a time x axis when all x values are ISO date strings:
+
+```jsx
+const visitsStore = createStore().setTable('visits', {
+  d1: {day: '2026-01-01', visits: 42},
+  d2: {day: '2026-01-02', visits: 57},
+  d3: {day: '2026-01-05', visits: 64},
+  d4: {day: '2026-01-08', visits: 81},
+});
+
+const IsoTimeChartApp = () => (
+  <Provider store={visitsStore}>
+    <LineChart tableId="visits" xCellId="day" yCellId="visits" />
+  </Provider>
+);
+
+const isoTimeChartApp = document.createElement('div');
+createRoot(isoTimeChartApp).render(<IsoTimeChartApp />); // !act
+console.log(isoTimeChartApp.firstChild?.nodeName.toLowerCase());
+// -> 'svg'
+```
+
+Numeric timestamps are not auto-detected as dates, since they may also be
+ordinary measurements. Use an XAxis component with `scale="time"` and, for Unix
+second timestamps, `timestampUnit="second"`:
+
+```jsx
+const ordersStore = createStore().setTable('orders', {
+  d1: {time: 1767225600, orders: 12},
+  d2: {time: 1767312000, orders: 18},
+  d3: {time: 1767571200, orders: 21},
+  d4: {time: 1767830400, orders: 25},
+});
+
+const UnixTimeChartApp = () => (
+  <Provider store={ordersStore}>
+    <LineChart tableId="orders" xCellId="time" yCellId="orders">
+      <XAxis scale="time" timestampUnit="second" title="Order date" />
+    </LineChart>
+  </Provider>
+);
+
+const unixTimeChartApp = document.createElement('div');
+createRoot(unixTimeChartApp).render(<UnixTimeChartApp />); // !act
+console.log(unixTimeChartApp.firstChild?.nodeName.toLowerCase());
+// -> 'svg'
+```
+
 ## Styling With CSS
 
 Chart components emit a single SVG element. Give the SVG a size with CSS, then
