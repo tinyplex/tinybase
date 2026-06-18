@@ -2,6 +2,7 @@ import type {Id} from '../../@types/common/index.d.ts';
 import type {ResultCellOrUndefined} from '../../@types/queries/index.d.ts';
 import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import {
+  arrayEvery,
   arrayFilter,
   arrayForEach,
   arrayHas,
@@ -19,6 +20,7 @@ import {
   isString,
   isTrue,
   isUndefined,
+  mathFloor,
   mathMax,
   mathMin,
   mathRound,
@@ -34,11 +36,14 @@ import type {
   SeriesSummary,
   Size,
   Ticks,
+  TimestampUnit,
+  XScale,
   XValue,
 } from './types.ts';
 import {getTicks} from './wilkinson.ts';
 
 const TARGET_TICKS = 10;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:$|T)/;
 
 export const getDataPoints = (
   rowIds: string[],
@@ -68,13 +73,15 @@ export const getScaledPoints = (
   [xMin, xMax, yMin, yMax]: Bounds,
   [width, height]: Size,
   xValues?: XValue[],
+  xScale: XScale = 'category',
+  timestampUnit: TimestampUnit = 'millisecond',
   xTitle?: string,
   yTitle?: string,
 ): ScaledPoint[] => {
-  const numericX =
-    kind == 'line' &&
-    arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
-  const xDomain: Domain = numericX ? [xMin as number, xMax as number] : [0, 0];
+  const continuousX = xScale != 'category';
+  const xDomain: Domain = continuousX
+    ? [xMin as number, xMax as number]
+    : [0, 0];
   const yDomain: Domain = [yMin ?? 0, yMax ?? 0];
   const xCategories = new Map<XValue, number>();
 
@@ -89,27 +96,47 @@ export const getScaledPoints = (
     },
   );
 
-  return arrayMap(points, ([rowId, xValue, yValue]) => [
-    rowId,
-    xValue,
-    yValue,
-    getX(xValue, numericX, xDomain, xCategories, width, kind),
-    getY(yValue, yDomain, height),
-    xTitle,
-    yTitle,
-  ]);
+  return arrayFilter(
+    arrayMap(points, ([rowId, xValue, yValue]): ScaledPoint | undefined => {
+      const x = getX(
+        xValue,
+        xScale,
+        timestampUnit,
+        xDomain,
+        xCategories,
+        width,
+        kind,
+      );
+      return isUndefined(x)
+        ? undefined
+        : [
+            rowId,
+            xValue,
+            yValue,
+            x,
+            getY(yValue, yDomain, height),
+            xTitle,
+            yTitle,
+          ];
+    }),
+    (point): point is ScaledPoint => !isUndefined(point),
+  );
 };
 
 const getX = (
   xValue: XValue,
-  numericX: boolean,
+  xScale: XScale,
+  timestampUnit: TimestampUnit,
   [xMin, xMax]: Domain,
   xCategories: Map<XValue, number>,
   width: number,
   kind: Kind,
-) =>
-  numericX
-    ? getScale(xValue as number, xMin, xMax, width)
+): number | undefined => {
+  const continuousValue = getContinuousXValue(xValue, xScale, timestampUnit);
+  return xScale != 'category'
+    ? isUndefined(continuousValue)
+      ? undefined
+      : getScale(continuousValue, xMin, xMax, width)
     : kind == 'bar'
       ? (width * ((xCategories.get(xValue) ?? 0) + 0.5)) / collSize(xCategories)
       : getScale(
@@ -118,6 +145,7 @@ const getX = (
           collSize(xCategories) - 1,
           width,
         );
+};
 
 const getY = (yValue: number, [yMin, yMax]: Domain, height: number) =>
   height - getScale(yValue, yMin, yMax, height);
@@ -185,6 +213,60 @@ export const getXTicks = (
         isInteger(xMin) && isInteger(xMax),
       )
     : [];
+
+export const getResolvedXScale = (
+  xAxisScale: 'auto' | XScale | undefined,
+  {continuousX, xValues}: DomainState,
+  hasLinearAxisDefinition: boolean,
+): XScale =>
+  xAxisScale == 'category' || xAxisScale == 'linear' || xAxisScale == 'time'
+    ? xAxisScale
+    : continuousX || (arrayIsEmpty(xValues) && hasLinearAxisDefinition)
+      ? 'linear'
+      : hasTimeStringXValues(xValues)
+        ? 'time'
+        : 'category';
+
+export const getXScaleDomain = (
+  [xMin, xMax]: Bounds,
+  xValues: XValue[],
+  xScale: XScale,
+  timestampUnit: TimestampUnit,
+): readonly [xMin?: XValue, xMax?: XValue] => {
+  if (xScale == 'linear') {
+    return [
+      isNumber(xMin) ? xMin : undefined,
+      isNumber(xMax) ? xMax : undefined,
+    ];
+  }
+  if (xScale == 'time') {
+    const timestamps: number[] = [];
+    arrayForEach(xValues, (xValue) => {
+      const timestamp = normalizeTimeValue(xValue, timestampUnit);
+      if (isFiniteNumber(timestamp)) {
+        arrayPush(timestamps, timestamp as number);
+      }
+    });
+    return arrayIsEmpty(timestamps) ? [] : getDomain(timestamps);
+  }
+  return [xMin, xMax];
+};
+
+export const normalizeTimeValue = (
+  value: unknown,
+  timestampUnit: TimestampUnit,
+): number | undefined => {
+  const timestamp = isNumber(value)
+    ? timestampUnit == 'second'
+      ? value * 1000
+      : value
+    : isString(value) && ISO_DATE.test(value)
+      ? getTime(value)
+      : value instanceof Date
+        ? getTime(value)
+        : undefined;
+  return isFiniteNumber(timestamp) ? timestamp : undefined;
+};
 
 export const getTickBounds = (
   [xMin, xMax, yMin, yMax]: Bounds,
@@ -287,6 +369,33 @@ export const getYDomain = (
 const getDomain = (values: number[]): Domain => {
   const min = mathMin(...values);
   return min == infinity ? [0, 0] : [min, mathMax(...values)];
+};
+
+const getContinuousXValue = (
+  xValue: XValue,
+  xScale: XScale,
+  timestampUnit: TimestampUnit,
+): number | undefined =>
+  xScale == 'linear'
+    ? isNumber(xValue)
+      ? xValue
+      : undefined
+    : xScale == 'time'
+      ? normalizeTimeValue(xValue, timestampUnit)
+      : undefined;
+
+const hasTimeStringXValues = (xValues: XValue[]): boolean =>
+  !arrayIsEmpty(xValues) &&
+  arrayEvery(
+    xValues,
+    (xValue) =>
+      isString(xValue) &&
+      isFiniteNumber(normalizeTimeValue(xValue, 'millisecond')),
+  );
+
+const getTime = (value: string | Date): number | undefined => {
+  const time = +new Date(value);
+  return isFiniteNumber(time) ? mathFloor(time) : undefined;
 };
 
 const getMinTickBound = (bound: XValue | undefined, tick: number) =>

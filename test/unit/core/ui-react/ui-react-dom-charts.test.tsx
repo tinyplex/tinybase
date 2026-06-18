@@ -269,13 +269,7 @@ describe.each(CHARTS)('%s', (_chartName, Chart) => {
       r2: {x: 'Feb', y: 5, z: 2},
     });
     const {container, unmount} = render(
-      <Chart
-        store={store}
-        tableId="t1"
-        xCellId="x"
-        yCellId="y"
-        sortCellId="z"
-      >
+      <Chart store={store} tableId="t1" xCellId="x" yCellId="y" sortCellId="z">
         <XAxis
           className="month-axis"
           tickFormatter={(tick) => `M-${tick}`}
@@ -389,6 +383,68 @@ describe('CartesianChart', () => {
 
     expect(getXAxisTickLabels(container)).toEqual(['A', 'B', 'C']);
     expect(getXAxisTickXs(container)).toEqual(getLinePathXs(container)[0]);
+
+    unmount();
+  });
+
+  test('auto-detects ISO string x values as time', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: '2026-01-01', y: 3, z: 1},
+      r2: {x: '2026-01-02', y: 5, z: 2},
+      r3: {x: '2026-01-11', y: 4, z: 3},
+    });
+    const {container, unmount} = render(
+      <LineChart
+        store={store}
+        tableId="t1"
+        xCellId="x"
+        yCellId="y"
+        sortCellId="z"
+      />,
+    );
+    const [firstX, secondX, thirdX] = getLinePathXs(container)[0];
+
+    expect(secondX - firstX).toBeLessThan(thirdX - secondX);
+
+    unmount();
+  });
+
+  test('normalizes explicit second timestamps as time', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 1767225600, y: 3, z: 1},
+      r2: {x: 1767312000, y: 5, z: 2},
+      r3: {x: 1768089600, y: 4, z: 3},
+    });
+    const {container, unmount} = render(
+      <LineChart
+        store={store}
+        tableId="t1"
+        xCellId="x"
+        yCellId="y"
+        sortCellId="z"
+      >
+        <XAxis
+          max="2026-01-11"
+          min="2026-01-01"
+          scale="time"
+          tickFormatter={(date, timestamp) =>
+            `${date.getUTCDate()}:${timestamp}`
+          }
+          ticks={['2026-01-01', '2026-01-11']}
+          timestampUnit="second"
+        />
+      </LineChart>,
+    );
+    const [firstTickX, secondTickX] = getXAxisTickXs(container);
+    const [firstX, secondX, thirdX] = getLinePathXs(container)[0];
+
+    expect(getXAxisTickLabels(container)).toEqual([
+      '1:1767225600000',
+      '11:1768089600000',
+    ]);
+    expect(firstX).toBe(firstTickX);
+    expect(thirdX).toBe(secondTickX);
+    expect(secondX - firstX).toBeLessThan(thirdX - secondX);
 
     unmount();
   });

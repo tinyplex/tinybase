@@ -34,6 +34,8 @@ export type DomainState = {
   readonly continuousX: boolean;
   readonly xValues: XValue[];
 };
+export type XScale = 'category' | 'linear' | 'time';
+export type TimestampUnit = 'millisecond' | 'second';
 export type Style = readonly [
   tickSize: number,
   tickGap: number,

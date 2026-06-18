@@ -8,6 +8,8 @@ import {
   type PlotFrame,
   type ScaledPoint,
   type Ticks,
+  type TimestampUnit,
+  type XScale,
 } from '../common/types.ts';
 import {XAxis} from './XAxis.tsx';
 import {YAxis} from './YAxis.tsx';
@@ -23,6 +25,8 @@ export const Axes = ({
   xAxisHeight,
   yAxisWidth,
   fontSize,
+  timestampUnit,
+  xScale,
   ...sharedProps
 }: {
   readonly xAxis?: XAxisProps;
@@ -38,6 +42,8 @@ export const Axes = ({
   readonly xAxisHeight: number;
   readonly yAxisWidth: number;
   readonly fontSize: number;
+  readonly timestampUnit: TimestampUnit;
+  readonly xScale: XScale;
 }) => {
   return (
     <g className="axes" fill={CURRENT_COLOR} fillOpacity={0.75}>
@@ -62,6 +68,8 @@ export const Axes = ({
         xTitle={xTitle}
         axisHeight={xAxisHeight}
         fontSize={fontSize}
+        timestampUnit={timestampUnit}
+        xScale={xScale}
       />
     </g>
   );

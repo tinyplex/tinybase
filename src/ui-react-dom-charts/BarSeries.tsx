@@ -21,6 +21,8 @@ export const BarSeries = ((props: SeriesProps) => {
     releaseBarSeries,
     setSeriesSummary,
     setTooltipPoint,
+    timestampUnit,
+    xScale,
     xValues,
   } = useCartesianChartContext();
   const {className, label, xCellId, yCellId} = props;
@@ -33,6 +35,8 @@ export const BarSeries = ((props: SeriesProps) => {
     bounds,
     plotSize,
     xValues,
+    xScale,
+    timestampUnit,
     xCellId,
     label ?? yCellId,
   );

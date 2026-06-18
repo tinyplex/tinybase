@@ -1,11 +1,13 @@
 import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
 import {isNumber, mathMax, string} from '../../common/other.ts';
-import {getScale} from '../common/data.ts';
+import {getScale, normalizeTimeValue} from '../common/data.ts';
 import {
   CURRENT_COLOR,
   type PlotFrame,
   type ScaledPoint,
   type Ticks,
+  type TimestampUnit,
+  type XScale,
   type XValue,
 } from '../common/types.ts';
 
@@ -24,6 +26,8 @@ export const XAxis = ({
   tickGap,
   axisHeight,
   fontSize,
+  timestampUnit,
+  xScale,
 }: {
   readonly className?: string;
   readonly points: ScaledPoint[];
@@ -37,6 +41,8 @@ export const XAxis = ({
   readonly tickGap: number;
   readonly axisHeight: number;
   readonly fontSize: number;
+  readonly timestampUnit: TimestampUnit;
+  readonly xScale: XScale;
 }) => {
   const [plotX, plotY, plotWidth, plotHeight] = plotFrame;
   const titleGap = mathMax(axisHeight - tickSize - tickGap - 2 * fontSize, 0);
@@ -62,7 +68,7 @@ export const XAxis = ({
                 x={plotX + x}
                 y={plotY + plotHeight + tickSize + tickGap}
               >
-                {getTickLabel(xValue, tickFormatter)}
+                {getTickLabel(xValue, tickFormatter, xScale, timestampUnit)}
               </text>
             ))
           : arrayMap(xTicks, (tick) => {
@@ -73,7 +79,7 @@ export const XAxis = ({
                   x={plotX + x}
                   y={plotY + plotHeight + tickSize + tickGap}
                 >
-                  {getTickLabel(tick, tickFormatter)}
+                  {getTickLabel(tick, tickFormatter, xScale, 'millisecond')}
                 </text>
               );
             })}
@@ -95,4 +101,12 @@ const getAxisClassName = (baseClassName: string, className?: string) =>
 const getTickLabel = (
   tick: XValue | Date,
   tickFormatter: TickFormatter | undefined,
-) => tickFormatter?.(tick) ?? string(tick);
+  xScale: XScale,
+  timestampUnit: TimestampUnit,
+) => {
+  const timestamp =
+    xScale == 'time' ? normalizeTimeValue(tick, timestampUnit) : undefined;
+  return isNumber(timestamp)
+    ? (tickFormatter?.(new Date(timestamp), timestamp) ?? string(tick))
+    : (tickFormatter?.(tick) ?? string(tick));
+};

@@ -12,21 +12,24 @@ export const LineSeries = ((props: SeriesProps) => {
   const {
     barSeriesCount,
     bounds,
-    domainState,
     plotFrame,
     plotSize,
     setSeriesSummary,
     setTooltipPoint,
+    timestampUnit,
+    xScale,
     xValues,
   } = useCartesianChartContext();
   const {className, label, xCellId, yCellId} = props;
   const [seriesId, rawPoints] = useSeriesData(props);
   const points = getScaledPoints(
-    domainState.continuousX || barSeriesCount == 0 ? 'line' : 'bar',
+    xScale != 'category' || barSeriesCount == 0 ? 'line' : 'bar',
     rawPoints,
     bounds,
     plotSize,
     xValues,
+    xScale,
+    timestampUnit,
     xCellId,
     label ?? yCellId,
   );

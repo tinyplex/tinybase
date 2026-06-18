@@ -15,6 +15,8 @@ import type {
   SetTooltipPoint,
   Size,
   Ticks,
+  TimestampUnit,
+  XScale,
   XValue,
 } from './types.ts';
 
@@ -72,7 +74,9 @@ export type CartesianChartContextValue = {
   readonly store?: Store;
   readonly storeOrStoreId?: TableSourceProps['store'];
   readonly tableId?: Id;
+  readonly timestampUnit: TimestampUnit;
   readonly xTicks: Ticks;
+  readonly xScale: XScale;
   readonly xValues: XValue[];
   readonly yTicks: Ticks;
 };

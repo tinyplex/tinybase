@@ -14,6 +14,7 @@ import {
   arrayIndexOf,
   arrayIsEmpty,
   arrayIsEqual,
+  arrayMap,
   arrayPush,
   arraySort,
 } from '../../common/array.ts';
@@ -48,10 +49,13 @@ import {
 } from '../common/context.ts';
 import {
   getDomainState,
+  getResolvedXScale,
   getScaledPoints,
   getTickBounds,
+  getXScaleDomain,
   getXTicks,
   getYTicks,
+  normalizeTimeValue,
 } from '../common/data.ts';
 import {
   getLabelSize,
@@ -65,6 +69,8 @@ import type {
   ScaledPoint,
   SeriesSummary,
   Ticks,
+  TimestampUnit,
+  XScale,
   XValue,
 } from '../common/types.ts';
 import {Axes} from './Axes.tsx';
@@ -139,14 +145,25 @@ export const CartesianChart = ({
   const [tooltipPoint, setTooltipPoint] = useState<ScaledPoint | undefined>();
   const [chartChildren, xAxis, yAxis] = getParsedChildren(children);
   const xValues = domainState.xValues;
-  const numericX =
-    domainState.continuousX ||
-    (arrayIsEmpty(xValues) && hasNumericXAxisDefinition(xAxis));
-  const dataBounds = getAxisBounds(domainState.bounds, numericX, xAxis, yAxis);
-  const axisKind = numericX || arrayIsEmpty(barSeriesIds) ? 'line' : 'bar';
+  const timestampUnit = getTimestampUnit(xAxis);
+  const xScale = getResolvedXScale(
+    xAxis?.scale,
+    domainState,
+    hasLinearXAxisDefinition(xAxis),
+  );
+  const continuousX = xScale != 'category';
+  const dataBounds = getAxisBounds(
+    domainState.bounds,
+    xValues,
+    xScale,
+    timestampUnit,
+    xAxis,
+    yAxis,
+  );
+  const axisKind = continuousX || arrayIsEmpty(barSeriesIds) ? 'line' : 'bar';
   const xTicks =
-    numericX && xAxis?.ticks != null
-      ? getAxisTicks(xAxis.ticks)
+    continuousX && xAxis?.ticks != null
+      ? getAxisTicks(xAxis.ticks, xScale, timestampUnit)
       : getXTicks(axisKind, dataBounds, plotSize, labelSize, xAxis?.tickCount);
   const yTicks =
     yAxis?.ticks == null
@@ -159,6 +176,8 @@ export const CartesianChart = ({
     tickBounds,
     plotSize,
     xValues,
+    xScale,
+    timestampUnit,
   );
 
   const setNextDomainState = useCallback((summaryById: SummaryById) => {
@@ -292,7 +311,9 @@ export const CartesianChart = ({
       store: storeObject,
       storeOrStoreId: store,
       tableId,
+      timestampUnit,
       xTicks,
+      xScale,
       xValues,
       yTicks,
     }),
@@ -315,8 +336,10 @@ export const CartesianChart = ({
       store,
       storeObject,
       tableId,
+      timestampUnit,
       tickBounds,
       xTicks,
+      xScale,
       xValues,
       yTicks,
     ],
@@ -346,8 +369,10 @@ export const CartesianChart = ({
           tickGap={tickGap}
           tickSize={tickSize}
           titles={[xAxis?.title ?? xTitle, yAxis?.title ?? yTitle]}
+          timestampUnit={timestampUnit}
           xAxis={xAxis}
           xAxisHeight={xAxisHeight}
+          xScale={xScale}
           xTicks={xTicks}
           yAxis={yAxis}
           yAxisWidth={yAxisWidth}
@@ -436,35 +461,71 @@ const getTitle = (
 
 const getAxisBounds = (
   [xMin, xMax, yMin, yMax]: Bounds,
-  numericX: boolean,
+  xValues: XValue[],
+  xScale: XScale,
+  timestampUnit: TimestampUnit,
   xAxis?: XAxisProps,
   yAxis?: YAxisProps,
-): Bounds => [
-  numericX ? getAxisBound(xAxis?.min, xMin) : xMin,
-  numericX ? getAxisBound(xAxis?.max, xMax) : xMax,
-  getNumberAxisBound(yAxis?.min, yMin),
-  getNumberAxisBound(yAxis?.max, yMax),
-];
+): Bounds => {
+  const [xDomainMin, xDomainMax] = getXScaleDomain(
+    [xMin, xMax],
+    xValues,
+    xScale,
+    timestampUnit,
+  );
+  return [
+    xScale == 'category'
+      ? xDomainMin
+      : getAxisBound(xAxis?.min, xDomainMin, xScale, timestampUnit),
+    xScale == 'category'
+      ? xDomainMax
+      : getAxisBound(xAxis?.max, xDomainMax, xScale, timestampUnit),
+    getNumberAxisBound(yAxis?.min, yMin),
+    getNumberAxisBound(yAxis?.max, yMax),
+  ];
+};
 
 const getAxisBound = (
   value: TimeValue | undefined,
   bound: XValue | undefined,
-): XValue | undefined => (isFiniteNumber(value) ? (value as number) : bound);
+  xScale: XScale,
+  timestampUnit: TimestampUnit,
+): XValue | undefined => {
+  const axisBound =
+    xScale == 'time' ? normalizeTimeValue(value, timestampUnit) : value;
+  return isFiniteNumber(axisBound) ? (axisBound as number) : bound;
+};
 
 const getNumberAxisBound = (
   value: number | undefined,
   bound: number | undefined,
 ): number | undefined => (isFiniteNumber(value) ? value : bound);
 
-const getAxisTicks = (ticks: readonly TimeValue[]): Ticks =>
-  arraySort(arrayFilter([...ticks], isFiniteNumber), (tick1, tick2) => {
+const getAxisTicks = (
+  ticks: readonly TimeValue[],
+  xScale: XScale = 'linear',
+  timestampUnit: TimestampUnit = 'millisecond',
+): Ticks => {
+  const normalizedTicks = arrayFilter(
+    arrayMap([...ticks], (tick) =>
+      xScale == 'time' ? normalizeTimeValue(tick, timestampUnit) : tick,
+    ),
+    (tick): tick is number => isFiniteNumber(tick),
+  );
+  return arraySort(normalizedTicks, (tick1, tick2) => {
     return tick1 - tick2;
   });
+};
 
-const hasNumericXAxisDefinition = (xAxis?: XAxisProps): boolean =>
+const hasLinearXAxisDefinition = (xAxis?: XAxisProps): boolean =>
   isFiniteNumber(xAxis?.min) ||
   isFiniteNumber(xAxis?.max) ||
   xAxis?.ticks != null;
+
+const getTimestampUnit = (xAxis?: XAxisProps): TimestampUnit =>
+  xAxis?.scale == 'time' && xAxis.timestampUnit == 'second'
+    ? 'second'
+    : 'millisecond';
 
 const getParsedChildren = (children: ReactNode): ParsedChildren => {
   const chartChildren: ReactNode[] = [];
