@@ -5,6 +5,7 @@ import {useInitialSeriesSummary} from './components/summary.ts';
 
 type BarChartProps = Parameters<typeof BarChartDecl>[0];
 
+// eslint-disable-next-line react/prop-types
 export const BarChart: typeof BarChartDecl = ({children, ...props}) => {
   const initialSummary = useInitialSeriesSummary('bar', props);
 

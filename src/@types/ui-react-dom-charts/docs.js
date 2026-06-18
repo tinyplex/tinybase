@@ -219,8 +219,8 @@
   /// SeriesProps.limit
 }
 /**
- * The XAxisScale type describes how x-axis values should be interpreted: `auto`,
- * `category`, `linear`, or `time`.
+ * The XAxisScale type describes how x-axis values should be interpreted:
+ * `auto`, `category`, `linear`, or `time`.
  * @category Configuration
  * @since v8.5.0
  */
@@ -283,9 +283,9 @@
  * The XAxisProps type describes the props that configure the x axis of a
  * CartesianChart component, LineChart component, or BarChart component.
  *
- * The x axis is inferred by default. Use an XAxis component child when you want
- * to override its title, scale, continuous bounds, tick values, tick count, tick
- * labels, or SVG class name.
+ * The x axis is inferred by default. Use an XAxis component child when you
+ * want to override its title, scale, continuous bounds, tick values, tick
+ * count, tick labels, or SVG class name.
  * @category Configuration
  * @since v8.5.0
  */

@@ -5,6 +5,7 @@ import {LineSeries} from './LineSeries.tsx';
 
 type LineChartProps = Parameters<typeof LineChartDecl>[0];
 
+// eslint-disable-next-line react/prop-types
 export const LineChart: typeof LineChartDecl = ({children, ...props}) => {
   const initialSummary = useInitialSeriesSummary('line', props);
 
