@@ -67,9 +67,18 @@ export const arrayReduce = <Value, Result>(
   initial: Result,
 ): Result => array.reduce(cb, initial);
 
-export const arrayFilter = <Value>(
+export const arrayFilter: {
+  <Value, FilteredValue extends Value>(
+    array: Value[],
+    cb: (value: Value, index: number, array: Value[]) => value is FilteredValue,
+  ): FilteredValue[];
+  <Value>(
+    array: Value[],
+    cb: (value: Value, index: number, array: Value[]) => boolean,
+  ): Value[];
+} = <Value>(
   array: Value[],
-  cb: (value: Value) => boolean,
+  cb: (value: Value, index: number, array: Value[]) => boolean,
 ): Value[] => array.filter(cb);
 
 export const arrayFind = <Value>(

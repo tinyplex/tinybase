@@ -514,17 +514,18 @@ const getAxisTicks = (
   ticks: readonly TimeValue[],
   xScale: XScale = 'linear',
   timestampUnit: TimestampUnit = 'millisecond',
-): Ticks => {
-  const normalizedTicks = arrayFilter(
-    arrayMap([...ticks], (tick) =>
-      xScale == 'time' ? normalizeTimeValue(tick, timestampUnit) : tick,
+): Ticks =>
+  arraySort(
+    arrayFilter(
+      arrayMap([...ticks], (tick) =>
+        xScale == 'time' ? normalizeTimeValue(tick, timestampUnit) : tick,
+      ),
+      (tick): tick is number => isFiniteNumber(tick),
     ),
-    (tick): tick is number => isFiniteNumber(tick),
+    (tick1, tick2) => {
+      return tick1 - tick2;
+    },
   );
-  return arraySort(normalizedTicks, (tick1, tick2) => {
-    return tick1 - tick2;
-  });
-};
 
 const hasLinearXAxisDefinition = (xAxis?: XAxisProps): boolean =>
   isFiniteNumber(xAxis?.min) ||

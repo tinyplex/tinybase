@@ -101,7 +101,7 @@ export const getDataPoints = (
   arrayFilter(
     arrayMap(rowIds, getPoint),
     (point): point is DataPoint => !isUndefined(point),
-  ) as DataPoint[];
+  );
 
 export const getDataPoint = (
   rowId: string,

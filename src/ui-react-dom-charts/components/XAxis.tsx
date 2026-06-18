@@ -15,7 +15,7 @@ import {
   type XValue,
 } from '../common/types.ts';
 
-type TickFormatter = (tick: XValue | Date, timestamp?: number) => string;
+type TickFormatter = (tick: any, timestamp: any) => string;
 
 export const XAxis = ({
   className,
@@ -120,5 +120,5 @@ const getTickLabel = (
   return isNumber(timestamp)
     ? (tickFormatter?.(new Date(timestamp), timestamp) ??
         getTimeTickLabel(timestamp, ticks))
-    : (tickFormatter?.(tick) ?? string(tick));
+    : (tickFormatter?.(tick, undefined) ?? string(tick));
 };

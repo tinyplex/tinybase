@@ -5,6 +5,7 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import type {
   CellOrUndefined,
+  Row,
   Table,
   ValueOrUndefined,
 } from '../../../@types/store/index.d.ts';
@@ -107,14 +108,15 @@ export const getCommandFunctions = (
                   escapeId(tableName) +
                   getWhereCondition(tableName, condition),
               ),
-              (row) => [
+              (row): [Id | undefined, Row] => [
                 row[rowIdColumnName],
                 decode
                   ? objMap(objDel(row, rowIdColumnName), decode)
                   : objDel(row, rowIdColumnName),
               ],
             ),
-            ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
+            (entry): entry is [Id, Row] =>
+              !isUndefined(entry[0]) && !objIsEmpty(entry[1]),
           ),
         )
       : {};
