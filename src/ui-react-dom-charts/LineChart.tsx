@@ -5,12 +5,13 @@ import {LineSeries} from './LineSeries.tsx';
 
 type LineChartProps = Parameters<typeof LineChartDecl>[0];
 
-export const LineChart: typeof LineChartDecl = (props) => {
+export const LineChart: typeof LineChartDecl = ({children, ...props}) => {
   const initialSummary = useInitialSeriesSummary('line', props);
 
   return (
     <CartesianChart {...getSourceProps(props)} initialSummary={initialSummary}>
       <LineSeries {...getSeriesProps(props)} />
+      {children}
     </CartesianChart>
   );
 };

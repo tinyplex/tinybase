@@ -129,10 +129,14 @@ export function BarSeries(props: SeriesProps): ComponentReturnType;
 
 /// LineChart
 export function LineChart(
-  props: (TableSourceProps | QuerySourceProps) & BindingProps & ChartProps,
+  props: (TableSourceProps | QuerySourceProps) &
+    BindingProps &
+    ChartProps & {readonly children?: ReactNode},
 ): ComponentReturnType;
 
 /// BarChart
 export function BarChart(
-  props: (TableSourceProps | QuerySourceProps) & BindingProps & ChartProps,
+  props: (TableSourceProps | QuerySourceProps) &
+    BindingProps &
+    ChartProps & {readonly children?: ReactNode},
 ): ComponentReturnType;

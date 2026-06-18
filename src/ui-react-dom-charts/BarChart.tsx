@@ -5,12 +5,13 @@ import {useInitialSeriesSummary} from './components/summary.ts';
 
 type BarChartProps = Parameters<typeof BarChartDecl>[0];
 
-export const BarChart: typeof BarChartDecl = (props) => {
+export const BarChart: typeof BarChartDecl = ({children, ...props}) => {
   const initialSummary = useInitialSeriesSummary('bar', props);
 
   return (
     <CartesianChart {...getSourceProps(props)} initialSummary={initialSummary}>
       <BarSeries {...getSeriesProps(props)} />
+      {children}
     </CartesianChart>
   );
 };

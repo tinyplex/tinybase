@@ -262,6 +262,43 @@ describe.each(CHARTS)('%s', (_chartName, Chart) => {
 
     unmount();
   });
+
+  test('uses axis child configuration', () => {
+    const store = createStore().setTable('t1', {
+      r1: {x: 'Jan', y: 3, z: 1},
+      r2: {x: 'Feb', y: 5, z: 2},
+    });
+    const {container, unmount} = render(
+      <Chart
+        store={store}
+        tableId="t1"
+        xCellId="x"
+        yCellId="y"
+        sortCellId="z"
+      >
+        <XAxis
+          className="month-axis"
+          tickFormatter={(tick) => `M-${tick}`}
+          title="Month"
+        />
+        <YAxis
+          className="value-axis"
+          tickFormatter={(tick) => `V-${tick}`}
+          ticks={[0, 5]}
+          title="Value"
+        />
+      </Chart>,
+    );
+
+    expect(container.querySelectorAll('.axes .x.month-axis')).toHaveLength(1);
+    expect(container.querySelectorAll('.axes .y.value-axis')).toHaveLength(1);
+    expect(getXAxisTickLabels(container)).toEqual(['M-Jan', 'M-Feb']);
+    expect(getYAxisTickLabels(container)).toEqual(['V-0', 'V-5']);
+    expect(container.innerHTML).toContain('>Month<');
+    expect(container.innerHTML).toContain('>Value<');
+
+    unmount();
+  });
 });
 
 describe('CartesianChart', () => {

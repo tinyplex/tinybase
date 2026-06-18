@@ -85,7 +85,14 @@ const _App = () => {
   return (
     <>
       <LineChart tableId="t1" xCellId="c1" yCellId="c1d" />
-      <BarChart queryId="q1" xCellId="c1" yCellId="c1d" />
+      <BarChart queryId="q1" xCellId="c1" yCellId="c1d">
+        <XAxis title="Bar X" />
+        <YAxis title="Bar Y" />
+      </BarChart>
+      <LineChart tableId="t1" xCellId="c1" yCellId="c1d">
+        <XAxis title="Line X" />
+        <YAxis title="Line Y" />
+      </LineChart>
       <CartesianChart tableId="t1">
         <XAxis
           className="x"
@@ -130,7 +137,14 @@ const _App = () => {
         offset={1}
         limit={2}
         className="sales"
-      />
+      >
+        <UiReactDomChartsWithSchemas.XAxis title="Schema Line X" />
+        <UiReactDomChartsWithSchemas.YAxis title="Schema Line Y" />
+      </LineChartWithSchemas>
+      <BarChartWithSchemas tableId="t1" xCellId="c1b" yCellId="c1">
+        <UiReactDomChartsWithSchemas.XAxis title="Schema Bar X" />
+        <UiReactDomChartsWithSchemas.YAxis title="Schema Bar Y" />
+      </BarChartWithSchemas>
       <CartesianChartWithSchemas tableId="t1">
         <UiReactDomChartsWithSchemas.XAxis title="Schema X" />
         <UiReactDomChartsWithSchemas.YAxis title="Schema Y" />

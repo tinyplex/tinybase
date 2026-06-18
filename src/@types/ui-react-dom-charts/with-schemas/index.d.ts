@@ -184,14 +184,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// LineChart
   LineChart: (
     props:
-      | (TableBindingProps<Schemas> & ChartProps)
-      | (QuerySourceProps<Schemas> & BindingProps & ChartProps),
+      | (TableBindingProps<Schemas> &
+          ChartProps & {readonly children?: ReactNode})
+      | (QuerySourceProps<Schemas> &
+          BindingProps &
+          ChartProps & {readonly children?: ReactNode}),
   ) => ComponentReturnType;
 
   /// BarChart
   BarChart: (
     props:
-      | (TableBindingProps<Schemas> & ChartProps)
-      | (QuerySourceProps<Schemas> & BindingProps & ChartProps),
+      | (TableBindingProps<Schemas> &
+          ChartProps & {readonly children?: ReactNode})
+      | (QuerySourceProps<Schemas> &
+          BindingProps &
+          ChartProps & {readonly children?: ReactNode}),
   ) => ComponentReturnType;
 };
