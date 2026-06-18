@@ -4,6 +4,7 @@ import type {CellOrUndefined} from '../../@types/store/index.d.ts';
 import type {SeriesProps} from '../../@types/ui-react-dom-charts/index.d.ts';
 import {isNullish} from '../../common/other.ts';
 import {useCallback, useLayoutEffect, useState} from '../../common/react.ts';
+import {EMPTY_STRING} from '../../common/strings.ts';
 import {
   useCellListener,
   useResultCellListener,
@@ -13,8 +14,6 @@ import {
 import {SourceType, useCartesianChartContext} from '../common/context.ts';
 import {getDataPoint, getDataPoints} from '../common/data.ts';
 import type {DataPoint} from '../common/types.ts';
-
-const EMPTY_ID = '';
 
 export const useSeriesData = ({
   descending,
@@ -40,7 +39,7 @@ export const useSeriesData = ({
   const [seriesId] = useState(getSeriesId);
   const handleChange = useCallback(() => rerender([]), [rerender]);
   const tableRowIds = useSortedRowIds(
-    tableId ?? EMPTY_ID,
+    tableId ?? EMPTY_STRING,
     sortCellId ?? xCellId,
     descending,
     offset,
@@ -48,7 +47,7 @@ export const useSeriesData = ({
     storeOrStoreId,
   );
   const queryRowIds = useResultSortedRowIds(
-    queryId ?? EMPTY_ID,
+    queryId ?? EMPTY_STRING,
     sortCellId ?? xCellId,
     descending,
     offset,
@@ -56,32 +55,15 @@ export const useSeriesData = ({
     queriesOrQueriesId,
   );
   const rowIds = sourceType == SourceType.Table ? tableRowIds : queryRowIds;
-  const points =
-    yCellId == null
-      ? []
-      : getDataPoints(rowIds, (rowId) =>
-          getDataPoint(
-            rowId,
-            getCell(
-              sourceType,
-              store,
-              queries,
-              tableId,
-              queryId,
-              rowId,
-              xCellId,
-            ),
-            getCell(
-              sourceType,
-              store,
-              queries,
-              tableId,
-              queryId,
-              rowId,
-              yCellId,
-            ),
-          ),
-        );
+  const points = isNullish(yCellId)
+    ? []
+    : getDataPoints(rowIds, (rowId) =>
+        getDataPoint(
+          rowId,
+          getCell(sourceType, store, queries, tableId, queryId, rowId, xCellId),
+          getCell(sourceType, store, queries, tableId, queryId, rowId, yCellId),
+        ),
+      );
 
   useCellListener(
     sourceType == SourceType.Table ? (tableId ?? null) : null,

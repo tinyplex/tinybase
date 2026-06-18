@@ -4,7 +4,9 @@ import type {
   QuerySourceProps,
   TableSourceProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
+import {isNullish} from '../../common/other.ts';
 import {useMemo} from '../../common/react.ts';
+import {EMPTY_STRING} from '../../common/strings.ts';
 import {
   useQueriesOrQueriesById,
   useStoreOrStoreById,
@@ -35,38 +37,45 @@ export const useInitialSeriesSummary = (
   const queriesObject = useQueriesOrQueriesById(queries);
 
   return useMemo(() => {
-    const points =
-      tableId == null
-        ? getDataPoints(
-            queriesObject?.getResultSortedRowIds(
-              queryId ?? '',
-              sortCellId ?? xCellId,
-              descending,
-              offset,
-              limit,
-            ) ?? [],
-            (rowId) =>
-              getDataPoint(
+    const points = isNullish(tableId)
+      ? getDataPoints(
+          queriesObject?.getResultSortedRowIds(
+            queryId ?? EMPTY_STRING,
+            sortCellId ?? xCellId,
+            descending,
+            offset,
+            limit,
+          ) ?? [],
+          (rowId) =>
+            getDataPoint(
+              rowId,
+              queriesObject?.getResultCell(
+                queryId ?? EMPTY_STRING,
                 rowId,
-                queriesObject?.getResultCell(queryId ?? '', rowId, xCellId),
-                queriesObject?.getResultCell(queryId ?? '', rowId, yCellId),
+                xCellId,
               ),
-          )
-        : getDataPoints(
-            storeObject?.getSortedRowIds(
-              tableId,
-              sortCellId ?? xCellId,
-              descending,
-              offset,
-              limit,
-            ) ?? [],
-            (rowId) =>
-              getDataPoint(
+              queriesObject?.getResultCell(
+                queryId ?? EMPTY_STRING,
                 rowId,
-                storeObject?.getCell(tableId, rowId, xCellId),
-                storeObject?.getCell(tableId, rowId, yCellId),
+                yCellId,
               ),
-          );
+            ),
+        )
+      : getDataPoints(
+          storeObject?.getSortedRowIds(
+            tableId,
+            sortCellId ?? xCellId,
+            descending,
+            offset,
+            limit,
+          ) ?? [],
+          (rowId) =>
+            getDataPoint(
+              rowId,
+              storeObject?.getCell(tableId, rowId, xCellId),
+              storeObject?.getCell(tableId, rowId, yCellId),
+            ),
+        );
 
     return getSeriesSummary(kind, points, xCellId, yCellId);
   }, [

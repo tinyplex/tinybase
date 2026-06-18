@@ -5,7 +5,9 @@ import type {
   QuerySourceProps,
   TableSourceProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
+import {errorNew, isFunction, isNullish} from '../../common/other.ts';
 import {createContext, useContext} from '../../common/react.ts';
+import {SERIES, X_AXIS, Y_AXIS} from './strings.ts';
 import type {
   Bounds,
   DomainState,
@@ -26,10 +28,6 @@ export const enum SourceType {
   Table = 2,
 }
 
-export const SERIES = '_tinybaseChartSeries';
-export const X_AXIS = '_tinybaseChartXAxis';
-export const Y_AXIS = '_tinybaseChartYAxis';
-
 export type SeriesComponent = {
   [SERIES]?: true;
 };
@@ -41,14 +39,11 @@ export type YAxisComponent = {
 };
 
 export const isSeriesComponent = (component: unknown): boolean =>
-  typeof component == 'function' &&
-  (component as SeriesComponent)[SERIES] === true;
+  isFunction(component) && (component as SeriesComponent)[SERIES] === true;
 export const isXAxisComponent = (component: unknown): boolean =>
-  typeof component == 'function' &&
-  (component as XAxisComponent)[X_AXIS] === true;
+  isFunction(component) && (component as XAxisComponent)[X_AXIS] === true;
 export const isYAxisComponent = (component: unknown): boolean =>
-  typeof component == 'function' &&
-  (component as YAxisComponent)[Y_AXIS] === true;
+  isFunction(component) && (component as YAxisComponent)[Y_AXIS] === true;
 
 export type CartesianChartContextValue = {
   readonly bounds: Bounds;
@@ -86,8 +81,8 @@ export const CartesianChartContext =
 
 export const useCartesianChartContext = (): CartesianChartContextValue => {
   const context = useContext(CartesianChartContext);
-  if (context == null) {
-    throw new Error('Series components must be used inside a CartesianChart');
+  if (isNullish(context)) {
+    errorNew('Series components must be used inside a CartesianChart');
   }
-  return context;
+  return context as CartesianChartContextValue;
 };

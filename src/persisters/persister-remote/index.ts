@@ -6,11 +6,13 @@ import type {
 import type {Content, Store} from '../../@types/store/index.d.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import {startInterval, stopInterval} from '../../common/other.ts';
+import {EMPTY_STRING} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
-const getETag = (response: Response) => response.headers.get('ETag') ?? '';
+const getETag = (response: Response) =>
+  response.headers.get('ETag') ?? EMPTY_STRING;
 const getIfNoneMatchHeaders = (lastEtag: string): HeadersInit | undefined =>
-  lastEtag == '' ? undefined : {'If-None-Match': lastEtag};
+  lastEtag == EMPTY_STRING ? undefined : {'If-None-Match': lastEtag};
 
 export const createRemotePersister = ((
   store: Store,
@@ -19,7 +21,7 @@ export const createRemotePersister = ((
   autoLoadIntervalSeconds = 5,
   onIgnoredError?: (error: any) => void,
 ): RemotePersister => {
-  let lastEtag: string = '';
+  let lastEtag: string = EMPTY_STRING;
 
   const getPersisted = async (): Promise<Content> => {
     const response = await fetch(loadUrl, {

@@ -1,4 +1,4 @@
-import {isArray, size} from './other.ts';
+import {isArray, isZero, size} from './other.ts';
 import {EMPTY_STRING} from './strings.ts';
 
 export const arrayNew = <Value>(
@@ -35,7 +35,7 @@ export const arrayIsSorted = <Value>(
 ): boolean =>
   arrayEvery(
     array,
-    (value, index) => index == 0 || sorter(array[index - 1], value) <= 0,
+    (value, index) => isZero(index) || sorter(array[index - 1], value) <= 0,
   );
 
 export const arraySort = <Value>(
@@ -59,7 +59,7 @@ export const arrayMap = <Value, Return>(
 export const arraySum = (array: number[]): number =>
   arrayReduce<number, number>(array, (i, j) => i + j, 0);
 
-export const arrayIsEmpty = (array: unknown[]): boolean => size(array) == 0;
+export const arrayIsEmpty = (array: unknown[]): boolean => isZero(size(array));
 
 export const arrayReduce = <Value, Result>(
   array: Value[],

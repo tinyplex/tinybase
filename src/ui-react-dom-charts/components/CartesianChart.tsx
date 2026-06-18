@@ -23,6 +23,7 @@ import {
 import {objValues} from '../../common/obj.ts';
 import {
   isFiniteNumber,
+  isNullish,
   isNumber,
   mathMax,
   mathMin,
@@ -129,18 +130,17 @@ export const CartesianChart = ({
   const labelSize = getLabelSize(layout);
   const storeObject = useStoreOrStoreById(store);
   const queriesObject = useQueriesOrQueriesById(queries);
-  const sourceType =
-    tableId == null
-      ? queryId == null
-        ? SourceType.None
-        : SourceType.Query
-      : SourceType.Table;
-  const initialSummaries: SummaryById =
-    initialSummary == null ? {} : {0: initialSummary};
-  const initialDomainState =
-    initialSummary == null
-      ? EMPTY_DOMAIN_STATE
-      : getDomainState(objValues(initialSummaries));
+  const sourceType = isNullish(tableId)
+    ? isNullish(queryId)
+      ? SourceType.None
+      : SourceType.Query
+    : SourceType.Table;
+  const initialSummaries: SummaryById = isNullish(initialSummary)
+    ? {}
+    : {0: initialSummary};
+  const initialDomainState = isNullish(initialSummary)
+    ? EMPTY_DOMAIN_STATE
+    : getDomainState(objValues(initialSummaries));
   const initialXTitle = getTitle(initialSummaries, 'xCellId');
   const initialYTitle = getTitle(initialSummaries, 'yCellId');
   const summariesRef = useRef<SummaryById>(initialSummaries);
@@ -167,7 +167,7 @@ export const CartesianChart = ({
     domainState,
     isFiniteNumber(xAxis?.min) ||
       isFiniteNumber(xAxis?.max) ||
-      xAxis?.ticks != null,
+      !isNullish(xAxis?.ticks),
   );
   const continuousX = xScale != CATEGORY;
   const dataBounds = getAxisBounds(
@@ -181,7 +181,7 @@ export const CartesianChart = ({
   const [dataXMin, dataXMax] = dataBounds;
   const axisKind = continuousX || arrayIsEmpty(barSeriesIds) ? LINE : BAR;
   const xTicks =
-    continuousX && xAxis?.ticks != null
+    continuousX && !isNullish(xAxis?.ticks)
       ? getAxisTicks(xAxis.ticks, xScale, timestampUnit)
       : xScale == TIME &&
           isNumber(dataXMin) &&
@@ -201,10 +201,9 @@ export const CartesianChart = ({
             labelSize,
             xAxis?.tickCount,
           );
-  const yTicks =
-    yAxis?.ticks == null
-      ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount)
-      : getAxisTicks(yAxis.ticks);
+  const yTicks = isNullish(yAxis?.ticks)
+    ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount)
+    : getAxisTicks(yAxis.ticks);
   const tickBounds = getTickBounds(dataBounds, xTicks, yTicks);
   const axisPoints = getScaledPoints(
     axisKind,
@@ -253,10 +252,10 @@ export const CartesianChart = ({
       isNumber(currentXMax) && isNumber(xMax)
         ? mathMax(currentXMax, xMax)
         : (currentXMax ?? xMax),
-      currentYMin == null || yMin == null
+      isNullish(currentYMin) || isNullish(yMin)
         ? (currentYMin ?? yMin)
         : mathMin(currentYMin, yMin),
-      currentYMax == null || yMax == null
+      isNullish(currentYMax) || isNullish(yMax)
         ? (currentYMax ?? yMax)
         : mathMax(currentYMax, yMax),
     ];
@@ -276,8 +275,8 @@ export const CartesianChart = ({
     (seriesId: string, summary: SeriesSummary | undefined) => {
       const currentSummaries = summariesRef.current;
       const currentSummary = currentSummaries[seriesId];
-      if (summary == null) {
-        if (currentSummary == null) {
+      if (isNullish(summary)) {
+        if (isNullish(currentSummary)) {
           return;
         }
         delete currentSummaries[seriesId];
@@ -288,7 +287,7 @@ export const CartesianChart = ({
       currentSummaries[seriesId] = summary;
       setNextTitles(currentSummaries);
       if (
-        currentSummary == null
+        isNullish(currentSummary)
           ? !arrayEvery(summary.xValues, (xValue) =>
               arrayHas(domainStateRef.current.xValues, xValue),
             ) || summary.continuousX != domainStateRef.current.continuousX
@@ -463,7 +462,7 @@ const getTitle = (
       cellIdType == 'yCellId'
         ? (summary.yLabel ?? summary.yCellId)
         : summary.xCellId;
-    if (title != null && !arrayHas(titles, title)) {
+    if (!isNullish(title) && !arrayHas(titles, title)) {
       arrayPush(titles, title);
     }
   });
@@ -546,9 +545,9 @@ const getParsedChildren = (children: ReactNode): ParsedChildren => {
         yAxis ??= childYAxis;
       } else if (isSeriesComponent(child.type)) {
         arrayPush(chartChildren, child);
-      } else if (xAxis == null && isXAxisComponent(child.type)) {
+      } else if (isNullish(xAxis) && isXAxisComponent(child.type)) {
         xAxis = (child as ElementWithProps<XAxisProps>).props;
-      } else if (yAxis == null && isYAxisComponent(child.type)) {
+      } else if (isNullish(yAxis) && isYAxisComponent(child.type)) {
         yAxis = (child as ElementWithProps<YAxisProps>).props;
       }
     }

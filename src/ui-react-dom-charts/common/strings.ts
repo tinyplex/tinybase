@@ -6,3 +6,6 @@ export const SECOND_UNIT = 'second';
 export const BAR = 'bar';
 export const LINE = 'line';
 export const CURRENT_COLOR = 'currentColor';
+export const SERIES = '_tinybaseChartSeries';
+export const X_AXIS = '_tinybaseChartXAxis';
+export const Y_AXIS = '_tinybaseChartYAxis';

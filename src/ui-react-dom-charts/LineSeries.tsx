@@ -3,9 +3,9 @@ import type {
   SeriesProps,
 } from '../@types/ui-react-dom-charts/index.d.ts';
 import {useLayoutEffect} from '../common/react.ts';
-import {SERIES, useCartesianChartContext} from './common/context.ts';
+import {useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
-import {BAR, CATEGORY, LINE} from './common/strings.ts';
+import {BAR, CATEGORY, LINE, SERIES} from './common/strings.ts';
 import {Line} from './components/Line.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 

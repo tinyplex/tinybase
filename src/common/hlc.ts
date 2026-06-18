@@ -7,6 +7,7 @@ import type {
 import {decode, encode, getUniqueId} from './codec.ts';
 import {getHash} from './hash.ts';
 import {ifNotUndefined, isUndefined, mathMax} from './other.ts';
+import {EMPTY_STRING} from './strings.ts';
 
 const SHIFT36 = 2 ** 36;
 const SHIFT30 = 2 ** 30;
@@ -53,7 +54,7 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
   const seenHlc = (hlc?: Hlc): void => {
     const previousLogicalTime = lastLogicalTime;
     const [remoteLogicalTime, remoteCounter] =
-      isUndefined(hlc) || hlc == '' ? [0, 0] : decodeHlc(hlc);
+      isUndefined(hlc) || hlc == EMPTY_STRING ? [0, 0] : decodeHlc(hlc);
     lastLogicalTime = mathMax(previousLogicalTime, remoteLogicalTime, getNow());
     lastCounter =
       lastLogicalTime == previousLogicalTime

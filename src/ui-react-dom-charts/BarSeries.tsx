@@ -3,10 +3,11 @@ import type {
   SeriesProps,
 } from '../@types/ui-react-dom-charts/index.d.ts';
 import {arrayMap} from '../common/array.ts';
+import {isNullish} from '../common/other.ts';
 import {useLayoutEffect} from '../common/react.ts';
-import {SERIES, useCartesianChartContext} from './common/context.ts';
+import {useCartesianChartContext} from './common/context.ts';
 import {getScaledPoints, getSeriesSummary} from './common/data.ts';
-import {BAR, CATEGORY, CURRENT_COLOR, LINE} from './common/strings.ts';
+import {BAR, CATEGORY, CURRENT_COLOR, LINE, SERIES} from './common/strings.ts';
 import {Bars, getContinuousBarWidth} from './components/Bars.tsx';
 import {getSeriesClassName, useSeriesData} from './components/series.ts';
 
@@ -76,7 +77,7 @@ export const BarSeries = ((props: SeriesProps) => {
         barSeriesCount={barSeriesCount}
         barSeriesIndex={barSeriesIndex}
         fullBarWidth={
-          axisPoints == null
+          isNullish(axisPoints)
             ? undefined
             : getContinuousBarWidth(axisPoints, plotSize[0])
         }

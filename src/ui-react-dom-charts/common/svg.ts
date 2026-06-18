@@ -7,6 +7,7 @@ import {
   mathRound,
 } from '../../common/other.ts';
 import {useLayoutEffect, useRef, useState} from '../../common/react.ts';
+import {EMPTY_STRING} from '../../common/strings.ts';
 import type {PlotFrame, RefAndLayout, Size, Style} from './types.ts';
 
 const DEFAULT_SIZE: Size = [1000, 1000];
@@ -77,7 +78,7 @@ const getDefaultStyle = (fontSize: number): Style =>
   arrayMap(DEFAULT_STYLE, (value) => value * fontSize) as unknown as Style;
 
 const getStyle = (style: CSSStyleDeclaration | undefined): Style => {
-  const fontSize = parseFloat(style?.fontSize ?? '');
+  const fontSize = parseFloat(style?.fontSize ?? EMPTY_STRING);
   return getDefaultStyle(
     isFiniteNumber(fontSize) ? fontSize : DEFAULT_FONT_SIZE,
   );

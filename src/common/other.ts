@@ -144,7 +144,7 @@ export const promiseAll = async (promises: Promise<any>[]) =>
 
 export const structuredClone = GLOBAL.structuredClone as <T>(value: T) => T;
 
-export const errorNew = (message: string) => {
+export const errorNew = (message: string): never => {
   throw new Error(message);
 };
 

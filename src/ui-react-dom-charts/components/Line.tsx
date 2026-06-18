@@ -1,5 +1,5 @@
 import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
-import {size} from '../../common/other.ts';
+import {isZero, size} from '../../common/other.ts';
 import {CURRENT_COLOR} from '../common/strings.ts';
 import {
   type PlotFrame,
@@ -58,7 +58,7 @@ const getLinePath = (points: ScaledPoint[], plotX: number, plotY: number) =>
     arrayMap(
       points,
       ([, , , x, y], index) =>
-        `${index == 0 ? 'M' : 'L'}${plotX + x},${plotY + y}`,
+        `${isZero(index) ? 'M' : 'L'}${plotX + x},${plotY + y}`,
     ),
     ' ',
   );

@@ -1,6 +1,12 @@
 import type {Id} from '../@types/common/index.d.ts';
 import {arrayEvery, arrayForEach, arrayMap} from './array.ts';
-import {ifNotNullish, ifNotUndefined, isNullish, size} from './other.ts';
+import {
+  ifNotNullish,
+  ifNotUndefined,
+  isNullish,
+  isZero,
+  size,
+} from './other.ts';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
@@ -70,7 +76,7 @@ export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
 export const objSize = (obj: IdObj<unknown>): number => size(objIds(obj));
 
 export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
-  isObject(obj) && objSize(obj) == 0;
+  isObject(obj) && isZero(objSize(obj));
 
 /*! istanbul ignore next */
 export const objIsEqual = (

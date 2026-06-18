@@ -18,6 +18,7 @@ import {
   isFalse,
   isFiniteNumber,
   isInteger,
+  isNullish,
   isNumber,
   isString,
   isTrue,
@@ -96,7 +97,7 @@ export const getScaledPoints = (
   const xCategories = mapNew<XValue, number>();
 
   arrayForEach(
-    xValues == null || arrayIsEmpty(xValues)
+    isNullish(xValues) || arrayIsEmpty(xValues)
       ? arrayMap(points, ([, xValue]) => xValue)
       : xValues,
     (xValue) =>

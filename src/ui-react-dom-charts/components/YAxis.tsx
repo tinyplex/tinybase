@@ -29,7 +29,7 @@ export const YAxis = ({
 }) => {
   const [plotX, plotY, , plotHeight] = plotFrame;
   return isNullish(yMin) || isNullish(yMax) ? null : (
-    <g className={getAxisClassName('y', className)}>
+    <g className={isNullish(className) ? 'y' : `y ${className}`}>
       <path
         className="line"
         d={`M${plotX},${plotY}v${plotHeight}`}
@@ -61,6 +61,3 @@ export const YAxis = ({
     </g>
   );
 };
-
-const getAxisClassName = (baseClassName: string, className?: string) =>
-  isNullish(className) ? baseClassName : `${baseClassName} ${className}`;

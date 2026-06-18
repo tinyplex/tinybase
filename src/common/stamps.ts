@@ -43,7 +43,8 @@ export const getLatestHlc = (
   hlc2: Hlc | undefined,
 ): Hlc =>
   /*! istanbul ignore next */
-  ((hlc1 ?? '') > (hlc2 ?? '') ? hlc1 : hlc2) ?? '';
+  ((hlc1 ?? EMPTY_STRING) > (hlc2 ?? EMPTY_STRING) ? hlc1 : hlc2) ??
+  EMPTY_STRING;
 
 export const stampUpdate = (
   stamp: Stamp<unknown, true>,
