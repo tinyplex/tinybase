@@ -6,7 +6,7 @@ import type {
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
 } from '../@types/ui-solid-dom/index.d.ts';
-import {isFalse, isTrue, isZero, mathMin} from '../common/other.ts';
+import {isFalse, isTrue, mathMin} from '../common/other.ts';
 import type {MaybeAccessor} from '../common/solid.ts';
 import {getValue} from '../common/solid.ts';
 import {getCallbackOrUndefined} from './common/hooks.tsx';
@@ -95,7 +95,7 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = (
           <>
             <button
               class="previous"
-              disabled={isZero(offset)}
+              disabled={offset == 0}
               onClick={getCallbackOrUndefined(
                 () => props.onChange(offset - limit),
                 offset > 0,

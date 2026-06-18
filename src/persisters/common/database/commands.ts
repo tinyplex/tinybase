@@ -27,12 +27,7 @@ import {
   objToArray,
   objValues,
 } from '../../../common/obj.ts';
-import {
-  isUndefined,
-  isZero,
-  promiseAll,
-  tryCatch,
-} from '../../../common/other.ts';
+import {isUndefined, promiseAll, tryCatch} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {COMMA, TRUE} from '../../../common/strings.ts';
 import {
@@ -197,7 +192,7 @@ export const getCommandFunctions = (
                     escapeId(settingColumnName) +
                     columnType,
                 );
-                if (isZero(index)) {
+                if (index == 0) {
                   await databaseExecuteCommand(
                     'CREATE UNIQUE INDEX pk ON ' +
                       escapeId(tableName) +

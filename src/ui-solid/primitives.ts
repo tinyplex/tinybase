@@ -118,7 +118,6 @@ import {
   ifNotUndefined,
   isFunction,
   isUndefined,
-  isZero,
 } from '../common/other.ts';
 import type {MaybeAccessor} from '../common/solid.ts';
 import {
@@ -371,7 +370,7 @@ const argsOrGetArgs = <Parameter>(
 ) =>
   arrayMap(args, (arg) =>
     isFunction(arg)
-      ? isZero(arg.length)
+      ? arg.length == 0
         ? getThing(arg as MaybeAccessor<Id>)
         : (
             arg as (parameter: Parameter, storeOrQueries: Store | Queries) => Id

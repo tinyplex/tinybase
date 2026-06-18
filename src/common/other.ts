@@ -53,8 +53,6 @@ export const epsilon = Number.EPSILON;
 export const isFiniteNumber: (num: any) => boolean = isFinite;
 export const isInteger = number.isInteger;
 
-export const isZero = (thing: number): boolean => thing == 0;
-
 export const isInstanceOf = (
   thing: unknown,
   cls: MapConstructor | SetConstructor | ObjectConstructor,

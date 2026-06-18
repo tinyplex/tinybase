@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {SortedTablePaginatorProps} from '../@types/ui-svelte-dom/index.d.ts';
-  import {isZero, mathMin} from '../common/other.ts';
+  import {mathMin} from '../common/other.ts';
 
   const LEFT_ARROW = '\u2190';
   const RIGHT_ARROW = '\u2192';
@@ -32,7 +32,7 @@
 {#if props.total > limit}
   <button
     class="previous"
-    disabled={isZero(offset)}
+    disabled={offset == 0}
     onclick={() => props.onChange(offset - limit)}>{LEFT_ARROW}</button
   ><button
     class="next"

@@ -2,7 +2,7 @@ import type {
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
 } from '../@types/ui-react-dom/index.d.ts';
-import {isFalse, isTrue, isZero, mathMin} from '../common/other.ts';
+import {isFalse, isTrue, mathMin} from '../common/other.ts';
 import {useCallbackOrUndefined} from './common/hooks.tsx';
 
 import type {ComponentType, ReactNode} from 'react';
@@ -107,7 +107,7 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
         <>
           <button
             className="previous"
-            disabled={isZero(offset)}
+            disabled={offset == 0}
             onClick={handlePrevClick}
           >
             {LEFT_ARROW}

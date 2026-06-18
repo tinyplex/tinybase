@@ -17,7 +17,6 @@ import {
   epsilon,
   infinity,
   isFiniteNumber,
-  isZero,
   mathAbs,
   mathCeil,
   mathFloor,
@@ -295,11 +294,11 @@ export const getTimeTickLabel = (
   });
   minDiff =
     minDiff == infinity
-      ? isZero(dateGetUTCHours(date)) &&
-        isZero(dateGetUTCMinutes(date)) &&
-        isZero(dateGetUTCSeconds(date))
+      ? dateGetUTCHours(date) == 0 &&
+        dateGetUTCMinutes(date) == 0 &&
+        dateGetUTCSeconds(date) == 0
         ? DAY
-        : isZero(dateGetUTCSeconds(date))
+        : dateGetUTCSeconds(date) == 0
           ? HOUR
           : SECOND
       : minDiff;

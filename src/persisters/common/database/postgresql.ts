@@ -16,7 +16,7 @@ import {
   jsonStringWithUndefined,
 } from '../../../common/json.ts';
 import {mapGet} from '../../../common/map.ts';
-import {ifNotUndefined, isZero, promiseAll} from '../../../common/other.ts';
+import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
 import {
   EMPTY_STRING,
   TINYBASE,
@@ -130,7 +130,7 @@ export const createCustomPostgreSqlPersister = <
               tableName,
             )?.[2] ?? TRUE,
             TABLE_NAME_PLACEHOLDER,
-            isZero(newOrOldOrBoth) ? 'NEW' : 'OLD',
+            newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
           );
 
   const addDataChangedTriggers = (

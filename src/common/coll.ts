@@ -1,5 +1,5 @@
 import {arrayReduce} from './array.ts';
-import {isUndefined, isZero} from './other.ts';
+import {isUndefined} from './other.ts';
 
 export type Coll<Value> = Map<unknown, Value> | Set<Value>;
 
@@ -24,7 +24,7 @@ export const collHas = (
 ): boolean => coll?.has(keyOrValue) ?? false;
 
 export const collIsEmpty = (coll: Coll<unknown> | undefined): boolean =>
-  isUndefined(coll) || isZero(collSize(coll));
+  isUndefined(coll) || collSize(coll) == 0;
 
 export const collValues = <Value>(coll: Coll<Value> | undefined): Value[] => [
   ...(coll?.values() ?? []),

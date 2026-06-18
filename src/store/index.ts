@@ -109,7 +109,6 @@ import {
   isNull,
   isTypeStringOrBoolean,
   isUndefined,
-  isZero,
   slice,
   structuredClone,
   tryCatch,
@@ -972,7 +971,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     const cellIds = mapGet(tableCellIds, tableId);
     const count = mapGet(cellIds, cellId) ?? 0;
     if (
-      (isZero(count) && addedOrRemoved == 1) ||
+      (count == 0 && addedOrRemoved == 1) ||
       (count == 1 && addedOrRemoved == -1)
     ) {
       idsChanged(
@@ -1220,7 +1219,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         );
 
         collForEach(changes[2], (changedCount, tableId) => {
-          if (!isZero(changedCount)) {
+          if (changedCount != 0) {
             callListeners(
               rowCountListeners[mutator],
               [tableId],
@@ -1910,7 +1909,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (transactions > 0) {
       transactions--;
 
-      if (isZero(transactions)) {
+      if (transactions == 0) {
         transactions = 1;
 
         whileMutating(() => {

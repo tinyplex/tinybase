@@ -4,7 +4,7 @@ import {
   arrayJoin,
   arrayMap,
 } from '../../common/array.ts';
-import {isNullish, isNumber, isZero} from '../../common/other.ts';
+import {isNullish, isNumber} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {CURRENT_COLOR} from '../common/strings.ts';
 import {
@@ -44,7 +44,7 @@ export const Grid = ({
             arrayMap(
               arrayFilter(
                 yTicks,
-                (tick) => !isZero(getScale(tick, yMin, yMax, height)),
+                (tick) => getScale(tick, yMin, yMax, height) != 0,
               ),
               (tick) =>
                 `M${plotX - tickSize},${
@@ -60,7 +60,7 @@ export const Grid = ({
           className="x"
           d={arrayJoin(
             arrayMap(
-              arrayFilter(points, ([, , , x]) => !isZero(x)),
+              arrayFilter(points, ([, , , x]) => x != 0),
               ([, , , x]) => `M${plotX + x},${plotY}v${height + tickSize}`,
             ),
             ' ',
@@ -73,7 +73,7 @@ export const Grid = ({
             arrayMap(
               arrayFilter(
                 xTicks,
-                (tick) => !isZero(getScale(tick, xMin, xMax, width)),
+                (tick) => getScale(tick, xMin, xMax, width) != 0,
               ),
               (tick) =>
                 `M${
