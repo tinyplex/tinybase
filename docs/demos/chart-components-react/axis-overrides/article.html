@@ -1,0 +1,218 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/chart-components-react/">Chart Components (React)</a></li><li><a href="/demos/chart-components-react/axis-overrides/">Axis Overrides</a></li></ul></nav><section class="s1" id="/demos/chart-components-react/axis-overrides/" data-id="AO2"><h1>Axis Overrides</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{background:white;font-family:Inter,sans-serif;margin:0}main{margin:2rem auto;max-width:52rem;padding:0 2rem}.chart{background:#f7f9fb;border:1px solid #dce5ee;border-radius:.5rem;color:#596779;display:block;font-size:12px;height:20rem;padding:1rem;width:100%}.chart .grid{color:#d7e0ea;stroke-dasharray:4 6}.chart .axes .title{fill:#1f2937;font-weight:700}.chart .axis-dates{fill:#275f83}.chart .axis-revenue{fill:#6f4a1c}.chart .area{fill:#3b82a0;fill-opacity:.12}.chart .line{stroke:#1f7799;stroke-linecap:round;stroke-linejoin:round;stroke-width:3}.chart .points{fill:white;stroke:#1f7799;stroke-width:2}@media (max-width:40rem){main{padding:0 1rem}}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
+import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.7/jsx-runtime&quot;;
+import React from &quot;https://esm.sh/react@^19.2.7&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.7/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.3&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.3/ui-react&quot;;
+import {
+  CartesianChart,
+  LineSeries,
+  XAxis,
+  YAxis
+} from &quot;https://esm.sh/tinybase@8.5.0-beta.3/ui-react-dom-charts&quot;;
+var date = (day) =&gt; Date.UTC(2026, 0, day);
+var formatDate = (timestamp) =&gt; new Date(timestamp).toLocaleDateString(&quot;en-US&quot;, {
+  day: &quot;numeric&quot;,
+  month: &quot;short&quot;,
+  timeZone: &quot;UTC&quot;
+});
+var App = () =&gt; {
+  const store = useCreateStore(
+    () =&gt; createStore().setTable(&quot;sales&quot;, {
+      d1: { date: date(1), revenue: 18 },
+      d2: { date: date(2), revenue: 26 },
+      d3: { date: date(3), revenue: 22 },
+      d4: { date: date(4), revenue: 39 },
+      d5: { date: date(5), revenue: 44 },
+      d6: { date: date(6), revenue: 41 },
+      d7: { date: date(7), revenue: 53 }
+    })
+  );
+  return jsx(Provider, { store, children: jsx(Body, {}) });
+};
+addEventListener(&quot;load&quot;, () =&gt; createRoot(document.body).render(jsx(App, {})));
+var Body = () =&gt; jsx(&quot;main&quot;, { children: jsxs(CartesianChart, { className: &quot;chart chart-axes&quot;, tableId: &quot;sales&quot;, children: [
+  jsx(
+    XAxis,
+    {
+      className: &quot;axis-dates&quot;,
+      max: date(7),
+      min: date(1),
+      tickFormatter: formatDate,
+      ticks: [date(1), date(3), date(5), date(7)],
+      title: &quot;Sale date&quot;
+    }
+  ),
+  jsx(
+    YAxis,
+    {
+      className: &quot;axis-revenue&quot;,
+      max: 60,
+      min: 0,
+      tickFormatter: (tick) =&gt; `$${tick}k`,
+      ticks: [0, 20, 40, 60],
+      title: &quot;Revenue&quot;
+    }
+  ),
+  jsx(LineSeries, { xCellId: &quot;date&quot;, yCellId: &quot;revenue&quot; })
+] }) });&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>This demo shows how XAxis and <a href="/api/ui-react-dom-charts/functions/store-components/yaxis/"><code>YAxis</code></a> component children can override the inferred axis titles, bounds, ticks, tick formatting, and SVG classes in a <a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/"><code>CartesianChart</code></a> component.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="punctuation">{</span>
+    <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3/ui-react-dom-charts"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.7/client"</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+</code></pre><p>We need a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>, a Provider, and the composable chart components:</p><pre><code><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createRoot<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'react-dom/client'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">,</span> useCreateStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>
+  CartesianChart<span class="punctuation">,</span>
+  LineSeries<span class="punctuation">,</span>
+  XAxis<span class="punctuation">,</span>
+  YAxis<span class="punctuation">,</span>
+<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react-dom-charts'</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-app">The App</h3><p>The <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> keeps dates as numeric timestamps so the x axis can remain continuous. The <a href="/api/ui-react-dom-charts/functions/store-components/xaxis/"><code>XAxis</code></a> component formats those numbers as readable dates:</p><pre><code><span class="keyword">const</span> <span class="function-variable">date</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">day</span><span class="punctuation">)</span> <span class="operator">=></span> Date<span class="punctuation">.</span><span class="constant">UTC</span><span class="punctuation">(</span><span class="number">2026</span><span class="punctuation">,</span> <span class="number">0</span><span class="punctuation">,</span> day<span class="punctuation">)</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> <span class="function-variable">formatDate</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">timestamp</span><span class="punctuation">)</span> <span class="operator">=></span>
+  <span class="keyword">new</span> <span class="class-name">Date</span><span class="punctuation">(</span>timestamp<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">toLocaleDateString</span><span class="punctuation">(</span><span class="string">'en-US'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+    <span class="literal-property">day</span><span class="operator">:</span> <span class="string">'numeric'</span><span class="punctuation">,</span>
+    <span class="literal-property">month</span><span class="operator">:</span> <span class="string">'short'</span><span class="punctuation">,</span>
+    <span class="literal-property">timeZone</span><span class="operator">:</span> <span class="string">'UTC'</span><span class="punctuation">,</span>
+  <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'sales'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+      <span class="literal-property">d1</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">18</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d2</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">2</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">26</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d3</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">22</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d4</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">4</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">39</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d5</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">44</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d6</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">6</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">41</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d7</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">53</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react/functions/context-components/provider/">Provider</a></span></span> <span class="attr-name">store</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Body</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/ui-react/functions/context-components/provider/">Provider</a></span></span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+
+<span class="function">addEventListener</span><span class="punctuation">(</span><span class="string">'load'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">createRoot</span><span class="punctuation">(</span>document<span class="punctuation">.</span>body<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App</span></span> <span class="punctuation">/></span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-chart">The Chart</h3><p>The axis components are configuration children. They do not render separate charts; instead they tell the parent <a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/"><code>CartesianChart</code></a> component how to render its shared axes:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Body</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>main</span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/">CartesianChart</a></span></span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>chart chart-axes<span class="punctuation">"</span></span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>sales<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/xaxis/">XAxis</a></span></span>
+        <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>axis-dates<span class="punctuation">"</span></span>
+        <span class="attr-name">max</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">date</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+        <span class="attr-name">min</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">date</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+        <span class="attr-name">tickFormatter</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>formatDate<span class="punctuation">}</span></span>
+        <span class="attr-name">ticks</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">[</span><span class="function">date</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="punctuation">}</span></span>
+        <span class="attr-name">title</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>Sale date<span class="punctuation">"</span></span>
+      <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/yaxis/">YAxis</a></span></span>
+        <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>axis-revenue<span class="punctuation">"</span></span>
+        <span class="attr-name">max</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="number">60</span><span class="punctuation">}</span></span>
+        <span class="attr-name">min</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="number">0</span><span class="punctuation">}</span></span>
+        <span class="attr-name">tickFormatter</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">(</span><span class="parameter">tick</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="template-string"><span class="template-punctuation">`</span><span class="string">$</span><span class="interpolation"><span class="interpolation-punctuation">${</span>tick<span class="interpolation-punctuation">}</span></span><span class="string">k</span><span class="template-punctuation">`</span></span><span class="punctuation">}</span></span>
+        <span class="attr-name">ticks</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">[</span><span class="number">0</span><span class="punctuation">,</span> <span class="number">20</span><span class="punctuation">,</span> <span class="number">40</span><span class="punctuation">,</span> <span class="number">60</span><span class="punctuation">]</span><span class="punctuation">}</span></span>
+        <span class="attr-name">title</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>Revenue<span class="punctuation">"</span></span>
+      <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/lineseries/">LineSeries</a></span></span> <span class="attr-name">xCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>date<span class="punctuation">"</span></span> <span class="attr-name">yCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>revenue<span class="punctuation">"</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/">CartesianChart</a></span></span><span class="punctuation">></span></span><span class="plain-text">
+  </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>main</span><span class="punctuation">></span></span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="styling">Styling</h3><p>Because the axis components add their className values to the x-axis and y-axis SVG groups, CSS can style them independently:</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
+  <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">*</span> <span class="punctuation">{</span>
+  <span class="property">box-sizing</span><span class="punctuation">:</span> border<span class="operator">-</span>box<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">main</span> <span class="punctuation">{</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 2rem auto<span class="punctuation">;</span>
+  <span class="property">max-width</span><span class="punctuation">:</span> 52rem<span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> 0 2rem<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> #f7f9fb<span class="punctuation">;</span>
+  <span class="property">border</span><span class="punctuation">:</span> 1px solid #dce5ee<span class="punctuation">;</span>
+  <span class="property">border-radius</span><span class="punctuation">:</span> 0.5rem<span class="punctuation">;</span>
+  <span class="property">color</span><span class="punctuation">:</span> #596779<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> block<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> 12px<span class="punctuation">;</span>
+  <span class="property">height</span><span class="punctuation">:</span> 20rem<span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> 1rem<span class="punctuation">;</span>
+  <span class="property">width</span><span class="punctuation">:</span> 100%<span class="punctuation">;</span>
+
+  <span class="selector">.grid</span> <span class="punctuation">{</span>
+    <span class="property">color</span><span class="punctuation">:</span> #d7e0ea<span class="punctuation">;</span>
+    <span class="property">stroke-dasharray</span><span class="punctuation">:</span> 4 6<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.axes</span> <span class="punctuation">{</span>
+    <span class="selector">.title</span> <span class="punctuation">{</span>
+      <span class="property">fill</span><span class="punctuation">:</span> #1f2937<span class="punctuation">;</span>
+      <span class="property">font-weight</span><span class="punctuation">:</span> 700<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.axis-dates</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> #275f83<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.axis-revenue</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> #6f4a1c<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.area</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> #3b82a0<span class="punctuation">;</span>
+    <span class="property">fill-opacity</span><span class="punctuation">:</span> 0.12<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.line</span> <span class="punctuation">{</span>
+    <span class="property">stroke</span><span class="punctuation">:</span> #1f7799<span class="punctuation">;</span>
+    <span class="property">stroke-linecap</span><span class="punctuation">:</span> round<span class="punctuation">;</span>
+    <span class="property">stroke-linejoin</span><span class="punctuation">:</span> round<span class="punctuation">;</span>
+    <span class="property">stroke-width</span><span class="punctuation">:</span> 3<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.points</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+    <span class="property">stroke</span><span class="punctuation">:</span> #1f7799<span class="punctuation">;</span>
+    <span class="property">stroke-width</span><span class="punctuation">:</span> 2<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+
+<span class="atrule">@media <span class="punctuation">(</span>max-width<span class="punctuation">:</span> 40rem<span class="punctuation">)</span></span> <span class="punctuation">{</span>
+  <span class="selector">main</span> <span class="punctuation">{</span>
+    <span class="property">padding</span><span class="punctuation">:</span> 0 1rem<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+</code></pre><p>Axis components make formatting and bounds explicit, while the series stays focused on data binding.</p></section>

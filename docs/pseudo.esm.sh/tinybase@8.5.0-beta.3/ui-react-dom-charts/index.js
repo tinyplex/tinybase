@@ -67,8 +67,12 @@ var SourceType = /* @__PURE__ */ ((SourceType2) => {
   SourceType2[SourceType2["Table"] = 2] = "Table";
   return SourceType2;
 })(SourceType || {});
-var CHART_SERIES = "_tinybaseChartSeries";
-var isChartSeriesComponent = (component) => typeof component == "function" && component[CHART_SERIES] === true;
+var SERIES = "_tinybaseChartSeries";
+var X_AXIS = "_tinybaseChartXAxis";
+var Y_AXIS = "_tinybaseChartYAxis";
+var isSeriesComponent = (component) => typeof component == "function" && component[SERIES] === true;
+var isXAxisComponent = (component) => typeof component == "function" && component[X_AXIS] === true;
+var isYAxisComponent = (component) => typeof component == "function" && component[Y_AXIS] === true;
 var CartesianChartContext = createContext(null);
 var useCartesianChartContext = () => {
   const context = useContext(CartesianChartContext);
@@ -83,6 +87,7 @@ var arrayIndexOf = (array, value) => array.indexOf(value);
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
 var arrayOrValueEqual = (value1, value2) => isArray(value1) && isArray(value2) ? arrayIsEqual(value1, value2) : value1 === value2;
+var arraySort = (array, sorter) => array.sort(sorter);
 var arrayForEach = (array, cb) => array.forEach(cb);
 var arrayJoin = (array, sep = EMPTY_STRING) => array.join(sep);
 var arrayMap = (array, cb) => array.map(cb);
@@ -195,7 +200,7 @@ var getBounds = (kind, points) => {
   }
   return [points[0]?.[1], points[size(points) - 1]?.[1], yMin, yMax];
 };
-var getYTicks = ([, , yMin, yMax], [, height], labelSize) => {
+var getYTicks = ([, , yMin, yMax], [, height], labelSize, tickCount) => {
   if (isUndefined(yMin) || isUndefined(yMax)) {
     return [];
   }
@@ -205,23 +210,23 @@ var getYTicks = ([, , yMin, yMax], [, height], labelSize) => {
   return getTicks(
     yMin,
     yMax,
-    TARGET_TICKS,
+    getTickCount(tickCount),
     labelSize,
     height,
     isInteger(yMin) && isInteger(yMax)
   );
 };
-var getXTicks = (kind, [xMin, xMax], [width], labelSize) => kind == "line" && isNumber(xMin) && isNumber(xMax) && xMin != xMax ? getTicks(
+var getXTicks = (kind, [xMin, xMax], [width], labelSize, tickCount) => kind == "line" && isNumber(xMin) && isNumber(xMax) && xMin != xMax ? getTicks(
   xMin,
   xMax,
-  TARGET_TICKS,
+  getTickCount(tickCount),
   labelSize,
   width,
   isInteger(xMin) && isInteger(xMax)
 ) : [];
 var getTickBounds = ([xMin, xMax, yMin, yMax], xTicks, yTicks) => [
-  arrayIsEmpty(xTicks) ? xMin : mathMin(xMin, xTicks[0]),
-  arrayIsEmpty(xTicks) ? xMax : mathMax(xMax, xTicks[size(xTicks) - 1]),
+  arrayIsEmpty(xTicks) ? xMin : getMinTickBound(xMin, xTicks[0]),
+  arrayIsEmpty(xTicks) ? xMax : getMaxTickBound(xMax, xTicks[size(xTicks) - 1]),
   arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
   arrayIsEmpty(yTicks) ? yMax : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1])
 ];
@@ -295,6 +300,9 @@ var getDomain = (values) => {
   const min = mathMin(...values);
   return min == infinity ? [0, 0] : [min, mathMax(...values)];
 };
+var getMinTickBound = (bound, tick) => isNumber(bound) ? mathMin(bound, tick) : tick;
+var getMaxTickBound = (bound, tick) => isNumber(bound) ? mathMax(bound, tick) : tick;
+var getTickCount = (tickCount = TARGET_TICKS) => isFiniteNumber(tickCount) ? mathMax(mathRound(tickCount), 1) : TARGET_TICKS;
 var getRounded = (value) => mathRound(value * 1e6) / 1e6;
 var getXValue = (cell) => isNumber(cell) ? isFiniteNumber(cell) ? cell : void 0 : isString(cell) ? cell : isTrue(cell) || isFalse(cell) ? cell : void 0;
 var getYValue = (cell) => isNumber(cell) && isFiniteNumber(cell) ? cell : void 0;
@@ -632,7 +640,7 @@ var BarSeries = (props) => {
     })
   });
 };
-BarSeries[CHART_SERIES] = true;
+BarSeries[SERIES] = true;
 var INTEGER = /^\d+$/;
 var getPoolFunctions = () => {
   const pool = [];
@@ -705,8 +713,10 @@ var getSvgSize = ({ width, height }) => [
   mathRound(height) || DEFAULT_SIZE[1]
 ];
 var isLayoutEqual = ([chartSize1, chartStyle1], [chartSize2, chartStyle2]) => arrayIsEqual(chartSize1, chartSize2) && arrayIsEqual(chartStyle1, chartStyle2);
-var XAxis = ({
+var XAxis$1 = ({
+  className,
   points,
+  tickFormatter,
   xTicks,
   xMin,
   xMax,
@@ -720,7 +730,7 @@ var XAxis = ({
   const [plotX, plotY, plotWidth, plotHeight] = plotFrame;
   const titleGap = mathMax(axisHeight - tickSize - tickGap - 2 * fontSize, 0);
   return /* @__PURE__ */ jsxs("g", {
-    className: "x",
+    className: getAxisClassName$1("x", className),
     dominantBaseline: "hanging",
     textAnchor: "middle",
     children: [
@@ -741,7 +751,7 @@ var XAxis = ({
             {
               x: plotX + x,
               y: plotY + plotHeight + tickSize + tickGap,
-              children: string(xValue)
+              children: getTickLabel(xValue, tickFormatter)
             },
             rowId
           )
@@ -752,7 +762,7 @@ var XAxis = ({
             {
               x: plotX + x,
               y: plotY + plotHeight + tickSize + tickGap,
-              children: tick
+              children: getTickLabel(tick, tickFormatter)
             },
             tick
           );
@@ -767,7 +777,11 @@ var XAxis = ({
     ]
   });
 };
-var YAxis = ({
+var getAxisClassName$1 = (baseClassName, className) => className == null ? baseClassName : `${baseClassName} ${className}`;
+var getTickLabel = (tick, tickFormatter) => tickFormatter?.(tick) ?? string(tick);
+var YAxis$1 = ({
+  className,
+  tickFormatter,
   yTicks,
   yMin,
   yMax,
@@ -779,7 +793,7 @@ var YAxis = ({
 }) => {
   const [plotX, plotY, , plotHeight] = plotFrame;
   return isNullish(yMin) || isNullish(yMax) ? null : /* @__PURE__ */ jsxs("g", {
-    className: "y",
+    className: getAxisClassName("y", className),
     children: [
       /* @__PURE__ */ jsx("path", {
         className: "line",
@@ -797,7 +811,11 @@ var YAxis = ({
           const y = plotHeight - getScale(tick, yMin, yMax, plotHeight);
           return /* @__PURE__ */ jsx(
             "text",
-            { x: plotX - tickSize - tickGap, y: plotY + y, children: tick },
+            {
+              x: plotX - tickSize - tickGap,
+              y: plotY + y,
+              children: tickFormatter?.(tick) ?? string(tick)
+            },
             tick
           );
         })
@@ -812,7 +830,10 @@ var YAxis = ({
     ]
   });
 };
+var getAxisClassName = (baseClassName, className) => className == null ? baseClassName : `${baseClassName} ${className}`;
 var Axes = ({
+  xAxis,
+  yAxis,
   points,
   xTicks,
   yTicks,
@@ -828,17 +849,21 @@ var Axes = ({
     fill: CURRENT_COLOR,
     fillOpacity: 0.75,
     children: [
-      /* @__PURE__ */ jsx(YAxis, {
+      /* @__PURE__ */ jsx(YAxis$1, {
         ...sharedProps,
+        className: yAxis?.className,
+        tickFormatter: yAxis?.tickFormatter,
         yTicks,
         yMin,
         yMax,
         yTitle,
         axisWidth: yAxisWidth
       }),
-      /* @__PURE__ */ jsx(XAxis, {
+      /* @__PURE__ */ jsx(XAxis$1, {
         ...sharedProps,
+        className: xAxis?.className,
         points,
+        tickFormatter: xAxis?.tickFormatter,
         xTicks,
         xMin,
         xMax,
@@ -1005,11 +1030,13 @@ var CartesianChart = ({
   const barSeriesIdsRef = useRef([]);
   const [barSeriesIds, setBarSeriesIds] = useState([]);
   const [tooltipPoint, setTooltipPoint] = useState();
+  const [chartChildren, xAxis, yAxis] = getParsedChildren(children);
   const xValues = domainState.xValues;
-  const dataBounds = domainState.bounds;
-  const axisKind = domainState.continuousX || arrayIsEmpty(barSeriesIds) ? "line" : "bar";
-  const xTicks = getXTicks(axisKind, dataBounds, plotSize, labelSize);
-  const yTicks = getYTicks(dataBounds, plotSize, labelSize);
+  const numericX = domainState.continuousX || arrayIsEmpty(xValues) && hasNumericXAxisDefinition(xAxis);
+  const dataBounds = getAxisBounds(domainState.bounds, numericX, xAxis, yAxis);
+  const axisKind = numericX || arrayIsEmpty(barSeriesIds) ? "line" : "bar";
+  const xTicks = numericX && xAxis?.ticks != null ? getAxisTicks(xAxis.ticks) : getXTicks(axisKind, dataBounds, plotSize, labelSize, xAxis?.tickCount);
+  const yTicks = yAxis?.ticks == null ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount) : getAxisTicks(yAxis.ticks);
   const tickBounds = getTickBounds(dataBounds, xTicks, yTicks);
   const axisPoints = getScaledPoints(
     axisKind,
@@ -1185,21 +1212,20 @@ var CartesianChart = ({
           plotFrame,
           tickGap,
           tickSize,
-          titles: [xTitle, yTitle],
+          titles: [xAxis?.title ?? xTitle, yAxis?.title ?? yTitle],
+          xAxis,
           xAxisHeight,
           xTicks,
+          yAxis,
           yAxisWidth,
           yTicks
         }),
-        /* @__PURE__ */ jsx("g", {
-          className: "plot",
-          children: getChartChildren(children)
-        }),
+        /* @__PURE__ */ jsx("g", { className: "plot", children: chartChildren }),
         /* @__PURE__ */ jsx(Tooltip, {
           height: plotSize[1],
           point: tooltipPoint,
           plotFrame,
-          titles: [xTitle, yTitle],
+          titles: [xAxis?.title ?? xTitle, yAxis?.title ?? yTitle],
           width: plotSize[0]
         })
       ]
@@ -1231,21 +1257,44 @@ var getTitle = (summaryById, cellIdType) => {
   });
   return arrayIsEmpty(titles) ? "" : titles.join(" & ");
 };
-var getChartChildren = (children) => {
+var getAxisBounds = ([xMin, xMax, yMin, yMax], numericX, xAxis, yAxis) => [
+  numericX ? getAxisBound(xAxis?.min, xMin) : xMin,
+  numericX ? getAxisBound(xAxis?.max, xMax) : xMax,
+  getNumberAxisBound(yAxis?.min, yMin),
+  getNumberAxisBound(yAxis?.max, yMax)
+];
+var getAxisBound = (value, bound) => isFiniteNumber(value) ? value : bound;
+var getNumberAxisBound = (value, bound) => isFiniteNumber(value) ? value : bound;
+var getAxisTicks = (ticks) => arraySort(arrayFilter([...ticks], isFiniteNumber), (tick1, tick2) => {
+  return tick1 - tick2;
+});
+var hasNumericXAxisDefinition = (xAxis) => isFiniteNumber(xAxis?.min) || isFiniteNumber(xAxis?.max) || xAxis?.ticks != null;
+var getParsedChildren = (children) => {
   const chartChildren = [];
+  let xAxis;
+  let yAxis;
   Children.forEach(children, (child) => {
     if (isValidElement(child)) {
       if (child.type === Fragment) {
+        const [childChildren, childXAxis, childYAxis] = getParsedChildren(
+          child.props.children
+        );
         arrayForEach(
-          getChartChildren(child.props.children),
+          childChildren,
           (chartChild) => arrayPush(chartChildren, chartChild)
         );
-      } else if (isChartSeriesComponent(child.type)) {
+        xAxis ??= childXAxis;
+        yAxis ??= childYAxis;
+      } else if (isSeriesComponent(child.type)) {
         arrayPush(chartChildren, child);
+      } else if (xAxis == null && isXAxisComponent(child.type)) {
+        xAxis = child.props;
+      } else if (yAxis == null && isYAxisComponent(child.type)) {
+        yAxis = child.props;
       }
     }
   });
-  return chartChildren;
+  return [chartChildren, xAxis, yAxis];
 };
 var useInitialSeriesSummary = (kind, {
   descending,
@@ -1417,7 +1466,7 @@ var LineSeries = (props) => {
     })
   });
 };
-LineSeries[CHART_SERIES] = true;
+LineSeries[SERIES] = true;
 var LineChart = (props) => {
   const initialSummary = useInitialSeriesSummary("line", props);
   return /* @__PURE__ */ jsx(CartesianChart, {
@@ -1446,10 +1495,16 @@ var getSeriesProps = ({
   xCellId,
   yCellId
 });
+var XAxis = () => null;
+XAxis[X_AXIS] = true;
+var YAxis = () => null;
+YAxis[Y_AXIS] = true;
 export {
   BarChart,
   BarSeries,
   CartesianChart,
   LineChart,
-  LineSeries
+  LineSeries,
+  XAxis,
+  YAxis
 };

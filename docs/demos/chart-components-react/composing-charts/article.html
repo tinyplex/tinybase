@@ -10,13 +10,13 @@
 import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.7/jsx-runtime&quot;;
 import React from &quot;https://esm.sh/react@^19.2.7&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.7/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.2&quot;;
-import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.2/ui-react&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.3&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.3/ui-react&quot;;
 import {
   BarSeries,
   CartesianChart,
   LineSeries
-} from &quot;https://esm.sh/tinybase@8.5.0-beta.2/ui-react-dom-charts&quot;;
+} from &quot;https://esm.sh/tinybase@8.5.0-beta.3/ui-react-dom-charts&quot;;
 var App = () =&gt; {
   const store = useCreateStore(
     () =&gt; createStore().setTable(&quot;sales&quot;, {
@@ -102,9 +102,9 @@ var Body = () =&gt; jsxs(&quot;main&quot;, { children: [
     &lt;/html&gt;"></iframe><p>This demo shows how <a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/"><code>CartesianChart</code></a> component can render multiple child series from the same <a href="/api/store/type-aliases/store/table/"><code>Table</code></a>. Each child series owns its own <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> bindings, while the parent chart coordinates the shared axes and layout.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.2"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.2/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.2/ui-react-dom-charts"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3/ui-react-dom-charts"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.7/client"</span>
