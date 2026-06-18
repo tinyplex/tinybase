@@ -111,6 +111,9 @@ table {
   input {
     border: 1px solid #ccc;
   }
+  input[type='checkbox'] {
+    accent-color: #e2781c;
+  }
 }
 ```
 
