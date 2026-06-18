@@ -1,6 +1,10 @@
 import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
 import {isNumber, mathMax, string} from '../../common/other.ts';
-import {getScale, normalizeTimeValue} from '../common/data.ts';
+import {
+  getScale,
+  getTimeTickLabel,
+  normalizeTimeValue,
+} from '../common/data.ts';
 import {
   CURRENT_COLOR,
   type PlotFrame,
@@ -79,7 +83,13 @@ export const XAxis = ({
                   x={plotX + x}
                   y={plotY + plotHeight + tickSize + tickGap}
                 >
-                  {getTickLabel(tick, tickFormatter, xScale, 'millisecond')}
+                  {getTickLabel(
+                    tick,
+                    tickFormatter,
+                    xScale,
+                    'millisecond',
+                    xTicks,
+                  )}
                 </text>
               );
             })}
@@ -103,10 +113,12 @@ const getTickLabel = (
   tickFormatter: TickFormatter | undefined,
   xScale: XScale,
   timestampUnit: TimestampUnit,
+  ticks: Ticks = [],
 ) => {
   const timestamp =
     xScale == 'time' ? normalizeTimeValue(tick, timestampUnit) : undefined;
   return isNumber(timestamp)
-    ? (tickFormatter?.(new Date(timestamp), timestamp) ?? string(tick))
+    ? (tickFormatter?.(new Date(timestamp), timestamp) ??
+        getTimeTickLabel(timestamp, ticks))
     : (tickFormatter?.(tick) ?? string(tick));
 };

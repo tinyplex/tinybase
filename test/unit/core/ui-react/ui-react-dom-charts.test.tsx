@@ -43,6 +43,26 @@ const getLinePathXs = (container: HTMLElement): number[][] =>
     ),
   );
 
+const getTimeAxisLabels = (
+  min: string,
+  max: string,
+  tickCount: number,
+): string[] => {
+  const store = createStore().setTable('t1', {
+    r1: {x: min, y: 3},
+    r2: {x: max, y: 5},
+  });
+  const {container, unmount} = render(
+    <LineChart store={store} tableId="t1" xCellId="x" yCellId="y">
+      <XAxis scale="time" tickCount={tickCount} />
+    </LineChart>,
+  );
+  const labels = getXAxisTickLabels(container) as string[];
+
+  unmount();
+  return labels;
+};
+
 describe.each(CHARTS)('%s', (_chartName, Chart) => {
   describe('Table', () => {
     test('binds to a Table from a Store', () => {
@@ -405,6 +425,11 @@ describe('CartesianChart', () => {
     const [firstX, secondX, thirdX] = getLinePathXs(container)[0];
 
     expect(secondX - firstX).toBeLessThan(thirdX - secondX);
+    expect(
+      getXAxisTickLabels(container).every((label) => {
+        return /^2026-01-\d{2}$/.test(label ?? '');
+      }),
+    ).toBe(true);
 
     unmount();
   });
@@ -447,6 +472,53 @@ describe('CartesianChart', () => {
     expect(secondX - firstX).toBeLessThan(thirdX - secondX);
 
     unmount();
+  });
+
+  test('generates deterministic UTC time tick labels', () => {
+    (
+      [
+        [
+          '2026-01-01T00:00:00Z',
+          '2026-01-01T00:00:20Z',
+          /^2026-01-01 00:00:\d{2}$/,
+        ],
+        [
+          '2026-01-01T00:00:00Z',
+          '2026-01-01T00:20:00Z',
+          /^2026-01-01 00:\d{2}$/,
+        ],
+        [
+          '2026-01-01T00:00:00Z',
+          '2026-01-01T12:00:00Z',
+          /^2026-01-01 \d{2}:00$/,
+        ],
+        ['2026-01-01', '2026-01-11', /^2026-01-\d{2}$/],
+        ['2026-01-01', '2026-12-31', /^202[67]-\d{2}$/],
+        ['2020-01-01', '2030-01-01', /^20\d{2}$/],
+      ] as const
+    ).forEach(([min, max, pattern]) => {
+      const labels = getTimeAxisLabels(min, max, 5);
+
+      expect(labels.length).toBeGreaterThan(1);
+      expect(labels.every((label) => pattern.test(label))).toBe(true);
+    });
+  });
+
+  test('generates weekly and quarterly UTC time ticks', () => {
+    const weekLabels = getTimeAxisLabels('2026-01-01', '2026-02-12', 7);
+    const quarterLabels = getTimeAxisLabels('2026-01-01', '2027-01-01', 5);
+
+    expect(
+      Date.parse(`${weekLabels[1]}T00:00:00Z`) -
+        Date.parse(`${weekLabels[0]}T00:00:00Z`),
+    ).toBe(7 * 24 * 60 * 60 * 1000);
+    expect(quarterLabels).toEqual([
+      '2026-01',
+      '2026-04',
+      '2026-07',
+      '2026-10',
+      '2027-01',
+    ]);
   });
 
   test('renders a LineSeries from Table props', () => {

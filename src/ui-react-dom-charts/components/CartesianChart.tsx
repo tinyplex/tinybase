@@ -52,6 +52,7 @@ import {
   getResolvedXScale,
   getScaledPoints,
   getTickBounds,
+  getTimeTicks,
   getXScaleDomain,
   getXTicks,
   getYTicks,
@@ -164,7 +165,15 @@ export const CartesianChart = ({
   const xTicks =
     continuousX && xAxis?.ticks != null
       ? getAxisTicks(xAxis.ticks, xScale, timestampUnit)
-      : getXTicks(axisKind, dataBounds, plotSize, labelSize, xAxis?.tickCount);
+      : xScale == 'time'
+        ? getTimeTicks(dataBounds, plotSize, labelSize, xAxis?.tickCount)
+        : getXTicks(
+            axisKind,
+            dataBounds,
+            plotSize,
+            labelSize,
+            xAxis?.tickCount,
+          );
   const yTicks =
     yAxis?.ticks == null
       ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount)
