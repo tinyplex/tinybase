@@ -351,9 +351,7 @@ root.unmount(); // !act
 > The UI modules also provide bare React, Solid, and Svelte components that let
 > you build up a fully reactive user interface based on a Store.
 >
-> For React, these include HTML table components in the ui-react-dom module and
-> SVG chart components in the ui-react-dom-charts module. Solid and Svelte also
-> provide DOM components for tabular display of your data, with lots of
+> It's super easy to wire up tabular display of your data with lots of
 > customization and interactivity options.
 >
 > Try them out in the UI Components (React), Chart Components (React), UI
@@ -361,6 +359,18 @@ root.unmount(); // !act
 > Building UIs guides.
 
 <img src='/ui-react-dom.webp' />
+
+> ## Reactive charts of Store data.
+>
+> Render TinyBase data and queries directly as responsive, styleable SVG charts
+> with the ui-react-dom-charts module. These charts update reactively when data
+> changes, and are composable with labels, bounds, ticks, and time-aware x-axes.
+>
+> Try the [Chart Components (React)](/demos/chart-components-react/) demos, or
+> read more in the [Using Charts](/guides/building-uis-with-react/using-charts/)
+> guide.
+
+<img src='/shots/styled-chart-react-demo.png' />
 
 > ## An inspector for your data.
 >
