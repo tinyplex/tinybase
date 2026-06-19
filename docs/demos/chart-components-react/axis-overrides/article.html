@@ -10,16 +10,16 @@
 import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.7/jsx-runtime&quot;;
 import React from &quot;https://esm.sh/react@^19.2.7&quot;;
 import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.7/client&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.3&quot;;
-import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.3/ui-react&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.4&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.4/ui-react&quot;;
 import {
   CartesianChart,
   LineSeries,
   XAxis,
   YAxis
-} from &quot;https://esm.sh/tinybase@8.5.0-beta.3/ui-react-dom-charts&quot;;
-var date = (day) =&gt; Date.UTC(2026, 0, day);
-var formatDate = (timestamp) =&gt; new Date(timestamp).toLocaleDateString(&quot;en-US&quot;, {
+} from &quot;https://esm.sh/tinybase@8.5.0-beta.4/ui-react-dom-charts&quot;;
+var timestamp = (day) =&gt; Date.UTC(2026, 0, day) / 1e3;
+var formatDate = (date) =&gt; date.toLocaleDateString(&quot;en-US&quot;, {
   day: &quot;numeric&quot;,
   month: &quot;short&quot;,
   timeZone: &quot;UTC&quot;
@@ -27,13 +27,13 @@ var formatDate = (timestamp) =&gt; new Date(timestamp).toLocaleDateString(&quot;
 var App = () =&gt; {
   const store = useCreateStore(
     () =&gt; createStore().setTable(&quot;sales&quot;, {
-      d1: { date: date(1), revenue: 18 },
-      d2: { date: date(2), revenue: 26 },
-      d3: { date: date(3), revenue: 22 },
-      d4: { date: date(4), revenue: 39 },
-      d5: { date: date(5), revenue: 44 },
-      d6: { date: date(6), revenue: 41 },
-      d7: { date: date(7), revenue: 53 }
+      d1: { date: timestamp(1), revenue: 18 },
+      d2: { date: timestamp(2), revenue: 26 },
+      d3: { date: timestamp(3), revenue: 22 },
+      d4: { date: timestamp(4), revenue: 39 },
+      d5: { date: timestamp(5), revenue: 44 },
+      d6: { date: timestamp(6), revenue: 41 },
+      d7: { date: timestamp(7), revenue: 53 }
     })
   );
   return jsx(Provider, { store, children: jsx(Body, {}) });
@@ -44,10 +44,12 @@ var Body = () =&gt; jsx(&quot;main&quot;, { children: jsxs(CartesianChart, { cla
     XAxis,
     {
       className: &quot;axis-dates&quot;,
-      max: date(7),
-      min: date(1),
+      max: timestamp(7),
+      min: timestamp(1),
+      scale: &quot;time&quot;,
       tickFormatter: formatDate,
-      ticks: [date(1), date(3), date(5), date(7)],
+      ticks: [timestamp(1), timestamp(3), timestamp(5), timestamp(7)],
+      timestampUnit: &quot;second&quot;,
       title: &quot;Sale date&quot;
     }
   ),
@@ -67,9 +69,9 @@ var Body = () =&gt; jsx(&quot;main&quot;, { children: jsxs(CartesianChart, { cla
     &lt;/html&gt;"></iframe><p>This demo shows how XAxis and <a href="/api/ui-react-dom-charts/functions/store-components/yaxis/"><code>YAxis</code></a> component children can override the inferred axis titles, bounds, ticks, tick formatting, and SVG classes in a <a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/"><code>CartesianChart</code></a> component.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.3/ui-react-dom-charts"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.4"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.4/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.4/ui-react-dom-charts"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.7/client"</span>
@@ -86,10 +88,10 @@ var Body = () =&gt; jsx(&quot;main&quot;, { children: jsxs(CartesianChart, { cla
   XAxis<span class="punctuation">,</span>
   YAxis<span class="punctuation">,</span>
 <span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react-dom-charts'</span><span class="punctuation">;</span>
-</code></pre><h3 id="the-app">The App</h3><p>The <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> keeps dates as numeric timestamps so the x axis can remain continuous. The <a href="/api/ui-react-dom-charts/functions/store-components/xaxis/"><code>XAxis</code></a> component formats those numbers as readable dates:</p><pre><code><span class="keyword">const</span> <span class="function-variable">date</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">day</span><span class="punctuation">)</span> <span class="operator">=></span> Date<span class="punctuation">.</span><span class="constant">UTC</span><span class="punctuation">(</span><span class="number">2026</span><span class="punctuation">,</span> <span class="number">0</span><span class="punctuation">,</span> day<span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-app">The App</h3><p>The <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> keeps dates as Unix second timestamps. The <a href="/api/ui-react-dom-charts/functions/store-components/xaxis/"><code>XAxis</code></a> component marks them as a time scale and formats the Date objects it receives:</p><pre><code><span class="keyword">const</span> <span class="function-variable">timestamp</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">day</span><span class="punctuation">)</span> <span class="operator">=></span> Date<span class="punctuation">.</span><span class="constant">UTC</span><span class="punctuation">(</span><span class="number">2026</span><span class="punctuation">,</span> <span class="number">0</span><span class="punctuation">,</span> day<span class="punctuation">)</span> <span class="operator">/</span> <span class="number">1000</span><span class="punctuation">;</span>
 
-<span class="keyword">const</span> <span class="function-variable">formatDate</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">timestamp</span><span class="punctuation">)</span> <span class="operator">=></span>
-  <span class="keyword">new</span> <span class="class-name">Date</span><span class="punctuation">(</span>timestamp<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">toLocaleDateString</span><span class="punctuation">(</span><span class="string">'en-US'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+<span class="keyword">const</span> <span class="function-variable">formatDate</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">date</span><span class="punctuation">)</span> <span class="operator">=></span>
+  date<span class="punctuation">.</span><span class="function">toLocaleDateString</span><span class="punctuation">(</span><span class="string">'en-US'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
     <span class="literal-property">day</span><span class="operator">:</span> <span class="string">'numeric'</span><span class="punctuation">,</span>
     <span class="literal-property">month</span><span class="operator">:</span> <span class="string">'short'</span><span class="punctuation">,</span>
     <span class="literal-property">timeZone</span><span class="operator">:</span> <span class="string">'UTC'</span><span class="punctuation">,</span>
@@ -98,13 +100,13 @@ var Body = () =&gt; jsx(&quot;main&quot;, { children: jsxs(CartesianChart, { cla
 <span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
   <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
     <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'sales'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
-      <span class="literal-property">d1</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">18</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="literal-property">d2</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">2</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">26</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="literal-property">d3</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">22</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="literal-property">d4</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">4</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">39</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="literal-property">d5</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">44</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="literal-property">d6</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">6</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">41</span><span class="punctuation">}</span><span class="punctuation">,</span>
-      <span class="literal-property">d7</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">53</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d1</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">18</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d2</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">2</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">26</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d3</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">22</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d4</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">4</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">39</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d5</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">44</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d6</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">6</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">41</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="literal-property">d7</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">date</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">revenue</span><span class="operator">:</span> <span class="number">53</span><span class="punctuation">}</span><span class="punctuation">,</span>
     <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="punctuation">)</span><span class="punctuation">;</span>
 
@@ -121,10 +123,12 @@ var Body = () =&gt; jsx(&quot;main&quot;, { children: jsxs(CartesianChart, { cla
     </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/cartesianchart/">CartesianChart</a></span></span> <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>chart chart-axes<span class="punctuation">"</span></span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>sales<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="plain-text">
       </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/xaxis/">XAxis</a></span></span>
         <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>axis-dates<span class="punctuation">"</span></span>
-        <span class="attr-name">max</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">date</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
-        <span class="attr-name">min</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">date</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+        <span class="attr-name">max</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">timestamp</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+        <span class="attr-name">min</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="function">timestamp</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">}</span></span>
+        <span class="attr-name">scale</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>time<span class="punctuation">"</span></span>
         <span class="attr-name">tickFormatter</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>formatDate<span class="punctuation">}</span></span>
-        <span class="attr-name">ticks</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">[</span><span class="function">date</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">date</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="punctuation">}</span></span>
+        <span class="attr-name">ticks</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">[</span><span class="function">timestamp</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="punctuation">}</span></span>
+        <span class="attr-name">timestampUnit</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>second<span class="punctuation">"</span></span>
         <span class="attr-name">title</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>Sale date<span class="punctuation">"</span></span>
       <span class="punctuation">/></span></span><span class="plain-text">
       </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/yaxis/">YAxis</a></span></span>

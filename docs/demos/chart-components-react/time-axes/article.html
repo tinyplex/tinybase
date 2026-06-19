@@ -1,0 +1,248 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/chart-components-react/">Chart Components (React)</a></li><li><a href="/demos/chart-components-react/time-axes/">Time Axes</a></li></ul></nav><section class="s1" id="/demos/chart-components-react/time-axes/" data-id="TA8"><h1>Time Axes</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}*{box-sizing:border-box}body{background:white;font-family:Inter,sans-serif;margin:0}main{display:grid;gap:1rem;grid-template-columns:repeat(2, minmax(0, 1fr));margin:2rem auto;max-width:64rem;padding:0 2rem}main section{min-width:0}.chart{background:#f7f9fb;border:1px solid #dce5ee;border-radius:.5rem;color:#596779;display:block;font-size:12px;height:18rem;padding:1rem;width:100%}.chart .grid{color:#d7e0ea;stroke-dasharray:4 6}.chart .axes .title{fill:#1f2937;font-weight:700}.chart .line{stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.9;stroke-width:3}.chart .points{fill:white;stroke-width:2}.chart-iso .area{fill:#3b82a0;fill-opacity:.12}.chart-iso .line,.chart-iso .points{stroke:#1f7799}.chart-unix .area{fill:#2b8c67;fill-opacity:.12}.chart-unix .line,.chart-unix .points{stroke:#2b8c67}.chart-unix .axis-unix{fill:#2f6c4c}@media (max-width:52rem){main{grid-template-columns:1fr;padding:0 1rem}}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.jsx
+import { jsx, jsxs } from &quot;https://esm.sh/react@^19.2.7/jsx-runtime&quot;;
+import React from &quot;https://esm.sh/react@^19.2.7&quot;;
+import { createRoot } from &quot;https://esm.sh/react-dom@^19.2.7/client&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.4&quot;;
+import { Provider, useCreateStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.4/ui-react&quot;;
+import { LineChart, XAxis } from &quot;https://esm.sh/tinybase@8.5.0-beta.4/ui-react-dom-charts&quot;;
+var timestamp = (day) =&gt; Date.UTC(2026, 0, day) / 1e3;
+var formatDate = (date) =&gt; date.toLocaleDateString(&quot;en-US&quot;, {
+  day: &quot;numeric&quot;,
+  month: &quot;short&quot;,
+  timeZone: &quot;UTC&quot;
+});
+var App = () =&gt; {
+  const store = useCreateStore(
+    () =&gt; createStore().setTable(&quot;visits&quot;, {
+      d1: { day: &quot;2026-01-01&quot;, visits: 42 },
+      d2: { day: &quot;2026-01-02&quot;, visits: 57 },
+      d3: { day: &quot;2026-01-05&quot;, visits: 64 },
+      d4: { day: &quot;2026-01-08&quot;, visits: 81 }
+    }).setTable(&quot;orders&quot;, {
+      d1: { time: timestamp(1), orders: 12 },
+      d2: { time: timestamp(2), orders: 18 },
+      d3: { time: timestamp(5), orders: 21 },
+      d4: { time: timestamp(8), orders: 25 }
+    })
+  );
+  return jsx(Provider, { store, children: jsx(Body, {}) });
+};
+addEventListener(&quot;load&quot;, () =&gt; createRoot(document.body).render(jsx(App, {})));
+var Body = () =&gt; jsxs(&quot;main&quot;, { children: [
+  jsx(&quot;section&quot;, { children: jsx(
+    LineChart,
+    {
+      className: &quot;chart chart-iso&quot;,
+      tableId: &quot;visits&quot;,
+      xCellId: &quot;day&quot;,
+      yCellId: &quot;visits&quot;
+    }
+  ) }),
+  jsx(&quot;section&quot;, { children: jsx(
+    LineChart,
+    {
+      className: &quot;chart chart-unix&quot;,
+      tableId: &quot;orders&quot;,
+      xCellId: &quot;time&quot;,
+      yCellId: &quot;orders&quot;,
+      children: jsx(
+        XAxis,
+        {
+          className: &quot;axis-unix&quot;,
+          scale: &quot;time&quot;,
+          tickFormatter: formatDate,
+          ticks: [timestamp(1), timestamp(3), timestamp(5), timestamp(7)],
+          timestampUnit: &quot;second&quot;,
+          title: &quot;Order date&quot;
+        }
+      )
+    }
+  ) })
+] });&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>This demo shows two ways to use time values on an x axis: ISO date strings that can be detected automatically, and Unix second timestamps that need an explicit <a href="/api/ui-react-dom-charts/functions/store-components/xaxis/"><code>XAxis</code></a> component.</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+  <span class="punctuation">{</span>
+    <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.4"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.4/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom-charts"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.5.0-beta.4/ui-react-dom-charts"</span><span class="punctuation">,</span>
+      <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7"</span><span class="punctuation">,</span>
+      <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.7/jsx-runtime"</span><span class="punctuation">,</span>
+      <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.7/client"</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+</span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>
+</code></pre><p>We need a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>, a Provider, and the chart components:</p><pre><code><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createRoot<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'react-dom/client'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>Provider<span class="punctuation">,</span> useCreateStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>LineChart<span class="punctuation">,</span> XAxis<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react-dom-charts'</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-app">The App</h3><p>The first <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> stores ISO date strings. The second stores Unix second timestamps:</p><pre><code><span class="keyword">const</span> <span class="function-variable">timestamp</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">day</span><span class="punctuation">)</span> <span class="operator">=></span> Date<span class="punctuation">.</span><span class="constant">UTC</span><span class="punctuation">(</span><span class="number">2026</span><span class="punctuation">,</span> <span class="number">0</span><span class="punctuation">,</span> day<span class="punctuation">)</span> <span class="operator">/</span> <span class="number">1000</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> <span class="function-variable">formatDate</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter">date</span><span class="punctuation">)</span> <span class="operator">=></span>
+  date<span class="punctuation">.</span><span class="function">toLocaleDateString</span><span class="punctuation">(</span><span class="string">'en-US'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+    <span class="literal-property">day</span><span class="operator">:</span> <span class="string">'numeric'</span><span class="punctuation">,</span>
+    <span class="literal-property">month</span><span class="operator">:</span> <span class="string">'short'</span><span class="punctuation">,</span>
+    <span class="literal-property">timeZone</span><span class="operator">:</span> <span class="string">'UTC'</span><span class="punctuation">,</span>
+  <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/using-react/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
+    <span class="function"><a href="/api/the-essentials/creating-stores/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span>
+      <span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'visits'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+        <span class="literal-property">d1</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">day</span><span class="operator">:</span> <span class="string">'2026-01-01'</span><span class="punctuation">,</span> <span class="literal-property">visits</span><span class="operator">:</span> <span class="number">42</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="literal-property">d2</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">day</span><span class="operator">:</span> <span class="string">'2026-01-02'</span><span class="punctuation">,</span> <span class="literal-property">visits</span><span class="operator">:</span> <span class="number">57</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="literal-property">d3</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">day</span><span class="operator">:</span> <span class="string">'2026-01-05'</span><span class="punctuation">,</span> <span class="literal-property">visits</span><span class="operator">:</span> <span class="number">64</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="literal-property">d4</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">day</span><span class="operator">:</span> <span class="string">'2026-01-08'</span><span class="punctuation">,</span> <span class="literal-property">visits</span><span class="operator">:</span> <span class="number">81</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="punctuation">}</span><span class="punctuation">)</span>
+      <span class="punctuation">.</span><span class="function"><a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'orders'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
+        <span class="literal-property">d1</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">time</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">orders</span><span class="operator">:</span> <span class="number">12</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="literal-property">d2</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">time</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">2</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">orders</span><span class="operator">:</span> <span class="number">18</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="literal-property">d3</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">time</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">orders</span><span class="operator">:</span> <span class="number">21</span><span class="punctuation">}</span><span class="punctuation">,</span>
+        <span class="literal-property">d4</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">time</span><span class="operator">:</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">8</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="literal-property">orders</span><span class="operator">:</span> <span class="number">25</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">,</span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span> <span class="attr-name">store</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Body</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/the-essentials/using-react/provider/">Provider</a></span></span><span class="punctuation">></span></span>
+  <span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+
+<span class="function">addEventListener</span><span class="punctuation">(</span><span class="string">'load'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">createRoot</span><span class="punctuation">(</span>document<span class="punctuation">.</span>body<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App</span></span> <span class="punctuation">/></span></span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="the-charts">The Charts</h3><p>When all x values are ISO date strings, LineChart infers a time scale. Numeric timestamps are ordinary numbers unless an <a href="/api/ui-react-dom-charts/functions/store-components/xaxis/"><code>XAxis</code></a> component declares them as time values:</p><pre><code><span class="keyword">const</span> <span class="function-variable">Body</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>main</span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>section</span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/linechart/">LineChart</a></span></span>
+        <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>chart chart-iso<span class="punctuation">"</span></span>
+        <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>visits<span class="punctuation">"</span></span>
+        <span class="attr-name">xCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>day<span class="punctuation">"</span></span>
+        <span class="attr-name">yCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>visits<span class="punctuation">"</span></span>
+      <span class="punctuation">/></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>section</span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>section</span><span class="punctuation">></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/linechart/">LineChart</a></span></span>
+        <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>chart chart-unix<span class="punctuation">"</span></span>
+        <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>orders<span class="punctuation">"</span></span>
+        <span class="attr-name">xCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>time<span class="punctuation">"</span></span>
+        <span class="attr-name">yCellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>orders<span class="punctuation">"</span></span>
+      <span class="punctuation">></span></span><span class="plain-text">
+        </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/xaxis/">XAxis</a></span></span>
+          <span class="attr-name">className</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>axis-unix<span class="punctuation">"</span></span>
+          <span class="attr-name">scale</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>time<span class="punctuation">"</span></span>
+          <span class="attr-name">tickFormatter</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>formatDate<span class="punctuation">}</span></span>
+          <span class="attr-name">ticks</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="punctuation">[</span><span class="function">timestamp</span><span class="punctuation">(</span><span class="number">1</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">3</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">5</span><span class="punctuation">)</span><span class="punctuation">,</span> <span class="function">timestamp</span><span class="punctuation">(</span><span class="number">7</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="punctuation">}</span></span>
+          <span class="attr-name">timestampUnit</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>second<span class="punctuation">"</span></span>
+          <span class="attr-name">title</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>Order date<span class="punctuation">"</span></span>
+        <span class="punctuation">/></span></span><span class="plain-text">
+      </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/ui-react-dom-charts/functions/store-components/linechart/">LineChart</a></span></span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>section</span><span class="punctuation">></span></span><span class="plain-text">
+  </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>main</span><span class="punctuation">></span></span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+</code></pre><h3 id="styling">Styling</h3><p>The two charts share most styling, with separate colors to show that the same time-axis behavior works with ordinary CSS customization:</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
+  <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">*</span> <span class="punctuation">{</span>
+  <span class="property">box-sizing</span><span class="punctuation">:</span> border<span class="operator">-</span>box<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">body</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+  <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">,</span> sans<span class="operator">-</span>serif<span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+<span class="punctuation">}</span>
+
+<span class="selector">main</span> <span class="punctuation">{</span>
+  <span class="property">display</span><span class="punctuation">:</span> grid<span class="punctuation">;</span>
+  <span class="property">gap</span><span class="punctuation">:</span> 1rem<span class="punctuation">;</span>
+  <span class="property">grid-template-columns</span><span class="punctuation">:</span> <span class="function">repeat</span><span class="punctuation">(</span>2<span class="punctuation">,</span> <span class="function">minmax</span><span class="punctuation">(</span>0<span class="punctuation">,</span> 1fr<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="property">margin</span><span class="punctuation">:</span> 2rem auto<span class="punctuation">;</span>
+  <span class="property">max-width</span><span class="punctuation">:</span> 64rem<span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> 0 2rem<span class="punctuation">;</span>
+
+  <span class="selector">section</span> <span class="punctuation">{</span>
+    <span class="property">min-width</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart</span> <span class="punctuation">{</span>
+  <span class="property">background</span><span class="punctuation">:</span> #f7f9fb<span class="punctuation">;</span>
+  <span class="property">border</span><span class="punctuation">:</span> 1px solid #dce5ee<span class="punctuation">;</span>
+  <span class="property">border-radius</span><span class="punctuation">:</span> 0.5rem<span class="punctuation">;</span>
+  <span class="property">color</span><span class="punctuation">:</span> #596779<span class="punctuation">;</span>
+  <span class="property">display</span><span class="punctuation">:</span> block<span class="punctuation">;</span>
+  <span class="property">font-size</span><span class="punctuation">:</span> 12px<span class="punctuation">;</span>
+  <span class="property">height</span><span class="punctuation">:</span> 18rem<span class="punctuation">;</span>
+  <span class="property">padding</span><span class="punctuation">:</span> 1rem<span class="punctuation">;</span>
+  <span class="property">width</span><span class="punctuation">:</span> 100%<span class="punctuation">;</span>
+
+  <span class="selector">.grid</span> <span class="punctuation">{</span>
+    <span class="property">color</span><span class="punctuation">:</span> #d7e0ea<span class="punctuation">;</span>
+    <span class="property">stroke-dasharray</span><span class="punctuation">:</span> 4 6<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.axes</span> <span class="punctuation">{</span>
+    <span class="selector">.title</span> <span class="punctuation">{</span>
+      <span class="property">fill</span><span class="punctuation">:</span> #1f2937<span class="punctuation">;</span>
+      <span class="property">font-weight</span><span class="punctuation">:</span> 700<span class="punctuation">;</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.line</span> <span class="punctuation">{</span>
+    <span class="property">stroke-linecap</span><span class="punctuation">:</span> round<span class="punctuation">;</span>
+    <span class="property">stroke-linejoin</span><span class="punctuation">:</span> round<span class="punctuation">;</span>
+    <span class="property">stroke-opacity</span><span class="punctuation">:</span> 0.9<span class="punctuation">;</span>
+    <span class="property">stroke-width</span><span class="punctuation">:</span> 3<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.points</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> white<span class="punctuation">;</span>
+    <span class="property">stroke-width</span><span class="punctuation">:</span> 2<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart-iso</span> <span class="punctuation">{</span>
+  <span class="selector">.area</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> #3b82a0<span class="punctuation">;</span>
+    <span class="property">fill-opacity</span><span class="punctuation">:</span> 0.12<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.line,
+  .points</span> <span class="punctuation">{</span>
+    <span class="property">stroke</span><span class="punctuation">:</span> #1f7799<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+
+<span class="selector">.chart-unix</span> <span class="punctuation">{</span>
+  <span class="selector">.area</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> #2b8c67<span class="punctuation">;</span>
+    <span class="property">fill-opacity</span><span class="punctuation">:</span> 0.12<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.line,
+  .points</span> <span class="punctuation">{</span>
+    <span class="property">stroke</span><span class="punctuation">:</span> #2b8c67<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+
+  <span class="selector">.axis-unix</span> <span class="punctuation">{</span>
+    <span class="property">fill</span><span class="punctuation">:</span> #2f6c4c<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+
+<span class="atrule">@media <span class="punctuation">(</span>max-width<span class="punctuation">:</span> 52rem<span class="punctuation">)</span></span> <span class="punctuation">{</span>
+  <span class="selector">main</span> <span class="punctuation">{</span>
+    <span class="property">grid-template-columns</span><span class="punctuation">:</span> 1fr<span class="punctuation">;</span>
+    <span class="property">padding</span><span class="punctuation">:</span> 0 1rem<span class="punctuation">;</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+</code></pre><p>ISO strings can be used directly. Numeric timestamps need <code>scale=&quot;time&quot;</code> so the chart knows they are dates rather than large linear numbers.</p></section>

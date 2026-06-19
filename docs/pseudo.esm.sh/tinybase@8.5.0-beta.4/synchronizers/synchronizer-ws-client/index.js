@@ -143,7 +143,7 @@ var getUniqueId = (length = 16) => arrayReduce(
 var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
 var getLatestHlc = (hlc1, hlc2) => (
   /* istanbul ignore next */
-  ((hlc1 ?? "") > (hlc2 ?? "") ? hlc1 : hlc2) ?? ""
+  ((hlc1 ?? EMPTY_STRING) > (hlc2 ?? EMPTY_STRING) ? hlc1 : hlc2) ?? EMPTY_STRING
 );
 var stampNewObj = (hlc = EMPTY_STRING) => stampNew(objNew(), hlc);
 var INTEGER = /^\d+$/;

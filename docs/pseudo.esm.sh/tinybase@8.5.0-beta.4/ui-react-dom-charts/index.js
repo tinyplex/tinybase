@@ -6,6 +6,7 @@ var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
 var STRING = getTypeOf(EMPTY_STRING);
 var NUMBER = getTypeOf(0);
+var FUNCTION = getTypeOf(getTypeOf);
 var LISTENER = "Listener";
 var RESULT = "Result";
 var GET = "get";
@@ -15,6 +16,7 @@ var ROW = "Row";
 var SORTED_ROW_IDS = "Sorted" + ROW + IDS;
 var CELL = "Cell";
 var math = Math;
+var date = Date;
 var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(value) ? (
   /* istanbul ignore next */
   otherwise?.()
@@ -30,12 +32,21 @@ var mathPow = math.pow;
 var mathRound = math.round;
 var mathAbs = math.abs;
 var mathLog10 = math.log10;
+var dateUtc = date.UTC;
 var infinity = Infinity;
 var epsilon = Number.EPSILON;
 var isFiniteNumber = isFinite;
 var isInteger = number.isInteger;
 var isNullish = (thing) => thing == null;
 var isUndefined = (thing) => thing === void 0;
+var dateNew = (value) => isUndefined(value) ? new date() : new date(value);
+var dateGetUTCFullYear = (dateObj) => dateObj.getUTCFullYear();
+var dateGetUTCMonth = (dateObj) => dateObj.getUTCMonth();
+var dateGetUTCDate = (dateObj) => dateObj.getUTCDate();
+var dateGetUTCDay = (dateObj) => dateObj.getUTCDay();
+var dateGetUTCHours = (dateObj) => dateObj.getUTCHours();
+var dateGetUTCMinutes = (dateObj) => dateObj.getUTCMinutes();
+var dateGetUTCSeconds = (dateObj) => dateObj.getUTCSeconds();
 var isNull = (thing) => thing === null;
 var isTrue = (thing) => thing === true;
 var isFalse = (thing) => thing === false;
@@ -43,43 +54,12 @@ var ifNotNullish = getIfNotFunction(isNullish);
 var ifNotUndefined = getIfNotFunction(isUndefined);
 var isString = (thing) => getTypeOf(thing) == STRING;
 var isNumber = (thing) => getTypeOf(thing) == NUMBER;
+var isFunction = (thing) => getTypeOf(thing) == FUNCTION;
 var isArray = (thing) => Array.isArray(thing);
 var size = (arrayOrString) => arrayOrString.length;
 var test = (regex, subject) => regex.test(subject);
-var {
-  Children,
-  Fragment,
-  PureComponent,
-  createContext,
-  isValidElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore
-} = React;
-var SourceType = /* @__PURE__ */ ((SourceType2) => {
-  SourceType2[SourceType2["None"] = 0] = "None";
-  SourceType2[SourceType2["Query"] = 1] = "Query";
-  SourceType2[SourceType2["Table"] = 2] = "Table";
-  return SourceType2;
-})(SourceType || {});
-var SERIES = "_tinybaseChartSeries";
-var X_AXIS = "_tinybaseChartXAxis";
-var Y_AXIS = "_tinybaseChartYAxis";
-var isSeriesComponent = (component) => typeof component == "function" && component[SERIES] === true;
-var isXAxisComponent = (component) => typeof component == "function" && component[X_AXIS] === true;
-var isYAxisComponent = (component) => typeof component == "function" && component[Y_AXIS] === true;
-var CartesianChartContext = createContext(null);
-var useCartesianChartContext = () => {
-  const context = useContext(CartesianChartContext);
-  if (context == null) {
-    throw new Error("Series components must be used inside a CartesianChart");
-  }
-  return context;
+var errorNew = (message) => {
+  throw new Error(message);
 };
 var arrayNew = (size2, cb) => arrayMap(new Array(size2).fill(0), (_, index) => cb(index));
 var arrayHas = (array, value) => array.includes(value);
@@ -95,9 +75,126 @@ var arrayIsEmpty = (array) => size(array) == 0;
 var arrayFilter = (array, cb) => array.filter(cb);
 var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
+var {
+  Children,
+  Fragment,
+  PureComponent,
+  createContext,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore
+} = React;
+var CATEGORY = "category";
+var LINEAR = "linear";
+var TIME = "time";
+var MILLISECOND = "millisecond";
+var SECOND_UNIT = "second";
+var BAR = "bar";
+var LINE = "line";
+var CURRENT_COLOR = "currentColor";
+var SERIES = "_tinybaseChartSeries";
+var X_AXIS = "_tinybaseChartXAxis";
+var Y_AXIS = "_tinybaseChartYAxis";
+var SourceType = /* @__PURE__ */ ((SourceType2) => {
+  SourceType2[SourceType2["None"] = 0] = "None";
+  SourceType2[SourceType2["Query"] = 1] = "Query";
+  SourceType2[SourceType2["Table"] = 2] = "Table";
+  return SourceType2;
+})(SourceType || {});
+var isSeriesComponent = (component) => isFunction(component) && component[SERIES] === true;
+var isXAxisComponent = (component) => isFunction(component) && component[X_AXIS] === true;
+var isYAxisComponent = (component) => isFunction(component) && component[Y_AXIS] === true;
+var CartesianChartContext = createContext(null);
+var useCartesianChartContext = () => {
+  const context = useContext(CartesianChartContext);
+  if (isNullish(context)) {
+    errorNew("Series components must be used inside a CartesianChart");
+  }
+  return context;
+};
 var collSize = (coll) => coll?.size ?? 0;
+var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
+var object = Object;
+var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+var objEntries = object.entries;
+var isObject = (obj) => !isNullish(obj) && ifNotNullish(
+  getPrototypeOf(obj),
+  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
+  /* istanbul ignore next */
+  () => true
+);
+var objIds = object.keys;
+var objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
+var objValues = (obj) => object.values(obj);
+var objSize = (obj) => size(objIds(obj));
+var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) => {
+  const entries1 = objEntries(obj1);
+  return size(entries1) === objSize(obj2) && arrayEvery(
+    entries1,
+    ([index, value1]) => isObject(value1) ? (
+      /* istanbul ignore next */
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1, isEqual2) : false
+    ) : isEqual2(value1, obj2[index])
+  );
+};
+var map = Map;
+var mapNew = (entries) => new map(entries);
+var mapGet = (map2, key) => map2?.get(key);
+var mapSet = (map2, key, value) => isUndefined(value) ? (collDel(map2, key), map2) : map2?.set(key, value);
+var TARGET_TICKS = 10;
 var NICE_NUMBERS = [1, 5, 2, 2.5, 4, 3];
 var WEIGHTS = [0.25, 0.2, 0.5, 0.05];
+var SECOND = 1e3;
+var MINUTE = 60 * SECOND;
+var HOUR = 60 * MINUTE;
+var DAY = 24 * HOUR;
+var MONTH = 30 * DAY;
+var YEAR = 365 * DAY;
+var MINUTE_UNIT = "minute";
+var HOUR_UNIT = "hour";
+var DAY_UNIT = "day";
+var WEEK_UNIT = "week";
+var MONTH_UNIT = "month";
+var QUARTER_UNIT = "quarter";
+var YEAR_UNIT = "year";
+var TIME_INTERVALS = [
+  [SECOND_UNIT, 1],
+  [SECOND_UNIT, 5],
+  [SECOND_UNIT, 10],
+  [SECOND_UNIT, 15],
+  [SECOND_UNIT, 30],
+  [MINUTE_UNIT, 1],
+  [MINUTE_UNIT, 5],
+  [MINUTE_UNIT, 10],
+  [MINUTE_UNIT, 15],
+  [MINUTE_UNIT, 30],
+  [HOUR_UNIT, 1],
+  [HOUR_UNIT, 3],
+  [HOUR_UNIT, 6],
+  [HOUR_UNIT, 12],
+  [DAY_UNIT, 1],
+  [DAY_UNIT, 2],
+  [WEEK_UNIT, 1],
+  [MONTH_UNIT, 1],
+  [MONTH_UNIT, 2],
+  [QUARTER_UNIT, 1],
+  [MONTH_UNIT, 6],
+  [YEAR_UNIT, 1],
+  [YEAR_UNIT, 2],
+  [YEAR_UNIT, 5],
+  [YEAR_UNIT, 10],
+  [YEAR_UNIT, 25],
+  [YEAR_UNIT, 50],
+  [YEAR_UNIT, 100]
+];
+var getTickCount = (tickCount = TARGET_TICKS) => isFiniteNumber(tickCount) ? mathMax(mathRound(tickCount), 1) : TARGET_TICKS;
 var getTicks = (min, max, targetTickCount, labelSize, axisSize, integerTicks) => {
   let bestTicks = [min, max];
   let bestScore = -2;
@@ -151,44 +248,118 @@ var getTicks = (min, max, targetTickCount, labelSize, axisSize, integerTicks) =>
   }
   return bestTicks;
 };
-var TARGET_TICKS = 10;
+var getTimeTicks = (minTimestamp, maxTimestamp, targetTickCount, labelSize, axisSize) => {
+  const min = mathMin(minTimestamp, maxTimestamp);
+  const max = mathMax(minTimestamp, maxTimestamp);
+  let bestTicks = [min, max];
+  let bestScore = -infinity;
+  arrayForEach(TIME_INTERVALS, (interval, index) => {
+    const ticks = [];
+    for (let tick = floorTime(min, interval), count = 0; tick <= max && count < 1e3; tick = addTime(tick, interval), count++) {
+      arrayPush(ticks, tick);
+    }
+    const lastTick = ticks[size(ticks) - 1];
+    if (!isFiniteNumber(lastTick) || lastTick < max) {
+      arrayPush(ticks, addTime(lastTick ?? floorTime(min, interval), interval));
+    }
+    const tickCount = size(ticks);
+    const tickMin = ticks[0];
+    const tickMax = ticks[tickCount - 1];
+    const range = max - min;
+    const target = mathMax(targetTickCount, 2);
+    const spacing = axisSize / (tickCount - 1);
+    const score = tickCount < 2 ? -infinity : WEIGHTS[0] * (1 - index / mathMax(size(TIME_INTERVALS) - 1, 1)) + WEIGHTS[1] * (1 - (mathAbs(min - tickMin) + mathAbs(tickMax - max)) / range) + WEIGHTS[2] * (2 - mathMax(tickCount / target, target / tickCount)) + WEIGHTS[3] * (spacing < labelSize * 1.2 ? -infinity : mathMin(spacing / labelSize, 1));
+    if (score > bestScore) {
+      bestTicks = ticks;
+      bestScore = score;
+    }
+  });
+  return bestTicks;
+};
+var getTimeTickLabel = (timestamp, ticks) => {
+  const date2 = dateNew(timestamp);
+  const year = dateGetUTCFullYear(date2) + EMPTY_STRING;
+  const month = getPadded(dateGetUTCMonth(date2) + 1);
+  const day = getPadded(dateGetUTCDate(date2));
+  const hour = getPadded(dateGetUTCHours(date2));
+  const minute = getPadded(dateGetUTCMinutes(date2));
+  const second = getPadded(dateGetUTCSeconds(date2));
+  const dateLabel = `${year}-${month}-${day}`;
+  let minDiff = infinity;
+  arrayForEach(ticks, (tick, index) => {
+    if (index > 0) {
+      minDiff = mathMin(minDiff, tick - ticks[index - 1]);
+    }
+  });
+  minDiff = minDiff == infinity ? dateGetUTCHours(date2) == 0 && dateGetUTCMinutes(date2) == 0 && dateGetUTCSeconds(date2) == 0 ? DAY : dateGetUTCSeconds(date2) == 0 ? HOUR : SECOND : minDiff;
+  return minDiff < MINUTE ? `${dateLabel} ${hour}:${minute}:${second}` : minDiff < DAY ? `${dateLabel} ${hour}:${minute}` : minDiff < MONTH ? dateLabel : minDiff < YEAR ? `${year}-${month}` : year;
+};
+var floorTime = (timestamp, [unit, step]) => {
+  const date2 = dateNew(timestamp);
+  const year = dateGetUTCFullYear(date2);
+  const month = dateGetUTCMonth(date2);
+  const monthStep = unit == QUARTER_UNIT ? step * 3 : step;
+  const monthIndex = year * 12 + month;
+  const flooredMonthIndex = mathFloor(monthIndex / monthStep) * monthStep;
+  const fixedInterval = getFixedInterval(unit, step);
+  return unit == YEAR_UNIT ? dateUtc(mathFloor(year / step) * step, 0, 1) : unit == QUARTER_UNIT || unit == MONTH_UNIT ? dateUtc(mathFloor(flooredMonthIndex / 12), flooredMonthIndex % 12, 1) : unit == WEEK_UNIT ? dateUtc(year, month, dateGetUTCDate(date2)) - (dateGetUTCDay(date2) + 6) % 7 * DAY : mathFloor(timestamp / fixedInterval) * fixedInterval;
+};
+var addTime = (timestamp, [unit, step]) => {
+  const date2 = dateNew(timestamp);
+  return unit == YEAR_UNIT ? dateUtc(dateGetUTCFullYear(date2) + step, 0, 1) : unit == QUARTER_UNIT ? dateUtc(dateGetUTCFullYear(date2), dateGetUTCMonth(date2) + step * 3, 1) : unit == MONTH_UNIT ? dateUtc(dateGetUTCFullYear(date2), dateGetUTCMonth(date2) + step, 1) : timestamp + getFixedInterval(unit, step);
+};
+var getFixedInterval = (unit, step) => unit == WEEK_UNIT ? step * 7 * DAY : unit == DAY_UNIT ? step * DAY : unit == HOUR_UNIT ? step * HOUR : unit == MINUTE_UNIT ? step * MINUTE : step * SECOND;
+var getPadded = (value) => value < 10 ? `0${value}` : value + EMPTY_STRING;
+var ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:$|T)/;
 var getDataPoints = (rowIds, getPoint) => arrayFilter(arrayMap(rowIds, getPoint), (point) => !isUndefined(point));
 var getDataPoint = (rowId, xCell, yCell) => {
   const xValue = getXValue(xCell);
   const yValue = getYValue(yCell);
   return isUndefined(xValue) || isUndefined(yValue) ? void 0 : [rowId, xValue, yValue];
 };
-var getScaledPoints = (kind, points, [xMin, xMax, yMin, yMax], [width, height], xValues, xTitle, yTitle) => {
-  const numericX = kind == "line" && arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
-  const xDomain = numericX ? [xMin, xMax] : [0, 0];
+var getScaledPoints = (kind, points, [xMin, xMax, yMin, yMax], [width, height], xValues, xScale = CATEGORY, timestampUnit = MILLISECOND, xTitle, yTitle) => {
+  const continuousX = xScale != CATEGORY;
+  const xDomain = continuousX ? [xMin, xMax] : [0, 0];
   const yDomain = [yMin ?? 0, yMax ?? 0];
-  const xCategories = /* @__PURE__ */ new Map();
+  const xCategories = mapNew();
   arrayForEach(
-    xValues == null || arrayIsEmpty(xValues) ? arrayMap(points, ([, xValue]) => xValue) : xValues,
-    (xValue) => {
-      if (!xCategories.has(xValue)) {
-        xCategories.set(xValue, collSize(xCategories));
-      }
-    }
+    isNullish(xValues) || arrayIsEmpty(xValues) ? arrayMap(points, ([, xValue]) => xValue) : xValues,
+    (xValue) => collHas(xCategories, xValue) ? 0 : mapSet(xCategories, xValue, collSize(xCategories))
   );
-  return arrayMap(points, ([rowId, xValue, yValue]) => [
-    rowId,
-    xValue,
-    yValue,
-    getX(xValue, numericX, xDomain, xCategories, width, kind),
-    getY(yValue, yDomain, height),
-    xTitle,
-    yTitle
-  ]);
+  return arrayFilter(
+    arrayMap(points, ([rowId, xValue, yValue]) => {
+      const x = getX(
+        xValue,
+        xScale,
+        timestampUnit,
+        xDomain,
+        xCategories,
+        width,
+        kind
+      );
+      return isUndefined(x) ? void 0 : [
+        rowId,
+        xValue,
+        yValue,
+        x,
+        height - getScale(yValue, yDomain[0], yDomain[1], height),
+        xTitle,
+        yTitle
+      ];
+    }),
+    (point) => !isUndefined(point)
+  );
 };
-var getX = (xValue, numericX, [xMin, xMax], xCategories, width, kind) => numericX ? getScale(xValue, xMin, xMax, width) : kind == "bar" ? width * ((xCategories.get(xValue) ?? 0) + 0.5) / collSize(xCategories) : getScale(
-  xCategories.get(xValue) ?? 0,
-  0,
-  collSize(xCategories) - 1,
-  width
-);
-var getY = (yValue, [yMin, yMax], height) => height - getScale(yValue, yMin, yMax, height);
-var getScale = (value, min, max, size2) => min == max ? size2 / 2 : getRounded(size2 * (value - min) / (max - min));
+var getX = (xValue, xScale, timestampUnit, [xMin, xMax], xCategories, width, kind) => {
+  const continuousValue = getContinuousXValue(xValue, xScale, timestampUnit);
+  return xScale != CATEGORY ? isUndefined(continuousValue) ? void 0 : getScale(continuousValue, xMin, xMax, width) : kind == BAR ? width * ((mapGet(xCategories, xValue) ?? 0) + 0.5) / collSize(xCategories) : getScale(
+    mapGet(xCategories, xValue) ?? 0,
+    0,
+    collSize(xCategories) - 1,
+    width
+  );
+};
+var getScale = (value, min, max, size2) => min == max ? size2 / 2 : mathRound(size2 * (value - min) / (max - min) * 1e6) / 1e6;
 var getBounds = (kind, points) => {
   if (arrayIsEmpty(points)) {
     return [];
@@ -216,7 +387,7 @@ var getYTicks = ([, , yMin, yMax], [, height], labelSize, tickCount) => {
     isInteger(yMin) && isInteger(yMax)
   );
 };
-var getXTicks = (kind, [xMin, xMax], [width], labelSize, tickCount) => kind == "line" && isNumber(xMin) && isNumber(xMax) && xMin != xMax ? getTicks(
+var getXTicks = (kind, [xMin, xMax], [width], labelSize, tickCount) => kind == LINE && isNumber(xMin) && isNumber(xMax) && xMin != xMax ? getTicks(
   xMin,
   xMax,
   getTickCount(tickCount),
@@ -224,16 +395,33 @@ var getXTicks = (kind, [xMin, xMax], [width], labelSize, tickCount) => kind == "
   width,
   isInteger(xMin) && isInteger(xMax)
 ) : [];
+var getResolvedXScale = (xAxisScale, { continuousX, xValues }, hasLinearAxisDefinition) => xAxisScale == CATEGORY || xAxisScale == LINEAR || xAxisScale == TIME ? xAxisScale : continuousX || arrayIsEmpty(xValues) && hasLinearAxisDefinition ? LINEAR : !arrayIsEmpty(xValues) && arrayEvery(
+  xValues,
+  (xValue) => isString(xValue) && isFiniteNumber(normalizeTimeValue(xValue, MILLISECOND))
+) ? TIME : CATEGORY;
+var getXScaleDomain = ([xMin, xMax], xValues, xScale, timestampUnit) => {
+  const timestamps = [];
+  return xScale == LINEAR ? [isNumber(xMin) ? xMin : void 0, isNumber(xMax) ? xMax : void 0] : xScale == TIME ? (arrayForEach(xValues, (xValue) => {
+    const timestamp = normalizeTimeValue(xValue, timestampUnit);
+    if (isFiniteNumber(timestamp)) {
+      arrayPush(timestamps, timestamp);
+    }
+  }), arrayIsEmpty(timestamps) ? [] : getDomain(timestamps)) : [xMin, xMax];
+};
+var normalizeTimeValue = (value, timestampUnit) => {
+  const timestamp = isNumber(value) ? timestampUnit == SECOND_UNIT ? value * 1e3 : value : isString(value) && ISO_DATE.test(value) ? getTime(value) : value instanceof Date ? getTime(value) : void 0;
+  return isFiniteNumber(timestamp) ? timestamp : void 0;
+};
 var getTickBounds = ([xMin, xMax, yMin, yMax], xTicks, yTicks) => [
-  arrayIsEmpty(xTicks) ? xMin : getMinTickBound(xMin, xTicks[0]),
-  arrayIsEmpty(xTicks) ? xMax : getMaxTickBound(xMax, xTicks[size(xTicks) - 1]),
+  arrayIsEmpty(xTicks) ? xMin : isNumber(xMin) ? mathMin(xMin, xTicks[0]) : xTicks[0],
+  arrayIsEmpty(xTicks) ? xMax : isNumber(xMax) ? mathMax(xMax, xTicks[size(xTicks) - 1]) : xTicks[size(xTicks) - 1],
   arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
   arrayIsEmpty(yTicks) ? yMax : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1])
 ];
 var getSeriesSummary = (kind, points, xCellId, yCellId, yLabel) => {
   const [xMin, xMax, yMin, yMax] = getBounds(kind, points);
   const xValues = [];
-  const continuousX = kind == "line" && arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
+  const continuousX = kind == LINE && arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
   arrayForEach(points, ([, xValue]) => {
     if (!arrayHas(xValues, xValue)) {
       arrayPush(xValues, xValue);
@@ -268,17 +456,17 @@ var getDomainState = (summaries) => {
       }
     });
     if (isNumber(summary.xMin) && isNumber(summary.xMax)) {
-      xMins.push(summary.xMin);
-      xMaxes.push(summary.xMax);
+      arrayPush(xMins, summary.xMin);
+      arrayPush(xMaxes, summary.xMax);
     } else {
       xMin ??= summary.xMin;
       xMax = summary.xMax ?? xMax;
     }
     if (!isUndefined(summary.yMin)) {
-      yMins.push(summary.yMin);
+      arrayPush(yMins, summary.yMin);
     }
     if (!isUndefined(summary.yMax)) {
-      yMaxes.push(summary.yMax);
+      arrayPush(yMaxes, summary.yMax);
     }
   });
   return {
@@ -292,27 +480,28 @@ var getDomainState = (summaries) => {
     xValues
   };
 };
-var getYDomain = (points, kind = "bar") => getDomain([
-  ...kind == "bar" ? [0] : [],
+var getYDomain = (points, kind = BAR) => getDomain([
+  ...kind == BAR ? [0] : [],
   ...arrayMap(points, ([, , yValue]) => yValue)
 ]);
 var getDomain = (values) => {
   const min = mathMin(...values);
   return min == infinity ? [0, 0] : [min, mathMax(...values)];
 };
-var getMinTickBound = (bound, tick) => isNumber(bound) ? mathMin(bound, tick) : tick;
-var getMaxTickBound = (bound, tick) => isNumber(bound) ? mathMax(bound, tick) : tick;
-var getTickCount = (tickCount = TARGET_TICKS) => isFiniteNumber(tickCount) ? mathMax(mathRound(tickCount), 1) : TARGET_TICKS;
-var getRounded = (value) => mathRound(value * 1e6) / 1e6;
+var getContinuousXValue = (xValue, xScale, timestampUnit) => xScale == LINEAR ? isNumber(xValue) ? xValue : void 0 : xScale == TIME ? normalizeTimeValue(xValue, timestampUnit) : void 0;
+var getTime = (value) => {
+  const time = +dateNew(value);
+  return isFiniteNumber(time) ? mathFloor(time) : void 0;
+};
 var getXValue = (cell) => isNumber(cell) ? isFiniteNumber(cell) ? cell : void 0 : isString(cell) ? cell : isTrue(cell) || isFalse(cell) ? cell : void 0;
 var getYValue = (cell) => isNumber(cell) && isFiniteNumber(cell) ? cell : void 0;
-var CURRENT_COLOR = "currentColor";
 var Bars = ({
   points,
   plotFrame,
   barGap,
   barSeriesCount,
   barSeriesIndex,
+  fullBarWidth,
   setTooltipPoint,
   yMin = 0,
   yMax = 0
@@ -320,10 +509,10 @@ var Bars = ({
   const [plotX, plotY, width, height] = plotFrame;
   const baselineY = height - getScale(0, yMin, yMax, height);
   const pointsSize = size(points);
-  const fullBarWidth = arrayIsEmpty(points) ? 0 : width / pointsSize;
+  const resolvedFullBarWidth = fullBarWidth ?? (arrayIsEmpty(points) ? 0 : width / pointsSize);
   const barCount = mathMax(barSeriesCount, 1);
   const barIndex = mathMax(barSeriesIndex, 0);
-  const barGroupWidth = mathMax(fullBarWidth - barGap, 0);
+  const barGroupWidth = mathMax(resolvedFullBarWidth - barGap, 0);
   const barWidth = mathMax(
     (barGroupWidth - barGap * (barCount - 1)) / barCount,
     0
@@ -346,28 +535,18 @@ var Bars = ({
     );
   });
 };
-var object = Object;
-var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
-var objEntries = object.entries;
-var isObject = (obj) => !isNullish(obj) && ifNotNullish(
-  getPrototypeOf(obj),
-  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
-  /* istanbul ignore next */
-  () => true
-);
-var objIds = object.keys;
-var objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
-var objValues = (obj) => object.values(obj);
-var objSize = (obj) => size(objIds(obj));
-var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) => {
-  const entries1 = objEntries(obj1);
-  return size(entries1) === objSize(obj2) && arrayEvery(
-    entries1,
-    ([index, value1]) => isObject(value1) ? (
-      /* istanbul ignore next */
-      isObject(obj2[index]) ? objIsEqual(obj2[index], value1, isEqual2) : false
-    ) : isEqual2(value1, obj2[index])
+var getContinuousBarWidth = (points, fallbackWidth) => {
+  const xs = arraySort(
+    arrayMap(points, ([, , , x]) => x),
+    (x1, x2) => x1 - x2
   );
+  let barWidth = infinity;
+  arrayForEach(xs, (x, index) => {
+    if (index > 0 && x > xs[index - 1]) {
+      barWidth = mathMin(barWidth, x - xs[index - 1]);
+    }
+  });
+  return barWidth == infinity ? fallbackWidth : barWidth;
 };
 var jsonString = JSON.stringify;
 var TINYBASE_CONTEXT = TINYBASE + "_uirc";
@@ -481,7 +660,6 @@ var useResultCellListener = (queryId, rowId, cellId, listener, listenerDeps, que
   listenerDeps,
   [queryId, rowId, cellId]
 );
-var EMPTY_ID = "";
 var useSeriesData = ({
   descending,
   limit,
@@ -506,7 +684,7 @@ var useSeriesData = ({
   const [seriesId] = useState(getSeriesId);
   const handleChange = useCallback(() => rerender([]), [rerender]);
   const tableRowIds = useSortedRowIds(
-    tableId ?? EMPTY_ID,
+    tableId ?? EMPTY_STRING,
     sortCellId ?? xCellId,
     descending,
     offset,
@@ -514,7 +692,7 @@ var useSeriesData = ({
     storeOrStoreId
   );
   const queryRowIds = useResultSortedRowIds(
-    queryId ?? EMPTY_ID,
+    queryId ?? EMPTY_STRING,
     sortCellId ?? xCellId,
     descending,
     offset,
@@ -522,28 +700,12 @@ var useSeriesData = ({
     queriesOrQueriesId
   );
   const rowIds = sourceType == SourceType.Table ? tableRowIds : queryRowIds;
-  const points = yCellId == null ? [] : getDataPoints(
+  const points = isNullish(yCellId) ? [] : getDataPoints(
     rowIds,
     (rowId) => getDataPoint(
       rowId,
-      getCell(
-        sourceType,
-        store,
-        queries,
-        tableId,
-        queryId,
-        rowId,
-        xCellId
-      ),
-      getCell(
-        sourceType,
-        store,
-        queries,
-        tableId,
-        queryId,
-        rowId,
-        yCellId
-      )
+      getCell(sourceType, store, queries, tableId, queryId, rowId, xCellId),
+      getCell(sourceType, store, queries, tableId, queryId, rowId, yCellId)
     )
   );
   useCellListener(
@@ -586,7 +748,7 @@ var useSeriesData = ({
   );
   return [seriesId, points];
 };
-var getSeriesClassName = (baseClassName, className) => className == null ? baseClassName : `${baseClassName} ${className}`;
+var getSeriesClassName = (baseClassName, className) => isNullish(className) ? baseClassName : `${baseClassName} ${className}`;
 var getCell = (sourceType, store, queries, tableId, queryId, rowId, cellId) => sourceType == SourceType.Table ? store?.getCell(tableId, rowId, cellId) : queries?.getResultCell(queryId, rowId, cellId);
 var BarSeries = (props) => {
   const {
@@ -600,25 +762,38 @@ var BarSeries = (props) => {
     releaseBarSeries,
     setSeriesSummary,
     setTooltipPoint,
+    timestampUnit,
+    xScale,
     xValues
   } = useCartesianChartContext();
   const { className, label, xCellId, yCellId } = props;
   const [seriesId, rawPoints] = useSeriesData(props);
   const barSeriesIndex = getBarSeriesIndex(seriesId);
   const [, , yMin, yMax] = bounds;
+  const axisPoints = xScale == CATEGORY ? void 0 : getScaledPoints(
+    LINE,
+    arrayMap(xValues, (xValue, index) => [`${index}`, xValue, 0]),
+    bounds,
+    plotSize,
+    xValues,
+    xScale,
+    timestampUnit
+  );
   const points = getScaledPoints(
-    "bar",
+    BAR,
     rawPoints,
     bounds,
     plotSize,
     xValues,
+    xScale,
+    timestampUnit,
     xCellId,
     label ?? yCellId
   );
   useLayoutEffect(() => {
     setSeriesSummary(
       seriesId,
-      getSeriesSummary("bar", rawPoints, xCellId, yCellId, label)
+      getSeriesSummary(BAR, rawPoints, xCellId, yCellId, label)
     );
   });
   useLayoutEffect(() => {
@@ -632,6 +807,7 @@ var BarSeries = (props) => {
       barGap,
       barSeriesCount,
       barSeriesIndex,
+      fullBarWidth: isNullish(axisPoints) ? void 0 : getContinuousBarWidth(axisPoints, plotSize[0]),
       plotFrame,
       points,
       setTooltipPoint,
@@ -641,6 +817,25 @@ var BarSeries = (props) => {
   });
 };
 BarSeries[SERIES] = true;
+var getConvenienceChartProps = (props) => [
+  isNullish(props.tableId) ? {
+    className: props.className,
+    queries: props.queries,
+    queryId: props.queryId
+  } : {
+    className: props.className,
+    store: props.store,
+    tableId: props.tableId
+  },
+  {
+    descending: props.descending,
+    limit: props.limit,
+    offset: props.offset,
+    sortCellId: props.sortCellId,
+    xCellId: props.xCellId,
+    yCellId: props.yCellId
+  }
+];
 var INTEGER = /^\d+$/;
 var getPoolFunctions = () => {
   const pool = [];
@@ -703,7 +898,7 @@ var getPlotFrame = ([width, height], [, , , xAxisHeight, yAxisWidth, inset, font
 };
 var getDefaultStyle = (fontSize) => arrayMap(DEFAULT_STYLE, (value) => value * fontSize);
 var getStyle = (style) => {
-  const fontSize = parseFloat(style?.fontSize ?? "");
+  const fontSize = parseFloat(style?.fontSize ?? EMPTY_STRING);
   return getDefaultStyle(
     isFiniteNumber(fontSize) ? fontSize : DEFAULT_FONT_SIZE
   );
@@ -725,12 +920,14 @@ var XAxis$1 = ({
   tickSize,
   tickGap,
   axisHeight,
-  fontSize
+  fontSize,
+  timestampUnit,
+  xScale
 }) => {
   const [plotX, plotY, plotWidth, plotHeight] = plotFrame;
   const titleGap = mathMax(axisHeight - tickSize - tickGap - 2 * fontSize, 0);
   return /* @__PURE__ */ jsxs("g", {
-    className: getAxisClassName$1("x", className),
+    className: isNullish(className) ? "x" : `x ${className}`,
     dominantBaseline: "hanging",
     textAnchor: "middle",
     children: [
@@ -751,7 +948,12 @@ var XAxis$1 = ({
             {
               x: plotX + x,
               y: plotY + plotHeight + tickSize + tickGap,
-              children: getTickLabel(xValue, tickFormatter)
+              children: getTickLabel(
+                xValue,
+                tickFormatter,
+                xScale,
+                timestampUnit
+              )
             },
             rowId
           )
@@ -762,7 +964,13 @@ var XAxis$1 = ({
             {
               x: plotX + x,
               y: plotY + plotHeight + tickSize + tickGap,
-              children: getTickLabel(tick, tickFormatter)
+              children: getTickLabel(
+                tick,
+                tickFormatter,
+                xScale,
+                MILLISECOND,
+                xTicks
+              )
             },
             tick
           );
@@ -777,8 +985,10 @@ var XAxis$1 = ({
     ]
   });
 };
-var getAxisClassName$1 = (baseClassName, className) => className == null ? baseClassName : `${baseClassName} ${className}`;
-var getTickLabel = (tick, tickFormatter) => tickFormatter?.(tick) ?? string(tick);
+var getTickLabel = (tick, tickFormatter, xScale, timestampUnit, ticks = []) => {
+  const timestamp = xScale == TIME ? normalizeTimeValue(tick, timestampUnit) : void 0;
+  return isNumber(timestamp) ? tickFormatter?.(dateNew(timestamp), timestamp) ?? getTimeTickLabel(timestamp, ticks) : tickFormatter?.(tick, void 0) ?? string(tick);
+};
 var YAxis$1 = ({
   className,
   tickFormatter,
@@ -793,7 +1003,7 @@ var YAxis$1 = ({
 }) => {
   const [plotX, plotY, , plotHeight] = plotFrame;
   return isNullish(yMin) || isNullish(yMax) ? null : /* @__PURE__ */ jsxs("g", {
-    className: getAxisClassName("y", className),
+    className: isNullish(className) ? "y" : `y ${className}`,
     children: [
       /* @__PURE__ */ jsx("path", {
         className: "line",
@@ -830,7 +1040,6 @@ var YAxis$1 = ({
     ]
   });
 };
-var getAxisClassName = (baseClassName, className) => className == null ? baseClassName : `${baseClassName} ${className}`;
 var Axes = ({
   xAxis,
   yAxis,
@@ -842,6 +1051,8 @@ var Axes = ({
   xAxisHeight,
   yAxisWidth,
   fontSize,
+  timestampUnit,
+  xScale,
   ...sharedProps
 }) => {
   return /* @__PURE__ */ jsxs("g", {
@@ -869,7 +1080,9 @@ var Axes = ({
         xMax,
         xTitle,
         axisHeight: xAxisHeight,
-        fontSize
+        fontSize,
+        timestampUnit,
+        xScale
       })
     ]
   });
@@ -996,6 +1209,7 @@ var EMPTY_DOMAIN_STATE = {
   continuousX: false,
   xValues: []
 };
+var TITLE_SEPARATOR = " & ";
 var CartesianChart = ({
   children,
   className,
@@ -1013,9 +1227,9 @@ var CartesianChart = ({
   const labelSize = getLabelSize(layout);
   const storeObject = useStoreOrStoreById(store);
   const queriesObject = useQueriesOrQueriesById(queries);
-  const sourceType = tableId == null ? queryId == null ? SourceType.None : SourceType.Query : SourceType.Table;
-  const initialSummaries = initialSummary == null ? {} : { 0: initialSummary };
-  const initialDomainState = initialSummary == null ? EMPTY_DOMAIN_STATE : getDomainState(objValues(initialSummaries));
+  const sourceType = isNullish(tableId) ? isNullish(queryId) ? SourceType.None : SourceType.Query : SourceType.Table;
+  const initialSummaries = isNullish(initialSummary) ? {} : { 0: initialSummary };
+  const initialDomainState = isNullish(initialSummary) ? EMPTY_DOMAIN_STATE : getDomainState(objValues(initialSummaries));
   const initialXTitle = getTitle(initialSummaries, "xCellId");
   const initialYTitle = getTitle(initialSummaries, "yCellId");
   const summariesRef = useRef(initialSummaries);
@@ -1032,18 +1246,46 @@ var CartesianChart = ({
   const [tooltipPoint, setTooltipPoint] = useState();
   const [chartChildren, xAxis, yAxis] = getParsedChildren(children);
   const xValues = domainState.xValues;
-  const numericX = domainState.continuousX || arrayIsEmpty(xValues) && hasNumericXAxisDefinition(xAxis);
-  const dataBounds = getAxisBounds(domainState.bounds, numericX, xAxis, yAxis);
-  const axisKind = numericX || arrayIsEmpty(barSeriesIds) ? "line" : "bar";
-  const xTicks = numericX && xAxis?.ticks != null ? getAxisTicks(xAxis.ticks) : getXTicks(axisKind, dataBounds, plotSize, labelSize, xAxis?.tickCount);
-  const yTicks = yAxis?.ticks == null ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount) : getAxisTicks(yAxis.ticks);
+  const timestampUnit = xAxis?.scale == TIME && xAxis.timestampUnit == SECOND_UNIT ? SECOND_UNIT : MILLISECOND;
+  const xScale = getResolvedXScale(
+    xAxis?.scale,
+    domainState,
+    isFiniteNumber(xAxis?.min) || isFiniteNumber(xAxis?.max) || !isNullish(xAxis?.ticks)
+  );
+  const continuousX = xScale != CATEGORY;
+  const dataBounds = getAxisBounds(
+    domainState.bounds,
+    xValues,
+    xScale,
+    timestampUnit,
+    xAxis,
+    yAxis
+  );
+  const [dataXMin, dataXMax] = dataBounds;
+  const axisKind = continuousX || arrayIsEmpty(barSeriesIds) ? LINE : BAR;
+  const xTicks = continuousX && !isNullish(xAxis?.ticks) ? getAxisTicks(xAxis.ticks, xScale, timestampUnit) : xScale == TIME && isNumber(dataXMin) && isNumber(dataXMax) && dataXMin != dataXMax ? getTimeTicks(
+    dataXMin,
+    dataXMax,
+    getTickCount(xAxis?.tickCount),
+    labelSize,
+    plotSize[0]
+  ) : getXTicks(
+    axisKind,
+    dataBounds,
+    plotSize,
+    labelSize,
+    xAxis?.tickCount
+  );
+  const yTicks = isNullish(yAxis?.ticks) ? getYTicks(dataBounds, plotSize, labelSize, yAxis?.tickCount) : getAxisTicks(yAxis.ticks);
   const tickBounds = getTickBounds(dataBounds, xTicks, yTicks);
   const axisPoints = getScaledPoints(
     axisKind,
-    xValues.map((xValue, index) => [`${index}`, xValue, 0]),
+    arrayMap(xValues, (xValue, index) => [`${index}`, xValue, 0]),
     tickBounds,
     plotSize,
-    xValues
+    xValues,
+    xScale,
+    timestampUnit
   );
   const setNextDomainState = useCallback((summaryById) => {
     const nextDomainState = getDomainState(objValues(summaryById));
@@ -1068,11 +1310,13 @@ var CartesianChart = ({
   }, []);
   const setIncrementalDomainState = useCallback((summary) => {
     const currentBounds = boundsRef.current;
+    const [currentXMin, currentXMax, currentYMin, currentYMax] = currentBounds;
+    const { xMin, xMax, yMin, yMax } = summary;
     const nextBounds = [
-      getMin(currentBounds[0], summary.xMin),
-      getMax(currentBounds[1], summary.xMax),
-      getNumberMin(currentBounds[2], summary.yMin),
-      getNumberMax(currentBounds[3], summary.yMax)
+      isNumber(currentXMin) && isNumber(xMin) ? mathMin(currentXMin, xMin) : currentXMin ?? xMin,
+      isNumber(currentXMax) && isNumber(xMax) ? mathMax(currentXMax, xMax) : currentXMax ?? xMax,
+      isNullish(currentYMin) || isNullish(yMin) ? currentYMin ?? yMin : mathMin(currentYMin, yMin),
+      isNullish(currentYMax) || isNullish(yMax) ? currentYMax ?? yMax : mathMax(currentYMax, yMax)
     ];
     if (!boundsAreEqual(currentBounds, nextBounds)) {
       boundsRef.current = nextBounds;
@@ -1088,8 +1332,8 @@ var CartesianChart = ({
     (seriesId, summary) => {
       const currentSummaries = summariesRef.current;
       const currentSummary = currentSummaries[seriesId];
-      if (summary == null) {
-        if (currentSummary == null) {
+      if (isNullish(summary)) {
+        if (isNullish(currentSummary)) {
           return;
         }
         delete currentSummaries[seriesId];
@@ -1099,7 +1343,10 @@ var CartesianChart = ({
       }
       currentSummaries[seriesId] = summary;
       setNextTitles(currentSummaries);
-      if (currentSummary == null ? addsXValues(summary.xValues, domainStateRef.current.xValues) || summary.continuousX != domainStateRef.current.continuousX : ownsBound(currentSummary, boundsRef.current) || currentSummary.continuousX != summary.continuousX || !arrayIsEqual(currentSummary.xValues, summary.xValues)) {
+      if (isNullish(currentSummary) ? !arrayEvery(
+        summary.xValues,
+        (xValue) => arrayHas(domainStateRef.current.xValues, xValue)
+      ) || summary.continuousX != domainStateRef.current.continuousX : ownsBound(currentSummary, boundsRef.current) || currentSummary.continuousX != summary.continuousX || !arrayIsEqual(currentSummary.xValues, summary.xValues)) {
         setNextDomainState(currentSummaries);
         return;
       }
@@ -1160,7 +1407,9 @@ var CartesianChart = ({
       store: storeObject,
       storeOrStoreId: store,
       tableId,
+      timestampUnit,
       xTicks,
+      xScale,
       xValues,
       yTicks
     }),
@@ -1183,8 +1432,10 @@ var CartesianChart = ({
       store,
       storeObject,
       tableId,
+      timestampUnit,
       tickBounds,
       xTicks,
+      xScale,
       xValues,
       yTicks
     ]
@@ -1213,8 +1464,10 @@ var CartesianChart = ({
           tickGap,
           tickSize,
           titles: [xAxis?.title ?? xTitle, yAxis?.title ?? yTitle],
+          timestampUnit,
           xAxis,
           xAxisHeight,
+          xScale,
           xTicks,
           yAxis,
           yAxisWidth,
@@ -1234,41 +1487,47 @@ var CartesianChart = ({
 };
 var boundsAreEqual = (bounds1, bounds2) => bounds1[0] === bounds2[0] && bounds1[1] === bounds2[1] && bounds1[2] === bounds2[2] && bounds1[3] === bounds2[3];
 var ownsBound = ({ xMin, xMax, yMin, yMax }, [boundXMin, boundXMax, boundYMin, boundYMax]) => xMin === boundXMin || xMax === boundXMax || yMin === boundYMin || yMax === boundYMax;
-var addsXValues = (xValues, currentXValues) => {
-  let adds = false;
-  arrayForEach(xValues, (xValue) => {
-    if (!arrayHas(currentXValues, xValue)) {
-      adds = true;
-    }
-  });
-  return adds;
-};
-var getMin = (value1, value2) => isNumber(value1) && isNumber(value2) ? mathMin(value1, value2) : value1 ?? value2;
-var getMax = (value1, value2) => isNumber(value1) && isNumber(value2) ? mathMax(value1, value2) : value1 ?? value2;
-var getNumberMin = (value1, value2) => value1 == null || value2 == null ? value1 ?? value2 : mathMin(value1, value2);
-var getNumberMax = (value1, value2) => value1 == null || value2 == null ? value1 ?? value2 : mathMax(value1, value2);
 var getTitle = (summaryById, cellIdType) => {
   const titles = [];
   arrayForEach(objValues(summaryById), (summary) => {
     const title = cellIdType == "yCellId" ? summary.yLabel ?? summary.yCellId : summary.xCellId;
-    if (title != null && !arrayHas(titles, title)) {
+    if (!isNullish(title) && !arrayHas(titles, title)) {
       arrayPush(titles, title);
     }
   });
-  return arrayIsEmpty(titles) ? "" : titles.join(" & ");
+  return arrayIsEmpty(titles) ? "" : arrayJoin(titles, TITLE_SEPARATOR);
 };
-var getAxisBounds = ([xMin, xMax, yMin, yMax], numericX, xAxis, yAxis) => [
-  numericX ? getAxisBound(xAxis?.min, xMin) : xMin,
-  numericX ? getAxisBound(xAxis?.max, xMax) : xMax,
-  getNumberAxisBound(yAxis?.min, yMin),
-  getNumberAxisBound(yAxis?.max, yMax)
-];
-var getAxisBound = (value, bound) => isFiniteNumber(value) ? value : bound;
+var getAxisBounds = ([xMin, xMax, yMin, yMax], xValues, xScale, timestampUnit, xAxis, yAxis) => {
+  const [xDomainMin, xDomainMax] = getXScaleDomain(
+    [xMin, xMax],
+    xValues,
+    xScale,
+    timestampUnit
+  );
+  return [
+    xScale == CATEGORY ? xDomainMin : getAxisBound(xAxis?.min, xDomainMin, xScale, timestampUnit),
+    xScale == CATEGORY ? xDomainMax : getAxisBound(xAxis?.max, xDomainMax, xScale, timestampUnit),
+    getNumberAxisBound(yAxis?.min, yMin),
+    getNumberAxisBound(yAxis?.max, yMax)
+  ];
+};
+var getAxisBound = (value, bound, xScale, timestampUnit) => {
+  const axisBound = xScale == TIME ? normalizeTimeValue(value, timestampUnit) : value;
+  return isFiniteNumber(axisBound) ? axisBound : bound;
+};
 var getNumberAxisBound = (value, bound) => isFiniteNumber(value) ? value : bound;
-var getAxisTicks = (ticks) => arraySort(arrayFilter([...ticks], isFiniteNumber), (tick1, tick2) => {
-  return tick1 - tick2;
-});
-var hasNumericXAxisDefinition = (xAxis) => isFiniteNumber(xAxis?.min) || isFiniteNumber(xAxis?.max) || xAxis?.ticks != null;
+var getAxisTicks = (ticks, xScale = LINEAR, timestampUnit = MILLISECOND) => arraySort(
+  arrayFilter(
+    arrayMap(
+      [...ticks],
+      (tick) => xScale == TIME ? normalizeTimeValue(tick, timestampUnit) : tick
+    ),
+    (tick) => isFiniteNumber(tick)
+  ),
+  (tick1, tick2) => {
+    return tick1 - tick2;
+  }
+);
 var getParsedChildren = (children) => {
   const chartChildren = [];
   let xAxis;
@@ -1287,9 +1546,9 @@ var getParsedChildren = (children) => {
         yAxis ??= childYAxis;
       } else if (isSeriesComponent(child.type)) {
         arrayPush(chartChildren, child);
-      } else if (xAxis == null && isXAxisComponent(child.type)) {
+      } else if (isNullish(xAxis) && isXAxisComponent(child.type)) {
         xAxis = child.props;
-      } else if (yAxis == null && isYAxisComponent(child.type)) {
+      } else if (isNullish(yAxis) && isYAxisComponent(child.type)) {
         yAxis = child.props;
       }
     }
@@ -1311,9 +1570,9 @@ var useInitialSeriesSummary = (kind, {
   const storeObject = useStoreOrStoreById(store);
   const queriesObject = useQueriesOrQueriesById(queries);
   return useMemo(() => {
-    const points = tableId == null ? getDataPoints(
+    const points = isNullish(tableId) ? getDataPoints(
       queriesObject?.getResultSortedRowIds(
-        queryId ?? "",
+        queryId ?? EMPTY_STRING,
         sortCellId ?? xCellId,
         descending,
         offset,
@@ -1321,8 +1580,16 @@ var useInitialSeriesSummary = (kind, {
       ) ?? [],
       (rowId) => getDataPoint(
         rowId,
-        queriesObject?.getResultCell(queryId ?? "", rowId, xCellId),
-        queriesObject?.getResultCell(queryId ?? "", rowId, yCellId)
+        queriesObject?.getResultCell(
+          queryId ?? EMPTY_STRING,
+          rowId,
+          xCellId
+        ),
+        queriesObject?.getResultCell(
+          queryId ?? EMPTY_STRING,
+          rowId,
+          yCellId
+        )
       )
     ) : getDataPoints(
       storeObject?.getSortedRowIds(
@@ -1353,34 +1620,15 @@ var useInitialSeriesSummary = (kind, {
     yCellId
   ]);
 };
-var BarChart = (props) => {
-  const initialSummary = useInitialSeriesSummary("bar", props);
-  return /* @__PURE__ */ jsx(CartesianChart, {
-    ...getSourceProps$1(props),
+var BarChart = ({ children, ...props }) => {
+  const initialSummary = useInitialSeriesSummary(BAR, props);
+  const [sourceProps, seriesProps] = getConvenienceChartProps(props);
+  return /* @__PURE__ */ jsxs(CartesianChart, {
+    ...sourceProps,
     initialSummary,
-    children: /* @__PURE__ */ jsx(BarSeries, { ...getSeriesProps$1(props) })
+    children: [/* @__PURE__ */ jsx(BarSeries, { ...seriesProps }), children]
   });
 };
-var getSourceProps$1 = (props) => props.tableId == null ? {
-  className: props.className,
-  queries: props.queries,
-  queryId: props.queryId
-} : { className: props.className, store: props.store, tableId: props.tableId };
-var getSeriesProps$1 = ({
-  descending,
-  limit,
-  offset,
-  sortCellId,
-  xCellId,
-  yCellId
-}) => ({
-  descending,
-  limit,
-  offset,
-  sortCellId,
-  xCellId,
-  yCellId
-});
 var Line = ({ plotFrame, points, setTooltipPoint }) => {
   const [plotX, plotY, , height] = plotFrame;
   return /* @__PURE__ */ jsxs(Fragment$1, {
@@ -1433,28 +1681,31 @@ var LineSeries = (props) => {
   const {
     barSeriesCount,
     bounds,
-    domainState,
     plotFrame,
     plotSize,
     setSeriesSummary,
     setTooltipPoint,
+    timestampUnit,
+    xScale,
     xValues
   } = useCartesianChartContext();
   const { className, label, xCellId, yCellId } = props;
   const [seriesId, rawPoints] = useSeriesData(props);
   const points = getScaledPoints(
-    domainState.continuousX || barSeriesCount == 0 ? "line" : "bar",
+    xScale != CATEGORY || !barSeriesCount ? LINE : BAR,
     rawPoints,
     bounds,
     plotSize,
     xValues,
+    xScale,
+    timestampUnit,
     xCellId,
     label ?? yCellId
   );
   useLayoutEffect(() => {
     setSeriesSummary(
       seriesId,
-      getSeriesSummary("line", rawPoints, xCellId, yCellId, label)
+      getSeriesSummary(LINE, rawPoints, xCellId, yCellId, label)
     );
   });
   return /* @__PURE__ */ jsx("g", {
@@ -1467,34 +1718,15 @@ var LineSeries = (props) => {
   });
 };
 LineSeries[SERIES] = true;
-var LineChart = (props) => {
-  const initialSummary = useInitialSeriesSummary("line", props);
-  return /* @__PURE__ */ jsx(CartesianChart, {
-    ...getSourceProps(props),
+var LineChart = ({ children, ...props }) => {
+  const initialSummary = useInitialSeriesSummary(LINE, props);
+  const [sourceProps, seriesProps] = getConvenienceChartProps(props);
+  return /* @__PURE__ */ jsxs(CartesianChart, {
+    ...sourceProps,
     initialSummary,
-    children: /* @__PURE__ */ jsx(LineSeries, { ...getSeriesProps(props) })
+    children: [/* @__PURE__ */ jsx(LineSeries, { ...seriesProps }), children]
   });
 };
-var getSourceProps = (props) => props.tableId == null ? {
-  className: props.className,
-  queries: props.queries,
-  queryId: props.queryId
-} : { className: props.className, store: props.store, tableId: props.tableId };
-var getSeriesProps = ({
-  descending,
-  limit,
-  offset,
-  sortCellId,
-  xCellId,
-  yCellId
-}) => ({
-  descending,
-  limit,
-  offset,
-  sortCellId,
-  xCellId,
-  yCellId
-});
 var XAxis = () => null;
 XAxis[X_AXIS] = true;
 var YAxis = () => null;

@@ -760,7 +760,7 @@ var getHlcFunctions = (uniqueId, getNow = Date.now) => {
   };
   const seenHlc = (hlc) => {
     const previousLogicalTime = lastLogicalTime;
-    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc) || hlc == "" ? [0, 0] : decodeHlc(hlc);
+    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc) || hlc == EMPTY_STRING ? [0, 0] : decodeHlc(hlc);
     lastLogicalTime = mathMax(previousLogicalTime, remoteLogicalTime, getNow());
     lastCounter = lastLogicalTime == previousLogicalTime ? lastLogicalTime == remoteLogicalTime ? mathMax(lastCounter, remoteCounter) : lastCounter : lastLogicalTime == remoteLogicalTime ? remoteCounter : -1;
   };
@@ -996,7 +996,7 @@ var getStampHash = (stamp) => stamp[2];
 var replaceHlcHash = (oldHlc, newHlc) => newHlc > oldHlc ? (oldHlc ? getHash(oldHlc) : 0) ^ getHash(newHlc) : 0;
 var getLatestHlc = (hlc1, hlc2) => (
   /* istanbul ignore next */
-  ((hlc1 ?? "") > (hlc2 ?? "") ? hlc1 : hlc2) ?? ""
+  ((hlc1 ?? EMPTY_STRING) > (hlc2 ?? EMPTY_STRING) ? hlc1 : hlc2) ?? EMPTY_STRING
 );
 var stampUpdate = (stamp, hlc, hash) => {
   if (hlc > stamp[1]) {

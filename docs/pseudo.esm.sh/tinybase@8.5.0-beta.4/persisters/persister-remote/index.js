@@ -383,10 +383,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   return objFreeze(persister);
 };
-var getETag = (response) => response.headers.get("ETag") ?? "";
-var getIfNoneMatchHeaders = (lastEtag) => lastEtag == "" ? void 0 : { "If-None-Match": lastEtag };
+var getETag = (response) => response.headers.get("ETag") ?? EMPTY_STRING;
+var getIfNoneMatchHeaders = (lastEtag) => lastEtag == EMPTY_STRING ? void 0 : { "If-None-Match": lastEtag };
 var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 5, onIgnoredError) => {
-  let lastEtag = "";
+  let lastEtag = EMPTY_STRING;
   const getPersisted = async () => {
     const response = await fetch(loadUrl, {
       headers: getIfNoneMatchHeaders(lastEtag)
