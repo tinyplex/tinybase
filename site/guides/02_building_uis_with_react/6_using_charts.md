@@ -271,6 +271,9 @@ For complete examples, see the Chart Components (React) demos:
 [axes]: /demos/chart-components-react/axis-overrides/
 [time]: /demos/chart-components-react/time-axes/
 
+To start from a complete editable charting app, run the CLI and choose the
+Charting app template: `npm create tinybase@latest`.
+
 ## Summary
 
 The ui-react-dom-charts module lets you use Store and Queries data directly in

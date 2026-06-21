@@ -25,8 +25,8 @@
 
 > ## Your first _TinyBase_ app
 >
-> Create a todo list, a chat app, a drawing tool, or a tic-tac-toe game - with
-> sync & persistence! - in less than 60 seconds.
+> Create a todo list, a chat app, a drawing tool, a charting app, or a
+> tic-tac-toe game - with sync & persistence! - in less than 60s.
 
 ```bash
 > npm create tinybase@latest

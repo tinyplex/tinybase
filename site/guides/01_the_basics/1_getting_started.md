@@ -32,12 +32,16 @@ This tool provides the following templates to get started with:
   history.
 - Drawing: a collaborative drawing app with support for multiple users and
   real-time updates.
+- Charting: an editable table with reactive chart output using the React chart
+  components.
 - Tic-tac-toe: a turn-based tic-tac-toe game with computed game state and win
   detection.
 
 You can also configure these templates with different options, such as using
-TypeScript or JavaScript, different UI libraries, adding persistence with SQLite
-or PGlite, and enabling synchronization with a remote server or Durable Objects.
+TypeScript or JavaScript, adding persistence with SQLite or PGlite, and enabling
+synchronization with a remote server or Durable Objects.
+Most templates can use different UI libraries; the Charting app uses React chart
+components.
 
 Check out the [create-tinybase
 documentation](https://github.com/tinyplex/create-tinybase) for more details.

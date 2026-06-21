@@ -6,7 +6,7 @@ applications.
 ## create-tinybase
 
 You can use a tool called `create-tinybase` to build simple demo apps and then
-extend them to create a full apps of your own. Simply run the following command
+extend them to create full apps of your own. Simply run the following command
 to get started:
 
 ```bash
@@ -19,14 +19,17 @@ This tool provides the following templates to get started with:
   tasks.
 - Chat: a real-time chat app with support for multiple rooms and message
   history.
-- Draw: a collaborative drawing app with support for multiple users and
+- Drawing: a collaborative drawing app with support for multiple users and
   real-time updates.
-- Games: a turn-based tic-tac-toe game with computed game state and win
+- Charting: an editable table with reactive chart output using the React chart
+  components.
+- Tic-tac-toe: a turn-based tic-tac-toe game with computed game state and win
   detection.
 
 You can also configure these templates with different options, such as using
 TypeScript or JavaScript, adding persistence with SQLite or PGlite, and enabling
-synchronization with a remote server or Durable Objects.
+synchronization with a remote server or Durable Objects. Most templates can use
+different UI libraries; the Charting app uses React chart components.
 
 ## TinyHub
 

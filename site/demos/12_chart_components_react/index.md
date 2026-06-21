@@ -5,6 +5,9 @@
 These demos use the ui-react-dom-charts module to render Store Tables and
 Queries ResultTables as simple SVG charts.
 
+To start from a complete editable charting app, run the CLI and choose the
+Charting app template: `npm create tinybase@latest`.
+
 The set is organized as a small gallery of chart themes:
 
 | Theme       | Demo                                 |

@@ -109,6 +109,10 @@ binding in props and visual styling in stylesheets.
 
 Read more in the Using Charts guide and the Chart Components (React) demos.
 
+The `create-tinybase` CLI tool also now includes a Charting app option, so you
+can scaffold a complete editable table with reactive chart output by running
+`npm create tinybase@latest`.
+
 There are no intended breaking changes in this release. Please try the new
 chart components and let us know which chart types or styling hooks would be
 most useful next.

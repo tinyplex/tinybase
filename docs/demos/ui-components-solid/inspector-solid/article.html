@@ -15,9 +15,9 @@ import { createComponent as _$createComponent } from &quot;https://esm.sh/solid-
 import { memo as _$memo } from &quot;https://esm.sh/solid-js@^1.9.13/web&quot;;
 import { createSignal, onMount } from &quot;https://esm.sh/solid-js@^1.9.13&quot;;
 import { render } from &quot;https://esm.sh/solid-js@^1.9.13/web&quot;;
-import { createStore } from &quot;https://esm.sh/tinybase@8.5.0-beta.4&quot;;
-import { Provider, useCreateStore, useTableIds } from &quot;https://esm.sh/tinybase@8.5.0-beta.4/ui-solid&quot;;
-import { Inspector } from &quot;https://esm.sh/tinybase@8.5.0-beta.4/ui-solid-inspector&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.5.0&quot;;
+import { Provider, useCreateStore, useTableIds } from &quot;https://esm.sh/tinybase@8.5.0/ui-solid&quot;;
+import { Inspector } from &quot;https://esm.sh/tinybase@8.5.0/ui-solid-inspector&quot;;
 var _tmpl$ = _$template(`&lt;div id=loading&gt;`);
 var _tmpl$2 = _$template(`&lt;div id=info&gt;Loaded tables: `);
 var App = () =&gt; {
@@ -74,10 +74,10 @@ var loadTable = async (store, tableId) =&gt; {
     &lt;/html&gt;"></iframe><p>In this demo, we showcase the <a href="/api/ui-solid-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component, which allows you to view and edit the content of a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> in a debug web environment.</p><p>Let&#x27;s make changes to the <a href="/demos/ui-components-solid/tableinhtmltable-solid/">&lt;TableInHtmlTable /&gt; (Solid)</a> demo so we can start with a well-populated <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> to inspect.</p><h3 id="set-up">Set Up</h3><p>Let&#x27;s import the <a href="/api/ui-solid-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
 <span class="prefix"> </span>  {
 <span class="prefix"> </span>    "imports": {
-<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.5.0-beta.4",
-<span class="prefix"> </span>      "tinybase/ui-solid": "https://esm.sh/tinybase@8.5.0-beta.4/ui-solid",
-</span><span class="deleted-sign"><span class="prefix">-</span>       "tinybase/ui-solid-dom": "https://esm.sh/tinybase@8.5.0-beta.4/ui-solid-dom",
-</span><span class="inserted-sign"><span class="prefix">+</span>       "tinybase/ui-solid-inspector": "https://esm.sh/tinybase@8.5.0-beta.4/ui-solid-inspector",
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@8.5.0",
+<span class="prefix"> </span>      "tinybase/ui-solid": "https://esm.sh/tinybase@8.5.0/ui-solid",
+</span><span class="deleted-sign"><span class="prefix">-</span>       "tinybase/ui-solid-dom": "https://esm.sh/tinybase@8.5.0/ui-solid-dom",
+</span><span class="inserted-sign"><span class="prefix">+</span>       "tinybase/ui-solid-inspector": "https://esm.sh/tinybase@8.5.0/ui-solid-inspector",
 </span><span class="unchanged"><span class="prefix"> </span>      "solid-js": "https://esm.sh/solid-js@^1.9.13",
 <span class="prefix"> </span>      "solid-js/web": "https://esm.sh/solid-js@^1.9.13/web"
 <span class="prefix"> </span>    }
