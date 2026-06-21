@@ -22,13 +22,13 @@ html {
     sans-serif;
   text-rendering: optimizeLegibility;
   font-weight: 400;
-  letter-spacing: -0.01rem;
-  line-height: 1.8rem;
+  letter-spacing: 0;
+  line-height: 1.65;
 }
 
 code {
   font-family: Inconsolata, menlo, monospace;
-  font-size: 1.15em;
+  font-size: 0.98em;
 }
 
 h1,
@@ -38,9 +38,9 @@ h4,
 h5,
 h6 {
   font-family: Inter;
-  margin: 3rem 0 1rem;
-  font-weight: 800 !important;
-  line-height: 1.15;
+  margin: 2.5rem 0 0.85rem;
+  font-weight: 720;
+  line-height: 1.2;
   color: @text2Color;
   clear: both;
   a {
@@ -49,40 +49,41 @@ h6 {
   }
 }
 h1 {
-  font-size: 2.4rem;
+  font-size: 2.25rem;
   margin-top: 1rem;
 }
 h2 {
-  font-size: 2.2rem;
+  font-size: 1.9rem;
 }
 h3 {
-  font-size: 1.8rem;
+  font-size: 1.55rem;
 }
 h4 {
-  font-size: 1.6rem;
+  font-size: 1.35rem;
 }
 h5 {
-  font-size: 1.4rem;
+  font-size: 1.15rem;
 }
 h6 {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .s7 h6 {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
 }
 .s8 h6 {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 p {
-  margin: 2rem 0;
+  margin: 1.15rem 0;
   clear: both;
 }
 
 p code,
 article ul code {
-  background: @borderColor;
-  padding: 0.05em 0.25em;
+  background: @back2Color;
+  border: 1px solid @borderColor;
+  padding: 0.05em 0.3em;
   border-radius: 0.25rem;
   text-decoration-color: transparent;
 }
@@ -99,7 +100,7 @@ article ul code {
     th,
     td {
       line-height: 1.6rem;
-      padding: 0.25rem 0.5rem;
+      padding: 0.35rem 0.6rem;
       vertical-align: top;
       &.right {
         text-align: right;
@@ -118,7 +119,7 @@ article ul code {
       margin: 0;
     }
     th {
-      font-weight: 800;
+      font-weight: 720;
       text-align: left;
     }
   }

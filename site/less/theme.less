@@ -20,9 +20,13 @@ html {
 
 a {
   color: @text2Color;
+  text-decoration-line: underline;
   text-decoration-color: transparent;
-  text-decoration-thickness: 1px;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
   &:hover {
+    color: @accentColor;
     text-decoration-color: @accentColor;
   }
 }
@@ -51,6 +55,9 @@ body {
       }
       a {
         text-decoration-color: @linkColor;
+        &:hover {
+          text-decoration-color: @accentColor;
+        }
         &#sbEdit {
           background: @accentColor;
           color: @backColor;
@@ -94,9 +101,10 @@ pre {
     background: @back2Color;
   }
   tr:first-child th {
-    background: @accentColor;
-    border-color: @accentColor;
-    color: #eee;
+    background: @back3Color;
+    border-color: @borderColor;
+    box-shadow: inset 0 0.125rem 0 @accentColor;
+    color: @text2Color;
   }
 }
 
