@@ -18,6 +18,9 @@ body > main > article#home {
   row-gap: 2rem;
   padding: 2rem;
   z-index: 0;
+  p {
+    margin: 1rem 0 0;
+  }
   > em {
     display: block;
     max-width: 10rem;
@@ -33,18 +36,34 @@ body > main > article#home {
     }
   }
   > section#hero {
+    display: grid;
     max-width: 40rem;
     margin: auto;
     h2 {
+      animation: heroHeading 6s ease-in-out infinite both;
       font-size: 3rem;
+      grid-column: 1;
+      grid-row: 1;
       line-height: 3.6rem;
+      margin: 0;
+      opacity: 0;
       text-align: center;
+      transform: translate3d(0, 0.8rem, 0);
+      will-change: opacity, transform;
+      &:nth-of-type(2) {
+        animation-delay: -4s;
+      }
+      &:nth-of-type(3) {
+        animation-delay: -2s;
+      }
       em,
       span {
         white-space: nowrap;
       }
     }
     p {
+      grid-column: 1;
+      grid-row: 2;
       text-align: center;
     }
   }
@@ -52,7 +71,7 @@ body > main > article#home {
     color: @accentColor;
     font-family: Shantell;
     display: block;
-    margin: 0 auto;
+    margin-top: -1rem;
     text-align: center;
     white-space: nowrap;
     font-size: 1.1rem;
@@ -177,12 +196,46 @@ body > main > article#home {
   }
 }
 
+@keyframes heroHeading {
+  0%,
+  25% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  33.333%,
+  91.666% {
+    opacity: 0;
+    transform: translate3d(0, -0.8rem, 0);
+  }
+  91.667% {
+    opacity: 0;
+    transform: translate3d(0, 0.8rem, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body > main > article#home > section#hero {
+    h2 {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    h2:nth-of-type(1n + 2) {
+      display: none;
+    }
+  }
+}
+
 @media (min-width: 56rem) {
   body > main > article#home {
     grid-template-columns: repeat(6, 1fr);
     padding: 4rem 8rem;
     column-gap: 4rem;
-    row-gap: 2rem;
+    row-gap: 3rem;
     > em {
       grid-column-end: span 2;
       grid-row: span 2;
@@ -213,7 +266,7 @@ body > main > article#home {
     > pre,
     > img,
     > .table {
-      margin-top: 0.3rem;
+      margin: 0.3rem 0 0;
     }
     > .table th:first-child {
       width: 45%;

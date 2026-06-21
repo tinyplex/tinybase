@@ -1,9 +1,14 @@
 # TinyBase
 
 <section id="hero">
-  <h2>
-    A <em>reactive</em> data store & <span><em>sync</em> engine</span>
-  </h2>
+  <h2><em>Local</em> first.</h2>
+  <h2><em>Sync</em> on demand.</h2>
+  <h2><em>Fast</em> always.</h2>
+  <p>
+    TinyBase is a reactive data store & sync engine for apps that need to feel 
+    instant, work well when they are offline, and yet stay consistent when they
+    are back online.
+  </p>
 </section>
 
 <a href='/guides/releases/#v8-5'><em>NEW!</em> v8.5 release</a>
@@ -18,7 +23,7 @@
 
 ---
 
-> ## Let's build _local-first_ apps
+> ## Your first _TinyBase_ app
 >
 > Create a todo list, a chat app, a drawing tool, or a tic-tac-toe game - with
 > sync & persistence! - in less than 60 seconds.
@@ -38,7 +43,7 @@
 > rendering cycles on things that change. The optional [bindings to
 > React](#call-hooks-to-bind-to-data), [pre-built
 > components](#pre-built-reactive-components), and
-> [charts](#pre-built-reactive-components) let you easily build fully reactive
+> [charts](#local-first-data-visualizations) let you easily build fully reactive
 > UIs on top of TinyBase. You even get a built-in [undo
 > stack](#set-checkpoints-for-an-undo-stack), and [developer
 > tools](#an-inspector-for-your-data)!
@@ -65,7 +70,7 @@
 > you can deterministically [synchronize](/guides/synchronization/) and merge
 > data across multiple sources, clients, and servers. And although TinyBase is
 > an in-memory data store, you can easily
-> [persist](#persist-to-storage-databases-more) your data to file, [browser
+> [persist](#persist-to-storage-or-a-database) your data to file, [browser
 > storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db),
 > [SQLite or PostgreSQL databases](/guides/persistence/database-persistence/),
 > and [more](/guides/persistence/third-party-crdt-persistence/).
@@ -360,7 +365,7 @@ root.unmount(); // !act
 
 <img src='/ui-react-dom.webp' />
 
-> ## Reactive charts of Store data.
+> ## Local-first data visualizations.
 >
 > Render TinyBase data and queries directly as responsive, styleable SVG charts
 > with the ui-react-dom-charts module. These charts update reactively when data
@@ -445,7 +450,7 @@ await synchronizer1.destroy();
 await server.destroy();
 ```
 
-> ## Persist to storage, databases, & more.
+> ## Persist to storage or a database.
 >
 > You can easily persist a Store between browser page reloads or sessions. You
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
