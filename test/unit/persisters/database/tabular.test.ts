@@ -166,6 +166,79 @@ describe.each(Object.entries(ALL_VARIANTS))(
             });
           });
 
+          test('subset', async () => {
+            await setDatabase(db, {
+              tinybase_values: [
+                'CREATE TABLE "tinybase_values" ("_id" ' +
+                  columnType +
+                  ' PRIMARY KEY, "v2" ' +
+                  columnType +
+                  ')',
+                [{_id: '_', v2: 20}],
+              ],
+            });
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                values: {save: ['v1']},
+                autoLoadIntervalSeconds,
+              })
+            ).save();
+            await pause();
+            expect(await getDatabase(db)).toEqual({
+              tinybase_values: [
+                {_id: columnType, v2: columnType, v1: columnType},
+                [{_id: '_', v2: 20, v1: 1}],
+              ],
+            });
+          });
+
+          test('subset automatic', async () => {
+            await setDatabase(db, {
+              tinybase_values: [
+                'CREATE TABLE "tinybase_values" ("_id" ' +
+                  columnType +
+                  ' PRIMARY KEY, "v2" ' +
+                  columnType +
+                  ')',
+                [{_id: '_', v2: 20}],
+              ],
+            });
+            const persister = await getPersister(store, db, {
+              mode: 'tabular',
+              values: {save: ['v1']},
+              autoLoadIntervalSeconds,
+            });
+            await persister.startAutoSave();
+            store.setValue('v2', 30);
+            await pause();
+            expect(await getDatabase(db)).toEqual({
+              tinybase_values: [
+                {_id: columnType, v2: columnType, v1: columnType},
+                [{_id: '_', v2: 20, v1: 1}],
+              ],
+            });
+
+            store.setValue('v1', 10);
+            await pause();
+            expect(await getDatabase(db)).toEqual({
+              tinybase_values: [
+                {_id: columnType, v2: columnType, v1: columnType},
+                [{_id: '_', v2: 20, v1: 10}],
+              ],
+            });
+
+            store.delValue('v1');
+            await pause();
+            expect(await getDatabase(db)).toEqual({
+              tinybase_values: [
+                {_id: columnType, v2: columnType, v1: columnType},
+                [{_id: '_', v2: 20, v1: null}],
+              ],
+            });
+            await persister.destroy();
+          });
+
           describe('tableName', () => {
             test('as string', async () => {
               await (
@@ -395,6 +468,17 @@ describe.each(Object.entries(ALL_VARIANTS))(
               })
             ).load();
             expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
+          });
+
+          test('subset', async () => {
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                values: {load: ['v1']},
+                autoLoadIntervalSeconds,
+              })
+            ).load();
+            expect(store.getContent()).toEqual([{}, {v1: 1}]);
           });
 
           describe('tableName', () => {

@@ -1,5 +1,8 @@
 /// persisters
-import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
+import type {
+  TableIdFromSchema,
+  ValueIdFromSchema,
+} from '../../_internal/store/with-schemas/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
@@ -10,6 +13,7 @@ import type {
   Content,
   OptionalSchemas,
   OptionalTablesSchema,
+  OptionalValuesSchema,
   Store,
 } from '../../store/with-schemas/index.d.ts';
 import type {Id} from '../../with-schemas/index.d.ts';
@@ -90,7 +94,7 @@ export type PersisterStats = {
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
   | DpcJson
-  | DpcTabular<Schemas[0]>;
+  | DpcTabular<Schemas[0], Schemas[1]>;
 
 /// DpcJson
 export type DpcJson = {
@@ -107,18 +111,21 @@ export type DpcJson = {
 };
 
 /// DpcTabular
-export type DpcTabular<Schema extends OptionalTablesSchema> = {
+export type DpcTabular<
+  TablesSchema extends OptionalTablesSchema,
+  ValuesSchema extends OptionalValuesSchema = OptionalValuesSchema,
+> = {
   /// DpcTabular.mode
   mode: 'tabular';
   /// DpcTabular.tables
   tables?: {
     /// DpcTabular.tables.load
-    load?: DpcTabularLoad<Schema>;
+    load?: DpcTabularLoad<TablesSchema>;
     /// DpcTabular.tables.save
-    save?: DpcTabularSave<Schema>;
+    save?: DpcTabularSave<TablesSchema>;
   };
   /// DpcTabular.values
-  values?: DpcTabularValues;
+  values?: DpcTabularValues<ValuesSchema>;
   /// DatabasePersisterConfig.autoLoadIntervalSeconds
   autoLoadIntervalSeconds?: number;
 };
@@ -159,14 +166,21 @@ export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
 };
 
 /// DpcTabularValues
-export type DpcTabularValues = {
+export type DpcTabularValues<
+  Schema extends OptionalValuesSchema = OptionalValuesSchema,
+> = {
   /// DpcTabularValues.load
-  load?: boolean;
+  load?: boolean | DpcTabularValuesIn<Schema>;
   /// DpcTabularValues.save
-  save?: boolean;
+  save?: boolean | DpcTabularValuesIn<Schema>;
   /// DpcTabularValues.tableName
   tableName?: string;
 };
+
+/// DpcTabularValuesIn
+export type DpcTabularValuesIn<
+  Schema extends OptionalValuesSchema = OptionalValuesSchema,
+> = ValueIdFromSchema<Schema>[];
 
 /// Persister
 export interface Persister<

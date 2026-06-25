@@ -5,6 +5,43 @@ highlighted features.
 
 ---
 
+# v8.6
+
+## Persistence Subsets
+
+This release adds finer-grained configuration for tabular database Persisters,
+allowing Values persistence to be limited to selected Value Ids.
+
+For apps that keep durable state and UI-only state in the same Store, the
+DpcTabularValues `load` and `save` properties can now use an array of Value
+Ids instead of a simple boolean:
+
+```js
+const valuesSubsetDatabasePersisterConfig = {
+  mode: 'tabular',
+  values: {
+    load: ['selectedPet', 'open'],
+    save: ['selectedPet'],
+  },
+};
+
+console.log(valuesSubsetDatabasePersisterConfig.values.load);
+// -> ['selectedPet', 'open']
+```
+
+When a subset is configured, unlisted Values in the Store are not saved, and
+unlisted columns in the Values database table are left untouched.
+
+## Query Transaction Fixes
+
+Grouped queries, including those with having clauses, now correctly return their
+current result when a query definition is added during an active Store
+transaction.
+
+There are no intended breaking changes in this release.
+
+---
+
 # v8.5
 
 ## React Chart Components

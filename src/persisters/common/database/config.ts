@@ -1,4 +1,4 @@
-import type {Id} from '../../../@types/common/index.d.ts';
+import type {Id, Ids} from '../../../@types/common/index.d.ts';
 import type {
   DatabasePersisterConfig,
   DpcTabularCondition,
@@ -18,7 +18,13 @@ import {
   objSize,
   objValues,
 } from '../../../common/obj.ts';
-import {isNull, isString, slice} from '../../../common/other.ts';
+import {
+  isArray,
+  isNull,
+  isString,
+  isTrue,
+  slice,
+} from '../../../common/other.ts';
 import {setAdd, setNew} from '../../../common/set.ts';
 import {TINYBASE, TRUE} from '../../../common/strings.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common.ts';
@@ -41,7 +47,13 @@ export type DefaultedTabularConfig = [
       condition: DpcTabularCondition,
     ]
   >,
-  valuesConfig: [load: boolean, save: boolean, tableName: string],
+  valuesConfig: [
+    load: boolean,
+    save: boolean,
+    tableName: string,
+    loadValueIds: Ids | undefined,
+    saveValueIds: Ids | undefined,
+  ],
 ];
 
 const COLUMN_NAME = 'ColumnName';
@@ -70,6 +82,11 @@ const DEFAULT_TABULAR_VALUES_CONFIG = {
   save: 0,
   [TABLE_NAME]: TINYBASE + '_values',
 };
+
+const getValuesIn = (config: any): Ids | undefined =>
+  isArray(config) ? (config as Ids) : undefined;
+
+const hasValues = (config: any): boolean => isTrue(config) || isArray(config);
 
 const getDefaultedConfig = (
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
@@ -138,11 +155,15 @@ export const getConfigStructures = (
 
   const {tables: {load = {}, save = {}} = {}, values = {}} = config;
 
-  const valuesConfig = slice(
-    objValues(objMerge(DEFAULT_TABULAR_VALUES_CONFIG, values)),
-    0,
-    objSize(DEFAULT_TABULAR_VALUES_CONFIG),
-  ) as DefaultedTabularConfig[2];
+  const valuesConfigObj = objMerge(DEFAULT_TABULAR_VALUES_CONFIG, values);
+  const {load: valuesLoad, save: valuesSave} = valuesConfigObj;
+  const valuesConfig = [
+    hasValues(valuesLoad),
+    hasValues(valuesSave),
+    valuesConfigObj[TABLE_NAME],
+    getValuesIn(valuesLoad),
+    getValuesIn(valuesSave),
+  ] as DefaultedTabularConfig[2];
   const valuesTable = valuesConfig[2];
   const managedTableNames = setNew(valuesTable);
   const excludedTableNames = setNew(valuesTable);

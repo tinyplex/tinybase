@@ -145,12 +145,15 @@ export type DpcTabularSave = {
 /// DpcTabularValues
 export type DpcTabularValues = {
   /// DpcTabularValues.load
-  load?: boolean;
+  load?: boolean | DpcTabularValuesIn;
   /// DpcTabularValues.save
-  save?: boolean;
+  save?: boolean | DpcTabularValuesIn;
   /// DpcTabularValues.tableName
   tableName?: string;
 };
+
+/// DpcTabularValuesIn
+export type DpcTabularValuesIn = Id[];
 
 /// Persister
 export interface Persister<Persist extends Persists = Persists.StoreOnly> {

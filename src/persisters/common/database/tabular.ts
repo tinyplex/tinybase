@@ -14,9 +14,9 @@ import type {
   ValueOrUndefined,
   Values,
 } from '../../../@types/store/index.d.ts';
-import {arrayFilter} from '../../../common/array.ts';
+import {arrayFilter, arrayHas, arrayMap} from '../../../common/array.ts';
 import {mapMap} from '../../../common/map.ts';
-import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
+import {objHas, objIsEmpty, objNew, objToArray} from '../../../common/obj.ts';
 import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {createCustomPersister} from '../create.ts';
 import {getCommandFunctions} from './commands.ts';
@@ -46,7 +46,13 @@ export const createTabularPersister = <
   [
     tablesLoadConfig,
     tablesSaveConfig,
-    [valuesLoad, valuesSave, valuesTableName],
+    [
+      valuesLoad,
+      valuesSave,
+      valuesTableName,
+      valuesLoadValueIds,
+      valuesSaveValueIds,
+    ],
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
   querySchema: QuerySchema,
@@ -107,6 +113,29 @@ export const createTabularPersister = <
       ),
     );
 
+  const getValuesSubset = (
+    values: Values | {[valueId: Id]: ValueOrUndefined},
+    valueIds: Id[],
+    partial?: boolean,
+  ) =>
+    objNew(
+      partial == true
+        ? arrayFilter(
+            objToArray(values, (value, valueId): [Id, ValueOrUndefined] => [
+              valueId,
+              value,
+            ]),
+            ([valueId]) => arrayHas(valueIds, valueId),
+          )
+        : arrayFilter(
+            arrayMap(valueIds, (valueId): [Id, ValueOrUndefined] => [
+              valueId,
+              values[valueId],
+            ]),
+            ([, value]) => !isUndefined(value),
+          ),
+    );
+
   const saveValues = async (
     values: Values | {[valueId: Id]: ValueOrUndefined},
     partial?: boolean,
@@ -115,10 +144,16 @@ export const createTabularPersister = <
       ? await saveTable(
           valuesTableName,
           DEFAULT_ROW_ID_COLUMN_NAME,
-          {[SINGLE_ROW_ID]: values},
+          {
+            [SINGLE_ROW_ID]: isUndefined(valuesSaveValueIds)
+              ? values
+              : getValuesSubset(values, valuesSaveValueIds, partial),
+          },
           true,
           true,
           partial,
+          undefined,
+          valuesSaveValueIds,
         )
       : null;
 
@@ -140,9 +175,14 @@ export const createTabularPersister = <
 
   const loadValues = async (): Promise<Values | null> =>
     valuesLoad
-      ? (await loadTable(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME))[
-          SINGLE_ROW_ID
-        ]
+      ? (
+          await loadTable(
+            valuesTableName,
+            DEFAULT_ROW_ID_COLUMN_NAME,
+            undefined,
+            valuesLoadValueIds,
+          )
+        )[SINGLE_ROW_ID]
       : {};
 
   const getPersisted = (): Promise<PersistedContent<Persist> | undefined> =>

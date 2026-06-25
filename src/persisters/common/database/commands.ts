@@ -1,4 +1,4 @@
-import type {Id} from '../../../@types/common/index.d.ts';
+import type {Id, Ids} from '../../../@types/common/index.d.ts';
 import type {
   DatabaseExecuteCommand,
   DpcTabularCondition,
@@ -25,7 +25,6 @@ import {
   objMap,
   objNew,
   objToArray,
-  objValues,
 } from '../../../common/obj.ts';
 import {isUndefined, promiseAll, tryCatch} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
@@ -63,6 +62,7 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
     condition?: DpcTabularCondition,
+    contentSubIds?: Ids,
   ) => Promise<Table>,
   saveTable: (
     tableName: string,
@@ -78,6 +78,7 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     partial?: boolean,
     condition?: DpcTabularCondition,
+    contentSubIds?: Ids,
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
@@ -98,8 +99,14 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
     condition?: DpcTabularCondition,
-  ): Promise<Table> =>
-    canSelect(tableName, rowIdColumnName)
+    contentSubIds?: Ids,
+  ): Promise<Table> => {
+    const contentSubIdSet = isUndefined(contentSubIds)
+      ? undefined
+      : setNew(contentSubIds);
+    const includeContentSubId = (contentSubId: Id): boolean =>
+      isUndefined(contentSubIdSet) || collHas(contentSubIdSet, contentSubId);
+    return canSelect(tableName, rowIdColumnName)
       ? objNew(
           arrayFilter(
             arrayMap(
@@ -108,18 +115,34 @@ export const getCommandFunctions = (
                   escapeId(tableName) +
                   getWhereCondition(tableName, condition),
               ),
-              (row): [Id | undefined, Row] => [
-                row[rowIdColumnName],
-                decode
+              (row): [Id | undefined, Row] => {
+                const rowId = row[rowIdColumnName];
+                const rowContent = decode
                   ? objMap(objDel(row, rowIdColumnName), decode)
-                  : objDel(row, rowIdColumnName),
-              ],
+                  : objDel(row, rowIdColumnName);
+                return [
+                  rowId,
+                  isUndefined(contentSubIdSet)
+                    ? rowContent
+                    : objNew(
+                        arrayFilter(
+                          objToArray(
+                            rowContent,
+                            (cellOrValue, contentSubId) =>
+                              [contentSubId, cellOrValue] as [Id, any],
+                          ),
+                          ([contentSubId]) => includeContentSubId(contentSubId),
+                        ),
+                      ),
+                ];
+              },
             ),
             (entry): entry is [Id, Row] =>
               !isUndefined(entry[0]) && !objIsEmpty(entry[1]),
           ),
         )
       : {};
+  };
 
   const saveTable = async (
     tableName: string,
@@ -135,17 +158,25 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     partial = false,
     condition: DpcTabularCondition = TRUE,
+    contentSubIds?: Ids,
   ): Promise<void> => {
+    const contentSubIdSet = isUndefined(contentSubIds)
+      ? undefined
+      : setNew(contentSubIds);
+    const includeContentSubId = (contentSubId: Id): boolean =>
+      isUndefined(contentSubIdSet) || collHas(contentSubIdSet, contentSubId);
     const settingColumnNameSet = setNew<string>();
     objMap(content ?? {}, (contentRow) =>
-      arrayMap(objIds(contentRow ?? {}), (cellOrValueId) =>
-        setAdd(settingColumnNameSet, cellOrValueId),
+      arrayMap(
+        arrayFilter(objIds(contentRow ?? {}), includeContentSubId),
+        (cellOrValueId) => setAdd(settingColumnNameSet, cellOrValueId),
       ),
     );
     const settingColumnNames = collValues(settingColumnNameSet);
 
     // Delete the table
     if (
+      isUndefined(contentSubIdSet) &&
       !partial &&
       deleteEmptyTable &&
       condition == TRUE &&
@@ -158,7 +189,13 @@ export const getCommandFunctions = (
     }
 
     const currentColumnNames = mapGet(schemaMap, tableName);
-    const unaccountedColumnNames = setNew(collValues(currentColumnNames));
+    const unaccountedColumnNames = setNew(
+      arrayFilter(
+        collValues(currentColumnNames),
+        (columnName) =>
+          columnName == rowIdColumnName || includeContentSubId(columnName),
+      ),
+    );
     if (!arrayIsEmpty(settingColumnNames)) {
       if (!collHas(schemaMap, tableName)) {
         // Create the table
@@ -229,11 +266,13 @@ export const getCommandFunctions = (
     if (partial) {
       if (isUndefined(content)) {
         // Delete all rows (partial)
-        await databaseExecuteCommand(
-          DELETE_FROM +
-            escapeId(tableName) +
-            getWhereCondition(tableName, condition),
-        );
+        if (isUndefined(contentSubIdSet)) {
+          await databaseExecuteCommand(
+            DELETE_FROM +
+              escapeId(tableName) +
+              getWhereCondition(tableName, condition),
+          );
+        }
       } else {
         await promiseAll(
           objToArray(content, async (row, rowId) => {
@@ -248,18 +287,24 @@ export const getCommandFunctions = (
               );
             } else if (!arrayIsEmpty(settingColumnNames)) {
               // Upsert row (partial)
-              await upsert(
-                databaseExecuteCommand,
-                tableName,
-                rowIdColumnName,
+              const changingColumnNames = arrayFilter(
                 objIds(row),
-                {
-                  [rowId]: encode
-                    ? arrayMap(objValues(row), encode)
-                    : objValues(row),
-                },
-                currentColumnNames,
+                includeContentSubId,
               );
+              if (!arrayIsEmpty(changingColumnNames)) {
+                await upsert(
+                  databaseExecuteCommand,
+                  tableName,
+                  rowIdColumnName,
+                  changingColumnNames,
+                  {
+                    [rowId]: arrayMap(changingColumnNames, (cellId) =>
+                      encode ? encode(row[cellId]) : row[cellId],
+                    ),
+                  },
+                  currentColumnNames,
+                );
+              }
             }
           }),
         );
@@ -268,7 +313,9 @@ export const getCommandFunctions = (
       if (!arrayIsEmpty(settingColumnNames)) {
         const changingColumnNames = arrayFilter(
           collValues(mapGet(schemaMap, tableName)),
-          (changingColumnName) => changingColumnName != rowIdColumnName,
+          (changingColumnName) =>
+            changingColumnName != rowIdColumnName &&
+            includeContentSubId(changingColumnName),
         );
         const rows: {[id: string]: any[]} = {};
         const deleteRowIds: string[] = [];
@@ -285,6 +332,7 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           rows,
+          currentColumnNames,
         );
         // Delete rows
         await databaseExecuteCommand(
@@ -295,7 +343,10 @@ export const getCommandFunctions = (
             `AND${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds)})`,
           deleteRowIds,
         );
-      } else if (collHas(schemaMap, tableName)) {
+      } else if (
+        isUndefined(contentSubIdSet) &&
+        collHas(schemaMap, tableName)
+      ) {
         // Delete all rows
         await databaseExecuteCommand(
           DELETE_FROM +

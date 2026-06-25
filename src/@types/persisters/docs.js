@@ -179,10 +179,10 @@
  * neither are present, the content will be loaded using the Persister's load
  * method. Prior to v5.0, these parameters were callbacks and the overall type
  * was non-generic.
- * @param content If provided, this is a Content object from the Persister
- * that will be used to immediately wholesale update the Store.
- * @param changes If provided, this is a Changes object from the Persister
- * that will be used to immediately incrementally update the Store. This takes
+ * @param content If provided, this is a Content object from the Persister that
+ * will be used to immediately wholesale update the Store.
+ * @param changes If provided, this is a Changes object from the Persister that
+ * will be used to immediately incrementally update the Store. This takes
  * priority over the content argument above if present.
  * @category Creation
  * @since v4.0.0
@@ -775,12 +775,15 @@
  * Note that both loading and saving of Values from and to the database are
  * disabled by default.
  *
+ * The `load` and `save` properties can be set to `true` to persist all Values,
+ * or to a DpcTabularValuesIn array to persist just a subset of Value Ids.
+ *
  * The 'Dpc' prefix indicates that this type is used within the
  * DatabasePersisterConfig type.
  * @example
  * When applied to a database Persister, this DatabasePersisterConfig will load
- * and save the data of a Store's Values into a database
- * table called 'my_tinybase_values'.
+ * and save the data of two Store Values into a database table called
+ * 'my_tinybase_values'.
  *
  * ```js
  * import type {DatabasePersisterConfig} from 'tinybase';
@@ -788,8 +791,8 @@
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   values: {
- *     load: true,
- *     save: true,
+ *     load: ['selectedPet', 'open'],
+ *     save: ['selectedPet', 'open'],
  *     tableName: 'my_tinybase_values',
  *   },
  * };
@@ -800,13 +803,15 @@
 /// DpcTabularValues
 {
   /**
-   * Whether Store Values will be loaded from a database table.
+   * Whether Store Values will be loaded from a database table, or the subset of
+   * Value Ids that will be loaded.
    * @category Configuration
    * @since v4.0.0
    */
   /// DpcTabularValues.load
   /**
-   * Whether Store Values will be saved to a database table.
+   * Whether Store Values will be saved to a database table, or the subset of
+   * Value Ids that will be saved.
    * @category Configuration
    * @since v4.0.0
    */
@@ -819,6 +824,20 @@
    */
   /// DpcTabularValues.tableName
 }
+/**
+ * The DpcTabularValuesIn type describes the subset of Store Values that are
+ * persisted by the DpcTabularValues type.
+ *
+ * When used as the DpcTabularValues `load` or `save` property, only the listed
+ * Value Ids will be loaded from or saved to the database table. Unlisted
+ * database columns are ignored on load and left untouched on save.
+ *
+ * The 'Dpc' prefix indicates that this type is used within the
+ * DatabasePersisterConfig type.
+ * @category Configuration
+ * @since v8.6.0
+ */
+/// DpcTabularValuesIn
 /**
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.
