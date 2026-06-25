@@ -5160,6 +5160,31 @@ describe('Miscellaneous', () => {
     });
   });
 
+  test('returns grouped result when query is defined mid-transaction', () => {
+    store.setTable('records', {
+      r1: {account: '1', amount: 3, decimals: 2},
+      r2: {account: '1', amount: 4, decimals: 2},
+      r3: {account: '2', amount: 5, decimals: 2},
+    });
+
+    queries.setQueryDefinition('q1', 'records', ({select, group}) => {
+      select('account');
+      select('amount');
+      group('amount', 'avg');
+    });
+
+    store.startTransaction();
+    queries.setQueryDefinition('q2', 'records', ({select, where, group}) => {
+      select('amount');
+      where('account', '1');
+      group('amount', 'sum');
+    });
+
+    expect(queries.getResultTable('q2')).toEqual({0: {amount: 7}});
+    store.finishTransaction();
+    expect(queries.getResultTable('q2')).toEqual({0: {amount: 7}});
+  });
+
   test('remove listener', () => {
     listener = createQueriesListener(queries);
     const listenerId = listener.listenToResultTable('/q1', 'q1');

@@ -130,9 +130,9 @@ type RoutedResultListener = [ResultListenerStat, IdMap<[Store, Id]>, Id?];
 
 export const createQueries = getCreateFunction((store: Store): Queries => {
   const createStore = (store as ProtectedStore)._[0];
-  const preStore = createStore();
   const paramStore = createStore();
   const resultStore = createStore();
+  const preStores: IdMap<Store> = mapNew();
   const resultStores: IdMap<Store> = mapNew();
   const redefiningQueryIds: IdSet = setNew();
   const routedResultListeners: Map<Id, RoutedResultListener> = mapNew();
@@ -178,6 +178,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const getResultStore = (queryId: Id): Store =>
     mapEnsure(resultStores, queryId, createStore);
 
+  const getPreStore = (queryId: Id): Store =>
+    mapEnsure(preStores, queryId, createStore);
+
   const addPreStoreListener = (
     preStore: Store,
     queryId: Id,
@@ -210,8 +213,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         collClear(queryPreStoreListenerIds);
       },
     );
-    arrayForEach([getResultStore(queryId), preStore], (store) =>
-      store.delTable(queryId),
+    arrayForEach(
+      [getResultStore(queryId), mapGet(preStores, queryId)],
+      (store) => store?.delTable(queryId),
     );
   };
 
@@ -515,13 +519,15 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           );
           const groups: IdMap<GroupClause> = mapNew(groupEntries);
 
-          let selectJoinWhereStore = preStore;
+          const hasGroupsOrHavings =
+            !collIsEmpty(groups) || !arrayIsEmpty(havings);
+          const selectJoinWhereStore = hasGroupsOrHavings
+            ? getPreStore(queryId)
+            : resultStore;
 
           // GROUP & HAVING
 
-          if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-            selectJoinWhereStore = resultStore;
-          } else {
+          if (hasGroupsOrHavings) {
             synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
 
             const groupedSelectedCellIds: IdMap<Set<[Id, Aggregators]>> =
