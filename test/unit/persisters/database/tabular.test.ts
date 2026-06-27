@@ -1340,6 +1340,29 @@ describe.each(Object.entries(ALL_VARIANTS))(
 
       afterEach(() => persister.destroy());
 
+      if (name == 'powerSync') {
+        test('updates existing rows before inserting missing rows', async () => {
+          sqlLogs.splice(0);
+          store.setCell('t1', 'r1', 'c1', 2);
+          await pause();
+          expect(sqlLogs).toEqual([
+            ['BEGIN', undefined],
+            ['UPDATE"t1" SET"c1"=$1 WHERE"_id"=$2 RETURNING"_id"', [2, 'r1']],
+            ['END', undefined],
+          ]);
+
+          sqlLogs.splice(0);
+          store.setCell('t1', 'r3', 'c1', 3);
+          await pause();
+          expect(sqlLogs).toEqual([
+            ['BEGIN', undefined],
+            ['UPDATE"t1" SET"c1"=$1 WHERE"_id"=$2 RETURNING"_id"', [3, 'r3']],
+            ['INSERT INTO"t1"("_id","c1")VALUES($1,$2)', ['r3', 3]],
+            ['END', undefined],
+          ]);
+        });
+      }
+
       test('initial conditions', async () => {
         expect(await getDatabase(db)).toEqual({
           t1: [

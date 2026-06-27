@@ -32,6 +32,13 @@ console.log(valuesSubsetDatabasePersisterConfig.values.load);
 When a subset is configured, unlisted Values in the Store are not saved, and
 unlisted columns in the Values database table are left untouched.
 
+## PowerSync Persistence Fixes
+
+The PowerSync Persister now updates existing tabular rows before inserting
+missing ones, instead of replacing whole rows during upserts. This avoids
+flooding PowerSync upload queues with replacement writes when schema validation
+causes loaded data to be written back unchanged on startup.
+
 ## Query Transaction Fixes
 
 Grouped queries, including those with having clauses, now correctly return their

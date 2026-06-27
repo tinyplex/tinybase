@@ -9,24 +9,13 @@ import type {
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {
-  arrayFilter,
-  arrayForEach,
-  arrayIsEmpty,
-  arrayJoin,
-  arrayMap,
-  arrayPush,
-} from '../../common/array.ts';
-import {collHas} from '../../common/coll.ts';
-import {IdObj, objIds, objNew, objToArray} from '../../common/obj.ts';
+import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
+import {IdObj, objToArray} from '../../common/obj.ts';
 import {noop} from '../../common/other.ts';
-import {IdSet, setNew} from '../../common/set.ts';
 import {COMMA} from '../../common/strings.ts';
 import {
-  FROM,
   INSERT,
-  OR_REPLACE,
-  SELECT,
+  UPDATE,
   Upsert,
   WHERE,
   escapeColumnNames,
@@ -76,83 +65,62 @@ export const createPowerSyncPersister = ((
     1, // StoreOnly,
     powerSync,
     'getPowerSync',
-    viewUpsert,
+    powerSyncUpdateThenInsert,
   ) as PowerSyncPersister;
 }) as typeof createPowerSyncPersisterDecl;
 
-const viewUpsert: Upsert = async (
+// PowerSync records INSERT/REPLACE statements as PUTs and UPDATE statements as
+// PATCHes. Update first so existing rows avoid replacement writes in the upload
+// queue, then insert only when RETURNING shows that no row existed.
+const powerSyncUpdateThenInsert: Upsert = async (
   executeCommand: DatabaseExecuteCommand,
   tableName: string,
   rowIdColumnName: string,
   changingColumnNames: string[],
   rows: {[id: string]: any[]},
-  currentColumnNames?: IdSet | undefined,
 ) => {
-  const offset = [1];
-  const changingColumnNamesSet = setNew(changingColumnNames);
-  const unchangingColumnNames = currentColumnNames
-    ? arrayFilter(
-        [...currentColumnNames],
-        (currentColumnName) =>
-          currentColumnName != rowIdColumnName &&
-          !collHas(changingColumnNamesSet, currentColumnName),
-      )
-    : [];
-  if (!arrayIsEmpty(unchangingColumnNames)) {
-    const ids = objIds(rows);
-    const unchangingData = objNew(
-      arrayMap(
+  const assignments = arrayJoin(
+    arrayMap(
+      changingColumnNames,
+      (columnName, index) => escapeId(columnName) + '=$' + (index + 1),
+    ),
+    COMMA,
+  );
+  for (const [id, row] of objToArray(rows, (row, id): [string, any[]] => [
+    id,
+    row,
+  ])) {
+    const rowParams = arrayMap(row, (value) => value ?? null);
+    if (
+      arrayIsEmpty(
         await executeCommand(
-          SELECT +
-            escapeColumnNames(rowIdColumnName, ...unchangingColumnNames) +
-            FROM +
+          UPDATE +
             escapeId(tableName) +
+            ' SET' +
+            assignments +
+            ' ' +
             WHERE +
             escapeId(rowIdColumnName) +
-            'IN(' +
-            getPlaceholders(ids) +
-            ')',
-          ids,
+            '=$' +
+            (row.length + 1) +
+            ' RETURNING' +
+            escapeId(rowIdColumnName),
+          [...rowParams, id],
         ),
-        (unchangingRow) => [unchangingRow[rowIdColumnName], unchangingRow],
-      ),
-    );
-    arrayForEach(ids, (id: string) =>
-      arrayPush(
-        rows[id],
-        ...arrayMap(
-          unchangingColumnNames,
-          (unchangingColumnName) =>
-            unchangingData?.[id]?.[unchangingColumnName] ?? null,
-        ),
-      ),
-    );
+      )
+    ) {
+      const offset = [1];
+      await executeCommand(
+        INSERT +
+          ' INTO' +
+          escapeId(tableName) +
+          '(' +
+          escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
+          ')VALUES(' +
+          getPlaceholders([id, ...row], offset) +
+          ')',
+        [id, ...rowParams],
+      );
+    }
   }
-
-  await executeCommand(
-    INSERT +
-      ' ' +
-      OR_REPLACE +
-      'INTO' +
-      escapeId(tableName) +
-      '(' +
-      escapeColumnNames(
-        rowIdColumnName,
-        ...changingColumnNames,
-        ...unchangingColumnNames,
-      ) +
-      ')VALUES' +
-      arrayJoin(
-        objToArray(
-          rows,
-          (row: any[]) =>
-            '($' + offset[0]++ + ',' + getPlaceholders(row, offset) + ')',
-        ),
-        COMMA,
-      ),
-    objToArray(rows, (row: any[], id: string) => [
-      id,
-      ...arrayMap(row, (value) => value ?? null),
-    ]).flat(),
-  );
 };
