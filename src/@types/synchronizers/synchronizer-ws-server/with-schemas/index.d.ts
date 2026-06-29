@@ -72,5 +72,6 @@ export function createWsServer<
     | Promise<[PathPersister, (store: MergeableStore<Schemas>) => void]>
     | undefined,
   onIgnoredError?: (error: any) => void,
+  requestTimeoutSeconds?: number,
   fragmentSize?: number,
 ): WsServer;

@@ -23,6 +23,9 @@ export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
   /// WsServerDurableObject.getFragmentSize
   getFragmentSize(): number | undefined;
 
+  /// WsServerDurableObject.getRequestTimeoutSeconds
+  getRequestTimeoutSeconds(): number;
+
   /// WsServerDurableObject.onPathId
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
 

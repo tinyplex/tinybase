@@ -512,6 +512,9 @@
  * @param onIgnoredError An optional handler for the errors that the server
  * would otherwise ignore when trying to sync data. This is suitable for
  * debugging issues in a development environment.
+ * @param requestTimeoutSeconds An optional time in seconds that the server
+ * will wait for responses to synchronization requests and incomplete fragments,
+ * defaulting to `1`.
  * @param fragmentSize An optional maximum size for each WebSocket message
  * fragment. When set, larger synchronization payloads sent by the server are
  * split into fragments and reassembled by the receiving WsSynchronizer, since

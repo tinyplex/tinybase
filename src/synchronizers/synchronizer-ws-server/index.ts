@@ -83,6 +83,7 @@ export const createWsServer = (<
     | Promise<[PathPersister, (store: MergeableStore) => void]>
     | undefined,
   onIgnoredError?: (error: any) => void,
+  requestTimeoutSeconds: number = 1,
   fragmentSize?: number,
 ) => {
   type ServerClient = [
@@ -134,10 +135,13 @@ export const createWsServer = (<
               messageHandler,
             ),
           (receive: Receive) => {
-            serverClient[Sc.Send] = createPayloadReceiver(receive);
+            serverClient[Sc.Send] = createPayloadReceiver(
+              receive,
+              requestTimeoutSeconds,
+            );
           },
           noop,
-          1,
+          requestTimeoutSeconds,
           undefined,
           undefined,
           onIgnoredError,

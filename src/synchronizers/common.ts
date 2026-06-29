@@ -1,20 +1,32 @@
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {Message, Receive} from '../@types/synchronizers/index.d.ts';
 import {arrayJoin, arrayMap} from '../common/array.ts';
-import {collDel} from '../common/coll.ts';
 import {getUniqueId} from '../common/codec.ts';
+import {collDel} from '../common/coll.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json.ts';
 import {IdMap, mapEnsure, mapNew} from '../common/map.ts';
-import {isUndefined, mathFloor, size, slice} from '../common/other.ts';
+import {
+  isUndefined,
+  mathFloor,
+  size,
+  slice,
+  startTimeout,
+  stopTimeout,
+} from '../common/other.ts';
 import {EMPTY_STRING, strMatch} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^(.+)\n(\d+)\n(\d+)\n([\s\S]*)$/;
 
-type Pending = [fragments: string[], remaining: number];
+type Pending = [
+  fragments: string[],
+  remaining: number,
+  total: number,
+  timeout: ReturnType<typeof startTimeout>,
+];
 
 export const ifPayloadValid = (
   payload: string,
@@ -45,8 +57,19 @@ export const receivePayload = (payload: string, receive: Receive) =>
     receivePayloadRemainder(fromClientId, remainder, receive),
   );
 
-export const createPayloadReceiver = (receive: Receive) => {
+export const createPayloadReceiver = (
+  receive: Receive,
+  fragmentTimeoutSeconds: number = 1,
+) => {
   const buffer: IdMap<Pending> = mapNew();
+
+  const setPendingTimeout = (bufferKey: Id) =>
+    startTimeout(() => collDel(buffer, bufferKey), fragmentTimeoutSeconds);
+
+  const delPending = (bufferKey: Id, pending: Pending) => {
+    stopTimeout(pending[3]);
+    collDel(buffer, bufferKey);
+  };
 
   return (payload: string) =>
     ifPayloadValid(payload, (fromClientId, remainder) => {
@@ -55,20 +78,28 @@ export const createPayloadReceiver = (receive: Receive) => {
       if (messageId) {
         const index = parseInt(indexStr);
         const total = parseInt(totalStr);
-        const bufferKey = fromClientId + MESSAGE_SEPARATOR + messageId;
-        const pending = mapEnsure(
-          buffer,
-          bufferKey,
-          (): Pending => [[], total],
-        );
-        const [fragments] = pending;
-        if (isUndefined(fragments[index])) {
-          fragments[index] = fragment;
-          pending[1]--;
-        }
-        if (pending[1] == 0) {
-          collDel(buffer, bufferKey);
-          receivePayloadRemainder(fromClientId, arrayJoin(fragments), receive);
+        if (total > 0 && index >= 0 && index < total) {
+          const bufferKey = fromClientId + MESSAGE_SEPARATOR + messageId;
+          const pending = mapEnsure(
+            buffer,
+            bufferKey,
+            (): Pending => [[], total, total, setPendingTimeout(bufferKey)],
+          );
+          const [fragments] = pending;
+          if (total == pending[2] && isUndefined(fragments[index])) {
+            stopTimeout(pending[3]);
+            pending[3] = setPendingTimeout(bufferKey);
+            fragments[index] = fragment;
+            pending[1]--;
+          }
+          if (pending[1] == 0) {
+            delPending(bufferKey, pending);
+            receivePayloadRemainder(
+              fromClientId,
+              arrayJoin(fragments),
+              receive,
+            );
+          }
         }
       } else {
         receivePayloadRemainder(fromClientId, remainder, receive);

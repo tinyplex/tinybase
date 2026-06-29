@@ -39,8 +39,10 @@ reassemble them on receipt. This helps deployments behind infrastructure with
 WebSocket message size limits, such as Cloudflare Workers and Durable Objects.
 
 The createWsSynchronizer and createWsServer functions now accept an optional
-fragment size argument. Durable Object servers can override the getFragmentSize
-method to set the same limit for messages they send.
+fragment size argument. Incomplete fragment buffers expire using the existing
+request timeout, which can also now be set on createWsServer. Durable Object
+servers can override the getFragmentSize and getRequestTimeoutSeconds methods
+to set the same behavior for messages they send.
 
 ## PowerSync Persistence Fixes
 

@@ -165,6 +165,76 @@ test('fragmented websocket payloads can arrive out of order', async () => {
   }
 });
 
+test('incomplete fragmented websocket buffers expire', async () => {
+  const received: any[] = [];
+  const sourceStore = createMergeableStore('s1', getNow);
+  const targetStore = createMergeableStore('s2', getNow);
+  const sourceSocket = new MockWebSocket();
+  const targetSocket = new MockWebSocket();
+  const synchronizer1 = await createWsSynchronizer(
+    sourceStore,
+    sourceSocket as any,
+    1,
+    undefined,
+    undefined,
+    undefined,
+    12,
+  );
+  const synchronizer2 = await createWsSynchronizer(
+    targetStore,
+    targetSocket as any,
+    0.01,
+    undefined,
+    (...args) => received.push(args),
+    undefined,
+    12,
+  );
+
+  try {
+    await synchronizer1.startSync();
+    sourceStore.setCell('t1', 'r1', 'c1', 'abcdefghijklmnopqrstuvwxyz');
+    await pause();
+
+    const fragmentGroup =
+      getFragmentGroup(
+        sourceSocket.sentPayloads,
+        'abcdefghijklmnopqrstuvwxyz',
+      ) ?? [];
+    expect(fragmentGroup.length).toBeGreaterThan(1);
+    const receivePayload = (payload: string) =>
+      targetSocket.receive(getPayloadFromClient('s1', payload));
+    const receiveFirstFragment = () => receivePayload(fragmentGroup[0]);
+    const receiveRestOfFragments = () =>
+      fragmentGroup.slice(1).forEach(receivePayload);
+    const hasReceivedContentDiff = () =>
+      received.some(
+        ([fromClientId, , message, body]) =>
+          fromClientId == 's1' &&
+          message == Message.ContentDiff &&
+          JSON.stringify(body).includes('abcdefghijklmnopqrstuvwxyz'),
+      );
+
+    receiveFirstFragment();
+    await pause(20);
+    expect(hasReceivedContentDiff()).toBe(false);
+
+    receiveRestOfFragments();
+    await pause(20);
+    expect(hasReceivedContentDiff()).toBe(false);
+
+    receiveFirstFragment();
+    await pause(20);
+    expect(hasReceivedContentDiff()).toBe(false);
+
+    receiveRestOfFragments();
+    await pause(20);
+    expect(hasReceivedContentDiff()).toBe(false);
+  } finally {
+    await synchronizer1.destroy();
+    await synchronizer2.destroy();
+  }
+});
+
 test('fragmented websocket payloads', async () => {
   const sentPayloads: string[] = [];
   const wsServer = createWsServer(new WebSocketServer({port: 8049}));
@@ -441,6 +511,7 @@ describe('Persistence', () => {
       webSocketServer,
       (pathId) => createPersister(serverStore, pathId),
       undefined,
+      undefined,
       20,
     );
 
@@ -468,6 +539,59 @@ describe('Persistence', () => {
       });
     } finally {
       await synchronizer.destroy();
+      await wsServer.destroy();
+    }
+  });
+
+  test('incomplete fragmented server buffers expire', async () => {
+    const sourceStore = createMergeableStore('s1', getNow);
+    const sourceSocket = new MockWebSocket();
+    const sourceSynchronizer = await createWsSynchronizer(
+      sourceStore,
+      sourceSocket as any,
+      1,
+      undefined,
+      undefined,
+      undefined,
+      12,
+    );
+    const serverStore = createMergeableStore('ss', getNow);
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8049}),
+      (pathId) => createPersister(serverStore, pathId),
+      undefined,
+      0.01,
+    );
+    const webSocket = new WebSocket('ws://localhost:8049/p1');
+    await new Promise<void>((resolve) => webSocket.on('open', () => resolve()));
+    await pause();
+
+    try {
+      await sourceSynchronizer.startSync();
+      sourceStore.setCell('t1', 'r1', 'c1', 'abcdefghijklmnopqrstuvwxyz');
+      await pause();
+
+      const fragmentGroup =
+        getFragmentGroup(
+          sourceSocket.sentPayloads,
+          'abcdefghijklmnopqrstuvwxyz',
+        ) ?? [];
+      expect(fragmentGroup.length).toBeGreaterThan(1);
+      const sendFirstFragment = () => webSocket.send(fragmentGroup[0]);
+      const sendRestOfFragments = () =>
+        fragmentGroup.slice(1).forEach((payload) => webSocket.send(payload));
+
+      sendFirstFragment();
+      await pause(20);
+      sendRestOfFragments();
+      await pause(20);
+      sendFirstFragment();
+      await pause(20);
+
+      expect(serverStore.getTables()).toEqual({});
+    } finally {
+      webSocket.close();
+      await sourceSynchronizer.destroy();
       await wsServer.destroy();
     }
   });

@@ -36,7 +36,10 @@ export const createWsSynchronizer = (async <
   };
 
   const registerReceive = (receive: Receive) => {
-    const receivePayload = createPayloadReceiver(receive);
+    const receivePayload = createPayloadReceiver(
+      receive,
+      requestTimeoutSeconds,
+    );
     addEventListener(MESSAGE, ({data}) => receivePayload(data.toString(UTF8)));
   };
 

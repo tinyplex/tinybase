@@ -50,6 +50,7 @@ export class WsServerDurableObject<Env = unknown>
         await ifNotUndefined(
           await this.createPersister(),
           async (persister) => {
+            const requestTimeoutSeconds = this.getRequestTimeoutSeconds();
             const synchronizer = createCustomSynchronizer(
               persister.getStore(),
               (toClientId, requestId, message, body) =>
@@ -64,9 +65,12 @@ export class WsServerDurableObject<Env = unknown>
                   (payload) => this.#handleMessage(SERVER_CLIENT_ID, payload),
                 ),
               (receive: Receive) =>
-                (this.#serverClientSend = createPayloadReceiver(receive)),
+                (this.#serverClientSend = createPayloadReceiver(
+                  receive,
+                  requestTimeoutSeconds,
+                )),
               noop,
-              1,
+              requestTimeoutSeconds,
             );
             await persister.load();
             await persister.startAutoSave();
@@ -158,6 +162,10 @@ export class WsServerDurableObject<Env = unknown>
 
   getFragmentSize(): number | undefined {
     return undefined;
+  }
+
+  getRequestTimeoutSeconds(): number {
+    return 1;
   }
 
   onPathId(_pathId: Id, _addedOrRemoved: IdAddedOrRemoved) {}

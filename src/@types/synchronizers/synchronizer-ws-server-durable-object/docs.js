@@ -161,6 +161,29 @@
    */
   /// WsServerDurableObject.getFragmentSize
   /**
+   * The getRequestTimeoutSeconds method is used to specify how long the Durable
+   * Object will wait for synchronization responses and incomplete fragments.
+   *
+   * Return a number of seconds to use as the timeout. The default is `1`.
+   * @returns The number of seconds to wait before timing out.
+   * @example
+   * This example waits up to 10 seconds for synchronization responses and
+   * incomplete fragments.
+   *
+   * ```js ignore
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+   *
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   getRequestTimeoutSeconds() {
+   *     return 10;
+   *   }
+   * }
+   * ```
+   * @category Getter
+   * @since v8.6.0
+   */
+  /// WsServerDurableObject.getRequestTimeoutSeconds
+  /**
    * The onPathId method is called when the first client connects to, or the
    * last client disconnects from, the server with a given path Id.
    *
