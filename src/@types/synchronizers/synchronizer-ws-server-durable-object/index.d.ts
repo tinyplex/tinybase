@@ -20,6 +20,9 @@ export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
   /// WsServerDurableObject.getClientIds
   getClientIds(): Ids;
 
+  /// WsServerDurableObject.getFragmentSize
+  getFragmentSize(): number | undefined;
+
   /// WsServerDurableObject.onPathId
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
 

@@ -44,10 +44,10 @@ import {
   strMatch,
 } from '../../common/strings.ts';
 import {
-  createPayload,
+  createPayloadReceiver,
+  createPayloads,
   createRawPayload,
   ifPayloadValid,
-  receivePayload,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
@@ -83,6 +83,7 @@ export const createWsServer = (<
     | Promise<[PathPersister, (store: MergeableStore) => void]>
     | undefined,
   onIgnoredError?: (error: any) => void,
+  fragmentSize?: number,
 ) => {
   type ServerClient = [
     state: ScState,
@@ -122,10 +123,19 @@ export const createWsServer = (<
         serverClient[Sc.Synchronizer] = createCustomSynchronizer(
           serverClient[Sc.Persister].getStore() as MergeableStore,
           (toClientId, requestId, message, body) =>
-            messageHandler(createPayload(toClientId, requestId, message, body)),
-          (receive: Receive) =>
-            (serverClient[Sc.Send] = (payload: string) =>
-              receivePayload(payload, receive)),
+            arrayForEach(
+              createPayloads(
+                toClientId,
+                requestId,
+                message,
+                body,
+                fragmentSize,
+              ),
+              messageHandler,
+            ),
+          (receive: Receive) => {
+            serverClient[Sc.Send] = createPayloadReceiver(receive);
+          },
           noop,
           1,
           undefined,

@@ -10,9 +10,10 @@ import type {
   WsSynchronizer,
   createWsSynchronizer as createWsSynchronizerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-client/index.d.ts';
+import {arrayForEach} from '../../common/array.ts';
 import {promiseNew} from '../../common/other.ts';
 import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
-import {createPayload, receivePayload} from '../common.ts';
+import {createPayloadReceiver, createPayloads} from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
 export const createWsSynchronizer = (async <
@@ -24,6 +25,7 @@ export const createWsSynchronizer = (async <
   onSend?: Send,
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
+  fragmentSize?: number,
 ) => {
   const addEventListener = (
     event: keyof WebSocketEventMap,
@@ -33,15 +35,18 @@ export const createWsSynchronizer = (async <
     return () => webSocket.removeEventListener(event, handler);
   };
 
-  const registerReceive = (receive: Receive) =>
-    addEventListener(MESSAGE, ({data}) =>
-      receivePayload(data.toString(UTF8), receive),
-    );
+  const registerReceive = (receive: Receive) => {
+    const receivePayload = createPayloadReceiver(receive);
+    addEventListener(MESSAGE, ({data}) => receivePayload(data.toString(UTF8)));
+  };
 
   const send = (
     toClientId: IdOrNull,
     ...args: [requestId: IdOrNull, message: Message, body: any]
-  ): void => webSocket.send(createPayload(toClientId, ...args));
+  ): void =>
+    arrayForEach(createPayloads(toClientId, ...args, fragmentSize), (payload) =>
+      webSocket.send(payload),
+    );
 
   const destroy = (): void => {
     webSocket.close();

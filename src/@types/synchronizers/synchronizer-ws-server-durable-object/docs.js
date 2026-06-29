@@ -135,6 +135,32 @@
    */
   /// WsServerDurableObject.getClientIds
   /**
+   * The getFragmentSize method is used to specify a maximum size for each
+   * WebSocket message fragment sent by the Durable Object.
+   *
+   * Return a number to split larger synchronization payloads into fragments
+   * that are reassembled by the receiving WsSynchronizer. Return `undefined`
+   * to send each payload as a single WebSocket message.
+   * @returns The maximum fragment size, or `undefined` to disable
+   * fragmentation.
+   * @example
+   * This example limits outbound Durable Object synchronization message
+   * fragments to 32KB.
+   *
+   * ```js ignore
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+   *
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   getFragmentSize() {
+   *     return 32 * 1024;
+   *   }
+   * }
+   * ```
+   * @category Getter
+   * @since v8.6.0
+   */
+  /// WsServerDurableObject.getFragmentSize
+  /**
    * The onPathId method is called when the first client connects to, or the
    * last client disconnects from, the server with a given path Id.
    *

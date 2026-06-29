@@ -22,4 +22,5 @@ export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
   onSend?: Send,
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
+  fragmentSize?: number,
 ): Promise<WsSynchronizer<WebSocketType>>;

@@ -32,6 +32,16 @@ console.log(valuesSubsetDatabasePersisterConfig.values.load);
 When a subset is configured, unlisted Values in the Store are not saved, and
 unlisted columns in the Values database table are left untouched.
 
+## WebSocket Synchronization Fixes
+
+WebSocket Synchronizers can now fragment large synchronization payloads and
+reassemble them on receipt. This helps deployments behind infrastructure with
+WebSocket message size limits, such as Cloudflare Workers and Durable Objects.
+
+The createWsSynchronizer and createWsServer functions now accept an optional
+fragment size argument. Durable Object servers can override the getFragmentSize
+method to set the same limit for messages they send.
+
 ## PowerSync Persistence Fixes
 
 The PowerSync Persister now updates existing tabular rows before inserting

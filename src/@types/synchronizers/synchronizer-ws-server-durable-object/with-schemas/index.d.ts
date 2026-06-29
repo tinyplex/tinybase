@@ -31,6 +31,9 @@ export class WsServerDurableObject<
   /// WsServerDurableObject.getClientIds
   getClientIds(): Ids;
 
+  /// WsServerDurableObject.getFragmentSize
+  getFragmentSize(): number | undefined;
+
   /// WsServerDurableObject.onPathId
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
 

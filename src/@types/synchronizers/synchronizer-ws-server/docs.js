@@ -512,6 +512,10 @@
  * @param onIgnoredError An optional handler for the errors that the server
  * would otherwise ignore when trying to sync data. This is suitable for
  * debugging issues in a development environment.
+ * @param fragmentSize An optional maximum size for each WebSocket message
+ * fragment. When set, larger synchronization payloads sent by the server are
+ * split into fragments and reassembled by the receiving WsSynchronizer, since
+ * v8.6.
  * @returns A reference to the new WsServer object.
  * @example
  * This example creates a WsServer that synchronizes two clients on a shared

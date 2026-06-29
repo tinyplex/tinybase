@@ -9,9 +9,10 @@ import {ifNotUndefined, noop, size, startTimeout} from '../../common/other.ts';
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import {
   createPayload,
+  createPayloadReceiver,
+  createPayloads,
   createRawPayload,
   ifPayloadValid,
-  receivePayload,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
@@ -52,13 +53,18 @@ export class WsServerDurableObject<Env = unknown>
             const synchronizer = createCustomSynchronizer(
               persister.getStore(),
               (toClientId, requestId, message, body) =>
-                this.#handleMessage(
-                  SERVER_CLIENT_ID,
-                  createPayload(toClientId, requestId, message, body),
+                arrayForEach(
+                  createPayloads(
+                    toClientId,
+                    requestId,
+                    message,
+                    body,
+                    this.getFragmentSize(),
+                  ),
+                  (payload) => this.#handleMessage(SERVER_CLIENT_ID, payload),
                 ),
               (receive: Receive) =>
-                (this.#serverClientSend = (payload: string) =>
-                  receivePayload(payload, receive)),
+                (this.#serverClientSend = createPayloadReceiver(receive)),
               noop,
               1,
             );
@@ -148,6 +154,10 @@ export class WsServerDurableObject<Env = unknown>
       this.#getClients(),
       (client) => this.ctx.getTags(client)[0],
     );
+  }
+
+  getFragmentSize(): number | undefined {
+    return undefined;
   }
 
   onPathId(_pathId: Id, _addedOrRemoved: IdAddedOrRemoved) {}
