@@ -29,10 +29,10 @@
  * The DpcFragmented type represents the configuration for fragmented
  * persistence mode in a DurableObjectSqlStoragePersister.
  *
- * This mode stores each table, row, cell, and value as separate database rows,
- * avoiding Cloudflare's 2MB row limit that can be hit with large stores in JSON
- * mode. While this creates more database writes, it provides better scalability
- * for larger datasets.
+ * This mode stores each table's metadata, row data, and values as separate
+ * database rows, avoiding Cloudflare's 2MB row limit that can be hit with
+ * large stores in JSON mode. While this creates more database writes than JSON
+ * mode, it provides better scalability for larger datasets.
  * @example
  * This example shows how to configure a DurableObjectSqlStoragePersister to use
  * fragmented mode with a custom storage prefix.
@@ -220,10 +220,11 @@
  *   database row. This is efficient for smaller stores but may hit Cloudflare's
  *   2MB row limit for very large stores and uses fewer database writes.
  *
- * - **Fragmented Mode**: Stores each table, row, cell, and value as separate
- *   database rows. Use this mode if you're concerned about hitting Cloudflare's
- *   2MB row limit with large stores in JSON mode. This mode creates more
- *   database writes but avoids row size limitations.
+ * - **Fragmented Mode**: Stores each table's metadata, row data, and values as
+ *   separate database rows. Use this mode if you're concerned about hitting
+ *   Cloudflare's 2MB row limit with large stores in JSON mode. This mode
+ *   creates more database writes than JSON mode but avoids row size
+ *   limitations.
  *
  * The third argument is a DatabasePersisterConfig object that configures which
  * of those modes to use, and settings for each. If the third argument is simply

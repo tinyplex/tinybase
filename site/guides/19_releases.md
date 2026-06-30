@@ -51,6 +51,15 @@ missing ones, instead of replacing whole rows during upserts. This avoids
 flooding PowerSync upload queues with replacement writes when schema validation
 causes loaded data to be written back unchanged on startup.
 
+## Durable Object Persistence Fixes
+
+The Durable Object SQL Storage Persister's fragmented mode now stores table row
+data as one SQL row per TinyBase Row, instead of one SQL row per Cell. This
+reduces the number of SQLite writes for wide Rows while preserving the
+fragmented mode's protection from Cloudflare's 2MB row limit. Existing
+cell-level fragmented data is still loaded and is cleaned up when the Row is
+next saved.
+
 ## Query Transaction Fixes
 
 Grouped queries, including those with having clauses, now correctly return their

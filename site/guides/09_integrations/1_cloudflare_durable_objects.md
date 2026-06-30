@@ -163,10 +163,15 @@ createPersister() {
 
 #### Fragmented Mode
 
-Stores each table, row, cell, and value as separate database rows. Use this mode
-if you're concerned about hitting Cloudflare's 2MB row limit with large stores
-in JSON mode. This mode creates more database writes but avoids row size
-limitations:
+Stores each table's metadata, row data, and values as separate database rows.
+Use this mode if you're concerned about hitting Cloudflare's 2MB row limit with
+large stores in JSON mode. This mode creates more database writes than JSON mode
+but avoids row size limitations:
+
+From TinyBase v8.6 onward, fragmented mode stores one SQL row per TinyBase Row
+instead of one SQL row per Cell. Existing cell-level fragmented data is still
+loaded and is cleaned up when each Row is next saved, but newly saved row-level
+data is not designed to be read by older TinyBase versions.
 
 ```js ignore
 // ...
