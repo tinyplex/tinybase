@@ -667,6 +667,36 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
+  test('set tables schema default', () => {
+    store.setTablesSchema({t0: {c0: {type: 'number', default: 0}}});
+    expect(store.getContent()).toEqual([{}, {}]);
+    store.setRow('t0', 'r0', {});
+    expect(store.getContent()).toEqual([{t0: {r0: {c0: 0}}}, {}]);
+    expect(store.getMergeableContent()[0][0].t0[0].r0[0].c0[1]).toEqual('');
+    store.setCell('t0', 'r0', 'c0', 1);
+    const writtenHlc = store.getMergeableContent()[0][0].t0[0].r0[0].c0[1];
+    expect(writtenHlc).not.toEqual('');
+    store.setRow('t0', 'r0', {});
+    expect(store.getContent()).toEqual([{t0: {r0: {c0: 0}}}, {}]);
+    expect(store.getMergeableContent()[0][0].t0[0].r0[0].c0[1]).not.toEqual('');
+    expect(store.getMergeableContent()[0][0].t0[0].r0[0].c0[1]).not.toEqual(
+      writtenHlc,
+    );
+  });
+
+  test('set values schema default', () => {
+    store.setValuesSchema({v0: {type: 'number', default: 0}});
+    expect(store.getContent()).toEqual([{}, {v0: 0}]);
+    expect(store.getMergeableContent()[1][0].v0[1]).toEqual('');
+    store.setValue('v0', 1);
+    const writtenHlc = store.getMergeableContent()[1][0].v0[1];
+    expect(writtenHlc).not.toEqual('');
+    store.setValues({});
+    expect(store.getContent()).toEqual([{}, {v0: 0}]);
+    expect(store.getMergeableContent()[1][0].v0[1]).not.toEqual('');
+    expect(store.getMergeableContent()[1][0].v0[1]).not.toEqual(writtenHlc);
+  });
+
   test('set over existing content', () => {
     store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
     store.setMergeableContent([

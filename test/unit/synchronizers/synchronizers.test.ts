@@ -309,6 +309,35 @@ describe.each([
           {},
         ]);
       });
+
+      test('defaulted value does not overwrite value', async () => {
+        const valuesSchema = {v1: {type: 'number', default: 0}} as const;
+        store1.setValuesSchema(valuesSchema);
+        store1.setValue('v1', 1);
+        await pause(synchronizable.pauseMilliseconds);
+        store2.setValuesSchema(valuesSchema);
+        await sync();
+        expect(store1.getContent()).toEqual([{}, {v1: 1}]);
+        expect(store2.getContent()).toEqual([{}, {v1: 1}]);
+        expect(store2.getMergeableContent()).toEqual(
+          store1.getMergeableContent(),
+        );
+      });
+
+      test('defaulted cell does not overwrite cell', async () => {
+        const tablesSchema = {t1: {c1: {type: 'number', default: 0}}} as const;
+        store1.setTablesSchema(tablesSchema);
+        store1.setCell('t1', 'r1', 'c1', 1);
+        await pause(synchronizable.pauseMilliseconds);
+        store2.setTablesSchema(tablesSchema);
+        store2.setRow('t1', 'r1', {});
+        await sync();
+        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+        expect(store2.getMergeableContent()).toEqual(
+          store1.getMergeableContent(),
+        );
+      });
     });
 
     describe('Bidirectional', () => {

@@ -338,6 +338,7 @@ export const createMergeableStore = ((
     cellId: Id,
     newCell: CellOrUndefined,
     mutating: 0 | 1,
+    defaulted: 0 | 1,
   ) => {
     setAdd(
       mapEnsure(
@@ -360,7 +361,9 @@ export const createMergeableStore = ((
                   {
                     [cellId]: [
                       newCell,
-                      defaultingContent ? EMPTY_STRING : getNextHlc(),
+                      defaultingContent || defaulted
+                        ? EMPTY_STRING
+                        : getNextHlc(),
                     ],
                   },
                 ],
@@ -378,6 +381,7 @@ export const createMergeableStore = ((
     valueId: Id,
     newValue: ValueOrUndefined,
     mutating: 0 | 1,
+    defaulted: 0 | 1,
   ) => {
     setAdd(touchedValues, valueId);
     if (listeningToRawStoreChanges || mutating) {
@@ -390,7 +394,7 @@ export const createMergeableStore = ((
           {
             [valueId]: [
               newValue,
-              defaultingContent ? EMPTY_STRING : getNextHlc(),
+              defaultingContent || defaulted ? EMPTY_STRING : getNextHlc(),
             ],
           },
         ],

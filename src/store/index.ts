@@ -162,11 +162,13 @@ type ProtectedMethods = [
       cellId: Id,
       newCell: CellOrUndefined,
       mutating: 0 | 1,
+      defaulted: 0 | 1,
     ) => void,
     valueChanged: (
       valueId: Id,
       newValue: ValueOrUndefined,
       mutating: 0 | 1,
+      defaulted: 0 | 1,
     ) => void,
   ) => void,
   setMiddleware: (
@@ -272,11 +274,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId: Id,
       newCell: CellOrUndefined,
       mutating: 0 | 1,
+      defaulted: 0 | 1,
     ) => void,
     valueChanged?: (
       valueId: Id,
       newValue: ValueOrUndefined,
       mutating: 0 | 1,
+      defaulted: 0 | 1,
     ) => void,
   ] = [];
   let mutating: 0 | 1 = 0;
@@ -286,8 +290,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedRowIds: ChangedIdsMap2 = mapNew();
   const changedCellIds: ChangedIdsMap3 = mapNew();
   const changedCells: IdMap3<ChangedCell> = mapNew();
+  const defaultedCells: IdSet3 = mapNew();
   const changedValueIds: ChangedIdsMap = mapNew();
   const changedValues: IdMap<ChangedValue> = mapNew();
+  const defaultedValues: IdSet = setNew();
   const invalidCells: IdMap3<any[]> = mapNew();
   const invalidValues: IdMap<any[]> = mapNew();
   const tablesSchemaMap: TablesSchemaMap = mapNew();
@@ -493,6 +499,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
         collForEach(rowDefaulted, (cell, cellId) => {
           if (!objHas(row, cellId)) {
             row[cellId] = cell;
+            ifNotUndefined(rowId, (rowId) =>
+              setAdd(
+                mapEnsure(
+                  mapEnsure(defaultedCells, tableId, mapNew<Id, IdSet>),
+                  rowId,
+                  setNew<Id>,
+                ),
+                cellId,
+              ),
+            );
           }
         });
         collForEach(rowNonDefaulted, (cellId) => {
@@ -510,6 +526,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collForEach(valuesDefaulted, (value, valueId) => {
         if (!objHas(values, valueId)) {
           values[valueId] = value;
+          setAdd(defaultedValues, valueId);
         }
       });
       collForEach(valuesNonDefaulted, (valueId) => {
@@ -1004,6 +1021,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     oldCell?: CellOrUndefined,
     newCell?: CellOrUndefined,
   ): void => {
+    const defaulted =
+      collHas(mapGet(mapGet(defaultedCells, tableId), rowId), cellId) &&
+      isUndefined(oldCell)
+        ? 1
+        : 0;
     mapEnsure<Id, ChangedCell>(
       mapEnsure<Id, IdMap<ChangedCell>>(
         mapEnsure<Id, IdMap2<ChangedCell>>(changedCells, tableId, mapNew),
@@ -1013,7 +1035,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
       () => [oldCell, 0],
     )[1] = newCell;
-    internalListeners[3]?.(tableId, rowId, cellId, newCell, mutating);
+    internalListeners[3]?.(
+      tableId,
+      rowId,
+      cellId,
+      newCell,
+      mutating,
+      defaulted,
+    );
+    collDel(mapGet(mapGet(defaultedCells, tableId), rowId), cellId);
   };
 
   const valueIdsChanged = (
@@ -1026,11 +1056,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     oldValue?: ValueOrUndefined,
     newValue?: ValueOrUndefined,
   ): void => {
+    const defaulted =
+      collHas(defaultedValues, valueId) && isUndefined(oldValue) ? 1 : 0;
     mapEnsure<Id, ChangedValue>(changedValues, valueId, () => [
       oldValue,
       0,
     ])[1] = newValue;
-    internalListeners[4]?.(valueId, newValue, mutating);
+    internalListeners[4]?.(valueId, newValue, mutating, defaulted);
+    collDel(defaultedValues, valueId);
   };
 
   const cellInvalid = (
@@ -1964,9 +1997,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
             changedRowIds,
             changedCellIds,
             changedCells,
+            defaultedCells,
             invalidCells,
             changedValueIds,
             changedValues,
+            defaultedValues,
             invalidValues,
           ],
           collClear,
@@ -2145,11 +2180,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId: Id,
       newCell: CellOrUndefined,
       mutating: 0 | 1,
+      defaulted: 0 | 1,
     ) => void,
     valueChanged: (
       valueId: Id,
       newValue: ValueOrUndefined,
       mutating: 0 | 1,
+      defaulted: 0 | 1,
     ) => void,
   ) =>
     (internalListeners = [
