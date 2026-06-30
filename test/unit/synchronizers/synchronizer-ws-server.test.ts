@@ -818,6 +818,64 @@ describe('Persistence', () => {
     await wsServer.destroy();
   });
 
+  test('store ids do not select paths', async () => {
+    const pathIds: Id[] = [];
+    const serverStores: {[pathId: string]: MergeableStore} = {};
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8049}),
+      (pathId) => {
+        pathIds.push(pathId);
+        const serverStore = createMergeableStore('ss' + pathId, getNow);
+        serverStores[pathId] = serverStore;
+        return createPersister(serverStore, pathId || 'root');
+      },
+    );
+
+    const clientStore1 = createMergeableStore('store1', getNow);
+    const synchronizer1 = await createWsSynchronizer(
+      clientStore1,
+      new WebSocket('ws://localhost:8049'),
+    );
+    await synchronizer1.startSync();
+    clientStore1.setCell('t1', 'r1', 'c1', 1);
+
+    const clientStore2 = createMergeableStore('store2', getNow);
+    const synchronizer2 = await createWsSynchronizer(
+      clientStore2,
+      new WebSocket('ws://localhost:8049'),
+    );
+    await synchronizer2.startSync();
+    clientStore2.setCell('t1', 'r2', 'c2', 2);
+
+    const clientStore3 = createMergeableStore('store3', getNow);
+    const synchronizer3 = await createWsSynchronizer(
+      clientStore3,
+      new WebSocket('ws://localhost:8049/store3'),
+    );
+    await synchronizer3.startSync();
+    clientStore3.setCell('t1', 'r3', 'c3', 3);
+
+    await pause();
+
+    expect(pathIds).toEqual(['', 'store3']);
+    expect(serverStores[''].getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c2: 2}},
+    });
+    expect(serverStores.store3.getTables()).toEqual({t1: {r3: {c3: 3}}});
+    expect(clientStore1.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c2: 2}},
+    });
+    expect(clientStore2.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c2: 2}},
+    });
+    expect(clientStore3.getTables()).toEqual({t1: {r3: {c3: 3}}});
+
+    await synchronizer1.destroy();
+    await synchronizer2.destroy();
+    await synchronizer3.destroy();
+    await wsServer.destroy();
+  });
+
   test('two clients, connecting in turn', async () => {
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),

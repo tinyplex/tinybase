@@ -73,7 +73,9 @@
  * via WebSockets facilitated by a WsServer.
  *
  * As well as providing a reference to the MergeableStore to persist, you must
- * provide a configured WebSocket to send synchronization messages over.
+ * provide a configured WebSocket to send synchronization messages over. The
+ * path in the WebSocket URL is used by a WsServer as the path that the client
+ * joins. The MergeableStore Id does not select the server path.
  *
  * Instead of the raw browser implementation of WebSocket, you may prefer to use
  * the [Reconnecting
@@ -122,11 +124,11 @@
  *
  * const synchronizer1 = await createWsSynchronizer(
  *   store1,
- *   new WebSocket('ws://localhost:8047'),
+ *   new WebSocket('ws://localhost:8047/petShop'),
  * );
  * const synchronizer2 = await createWsSynchronizer(
  *   store2,
- *   new WebSocket('ws://localhost:8047'),
+ *   new WebSocket('ws://localhost:8047/petShop'),
  * );
  *
  * await synchronizer1.startSync();

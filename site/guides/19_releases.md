@@ -44,6 +44,10 @@ request timeout, which can also now be set on createWsServer. Durable Object
 servers can override the getFragmentSize and getRequestTimeoutSeconds methods
 to set the same behavior for messages they send.
 
+The WebSocket Synchronizer documentation now also clarifies that WsServer paths
+come from WebSocket URL paths, not MergeableStore Ids, so clients that need
+separate synchronization groups should connect to different URL paths.
+
 ## PowerSync Persistence Fixes
 
 The PowerSync Persister now updates existing tabular rows before inserting

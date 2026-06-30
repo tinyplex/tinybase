@@ -73,9 +73,14 @@ import {WebSocket} from 'ws';
 const clientStore1 = createMergeableStore();
 const clientSynchronizer1 = await createWsSynchronizer(
   clientStore1,
-  new WebSocket('ws://localhost:8048'),
+  new WebSocket('ws://localhost:8048/petShop'),
 );
 ```
+
+The path in the WebSocket URL is the WsServer path (or 'room') that the
+client joins. Clients connected to the same URL path synchronize together. The
+Id you optionally provide to createMergeableStore does not select the server
+path.
 
 This WsSynchronizer can then be started, and data manipulated as normal:
 
@@ -93,7 +98,7 @@ can be created and started, connecting to the same server.
 const clientStore2 = createMergeableStore();
 const clientSynchronizer2 = await createWsSynchronizer(
   clientStore2,
-  new WebSocket('ws://localhost:8048'),
+  new WebSocket('ws://localhost:8048/petShop'),
 );
 await clientSynchronizer2.startSync();
 ```
@@ -150,7 +155,8 @@ to sync with.
 
 This is done by passing in a second argument to the function that creates a
 Persister instance (for which also need to create or provide a MergeableStore)
-for a given path:
+for a given path. The `pathId` argument is the path from the client WebSocket
+URL, such as `petShop` for `ws://localhost:8048/petShop`:
 
 ```js
 import {createFilePersister} from 'tinybase/persisters/persister-file';

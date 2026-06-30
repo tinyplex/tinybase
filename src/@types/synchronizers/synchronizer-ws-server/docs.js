@@ -1,6 +1,6 @@
 /**
- * The synchronizer-ws-server module of the TinyBase project lets you create
- * a server that facilitates synchronization between clients.
+ * The synchronizer-ws-server module of the TinyBase project lets you create a
+ * server that facilitates synchronization between clients.
  * @see Synchronization guide
  * @see Todo App v6 (collaboration) demo
  * @packageDocumentation
@@ -490,6 +490,10 @@
  * only exist when there are active clients on that particular path. The
  * creation callback can be asynchronous.
  *
+ * A path is taken from the path in the client WebSocket URL. For example,
+ * clients connecting to `ws://localhost:8047/petShop` will share the `petShop`
+ * path. The Id of a client's MergeableStore does not select this path.
+ *
  * You are responsible for creating a MergeableStore to pass to this Persister,
  * but starting and stopping its automatic saving and loading is taken care of
  * by the WsServer. As a result, the server MergeableStore will be kept in sync
@@ -512,8 +516,8 @@
  * @param onIgnoredError An optional handler for the errors that the server
  * would otherwise ignore when trying to sync data. This is suitable for
  * debugging issues in a development environment.
- * @param requestTimeoutSeconds An optional time in seconds that the server
- * will wait for responses to synchronization requests and incomplete fragments,
+ * @param requestTimeoutSeconds An optional time in seconds that the server will
+ * wait for responses to synchronization requests and incomplete fragments,
  * defaulting to `1`.
  * @param fragmentSize An optional maximum size for each WebSocket message
  * fragment. When set, larger synchronization payloads sent by the server are
