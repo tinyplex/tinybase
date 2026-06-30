@@ -145,12 +145,7 @@ const getWildcardedLeaves = (
 
 export const getListenerFunctions = (
   getThing: () =>
-    | Store
-    | Metrics
-    | Indexes
-    | Relationships
-    | Checkpoints
-    | WsServer,
+    Store | Metrics | Indexes | Relationships | Checkpoints | WsServer,
 ): [
   addListener: AddListener,
   callListeners: CallListeners,

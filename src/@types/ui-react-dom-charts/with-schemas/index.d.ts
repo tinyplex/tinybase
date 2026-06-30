@@ -167,10 +167,9 @@ type NumericCellIdFromSchema<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
 > = {
-  [CellId in CellIdFromSchema<
-    Schemas[0],
-    TableId
-  >]: Schemas[0][TableId][CellId] extends {type: 'any' | 'number'}
+  [
+    CellId in CellIdFromSchema<Schemas[0], TableId>
+  ]: Schemas[0][TableId][CellId] extends {type: 'any' | 'number'}
     ? CellId
     : never;
 }[CellIdFromSchema<Schemas[0], TableId>];

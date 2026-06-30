@@ -74,8 +74,7 @@ export const createCustomSynchronizer = (
 ): Synchronizer => {
   let syncing: 0 | 1 = 0;
   let persisterListener:
-    | PersisterListener<PersistsEnum.MergeableStoreOnly>
-    | undefined;
+    PersisterListener<PersistsEnum.MergeableStoreOnly> | undefined;
   let sends = 0;
   let receives = 0;
 

@@ -10,13 +10,7 @@ import type {
 
 /// ParamValue
 export type ParamValue =
-  | string
-  | number
-  | boolean
-  | null
-  | string[]
-  | number[]
-  | boolean[];
+  string | number | boolean | null | string[] | number[] | boolean[];
 
 /// ParamValues
 export type ParamValues = {[paramId: Id]: ParamValue};

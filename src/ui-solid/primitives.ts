@@ -361,9 +361,7 @@ const useQueriesSetCallback = <Parameter, Thing>(
 
 const argsOrGetArgs = <Parameter>(
   args: (
-    | MaybeAccessor<Id>
-    | GetId<Parameter>
-    | MaybeAccessor<boolean | undefined>
+    MaybeAccessor<Id> | GetId<Parameter> | MaybeAccessor<boolean | undefined>
   )[],
   store: Store | Queries,
   parameter?: Parameter,
@@ -383,9 +381,7 @@ const useDel = <Parameter>(
   deletable: string,
   then: (store: Store) => void = getUndefined,
   ...args: (
-    | MaybeAccessor<Id>
-    | GetId<Parameter>
-    | MaybeAccessor<boolean | undefined>
+    MaybeAccessor<Id> | GetId<Parameter> | MaybeAccessor<boolean | undefined>
   )[]
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreById(storeOrStoreId);
@@ -412,8 +408,7 @@ const useCheckpointAction = (
   return () =>
     (
       getThing(checkpoints) as
-        | {[method: string]: (arg?: string) => Checkpoints}
-        | undefined
+        {[method: string]: (arg?: string) => Checkpoints} | undefined
     )?.[action](arg);
 };
 

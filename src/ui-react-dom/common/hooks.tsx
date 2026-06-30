@@ -54,9 +54,7 @@ export const useParams = <
 export const useCells = (
   defaultCellIds: Ids,
   customCells:
-    | Ids
-    | {[cellId: Id]: string | CustomCell | CustomResultCell}
-    | undefined,
+    Ids | {[cellId: Id]: string | CustomCell | CustomResultCell} | undefined,
   defaultCellComponent: CellComponent,
 ): Cells<any> =>
   useMemo(() => {

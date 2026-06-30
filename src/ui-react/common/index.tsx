@@ -131,9 +131,7 @@ export const getUseCheckpointView =
     separator,
     debugIds,
   }: (
-    | BackwardCheckpointsProps
-    | CurrentCheckpointProps
-    | ForwardCheckpointsProps
+    BackwardCheckpointsProps | CurrentCheckpointProps | ForwardCheckpointsProps
   ) & {
     readonly separator?: ReactElement | string;
   }): any => {

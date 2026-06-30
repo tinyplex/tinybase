@@ -26,8 +26,7 @@ export type Cells<Props = CellProps> = {
 };
 
 export type CellComponent =
-  | ComponentType<CellProps>
-  | ComponentType<ResultCellProps>;
+  ComponentType<CellProps> | ComponentType<ResultCellProps>;
 type CellComponentProps =
   | {store?: StoreOrStoreId; tableId: Id}
   | {queries?: QueriesOrQueriesId; queryId: Id};

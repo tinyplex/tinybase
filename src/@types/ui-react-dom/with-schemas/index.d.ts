@@ -98,8 +98,7 @@ export type TableInHtmlTableProps<
           | CellIdFromSchema<Schemas[0], TableId>[]
           | {
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
-                | string
-                | CustomCell<Schemas, TableId, CellId>;
+                string | CustomCell<Schemas, TableId, CellId>;
             };
       }
     : never
@@ -133,8 +132,7 @@ export type SortedTableInHtmlTableProps<
           | CellIdFromSchema<Schemas[0], TableId>[]
           | {
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
-                | string
-                | CustomCell<Schemas, TableId, CellId>;
+                string | CustomCell<Schemas, TableId, CellId>;
             };
         /// SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
@@ -176,8 +174,7 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly editable?: boolean;
   /// SliceInHtmlTableProps.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+    Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
 /// RelationshipInHtmlTableProps
@@ -190,8 +187,7 @@ export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly editable?: boolean;
   /// RelationshipInHtmlTable.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+    Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
 /// ResultTableInHtmlTableProps
@@ -202,8 +198,7 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly queries?: QueriesOrQueriesId<Schemas>;
   /// ResultTableInHtmlTableProps.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
 };
 
 /// ResultSortedTableInHtmlTableProps
@@ -223,8 +218,7 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     readonly queries?: QueriesOrQueriesId<Schemas>;
     /// ResultSortedTableInHtmlTableProps.customCells
     readonly customCells?:
-      | Ids
-      | {[cellId: Id]: string | CustomResultCell<Schemas>};
+      Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
     /// ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
     /// ResultSortedTableInHtmlTableProps.paginator

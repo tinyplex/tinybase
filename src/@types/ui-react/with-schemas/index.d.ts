@@ -462,8 +462,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
     SetOrMapCell =
-      | Cell<Schemas[0], TableId, CellId>
-      | MapCell<Schemas[0], TableId, CellId>,
+      Cell<Schemas[0], TableId, CellId> | MapCell<Schemas[0], TableId, CellId>,
   >(
     tableId: TableId | GetId<Schemas, Parameter, TableId>,
     rowId: Id | GetId<Schemas, Parameter, Id>,
@@ -683,8 +682,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     <
       TableId extends TableIdFromSchema<Schemas[0]>,
       CellIdOrUndefined extends
-        | CellIdFromSchema<Schemas[0], TableId>
-        | undefined,
+        CellIdFromSchema<Schemas[0], TableId> | undefined,
     >(
       tableId: TableId,
       cellId: CellIdOrUndefined,
@@ -701,8 +699,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     <
       TableId extends TableIdFromSchema<Schemas[0]>,
       CellIdOrUndefined extends
-        | CellIdFromSchema<Schemas[0], TableId>
-        | undefined,
+        CellIdFromSchema<Schemas[0], TableId> | undefined,
     >(
       args: SortedRowIdsArgs<Schemas[0], TableId>,
       listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,

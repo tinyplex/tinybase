@@ -869,8 +869,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
   const getParamValue = (queryId: Id, paramId: Id): ParamValue | undefined =>
     paramStore.getCell(PARAMS_TABLE, queryId, paramId) as
-      | ParamValue
-      | undefined;
+      ParamValue | undefined;
 
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));

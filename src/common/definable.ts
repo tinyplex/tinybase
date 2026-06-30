@@ -128,14 +128,12 @@ export const getDefinableFunctions = <Thing, RowValue>(
       const newRowValue = hasRow(tableId, rowId)
         ? validateRowValue(getRowValue(getCell as any, rowId))
         : undefined;
-      if (
-        !(
-          oldRowValue === newRowValue ||
-          (isArray(oldRowValue) &&
-            isArray(newRowValue) &&
-            arrayIsEqual(oldRowValue, newRowValue))
-        )
-      ) {
+      if (!(
+        oldRowValue === newRowValue ||
+        (isArray(oldRowValue) &&
+          isArray(newRowValue) &&
+          arrayIsEqual(oldRowValue, newRowValue))
+      )) {
         mapSet(changedRowValues, rowId, [oldRowValue, newRowValue]);
       }
 
@@ -231,12 +229,7 @@ export const getRowCellFunction = <RowValue>(
 
 export const getCreateFunction = <
   Thing extends
-    | Metrics
-    | Middleware
-    | Indexes
-    | Relationships
-    | Checkpoints
-    | Queries,
+    Metrics | Middleware | Indexes | Relationships | Checkpoints | Queries,
 >(
   getFunction: (store: Store) => Thing,
   initFunction?: (thing: Thing) => void,

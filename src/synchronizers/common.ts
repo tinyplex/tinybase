@@ -80,11 +80,12 @@ export const createPayloadReceiver = (
         const total = parseInt(totalStr);
         if (total > 0 && index >= 0 && index < total) {
           const bufferKey = fromClientId + MESSAGE_SEPARATOR + messageId;
-          const pending = mapEnsure(
-            buffer,
-            bufferKey,
-            (): Pending => [[], total, total, setPendingTimeout(bufferKey)],
-          );
+          const pending = mapEnsure(buffer, bufferKey, (): Pending => [
+            [],
+            total,
+            total,
+            setPendingTimeout(bufferKey),
+          ]);
           const [fragments] = pending;
           if (total == pending[2] && isUndefined(fragments[index])) {
             stopTimeout(pending[3]);

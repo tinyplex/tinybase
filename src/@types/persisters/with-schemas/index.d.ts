@@ -93,8 +93,7 @@ export type PersisterStats = {
 
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
-  | DpcJson
-  | DpcTabular<Schemas[0], Schemas[1]>;
+  DpcJson | DpcTabular<Schemas[0], Schemas[1]>;
 
 /// DpcJson
 export type DpcJson = {

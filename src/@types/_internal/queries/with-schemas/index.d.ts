@@ -12,8 +12,7 @@ import type {
 export type JoinedCellIdOrId<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   JoinedTableId extends TableIdFromSchema<Schema> | Id =
-    | TableIdFromSchema<Schema>
-    | Id,
+    TableIdFromSchema<Schema> | Id,
 > =
   JoinedTableId extends TableIdFromSchema<Schema>
     ? CellIdFromSchema<Schema, JoinedTableId>

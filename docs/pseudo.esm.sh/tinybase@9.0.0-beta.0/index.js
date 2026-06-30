@@ -3174,9 +3174,9 @@ var PARAMS_TABLE = "_";
 var PARAM_LISTENER_PREFIX = "p";
 var createQueries = getCreateFunction((store) => {
   const createStore2 = store._[0];
-  const preStore = createStore2();
   const paramStore = createStore2();
   const resultStore = createStore2();
+  const preStores = mapNew();
   const resultStores = mapNew();
   const redefiningQueryIds = setNew();
   const routedResultListeners = mapNew();
@@ -3218,12 +3218,13 @@ var createQueries = getCreateFunction((store) => {
     callListeners
   );
   const getResultStore = (queryId) => mapEnsure(resultStores, queryId, createStore2);
-  const addPreStoreListener = (preStore2, queryId, ...listenerIds) => arrayForEach(
+  const getPreStore = (queryId) => mapEnsure(preStores, queryId, createStore2);
+  const addPreStoreListener = (preStore, queryId, ...listenerIds) => arrayForEach(
     listenerIds,
     (listenerId) => setAdd(
       mapEnsure(
         mapEnsure(preStoreListenerIds, queryId, mapNew),
-        preStore2,
+        preStore,
         setNew
       ),
       listenerId
@@ -3235,17 +3236,17 @@ var createQueries = getCreateFunction((store) => {
       (queryPreStoreListenerIds) => {
         mapForEach(
           queryPreStoreListenerIds,
-          (preStore2, listenerIds) => collForEach(
+          (preStore, listenerIds) => collForEach(
             listenerIds,
-            (listenerId) => preStore2.delListener(listenerId)
+            (listenerId) => preStore.delListener(listenerId)
           )
         );
         collClear(queryPreStoreListenerIds);
       }
     );
     arrayForEach(
-      [getResultStore(queryId), preStore],
-      (store2) => store2.delTable(queryId)
+      [getResultStore(queryId), mapGet(preStores, queryId)],
+      (store2) => store2?.delTable(queryId)
     );
   };
   const addSourceStoreListeners = (sourceStore, queryId, andCall, ...listenerIds) => {
@@ -3428,10 +3429,9 @@ var createQueries = getCreateFunction((store) => {
         )
       );
       const groups = mapNew(groupEntries);
-      let selectJoinWhereStore = preStore;
-      if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-        selectJoinWhereStore = resultStore2;
-      } else {
+      const hasGroupsOrHavings = !collIsEmpty(groups) || !arrayIsEmpty(havings);
+      const selectJoinWhereStore = hasGroupsOrHavings ? getPreStore(queryId) : resultStore2;
+      if (hasGroupsOrHavings) {
         synchronizeTransactions(queryId, selectJoinWhereStore, resultStore2);
         const groupedSelectedCellIds = mapNew();
         mapForEach(

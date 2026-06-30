@@ -94,8 +94,7 @@ export type TableInHtmlTableProps<
           | CellIdFromSchema<Schemas[0], TableId>[]
           | {
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
-                | string
-                | CustomCell<Schemas, TableId, CellId>;
+                string | CustomCell<Schemas, TableId, CellId>;
             };
       }
     : never
@@ -129,8 +128,7 @@ export type SortedTableInHtmlTableProps<
           | CellIdFromSchema<Schemas[0], TableId>[]
           | {
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
-                | string
-                | CustomCell<Schemas, TableId, CellId>;
+                string | CustomCell<Schemas, TableId, CellId>;
             };
         /// ui-svelte-dom.SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
@@ -172,8 +170,7 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly editable?: boolean;
   /// ui-svelte-dom.SliceInHtmlTableProps.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+    Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
 /// ui-svelte-dom.RelationshipInHtmlTableProps
@@ -186,8 +183,7 @@ export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly editable?: boolean;
   /// ui-svelte-dom.RelationshipInHtmlTable.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+    Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
 /// ui-svelte-dom.ResultTableInHtmlTableProps
@@ -198,8 +194,7 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly queries?: QueriesOrQueriesId<Schemas>;
   /// ui-svelte-dom.ResultTableInHtmlTableProps.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
 };
 
 /// ui-svelte-dom.ResultSortedTableInHtmlTableProps
@@ -219,8 +214,7 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     readonly queries?: QueriesOrQueriesId<Schemas>;
     /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.customCells
     readonly customCells?:
-      | Ids
-      | {[cellId: Id]: string | CustomResultCell<Schemas>};
+      Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
     /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
     /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.paginator

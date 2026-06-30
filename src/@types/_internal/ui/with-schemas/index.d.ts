@@ -15,33 +15,25 @@ import type {
 import type {Synchronizer} from '../../../synchronizers/with-schemas/index.d.ts';
 
 export type StoreOrStoreId<Schemas extends OptionalSchemas> =
-  | Store<Schemas>
-  | Id;
+  Store<Schemas> | Id;
 
 export type MetricsOrMetricsId<Schemas extends OptionalSchemas> =
-  | Metrics<Schemas>
-  | Id;
+  Metrics<Schemas> | Id;
 
 export type IndexesOrIndexesId<Schemas extends OptionalSchemas> =
-  | Indexes<Schemas>
-  | Id;
+  Indexes<Schemas> | Id;
 
 export type RelationshipsOrRelationshipsId<Schemas extends OptionalSchemas> =
-  | Relationships<Schemas>
-  | Id;
+  Relationships<Schemas> | Id;
 
 export type QueriesOrQueriesId<Schemas extends OptionalSchemas> =
-  | Queries<Schemas>
-  | Id;
+  Queries<Schemas> | Id;
 
 export type CheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
-  | Checkpoints<Schemas>
-  | Id;
+  Checkpoints<Schemas> | Id;
 
 export type PersisterOrPersisterId<Schemas extends OptionalSchemas> =
-  | Persister<Schemas, Persists.StoreOrMergeableStore>
-  | Id;
+  Persister<Schemas, Persists.StoreOrMergeableStore> | Id;
 
 export type SynchronizerOrSynchronizerId<Schemas extends OptionalSchemas> =
-  | Synchronizer<Schemas>
-  | Id;
+  Synchronizer<Schemas> | Id;

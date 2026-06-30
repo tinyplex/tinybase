@@ -96,8 +96,7 @@ export type TableInHtmlTableProps<
           | CellIdFromSchema<Schemas[0], TableId>[]
           | {
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
-                | string
-                | CustomCell<Schemas, TableId, CellId>;
+                string | CustomCell<Schemas, TableId, CellId>;
             };
       }
     : never
@@ -131,8 +130,7 @@ export type SortedTableInHtmlTableProps<
           | CellIdFromSchema<Schemas[0], TableId>[]
           | {
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
-                | string
-                | CustomCell<Schemas, TableId, CellId>;
+                string | CustomCell<Schemas, TableId, CellId>;
             };
         /// ui-solid-dom.SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
@@ -174,8 +172,7 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly editable?: boolean;
   /// ui-solid-dom.SliceInHtmlTableProps.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+    Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
 /// ui-solid-dom.RelationshipInHtmlTableProps
@@ -188,8 +185,7 @@ export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly editable?: boolean;
   /// ui-solid-dom.RelationshipInHtmlTable.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+    Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
 /// ui-solid-dom.ResultTableInHtmlTableProps
@@ -200,8 +196,7 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly queries?: QueriesOrQueriesId<Schemas>;
   /// ui-solid-dom.ResultTableInHtmlTableProps.customCells
   readonly customCells?:
-    | Ids
-    | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
 };
 
 /// ui-solid-dom.ResultSortedTableInHtmlTableProps
@@ -221,8 +216,7 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     readonly queries?: QueriesOrQueriesId<Schemas>;
     /// ui-solid-dom.ResultSortedTableInHtmlTableProps.customCells
     readonly customCells?:
-      | Ids
-      | {[cellId: Id]: string | CustomResultCell<Schemas>};
+      Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
     /// ui-solid-dom.ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
     /// ui-solid-dom.ResultSortedTableInHtmlTableProps.paginator

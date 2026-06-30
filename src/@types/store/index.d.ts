@@ -365,8 +365,7 @@ export type InvalidValues = {[valueId: Id]: any[]};
 export type Changes = [
   changedTables: {
     [tableId: Id]:
-      | {[rowId: Id]: {[cellId: Id]: CellOrUndefined} | undefined}
-      | undefined;
+      {[rowId: Id]: {[cellId: Id]: CellOrUndefined} | undefined} | undefined;
   },
   changedValues: {[valueId: Id]: ValueOrUndefined},
   isChanges: 1,

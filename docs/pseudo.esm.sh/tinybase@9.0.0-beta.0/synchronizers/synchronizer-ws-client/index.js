@@ -6,6 +6,7 @@ var OPEN = "open";
 var MESSAGE = "message";
 var ERROR = "error";
 var UNDEFINED = "\uFFFC";
+var strMatch = (str, regex) => str?.match(regex);
 var strSplit = (str, separator = EMPTY_STRING, limit) => str.split(separator, limit);
 var promise = Promise;
 var math = Math;
@@ -16,6 +17,7 @@ var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(valu
 var GLOBAL = globalThis;
 var THOUSAND = 1e3;
 var startTimeout = (callback, sec = 0) => setTimeout(callback, sec * THOUSAND);
+var stopTimeout = clearTimeout;
 var mathFloor = math.floor;
 var mathRandom = math.random;
 var isNullish = (thing) => thing == null;
@@ -39,11 +41,17 @@ var tryCatch = async (action, then1, then2) => {
   }
 };
 var arrayForEach = (array, cb) => array.forEach(cb);
+var arrayJoin = (array, sep = EMPTY_STRING) => array.join(sep);
 var arrayMap = (array, cb) => array.map(cb);
 var arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
 var arrayClear = (array, to) => array.splice(0, to);
 var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
+var collSize = (coll) => coll?.size ?? 0;
+var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
+var collForEach = (coll, cb) => coll?.forEach(cb);
+var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
@@ -68,32 +76,6 @@ var objEnsure = (obj, id, getDefaultValue) => {
   }
   return obj[id];
 };
-var jsonString = JSON.stringify;
-var jsonParse = JSON.parse;
-var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined(value) ? UNDEFINED : value);
-var jsonParseWithUndefined = (str) => (
-  // JSON.parse reviver removes properties with undefined values
-  replaceUndefinedString(jsonParse(str))
-);
-var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray(obj) ? arrayMap(obj, replaceUndefinedString) : isObject(obj) ? objMap(obj, replaceUndefinedString) : obj;
-var MESSAGE_SEPARATOR = "\n";
-var ifPayloadValid = (payload, then) => {
-  const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-  if (splitAt !== -1) {
-    then(slice(payload, 0, splitAt), slice(payload, splitAt + 1));
-  }
-};
-var receivePayload = (payload, receive) => ifPayloadValid(
-  payload,
-  (fromClientId, remainder) => receive(fromClientId, ...jsonParseWithUndefined(remainder))
-);
-var createPayload = (toClientId, ...args) => createRawPayload(toClientId ?? EMPTY_STRING, jsonStringWithUndefined(args));
-var createRawPayload = (clientId, remainder) => clientId + MESSAGE_SEPARATOR + remainder;
-var collSize = (coll) => coll?.size ?? 0;
-var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
-var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
-var collForEach = (coll, cb) => coll?.forEach(cb);
-var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 var map = Map;
 var mapNew = (entries) => new map(entries);
 var mapGet = (map2, key) => map2?.get(key);
@@ -140,6 +122,86 @@ var getUniqueId = (length = 16) => arrayReduce(
   (uniqueId, number) => uniqueId + encode(number),
   EMPTY_STRING
 );
+var jsonString = JSON.stringify;
+var jsonParse = JSON.parse;
+var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined(value) ? UNDEFINED : value);
+var jsonParseWithUndefined = (str) => (
+  // JSON.parse reviver removes properties with undefined values
+  replaceUndefinedString(jsonParse(str))
+);
+var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray(obj) ? arrayMap(obj, replaceUndefinedString) : isObject(obj) ? objMap(obj, replaceUndefinedString) : obj;
+var MESSAGE_SEPARATOR = "\n";
+var FRAGMENT = /^(.+)\n(\d+)\n(\d+)\n([\s\S]*)$/;
+var ifPayloadValid = (payload, then) => {
+  const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
+  if (splitAt !== -1) {
+    then(slice(payload, 0, splitAt), slice(payload, splitAt + 1));
+  }
+};
+var receivePayloadRemainder = (fromClientId, remainder, receive) => receive(fromClientId, ...jsonParseWithUndefined(remainder));
+var createPayloadReceiver = (receive, fragmentTimeoutSeconds = 1) => {
+  const buffer = mapNew();
+  const setPendingTimeout = (bufferKey) => startTimeout(() => collDel(buffer, bufferKey), fragmentTimeoutSeconds);
+  const delPending = (bufferKey, pending) => {
+    stopTimeout(pending[3]);
+    collDel(buffer, bufferKey);
+  };
+  return (payload) => ifPayloadValid(payload, (fromClientId, remainder) => {
+    const [, messageId, indexStr, totalStr, fragment] = strMatch(remainder, FRAGMENT) ?? [];
+    if (messageId) {
+      const index = parseInt(indexStr);
+      const total = parseInt(totalStr);
+      if (total > 0 && index >= 0 && index < total) {
+        const bufferKey = fromClientId + MESSAGE_SEPARATOR + messageId;
+        const pending = mapEnsure(buffer, bufferKey, () => [
+          [],
+          total,
+          total,
+          setPendingTimeout(bufferKey)
+        ]);
+        const [fragments] = pending;
+        if (total == pending[2] && isUndefined(fragments[index])) {
+          stopTimeout(pending[3]);
+          pending[3] = setPendingTimeout(bufferKey);
+          fragments[index] = fragment;
+          pending[1]--;
+        }
+        if (pending[1] == 0) {
+          delPending(bufferKey, pending);
+          receivePayloadRemainder(
+            fromClientId,
+            arrayJoin(fragments),
+            receive
+          );
+        }
+      }
+    } else {
+      receivePayloadRemainder(fromClientId, remainder, receive);
+    }
+  });
+};
+var createRawPayload = (clientId, remainder) => clientId + MESSAGE_SEPARATOR + remainder;
+var createPayloads = (toClientId, requestId, message, body, fragmentSize) => {
+  const clientId = toClientId ?? EMPTY_STRING;
+  const remainder = jsonStringWithUndefined([requestId, message, body]);
+  const maxFragmentSize = mathFloor(fragmentSize ?? 0);
+  if (isUndefined(fragmentSize) || maxFragmentSize < 1 || size(remainder) <= maxFragmentSize) {
+    return [createRawPayload(clientId, remainder)];
+  }
+  const fragments = strMatch(
+    remainder,
+    new RegExp(`.{1,${maxFragmentSize}}`, "g")
+  );
+  const total = size(fragments ?? []);
+  const messageId = getUniqueId();
+  return arrayMap(
+    fragments ?? [],
+    (fragment, index) => createRawPayload(
+      clientId,
+      arrayJoin([messageId, index, total, fragment], MESSAGE_SEPARATOR)
+    )
+  );
+};
 var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
 var getLatestHlc = (hlc1, hlc2) => (
   /* istanbul ignore next */
@@ -614,16 +676,22 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
   });
   return persister;
 };
-var createWsSynchronizer = async (store, webSocket, requestTimeoutSeconds = 1, onSend, onReceive, onIgnoredError) => {
+var createWsSynchronizer = async (store, webSocket, requestTimeoutSeconds = 1, onSend, onReceive, onIgnoredError, fragmentSize) => {
   const addEventListener = (event, handler) => {
     webSocket.addEventListener(event, handler);
     return () => webSocket.removeEventListener(event, handler);
   };
-  const registerReceive = (receive) => addEventListener(
-    MESSAGE,
-    ({ data }) => receivePayload(data.toString(UTF8), receive)
+  const registerReceive = (receive) => {
+    const receivePayload = createPayloadReceiver(
+      receive,
+      requestTimeoutSeconds
+    );
+    addEventListener(MESSAGE, ({ data }) => receivePayload(data.toString(UTF8)));
+  };
+  const send = (toClientId, ...args) => arrayForEach(
+    createPayloads(toClientId, ...args, fragmentSize),
+    (payload) => webSocket.send(payload)
   );
-  const send = (toClientId, ...args) => webSocket.send(createPayload(toClientId, ...args));
   const destroy = () => {
     webSocket.close();
   };

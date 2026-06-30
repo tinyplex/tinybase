@@ -117,8 +117,7 @@ const getCell = (
   sourceType: SourceType,
   store: {getCell: (...args: any[]) => CellOrUndefined} | undefined,
   queries:
-    | {getResultCell: (...args: any[]) => ResultCellOrUndefined}
-    | undefined,
+    {getResultCell: (...args: any[]) => ResultCellOrUndefined} | undefined,
   tableId: Id | undefined,
   queryId: Id | undefined,
   rowId: Id,

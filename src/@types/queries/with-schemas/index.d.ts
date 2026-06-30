@@ -21,13 +21,7 @@ import type {
 
 /// ParamValue
 export type ParamValue =
-  | string
-  | number
-  | boolean
-  | null
-  | string[]
-  | number[]
-  | boolean[];
+  string | number | boolean | null | string[] | number[] | boolean[];
 
 /// ParamValues
 export type ParamValues = {[paramId: Id]: ParamValue};
@@ -301,8 +295,7 @@ export type Join<
   /// Join.5
   <
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
+      TableIdFromSchema<Schema> | Id,
     IntermediateJoinedCellId extends JoinedCellIdOrId<
       Schema,
       IntermediateJoinedTableId
@@ -315,8 +308,7 @@ export type Join<
   /// Join.6
   <
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
+      TableIdFromSchema<Schema> | Id,
     IntermediateJoinedCellId extends JoinedCellIdOrId<
       Schema,
       IntermediateJoinedTableId
@@ -330,8 +322,7 @@ export type Join<
   /// Join.7
   <
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
+      TableIdFromSchema<Schema> | Id,
   >(
     joinedTableId: TableIdFromSchema<Schema>,
     fromIntermediateJoinedTableId: IntermediateJoinedTableId,
@@ -347,8 +338,7 @@ export type Join<
   /// Join.8
   <
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
+      TableIdFromSchema<Schema> | Id,
   >(
     asQuery: true,
     joinedQueryId: Id,

@@ -243,9 +243,8 @@ export type ValueCallback<
   Schema extends OptionalValuesSchema,
   Params extends any[] = ValueIdFromSchema<Schema> extends infer ValueId
     ? ValueId extends ValueIdFromSchema<Schema>
-      ?
-          | [valueId: ValueId, value: Value<Schema, ValueId>]
-          | [valueId: never, value: never]
+      ? | [valueId: ValueId, value: Value<Schema, ValueId>]
+        | [valueId: never, value: never]
       : never
     : never,
   Params2 extends any[] = Params | [valueId: never, value: never],
@@ -314,8 +313,7 @@ export type SortedRowIdsArgs<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
   CellIdOrUndefined extends CellIdFromSchema<Schema, TableId> | undefined =
-    | CellIdFromSchema<Schema, TableId>
-    | undefined,
+    CellIdFromSchema<Schema, TableId> | undefined,
 > = {
   /// SortedRowIdsArgs.tableId
   tableId: TableId;
@@ -402,8 +400,7 @@ export type TableCellIdsListener<
       : never
     : never,
   Params3 extends any[] =
-    | Params
-    | [store: never, tableId: never, getIdChanges: never],
+    Params | [store: never, tableId: never, getIdChanges: never],
   Params2 extends any[] = Truncate<Params3>,
   // Params1 extends any[] = Truncate<Params2>,
 > = Params extends any
@@ -442,8 +439,7 @@ export type HasTableCellListener<
       : never
     : never,
   Params4 extends any[] =
-    | Params
-    | [store: never, tableId: never, cellId: never, hasTableCell: never],
+    Params | [store: never, tableId: never, cellId: never, hasTableCell: never],
   Params3 extends any[] = Truncate<Params4>,
   //  Params2 extends any[] = Truncate<Params3>,
   // Params1 extends any[] = Truncate<Params2>,
@@ -544,8 +540,7 @@ export type CellIdsListener<
       : never
     : never,
   Params4 extends any[] =
-    | Params
-    | [store: never, tableId: never, rowId: never, getIdChanges: never],
+    Params | [store: never, tableId: never, rowId: never, getIdChanges: never],
   Params3 extends any[] = Truncate<Params4>,
   // Params2 extends any[] = Truncate<Params3>,
   // Params1 extends any[] = Truncate<Params2>,
@@ -661,11 +656,10 @@ export type CellListener<
   // Params2 extends any[] = Truncate<Params3>,
   // Params1 extends any[] = Truncate<Params2>,
 > = Params extends any
-  ?
-      | ((...params: Params7) => void)
-      | ((...params: Params6) => void)
-      | ((...params: Params5) => void)
-      | ((...params: Params4) => void)
+  ? | ((...params: Params7) => void)
+    | ((...params: Params6) => void)
+    | ((...params: Params5) => void)
+    | ((...params: Params4) => void)
   : // The unions may no longer be discriminatory with fewer parameters, and
     // TypeScript fails to resolve callback signatures in some cases.
     // | ((...params: Params3) => void)
@@ -742,11 +736,10 @@ export type ValueListener<
   Params2 extends any[] = Truncate<Params3>,
   //  Params1 extends any[] = Truncate<Params2>,
 > = Params extends any
-  ?
-      | ((...params: Params5) => void)
-      | ((...params: Params4) => void)
-      | ((...params: Params3) => void)
-      | ((...params: Params2) => void)
+  ? | ((...params: Params5) => void)
+    | ((...params: Params4) => void)
+    | ((...params: Params3) => void)
+    | ((...params: Params2) => void)
   : // | ((...params: Params1) => void)
     never;
 
@@ -857,10 +850,9 @@ export type Changes<Schemas extends OptionalSchemas> = [
       | {
           [rowId: Id]:
             | {
-                [CellId in CellIdFromSchema<
-                  Schemas[0],
-                  TableId
-                >]?: CellOrUndefined<Schemas[0], TableId, CellId>;
+                [
+                  CellId in CellIdFromSchema<Schemas[0], TableId>
+                ]?: CellOrUndefined<Schemas[0], TableId, CellId>;
               }
             | undefined;
         }
@@ -1106,8 +1098,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     rowId: Id,
     cellId: CellId,
     cell:
-      | Cell<Schemas[0], TableId, CellId>
-      | MapCell<Schemas[0], TableId, CellId>,
+      Cell<Schemas[0], TableId, CellId> | MapCell<Schemas[0], TableId, CellId>,
   ): this;
 
   /// Store.setValues

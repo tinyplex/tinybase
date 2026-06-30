@@ -566,10 +566,7 @@ export const mount = (component, options = {}) => {
             return {
               contents: file,
               loader: extname(args.path).slice(1) as
-                | 'js'
-                | 'jsx'
-                | 'ts'
-                | 'tsx',
+                'js' | 'jsx' | 'ts' | 'tsx',
               resolveDir: dirname(args.path),
             };
           });

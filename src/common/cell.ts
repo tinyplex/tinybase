@@ -32,12 +32,7 @@ import {
 export type PrimitiveCellOrValue = string | number | boolean | null;
 
 export type CellOrValueType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'null'
-  | 'object'
-  | 'array';
+  'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
 
 export const getCellOrValueType = (
   cellOrValue: any,
