@@ -988,6 +988,14 @@ exports[`Types in mergeable-store.ts > 1526:2 1`] = `"Conversion of type 'ValueO
 
 exports[`Types in mergeable-store.ts > 1527:25 1`] = `"Property 'v2' does not exist on type '{ v1?: [thing: ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, hlc: string, hash: number] | undefined; v1d?: [thing: ...] | undefined; }'."`;
 
+exports[`Types in mergeable-store.ts > 1557:19 1`] = `"Type 'string' is not assignable to type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
+
+exports[`Types in mergeable-store.ts > 1579:14 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '{ c1?: [thing: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">, hlc: string, hash: number] | undefined; c1d?: [thing: ...] | undefined; }'."`;
+
+exports[`Types in mergeable-store.ts > 1596:9 1`] = `"Type 'string' is not assignable to type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
+
+exports[`Types in mergeable-store.ts > 1601:4 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type '{ v1?: [thing: ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, hlc?: string | undefined] | undefined; v1d?: [thing: ...] | undefined; }'."`;
+
 exports[`Types in metrics.ts > 24:44 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
 exports[`Types in metrics.ts > 25:57 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | "c1s" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "number"; readonly default: 0; }; readonly c1s: { ...; }; }; }, "t1">, rowId: string) => number) | undefined'."`;
@@ -1111,6 +1119,16 @@ exports[`Types in persisters.ts > 45:61 1`] = `"Property 't2' does not exist on 
 exports[`Types in persisters.ts > 49:60 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in persisters.ts > 52:69 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types in persisters.ts > 78:13 1`] = `"Type 'string' is not assignable to type 'number'."`;
+
+exports[`Types in persisters.ts > 82:13 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+
+exports[`Types in persisters.ts > 87:3 1`] = `"Type 'string' is not assignable to type 'number'."`;
+
+exports[`Types in persisters.ts > 91:3 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+
+exports[`Types in persisters.ts > 104:13 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
 exports[`Types in queries.ts > 18:9 1`] = `"No overload matches this call."`;
 

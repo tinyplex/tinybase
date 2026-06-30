@@ -52,29 +52,32 @@ export type PersistedStore<
 export type PersistedContent<
   Schemas extends OptionalSchemas,
   Persist extends Persists = Persists.StoreOnly,
+  WhenSet extends boolean = false,
 > = Persist extends Persists.StoreOrMergeableStore
-  ? Content<Schemas> | MergeableContent<Schemas>
+  ? Content<Schemas, WhenSet> | MergeableContent<Schemas, WhenSet>
   : Persist extends Persists.MergeableStoreOnly
-    ? MergeableContent<Schemas>
-    : Content<Schemas>;
+    ? MergeableContent<Schemas, WhenSet>
+    : Content<Schemas, WhenSet>;
 
 /// PersistedChanges
 export type PersistedChanges<
   Schemas extends OptionalSchemas,
   Persist extends Persists = Persists.StoreOnly,
+  WhenSet extends boolean = false,
 > = Persist extends Persists.StoreOrMergeableStore
-  ? Changes<Schemas> | MergeableChanges<Schemas>
+  ? Changes<Schemas> | MergeableChanges<Schemas, false, WhenSet>
   : Persist extends Persists.MergeableStoreOnly
-    ? MergeableChanges<Schemas>
+    ? MergeableChanges<Schemas, false, WhenSet>
     : Changes<Schemas>;
 
 /// PersisterListener
 export type PersisterListener<
   Schemas extends OptionalSchemas,
   Persist extends Persists = Persists.StoreOnly,
+  WhenSet extends boolean = false,
 > = (
-  content?: PersistedContent<Schemas, Persist>,
-  changes?: PersistedChanges<Schemas, Persist>,
+  content?: PersistedContent<Schemas, Persist, WhenSet>,
+  changes?: PersistedChanges<Schemas, Persist, WhenSet>,
 ) => void;
 
 /// StatusListener
@@ -267,13 +270,15 @@ export function createCustomPersister<
   Persist extends Persists = Persists.StoreOnly,
 >(
   store: PersistedStore<Schemas, Persist>,
-  getPersisted: () => Promise<PersistedContent<Schemas, Persist> | undefined>,
+  getPersisted: () => Promise<
+    PersistedContent<Schemas, Persist, true> | undefined
+  >,
   setPersisted: (
     getContent: () => PersistedContent<Schemas, Persist>,
     changes?: PersistedChanges<Schemas, Persist>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<Schemas, Persist>,
+    listener: PersisterListener<Schemas, Persist, true>,
   ) => ListenerHandle | Promise<ListenerHandle>,
   delPersisterListener: (
     listenerHandle: ListenerHandle,
