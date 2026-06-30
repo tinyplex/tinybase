@@ -522,7 +522,7 @@
  * @param fragmentSize An optional maximum size for each WebSocket message
  * fragment. When set, larger synchronization payloads sent by the server are
  * split into fragments and reassembled by the receiving WsSynchronizer, since
- * v8.6.
+ * v9.0.
  * @returns A reference to the new WsServer object.
  * @example
  * This example creates a WsServer that synchronizes two clients on a shared

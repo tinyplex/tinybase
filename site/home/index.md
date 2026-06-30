@@ -11,7 +11,7 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v8-6'><em>NEW!</em> v8.6 release</a>
+<a href='/guides/releases/#v9-0'><em>NEW!</em> v9.0 release</a>
 
 <span id="one-with">"The one with bug fixes!"</span>
 

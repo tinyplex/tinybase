@@ -835,7 +835,7 @@
  * The 'Dpc' prefix indicates that this type is used within the
  * DatabasePersisterConfig type.
  * @category Configuration
- * @since v8.6.0
+ * @since v9.0.0
  */
 /// DpcTabularValuesIn
 /**

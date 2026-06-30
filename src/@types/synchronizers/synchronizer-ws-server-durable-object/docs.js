@@ -157,7 +157,7 @@
    * }
    * ```
    * @category Getter
-   * @since v8.6.0
+   * @since v9.0.0
    */
   /// WsServerDurableObject.getFragmentSize
   /**
@@ -180,7 +180,7 @@
    * }
    * ```
    * @category Getter
-   * @since v8.6.0
+   * @since v9.0.0
    */
   /// WsServerDurableObject.getRequestTimeoutSeconds
   /**

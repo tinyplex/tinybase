@@ -5,7 +5,7 @@ highlighted features.
 
 ---
 
-# v8.6
+# v9.0
 
 ## Persistence Subsets
 
@@ -64,13 +64,21 @@ fragmented mode's protection from Cloudflare's 2MB row limit. Existing
 cell-level fragmented data is still loaded and is cleaned up when the Row is
 next saved.
 
+## Breaking Change
+
+This release is a major version because the Durable Object SQL Storage
+Persister's fragmented mode uses a new storage layout. TinyBase v9.0 can read
+the old cell-level fragmented data written by earlier releases, but once it
+saves the new row-level fragmented data, older TinyBase versions are not
+designed to read that data back. Apps using fragmented Durable Object SQL
+storage should not roll those Durable Objects back to an earlier TinyBase
+version after v9.0 has written to them.
+
 ## Query Transaction Fixes
 
 Grouped queries, including those with having clauses, now correctly return their
 current result when a query definition is added during an active Store
 transaction.
-
-There are no intended breaking changes in this release.
 
 ---
 

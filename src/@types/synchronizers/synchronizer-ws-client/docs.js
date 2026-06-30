@@ -105,7 +105,7 @@
  * suitable for debugging synchronization issues in a development environment.
  * @param fragmentSize An optional maximum size for each WebSocket message
  * fragment. When set, larger synchronization payloads are split into fragments
- * and reassembled by the receiving WsSynchronizer, since v8.6.
+ * and reassembled by the receiving WsSynchronizer, since v9.0.
  * @returns A reference to the new WsSynchronizer object.
  * @example
  * This example creates two WsSynchronizer objects to synchronize one
