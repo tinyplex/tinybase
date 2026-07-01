@@ -795,13 +795,13 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
             const content = await getPersisted();
             if (isArray(content)) {
               setContentOrChanges(content);
-            } else if (initialContent) {
+            } else if (isUndefined(content) && initialContent) {
               setDefaultContent(initialContent);
-            } else {
+            } else if (!isUndefined(content)) {
               errorNew(`Content is not an array: ${content}`);
             }
           },
-          () => {
+          (error) => {
             if (initialContent) {
               setDefaultContent(initialContent);
             }
@@ -1018,8 +1018,10 @@ var createStore = () => {
   const changedRowIds = mapNew();
   const changedCellIds = mapNew();
   const changedCells = mapNew();
+  const defaultedCells = mapNew();
   const changedValueIds = mapNew();
   const changedValues = mapNew();
+  const defaultedValues = setNew();
   const invalidCells = mapNew();
   const invalidValues = mapNew();
   const tablesSchemaMap = mapNew();
@@ -1151,6 +1153,17 @@ var createStore = () => {
         collForEach(rowDefaulted, (cell, cellId) => {
           if (!objHas(row, cellId)) {
             row[cellId] = cell;
+            ifNotUndefined(
+              rowId,
+              (rowId2) => setAdd(
+                mapEnsure(
+                  mapEnsure(defaultedCells, tableId, mapNew),
+                  rowId2,
+                  setNew
+                ),
+                cellId
+              )
+            );
           }
         });
         collForEach(rowNonDefaulted, (cellId) => {
@@ -1167,6 +1180,7 @@ var createStore = () => {
       collForEach(valuesDefaulted, (value, valueId) => {
         if (!objHas(values, valueId)) {
           values[valueId] = value;
+          setAdd(defaultedValues, valueId);
         }
       });
       collForEach(valuesNonDefaulted, (valueId) => {
@@ -1485,17 +1499,28 @@ var createStore = () => {
     );
   };
   const cellChanged = (tableId, rowId, cellId, oldCell, newCell) => {
+    const defaulted = collHas(mapGet(mapGet(defaultedCells, tableId), rowId), cellId) && isUndefined(oldCell) ? 1 : 0;
     mapEnsure(
       mapEnsure(mapEnsure(changedCells, tableId, mapNew), rowId, mapNew),
       cellId,
       () => [oldCell, 0]
     )[1] = newCell;
-    internalListeners[3]?.(tableId, rowId, cellId, newCell, mutating);
+    internalListeners[3]?.(
+      tableId,
+      rowId,
+      cellId,
+      newCell,
+      mutating,
+      defaulted
+    );
+    collDel(mapGet(mapGet(defaultedCells, tableId), rowId), cellId);
   };
   const valueIdsChanged = (valueId, addedOrRemoved) => idsChanged(changedValueIds, valueId, addedOrRemoved);
   const valueChanged = (valueId, oldValue, newValue) => {
+    const defaulted = collHas(defaultedValues, valueId) && isUndefined(oldValue) ? 1 : 0;
     mapEnsure(changedValues, valueId, () => [oldValue, 0])[1] = newValue;
-    internalListeners[4]?.(valueId, newValue, mutating);
+    internalListeners[4]?.(valueId, newValue, mutating, defaulted);
+    collDel(defaultedValues, valueId);
   };
   const cellInvalid = (tableId, rowId, cellId, invalidCell, defaultedCell) => {
     arrayPush(
@@ -2166,9 +2191,11 @@ var createStore = () => {
             changedRowIds,
             changedCellIds,
             changedCells,
+            defaultedCells,
             invalidCells,
             changedValueIds,
             changedValues,
+            defaultedValues,
             invalidValues
           ],
           collClear

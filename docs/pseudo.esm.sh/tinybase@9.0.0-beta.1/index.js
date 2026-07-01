@@ -1039,8 +1039,10 @@ var createStore = () => {
   const changedRowIds = mapNew();
   const changedCellIds = mapNew();
   const changedCells = mapNew();
+  const defaultedCells = mapNew();
   const changedValueIds = mapNew();
   const changedValues = mapNew();
+  const defaultedValues = setNew();
   const invalidCells = mapNew();
   const invalidValues = mapNew();
   const tablesSchemaMap = mapNew();
@@ -1172,6 +1174,17 @@ var createStore = () => {
         collForEach(rowDefaulted, (cell, cellId) => {
           if (!objHas(row, cellId)) {
             row[cellId] = cell;
+            ifNotUndefined(
+              rowId,
+              (rowId2) => setAdd(
+                mapEnsure(
+                  mapEnsure(defaultedCells, tableId, mapNew),
+                  rowId2,
+                  setNew
+                ),
+                cellId
+              )
+            );
           }
         });
         collForEach(rowNonDefaulted, (cellId) => {
@@ -1188,6 +1201,7 @@ var createStore = () => {
       collForEach(valuesDefaulted, (value, valueId) => {
         if (!objHas(values, valueId)) {
           values[valueId] = value;
+          setAdd(defaultedValues, valueId);
         }
       });
       collForEach(valuesNonDefaulted, (valueId) => {
@@ -1506,17 +1520,28 @@ var createStore = () => {
     );
   };
   const cellChanged = (tableId, rowId, cellId, oldCell, newCell) => {
+    const defaulted = collHas(mapGet(mapGet(defaultedCells, tableId), rowId), cellId) && isUndefined(oldCell) ? 1 : 0;
     mapEnsure(
       mapEnsure(mapEnsure(changedCells, tableId, mapNew), rowId, mapNew),
       cellId,
       () => [oldCell, 0]
     )[1] = newCell;
-    internalListeners[3]?.(tableId, rowId, cellId, newCell, mutating);
+    internalListeners[3]?.(
+      tableId,
+      rowId,
+      cellId,
+      newCell,
+      mutating,
+      defaulted
+    );
+    collDel(mapGet(mapGet(defaultedCells, tableId), rowId), cellId);
   };
   const valueIdsChanged = (valueId, addedOrRemoved) => idsChanged(changedValueIds, valueId, addedOrRemoved);
   const valueChanged = (valueId, oldValue, newValue) => {
+    const defaulted = collHas(defaultedValues, valueId) && isUndefined(oldValue) ? 1 : 0;
     mapEnsure(changedValues, valueId, () => [oldValue, 0])[1] = newValue;
-    internalListeners[4]?.(valueId, newValue, mutating);
+    internalListeners[4]?.(valueId, newValue, mutating, defaulted);
+    collDel(defaultedValues, valueId);
   };
   const cellInvalid = (tableId, rowId, cellId, invalidCell, defaultedCell) => {
     arrayPush(
@@ -2187,9 +2212,11 @@ var createStore = () => {
             changedRowIds,
             changedCellIds,
             changedCells,
+            defaultedCells,
             invalidCells,
             changedValueIds,
             changedValues,
+            defaultedValues,
             invalidValues
           ],
           collClear
@@ -2633,7 +2660,7 @@ var createMergeableStore = (uniqueId, getNow) => {
     collClear(touchedCells);
     collClear(touchedValues);
   };
-  const cellChanged = (tableId, rowId, cellId, newCell, mutating) => {
+  const cellChanged = (tableId, rowId, cellId, newCell, mutating, defaulted) => {
     setAdd(
       mapEnsure(mapEnsure(touchedCells, tableId, mapNew), rowId, setNew),
       cellId
@@ -2651,7 +2678,7 @@ var createMergeableStore = (uniqueId, getNow) => {
                   {
                     [cellId]: [
                       newCell,
-                      defaultingContent ? EMPTY_STRING : getNextHlc()
+                      defaultingContent || defaulted ? EMPTY_STRING : getNextHlc()
                     ]
                   }
                 ]
@@ -2664,7 +2691,7 @@ var createMergeableStore = (uniqueId, getNow) => {
       ]);
     }
   };
-  const valueChanged = (valueId, newValue, mutating) => {
+  const valueChanged = (valueId, newValue, mutating, defaulted) => {
     setAdd(touchedValues, valueId);
     if (listeningToRawStoreChanges || mutating) {
       if (mutating) {
@@ -2676,7 +2703,7 @@ var createMergeableStore = (uniqueId, getNow) => {
           {
             [valueId]: [
               newValue,
-              defaultingContent ? EMPTY_STRING : getNextHlc()
+              defaultingContent || defaulted ? EMPTY_STRING : getNextHlc()
             ]
           }
         ],

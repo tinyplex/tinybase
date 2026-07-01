@@ -239,13 +239,14 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
             const content = await getPersisted();
             if (isArray(content)) {
               setContentOrChanges(content);
-            } else if (initialContent) {
+            } else if (isUndefined(content) && initialContent) {
               setDefaultContent(initialContent);
-            } else {
+            } else if (!isUndefined(content)) {
               errorNew(`Content is not an array: ${content}`);
             }
           },
-          () => {
+          (error) => {
+            onIgnoredError?.(error);
             if (initialContent) {
               setDefaultContent(initialContent);
             }
