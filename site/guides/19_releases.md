@@ -10,11 +10,12 @@ highlighted features.
 ## Persistence Subsets
 
 This release adds finer-grained configuration for tabular database Persisters,
-allowing Values persistence to be limited to selected Value Ids.
+allowing Values persistence to be limited to selected Value Ids
+([#279](https://github.com/tinyplex/tinybase/issues/279)).
 
 For apps that keep durable state and UI-only state in the same Store, the
-DpcTabularValues `load` and `save` properties can now use an array of Value
-Ids instead of a simple boolean:
+DpcTabularValues `load` and `save` properties can now use an array of Value Ids
+instead of a simple boolean:
 
 ```js
 const valuesSubsetDatabasePersisterConfig = {
@@ -36,29 +37,40 @@ unlisted columns in the Values database table are left untouched.
 
 WebSocket Synchronizers can now fragment large synchronization payloads and
 reassemble them on receipt. This helps deployments behind infrastructure with
-WebSocket message size limits, such as Cloudflare Workers and Durable Objects.
+WebSocket message size limits, such as Cloudflare Workers and Durable Objects
+([#261](https://github.com/tinyplex/tinybase/issues/261)).
 
 The createWsSynchronizer and createWsServer functions now accept an optional
 fragment size argument. Incomplete fragment buffers expire using the existing
 request timeout, which can also now be set on createWsServer. Durable Object
-servers can override the getFragmentSize and getRequestTimeoutSeconds methods
-to set the same behavior for messages they send.
+servers can override the getFragmentSize and getRequestTimeoutSeconds methods to
+set the same behavior for messages they send.
 
 The WebSocket Synchronizer documentation now also clarifies that WsServer paths
 come from WebSocket URL paths, not MergeableStore Ids, so clients that need
-separate synchronization groups should connect to different URL paths.
+separate synchronization groups should connect to different URL paths
+([#206](https://github.com/tinyplex/tinybase/issues/206)).
 
 When a persisted WsServer path starts after having no connected clients, it now
 loads its persisted Store before starting synchronization. This means the first
 client to reconnect is sent only the data it is missing, instead of receiving
-the whole persisted Store as a fresh change.
+the whole persisted Store as a fresh change
+([#205](https://github.com/tinyplex/tinybase/issues/205)).
+
+## Schema Default Synchronization Fixes
+
+Schema defaults inserted automatically into MergeableStores now use neutral
+timestamps, so defaulted Values and Cells no longer overwrite newer synced data
+from another peer. Explicit writes of default values still receive normal
+timestamps ([#167](https://github.com/tinyplex/tinybase/issues/167)).
 
 ## PowerSync Persistence Fixes
 
 The PowerSync Persister now updates existing tabular rows before inserting
 missing ones, instead of replacing whole rows during upserts. This avoids
 flooding PowerSync upload queues with replacement writes when schema validation
-causes loaded data to be written back unchanged on startup.
+causes loaded data to be written back unchanged on startup
+([#262](https://github.com/tinyplex/tinybase/issues/262)).
 
 ## Durable Object Persistence Fixes
 
@@ -67,7 +79,21 @@ data as one SQL row per TinyBase Row, instead of one SQL row per Cell. This
 reduces the number of SQLite writes for wide Rows while preserving the
 fragmented mode's protection from Cloudflare's 2MB row limit. Existing
 cell-level fragmented data is still loaded and is cleaned up when the Row is
-next saved.
+next saved ([#268](https://github.com/tinyplex/tinybase/issues/268)).
+
+## Query Transaction Fixes
+
+Grouped queries, including those with having clauses, now correctly return their
+current result when a query definition is added during an active Store
+transaction ([#259](https://github.com/tinyplex/tinybase/issues/259)).
+
+## Type Fixes
+
+The schema-aware MergeableContent, MergeableChanges, persisted content, and
+Persister listener types now validate content being set or loaded in the same
+way as Store setters. This catches invalid Cell or Value Ids and values in
+custom Persisters and MergeableStore setters
+([#178](https://github.com/tinyplex/tinybase/issues/178)).
 
 ## Breaking Change
 
@@ -78,12 +104,6 @@ saves the new row-level fragmented data, older TinyBase versions are not
 designed to read that data back. Apps using fragmented Durable Object SQL
 storage should not roll those Durable Objects back to an earlier TinyBase
 version after v9.0 has written to them.
-
-## Query Transaction Fixes
-
-Grouped queries, including those with having clauses, now correctly return their
-current result when a query definition is added during an active Store
-transaction.
 
 ---
 
@@ -100,7 +120,8 @@ patterns as the rest of the React UI modules. For more complex charts, the
 CartesianChart component can compose multiple LineSeries component children and
 BarSeries component children in one SVG.
 
-![LineChart component (React)](/shots/styled-chart-react-demo.png 'LineChart component (React)')
+![LineChart component (React)](/shots/styled-chart-react-demo.png 'LineChart
+component (React)')
 
 A chart can be bound to a Table with just the Table Id and the Cell Ids to use
 for the x and y values:
@@ -175,7 +196,8 @@ component child. These configuration children let you override inferred axis
 titles, numeric bounds, explicit ticks, tick counts, tick formatters, and
 axis-specific class names without adding more top-level chart props.
 
-![Axis Overrides demo (React)](/shots/axis-overrides-react-demo.png 'Axis Overrides demo (React)')
+![Axis Overrides demo (React)](/shots/axis-overrides-react-demo.png 'Axis
+Overrides demo (React)')
 
 The Axis Overrides demo shows this pattern with numeric timestamps formatted as
 dates on the x axis, and revenue ticks formatted as dollar amounts on the y
@@ -195,9 +217,9 @@ The `create-tinybase` CLI tool also now includes a Charting app option, so you
 can scaffold a complete editable table with reactive chart output by running
 `npm create tinybase@latest`.
 
-There are no intended breaking changes in this release. Please try the new
-chart components and let us know which chart types or styling hooks would be
-most useful next.
+There are no intended breaking changes in this release. Please try the new chart
+components and let us know which chart types or styling hooks would be most
+useful next.
 
 ---
 
@@ -212,7 +234,8 @@ The ui-solid-dom module provides browser-ready Solid components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Solid components and Accessors throughout.
 
-![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png
+'SortedTableInHtmlTable (Solid)')
 
 Alongside the table components, the new ui-solid-inspector module brings the
 TinyBase development inspector to Solid apps too, making it easy to inspect and
@@ -267,7 +290,8 @@ This release also adds a complete set of Solid UI component demos, plus a
 Countries demo and an Inspector demo, so you can see the new modules working
 across Stores, Indexes, Relationships, Queries, and editable views.
 
-![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png
+'EditableValueView (Solid)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -339,9 +363,9 @@ if you have any feedback or suggestions.
 ## Queries From Queries
 
 Also in this release, TinyQL queries can now use the result of another query as
-their source. This lets you build complex results in small, readable steps -
-for example, first finding all dogs, and then querying that result to find just
-the brown ones:
+their source. This lets you build complex results in small, readable steps - for
+example, first finding all dogs, and then querying that result to find just the
+brown ones:
 
 ```js
 import {createQueries} from 'tinybase';
@@ -367,9 +391,9 @@ console.log(queryQueries.getResultTable('brownDogs'));
 ```
 
 The `true` argument tells setQueryDefinition that `dogs` is another query
-result, not a Table in the underlying Store. This works in query clauses too,
-so you can select or join from query results as your TinyQL definitions become
-more modular.
+result, not a Table in the underlying Store. This works in query clauses too, so
+you can select or join from query results as your TinyQL definitions become more
+modular.
 
 ## Schematizer Enums
 
@@ -394,7 +418,8 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
+'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -441,7 +466,8 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
+'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -1148,7 +1174,8 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue,
+#[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 
