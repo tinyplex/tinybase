@@ -97,6 +97,29 @@ describe('Queries tables', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
 
+    test('root table column by id, some selected cells missing', () => {
+      store.setTable('t1', {
+        r1: {c1: 'one', c2: true},
+        r2: {c1: 'two', c2: false},
+        r3: {c2: true},
+      });
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where('c2', true);
+      });
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'one'}});
+
+      queries.setQueryDefinition('q2', 't1', ({select, where}) => {
+        select('c1');
+        select('c2');
+        where('c2', true);
+      });
+      expect(queries.getResultTable('q2')).toEqual({
+        r1: {c1: 'one', c2: true},
+        r3: {c2: true},
+      });
+    });
+
     test('one root table column by id, aliased once', () => {
       setCells();
       queries.setQueryDefinition('q1', 't1', ({select}) => {

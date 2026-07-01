@@ -94,6 +94,13 @@ Grouped queries, including those with having clauses, now correctly return their
 current result when a query definition is added during an active Store
 transaction ([#259](https://github.com/tinyplex/tinybase/issues/259)).
 
+## Query Documentation Clarifications
+
+The TinyQL documentation now explicitly describes that a Row only appears in a
+query result when at least one selected Cell or calculated value is defined. If
+all selected values for a Row resolve to `undefined`, no ResultRow is created
+for that Row ([#183](https://github.com/tinyplex/tinybase/issues/183)).
+
 ## Type Fixes
 
 The schema-aware MergeableContent, MergeableChanges, persisted content, and

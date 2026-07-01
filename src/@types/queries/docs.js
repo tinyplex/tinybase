@@ -740,6 +740,10 @@
  * The Select function is provided to the third `query` parameter of the
  * setQueryDefinition method. A query definition must call the Select function
  * at least once, otherwise it will be meaningless and return no data.
+ *
+ * A Row will only appear in the ResultTable if at least one Select clause
+ * produces a defined value for it. If all selected Cells or calculated values
+ * resolve to `undefined`, no ResultRow is created for that Row.
  * @example
  * This example shows a query that selects two Cells from the main query Table.
  *

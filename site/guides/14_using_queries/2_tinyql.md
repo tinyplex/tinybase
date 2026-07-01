@@ -93,6 +93,12 @@ console.log(queries.getResultTable('query'));
 // -> {fido: {color: 'brown'}, felix: {color: 'black'}, cujo: {color: 'black'}}
 ```
 
+Rows only appear in the result if at least one selected Cell has a defined
+value. If every `select` clause for a Row resolves to `undefined` - for example
+because an optional Cell is missing - no ResultRow is created. To keep such a
+Row in the result, select another Cell that is present, or return a placeholder
+value from a calculated `select`.
+
 Calling this function with one _callback_ parameter will indicate that the query
 should select a calculated value, based on one or more Cell values:
 
