@@ -48,6 +48,11 @@ The WebSocket Synchronizer documentation now also clarifies that WsServer paths
 come from WebSocket URL paths, not MergeableStore Ids, so clients that need
 separate synchronization groups should connect to different URL paths.
 
+When a persisted WsServer path starts after having no connected clients, it now
+loads its persisted Store before starting synchronization. This means the first
+client to reconnect is sent only the data it is missing, instead of receiving
+the whole persisted Store as a fresh change.
+
 ## PowerSync Persistence Fixes
 
 The PowerSync Persister now updates existing tabular rows before inserting

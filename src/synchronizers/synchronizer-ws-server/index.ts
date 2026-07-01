@@ -155,11 +155,9 @@ export const createWsServer = (<
 
   const startServerClient = async (serverClient: ServerClient) => {
     serverClient[Sc.State] = ScState.Starting;
-    await serverClient[Sc.Persister].schedule(
-      serverClient[Sc.Persister].startAutoLoad,
-      serverClient[Sc.Persister].startAutoSave,
-      serverClient[Sc.Synchronizer].startSync,
-    );
+    await serverClient[Sc.Persister].startAutoLoad();
+    await serverClient[Sc.Persister].startAutoSave();
+    await serverClient[Sc.Synchronizer].startSync();
     serverClient[Sc.Then](
       serverClient[Sc.Persister].getStore() as MergeableStore,
     );

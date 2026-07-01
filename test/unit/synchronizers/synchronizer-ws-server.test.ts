@@ -543,6 +543,56 @@ describe('Persistence', () => {
     }
   });
 
+  test('only sends missing data to first persisted client', async () => {
+    const persistedStore = createMergeableStore('seed', getNow);
+    persistedStore.setCell('t1', 'r1', 'c1', 'existing');
+    const clientContent = persistedStore.getMergeableContent();
+    persistedStore.setCell('t1', 'r2', 'c1', 'missing');
+    writeFileSync(
+      join(tmpDir, 'p1.json'),
+      JSON.stringify(persistedStore.getMergeableContent()),
+      'utf-8',
+    );
+
+    const sentPayloads: string[] = [];
+    const webSocketServer = new WebSocketServer({port: 8049});
+    webSocketServer.on('connection', (client) => {
+      const send = client.send.bind(client);
+      client.send = ((payload: string) => {
+        sentPayloads.push(payload);
+        return send(payload);
+      }) as any;
+    });
+
+    const wsServer = createWsServer(webSocketServer, (pathId) =>
+      createPersister(createMergeableStore('ss', getNow), pathId),
+    );
+    const clientStore = createMergeableStore('s1', getNow);
+    clientStore.setMergeableContent(clientContent);
+    const synchronizer = await createWsSynchronizer(
+      clientStore,
+      new WebSocket('ws://localhost:8049/p1'),
+    );
+
+    try {
+      await synchronizer.startSync();
+      await pause();
+
+      expect(clientStore.getTables()).toEqual({
+        t1: {r1: {c1: 'existing'}, r2: {c1: 'missing'}},
+      });
+      expect(sentPayloads.some((payload) => payload.includes('missing'))).toBe(
+        true,
+      );
+      expect(sentPayloads.some((payload) => payload.includes('existing'))).toBe(
+        false,
+      );
+    } finally {
+      await synchronizer.destroy();
+      await wsServer.destroy();
+    }
+  });
+
   test('incomplete fragmented server buffers expire', async () => {
     const sourceStore = createMergeableStore('s1', getNow);
     const sourceSocket = new MockWebSocket();
