@@ -446,6 +446,25 @@ test('Not supported, MergeableStore', async () => {
 });
 
 describe('Supported, MergeableStore', () => {
+  test('does not error when custom persister has no content', async () => {
+    const ignoredErrors: any[] = [];
+    const store = createMergeableStore('s1', getNow);
+    store.setTables({t1: {r1: {c1: 1}}});
+    const persister = createCustomPersister(
+      store,
+      asyncNoop,
+      asyncNoop,
+      noop,
+      noop,
+      (error) => ignoredErrors.push(error),
+      Persists.MergeableStoreOnly,
+    );
+    await persister.load();
+    await persister.destroy();
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(ignoredErrors).toEqual([]);
+  });
+
   test('Content in setPersisted', async () => {
     const store = createMergeableStore('s1', getNow);
     const content: MergeableContent = [

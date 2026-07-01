@@ -72,6 +72,13 @@ flooding PowerSync upload queues with replacement writes when schema validation
 causes loaded data to be written back unchanged on startup
 ([#262](https://github.com/tinyplex/tinybase/issues/262)).
 
+## Custom Persister Loading Fixes
+
+Custom Persisters can now return `undefined` from `getPersisted` to indicate
+that there is no persisted content. Loading then uses `initialContent` if it was
+provided, or otherwise leaves the Store unchanged without invoking the ignored
+error handler ([#161](https://github.com/tinyplex/tinybase/issues/161)).
+
 ## Durable Object Persistence Fixes
 
 The Durable Object SQL Storage Persister's fragmented mode now stores table row

@@ -420,7 +420,8 @@ describe.each([
   });
 });
 
-test('does not error on getPersister returning undefined', async () => {
+test('does not error when custom persister has no content', async () => {
+  const ignoredErrors: any[] = [];
   const store = createStore();
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
@@ -429,12 +430,15 @@ test('does not error on getPersister returning undefined', async () => {
     asyncNoop,
     noop,
     noop,
+    (error) => ignoredErrors.push(error),
   );
   await persister.load();
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+  expect(ignoredErrors).toEqual([]);
 });
 
-test('does not error on getPersister returning invalid', async () => {
+test('loads initial content when custom persister has no content', async () => {
+  const ignoredErrors: any[] = [];
   const store = createStore();
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
@@ -443,13 +447,35 @@ test('does not error on getPersister returning invalid', async () => {
     asyncNoop,
     noop,
     noop,
+    (error) => ignoredErrors.push(error),
+  );
+  await persister.load([{t2: {r2: {c2: 2}}}, {v2: 2}]);
+  expect(store.getContent()).toEqual([{t2: {r2: {c2: 2}}}, {v2: 2}]);
+  expect(ignoredErrors).toEqual([]);
+});
+
+test('errors when custom persister returns invalid content', async () => {
+  const ignoredErrors: any[] = [];
+  const store = createStore();
+  store.setTables({t1: {r1: {c1: 1}}});
+  const persister = createCustomPersister(
+    store,
+    async () => 1 as any,
+    asyncNoop,
+    noop,
+    noop,
+    (error) => ignoredErrors.push(error),
   );
   await persister.load();
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+  expect(ignoredErrors.map((error) => error.message)).toEqual([
+    'Content is not an array: 1',
+  ]);
 });
 
 test('does not error on persister listener returning undefined', async () => {
   let triggerListener = (_listener: any) => {};
+  const ignoredErrors: any[] = [];
   const store = createStore();
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
@@ -458,10 +484,12 @@ test('does not error on persister listener returning undefined', async () => {
     asyncNoop,
     (listener) => (triggerListener = listener),
     noop,
+    (error) => ignoredErrors.push(error),
   );
   await persister.startAutoLoad();
   triggerListener(undefined);
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+  expect(ignoredErrors).toEqual([]);
 });
 
 test('does not error on persister listener returning invalid', async () => {
