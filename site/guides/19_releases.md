@@ -7,6 +7,22 @@ highlighted features.
 
 # v9.0
 
+This release has no new features; just fixes and reliability improvements.
+
+TinyBase v9.0 is all about addressing issues from the community - and making
+local-first apps behave better in production. The areas addressed include
+persistence, synchronization, schema defaults, infrastructure limits, and
+edge-case query semantics.
+
+There is one new configuration option (for more selective Value persistence),
+but otherwise the wider theme is reliability. This release hardens WebSocket
+synchronization, Durable Object storage, PowerSync startup, custom Persister
+loading, and a few type and documentation edges so that apps recover and sync
+more cleanly under real-world conditions.
+
+We hope you enjoy using TinyBase and if you find further issues, keep them
+coming!
+
 ## Persistence Subsets
 
 This release adds finer-grained configuration for tabular database Persisters,
