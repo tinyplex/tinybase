@@ -146,7 +146,7 @@ Thanks to everyone whose reports and fixes shaped this release:
 [Andrew Glago](https://github.com/a11rew),
 [wattroll](https://github.com/wattroll),
 [Will Honey](https://github.com/willhoney7), and
-[Daniel](https://github.com/danielberndt).
+[Daniel Berndt](https://github.com/danielberndt).
 
 Couldn't do it without you!
 
