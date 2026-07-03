@@ -135,6 +135,21 @@ designed to read that data back. Apps using fragmented Durable Object SQL
 storage should not roll those Durable Objects back to an earlier TinyBase
 version after v9.0 has written to them.
 
+## Thank You
+
+Thanks to everyone whose reports and fixes shaped this release:
+
+[Dheeraj](https://github.com/dheerajvs),
+[Jakub Riedl](https://github.com/jakubriedl),
+[Patryk Wegrzyn](https://github.com/patrykwegrzyn),
+[Damilola Romniyi](https://github.com/dsrominiyi),
+[Andrew Glago](https://github.com/a11rew),
+[wattroll](https://github.com/wattroll),
+[Will Honey](https://github.com/willhoney7), and
+[Daniel](https://github.com/danielberndt).
+
+Couldn't do it without you!
+
 ---
 
 # v8.5
