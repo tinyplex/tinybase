@@ -79,6 +79,19 @@
  */
 /// SortKey
 /**
+ * The Sorter type represents a function that compares two SortKey values.
+ *
+ * A Sorter is provided to methods that sort Row Ids when the default
+ * alphanumeric ordering is not appropriate. Return a positive or negative
+ * number to indicate which of the two SortKey values should be ordered first.
+ * @param sortKey1 The first item of the pair to compare.
+ * @param sortKey2 The second item of the pair to compare.
+ * @returns A number indicating how to sort the pair.
+ * @category Parameter
+ * @since v9.1.0
+ */
+/// Sorter
+/**
  * The GetNow type is used to represent a function that returns the current time
  * in milliseconds.
  *
