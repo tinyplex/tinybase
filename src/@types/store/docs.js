@@ -564,7 +564,7 @@
  * the getSortedRowIds method.
  *
  * It's an object containing the Id of the Table in the Store, and optional
- * `cellId`, `descending`, `offset`, and `limit` parameters. See the
+ * `cellId`, `descending`, `offset`, `limit`, and `sorter` parameters. See the
  * getSortedRowIds method for specific examples.
  * @category Store
  * @since v6.1.0
@@ -602,6 +602,13 @@
    * @since v6.1.0
    */
   /// SortedRowIdsArgs.limit
+  /**
+   * A custom function for comparing the sorting values, defaulting to the
+   * defaultSorter function.
+   * @category Argument
+   * @since v9.1.0
+   */
+  /// SortedRowIdsArgs.sorter
 }
 /**
  * The TransactionListener type describes a function that is used to listen to
@@ -1955,10 +1962,11 @@
    * The getSortedRowIds method returns the Ids of every Row in a given Table,
    * sorted according to the values in a specified Cell.
    *
-   * The sorting of the rows is alphanumeric, and you can indicate whether it
-   * should be in descending order. The `offset` and `limit` parameters are used
-   * to paginate results, but default to `0` and `undefined` to return all
-   * available Row Ids if not specified.
+   * By default the sorting of the rows is alphanumeric, and you can indicate
+   * whether it should be in descending order. The `offset` and `limit`
+   * parameters are used to paginate results, but default to `0` and
+   * `undefined` to return all available Row Ids if not specified. The `sorter`
+   * parameter can provide a custom comparison function.
    *
    * Note that every call to this method will perform the sorting afresh - there
    * is no caching of the results - and so you are advised to memoize the
@@ -1975,6 +1983,8 @@
    * any.
    * @param limit The maximum number of Row Ids to return, or `undefined` for
    * all.
+   * @param sorter A custom function for comparing the sorting values, or
+   * `undefined` to use the defaultSorter function.
    * @returns An array of the sorted Ids of appropriate Rows in the Table.
    * @example
    * This example retrieves sorted Row Ids in a Table.
@@ -2046,6 +2056,24 @@
    * // -> ['cujo', 'felix', 'fido']
    * ```
    * @example
+   * This example retrieves Row Ids sorted numerically by their own value.
+   *
+   * ```js
+   * import {createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * ['1', '10', '2'].forEach((rowId) =>
+   *   store.setRow('pets', rowId, {sold: false}),
+   * );
+   * const numericSorter = (sortKey1, sortKey2) =>
+   *   Number(sortKey1) - Number(sortKey2);
+   *
+   * console.log(
+   *   store.getSortedRowIds({tableId: 'pets', sorter: numericSorter}),
+   * );
+   * // -> ['1', '2', '10']
+   * ```
+   * @example
    * This example retrieves the sorted Row Ids of a Table that does not exist,
    * returning an empty array.
    *
@@ -2064,7 +2092,7 @@
    * When called with one object argument, the getSortedRowIds method
    * destructures it to make it easier to skip optional parameters.
    * @param args A SortedRowIdsArgs object containing the Id of the Table in the
-   * Store, and optional `cellId`, `descending`, `offset`, and `limit`
+   * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
    * parameters.
    * @returns An array of the sorted Ids of appropriate Rows in the Table.
    * @example
@@ -5461,7 +5489,7 @@
    * addSortedRowIdsListener method destructures it to make it easier to skip
    * optional parameters.
    * @param args A SortedRowIdsArgs object containing the Id of the Table in the
-   * Store, and optional `cellId`, `descending`, `offset`, and `limit`
+   * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
    * parameters.
    * @param listener The function that will be called whenever the sorted Row
    * Ids in the Table change.

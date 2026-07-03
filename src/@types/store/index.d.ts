@@ -7,6 +7,7 @@ import type {
   IdOrNull,
   Ids,
   Json,
+  Sorter,
 } from '../common/index.d.ts';
 
 /// TablesSchema
@@ -138,6 +139,8 @@ export type SortedRowIdsArgs = {
   offset?: number;
   /// SortedRowIdsArgs.limit
   limit?: number;
+  /// SortedRowIdsArgs.sorter
+  sorter?: Sorter;
 };
 
 /// TransactionListener
@@ -466,6 +469,7 @@ export interface Store {
     descending?: boolean,
     offset?: number,
     limit?: number,
+    sorter?: Sorter,
   ): Ids;
 
   /// Store.getSortedRowIds.2
