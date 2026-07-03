@@ -58,6 +58,7 @@ import type {
   IdOrNull,
   Ids,
   ParameterizedCallback,
+  Sorter,
 } from '../../common/with-schemas/index.d.ts';
 import type {
   Indexes,
@@ -268,6 +269,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       descending?: boolean,
       offset?: number,
       limit?: number,
+      sorterOrStoreOrStoreId?: Sorter | StoreOrStoreId<Schemas>,
       storeOrStoreId?: StoreOrStoreId<Schemas>,
     ): Ids;
 

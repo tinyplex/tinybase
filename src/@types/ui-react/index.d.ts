@@ -12,6 +12,7 @@ import type {
   IdOrNull,
   Ids,
   ParameterizedCallback,
+  Sorter,
 } from '../common/index.d.ts';
 import type {
   Indexes,
@@ -203,6 +204,7 @@ export function useSortedRowIds(
   descending?: boolean,
   offset?: number,
   limit?: number,
+  sorterOrStoreOrStoreId?: Sorter | StoreOrStoreId,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 

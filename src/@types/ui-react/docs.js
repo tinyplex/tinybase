@@ -1656,7 +1656,8 @@
  * When called with an object as the first argument, the useSortedRowIds method
  * destructures it to make it easier to skip optional parameters.
  * @param args A SortedRowIdsArgs object containing the Id of the Table in the
- * Store, and optional `cellId`, `descending`, `offset`, and `limit` parameters.
+ * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
+ * parameters.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -4786,7 +4787,8 @@
  * When called with an object as the first argument, the useSortedRowIds method
  * destructures it to make it easier to skip optional parameters.
  * @param args A SortedRowIdsArgs object containing the Id of the Table in the
- * Store, and optional `cellId`, `descending`, `offset`, and `limit` parameters.
+ * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
+ * parameters.
  * @param listener The function that will be called whenever the sorted Row Ids
  * in the Table change.
  * @param listenerDeps An optional array of dependencies for the `listener`
