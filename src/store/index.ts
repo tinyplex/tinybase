@@ -1,4 +1,4 @@
-import type {Id, Ids, Json, Sorter} from '../@types/common/index.d.ts';
+import type {Id, Ids, Json, SortKey, Sorter} from '../@types/common/index.d.ts';
 import type {
   Cell,
   CellCallback,
@@ -45,7 +45,6 @@ import {
   arraySort,
 } from '../common/array.ts';
 import {
-  PrimitiveCellOrValue,
   decodeIfJson,
   encodeIfJson,
   getCellOrValueType,
@@ -1530,12 +1529,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : arrayMap(
           slice(
             arraySort(
-              mapMap<Id, RowMap, [PrimitiveCellOrValue, Id]>(
+              mapMap<Id, RowMap, [SortKey, Id]>(
                 mapGet(tablesMap, id(tableIdOrArgs)),
                 (row, rowId) => [
                   isUndefined(cellId)
                     ? rowId
-                    : (mapGet(row, id(cellId)) as PrimitiveCellOrValue),
+                    : decodeIfJson(mapGet(row, id(cellId)) as SortKey),
                   rowId,
                 ],
               ),

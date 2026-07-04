@@ -73,7 +73,8 @@
  */
 /// Callback
 /**
- * The SortKey type represents a value that can be used by a sort function.
+ * The SortKey type represents a Cell value, or `undefined`, that can be used by
+ * a sort function.
  * @category Parameter
  * @since v1.0.0
  */

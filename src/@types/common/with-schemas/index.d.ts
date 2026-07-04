@@ -39,7 +39,14 @@ export type ParameterizedCallback<Parameter> = (parameter?: Parameter) => void;
 export type Callback = () => void;
 
 /// SortKey
-export type SortKey = string | number | boolean | null | undefined;
+export type SortKey =
+  | string
+  | number
+  | boolean
+  | null
+  | AnyObject
+  | AnyArray
+  | undefined;
 
 /// Sorter
 export type Sorter = (sortKey1: SortKey, sortKey2: SortKey) => number;
