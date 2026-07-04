@@ -107,6 +107,42 @@ describe('Sets', () => {
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
+  test('string key index, custom sortKey sort with object and array', () => {
+    store
+      .setTablesSchema({
+        t1: {c1: {type: 'object'}, c2: {type: 'array'}, c3: {type: 'string'}},
+      })
+      .setTable('t1', {
+        r1: {c1: {rank: 2}, c2: ['b'], c3: 'all'},
+        r2: {c1: {rank: 1}, c2: ['c'], c3: 'all'},
+        r3: {c1: {rank: 3}, c2: ['a'], c3: 'all'},
+      });
+    indexes.setIndexDefinition(
+      'i1',
+      't1',
+      'c3',
+      'c1',
+      undefined,
+      (sortKey1: any, sortKey2: any) => sortKey1.rank - sortKey2.rank,
+    );
+    expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
+      all: ['r2', 'r1', 'r3'],
+    });
+
+    indexes.setIndexDefinition(
+      'i1',
+      't1',
+      'c3',
+      'c2',
+      undefined,
+      (sortKey1: any, sortKey2: any) =>
+        sortKey1[0].localeCompare(sortKey2[0]),
+    );
+    expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
+      all: ['r3', 'r1', 'r2'],
+    });
+  });
+
   test('string key index, sorting sliceIds and sortKey sort', () => {
     setCells();
     indexes.setIndexDefinition('i1', 't1', 'c2', 'c1', ascend, oddAscend);
