@@ -13,6 +13,7 @@ export const SortedTableView = (props: SortedTableProps): JSXElement =>
       () => props.descending,
       () => props.offset,
       () => props.limit,
+      undefined,
       () => props.store,
     ),
   );

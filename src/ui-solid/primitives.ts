@@ -19,6 +19,7 @@ import type {
   IdOrNull,
   Ids,
   ParameterizedCallback,
+  Sorter,
 } from '../@types/common/index.d.ts';
 import type {
   Indexes,
@@ -418,13 +419,25 @@ const useSortedRowIdsImpl = (
   descending?: MaybeAccessor<boolean | undefined>,
   offset?: MaybeAccessor<number | undefined>,
   limit?: MaybeAccessor<number | undefined>,
+  sorter?: MaybeAccessor<Sorter | undefined>,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): Accessor<Ids> =>
   useListenable(
     SORTED_ROW_IDS,
     useStoreOrStoreById(storeOrStoreId),
     ReturnType.Array,
-    [tableId, cellId, descending, offset, limit],
+    (isUndefined(sorter)
+      ? [tableId, cellId, descending, offset, limit]
+      : [
+          () => ({
+            tableId: getThing(tableId),
+            cellId: getThing(cellId),
+            descending: getThing(descending) ?? false,
+            offset: getThing(offset) ?? 0,
+            limit: getThing(limit),
+            sorter: getThing(sorter),
+          }),
+        ]) as any,
   );
 
 export const useSortedRowIdsListenerImpl = (
@@ -433,6 +446,7 @@ export const useSortedRowIdsListenerImpl = (
   descending: MaybeAccessor<boolean>,
   offset: MaybeAccessor<number>,
   limit: MaybeAccessor<number | undefined>,
+  sorter: MaybeAccessor<Sorter | undefined>,
   listener: SortedRowIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
@@ -441,7 +455,18 @@ export const useSortedRowIdsListenerImpl = (
     SORTED_ROW_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
-    [tableId, cellId, descending, offset, limit],
+    (isUndefined(sorter)
+      ? [tableId, cellId, descending, offset, limit]
+      : [
+          () => ({
+            tableId: getThing(tableId),
+            cellId: getThing(cellId),
+            descending: getThing(descending),
+            offset: getThing(offset),
+            limit: getThing(limit),
+            sorter: getThing(sorter),
+          }),
+        ]) as any,
     mutator,
   );
 
@@ -583,6 +608,7 @@ export const useSortedRowIds = (
   descending?: MaybeAccessor<boolean | undefined>,
   offset?: MaybeAccessor<number | undefined>,
   limit?: MaybeAccessor<number | undefined>,
+  sorter?: Sorter,
   storeOrStoreId?: MaybeAccessor<StoreOrStoreId | undefined>,
 ): Accessor<Ids> =>
   isObject(tableIdOrArgs)
@@ -592,6 +618,7 @@ export const useSortedRowIds = (
         tableIdOrArgs.descending ?? false,
         tableIdOrArgs.offset ?? 0,
         tableIdOrArgs.limit,
+        () => tableIdOrArgs.sorter,
         cellIdOrStoreOrStoreId as MaybeAccessor<StoreOrStoreId | undefined>,
       )
     : useSortedRowIdsImpl(
@@ -600,6 +627,7 @@ export const useSortedRowIds = (
         descending,
         offset,
         limit,
+        isUndefined(sorter) ? undefined : () => sorter,
         storeOrStoreId,
       );
 
@@ -1035,6 +1063,7 @@ export const useSortedRowIdsListener = (
         tableIdOrArgs.descending ?? false,
         tableIdOrArgs.offset ?? 0,
         tableIdOrArgs.limit,
+        () => tableIdOrArgs.sorter,
         cellIdOrListener as SortedRowIdsListener,
         descendingOrMutator,
         offsetOrStoreOrStoreId as MaybeAccessor<StoreOrStoreId | undefined>,
@@ -1045,6 +1074,7 @@ export const useSortedRowIdsListener = (
         (descendingOrMutator ?? false) as MaybeAccessor<boolean>,
         (offsetOrStoreOrStoreId ?? 0) as MaybeAccessor<number>,
         limit as MaybeAccessor<number | undefined>,
+        undefined,
         listener as SortedRowIdsListener,
         mutator,
         storeOrStoreId,

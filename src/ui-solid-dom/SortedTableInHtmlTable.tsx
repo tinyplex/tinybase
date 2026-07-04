@@ -56,6 +56,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = (
         () => sortAndOffset()[1],
         () => sortAndOffset()[2],
         () => props.limit,
+        undefined,
         () => props.store,
       ),
       props.extraCellsBefore,
