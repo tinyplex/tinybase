@@ -55,6 +55,7 @@
     () => sorting.sortAndOffset[1],
     () => sorting.sortAndOffset[2],
     () => limit,
+    undefined,
     () => store,
   );
   const defaultCellComponent = $derived(editable ? EditableCellView : CellView);

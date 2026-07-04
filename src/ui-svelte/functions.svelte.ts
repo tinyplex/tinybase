@@ -6,7 +6,7 @@ import type {
   CheckpointListener,
   Checkpoints,
 } from '../@types/checkpoints/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import type {Id, IdOrNull, Ids, Sorter} from '../@types/common/index.d.ts';
 import type {
   Indexes,
   SliceIdsListener,
@@ -53,6 +53,7 @@ import type {
   RowCountListener,
   RowIdsListener,
   RowListener,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   Table,
@@ -72,7 +73,7 @@ import type {
 import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {MaybeGetter} from '../@types/ui-svelte/index.d.ts';
 import type {IdObj} from '../common/obj.ts';
-import {objGet, objIds} from '../common/obj.ts';
+import {isObject, objGet, objIds} from '../common/obj.ts';
 import {
   hasWindow,
   isFunction,
@@ -401,25 +402,55 @@ export const getRowIds = (
   ]);
 
 export const getSortedRowIds = (
-  tableId: MaybeGetter<Id>,
-  cellId?: MaybeGetter<Id | undefined>,
+  tableIdOrArgs: MaybeGetter<Id> | SortedRowIdsArgs,
+  cellIdOrStoreOrStoreId?: MaybeGetter<Id | Store | undefined>,
   descending: MaybeGetter<boolean> = false,
   offset: MaybeGetter<number> = 0,
   limit?: MaybeGetter<number | undefined>,
+  sorter?: Sorter,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  createListenable(
-    resolveStore(storeOrStoreId),
-    SORTED_ROW_IDS,
-    EMPTY_ARR,
-    () => [
-      maybeGet(tableId),
-      maybeGet(cellId),
-      maybeGet(descending),
-      maybeGet(offset),
-      maybeGet(limit),
-    ],
-  );
+  isObject(tableIdOrArgs)
+    ? createListenable(
+        resolveStore(
+          cellIdOrStoreOrStoreId as MaybeGetter<Store | Id | undefined>,
+        ),
+        SORTED_ROW_IDS,
+        EMPTY_ARR,
+        () => [tableIdOrArgs],
+      )
+    : createListenable(
+        resolveStore(storeOrStoreId),
+        SORTED_ROW_IDS,
+        EMPTY_ARR,
+        () =>
+          isUndefined(sorter)
+            ? [
+                maybeGet(tableIdOrArgs),
+                maybeGet(
+                  cellIdOrStoreOrStoreId as
+                    | MaybeGetter<Id | undefined>
+                    | undefined,
+                ),
+                maybeGet(descending),
+                maybeGet(offset),
+                maybeGet(limit),
+              ]
+            : [
+                {
+                  tableId: maybeGet(tableIdOrArgs),
+                  cellId: maybeGet(
+                    cellIdOrStoreOrStoreId as
+                      | MaybeGetter<Id | undefined>
+                      | undefined,
+                  ),
+                  descending: maybeGet(descending) ?? false,
+                  offset: maybeGet(offset) ?? 0,
+                  limit: maybeGet(limit),
+                  sorter,
+                },
+              ],
+      );
 
 export const hasRow = (
   tableId: MaybeGetter<Id>,
@@ -1113,28 +1144,40 @@ export const onRowIds = (
   );
 
 export const onSortedRowIds = (
-  tableId: MaybeGetter<Id>,
-  cellId: MaybeGetter<Id | undefined>,
-  descending: MaybeGetter<boolean>,
-  offset: MaybeGetter<number>,
-  limit: MaybeGetter<number | undefined>,
-  listener: SortedRowIdsListener,
+  tableIdOrArgs: MaybeGetter<Id> | SortedRowIdsArgs,
+  cellIdOrListener: MaybeGetter<Id | undefined> | SortedRowIdsListener,
+  descendingOrMutator: MaybeGetter<boolean> | boolean | undefined,
+  offsetOrStoreOrStoreId?:
+    | MaybeGetter<number>
+    | MaybeGetter<Store | Id | undefined>,
+  limit?: MaybeGetter<number | undefined>,
+  listener?: SortedRowIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  addListenerEffect(
-    resolveStore(storeOrStoreId),
-    SORTED_ROW_IDS,
-    listener,
-    () => [
-      maybeGet(tableId),
-      maybeGet(cellId),
-      maybeGet(descending),
-      maybeGet(offset),
-      maybeGet(limit),
-    ],
-    mutator,
-  );
+  isObject(tableIdOrArgs)
+    ? addListenerEffect(
+        resolveStore(
+          offsetOrStoreOrStoreId as MaybeGetter<Store | Id | undefined>,
+        ),
+        SORTED_ROW_IDS,
+        cellIdOrListener as SortedRowIdsListener,
+        () => [tableIdOrArgs],
+        descendingOrMutator as boolean | undefined,
+      )
+    : addListenerEffect(
+        resolveStore(storeOrStoreId),
+        SORTED_ROW_IDS,
+        listener as SortedRowIdsListener,
+        () => [
+          maybeGet(tableIdOrArgs),
+          maybeGet(cellIdOrListener as MaybeGetter<Id | undefined>),
+          maybeGet(descendingOrMutator as MaybeGetter<boolean>),
+          maybeGet(offsetOrStoreOrStoreId as MaybeGetter<number>),
+          maybeGet(limit),
+        ],
+        mutator,
+      );
 
 export const onHasRow = (
   tableId: MaybeGetter<IdOrNull>,
