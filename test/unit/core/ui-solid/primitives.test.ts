@@ -282,6 +282,7 @@ const Reader = ({
     descending,
     offset,
     limit,
+    undefined,
     store,
   );
   const hasRow = useHasRow(tableId, rowId, store);
@@ -910,7 +911,15 @@ describe('Solid-specific', () => {
         tableCellIds: useTableCellIds('t1', store),
         rowCount: useRowCount('t1', store),
         rowIds: useRowIds('t1', store),
-        sortedRowIds: useSortedRowIds('t2', 'c1', true, 0, undefined, store),
+        sortedRowIds: useSortedRowIds(
+          't2',
+          'c1',
+          true,
+          0,
+          undefined,
+          undefined,
+          store,
+        ),
         hasRow: useHasRow('t1', 'r1', store),
         row: useRow('t1', 'r1', store),
         hasCell: useHasCell('t1', 'r1', 'c1', store),
@@ -1444,6 +1453,68 @@ describe('Solid-specific', () => {
     await pause();
     expect(persisterDestroy).toHaveBeenCalledTimes(1);
     expect(synchronizerDestroy).not.toHaveBeenCalled();
+  });
+
+  test('useSortedRowIds with a custom sorter', async () => {
+    const store = createStore();
+    const numericSorter = (sortKey1: any, sortKey2: any) =>
+      Number(sortKey1) - Number(sortKey2);
+    ['1', '10', '0', '2'].forEach((rowId) =>
+      store.setRow('t1', rowId, {c1: true}),
+    );
+    let sortedRowIds: Accessor<string[]> | undefined;
+    let positionalSortedRowIds: Accessor<string[]> | undefined;
+
+    const dispose = renderPrimitive(() => {
+      sortedRowIds = useSortedRowIds(
+        {tableId: 't1', sorter: numericSorter},
+        store,
+      );
+      positionalSortedRowIds = useSortedRowIds(
+        't1',
+        undefined,
+        false,
+        0,
+        undefined,
+        numericSorter,
+        store,
+      );
+    });
+
+    expect(sortedRowIds!()).toEqual(['0', '1', '2', '10']);
+    expect(positionalSortedRowIds!()).toEqual(['0', '1', '2', '10']);
+    store.setRow('t1', '3', {c1: true});
+    await pause();
+    expect(sortedRowIds!()).toEqual(['0', '1', '2', '3', '10']);
+    expect(positionalSortedRowIds!()).toEqual(['0', '1', '2', '3', '10']);
+
+    dispose();
+  });
+
+  test('useSortedRowIdsListener with a custom sorter', async () => {
+    const store = createStore();
+    const numericSorter = (sortKey1: any, sortKey2: any) =>
+      Number(sortKey1) - Number(sortKey2);
+    ['1', '10', '2'].forEach((rowId) =>
+      store.setRow('t1', rowId, {c1: true}),
+    );
+    const listener = vi.fn();
+
+    const dispose = renderPrimitive(() => {
+      useSortedRowIdsListener(
+        {tableId: 't1', sorter: numericSorter},
+        listener,
+        false,
+        store,
+      );
+    });
+
+    store.setRow('t1', '3', {c1: true});
+    await pause();
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener.mock.calls[0][6]).toEqual(['1', '2', '3', '10']);
+
+    dispose();
   });
 
   test('covers sorted row ids listener overloads', async () => {

@@ -23,6 +23,7 @@
     () => descending,
     () => offset,
     () => limit,
+    undefined,
     () => store,
   );
 </script>

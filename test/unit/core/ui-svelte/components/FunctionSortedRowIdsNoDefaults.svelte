@@ -11,6 +11,7 @@
     undefined,
     undefined,
     undefined,
+    undefined,
     () => store,
   );
 </script>

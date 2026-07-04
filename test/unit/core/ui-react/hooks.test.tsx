@@ -2198,6 +2198,33 @@ describe('React-specific', () => {
       unmount();
     });
 
+    test('useSortedRowIds, object arg, custom sorter', () => {
+      const numericSorter = (sortKey1: any, sortKey2: any) =>
+        Number(sortKey1) - Number(sortKey2);
+      ['1', '10', '0', '2'].forEach((rowId) =>
+        store.setRow('t2', rowId, {c1: true}),
+      );
+      const Test = () =>
+        didRender(
+          <>
+            {JSON.stringify(
+              useSortedRowIds({tableId: 't2', sorter: numericSorter}, store),
+            )}
+          </>,
+        );
+      const {container, unmount} = render(<Test />);
+
+      expect(container.textContent).toEqual(
+        JSON.stringify(['0', '1', '2', '10']),
+      );
+      act(() => store.setRow('t2', '3', {c1: true}));
+      expect(container.textContent).toEqual(
+        JSON.stringify(['0', '1', '2', '3', '10']),
+      );
+
+      unmount();
+    });
+
     test('useRow re-render for array or object', () => {
       store
         .setTablesSchema({t1: {c1: {type: 'array'}, c2: {type: 'object'}}})

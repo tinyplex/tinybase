@@ -154,6 +154,7 @@
               undefined,
               undefined,
               undefined,
+              undefined,
               () => store,
             )
           : getSortedRowIds(
@@ -162,6 +163,7 @@
               () => descending,
               () => offset,
               () => limit,
+              undefined,
               () => store,
             );
       case 'hasRow':

@@ -19,6 +19,7 @@ import ContextPrimitiveNoContext from './components/ContextPrimitiveNoContext.sv
 import ContextPrimitiveThings from './components/ContextPrimitiveThings.svelte';
 import FunctionPersisterStatus from './components/FunctionPersisterStatus.svelte';
 import FunctionReader from './components/FunctionReader.svelte';
+import FunctionSortedRowIdsObject from './components/FunctionSortedRowIdsObject.svelte';
 import FunctionSynchronizerStatus from './components/FunctionSynchronizerStatus.svelte';
 import FunctionWindowlessCoverage from './components/FunctionWindowlessCoverage.svelte';
 import FunctionWritableCell from './components/FunctionWritableCell.svelte';
@@ -129,6 +130,37 @@ describe('Svelte-specific', () => {
       );
       expect(container.textContent).toContain('true');
       expect(store.getValue('v1')).toEqual(true);
+
+      unmount();
+    });
+
+    test('getSortedRowIds supports object args with a sorter', async () => {
+      store.setTables({
+        t1: {
+          '1': {present: true},
+          '10': {present: true},
+          '2': {present: true},
+        },
+      });
+      const listener = vi.fn();
+      const {container, unmount} = render(FunctionSortedRowIdsObject, {
+        props: {store, listener},
+      });
+      expect(container.textContent).toEqual(
+        JSON.stringify([
+          ['1', '2', '10'],
+          ['1', '2', '10'],
+        ]),
+      );
+
+      await act(() => store.setRow('t1', '3', {present: true}));
+      expect(container.textContent).toEqual(
+        JSON.stringify([
+          ['1', '2', '3', '10'],
+          ['1', '2', '3', '10'],
+        ]),
+      );
+      expect(listener).toHaveBeenCalledTimes(1);
 
       unmount();
     });
