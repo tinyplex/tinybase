@@ -23,7 +23,12 @@ import type {
   CheckpointListener,
   Checkpoints,
 } from '../../checkpoints/with-schemas/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
+import type {
+  Id,
+  IdOrNull,
+  Ids,
+  Sorter,
+} from '../../common/with-schemas/index.d.ts';
 import type {
   Indexes,
   SliceIdsListener,
@@ -77,6 +82,7 @@ import type {
   RowCountListener,
   RowIdsListener,
   RowListener,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   Table,
@@ -592,15 +598,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.getSortedRowIds
-  getSortedRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: MaybeGetter<TableId>,
-    cellId?: MaybeGetter<CellIdFromSchema<Schemas[0], TableId> | undefined>,
-    descending?: MaybeGetter<boolean>,
-    offset?: MaybeGetter<number>,
-    limit?: MaybeGetter<number | undefined>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => {readonly current: Ids};
+  getSortedRowIds: {
+    /// ui-svelte.getSortedRowIds
+    <TableId extends TableIdFromSchema<Schemas[0]>>(
+      tableId: MaybeGetter<TableId>,
+      cellId?: MaybeGetter<CellIdFromSchema<Schemas[0], TableId> | undefined>,
+      descending?: MaybeGetter<boolean>,
+      offset?: MaybeGetter<number>,
+      limit?: MaybeGetter<number | undefined>,
+      sorter?: Sorter,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): {readonly current: Ids};
+
+    /// ui-svelte.getSortedRowIds.2
+    <TableId extends TableIdFromSchema<Schemas[0]>>(
+      args: SortedRowIdsArgs<Schemas[0], TableId>,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): {readonly current: Ids};
+  };
 
   /// ui-svelte.hasRow
   hasRow: (
@@ -1041,20 +1056,35 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.onSortedRowIds
-  onSortedRowIds: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-  >(
-    tableId: MaybeGetter<TableId>,
-    cellId: MaybeGetter<CellIdOrUndefined>,
-    descending: MaybeGetter<boolean>,
-    offset: MaybeGetter<number>,
-    limit: MaybeGetter<number | undefined>,
-    listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
-    mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => void;
+  onSortedRowIds: {
+    /// ui-svelte.onSortedRowIds
+    <
+      TableId extends TableIdFromSchema<Schemas[0]>,
+      CellIdOrUndefined extends
+        CellIdFromSchema<Schemas[0], TableId> | undefined,
+    >(
+      tableId: MaybeGetter<TableId>,
+      cellId: MaybeGetter<CellIdOrUndefined>,
+      descending: MaybeGetter<boolean>,
+      offset: MaybeGetter<number>,
+      limit: MaybeGetter<number | undefined>,
+      listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
+      mutator?: boolean,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): void;
+
+    /// ui-svelte.onSortedRowIds.2
+    <
+      TableId extends TableIdFromSchema<Schemas[0]>,
+      CellIdOrUndefined extends
+        CellIdFromSchema<Schemas[0], TableId> | undefined,
+    >(
+      args: SortedRowIdsArgs<Schemas[0], TableId, CellIdOrUndefined>,
+      listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
+      mutator?: boolean,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): void;
+  };
 
   /// ui-svelte.onHasRow
   onHasRow: <

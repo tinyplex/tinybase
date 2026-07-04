@@ -6,7 +6,7 @@ import type {
   CheckpointListener,
   Checkpoints,
 } from '../checkpoints/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
+import type {Id, IdOrNull, Ids, Sorter} from '../common/index.d.ts';
 import type {
   Indexes,
   SliceIdsListener,
@@ -53,6 +53,7 @@ import type {
   RowCountListener,
   RowIdsListener,
   RowListener,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   Table,
@@ -568,6 +569,13 @@ export function getSortedRowIds(
   descending?: MaybeGetter<boolean>,
   offset?: MaybeGetter<number>,
   limit?: MaybeGetter<number | undefined>,
+  sorter?: Sorter,
+  storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
+): {readonly current: Ids};
+
+/// ui-svelte.getSortedRowIds.2
+export function getSortedRowIds(
+  args: SortedRowIdsArgs,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Ids};
 
@@ -999,6 +1007,14 @@ export function onSortedRowIds(
   descending: MaybeGetter<boolean>,
   offset: MaybeGetter<number>,
   limit: MaybeGetter<number | undefined>,
+  listener: SortedRowIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
+): void;
+
+/// ui-svelte.onSortedRowIds.2
+export function onSortedRowIds(
+  args: SortedRowIdsArgs,
   listener: SortedRowIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,

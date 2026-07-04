@@ -2750,6 +2750,8 @@
  * @param descending Whether to sort descending (or a getter returning it).
  * @param offset The starting Row offset (or a getter returning it).
  * @param limit The maximum number of Rows to return (or a getter returning it).
+ * @param sorter A custom function for comparing the sorting values, or
+ * `undefined` to use the default alphanumeric sorting.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @example
@@ -2764,7 +2766,15 @@
  *
  *   let {store} = $props();
  *
- *   const result = getSortedRowIds('pets', 'sold', false, 0, undefined, store);
+ *   const result = getSortedRowIds(
+ *     'pets',
+ *     'sold',
+ *     false,
+ *     0,
+ *     undefined,
+ *     undefined,
+ *     store,
+ *   );
  * </script>
  *
  * {JSON.stringify(result.current)}
@@ -2793,6 +2803,18 @@
  * @since v8.1.0
  */
 /// ui-svelte.getSortedRowIds
+/**
+ * When called with an object as the first argument, the getSortedRowIds
+ * function destructures it to make it easier to skip optional parameters.
+ * @param args A SortedRowIdsArgs object containing the Id of the Table in the
+ * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
+ * parameters.
+ * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
+ * @returns A reactive object with a `current` Ids property.
+ * @category Getter
+ * @since v9.1.0
+ */
+/// ui-svelte.getSortedRowIds.2
 /**
  * The hasRow function returns a reactive object indicating whether a Row exists
  * in a Table, and registers a listener so that any changes to that result will
@@ -6492,6 +6514,20 @@
  * @since v8.1.0
  */
 /// ui-svelte.onSortedRowIds
+/**
+ * When called with an object as the first argument, the onSortedRowIds function
+ * destructures it to make it easier to skip optional parameters.
+ * @param args A SortedRowIdsArgs object containing the Id of the Table in the
+ * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
+ * parameters.
+ * @param listener The function to call when sorted Row Ids change.
+ * @param mutator An optional boolean indicating the listener mutates Store
+ * data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Listener
+ * @since v9.1.0
+ */
+/// ui-svelte.onSortedRowIds.2
 /**
  * The onHasRow function registers a listener that is called whenever a
  * specified Row is added to or removed from a Table.
