@@ -11,6 +11,7 @@ import type {
   IdOrNull,
   Ids,
   ParameterizedCallback,
+  Sorter,
 } from '../@types/common/index.d.ts';
 import type {
   Indexes,
@@ -582,14 +583,29 @@ const useSortedRowIdsImpl = (
   descending?: boolean,
   offset?: number,
   limit?: number | undefined,
+  sorter?: Sorter,
   storeOrStoreId?: StoreOrStoreId,
-): Ids =>
-  useListenable(
+): Ids => {
+  const sortedRowIdsArgs = useMemo(
+    () => ({
+      tableId,
+      cellId,
+      descending: descending ?? false,
+      offset: offset ?? 0,
+      limit,
+      sorter,
+    }),
+    [tableId, cellId, descending, offset, limit, sorter],
+  );
+  return useListenable(
     SORTED_ROW_IDS,
     useStoreOrStoreById(storeOrStoreId),
     ReturnType.Array,
-    [tableId, cellId, descending, offset, limit],
+    isUndefined(sorter)
+      ? [tableId, cellId, descending, offset, limit]
+      : [sortedRowIdsArgs as any],
   );
+};
 
 export const useSortedRowIdsListenerImpl = (
   tableId: Id,
@@ -597,19 +613,27 @@ export const useSortedRowIdsListenerImpl = (
   descending: boolean,
   offset: number,
   limit: number | undefined,
+  sorter: Sorter | undefined,
   listener: SortedRowIdsListener,
   listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
-): void =>
+): void => {
+  const sortedRowIdsArgs = useMemo(
+    () => ({tableId, cellId, descending, offset, limit, sorter}),
+    [tableId, cellId, descending, offset, limit, sorter],
+  );
   useListener(
     SORTED_ROW_IDS,
     useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
-    [tableId, cellId, descending, offset, limit],
+    isUndefined(sorter)
+      ? [tableId, cellId, descending, offset, limit]
+      : [sortedRowIdsArgs as any],
     mutator,
   );
+};
 
 // ---
 
@@ -752,6 +776,7 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
   descending?: boolean,
   offset?: number,
   limit?: number | undefined,
+  sorterOrStoreOrStoreId?: Sorter | StoreOrStoreId,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
   (useSortedRowIdsImpl as any)(
@@ -762,6 +787,7 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
           tableIdOrArgs.descending ?? false,
           tableIdOrArgs.offset ?? 0,
           tableIdOrArgs.limit,
+          tableIdOrArgs.sorter,
           cellIdOrStoreOrStoreId,
         ]
       : [
@@ -770,7 +796,12 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
           descending,
           offset,
           limit,
-          storeOrStoreId,
+          isFunction(sorterOrStoreOrStoreId)
+            ? sorterOrStoreOrStoreId
+            : undefined,
+          isFunction(sorterOrStoreOrStoreId)
+            ? storeOrStoreId
+            : sorterOrStoreOrStoreId,
         ]),
   );
 
@@ -1312,6 +1343,7 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
           tableIdOrArgs.descending ?? false,
           tableIdOrArgs.offset ?? 0,
           tableIdOrArgs.limit,
+          tableIdOrArgs.sorter,
           cellIdOrListener,
           descendingOrListenerDeps,
           offsetOrMutator,
@@ -1323,6 +1355,7 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
           descendingOrListenerDeps,
           offsetOrMutator,
           limitOrStoreOrStoreId,
+          undefined,
           listener,
           listenerDeps,
           mutator,
