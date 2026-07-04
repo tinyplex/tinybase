@@ -882,11 +882,38 @@ const ComponentProps = () => {
     cellId: 'c1',
     sorter: numericSorter,
   }).current;
+  const stringOnlySorter = (sortKey1: string, sortKey2: string) =>
+    sortKey1.localeCompare(sortKey2);
+  const stringReturningSorter = () => 'sort';
+  const extraArgSorter = (
+    _sortKey1: unknown,
+    _sortKey2: unknown,
+    _extra: string,
+  ) => 0;
+  getSortedRowIds(
+    't1',
+    undefined,
+    false,
+    0,
+    undefined,
+    stringOnlySorter, // !
+  ).current;
+  getSortedRowIds({ // !
+    tableId: 't1',
+    sorter: stringReturningSorter,
+  }).current;
   onSortedRowIds(
     {tableId: 't1', cellId: 'c1', sorter: numericSorter},
     (_store, tableId, cellId) => {
       tableId == 't1';
       cellId == 'c1';
     },
+  );
+  onSortedRowIds(
+    {
+      tableId: 't1',
+      sorter: extraArgSorter, // !
+    },
+    () => null,
   );
 };

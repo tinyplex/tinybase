@@ -1654,3 +1654,40 @@ const storeWithJsonSchemas = store.setSchema(
   storeWithNoSchemas.getTables().t1;
   storeWithNoSchemas.getTables().t2;
 })();
+
+// Sorters
+(() => {
+  const stringOnlySorter = (sortKey1: string, sortKey2: string) =>
+    sortKey1.localeCompare(sortKey2);
+  const stringReturningSorter = () => 'sort';
+  const extraArgSorter = (
+    _sortKey1: unknown,
+    _sortKey2: unknown,
+    _extra: string,
+  ) => 0;
+
+  storeWithSchemas.getSortedRowIds(
+    't1',
+    undefined,
+    false,
+    0,
+    undefined,
+    stringOnlySorter, // !
+  );
+  storeWithSchemas.getSortedRowIds({ // !
+    tableId: 't1',
+    sorter: stringOnlySorter,
+  });
+  storeWithSchemas.getSortedRowIds(
+    't1',
+    undefined,
+    false,
+    0,
+    undefined,
+    stringReturningSorter, // !
+  );
+  storeWithSchemas.getSortedRowIds({ // !
+    tableId: 't1',
+    sorter: extraArgSorter,
+  });
+})();

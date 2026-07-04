@@ -1689,6 +1689,26 @@ const SortedRowIdsSorterArgs = () => {
     numericSorter,
   )();
   useSortedRowIds({tableId: 't1', sorter: numericSorter})();
+  const stringOnlySorter = (sortKey1: string, sortKey2: string) =>
+    sortKey1.localeCompare(sortKey2);
+  const stringReturningSorter = () => 'sort';
+  const extraArgSorter = (
+    _sortKey1: unknown,
+    _sortKey2: unknown,
+    _extra: string,
+  ) => 0;
+  useSortedRowIds(
+    't1',
+    undefined,
+    false,
+    0,
+    undefined,
+    stringOnlySorter, // !
+  )();
+  useSortedRowIds({ // !
+    tableId: 't1',
+    sorter: stringReturningSorter,
+  })();
   useSortedRowIdsListener(
     {
       tableId: 't1',
@@ -1702,5 +1722,12 @@ const SortedRowIdsSorterArgs = () => {
       tableId == 't1';
       cellId == 'c1';
     },
+  );
+  useSortedRowIdsListener(
+    {
+      tableId: 't1',
+      sorter: extraArgSorter, // !
+    },
+    () => null,
   );
 };
