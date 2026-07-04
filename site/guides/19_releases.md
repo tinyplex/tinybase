@@ -5,6 +5,47 @@ highlighted features.
 
 ---
 
+# v9.1
+
+## Custom Sorting
+
+This release adds custom sorting for sorted Row Id APIs, so applications can opt
+into numeric or domain-specific ordering without changing TinyBase's existing
+alphanumeric default behavior.
+
+The getSortedRowIds method and addSortedRowIdsListener method now support a
+custom `sorter` function in the SortedRowIdsArgs object. The useSortedRowIds
+hook and getSortedRowIds Svelte function also accept the sorter positionally
+([#190](https://github.com/tinyplex/tinybase/issues/190),
+[#213](https://github.com/tinyplex/tinybase/issues/213)).
+
+```js
+import {createStore as createStoreForNumericSort} from 'tinybase';
+
+const numericSortStore = createStoreForNumericSort();
+['1', '10', '2'].forEach((rowId) =>
+  numericSortStore.setRow('pets', rowId, {sold: false}),
+);
+const numericRowIdSorter = (sortKey1, sortKey2) =>
+  Number(sortKey1) - Number(sortKey2);
+
+console.log(
+  numericSortStore.getSortedRowIds({
+    tableId: 'pets',
+    sorter: numericRowIdSorter,
+  }),
+);
+// -> ['1', '2', '10']
+```
+
+**Breaking change:** In the `ui-solid` and `ui-svelte` modules, the positional
+Store argument for `useSortedRowIds` and `getSortedRowIds` respectively has
+moved one slot later to make room for a positional custom sorter. If you pass a
+Store as the final positional argument, add `undefined` before it, or switch to
+the object argument form.
+
+---
+
 # v9.0
 
 This release has no new features; just fixes and reliability improvements.
@@ -139,14 +180,13 @@ version after v9.0 has written to them.
 
 Thanks to everyone whose reports and fixes shaped this release:
 
-[Dheeraj](https://github.com/dheerajvs),
-[Jakub Riedl](https://github.com/jakubriedl),
-[Patryk Wegrzyn](https://github.com/patrykwegrzyn),
-[Damilola Romniyi](https://github.com/dsrominiyi),
-[Andrew Glago](https://github.com/a11rew),
-[wattroll](https://github.com/wattroll),
-[Will Honey](https://github.com/willhoney7), and
-[Daniel Berndt](https://github.com/danielberndt).
+[Dheeraj](https://github.com/dheerajvs), [Jakub
+Riedl](https://github.com/jakubriedl), [Patryk
+Wegrzyn](https://github.com/patrykwegrzyn), [Damilola
+Romniyi](https://github.com/dsrominiyi), [Andrew
+Glago](https://github.com/a11rew), [wattroll](https://github.com/wattroll),
+[Will Honey](https://github.com/willhoney7), and [Daniel
+Berndt](https://github.com/danielberndt).
 
 Couldn't do it without you!
 
