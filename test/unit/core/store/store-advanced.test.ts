@@ -280,6 +280,66 @@ describe.each([
       ).toEqual(['r5', 'r4', 'r1']);
     });
 
+    test('Cell sort, custom sorter', () => {
+      const numericSorter = (sortKey1: any, sortKey2: any) =>
+        Number(sortKey1) - Number(sortKey2);
+      store = createStore();
+      ['1', '10', '0', '11', '12', '2'].forEach((rowId) =>
+        store.setRow('t1', rowId, {c1: true}),
+      );
+
+      expect(store.getSortedRowIds('t1')).toEqual([
+        '0',
+        '1',
+        '10',
+        '11',
+        '12',
+        '2',
+      ]);
+      expect(
+        store.getSortedRowIds(
+          't1',
+          undefined,
+          false,
+          0,
+          undefined,
+          numericSorter,
+        ),
+      ).toEqual(['0', '1', '2', '10', '11', '12']);
+      expect(
+        store.getSortedRowIds({tableId: 't1', sorter: numericSorter}),
+      ).toEqual(['0', '1', '2', '10', '11', '12']);
+    });
+
+    test('Cell sort, custom sorter with object and array cells', () => {
+      store = createStore()
+        .setTablesSchema({t1: {c1: {type: 'object'}, c2: {type: 'array'}}})
+        .setTable('t1', {
+          r1: {c1: {rank: 2}, c2: ['b']},
+          r2: {c1: {rank: 1}, c2: ['c']},
+          r3: {c1: {rank: 3}, c2: ['a']},
+        });
+
+      expect(
+        store.getSortedRowIds(
+          't1',
+          'c1',
+          false,
+          0,
+          undefined,
+          (sortKey1: any, sortKey2: any) => sortKey1.rank - sortKey2.rank,
+        ),
+      ).toEqual(['r2', 'r1', 'r3']);
+      expect(
+        store.getSortedRowIds({
+          tableId: 't1',
+          cellId: 'c2',
+          sorter: (sortKey1: any, sortKey2: any) =>
+            sortKey1[0].localeCompare(sortKey2[0]),
+        }),
+      ).toEqual(['r3', 'r1', 'r2']);
+    });
+
     test('Cell sort, offset', () => {
       expect(store.getSortedRowIds('t1', 'c2', false, 3)).toEqual([
         'r6',
@@ -385,6 +445,31 @@ describe.each([
         },
       );
       store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
+    });
+
+    test('Cell sort listener, custom sorter', () => {
+      expect.assertions(7);
+      const numericSorter = (sortKey1: any, sortKey2: any) =>
+        Number(sortKey1) - Number(sortKey2);
+      store = createStore();
+      ['1', '10', '0'].forEach((rowId) =>
+        store.setRow('t1', rowId, {c1: true}),
+      );
+      store.addSortedRowIdsListener(
+        {tableId: 't1', sorter: numericSorter},
+        (_store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
+          expect(tableId).toEqual('t1');
+          expect(cellId).toBeUndefined();
+          expect(descending).toEqual(false);
+          expect(offset).toEqual(0);
+          expect(limit).toBeUndefined();
+          expect(sortedRowIds).toEqual(['0', '1', '2', '10']);
+          expect(
+            store.getSortedRowIds({tableId, sorter: numericSorter}),
+          ).toEqual(['0', '1', '2', '10']);
+        },
+      );
+      store.setRow('t1', '2', {c1: true});
     });
 
     test('Cell sort listener, add row without relevant cell', () => {
