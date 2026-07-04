@@ -28,8 +28,6 @@ exports[`Types in indexes.ts > 25:55 1`] = `"Argument of type '"c2"' is not assi
 
 exports[`Types in indexes.ts > 29:2 1`] = `"Argument of type '(getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">) => DefaultedCellFromSchema<...>' is not assignable to parameter of type '"c1" | "c1d" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">, rowId: string) => string | Ids) | undefined'."`;
 
-exports[`Types in indexes.ts > 35:2 1`] = `"Argument of type '(getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">) => DefaultedCellFromSchema<...>' is not assignable to parameter of type '"c1" | "c1d" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">, rowId: string) => SortKey) | undefined'."`;
-
 exports[`Types in indexes.ts > 40:2 1`] = `"Argument of type '(getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">) => DefaultedCellFromSchema<...>' is not assignable to parameter of type '"c1" | "c1d" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">, rowId: string) => string | Ids) | undefined'."`;
 
 exports[`Types in indexes.ts > 40:23 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
@@ -3952,9 +3950,9 @@ exports[`Types in ui-svelte.ts > 137:14 1`] = `"Argument of type '"t2"' is not a
 
 exports[`Types in ui-svelte.ts > 140:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 143:24 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | undefined>'."`;
+exports[`Types in ui-svelte.ts > 143:2 1`] = `"No overload matches this call."`;
 
-exports[`Types in ui-svelte.ts > 144:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
+exports[`Types in ui-svelte.ts > 144:18 1`] = `"No overload matches this call."`;
 
 exports[`Types in ui-svelte.ts > 147:9 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 

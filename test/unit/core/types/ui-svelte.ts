@@ -865,4 +865,28 @@ const ComponentProps = () => {
   testProviderStore(createStore().setTablesSchema(tablesSchema)); // !
   testProviderStore(createStore().setValuesSchema(valuesSchema)); // !
   testProviderStore(createStore()); // !
+
+  const numericSorter = (sortKey1: unknown, sortKey2: unknown) =>
+    Number(sortKey1) - Number(sortKey2);
+  getSortedRowIds(
+    't1',
+    undefined,
+    false,
+    0,
+    undefined,
+    numericSorter,
+  ).current;
+  getSortedRowIds({tableId: 't1', sorter: numericSorter}).current;
+  getSortedRowIds({
+    tableId: 't1',
+    cellId: 'c1',
+    sorter: numericSorter,
+  }).current;
+  onSortedRowIds(
+    {tableId: 't1', cellId: 'c1', sorter: numericSorter},
+    (_store, tableId, cellId) => {
+      tableId == 't1';
+      cellId == 'c1';
+    },
+  );
 };

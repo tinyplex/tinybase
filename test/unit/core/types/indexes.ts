@@ -33,7 +33,7 @@ indexesWithSchema.setIndexDefinition(
   'i1',
   't1',
   (getCell) => getCell('c1d'),
-  (getCell) => getCell('c1'), // !
+  (getCell) => getCell('c1'),
 );
 indexesWithSchema.setIndexDefinition(
   'i1',
@@ -112,3 +112,16 @@ indexesWithSchema.addSliceRowIdsListener('i1', 's1', (indexes) => {
 
 indexesWithSchema.delListener('i1').getStore().getTables().t1;
 indexesWithSchema.delListener('i1').getStore().getTables().t2; // !
+
+indexesWithSchema.setIndexDefinition(
+  'i1',
+  't1',
+  () => 's1',
+  () => ({rank: 1}),
+);
+indexesWithSchema.setIndexDefinition(
+  'i1',
+  't1',
+  () => 's1',
+  () => [1, 2],
+);

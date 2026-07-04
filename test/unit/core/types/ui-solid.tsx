@@ -1675,3 +1675,32 @@ const App = () => (
     </Provider>
   </>
 );
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const SortedRowIdsSorterArgs = () => {
+  const numericSorter = (sortKey1: unknown, sortKey2: unknown) =>
+    Number(sortKey1) - Number(sortKey2);
+  useSortedRowIds(
+    't1',
+    undefined,
+    false,
+    0,
+    undefined,
+    numericSorter,
+  )();
+  useSortedRowIds({tableId: 't1', sorter: numericSorter})();
+  useSortedRowIdsListener(
+    {
+      tableId: 't1',
+      cellId: 'c1',
+      descending: true,
+      offset: 0,
+      limit: 10,
+      sorter: numericSorter,
+    },
+    (_store, tableId, cellId) => {
+      tableId == 't1';
+      cellId == 'c1';
+    },
+  );
+};
