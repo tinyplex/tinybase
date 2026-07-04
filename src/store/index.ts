@@ -1,4 +1,4 @@
-import type {Id, Ids, Json} from '../@types/common/index.d.ts';
+import type {Id, Ids, Json, Sorter} from '../@types/common/index.d.ts';
 import type {
   Cell,
   CellCallback,
@@ -1407,17 +1407,45 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const addSortedRowIdsListenerImpl = (
     tableId: Id,
     cellId: Id | undefined,
-    otherArgs: [descending: boolean, offset: number, limit: number | undefined],
+    otherArgs: [
+      descending: boolean,
+      offset: number,
+      limit: number | undefined,
+      sorter: Sorter | undefined,
+    ],
     listener: SortedRowIdsListener,
     mutator?: boolean,
   ): Id => {
-    let sortedRowIds = getSortedRowIds(tableId, cellId, ...otherArgs);
+    const [descending, offset, limit, sorter] = otherArgs;
+    let sortedRowIds = getSortedRowIds(
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      sorter,
+    );
     return addListener(
       () => {
-        const newSortedRowIds = getSortedRowIds(tableId, cellId, ...otherArgs);
+        const newSortedRowIds = getSortedRowIds(
+          tableId,
+          cellId,
+          descending,
+          offset,
+          limit,
+          sorter,
+        );
         if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
           sortedRowIds = newSortedRowIds;
-          listener(store, tableId, cellId, ...otherArgs, sortedRowIds);
+          listener(
+            store,
+            tableId,
+            cellId,
+            descending,
+            offset,
+            limit,
+            sortedRowIds,
+          );
         }
       },
       sortedRowIdsListeners[mutator ? 1 : 0],
@@ -1488,6 +1516,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     descending?: boolean,
     offset = 0,
     limit?: number,
+    sorter: Sorter = defaultSorter,
   ): Ids =>
     isObject(tableIdOrArgs)
       ? getSortedRowIds(
@@ -1496,6 +1525,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           tableIdOrArgs.descending,
           tableIdOrArgs.offset,
           tableIdOrArgs.limit,
+          tableIdOrArgs.sorter,
         )
       : arrayMap(
           slice(
@@ -1510,7 +1540,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 ],
               ),
               ([cell1], [cell2]) =>
-                defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+                sorter(cell1, cell2) * (descending ? -1 : 1),
             ),
             offset,
             isUndefined(limit) ? limit : offset + limit,
@@ -2070,6 +2100,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             tableIdOrArgs.descending ?? false,
             tableIdOrArgs.offset ?? 0,
             tableIdOrArgs.limit,
+            tableIdOrArgs.sorter,
           ],
           cellIdOrListener as SortedRowIdsListener,
           descendingOrMutator,
@@ -2077,7 +2108,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : addSortedRowIdsListenerImpl(
           tableIdOrArgs,
           cellIdOrListener as Id | undefined,
-          [descendingOrMutator as boolean, offset as number, limit],
+          [descendingOrMutator as boolean, offset as number, limit, undefined],
           listener as SortedRowIdsListener,
           mutator,
         );
