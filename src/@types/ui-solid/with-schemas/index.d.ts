@@ -58,6 +58,7 @@ import type {
   IdOrNull,
   Ids,
   ParameterizedCallback,
+  Sorter,
 } from '../../common/with-schemas/index.d.ts';
 import type {
   Indexes,
@@ -275,6 +276,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       descending?: MaybeAccessor<boolean | undefined>,
       offset?: MaybeAccessor<number | undefined>,
       limit?: MaybeAccessor<number | undefined>,
+      sorter?: Sorter,
       storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
     ): Accessor<Ids>;
 

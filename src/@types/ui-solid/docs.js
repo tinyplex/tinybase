@@ -1267,6 +1267,8 @@
  * @param descending Whether the sorting should be in descending order.
  * @param offset The number of Row Ids to skip for pagination purposes, if any.
  * @param limit The maximum number of Row Ids to return, or `undefined` for all.
+ * @param sorter A custom function for comparing the sorting values, or
+ * `undefined` to use the default alphanumeric sorting.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -1290,6 +1292,7 @@
  *     false,
  *     0,
  *     undefined,
+ *     undefined,
  *     store,
  *   );
  *   console.log(JSON.stringify(rowIds()));
@@ -1305,7 +1308,8 @@
  * When called with an object as the first argument, the useSortedRowIds method
  * destructures it to make it easier to skip optional parameters.
  * @param args A SortedRowIdsArgs object containing the Id of the Table in the
- * Store, and optional `cellId`, `descending`, `offset`, and `limit` parameters.
+ * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
+ * parameters.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -4142,7 +4146,8 @@
  * When called with an object as the first argument, the useSortedRowIds method
  * destructures it to make it easier to skip optional parameters.
  * @param args A SortedRowIdsArgs object containing the Id of the Table in the
- * Store, and optional `cellId`, `descending`, `offset`, and `limit` parameters.
+ * Store, and optional `cellId`, `descending`, `offset`, `limit`, and `sorter`
+ * parameters.
  * @param listener The function that will be called whenever the sorted Row Ids
  * in the Table change.
  * @param mutator An optional boolean that indicates that the listener mutates
