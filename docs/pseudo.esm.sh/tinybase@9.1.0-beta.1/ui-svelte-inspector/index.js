@@ -1773,13 +1773,36 @@ var createStore = () => {
     return store;
   };
   const addSortedRowIdsListenerImpl = (tableId, cellId, otherArgs, listener, mutator) => {
-    let sortedRowIds = getSortedRowIds2(tableId, cellId, ...otherArgs);
+    const [descending, offset, limit, sorter] = otherArgs;
+    let sortedRowIds = getSortedRowIds2(
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      sorter
+    );
     return addListener(
       () => {
-        const newSortedRowIds = getSortedRowIds2(tableId, cellId, ...otherArgs);
+        const newSortedRowIds = getSortedRowIds2(
+          tableId,
+          cellId,
+          descending,
+          offset,
+          limit,
+          sorter
+        );
         if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
           sortedRowIds = newSortedRowIds;
-          listener(store, tableId, cellId, ...otherArgs, sortedRowIds);
+          listener(
+            store,
+            tableId,
+            cellId,
+            descending,
+            offset,
+            limit,
+            sortedRowIds
+          );
         }
       },
       sortedRowIdsListeners[mutator ? 1 : 0],
@@ -1818,20 +1841,21 @@ var createStore = () => {
   const getTableCellIds2 = (tableId) => mapKeys(mapGet(tableCellIds, id(tableId)));
   const getRowCount2 = (tableId) => collSize(mapGet(tablesMap, id(tableId)));
   const getRowIds2 = (tableId) => mapKeys(mapGet(tablesMap, id(tableId)));
-  const getSortedRowIds2 = (tableIdOrArgs, cellId, descending, offset = 0, limit) => isObject(tableIdOrArgs) ? getSortedRowIds2(
+  const getSortedRowIds2 = (tableIdOrArgs, cellId, descending, offset = 0, limit, sorter = defaultSorter) => isObject(tableIdOrArgs) ? getSortedRowIds2(
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
     tableIdOrArgs.descending,
     tableIdOrArgs.offset,
-    tableIdOrArgs.limit
+    tableIdOrArgs.limit,
+    tableIdOrArgs.sorter
   ) : arrayMap(
     slice(
       arraySort(
         mapMap(mapGet(tablesMap, id(tableIdOrArgs)), (row, rowId) => [
-          isUndefined(cellId) ? rowId : mapGet(row, id(cellId)),
+          isUndefined(cellId) ? rowId : decodeIfJson(mapGet(row, id(cellId))),
           rowId
         ]),
-        ([cell1], [cell2]) => defaultSorter(cell1, cell2) * (descending ? -1 : 1)
+        ([cell1], [cell2]) => sorter(cell1, cell2) * (descending ? -1 : 1)
       ),
       offset,
       isUndefined(limit) ? limit : offset + limit
@@ -2245,14 +2269,15 @@ var createStore = () => {
     [
       tableIdOrArgs.descending ?? false,
       tableIdOrArgs.offset ?? 0,
-      tableIdOrArgs.limit
+      tableIdOrArgs.limit,
+      tableIdOrArgs.sorter
     ],
     cellIdOrListener,
     descendingOrMutator
   ) : addSortedRowIdsListenerImpl(
     tableIdOrArgs,
     cellIdOrListener,
-    [descendingOrMutator, offset, limit],
+    [descendingOrMutator, offset, limit, void 0],
     listener,
     mutator
   );
@@ -2556,16 +2581,30 @@ var getRowCount = (tableId, storeOrStoreId) => createListenable(resolveStore(sto
 var getRowIds = (tableId, storeOrStoreId) => createListenable(resolveStore(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [
   maybeGet$1(tableId)
 ]);
-var getSortedRowIds = (tableId, cellId, descending = false, offset = 0, limit, storeOrStoreId) => createListenable(
+var getSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending = false, offset = 0, limit, sorter, storeOrStoreId) => isObject(tableIdOrArgs) ? createListenable(
+  resolveStore(cellIdOrStoreOrStoreId),
+  SORTED_ROW_IDS,
+  EMPTY_ARR,
+  () => [tableIdOrArgs]
+) : createListenable(
   resolveStore(storeOrStoreId),
   SORTED_ROW_IDS,
   EMPTY_ARR,
-  () => [
-    maybeGet$1(tableId),
-    maybeGet$1(cellId),
+  () => isUndefined(sorter) ? [
+    maybeGet$1(tableIdOrArgs),
+    maybeGet$1(cellIdOrStoreOrStoreId),
     maybeGet$1(descending),
     maybeGet$1(offset),
     maybeGet$1(limit)
+  ] : [
+    {
+      tableId: maybeGet$1(tableIdOrArgs),
+      cellId: maybeGet$1(cellIdOrStoreOrStoreId),
+      descending: maybeGet$1(descending) ?? false,
+      offset: maybeGet$1(offset) ?? 0,
+      limit: maybeGet$1(limit),
+      sorter
+    }
   ]
 );
 var getCellIds = (tableId, rowId, storeOrStoreId) => createListenable(resolveStore(storeOrStoreId), CELL_IDS, EMPTY_ARR, () => [
@@ -4154,6 +4193,7 @@ function SortedTableInHtmlTable($$anchor, $$props) {
     () => sorting.sortAndOffset[1],
     () => sorting.sortAndOffset[2],
     () => $$props.limit,
+    void 0,
     () => $$props.store
   );
   const defaultCellComponent = $.derived(

@@ -188,7 +188,7 @@ Glago](https://github.com/a11rew), [wattroll](https://github.com/wattroll),
 [Will Honey](https://github.com/willhoney7), and [Daniel
 Berndt](https://github.com/danielberndt).
 
-Couldn't do it without you!
+Could not do it without you!
 
 ---
 

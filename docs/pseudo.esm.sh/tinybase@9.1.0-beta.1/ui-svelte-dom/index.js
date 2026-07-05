@@ -154,16 +154,30 @@ var getRowCount = (tableId, storeOrStoreId) => createListenable(resolveStore(sto
 var getRowIds = (tableId, storeOrStoreId) => createListenable(resolveStore(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [
   maybeGet(tableId)
 ]);
-var getSortedRowIds = (tableId, cellId, descending = false, offset = 0, limit, storeOrStoreId) => createListenable(
+var getSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending = false, offset = 0, limit, sorter, storeOrStoreId) => isObject(tableIdOrArgs) ? createListenable(
+  resolveStore(cellIdOrStoreOrStoreId),
+  SORTED_ROW_IDS,
+  EMPTY_ARR,
+  () => [tableIdOrArgs]
+) : createListenable(
   resolveStore(storeOrStoreId),
   SORTED_ROW_IDS,
   EMPTY_ARR,
-  () => [
-    maybeGet(tableId),
-    maybeGet(cellId),
+  () => isUndefined(sorter) ? [
+    maybeGet(tableIdOrArgs),
+    maybeGet(cellIdOrStoreOrStoreId),
     maybeGet(descending),
     maybeGet(offset),
     maybeGet(limit)
+  ] : [
+    {
+      tableId: maybeGet(tableIdOrArgs),
+      cellId: maybeGet(cellIdOrStoreOrStoreId),
+      descending: maybeGet(descending) ?? false,
+      offset: maybeGet(offset) ?? 0,
+      limit: maybeGet(limit),
+      sorter
+    }
   ]
 );
 var getCell = (tableId, rowId, cellId, storeOrStoreId) => {
@@ -1613,6 +1627,7 @@ function SortedTableInHtmlTable($$anchor, $$props) {
     () => sorting.sortAndOffset[1],
     () => sorting.sortAndOffset[2],
     () => $$props.limit,
+    void 0,
     () => $$props.store
   );
   const defaultCellComponent = $.derived(

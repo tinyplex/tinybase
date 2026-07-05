@@ -477,12 +477,25 @@ var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps, then, thenDep
 );
 var argsOrGetArgs = (args, store, parameter) => arrayMap2(args, (arg) => isFunction(arg) ? arg(parameter, store) : arg);
 var nonFunctionDeps = (args) => arrayFilter(args, (arg) => !isFunction(arg));
-var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable2(
-  SORTED_ROW_IDS2,
-  useStoreOrStoreById2(storeOrStoreId),
-  1,
-  [tableId, cellId, descending, offset, limit]
-);
+var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, sorter, storeOrStoreId) => {
+  const sortedRowIdsArgs = useMemo2(
+    () => ({
+      tableId,
+      cellId,
+      descending: descending ?? false,
+      offset: offset ?? 0,
+      limit,
+      sorter
+    }),
+    [tableId, cellId, descending, offset, limit, sorter]
+  );
+  return useListenable2(
+    SORTED_ROW_IDS2,
+    useStoreOrStoreById2(storeOrStoreId),
+    1,
+    isUndefined2(sorter) ? [tableId, cellId, descending, offset, limit] : [sortedRowIdsArgs]
+  );
+};
 var useStoreOrStoreById2 = (storeOrStoreId) => useThingOrThingById2(storeOrStoreId, OFFSET_STORE2);
 var useTableCellIds = (tableId, storeOrStoreId) => useListenable2(
   TABLE2 + CELL_IDS2,
@@ -499,13 +512,14 @@ var useRowCount = (tableId, storeOrStoreId) => useListenable2(
 var useRowIds = (tableId, storeOrStoreId) => useListenable2(ROW_IDS2, useStoreOrStoreById2(storeOrStoreId), 1, [
   tableId
 ]);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => useSortedRowIdsImpl(
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, sorterOrStoreOrStoreId, storeOrStoreId) => useSortedRowIdsImpl(
   ...isObject2(tableIdOrArgs) ? [
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
     tableIdOrArgs.descending ?? false,
     tableIdOrArgs.offset ?? 0,
     tableIdOrArgs.limit,
+    tableIdOrArgs.sorter,
     cellIdOrStoreOrStoreId
   ] : [
     tableIdOrArgs,
@@ -513,7 +527,8 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
     descending,
     offset,
     limit,
-    storeOrStoreId
+    isFunction(sorterOrStoreOrStoreId) ? sorterOrStoreOrStoreId : void 0,
+    isFunction(sorterOrStoreOrStoreId) ? storeOrStoreId : sorterOrStoreOrStoreId
   ]
 );
 var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(

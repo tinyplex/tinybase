@@ -422,20 +422,39 @@ var useCheckpointAction = (checkpointsOrCheckpointsId, action, arg) => {
     [checkpoints, action, arg]
   );
 };
-var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable(
-  SORTED_ROW_IDS,
-  useStoreOrStoreById(storeOrStoreId),
-  1,
-  [tableId, cellId, descending, offset, limit]
-);
-var useSortedRowIdsListenerImpl = (tableId, cellId, descending, offset, limit, listener, listenerDeps, mutator, storeOrStoreId) => useListener(
-  SORTED_ROW_IDS,
-  useStoreOrStoreById(storeOrStoreId),
-  listener,
-  listenerDeps,
-  [tableId, cellId, descending, offset, limit],
-  mutator
-);
+var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, sorter, storeOrStoreId) => {
+  const sortedRowIdsArgs = useMemo(
+    () => ({
+      tableId,
+      cellId,
+      descending: descending ?? false,
+      offset: offset ?? 0,
+      limit,
+      sorter
+    }),
+    [tableId, cellId, descending, offset, limit, sorter]
+  );
+  return useListenable(
+    SORTED_ROW_IDS,
+    useStoreOrStoreById(storeOrStoreId),
+    1,
+    isUndefined(sorter) ? [tableId, cellId, descending, offset, limit] : [sortedRowIdsArgs]
+  );
+};
+var useSortedRowIdsListenerImpl = (tableId, cellId, descending, offset, limit, sorter, listener, listenerDeps, mutator, storeOrStoreId) => {
+  const sortedRowIdsArgs = useMemo(
+    () => ({ tableId, cellId, descending, offset, limit, sorter }),
+    [tableId, cellId, descending, offset, limit, sorter]
+  );
+  useListener(
+    SORTED_ROW_IDS,
+    useStoreOrStoreById(storeOrStoreId),
+    listener,
+    listenerDeps,
+    isUndefined(sorter) ? [tableId, cellId, descending, offset, limit] : [sortedRowIdsArgs],
+    mutator
+  );
+};
 var useCreateStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
 var useStoreIds = () => useThingIds(OFFSET_STORE);
 var useStore = (id) => useThing(id, OFFSET_STORE);
@@ -496,13 +515,14 @@ var useRowCount = (tableId, storeOrStoreId) => useListenable(
 var useRowIds = (tableId, storeOrStoreId) => useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
   tableId
 ]);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => useSortedRowIdsImpl(
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, sorterOrStoreOrStoreId, storeOrStoreId) => useSortedRowIdsImpl(
   ...isObject(tableIdOrArgs) ? [
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
     tableIdOrArgs.descending ?? false,
     tableIdOrArgs.offset ?? 0,
     tableIdOrArgs.limit,
+    tableIdOrArgs.sorter,
     cellIdOrStoreOrStoreId
   ] : [
     tableIdOrArgs,
@@ -510,7 +530,8 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
     descending,
     offset,
     limit,
-    storeOrStoreId
+    isFunction(sorterOrStoreOrStoreId) ? sorterOrStoreOrStoreId : void 0,
+    isFunction(sorterOrStoreOrStoreId) ? storeOrStoreId : sorterOrStoreOrStoreId
   ]
 );
 var useHasRow = (tableId, rowId, storeOrStoreId) => useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 6, [
@@ -768,6 +789,7 @@ var useSortedRowIdsListener = (tableIdOrArgs, cellIdOrListener, descendingOrList
     tableIdOrArgs.descending ?? false,
     tableIdOrArgs.offset ?? 0,
     tableIdOrArgs.limit,
+    tableIdOrArgs.sorter,
     cellIdOrListener,
     descendingOrListenerDeps,
     offsetOrMutator,
@@ -778,6 +800,7 @@ var useSortedRowIdsListener = (tableIdOrArgs, cellIdOrListener, descendingOrList
     descendingOrListenerDeps,
     offsetOrMutator,
     limitOrStoreOrStoreId,
+    void 0,
     listener,
     listenerDeps,
     mutator,

@@ -1794,13 +1794,36 @@ var createStore = () => {
     return store;
   };
   const addSortedRowIdsListenerImpl = (tableId, cellId, otherArgs, listener, mutator) => {
-    let sortedRowIds = getSortedRowIds(tableId, cellId, ...otherArgs);
+    const [descending, offset, limit, sorter] = otherArgs;
+    let sortedRowIds = getSortedRowIds(
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      sorter
+    );
     return addListener(
       () => {
-        const newSortedRowIds = getSortedRowIds(tableId, cellId, ...otherArgs);
+        const newSortedRowIds = getSortedRowIds(
+          tableId,
+          cellId,
+          descending,
+          offset,
+          limit,
+          sorter
+        );
         if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
           sortedRowIds = newSortedRowIds;
-          listener(store, tableId, cellId, ...otherArgs, sortedRowIds);
+          listener(
+            store,
+            tableId,
+            cellId,
+            descending,
+            offset,
+            limit,
+            sortedRowIds
+          );
         }
       },
       sortedRowIdsListeners[mutator ? 1 : 0],
@@ -1839,20 +1862,21 @@ var createStore = () => {
   const getTableCellIds = (tableId) => mapKeys(mapGet(tableCellIds, id(tableId)));
   const getRowCount = (tableId) => collSize(mapGet(tablesMap, id(tableId)));
   const getRowIds = (tableId) => mapKeys(mapGet(tablesMap, id(tableId)));
-  const getSortedRowIds = (tableIdOrArgs, cellId, descending, offset = 0, limit) => isObject(tableIdOrArgs) ? getSortedRowIds(
+  const getSortedRowIds = (tableIdOrArgs, cellId, descending, offset = 0, limit, sorter = defaultSorter) => isObject(tableIdOrArgs) ? getSortedRowIds(
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
     tableIdOrArgs.descending,
     tableIdOrArgs.offset,
-    tableIdOrArgs.limit
+    tableIdOrArgs.limit,
+    tableIdOrArgs.sorter
   ) : arrayMap(
     slice(
       arraySort(
         mapMap(mapGet(tablesMap, id(tableIdOrArgs)), (row, rowId) => [
-          isUndefined(cellId) ? rowId : mapGet(row, id(cellId)),
+          isUndefined(cellId) ? rowId : decodeIfJson(mapGet(row, id(cellId))),
           rowId
         ]),
-        ([cell1], [cell2]) => defaultSorter(cell1, cell2) * (descending ? -1 : 1)
+        ([cell1], [cell2]) => sorter(cell1, cell2) * (descending ? -1 : 1)
       ),
       offset,
       isUndefined(limit) ? limit : offset + limit
@@ -2266,14 +2290,15 @@ var createStore = () => {
     [
       tableIdOrArgs.descending ?? false,
       tableIdOrArgs.offset ?? 0,
-      tableIdOrArgs.limit
+      tableIdOrArgs.limit,
+      tableIdOrArgs.sorter
     ],
     cellIdOrListener,
     descendingOrMutator
   ) : addSortedRowIdsListenerImpl(
     tableIdOrArgs,
     cellIdOrListener,
-    [descendingOrMutator, offset, limit],
+    [descendingOrMutator, offset, limit, void 0],
     listener,
     mutator
   );

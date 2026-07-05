@@ -377,17 +377,35 @@ var useCheckpointAction = (checkpointsOrCheckpointsId, action, arg) => {
   );
   return () => getThing(checkpoints)?.[action](arg);
 };
-var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable(
+var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, sorter, storeOrStoreId) => useListenable(
   SORTED_ROW_IDS,
   useStoreOrStoreById(storeOrStoreId),
   1,
-  [tableId, cellId, descending, offset, limit]
+  isUndefined(sorter) ? [tableId, cellId, descending, offset, limit] : [
+    () => ({
+      tableId: getThing(tableId),
+      cellId: getThing(cellId),
+      descending: getThing(descending) ?? false,
+      offset: getThing(offset) ?? 0,
+      limit: getThing(limit),
+      sorter: getThing(sorter)
+    })
+  ]
 );
-var useSortedRowIdsListenerImpl = (tableId, cellId, descending, offset, limit, listener, mutator, storeOrStoreId) => useListener(
+var useSortedRowIdsListenerImpl = (tableId, cellId, descending, offset, limit, sorter, listener, mutator, storeOrStoreId) => useListener(
   SORTED_ROW_IDS,
   useStoreOrStoreById(storeOrStoreId),
   listener,
-  [tableId, cellId, descending, offset, limit],
+  isUndefined(sorter) ? [tableId, cellId, descending, offset, limit] : [
+    () => ({
+      tableId: getThing(tableId),
+      cellId: getThing(cellId),
+      descending: getThing(descending),
+      offset: getThing(offset),
+      limit: getThing(limit),
+      sorter: getThing(sorter)
+    })
+  ],
   mutator
 );
 var useCreateStore = (create) => {
@@ -456,12 +474,13 @@ var useRowCount = (tableId, storeOrStoreId) => useListenable(
 var useRowIds = (tableId, storeOrStoreId) => useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
   tableId
 ]);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => isObject(tableIdOrArgs) ? useSortedRowIdsImpl(
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, sorter, storeOrStoreId) => isObject(tableIdOrArgs) ? useSortedRowIdsImpl(
   tableIdOrArgs.tableId,
   tableIdOrArgs.cellId,
   tableIdOrArgs.descending ?? false,
   tableIdOrArgs.offset ?? 0,
   tableIdOrArgs.limit,
+  () => tableIdOrArgs.sorter,
   cellIdOrStoreOrStoreId
 ) : useSortedRowIdsImpl(
   tableIdOrArgs,
@@ -469,6 +488,7 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
   descending,
   offset,
   limit,
+  isUndefined(sorter) ? void 0 : () => sorter,
   storeOrStoreId
 );
 var useHasRow = (tableId, rowId, storeOrStoreId) => useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 6, [
@@ -653,6 +673,7 @@ var useSortedRowIdsListener = (tableIdOrArgs, cellIdOrListener, descendingOrMuta
   tableIdOrArgs.descending ?? false,
   tableIdOrArgs.offset ?? 0,
   tableIdOrArgs.limit,
+  () => tableIdOrArgs.sorter,
   cellIdOrListener,
   descendingOrMutator,
   offsetOrStoreOrStoreId
@@ -662,6 +683,7 @@ var useSortedRowIdsListener = (tableIdOrArgs, cellIdOrListener, descendingOrMuta
   descendingOrMutator ?? false,
   offsetOrStoreOrStoreId ?? 0,
   limit,
+  void 0,
   listener,
   mutator,
   storeOrStoreId
@@ -1600,6 +1622,7 @@ var SortedTableView = (props) => tableView(
     () => props.descending,
     () => props.offset,
     () => props.limit,
+    void 0,
     () => props.store
   )
 );

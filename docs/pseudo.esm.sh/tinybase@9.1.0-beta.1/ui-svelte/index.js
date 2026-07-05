@@ -47,12 +47,20 @@ var GLOBAL = globalThis;
 var isNullish = (thing) => thing == null;
 var isUndefined = (thing) => thing === void 0;
 var hasWindow = () => !isUndefined(GLOBAL.window);
+var ifNotNullish = getIfNotFunction(isNullish);
 var ifNotUndefined = getIfNotFunction(isUndefined);
 var isString = (thing) => getTypeOf(thing) == STRING;
 var isFunction = (thing) => getTypeOf(thing) == FUNCTION;
 var noop2 = () => {
 };
 var object = Object;
+var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+var isObject = (obj) => !isNullish(obj) && ifNotNullish(
+  getPrototypeOf(obj),
+  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
+  /* istanbul ignore next */
+  () => true
+);
 var objIds = object.keys;
 var objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
 var TINYBASE_CONTEXT_KEY = TINYBASE + "_uisc";
@@ -184,16 +192,30 @@ var getRowCount = (tableId, storeOrStoreId) => createListenable(resolveStore(sto
 var getRowIds = (tableId, storeOrStoreId) => createListenable(resolveStore(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [
   maybeGet(tableId)
 ]);
-var getSortedRowIds = (tableId, cellId, descending = false, offset = 0, limit, storeOrStoreId) => createListenable(
+var getSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending = false, offset = 0, limit, sorter, storeOrStoreId) => isObject(tableIdOrArgs) ? createListenable(
+  resolveStore(cellIdOrStoreOrStoreId),
+  SORTED_ROW_IDS,
+  EMPTY_ARR,
+  () => [tableIdOrArgs]
+) : createListenable(
   resolveStore(storeOrStoreId),
   SORTED_ROW_IDS,
   EMPTY_ARR,
-  () => [
-    maybeGet(tableId),
-    maybeGet(cellId),
+  () => isUndefined(sorter) ? [
+    maybeGet(tableIdOrArgs),
+    maybeGet(cellIdOrStoreOrStoreId),
     maybeGet(descending),
     maybeGet(offset),
     maybeGet(limit)
+  ] : [
+    {
+      tableId: maybeGet(tableIdOrArgs),
+      cellId: maybeGet(cellIdOrStoreOrStoreId),
+      descending: maybeGet(descending) ?? false,
+      offset: maybeGet(offset) ?? 0,
+      limit: maybeGet(limit),
+      sorter
+    }
   ]
 );
 var hasRow = (tableId, rowId, storeOrStoreId) => createListenable(
@@ -624,15 +646,21 @@ var onRowIds = (tableId, listener, mutator, storeOrStoreId) => addListenerEffect
   () => [maybeGet(tableId)],
   mutator
 );
-var onSortedRowIds = (tableId, cellId, descending, offset, limit, listener, mutator, storeOrStoreId) => addListenerEffect(
+var onSortedRowIds = (tableIdOrArgs, cellIdOrListener, descendingOrMutator, offsetOrStoreOrStoreId, limit, listener, mutator, storeOrStoreId) => isObject(tableIdOrArgs) ? addListenerEffect(
+  resolveStore(offsetOrStoreOrStoreId),
+  SORTED_ROW_IDS,
+  cellIdOrListener,
+  () => [tableIdOrArgs],
+  descendingOrMutator
+) : addListenerEffect(
   resolveStore(storeOrStoreId),
   SORTED_ROW_IDS,
   listener,
   () => [
-    maybeGet(tableId),
-    maybeGet(cellId),
-    maybeGet(descending),
-    maybeGet(offset),
+    maybeGet(tableIdOrArgs),
+    maybeGet(cellIdOrListener),
+    maybeGet(descendingOrMutator),
+    maybeGet(offsetOrStoreOrStoreId),
     maybeGet(limit)
   ],
   mutator
@@ -1736,6 +1764,7 @@ function SortedTableView($$anchor, $$props) {
     () => $$props.descending ?? false,
     () => $$props.offset ?? 0,
     () => $$props.limit,
+    void 0,
     () => $$props.store
   );
   {

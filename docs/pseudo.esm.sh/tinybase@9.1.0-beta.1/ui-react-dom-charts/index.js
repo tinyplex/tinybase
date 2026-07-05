@@ -614,20 +614,34 @@ var useListener = (listenable, thing, listener, listenerDeps = EMPTY_ARRAY, preA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]
 );
-var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable(
-  SORTED_ROW_IDS,
-  useStoreOrStoreById(storeOrStoreId),
-  1,
-  [tableId, cellId, descending, offset, limit]
-);
+var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, sorter, storeOrStoreId) => {
+  const sortedRowIdsArgs = useMemo(
+    () => ({
+      tableId,
+      cellId,
+      descending: descending ?? false,
+      offset: offset ?? 0,
+      limit,
+      sorter
+    }),
+    [tableId, cellId, descending, offset, limit, sorter]
+  );
+  return useListenable(
+    SORTED_ROW_IDS,
+    useStoreOrStoreById(storeOrStoreId),
+    1,
+    isUndefined(sorter) ? [tableId, cellId, descending, offset, limit] : [sortedRowIdsArgs]
+  );
+};
 var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, OFFSET_STORE);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => useSortedRowIdsImpl(
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, sorterOrStoreOrStoreId, storeOrStoreId) => useSortedRowIdsImpl(
   ...isObject(tableIdOrArgs) ? [
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
     tableIdOrArgs.descending ?? false,
     tableIdOrArgs.offset ?? 0,
     tableIdOrArgs.limit,
+    tableIdOrArgs.sorter,
     cellIdOrStoreOrStoreId
   ] : [
     tableIdOrArgs,
@@ -635,7 +649,8 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
     descending,
     offset,
     limit,
-    storeOrStoreId
+    isFunction(sorterOrStoreOrStoreId) ? sorterOrStoreOrStoreId : void 0,
+    isFunction(sorterOrStoreOrStoreId) ? storeOrStoreId : sorterOrStoreOrStoreId
   ]
 );
 var useCellListener = (tableId, rowId, cellId, listener, listenerDeps, mutator, storeOrStoreId) => useListener(

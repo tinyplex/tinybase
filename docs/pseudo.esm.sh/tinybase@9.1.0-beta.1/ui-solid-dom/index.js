@@ -524,11 +524,20 @@ var argsOrGetArgs = (args, store, parameter) => arrayMap2(
   args,
   (arg) => isFunction2(arg) ? arg.length == 0 ? getThing2(arg) : arg(parameter, store) : arg
 );
-var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable2(
+var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, sorter, storeOrStoreId) => useListenable2(
   SORTED_ROW_IDS2,
   useStoreOrStoreById2(storeOrStoreId),
   1,
-  [tableId, cellId, descending, offset, limit]
+  isUndefined2(sorter) ? [tableId, cellId, descending, offset, limit] : [
+    () => ({
+      tableId: getThing2(tableId),
+      cellId: getThing2(cellId),
+      descending: getThing2(descending) ?? false,
+      offset: getThing2(offset) ?? 0,
+      limit: getThing2(limit),
+      sorter: getThing2(sorter)
+    })
+  ]
 );
 var useStoreOrStoreById2 = (storeOrStoreId) => useThingOrThingById2(storeOrStoreId, OFFSET_STORE2);
 var useTableCellIds = (tableId, storeOrStoreId) => useListenable2(
@@ -546,12 +555,13 @@ var useRowCount = (tableId, storeOrStoreId) => useListenable2(
 var useRowIds = (tableId, storeOrStoreId) => useListenable2(ROW_IDS2, useStoreOrStoreById2(storeOrStoreId), 1, [
   tableId
 ]);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => isObject2(tableIdOrArgs) ? useSortedRowIdsImpl(
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, sorter, storeOrStoreId) => isObject2(tableIdOrArgs) ? useSortedRowIdsImpl(
   tableIdOrArgs.tableId,
   tableIdOrArgs.cellId,
   tableIdOrArgs.descending ?? false,
   tableIdOrArgs.offset ?? 0,
   tableIdOrArgs.limit,
+  () => tableIdOrArgs.sorter,
   cellIdOrStoreOrStoreId
 ) : useSortedRowIdsImpl(
   tableIdOrArgs,
@@ -559,6 +569,7 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
   descending,
   offset,
   limit,
+  isUndefined2(sorter) ? void 0 : () => sorter,
   storeOrStoreId
 );
 var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(
@@ -1502,6 +1513,7 @@ var SortedTableInHtmlTable = (props) => {
         () => sortAndOffset()[1],
         () => sortAndOffset()[2],
         () => props.limit,
+        void 0,
         () => props.store
       ),
       props.extraCellsBefore,
