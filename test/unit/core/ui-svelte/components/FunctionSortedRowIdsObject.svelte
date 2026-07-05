@@ -22,7 +22,12 @@
     numericSorter,
     () => store,
   );
-  onSortedRowIds(args, (...args) => listener(...args), false, () => store);
+  onSortedRowIds(
+    args,
+    (...args) => listener(...args),
+    false,
+    () => store,
+  );
 </script>
 
 {JSON.stringify([rowIds.current, positionalRowIds.current])}

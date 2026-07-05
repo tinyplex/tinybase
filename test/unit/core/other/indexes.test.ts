@@ -135,8 +135,7 @@ describe('Sets', () => {
       'c3',
       'c2',
       undefined,
-      (sortKey1: any, sortKey2: any) =>
-        sortKey1[0].localeCompare(sortKey2[0]),
+      (sortKey1: any, sortKey2: any) => sortKey1[0].localeCompare(sortKey2[0]),
     );
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       all: ['r3', 'r1', 'r2'],

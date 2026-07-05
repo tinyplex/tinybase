@@ -40,13 +40,7 @@ export type Callback = () => void;
 
 /// SortKey
 export type SortKey =
-  | string
-  | number
-  | boolean
-  | null
-  | AnyObject
-  | AnyArray
-  | undefined;
+  string | number | boolean | null | AnyObject | AnyArray | undefined;
 
 /// Sorter
 export type Sorter = (sortKey1: SortKey, sortKey2: SortKey) => number;

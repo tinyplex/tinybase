@@ -429,8 +429,7 @@ export const getSortedRowIds = (
                 maybeGet(tableIdOrArgs),
                 maybeGet(
                   cellIdOrStoreOrStoreId as
-                    | MaybeGetter<Id | undefined>
-                    | undefined,
+                    MaybeGetter<Id | undefined> | undefined,
                 ),
                 maybeGet(descending),
                 maybeGet(offset),
@@ -441,8 +440,7 @@ export const getSortedRowIds = (
                   tableId: maybeGet(tableIdOrArgs),
                   cellId: maybeGet(
                     cellIdOrStoreOrStoreId as
-                      | MaybeGetter<Id | undefined>
-                      | undefined,
+                      MaybeGetter<Id | undefined> | undefined,
                   ),
                   descending: maybeGet(descending) ?? false,
                   offset: maybeGet(offset) ?? 0,
@@ -1148,8 +1146,7 @@ export const onSortedRowIds = (
   cellIdOrListener: MaybeGetter<Id | undefined> | SortedRowIdsListener,
   descendingOrMutator: MaybeGetter<boolean> | boolean | undefined,
   offsetOrStoreOrStoreId?:
-    | MaybeGetter<number>
-    | MaybeGetter<Store | Id | undefined>,
+    MaybeGetter<number> | MaybeGetter<Store | Id | undefined>,
   limit?: MaybeGetter<number | undefined>,
   listener?: SortedRowIdsListener,
   mutator?: boolean,

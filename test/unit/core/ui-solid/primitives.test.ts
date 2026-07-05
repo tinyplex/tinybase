@@ -1495,9 +1495,7 @@ describe('Solid-specific', () => {
     const store = createStore();
     const numericSorter = (sortKey1: any, sortKey2: any) =>
       Number(sortKey1) - Number(sortKey2);
-    ['1', '10', '2'].forEach((rowId) =>
-      store.setRow('t1', rowId, {c1: true}),
-    );
+    ['1', '10', '2'].forEach((rowId) => store.setRow('t1', rowId, {c1: true}));
     const listener = vi.fn();
 
     const dispose = renderPrimitive(() => {
