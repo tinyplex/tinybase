@@ -165,6 +165,21 @@ describe.each([
       expectNoChanges(listener);
     });
 
+    test('Set tablesSchema with required Cells', () => {
+      store.setTablesSchema({
+        t1: {
+          c1: {type: 'number', required: true},
+          c2: {type: 'string', default: '', required: true},
+        },
+      });
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+        t1: {
+          c1: {type: 'number', required: true},
+          c2: {type: 'string', default: '', required: true},
+        },
+      });
+    });
+
     test('Set tablesSchema after creation', () => {
       store.setCell('t1', 'r1', 'c1', '1');
       expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
@@ -272,6 +287,17 @@ describe.each([
       expect(store.getValues()).toEqual({v1: 2});
       expectChanges(listener, 'invalids', {v1: ['2']});
       expectNoChanges(listener);
+    });
+
+    test('Set valuesSchema with required Values', () => {
+      store.setValuesSchema({
+        v1: {type: 'number', required: true},
+        v2: {type: 'string', default: '', required: true},
+      });
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+        v1: {type: 'number', required: true},
+        v2: {type: 'string', default: '', required: true},
+      });
     });
 
     test('Set valuesSchema after creation', () => {
