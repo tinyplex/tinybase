@@ -37,6 +37,7 @@ import type {
   createStore as createStoreDecl,
 } from '../@types/store/index.d.ts';
 import {
+  arrayEvery,
   arrayForEach,
   arrayHas,
   arrayIsEqual,
@@ -61,6 +62,7 @@ import {
   collSize2,
   collSize3,
   collSize4,
+  collValues,
 } from '../common/coll.ts';
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
@@ -297,10 +299,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const invalidCells: IdMap3<any[]> = mapNew();
   const invalidValues: IdMap<any[]> = mapNew();
   const tablesSchemaMap: TablesSchemaMap = mapNew();
-  const tablesSchemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
+  const tablesSchemaRowCache: IdMap<[RowMap, IdSet, IdSet]> = mapNew();
   const valuesSchemaMap: ValuesSchemaMap = mapNew();
   const valuesDefaulted: ValuesMap = mapNew();
   const valuesNonDefaulted: IdSet = setNew();
+  const valuesRequiredNonDefaulted: IdSet = setNew();
   const tablePoolFunctions: IdMap<PoolFunctions> = mapNew();
   const tableCellIds: IdMap<IdMap<number>> = mapNew();
   const tablesMap: TablesMap = mapNew();
@@ -411,20 +414,32 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id | undefined,
     row: Row,
     skipDefaults?: 1,
-  ): boolean =>
-    objValidate(
-      skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
-      (cell: Cell, cellId: Id): boolean =>
-        ifNotUndefined(
-          getValidatedCell(tableId, rowId, cellId, cell),
-          (validCell) => {
-            row[cellId] = validCell;
-            return true;
-          },
-          () => false,
-        ) as boolean,
-      () => cellInvalid(tableId, rowId),
+  ): boolean => {
+    const rowWithDefaults = skipDefaults
+      ? row
+      : addDefaultsToRow(row, tableId, rowId);
+    return (
+      objValidate(
+        rowWithDefaults,
+        (cell: Cell, cellId: Id): boolean =>
+          ifNotUndefined(
+            getValidatedCell(tableId, rowId, cellId, cell),
+            (validCell) => {
+              row[cellId] = validCell;
+              return true;
+            },
+            () => false,
+          ) as boolean,
+        () => cellInvalid(tableId, rowId),
+      ) &&
+      (skipDefaults
+        ? true
+        : arrayEvery(
+            collValues(mapGet(tablesSchemaRowCache, tableId)?.[2]),
+            (cellId) => objHas(rowWithDefaults, cellId),
+          ))
     );
+  };
 
   const getValidatedCell = (
     tableId: Id,
@@ -457,20 +472,31 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ? cellInvalid(tableId, rowId, cellId, cell)
         : encodeIfJson(cell);
 
-  const validateValues = (values: Values, skipDefaults?: 1): boolean =>
-    objValidate(
-      skipDefaults ? values : addDefaultsToValues(values),
-      (value: Value, valueId: Id): boolean =>
-        ifNotUndefined(
-          getValidatedValue(valueId, value),
-          (validValue) => {
-            values[valueId] = validValue;
-            return true;
-          },
-          () => false,
-        ) as boolean,
-      () => valueInvalid(),
+  const validateValues = (values: Values, skipDefaults?: 1): boolean => {
+    const valuesWithDefaults = skipDefaults
+      ? values
+      : addDefaultsToValues(values);
+    return (
+      objValidate(
+        valuesWithDefaults,
+        (value: Value, valueId: Id): boolean =>
+          ifNotUndefined(
+            getValidatedValue(valueId, value),
+            (validValue) => {
+              values[valueId] = validValue;
+              return true;
+            },
+            () => false,
+          ) as boolean,
+        () => valueInvalid(),
+      ) &&
+      (skipDefaults
+        ? true
+        : arrayEvery(collValues(valuesRequiredNonDefaulted), (valueId) =>
+            objHas(valuesWithDefaults, valueId),
+          ))
     );
+  };
 
   const getValidatedValue = (valueId: Id, value: Value): ValueOrUndefined =>
     hasValuesSchema
@@ -545,6 +571,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       (_tablesSchema, tableId, tableSchema) => {
         const rowDefaulted = mapNew();
         const rowNonDefaulted = setNew();
+        const rowRequiredNonDefaulted = setNew();
         mapMatch(
           mapEnsure<Id, IdMap<CellSchema>>(tablesSchemaMap, tableId, mapNew),
           tableSchema,
@@ -552,12 +579,23 @@ export const createStore: typeof createStoreDecl = (): Store => {
             mapSet(tableSchemaMap, cellId, cellSchema);
             ifNotUndefined(
               cellSchema[DEFAULT],
-              (def) => mapSet(rowDefaulted, cellId, def),
-              () => setAdd(rowNonDefaulted, cellId) as any,
+              (defaultCell) => {
+                mapSet(rowDefaulted, cellId, defaultCell);
+              },
+              () => {
+                setAdd(rowNonDefaulted, cellId);
+                if (cellSchema[REQUIRED] === true) {
+                  setAdd(rowRequiredNonDefaulted, cellId);
+                }
+              },
             );
           },
         );
-        mapSet(tablesSchemaRowCache, tableId, [rowDefaulted, rowNonDefaulted]);
+        mapSet(tablesSchemaRowCache, tableId, [
+          rowDefaulted,
+          rowNonDefaulted,
+          rowRequiredNonDefaulted,
+        ]);
       },
       (_tablesSchema, tableId) => {
         mapSet(tablesSchemaMap, tableId);
@@ -573,14 +611,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
         mapSet(valuesSchemaMap, valueId, valueSchema);
         ifNotUndefined(
           valueSchema[DEFAULT],
-          (def) => mapSet(valuesDefaulted, valueId, def),
-          () => setAdd(valuesNonDefaulted, valueId) as any,
+          (defaultValue) => {
+            mapSet(valuesDefaulted, valueId, defaultValue);
+            collDel(valuesNonDefaulted, valueId);
+            collDel(valuesRequiredNonDefaulted, valueId);
+          },
+          () => {
+            mapSet(valuesDefaulted, valueId);
+            setAdd(valuesNonDefaulted, valueId);
+            if (valueSchema[REQUIRED] === true) {
+              setAdd(valuesRequiredNonDefaulted, valueId);
+            } else {
+              collDel(valuesRequiredNonDefaulted, valueId);
+            }
+          },
         );
       },
       (_valuesSchema, valueId) => {
         mapSet(valuesSchemaMap, valueId);
         mapSet(valuesDefaulted, valueId);
         collDel(valuesNonDefaulted, valueId);
+        collDel(valuesRequiredNonDefaulted, valueId);
       },
     );
 

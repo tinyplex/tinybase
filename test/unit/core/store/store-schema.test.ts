@@ -178,6 +178,29 @@ describe.each([
           c2: {type: 'string', default: '', required: true},
         },
       });
+      store.setRow('t1', 'r1', {});
+      expect(store.getRow('t1', 'r1')).toEqual({});
+      expectChangesNoJson(listener, 'invalids', {
+        t1: {r1: {c1: [undefined]}},
+      });
+      store.setRow('t1', 'r1', {c1: 1});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 1, c2: ''});
+      store.setRow('t1', 'r2', {c1: '1'});
+      expect(store.getRow('t1', 'r2')).toEqual({});
+      expectChanges(listener, 'invalids', {
+        t1: {r2: {c1: ['1']}},
+      });
+      expect(store.addRow('t1', {c2: '2'})).toBeUndefined();
+      expect(store.getTable('t1')).toEqual({r1: {c1: 1, c2: ''}});
+      expectChangesNoJson(listener, 'invalids', {
+        t1: {undefined: {c1: [undefined]}},
+      });
+      store.setTables({t1: {r2: {c2: '2'}}});
+      expect(store.getTable('t1')).toEqual({r1: {c1: 1, c2: ''}});
+      expectChangesNoJson(listener, 'invalids', {
+        t1: {r2: {c1: [undefined]}},
+      });
+      expectNoChanges(listener);
     });
 
     test('Set tablesSchema after creation', () => {
@@ -298,6 +321,20 @@ describe.each([
         v1: {type: 'number', required: true},
         v2: {type: 'string', default: '', required: true},
       });
+      expect(store.getValues()).toEqual({});
+      expectChangesNoJson(listener, 'invalids', {v1: [undefined]});
+      store.setValues({});
+      expect(store.getValues()).toEqual({});
+      expectChangesNoJson(listener, 'invalids', {v1: [undefined]});
+      store.setValues({v1: 1});
+      expect(store.getValues()).toEqual({v1: 1, v2: ''});
+      store.setValues({v1: '1'});
+      expect(store.getValues()).toEqual({v1: 1, v2: ''});
+      expectChanges(listener, 'invalids', {v1: ['1']});
+      store.setValues({v2: '2'});
+      expect(store.getValues()).toEqual({v1: 1, v2: ''});
+      expectChangesNoJson(listener, 'invalids', {v1: [undefined]});
+      expectNoChanges(listener);
     });
 
     test('Set valuesSchema after creation', () => {

@@ -10,9 +10,10 @@ highlighted features.
 ## Required Schema Fields
 
 Schemas can now mark a Cell or Value as required without providing a default
-value ([#173](https://github.com/tinyplex/tinybase/issues/173)). This gives
-schema-based typing a clear signal that the field should be present, while
-preserving the existing rule that a `default` also implies requiredness.
+value ([#173](https://github.com/tinyplex/tinybase/issues/173)). Full writes now
+reject Rows or Values that omit a required non-default field, while preserving
+the existing rule that a `default` also implies 'requiredness' (and will be
+filled automatically if omitted).
 
 ```js
 import {createStore} from 'tinybase';
@@ -29,8 +30,10 @@ console.log(requiredSchemaStore.getRow('pets', 'fido'));
 // -> {species: 'dog', sold: false}
 
 requiredSchemaStore.setRow('pets', 'felix', {});
+console.log(requiredSchemaStore.hasRow('pets', 'felix'));
+// -> false
 console.log(requiredSchemaStore.getRow('pets', 'felix'));
-// -> {sold: false}
+// -> {}
 ```
 
 ## Custom Sorting
