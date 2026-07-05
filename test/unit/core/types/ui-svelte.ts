@@ -868,14 +868,7 @@ const ComponentProps = () => {
 
   const numericSorter = (sortKey1: unknown, sortKey2: unknown) =>
     Number(sortKey1) - Number(sortKey2);
-  getSortedRowIds(
-    't1',
-    undefined,
-    false,
-    0,
-    undefined,
-    numericSorter,
-  ).current;
+  getSortedRowIds('t1', undefined, false, 0, undefined, numericSorter).current;
   getSortedRowIds({tableId: 't1', sorter: numericSorter}).current;
   getSortedRowIds({
     tableId: 't1',
@@ -898,6 +891,7 @@ const ComponentProps = () => {
     undefined,
     stringOnlySorter, // !
   ).current;
+  // prettier-ignore
   getSortedRowIds({ // !
     tableId: 't1',
     sorter: stringReturningSorter,

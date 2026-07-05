@@ -1674,6 +1674,7 @@ const storeWithJsonSchemas = store.setSchema(
     undefined,
     stringOnlySorter, // !
   );
+  // prettier-ignore
   storeWithSchemas.getSortedRowIds({ // !
     tableId: 't1',
     sorter: stringOnlySorter,
@@ -1686,6 +1687,7 @@ const storeWithJsonSchemas = store.setSchema(
     undefined,
     stringReturningSorter, // !
   );
+  // prettier-ignore
   storeWithSchemas.getSortedRowIds({ // !
     tableId: 't1',
     sorter: extraArgSorter,

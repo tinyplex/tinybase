@@ -1680,6 +1680,7 @@ const SortedRowIdsSorterArgs = () => {
     undefined,
     stringOnlySorter, // !
   );
+  // prettier-ignore
   useSortedRowIds({ // !
     tableId: 't1',
     sorter: stringReturningSorter,

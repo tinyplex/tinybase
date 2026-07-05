@@ -1680,14 +1680,7 @@ const App = () => (
 const SortedRowIdsSorterArgs = () => {
   const numericSorter = (sortKey1: unknown, sortKey2: unknown) =>
     Number(sortKey1) - Number(sortKey2);
-  useSortedRowIds(
-    't1',
-    undefined,
-    false,
-    0,
-    undefined,
-    numericSorter,
-  )();
+  useSortedRowIds('t1', undefined, false, 0, undefined, numericSorter)();
   useSortedRowIds({tableId: 't1', sorter: numericSorter})();
   const stringOnlySorter = (sortKey1: string, sortKey2: string) =>
     sortKey1.localeCompare(sortKey2);
@@ -1705,6 +1698,7 @@ const SortedRowIdsSorterArgs = () => {
     undefined,
     stringOnlySorter, // !
   )();
+  // prettier-ignore
   useSortedRowIds({ // !
     tableId: 't1',
     sorter: stringReturningSorter,

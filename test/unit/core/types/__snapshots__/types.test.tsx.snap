@@ -2226,11 +2226,11 @@ exports[`Types in store.ts > 1648:36 1`] = `"Property 'v2' does not exist on typ
 
 exports[`Types in store.ts > 1674:4 1`] = `"Argument of type '(sortKey1: string, sortKey2: string) => number' is not assignable to parameter of type 'Sorter'."`;
 
-exports[`Types in store.ts > 1676:19 1`] = `"No overload matches this call."`;
+exports[`Types in store.ts > 1677:19 1`] = `"No overload matches this call."`;
 
-exports[`Types in store.ts > 1686:4 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'Sorter'."`;
+exports[`Types in store.ts > 1687:4 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'Sorter'."`;
 
-exports[`Types in store.ts > 1688:19 1`] = `"No overload matches this call."`;
+exports[`Types in store.ts > 1690:19 1`] = `"No overload matches this call."`;
 
 exports[`Types in ui-react.tsx > 137:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -3016,9 +3016,9 @@ exports[`Types in ui-react.tsx > 1656:6 1`] = `"Type 'Store<NoSchemas>' is not a
 
 exports[`Types in ui-react.tsx > 1680:4 1`] = `"Argument of type '(sortKey1: string, sortKey2: string) => number' is not assignable to parameter of type 'StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | Sorter | undefined'."`;
 
-exports[`Types in ui-react.tsx > 1682:2 1`] = `"No overload matches this call."`;
+exports[`Types in ui-react.tsx > 1683:2 1`] = `"No overload matches this call."`;
 
-exports[`Types in ui-react.tsx > 1689:6 1`] = `"Type '(_sortKey1: unknown, _sortKey2: unknown, _extra: string) => number' is not assignable to type 'Sorter'."`;
+exports[`Types in ui-react.tsx > 1690:6 1`] = `"Type '(_sortKey1: unknown, _sortKey2: unknown, _extra: string) => number' is not assignable to type 'Sorter'."`;
 
 exports[`Types in ui-react-dom.tsx > 101:22 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
 
@@ -3898,11 +3898,11 @@ exports[`Types in ui-solid.tsx > 1666:6 1`] = `"Type 'Store<[NoTablesSchema, { r
 
 exports[`Types in ui-solid.tsx > 1671:6 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
-exports[`Types in ui-solid.tsx > 1705:4 1`] = `"Argument of type '(sortKey1: string, sortKey2: string) => number' is not assignable to parameter of type 'Sorter'."`;
+exports[`Types in ui-solid.tsx > 1698:4 1`] = `"Argument of type '(sortKey1: string, sortKey2: string) => number' is not assignable to parameter of type 'Sorter'."`;
 
-exports[`Types in ui-solid.tsx > 1707:2 1`] = `"No overload matches this call."`;
+exports[`Types in ui-solid.tsx > 1701:2 1`] = `"No overload matches this call."`;
 
-exports[`Types in ui-solid.tsx > 1728:6 1`] = `"Type '(_sortKey1: unknown, _sortKey2: unknown, _extra: string) => number' is not assignable to type 'Sorter'."`;
+exports[`Types in ui-solid.tsx > 1722:6 1`] = `"Type '(_sortKey1: unknown, _sortKey2: unknown, _extra: string) => number' is not assignable to type 'Sorter'."`;
 
 exports[`Types in ui-solid-dom.tsx > 102:22 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
 
@@ -4378,11 +4378,11 @@ exports[`Types in ui-svelte.ts > 865:20 1`] = `"Argument of type 'Store<[NoTable
 
 exports[`Types in ui-svelte.ts > 866:20 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
-exports[`Types in ui-svelte.ts > 898:4 1`] = `"Argument of type '(sortKey1: string, sortKey2: string) => number' is not assignable to parameter of type 'Sorter'."`;
+exports[`Types in ui-svelte.ts > 891:4 1`] = `"Argument of type '(sortKey1: string, sortKey2: string) => number' is not assignable to parameter of type 'Sorter'."`;
 
-exports[`Types in ui-svelte.ts > 900:2 1`] = `"No overload matches this call."`;
+exports[`Types in ui-svelte.ts > 894:2 1`] = `"No overload matches this call."`;
 
-exports[`Types in ui-svelte.ts > 914:6 1`] = `"Type '(_sortKey1: unknown, _sortKey2: unknown, _extra: string) => number' is not assignable to type 'Sorter'."`;
+exports[`Types in ui-svelte.ts > 908:6 1`] = `"Type '(_sortKey1: unknown, _sortKey2: unknown, _extra: string) => number' is not assignable to type 'Sorter'."`;
 
 exports[`Types in ui-svelte-dom.ts > 38:11 1`] = `"Cannot assign to 'tableId' because it is a read-only property."`;
 
