@@ -86,6 +86,11 @@ certain that that Cell will always be present in a Row. If the default value is
 _not_ provided (or its type is incorrect), the Cell may be missing from the Row.
 But when it is present you can be guaranteed it is of the correct type.
 
+You can also set `required: true` on a Cell or Value schema to indicate that it
+should be present even without providing a default value. This is especially
+useful for schema-based typing, since TinyBase will treat the field as defined
+without using `undefined` as an allowed data type.
+
 ## Altering A Schema
 
 You can also set or change the ValuesSchema or TablesSchema after data has been

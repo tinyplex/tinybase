@@ -7,6 +7,32 @@ highlighted features.
 
 # v9.1
 
+## Required Schema Fields
+
+Schemas can now mark a Cell or Value as required without providing a default
+value ([#173](https://github.com/tinyplex/tinybase/issues/173)). This gives
+schema-based typing a clear signal that the field should be present, while
+preserving the existing rule that a `default` also implies requiredness.
+
+```js
+import {createStore} from 'tinybase';
+
+const requiredSchemaStore = createStore().setTablesSchema({
+  pets: {
+    species: {type: 'string', required: true},
+    sold: {type: 'boolean', default: false},
+  },
+});
+
+requiredSchemaStore.setRow('pets', 'fido', {species: 'dog'});
+console.log(requiredSchemaStore.getRow('pets', 'fido'));
+// -> {species: 'dog', sold: false}
+
+requiredSchemaStore.setRow('pets', 'felix', {});
+console.log(requiredSchemaStore.getRow('pets', 'felix'));
+// -> {sold: false}
+```
+
 ## Custom Sorting
 
 This release adds custom sorting for sorted Row Id APIs, so applications can opt
@@ -20,9 +46,7 @@ hook and getSortedRowIds Svelte function also accept the sorter positionally
 [#213](https://github.com/tinyplex/tinybase/issues/213)).
 
 ```js
-import {createStore as createStoreForNumericSort} from 'tinybase';
-
-const numericSortStore = createStoreForNumericSort();
+const numericSortStore = createStore();
 ['1', '10', '2'].forEach((rowId) =>
   numericSortStore.setRow('pets', rowId, {sold: false}),
 );
@@ -214,7 +238,6 @@ for the x and y values:
 ```jsx
 import React from 'react';
 import {createRoot as createReactRoot} from 'react-dom/client';
-import {createStore} from 'tinybase';
 import {
   CartesianChart,
   LineChart,

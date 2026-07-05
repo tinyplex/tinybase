@@ -44,6 +44,11 @@ store.addValueListener(null, (store, valueId, newValue, oldValue) => {
 });
 ```
 
+A schema field with a `default` is typed as present because TinyBase will fill it
+when missing. A field with `required: true` is also typed as present, and is
+required in full writes such as setRow method, addRow method, and setValues
+method, without adding `undefined` as a supported data type.
+
 ## Getting the Typed Store
 
 Only the setSchema method, setTablesSchema method, and setValuesSchema method
