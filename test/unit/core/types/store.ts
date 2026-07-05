@@ -33,6 +33,24 @@ const jsonValuesSchema = {
   vad: {type: 'array', default: []},
 } as const;
 
+const requiredTablesSchema = {
+  t1: {
+    c1: {type: 'number', required: true},
+    c1d: {type: 'string', default: ''},
+    c1dr: {type: 'boolean', default: false, required: true},
+    c2: {type: 'string'},
+    c3: {type: 'string', required: true},
+  },
+} as const;
+
+const requiredValuesSchema = {
+  v1: {type: 'number', required: true},
+  v1d: {type: 'string', default: ''},
+  v1dr: {type: 'boolean', default: false, required: true},
+  v2: {type: 'string'},
+  v3: {type: 'string', required: true},
+} as const;
+
 const store = createStore();
 
 const storeWithSchemas = store.setSchema(tablesSchema, valuesSchema);
@@ -43,6 +61,11 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 const storeWithJsonSchemas = store.setSchema(
   jsonTablesSchema,
   jsonValuesSchema,
+);
+
+const storeWithRequiredSchemas = store.setSchema(
+  requiredTablesSchema,
+  requiredValuesSchema,
 );
 
 // Getters
@@ -140,6 +163,57 @@ const storeWithJsonSchemas = store.setSchema(
   storeWithSchemas.getValue('v1') as string; // !
   storeWithSchemas.getValue('v1d') as undefined; // !
   storeWithSchemas.getValue('v2'); // !
+})();
+
+// Required schema fields
+(() => {
+  storeWithRequiredSchemas.getRow('t1', 'r1').c1 as number;
+  storeWithRequiredSchemas.getRow('t1', 'r1').c1 as undefined; // !
+  storeWithRequiredSchemas.getRow('t1', 'r1').c1d as string;
+  storeWithRequiredSchemas.getRow('t1', 'r1').c1d as undefined; // !
+  storeWithRequiredSchemas.getRow('t1', 'r1').c1dr as boolean;
+  storeWithRequiredSchemas.getRow('t1', 'r1').c1dr as undefined; // !
+  storeWithRequiredSchemas.getRow('t1', 'r1').c2 as string;
+  storeWithRequiredSchemas.getRow('t1', 'r1').c2 as undefined;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c1') as number;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c1') as undefined; // !
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c1d') as string;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c1d') as undefined; // !
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c1dr') as boolean;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c1dr') as undefined; // !
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c2') as string;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c2') as undefined;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c3') as string;
+  storeWithRequiredSchemas.getCell('t1', 'r1', 'c3') as undefined; // !
+
+  storeWithRequiredSchemas.getValue('v1') as number;
+  storeWithRequiredSchemas.getValue('v1') as undefined; // !
+  storeWithRequiredSchemas.getValue('v1d') as string;
+  storeWithRequiredSchemas.getValue('v1d') as undefined; // !
+  storeWithRequiredSchemas.getValue('v1dr') as boolean;
+  storeWithRequiredSchemas.getValue('v1dr') as undefined; // !
+  storeWithRequiredSchemas.getValue('v2') as string;
+  storeWithRequiredSchemas.getValue('v2') as undefined;
+  storeWithRequiredSchemas.getValue('v3') as string;
+  storeWithRequiredSchemas.getValue('v3') as undefined; // !
+
+  storeWithRequiredSchemas.setRow('t1', 'r1', {c1: 1, c3: 'a'});
+  storeWithRequiredSchemas.setRow('t1', 'r1', {c1: 1}); // !
+  storeWithRequiredSchemas.setRow('t1', 'r1', {c2: 'a'}); // !
+  storeWithRequiredSchemas.addRow('t1', {c1: 1, c3: 'a'});
+  storeWithRequiredSchemas.addRow('t1', {c1: 1}); // !
+  storeWithRequiredSchemas.addRow('t1', {}); // !
+  storeWithRequiredSchemas.setTables({t1: {r1: {c1: 1, c3: 'a'}}});
+  storeWithRequiredSchemas.setTables({t1: {r1: {c1: 1}}}); // !
+  storeWithRequiredSchemas.setTables({t1: {r1: {c2: 'a'}}}); // !
+  storeWithRequiredSchemas.setPartialRow('t1', 'r1', {c2: 'a'});
+  storeWithRequiredSchemas.setPartialRow('t1', 'r1', {});
+
+  storeWithRequiredSchemas.setValues({v1: 1, v3: 'a'});
+  storeWithRequiredSchemas.setValues({v1: 1}); // !
+  storeWithRequiredSchemas.setValues({v2: 'a'}); // !
+  storeWithRequiredSchemas.setPartialValues({v2: 'a'});
+  storeWithRequiredSchemas.setPartialValues({});
 })();
 
 // Setters & deleters
