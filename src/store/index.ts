@@ -132,6 +132,7 @@ import {
   HAS,
   LISTENER,
   NUMBER,
+  REQUIRED,
   ROW,
   ROW_COUNT,
   ROW_IDS,
@@ -366,7 +367,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const validateCellOrValueSchema = (schema: CellSchema | ValueSchema) => {
     if (
       !objValidate(schema, (_child, id: Id) =>
-        arrayHas([TYPE, DEFAULT, ALLOW_NULL], id),
+        arrayHas([TYPE, DEFAULT, ALLOW_NULL, REQUIRED], id),
       )
     ) {
       return false;
