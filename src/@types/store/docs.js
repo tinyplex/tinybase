@@ -50,11 +50,13 @@
  * object or array Cell directly, and get back the same structure.
  *
  * If a default value is provided (and its type is correct), you can be certain
- * that that Cell will always be present in a Row.
+ * that that Cell will always be present in a Row. You can also set `required`
+ * to `true` to indicate to schema-based typing that the Cell should be present
+ * even if it does not have a default.
  *
- * If the default value is _not_ provided (or its type is incorrect), the Cell
- * may be missing from the Row, but when present you can be guaranteed it is of
- * the correct type.
+ * If neither a default value nor `required: true` is provided, the Cell may be
+ * missing from the Row, but when present you can be guaranteed it is of the
+ * correct type.
  * @example
  * When applied to a Store, this CellSchema ensures a boolean Cell is always
  * present, and defaults it to `false`.
@@ -65,6 +67,18 @@
  * export const requiredBoolean: CellSchema = {
  *   type: 'boolean',
  *   default: false,
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this CellSchema expects a string Cell to be present
+ * without providing a default value.
+ *
+ * ```js
+ * import type {CellSchema} from 'tinybase';
+ *
+ * export const requiredString: CellSchema = {
+ *   type: 'string',
+ *   required: true,
  * };
  * ```
  * @example
@@ -116,11 +130,13 @@
  * and from JSON when storing and retrieving them.
  *
  * If a default value is provided (and its type is correct), you can be certain
- * that the Value will always be present in a Store.
+ * that the Value will always be present in a Store. You can also set `required`
+ * to `true` to indicate to schema-based typing that the Value should be
+ * present even if it does not have a default.
  *
- * If the default value is _not_ provided (or its type is incorrect), the Value
- * may not be present in the Store, but when present you can be guaranteed it is
- * of the correct type.
+ * If neither a default value nor `required: true` is provided, the Value may
+ * not be present in the Store, but when present you can be guaranteed it is of
+ * the correct type.
  * @example
  * When applied to a Store, this ValueSchema ensures a boolean Value is always
  * present, and defaults it to `false`.
@@ -131,6 +147,18 @@
  * export const requiredBoolean: ValueSchema = {
  *   type: 'boolean',
  *   default: false,
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this ValueSchema expects a string Value to be
+ * present without providing a default value.
+ *
+ * ```js
+ * import type {ValueSchema} from 'tinybase';
+ *
+ * export const requiredString: ValueSchema = {
+ *   type: 'string',
+ *   required: true,
  * };
  * ```
  * @example
@@ -285,6 +313,16 @@
  */
 /// Row
 /**
+ * The PartialRow type is a Row-like type used when setting part of a row.
+ *
+ * In schema-based typing, a PartialRow allows any known Cell to be omitted,
+ * including Cells marked with `required: true`, while still preventing unknown
+ * Cell Ids from being used.
+ * @category Store
+ * @since v9.1.0
+ */
+/// PartialRow
+/**
  * The Cell type is the data structure representing the data in a single cell.
  *
  * A Cell is used when setting a cell with the setCell method, and when getting
@@ -330,6 +368,17 @@
  * @since v3.0.0
  */
 /// Values
+/**
+ * The PartialValues type is a Values-like type used when setting some keyed
+ * values.
+ *
+ * In schema-based typing, PartialValues allows any known Value to be omitted,
+ * including Values marked with `required: true`, while still preventing unknown
+ * Value Ids from being used.
+ * @category Store
+ * @since v9.1.0
+ */
+/// PartialValues
 /**
  * The Value type is the data structure representing the data in a single keyed
  * value.

@@ -117,6 +117,8 @@ import type {
   MapCell,
   MapValue,
   OptionalSchemas,
+  PartialRow,
+  PartialValues,
   Row,
   RowCountListener,
   RowIdsListener,
@@ -396,53 +398,57 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ];
 
   /// ui-solid.useSetTablesCallback
-  useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
+  useSetTablesCallback: <Parameter>(
     getTables: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetTables>,
+    ) => Tables<Schemas[0], true>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (store: Store<Schemas>, tables: SetTables) => void,
+    then?: (store: Store<Schemas>, tables: Tables<Schemas[0], true>) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetTableCallback
   useSetTableCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    SetTable = Table<Schemas[0], TableId, true>,
   >(
     tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
     getTable: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetTable>,
+    ) => Table<Schemas[0], TableId, true>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (store: Store<Schemas>, table: SetTable) => void,
+    then?: (
+      store: Store<Schemas>,
+      table: Table<Schemas[0], TableId, true>,
+    ) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetRowCallback
-  useSetRowCallback: <
-    Parameter,
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    SetRow = Row<Schemas[0], TableId, true>,
-  >(
+  useSetRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
     rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<SetRow>,
+    getRow: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => Row<Schemas[0], TableId, true>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (store: Store<Schemas>, row: SetRow) => void,
+    then?: (store: Store<Schemas>, row: Row<Schemas[0], TableId, true>) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useAddRowCallback
-  useAddRowCallback: <
-    Parameter,
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    AddRow = Row<Schemas[0], TableId, true>,
-  >(
+  useAddRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<AddRow>,
+    getRow: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => Row<Schemas[0], TableId, true>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (rowId: Id | undefined, store: Store<Schemas>, row: AddRow) => void,
+    then?: (
+      rowId: Id | undefined,
+      store: Store<Schemas>,
+      row: Row<Schemas[0], TableId, true>,
+    ) => void,
     reuseRowIds?: boolean,
   ) => ParameterizedCallback<Parameter>;
 
@@ -450,16 +456,18 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetPartialRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    SetPartialRow = Row<Schemas[0], TableId, true>,
   >(
     tableId: MaybeAccessor<TableId> | GetId<Schemas, Parameter, TableId>,
     rowId: MaybeAccessor<Id> | GetId<Schemas, Parameter, Id>,
     getPartialRow: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetPartialRow>,
+    ) => PartialRow<Schemas[0], TableId>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (store: Store<Schemas>, partialRow: SetPartialRow) => void,
+    then?: (
+      store: Store<Schemas>,
+      partialRow: PartialRow<Schemas[0], TableId>,
+    ) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetCellCallback
@@ -482,26 +490,26 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetValuesCallback
-  useSetValuesCallback: <Parameter, SetValues = Values<Schemas[1], true>>(
+  useSetValuesCallback: <Parameter>(
     getValues: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetValues>,
+    ) => Values<Schemas[1], true>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (store: Store<Schemas>, values: SetValues) => void,
+    then?: (store: Store<Schemas>, values: Values<Schemas[1], true>) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetPartialValuesCallback
-  useSetPartialValuesCallback: <
-    Parameter,
-    SetPartialValues = Values<Schemas[1], true>,
-  >(
+  useSetPartialValuesCallback: <Parameter>(
     getPartialValues: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetPartialValues>,
+    ) => PartialValues<Schemas[1]>,
     storeOrStoreId?: MaybeAccessor<StoreOrStoreId<Schemas> | undefined>,
-    then?: (store: Store<Schemas>, partialValues: SetPartialValues) => void,
+    then?: (
+      store: Store<Schemas>,
+      partialValues: PartialValues<Schemas[1]>,
+    ) => void,
   ) => ParameterizedCallback<Parameter>;
 
   /// ui-solid.useSetValueCallback

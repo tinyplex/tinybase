@@ -2,10 +2,12 @@
 import type {
   AllCellIdFromSchema,
   CellIdFromSchema,
-  DefaultCellIdFromSchema,
-  DefaultValueIdFromSchema,
   DefaultedCellFromSchema,
   DefaultedValueFromSchema,
+  PresentCellIdFromSchema,
+  PresentValueIdFromSchema,
+  RequiredNonDefaultCellIdFromSchema,
+  RequiredNonDefaultValueIdFromSchema,
   StoreAlias,
   TableIdFromSchema,
   Truncate,
@@ -26,22 +28,22 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
 /// CellSchema
 export type CellSchema =
-  | {type: 'string'; default?: string}
-  | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean}
-  | {type: 'object'; default?: AnyObject}
-  | {type: 'array'; default?: AnyArray};
+  | {type: 'string'; default?: string; required?: boolean}
+  | {type: 'number'; default?: number; required?: boolean}
+  | {type: 'boolean'; default?: boolean; required?: boolean}
+  | {type: 'object'; default?: AnyObject; required?: boolean}
+  | {type: 'array'; default?: AnyArray; required?: boolean};
 
 /// ValuesSchema
 export type ValuesSchema = {[valueId: Id]: ValueSchema};
 
 /// ValueSchema
 export type ValueSchema =
-  | {type: 'string'; default?: string}
-  | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean}
-  | {type: 'object'; default?: AnyObject}
-  | {type: 'array'; default?: AnyArray};
+  | {type: 'string'; default?: string; required?: boolean}
+  | {type: 'number'; default?: number; required?: boolean}
+  | {type: 'boolean'; default?: boolean; required?: boolean}
+  | {type: 'object'; default?: AnyObject; required?: boolean}
+  | {type: 'array'; default?: AnyArray; required?: boolean};
 
 /// NoTablesSchema
 export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
@@ -91,22 +93,32 @@ export type Row<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
-> = (WhenSet extends true
-  ? {
-      -readonly [CellId in DefaultCellIdFromSchema<Schema, TableId>]?: Cell<
-        Schema,
-        TableId,
-        CellId
-      >;
-    }
+> = WhenSet extends true
+  ? RequiredNonDefaultCellIdFromSchema<Schema, TableId> extends never
+    ? PartialRow<Schema, TableId>
+    : {
+        -readonly [
+          CellId in RequiredNonDefaultCellIdFromSchema<Schema, TableId>
+        ]: Cell<Schema, TableId, CellId>;
+      } & PartialRow<Schema, TableId>
   : {
-      -readonly [CellId in DefaultCellIdFromSchema<Schema, TableId>]: Cell<
+      -readonly [CellId in PresentCellIdFromSchema<Schema, TableId>]: Cell<
         Schema,
         TableId,
         CellId
       >;
-    }) & {
-  -readonly [CellId in DefaultCellIdFromSchema<Schema, TableId, false>]?: Cell<
+    } & {
+      -readonly [
+        CellId in PresentCellIdFromSchema<Schema, TableId, false>
+      ]?: Cell<Schema, TableId, CellId>;
+    };
+
+/// PartialRow
+export type PartialRow<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = {
+  -readonly [CellId in CellIdFromSchema<Schema, TableId>]?: Cell<
     Schema,
     TableId,
     CellId
@@ -142,23 +154,29 @@ export type CellOrUndefined<
 export type Values<
   Schema extends OptionalValuesSchema,
   WhenSet extends boolean = false,
-> = (WhenSet extends true
-  ? {
-      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]?: Value<
-        Schema,
-        ValueId
-      >;
-    }
+> = WhenSet extends true
+  ? RequiredNonDefaultValueIdFromSchema<Schema> extends never
+    ? PartialValues<Schema>
+    : {
+        -readonly [
+          ValueId in RequiredNonDefaultValueIdFromSchema<Schema>
+        ]: Value<Schema, ValueId>;
+      } & PartialValues<Schema>
   : {
-      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]: Value<
+      -readonly [ValueId in PresentValueIdFromSchema<Schema>]: Value<
         Schema,
         ValueId
       >;
-    }) & {
-  -readonly [ValueId in DefaultValueIdFromSchema<Schema, false>]?: Value<
-    Schema,
-    ValueId
-  >;
+    } & {
+      -readonly [ValueId in PresentValueIdFromSchema<Schema, false>]?: Value<
+        Schema,
+        ValueId
+      >;
+    };
+
+/// PartialValues
+export type PartialValues<Schema extends OptionalValuesSchema> = {
+  -readonly [ValueId in ValueIdFromSchema<Schema>]?: Value<Schema, ValueId>;
 };
 
 /// Value
@@ -1090,7 +1108,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   setPartialRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    partialRow: Row<Schemas[0], TableId, true>,
+    partialRow: PartialRow<Schemas[0], TableId>,
   ): this;
 
   /// Store.setCell
@@ -1109,7 +1127,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   setValues(values: Values<Schemas[1], true>): this;
 
   /// Store.setPartialValues
-  setPartialValues(partialValues: Values<Schemas[1], true>): this;
+  setPartialValues(partialValues: PartialValues<Schemas[1]>): this;
 
   /// Store.setValue
   setValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(

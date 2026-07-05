@@ -117,6 +117,8 @@ import type {
   MapCell,
   MapValue,
   OptionalSchemas,
+  PartialRow,
+  PartialValues,
   Row,
   RowCountListener,
   RowIdsListener,
@@ -382,14 +384,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ];
 
   /// useSetTablesCallback
-  useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
+  useSetTablesCallback: <Parameter>(
     getTables: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetTables>,
+    ) => Tables<Schemas[0], true>,
     getTablesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, tables: SetTables) => void,
+    then?: (store: Store<Schemas>, tables: Tables<Schemas[0], true>) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -397,45 +399,49 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetTableCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    SetTable = Table<Schemas[0], TableId, true>,
   >(
     tableId: TableId | GetId<Schemas, Parameter, TableId>,
     getTable: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetTable>,
+    ) => Table<Schemas[0], TableId, true>,
     getTableDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, table: SetTable) => void,
+    then?: (
+      store: Store<Schemas>,
+      table: Table<Schemas[0], TableId, true>,
+    ) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
   /// useSetRowCallback
-  useSetRowCallback: <
-    Parameter,
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    SetRow = Row<Schemas[0], TableId, true>,
-  >(
+  useSetRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId | GetId<Schemas, Parameter, TableId>,
     rowId: Id | GetId<Schemas, Parameter, Id>,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<SetRow>,
+    getRow: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => Row<Schemas[0], TableId, true>,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, row: SetRow) => void,
+    then?: (store: Store<Schemas>, row: Row<Schemas[0], TableId, true>) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
   /// useAddRowCallback
-  useAddRowCallback: <
-    Parameter,
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    AddRow = Row<Schemas[0], TableId, true>,
-  >(
+  useAddRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId | GetId<Schemas, Parameter, TableId>,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<AddRow>,
+    getRow: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => Row<Schemas[0], TableId, true>,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (rowId: Id | undefined, store: Store<Schemas>, row: AddRow) => void,
+    then?: (
+      rowId: Id | undefined,
+      store: Store<Schemas>,
+      row: Row<Schemas[0], TableId, true>,
+    ) => void,
     thenDeps?: React.DependencyList,
     reuseRowIds?: boolean,
   ) => ParameterizedCallback<Parameter>;
@@ -444,17 +450,19 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetPartialRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    SetPartialRow = Row<Schemas[0], TableId, true>,
   >(
     tableId: TableId | GetId<Schemas, Parameter, TableId>,
     rowId: Id | GetId<Schemas, Parameter, Id>,
     getPartialRow: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetPartialRow>,
+    ) => PartialRow<Schemas[0], TableId>,
     getPartialRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, partialRow: SetPartialRow) => void,
+    then?: (
+      store: Store<Schemas>,
+      partialRow: PartialRow<Schemas[0], TableId>,
+    ) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -480,29 +488,29 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => ParameterizedCallback<Parameter>;
 
   /// useSetValuesCallback
-  useSetValuesCallback: <Parameter, SetValues = Values<Schemas[1], true>>(
+  useSetValuesCallback: <Parameter>(
     getValues: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetValues>,
+    ) => Values<Schemas[1], true>,
     getValuesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, values: SetValues) => void,
+    then?: (store: Store<Schemas>, values: Values<Schemas[1], true>) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
   /// useSetPartialValuesCallback
-  useSetPartialValuesCallback: <
-    Parameter,
-    SetPartialValues = Values<Schemas[1], true>,
-  >(
+  useSetPartialValuesCallback: <Parameter>(
     getPartialValues: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => NoInfer<SetPartialValues>,
+    ) => PartialValues<Schemas[1]>,
     getPartialValuesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, partialValues: SetPartialValues) => void,
+    then?: (
+      store: Store<Schemas>,
+      partialValues: PartialValues<Schemas[1]>,
+    ) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 

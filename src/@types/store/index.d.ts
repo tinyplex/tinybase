@@ -15,22 +15,72 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
 /// CellSchema
 export type CellSchema =
-  | {type: 'string'; default?: string | null; allowNull?: boolean}
-  | {type: 'number'; default?: number | null; allowNull?: boolean}
-  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean}
-  | {type: 'object'; default?: AnyObject; allowNull?: boolean}
-  | {type: 'array'; default?: AnyArray; allowNull?: boolean};
+  | {
+      type: 'string';
+      default?: string | null;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'number';
+      default?: number | null;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'boolean';
+      default?: boolean | null;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'object';
+      default?: AnyObject;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'array';
+      default?: AnyArray;
+      allowNull?: boolean;
+      required?: boolean;
+    };
 
 /// ValuesSchema
 export type ValuesSchema = {[valueId: Id]: ValueSchema};
 
 /// ValueSchema
 export type ValueSchema =
-  | {type: 'string'; default?: string | null; allowNull?: boolean}
-  | {type: 'number'; default?: number | null; allowNull?: boolean}
-  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean}
-  | {type: 'object'; default?: AnyObject; allowNull?: boolean}
-  | {type: 'array'; default?: AnyArray; allowNull?: boolean};
+  | {
+      type: 'string';
+      default?: string | null;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'number';
+      default?: number | null;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'boolean';
+      default?: boolean | null;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'object';
+      default?: AnyObject;
+      allowNull?: boolean;
+      required?: boolean;
+    }
+  | {
+      type: 'array';
+      default?: AnyArray;
+      allowNull?: boolean;
+      required?: boolean;
+    };
 
 /// NoTablesSchema
 export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
