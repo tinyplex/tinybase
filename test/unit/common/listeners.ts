@@ -297,10 +297,27 @@ export const createIndexesListener = (indexes: Indexes): IndexesListener => {
       );
     },
 
+    listenToHasIndex: (id, indexId) => {
+      logs[id] = [];
+      return indexes.addHasIndexListener(indexId, (_, indexId, hasIndex) =>
+        logs[id].push({[indexId]: hasIndex}),
+      );
+    },
+
     listenToSliceIds: (id, indexId) => {
       logs[id] = [];
       return indexes.addSliceIdsListener(indexId, (indexes, indexId) =>
         logs[id].push({[indexId]: indexes.getSliceIds(indexId)}),
+      );
+    },
+
+    listenToHasSlice: (id, indexId, sliceId) => {
+      logs[id] = [];
+      return indexes.addHasSliceListener(
+        indexId,
+        sliceId,
+        (_, indexId, sliceId, hasSlice) =>
+          logs[id].push({[indexId]: {[sliceId]: hasSlice}}),
       );
     },
 

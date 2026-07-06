@@ -258,6 +258,18 @@ test('Listens to IndexIds', () => {
   indexes.delListener(listenerId);
 });
 
+test('Listens to HasIndex', () => {
+  const listener = createIndexesListener(indexes);
+  listener.listenToHasIndex('/i1', 'i1');
+  listener.listenToHasIndex('/i*', null);
+  indexes.setIndexDefinition('i1', 't1');
+  indexes.setIndexDefinition('i2', 't2');
+  indexes.delIndexDefinition('i1');
+  expectChanges(listener, '/i1', {i1: true}, {i1: false});
+  expectChanges(listener, '/i*', {i1: true}, {i2: true}, {i1: false});
+  expectNoChanges(listener);
+});
+
 describe('Listens to SliceIds when sets', () => {
   beforeEach(() => {
     listener = createIndexesListener(indexes);
@@ -615,6 +627,36 @@ describe('Listens to SliceIds when sets', () => {
   test('listener stats', () => {
     expect(indexes.getListenerStats().sliceIds).toEqual(2);
   });
+});
+
+test('Listens to HasSlice', () => {
+  const listener = createIndexesListener(indexes);
+  indexes.setIndexDefinition('i1', 't1', 'c1');
+  listener.listenToHasSlice('/i1/1', 'i1', '1');
+  listener.listenToHasSlice('/i1/*', 'i1', null);
+  listener.listenToHasSlice('/i*/*', null, null);
+  store.setCell('t1', 'r1', 'c1', 1);
+  store.setCell('t1', 'r2', 'c1', 2);
+  store.delRow('t1', 'r1');
+  indexes.delIndexDefinition('i1');
+  expectChanges(listener, '/i1/1', {i1: {'1': true}}, {i1: {'1': false}});
+  expectChanges(
+    listener,
+    '/i1/*',
+    {i1: {'1': true}},
+    {i1: {'2': true}},
+    {i1: {'1': false}},
+    {i1: {'2': false}},
+  );
+  expectChanges(
+    listener,
+    '/i*/*',
+    {i1: {'1': true}},
+    {i1: {'2': true}},
+    {i1: {'1': false}},
+    {i1: {'2': false}},
+  );
+  expectNoChanges(listener);
 });
 
 describe('Listens to SliceRowIds when sets', () => {

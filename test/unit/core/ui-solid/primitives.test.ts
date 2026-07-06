@@ -57,8 +57,10 @@ import {
   useGoToCallback,
   useHasCell,
   useHasCellListener,
+  useHasIndex,
   useHasRow,
   useHasRowListener,
+  useHasSlice,
   useHasTable,
   useHasTableCell,
   useHasTableCellListener,
@@ -305,7 +307,9 @@ const Reader = ({
   const metricIds = useMetricIds(metrics);
   const metric = useMetric(metricId, metrics);
   const indexIds = useIndexIds(indexes);
+  const hasIndex = useHasIndex(indexId, indexes);
   const sliceIds = useSliceIds(indexId, indexes);
+  const hasSlice = useHasSlice(indexId, sliceId, indexes);
   const sliceRowIds = useSliceRowIds(indexId, sliceId, indexes);
   const relationshipIds = useRelationshipIds(relationships);
   const remoteRowIdResult = useRemoteRowId(
@@ -371,7 +375,9 @@ const Reader = ({
     metricIds,
     metric,
     indexIds,
+    hasIndex,
     sliceIds,
+    hasSlice,
     sliceRowIds,
     relationshipIds,
     remoteRowId: remoteRowIdResult,

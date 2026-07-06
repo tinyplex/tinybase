@@ -49,7 +49,9 @@
     getValueIds,
     getValues,
     hasCell,
+    hasIndex,
     hasRow,
+    hasSlice,
     hasTable,
     hasTableCell,
     hasTables,
@@ -237,9 +239,20 @@
         );
       case 'indexIds':
         return getIndexIds(() => indexes);
+      case 'hasIndex':
+        return hasIndex(
+          () => indexId,
+          () => indexes,
+        );
       case 'sliceIds':
         return getSliceIds(
           () => indexId,
+          () => indexes,
+        );
+      case 'hasSlice':
+        return hasSlice(
+          () => indexId,
+          () => sliceId,
           () => indexes,
         );
       case 'sliceRowIds':

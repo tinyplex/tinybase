@@ -65,7 +65,9 @@ export type MetricsListener = Listener &
 export type IndexesListener = Listener &
   Readonly<{
     listenToIndexIds: (id: Id) => Id;
+    listenToHasIndex: (id: Id, indexId: IdOrNull) => Id;
     listenToSliceIds: (id: Id, indexId: IdOrNull) => Id;
+    listenToHasSlice: (id: Id, indexId: IdOrNull, sliceId: IdOrNull) => Id;
     listenToSliceRowIds: (id: Id, indexId: IdOrNull, sliceId: IdOrNull) => Id;
   }>;
 

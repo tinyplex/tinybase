@@ -817,6 +817,33 @@ export const testStoreReadFunctions = (
       unmount();
     });
 
+    test('hasIndex', async () => {
+      const indexes: Indexes = createIndexes(store);
+      const {container, rerender, unmount} = renderReader(
+        harness,
+        components,
+        'hasIndex',
+        {indexes, indexId: 'i0'},
+      );
+      expect(container.textContent).toEqual('false');
+
+      await harness.act(() =>
+        indexes.setIndexDefinition('i1', 't1').setIndexDefinition('i2', 't2'),
+      );
+      expect(container.textContent).toEqual('false');
+
+      await rerender({indexId: 'i1'});
+      expect(container.textContent).toEqual('true');
+
+      await harness.act(() => indexes.delIndexDefinition('i1'));
+      expect(container.textContent).toEqual('false');
+
+      await rerender({indexId: 'i2'});
+      expect(container.textContent).toEqual('true');
+
+      unmount();
+    });
+
     test('getSliceIds', async () => {
       const indexes: Indexes = createIndexes(store)
         .setIndexDefinition('i1', 't1', 'c1')
@@ -849,6 +876,40 @@ export const testStoreReadFunctions = (
 
       await rerender({indexId: 'i3'});
       expect(container.textContent).toEqual(JSON.stringify([]));
+
+      unmount();
+    });
+
+    test('hasSlice', async () => {
+      const indexes: Indexes = createIndexes(store)
+        .setIndexDefinition('i1', 't1', 'c1')
+        .setIndexDefinition('i2', 't1', 'c2');
+      const {container, rerender, unmount} = renderReader(
+        harness,
+        components,
+        'hasSlice',
+        {indexes, indexId: 'i1', sliceId: '2'},
+      );
+      expect(container.textContent).toEqual('false');
+
+      await rerender({indexId: 'i1', sliceId: '1'});
+      expect(container.textContent).toEqual('true');
+
+      await harness.act(() =>
+        store
+          .setCell('t1', 'r2', 'c1', 2)
+          .setCell('t1', 'r2', 'c2', 3),
+      );
+      expect(container.textContent).toEqual('true');
+
+      await rerender({indexId: 'i1', sliceId: '2'});
+      expect(container.textContent).toEqual('true');
+
+      await rerender({indexId: 'i2', sliceId: '3'});
+      expect(container.textContent).toEqual('true');
+
+      await harness.act(() => store.delTable('t1'));
+      expect(container.textContent).toEqual('false');
 
       unmount();
     });
