@@ -98,7 +98,7 @@ added to the Store. Note that this may result in a change to data in the Store,
 as defaults are applied or as invalid Value, Table, Row, or Cell objects are
 removed. These changes will fire any listeners to that data, as expected.
 
-In this example, the TablesSchema gains a new required field that is added to
+In this example, the TablesSchema gains a new defaulted field that is added to
 the current Row to make it compliant:
 
 ```js
