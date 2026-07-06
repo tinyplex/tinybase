@@ -6374,6 +6374,22 @@
  */
 /// ui-solid.useIndexIds
 /**
+ * The useHasIndex primitive returns a boolean indicating whether a given Index
+ * exists in the Indexes object, and registers a listener so that any changes to
+ * that result will cause an update.
+ *
+ * This primitive follows the same Indexes object resolution rules as the
+ * useIndexIds primitive.
+ * @param indexId The Id of a possible Index in the Indexes object.
+ * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
+ * default context Indexes object, provide an Id for a named context Indexes
+ * object, or provide an explicit reference.
+ * @returns Whether an Index with that Id exists.
+ * @category Indexes primitives
+ * @since v9.1.0
+ */
+/// ui-solid.useHasIndex
+/**
  * The useSliceIds primitive gets the list of Slice Ids in an Index, and
  * registers a listener so that any changes to that result will cause an update.
  *
@@ -6456,6 +6472,23 @@
  * @since v8.3.0
  */
 /// ui-solid.useSliceIds
+/**
+ * The useHasSlice primitive returns a boolean indicating whether a given Slice
+ * exists in an Index, and registers a listener so that any changes to that
+ * result will cause an update.
+ *
+ * This primitive follows the same Indexes object resolution rules as the
+ * useSliceIds primitive.
+ * @param indexId The Id of a possible Index in the Indexes object.
+ * @param sliceId The Id of a possible Slice in the Index.
+ * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
+ * default context Indexes object, provide an Id for a named context Indexes
+ * object, or provide an explicit reference.
+ * @returns Whether a Slice with that Id exists.
+ * @category Indexes primitives
+ * @since v9.1.0
+ */
+/// ui-solid.useHasSlice
 /**
  * The useSliceRowIds primitive gets the list of Row Ids in a given Slice, and
  * registers a listener so that any changes to that result will cause an update.

@@ -694,11 +694,24 @@ export function useIndexIds(
   indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
 ): Accessor<Ids>;
 
+/// ui-solid.useHasIndex
+export function useHasIndex(
+  indexId: MaybeAccessor<Id>,
+  indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
+): Accessor<boolean>;
+
 /// ui-solid.useSliceIds
 export function useSliceIds(
   indexId: MaybeAccessor<Id>,
   indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
 ): Accessor<Ids>;
+
+/// ui-solid.useHasSlice
+export function useHasSlice(
+  indexId: MaybeAccessor<Id>,
+  sliceId: MaybeAccessor<Id>,
+  indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
+): Accessor<boolean>;
 
 /// ui-solid.useSliceRowIds
 export function useSliceRowIds(

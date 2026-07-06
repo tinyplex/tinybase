@@ -901,11 +901,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId<Schemas> | undefined>,
   ): Accessor<Ids>;
 
+  /// ui-solid.useHasIndex
+  useHasIndex: (
+    indexId: MaybeAccessor<Id>,
+    indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId<Schemas> | undefined>,
+  ) => Accessor<boolean>;
+
   /// ui-solid.useSliceIds
   useSliceIds: (
     indexId: MaybeAccessor<Id>,
     indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId<Schemas> | undefined>,
   ) => Accessor<Ids>;
+
+  /// ui-solid.useHasSlice
+  useHasSlice: (
+    indexId: MaybeAccessor<Id>,
+    sliceId: MaybeAccessor<Id>,
+    indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId<Schemas> | undefined>,
+  ) => Accessor<boolean>;
 
   /// ui-solid.useSliceRowIds
   useSliceRowIds: (
