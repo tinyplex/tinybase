@@ -718,11 +718,24 @@ export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 /// useIndexIds
 export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Ids;
 
+/// useHasIndex
+export function useHasIndex(
+  indexId: Id,
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): boolean;
+
 /// useSliceIds
 export function useSliceIds(
   indexId: Id,
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Ids;
+
+/// useHasSlice
+export function useHasSlice(
+  indexId: Id,
+  sliceId: Id,
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): boolean;
 
 /// useSliceRowIds
 export function useSliceRowIds(

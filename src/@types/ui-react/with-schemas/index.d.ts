@@ -930,11 +930,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useIndexIds
   useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId<Schemas>): Ids;
 
+  /// useHasIndex
+  useHasIndex: (
+    indexId: Id,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => boolean;
+
   /// useSliceIds
   useSliceIds: (
     indexId: Id,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Ids;
+
+  /// useHasSlice
+  useHasSlice: (
+    indexId: Id,
+    sliceId: Id,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => boolean;
 
   /// useSliceRowIds
   useSliceRowIds: (

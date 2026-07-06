@@ -6732,6 +6732,22 @@
  */
 /// useIndexIds
 /**
+ * The useHasIndex hook returns a boolean indicating whether a given Index exists
+ * in the Indexes object, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ *
+ * This hook follows the same Indexes object resolution rules as the useIndexIds
+ * hook.
+ * @param indexId The Id of a possible Index in the Indexes object.
+ * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
+ * default context Indexes object, provide an Id for a named context Indexes
+ * object, or provide an explicit reference.
+ * @returns Whether an Index with that Id exists.
+ * @category Indexes hooks
+ * @since v9.1.0
+ */
+/// useHasIndex
+/**
  * The useSliceIds hook gets the list of Slice Ids in an Index, and registers a
  * listener so that any changes to that result will cause a re-render.
  *
@@ -6847,6 +6863,23 @@
  * @since v1.0.0
  */
 /// useSliceIds
+/**
+ * The useHasSlice hook returns a boolean indicating whether a given Slice exists
+ * in an Index, and registers a listener so that any changes to that result will
+ * cause a re-render.
+ *
+ * This hook follows the same Indexes object resolution rules as the useSliceIds
+ * hook.
+ * @param indexId The Id of a possible Index in the Indexes object.
+ * @param sliceId The Id of a possible Slice in the Index.
+ * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
+ * default context Indexes object, provide an Id for a named context Indexes
+ * object, or provide an explicit reference.
+ * @returns Whether a Slice with that Id exists.
+ * @category Indexes hooks
+ * @since v9.1.0
+ */
+/// useHasSlice
 /**
  * The useSliceRowIds hook gets the list of Row Ids in a given Slice, and
  * registers a listener so that any changes to that result will cause a
