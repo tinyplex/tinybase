@@ -759,11 +759,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     readonly current: Ids;
   };
 
+  /// ui-svelte.hasIndex
+  hasIndex: (
+    indexId: MaybeGetter<Id>,
+    indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId<Schemas> | undefined>,
+  ) => {readonly current: boolean};
+
   /// ui-svelte.getSliceIds
   getSliceIds: (
     indexId: MaybeGetter<Id>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => {readonly current: Ids};
+
+  /// ui-svelte.hasSlice
+  hasSlice: (
+    indexId: MaybeGetter<Id>,
+    sliceId: MaybeGetter<Id>,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => {readonly current: boolean};
 
   /// ui-svelte.getSliceRowIds
   getSliceRowIds: (

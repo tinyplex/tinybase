@@ -708,11 +708,24 @@ export function getIndexIds(
   readonly current: Ids;
 };
 
+/// ui-svelte.hasIndex
+export function hasIndex(
+  indexId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
+): {readonly current: boolean};
+
 /// ui-svelte.getSliceIds
 export function getSliceIds(
   indexId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
 ): {readonly current: Ids};
+
+/// ui-svelte.hasSlice
+export function hasSlice(
+  indexId: MaybeGetter<Id>,
+  sliceId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
+): {readonly current: boolean};
 
 /// ui-svelte.getSliceRowIds
 export function getSliceRowIds(

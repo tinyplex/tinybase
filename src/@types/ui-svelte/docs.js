@@ -3998,6 +3998,18 @@
  */
 /// ui-svelte.getIndexIds
 /**
+ * The hasIndex function returns a reactive object reflecting whether a given
+ * Index exists in the Indexes object, and registers a listener so that any
+ * changes will update `current`.
+ * @param indexId The Id of the possible Index (or a getter returning it).
+ * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
+ * Id.
+ * @returns A reactive object with a `current` boolean property.
+ * @category Getter
+ * @since v9.1.0
+ */
+/// ui-svelte.hasIndex
+/**
  * The getSliceIds function returns a reactive object reflecting the Ids of the
  * Slices in an Index, and registers a listener so that any changes will update
  * `current`.
@@ -4051,6 +4063,19 @@
  * @since v8.1.0
  */
 /// ui-svelte.getSliceIds
+/**
+ * The hasSlice function returns a reactive object reflecting whether a given
+ * Slice exists in an Index, and registers a listener so that any changes will
+ * update `current`.
+ * @param indexId The Id of the Index (or a getter returning it).
+ * @param sliceId The Id of the possible Slice (or a getter returning it).
+ * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
+ * Id.
+ * @returns A reactive object with a `current` boolean property.
+ * @category Getter
+ * @since v9.1.0
+ */
+/// ui-svelte.hasSlice
 /**
  * The getSliceRowIds function returns a reactive object reflecting the Ids of
  * the Rows in a Slice, and registers a listener so that any changes will update
