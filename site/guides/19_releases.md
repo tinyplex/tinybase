@@ -71,6 +71,14 @@ moved one slot later to make room for a positional custom sorter. If you pass a
 Store as the final positional argument, add `undefined` before it, or switch to
 the object argument form.
 
+## Index Presence Helpers
+
+The Indexes interface already exposes the hasIndex method and hasSlice method.
+This release also adds reactive helpers for UI integrations: `useHasIndex` and
+`useHasSlice` for React and Solid, and `hasIndex` and `hasSlice` for Svelte
+([#163](https://github.com/tinyplex/tinybase/issues/163)). The Indexes interface
+also now exposes a addHasIndexListener method and addHasSliceListener method.
+
 ---
 
 # v9.0
