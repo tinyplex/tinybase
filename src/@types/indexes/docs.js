@@ -80,6 +80,22 @@
  */
 /// IndexIdsListener
 /**
+ * The HasIndexListener type describes a function that is used to listen to
+ * Index definitions being added or removed.
+ *
+ * A HasIndexListener is provided when using the addHasIndexListener method.
+ * See that method for specific examples.
+ *
+ * When called, a HasIndexListener is given a reference to the Indexes object,
+ * the Id of the Index that changed, and whether it now exists.
+ * @param indexes A reference to the Indexes object that changed.
+ * @param indexId The Id of the Index that changed.
+ * @param hasIndex Whether the Index now exists.
+ * @category Listener
+ * @since v9.1.0
+ */
+/// HasIndexListener
+/**
  * The SliceIdsListener type describes a function that is used to listen to
  * changes to the Slice Ids in an Index.
  *
@@ -94,6 +110,24 @@
  * @since v1.0.0
  */
 /// SliceIdsListener
+/**
+ * The HasSliceListener type describes a function that is used to listen to
+ * Slices being added to or removed from an Index.
+ *
+ * A HasSliceListener is provided when using the addHasSliceListener method. See
+ * that method for specific examples.
+ *
+ * When called, a HasSliceListener is given a reference to the Indexes object,
+ * the Id of the Index that changed, the Id of the Slice that changed, and
+ * whether it now exists.
+ * @param indexes A reference to the Indexes object that changed.
+ * @param indexId The Id of the Index that changed.
+ * @param sliceId The Id of the Slice that changed.
+ * @param hasSlice Whether the Slice now exists.
+ * @category Listener
+ * @since v9.1.0
+ */
+/// HasSliceListener
 /**
  * The SliceRowIdsListener type describes a function that is used to listen to
  * changes to the Row Ids in a Slice.
@@ -694,6 +728,26 @@
    */
   /// Indexes.addIndexIdsListener
   /**
+   * The addHasIndexListener method registers a listener function with the
+   * Indexes object that will be called whenever an Index definition is added or
+   * removed.
+   *
+   * You can either listen to a single Index (by specifying the Index Id as the
+   * method's first parameter), or changes to any Index (by providing a `null`
+   * wildcard).
+   *
+   * The provided listener is a HasIndexListener function, and will be called
+   * with a reference to the Indexes object, the Id of the Index that changed,
+   * and whether it now exists.
+   * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the Index is
+   * added or removed.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @category Listener
+   * @since v9.1.0
+   */
+  /// Indexes.addHasIndexListener
+  /**
    * The addSliceIdsListener method registers a listener function with the
    * Indexes object that will be called whenever the Slice Ids in an Index
    * change.
@@ -773,6 +827,32 @@
    * @since v1.0.0
    */
   /// Indexes.addSliceIdsListener
+  /**
+   * The addHasSliceListener method registers a listener function with the
+   * Indexes object that will be called whenever a Slice is added to or removed
+   * from an Index.
+   *
+   * You can either listen to a single Slice (by specifying the Index Id and
+   * Slice Id as the method's first two parameters), or changes to any Slice (by
+   * providing `null` wildcards).
+   *
+   * Both, either, or neither of the `indexId` and `sliceId` parameters can be
+   * wildcarded with `null`. You can listen to a specific Slice in a specific
+   * Index, any Slice in a specific Index, a specific Slice in any Index, or any
+   * Slice in any Index.
+   *
+   * The provided listener is a HasSliceListener function, and will be called
+   * with a reference to the Indexes object, the Id of the Index, the Id of the
+   * Slice that changed, and whether it now exists.
+   * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
+   * @param sliceId The Id of the Slice to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the Slice is
+   * added or removed.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @category Listener
+   * @since v9.1.0
+   */
+  /// Indexes.addHasSliceListener
   /**
    * The addSliceRowIdsListener method registers a listener function with the
    * Indexes object that will be called whenever the Row Ids in a Slice change.

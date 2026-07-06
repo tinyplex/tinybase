@@ -40,10 +40,25 @@ export type IndexIdsListener<Schemas extends OptionalSchemas> = (
   indexes: Indexes<Schemas>,
 ) => void;
 
+/// HasIndexListener
+export type HasIndexListener<Schemas extends OptionalSchemas> = (
+  indexes: Indexes<Schemas>,
+  indexId: Id,
+  hasIndex: boolean,
+) => void;
+
 /// SliceIdsListener
 export type SliceIdsListener<Schemas extends OptionalSchemas> = (
   indexes: Indexes<Schemas>,
   indexId: Id,
+) => void;
+
+/// HasSliceListener
+export type HasSliceListener<Schemas extends OptionalSchemas> = (
+  indexes: Indexes<Schemas>,
+  indexId: Id,
+  sliceId: Id,
+  hasSlice: boolean,
 ) => void;
 
 /// SliceRowIdsListener
@@ -112,6 +127,12 @@ export interface Indexes<in out Schemas extends OptionalSchemas> {
   /// Indexes.addIndexIdsListener
   addIndexIdsListener(listener: IndexIdsListener<Schemas>): Id;
 
+  /// Indexes.addHasIndexListener
+  addHasIndexListener(
+    indexId: IdOrNull,
+    listener: HasIndexListener<Schemas>,
+  ): Id;
+
   /// Indexes.addSliceIdsListener
   addSliceIdsListener(
     indexId: IdOrNull,
@@ -123,6 +144,13 @@ export interface Indexes<in out Schemas extends OptionalSchemas> {
     indexId: IdOrNull,
     sliceId: IdOrNull,
     listener: SliceRowIdsListener<Schemas>,
+  ): Id;
+
+  /// Indexes.addHasSliceListener
+  addHasSliceListener(
+    indexId: IdOrNull,
+    sliceId: IdOrNull,
+    listener: HasSliceListener<Schemas>,
   ): Id;
 
   /// Indexes.delListener

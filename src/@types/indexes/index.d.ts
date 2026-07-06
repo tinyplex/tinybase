@@ -23,8 +23,23 @@ export type SliceCallback = (
 /// IndexIdsListener
 export type IndexIdsListener = (indexes: Indexes) => void;
 
+/// HasIndexListener
+export type HasIndexListener = (
+  indexes: Indexes,
+  indexId: Id,
+  hasIndex: boolean,
+) => void;
+
 /// SliceIdsListener
 export type SliceIdsListener = (indexes: Indexes, indexId: Id) => void;
+
+/// HasSliceListener
+export type HasSliceListener = (
+  indexes: Indexes,
+  indexId: Id,
+  sliceId: Id,
+  hasSlice: boolean,
+) => void;
 
 /// SliceRowIdsListener
 export type SliceRowIdsListener = (
@@ -90,11 +105,21 @@ export interface Indexes {
   /// Indexes.addIndexIdsListener
   addIndexIdsListener(listener: IndexIdsListener): Id;
 
+  /// Indexes.addHasIndexListener
+  addHasIndexListener(indexId: IdOrNull, listener: HasIndexListener): Id;
+
   /// Indexes.addSliceRowIdsListener
   addSliceRowIdsListener(
     indexId: IdOrNull,
     sliceId: IdOrNull,
     listener: SliceRowIdsListener,
+  ): Id;
+
+  /// Indexes.addHasSliceListener
+  addHasSliceListener(
+    indexId: IdOrNull,
+    sliceId: IdOrNull,
+    listener: HasSliceListener,
   ): Id;
 
   /// Indexes.delListener
