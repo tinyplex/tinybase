@@ -5,6 +5,8 @@ import type {
 } from '../@types/checkpoints/index.d.ts';
 import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import type {
+  HasIndexListener,
+  HasSliceListener,
   IndexIdsListener,
   Indexes,
   SliceIdsListener,
@@ -102,7 +104,9 @@ type Listener =
   | MetricIdsListener
   | MetricListener
   | IndexIdsListener
+  | HasIndexListener
   | SliceIdsListener
+  | HasSliceListener
   | SliceRowIdsListener
   | RelationshipIdsListener
   | RemoteRowIdListener

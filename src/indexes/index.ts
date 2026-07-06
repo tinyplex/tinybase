@@ -1,5 +1,7 @@
 import type {Id, IdOrNull, Ids, SortKey} from '../@types/common/index.d.ts';
 import type {
+  HasIndexListener,
+  HasSliceListener,
   IndexCallback,
   Indexes,
   IndexesListenerStats,
@@ -45,7 +47,9 @@ import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {EMPTY_STRING, id} from '../common/strings.ts';
 
 export const createIndexes = getCreateFunction((store: Store): Indexes => {
+  const hasIndexListeners: IdSet2 = mapNew();
   const sliceIdsListeners: IdSet2 = mapNew();
+  const hasSliceListeners: IdSet3 = mapNew();
   const sliceRowIdsListeners: IdSet3 = mapNew();
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
@@ -92,6 +96,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
       sliceId: Id,
     ) => number = defaultSorter,
   ): Indexes => {
+    const hadIndex = hasIndex(indexId);
     const sliceIdArraySorter = isUndefined(sliceIdSorter)
       ? undefined
       : ([id1]: [Id, IdSet], [id2]: [Id, IdSet]): number =>
@@ -110,8 +115,14 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
       ) => {
         let sliceIdsChanged = 0;
         const changedSlices: IdSet = setNew();
+        const hadSlices: IdMap<boolean> = mapNew();
         const unsortedSlices: IdSet = setNew();
         const index = getIndex(indexId);
+        const setHadSlice = (sliceId: Id): void => {
+          if (!collHas(hadSlices, sliceId)) {
+            mapSet(hadSlices, sliceId, collHas(index, sliceId));
+          }
+        };
         collForEach(
           changedSliceIds,
           ([oldSliceIdOrIds, newSliceIdOrIds], rowId) => {
@@ -124,6 +135,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
             );
 
             collForEach(oldSliceIds, (oldSliceId) => {
+              setHadSlice(oldSliceId);
               setAdd(changedSlices, oldSliceId);
               ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
                 collDel(oldSlice, rowId);
@@ -135,6 +147,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
             });
 
             collForEach(newSliceIds, (newSliceId) => {
+              setHadSlice(newSliceId);
               setAdd(changedSlices, newSliceId);
               if (!collHas(index, newSliceId)) {
                 mapSet(index, newSliceId, setNew());
@@ -206,6 +219,12 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
         if (sliceIdsChanged) {
           callListeners(sliceIdsListeners, [indexId]);
         }
+        mapForEach(hadSlices, (sliceId, hadSlice) => {
+          const hasSliceNow = collHas(index, sliceId);
+          if (hadSlice != hasSliceNow) {
+            callListeners(hasSliceListeners, [indexId, sliceId], hasSliceNow);
+          }
+        });
         collForEach(changedSlices, (sliceId) =>
           callListeners(sliceRowIdsListeners, [indexId, sliceId]),
         );
@@ -213,6 +232,9 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
       getRowCellFunction(getSliceIdOrIds),
       ifNotUndefined(getSortKey, getRowCellFunction),
     );
+    if (!hadIndex) {
+      callListeners(hasIndexListeners, [indexId], true);
+    }
     return indexes;
   };
 
@@ -244,7 +266,20 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
   };
 
   const delIndexDefinition = (indexId: Id): Indexes => {
+    const index = getIndex(indexId);
+    const hadIndex = hasIndex(indexId);
+    const sliceIds = hadIndex ? mapKeys(index) : [];
     delDefinition(indexId);
+    if (hadIndex) {
+      callListeners(hasIndexListeners, [indexId], false);
+      if (sliceIds.length > 0) {
+        callListeners(sliceIdsListeners, [indexId]);
+        arrayForEach(sliceIds, (sliceId) => {
+          callListeners(hasSliceListeners, [indexId, sliceId], false);
+          callListeners(sliceRowIdsListeners, [indexId, sliceId]);
+        });
+      }
+    }
     return indexes;
   };
 
@@ -257,6 +292,17 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     indexId: IdOrNull,
     listener: SliceIdsListener,
   ): Id => addListener(listener, sliceIdsListeners, [indexId]);
+
+  const addHasIndexListener = (
+    indexId: IdOrNull,
+    listener: HasIndexListener,
+  ): Id => addListener(listener, hasIndexListeners, [indexId]);
+
+  const addHasSliceListener = (
+    indexId: IdOrNull,
+    sliceId: IdOrNull,
+    listener: HasSliceListener,
+  ): Id => addListener(listener, hasSliceListeners, [indexId, sliceId]);
 
   const addSliceRowIdsListener = (
     indexId: IdOrNull,
@@ -289,7 +335,9 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     getSliceRowIds,
 
     addIndexIdsListener,
+    addHasIndexListener,
     addSliceIdsListener,
+    addHasSliceListener,
     addSliceRowIdsListener,
     delListener,
 
