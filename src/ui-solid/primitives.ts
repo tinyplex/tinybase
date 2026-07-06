@@ -1341,6 +1341,17 @@ export const useIndexIds = (
     ReturnType.Array,
   );
 
+export const useHasIndex = (
+  indexId: MaybeAccessor<Id>,
+  indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
+): Accessor<boolean> =>
+  useListenable(
+    INDEX,
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    ReturnType.Boolean,
+    [indexId],
+  );
+
 export const useSliceRowIds = (
   indexId: MaybeAccessor<Id>,
   sliceId: MaybeAccessor<Id>,
@@ -1350,6 +1361,18 @@ export const useSliceRowIds = (
     SLICE + ROW_IDS,
     useIndexesOrIndexesById(indexesOrIndexesId),
     ReturnType.Array,
+    [indexId, sliceId],
+  );
+
+export const useHasSlice = (
+  indexId: MaybeAccessor<Id>,
+  sliceId: MaybeAccessor<Id>,
+  indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId | undefined>,
+): Accessor<boolean> =>
+  useListenable(
+    SLICE,
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    ReturnType.Boolean,
     [indexId, sliceId],
   );
 

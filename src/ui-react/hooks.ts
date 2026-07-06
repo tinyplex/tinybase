@@ -130,8 +130,10 @@ import type {
   useGoToCallback as useGoToCallbackDecl,
   useHasCell as useHasCellDecl,
   useHasCellListener as useHasCellListenerDecl,
+  useHasIndex as useHasIndexDecl,
   useHasRow as useHasRowDecl,
   useHasRowListener as useHasRowListenerDecl,
+  useHasSlice as useHasSliceDecl,
   useHasTableCell as useHasTableCellDecl,
   useHasTableCellListener as useHasTableCellListenerDecl,
   useHasTable as useHasTableDecl,
@@ -1666,6 +1668,17 @@ export const useIndexIds: typeof useIndexIdsDecl = (
     ReturnType.Array,
   );
 
+export const useHasIndex: typeof useHasIndexDecl = (
+  indexId: Id,
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): boolean =>
+  useListenable(
+    INDEX,
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    ReturnType.Boolean,
+    [indexId],
+  );
+
 export const useSliceRowIds: typeof useSliceRowIdsDecl = (
   indexId: Id,
   sliceId: Id,
@@ -1675,6 +1688,18 @@ export const useSliceRowIds: typeof useSliceRowIdsDecl = (
     SLICE + ROW_IDS,
     useIndexesOrIndexesById(indexesOrIndexesId),
     ReturnType.Array,
+    [indexId, sliceId],
+  );
+
+export const useHasSlice: typeof useHasSliceDecl = (
+  indexId: Id,
+  sliceId: Id,
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): boolean =>
+  useListenable(
+    SLICE,
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    ReturnType.Boolean,
     [indexId, sliceId],
   );
 

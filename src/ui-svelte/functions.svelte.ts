@@ -667,6 +667,18 @@ export const getIndexIds = (
 ): {readonly current: Ids} =>
   createListenable(resolveIndexes(indexesOrIndexesId), INDEX + IDS, EMPTY_ARR);
 
+export const hasIndex = (
+  indexId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): {readonly current: boolean} =>
+  createListenable(
+    resolveIndexes(indexesOrIndexesId),
+    INDEX,
+    false,
+    () => [maybeGet(indexId)],
+    1,
+  );
+
 export const getSliceIds = (
   indexId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
@@ -676,6 +688,19 @@ export const getSliceIds = (
     SLICE + IDS,
     EMPTY_ARR,
     () => [maybeGet(indexId)],
+  );
+
+export const hasSlice = (
+  indexId: MaybeGetter<Id>,
+  sliceId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): {readonly current: boolean} =>
+  createListenable(
+    resolveIndexes(indexesOrIndexesId),
+    SLICE,
+    false,
+    () => [maybeGet(indexId), maybeGet(sliceId)],
+    1,
   );
 
 export const getSliceRowIds = (
