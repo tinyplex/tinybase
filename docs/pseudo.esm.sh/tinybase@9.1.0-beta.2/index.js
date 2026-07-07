@@ -36,6 +36,7 @@ var VALUE = "Value";
 var VALUES = VALUE + "s";
 var VALUE_IDS = VALUE + IDS;
 var TRANSACTION = "Transaction";
+var REQUIRED = "required";
 var JSON_PREFIX = "\uFFFD";
 var id = (key) => EMPTY_STRING + key;
 var strStartsWith = (str, prefix) => str.startsWith(prefix);
@@ -785,7 +786,9 @@ var getHlcFunctions = (uniqueId, getNow = Date.now) => {
 };
 var defaultSorter = (sortKey1, sortKey2) => (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 var createIndexes = getCreateFunction((store) => {
+  const hasIndexListeners = mapNew();
   const sliceIdsListeners = mapNew();
+  const hasSliceListeners = mapNew();
   const sliceRowIdsListeners = mapNew();
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => indexes
@@ -812,6 +815,7 @@ var createIndexes = getCreateFunction((store) => {
   );
   const hasSlice = (indexId, sliceId) => collHas(getIndex(indexId), sliceId);
   const setIndexDefinition = (indexId, tableId, getSliceIdOrIds, getSortKey, sliceIdSorter, rowIdSorter = defaultSorter) => {
+    const hadIndex = hasIndex(indexId);
     const sliceIdArraySorter = isUndefined(sliceIdSorter) ? void 0 : ([id1], [id2]) => sliceIdSorter(id1, id2);
     setDefinitionAndListen(
       indexId,
@@ -819,8 +823,14 @@ var createIndexes = getCreateFunction((store) => {
       (change, changedSliceIds, changedSortKeys, sliceIdOrIdsByRowId, sortKeys, force) => {
         let sliceIdsChanged = 0;
         const changedSlices = setNew();
+        const hadSlices = mapNew();
         const unsortedSlices = setNew();
         const index = getIndex(indexId);
+        const setHadSlice = (sliceId) => {
+          if (!collHas(hadSlices, sliceId)) {
+            mapSet(hadSlices, sliceId, collHas(index, sliceId));
+          }
+        };
         collForEach(
           changedSliceIds,
           ([oldSliceIdOrIds, newSliceIdOrIds], rowId) => {
@@ -831,6 +841,7 @@ var createIndexes = getCreateFunction((store) => {
               (oldSliceId) => collDel(newSliceIds, oldSliceId) ? collDel(oldSliceIds, oldSliceId) : 0
             );
             collForEach(oldSliceIds, (oldSliceId) => {
+              setHadSlice(oldSliceId);
               setAdd(changedSlices, oldSliceId);
               ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
                 collDel(oldSlice, rowId);
@@ -841,6 +852,7 @@ var createIndexes = getCreateFunction((store) => {
               });
             });
             collForEach(newSliceIds, (newSliceId) => {
+              setHadSlice(newSliceId);
               setAdd(changedSlices, newSliceId);
               if (!collHas(index, newSliceId)) {
                 mapSet(index, newSliceId, setNew());
@@ -901,6 +913,12 @@ var createIndexes = getCreateFunction((store) => {
         if (sliceIdsChanged) {
           callListeners(sliceIdsListeners, [indexId]);
         }
+        mapForEach(hadSlices, (sliceId, hadSlice) => {
+          const hasSliceNow = collHas(index, sliceId);
+          if (hadSlice != hasSliceNow) {
+            callListeners(hasSliceListeners, [indexId, sliceId], hasSliceNow);
+          }
+        });
         collForEach(
           changedSlices,
           (sliceId) => callListeners(sliceRowIdsListeners, [indexId, sliceId])
@@ -909,6 +927,9 @@ var createIndexes = getCreateFunction((store) => {
       getRowCellFunction(getSliceIdOrIds),
       ifNotUndefined(getSortKey, getRowCellFunction)
     );
+    if (!hadIndex) {
+      callListeners(hasIndexListeners, [indexId], true);
+    }
     return indexes;
   };
   const forEachIndex = (indexCallback) => forEachIndexImpl(
@@ -935,12 +956,27 @@ var createIndexes = getCreateFunction((store) => {
     );
   };
   const delIndexDefinition = (indexId) => {
+    const index = getIndex(indexId);
+    const hadIndex = hasIndex(indexId);
+    const sliceIds = hadIndex ? mapKeys(index) : [];
     delDefinition(indexId);
+    if (hadIndex) {
+      callListeners(hasIndexListeners, [indexId], false);
+      if (sliceIds.length > 0) {
+        callListeners(sliceIdsListeners, [indexId]);
+        arrayForEach(sliceIds, (sliceId) => {
+          callListeners(hasSliceListeners, [indexId, sliceId], false);
+          callListeners(sliceRowIdsListeners, [indexId, sliceId]);
+        });
+      }
+    }
     return indexes;
   };
   const getSliceIds = (indexId) => mapKeys(getIndex(indexId));
   const getSliceRowIds = (indexId, sliceId) => collValues(mapGet(getIndex(indexId), sliceId));
   const addSliceIdsListener = (indexId, listener) => addListener(listener, sliceIdsListeners, [indexId]);
+  const addHasIndexListener = (indexId, listener) => addListener(listener, hasIndexListeners, [indexId]);
+  const addHasSliceListener = (indexId, sliceId, listener) => addListener(listener, hasSliceListeners, [indexId, sliceId]);
   const addSliceRowIdsListener = (indexId, sliceId, listener) => addListener(listener, sliceRowIdsListeners, [indexId, sliceId]);
   const delListener = (listenerId) => {
     delListenerImpl(listenerId);
@@ -963,7 +999,9 @@ var createIndexes = getCreateFunction((store) => {
     getSliceIds,
     getSliceRowIds,
     addIndexIdsListener,
+    addHasIndexListener,
     addSliceIdsListener,
+    addHasSliceListener,
     addSliceRowIdsListener,
     delListener,
     destroy,
@@ -1050,6 +1088,7 @@ var createStore = () => {
   const valuesSchemaMap = mapNew();
   const valuesDefaulted = mapNew();
   const valuesNonDefaulted = setNew();
+  const valuesRequiredNonDefaulted = setNew();
   const tablePoolFunctions = mapNew();
   const tableCellIds = mapNew();
   const tablesMap = mapNew();
@@ -1098,7 +1137,7 @@ var createStore = () => {
   const validateCellOrValueSchema = (schema) => {
     if (!objValidate(
       schema,
-      (_child, id2) => arrayHas([TYPE, DEFAULT, ALLOW_NULL], id2)
+      (_child, id2) => arrayHas([TYPE, DEFAULT, ALLOW_NULL, REQUIRED], id2)
     )) {
       return false;
     }
@@ -1127,18 +1166,24 @@ var createStore = () => {
     (row, rowId) => validateRow(tableId, rowId, row),
     () => cellInvalid(tableId)
   );
-  const validateRow = (tableId, rowId, row, skipDefaults) => objValidate(
-    skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
-    (cell, cellId) => ifNotUndefined(
-      getValidatedCell(tableId, rowId, cellId, cell),
-      (validCell) => {
-        row[cellId] = validCell;
-        return true;
-      },
-      () => false
-    ),
-    () => cellInvalid(tableId, rowId)
-  );
+  const validateRow = (tableId, rowId, row, skipDefaults) => {
+    const rowWithDefaults = skipDefaults ? row : addDefaultsToRow(row, tableId, rowId);
+    return objValidate(
+      rowWithDefaults,
+      (cell, cellId) => ifNotUndefined(
+        getValidatedCell(tableId, rowId, cellId, cell),
+        (validCell) => {
+          row[cellId] = validCell;
+          return true;
+        },
+        () => false
+      ),
+      () => cellInvalid(tableId, rowId)
+    ) && (skipDefaults ? true : arrayEvery(
+      collValues(mapGet(tablesSchemaRowCache, tableId)?.[2]),
+      (cellId) => objHas(rowWithDefaults, cellId)
+    ));
+  };
   const getValidatedCell = (tableId, rowId, cellId, cell) => hasTablesSchema ? ifNotUndefined(
     mapGet(mapGet(tablesSchemaMap, tableId), cellId),
     (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) === cellSchema[TYPE] ? encodeIfJson(cell) : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell) ? cell : cellInvalid(
@@ -1150,18 +1195,24 @@ var createStore = () => {
     ),
     () => cellInvalid(tableId, rowId, cellId, cell)
   ) : isUndefined(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : encodeIfJson(cell);
-  const validateValues = (values, skipDefaults) => objValidate(
-    skipDefaults ? values : addDefaultsToValues(values),
-    (value, valueId) => ifNotUndefined(
-      getValidatedValue(valueId, value),
-      (validValue) => {
-        values[valueId] = validValue;
-        return true;
-      },
-      () => false
-    ),
-    () => valueInvalid()
-  );
+  const validateValues = (values, skipDefaults) => {
+    const valuesWithDefaults = skipDefaults ? values : addDefaultsToValues(values);
+    return objValidate(
+      valuesWithDefaults,
+      (value, valueId) => ifNotUndefined(
+        getValidatedValue(valueId, value),
+        (validValue) => {
+          values[valueId] = validValue;
+          return true;
+        },
+        () => false
+      ),
+      () => valueInvalid()
+    ) && (skipDefaults ? true : arrayEvery(
+      collValues(valuesRequiredNonDefaulted),
+      (valueId) => objHas(valuesWithDefaults, valueId)
+    ));
+  };
   const getValidatedValue = (valueId, value) => hasValuesSchema ? ifNotUndefined(
     mapGet(valuesSchemaMap, valueId),
     (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) === valueSchema[TYPE] ? encodeIfJson(value) : isJsonType(valueSchema[TYPE]) && isEncodedJson(value) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
@@ -1218,6 +1269,7 @@ var createStore = () => {
     (_tablesSchema, tableId, tableSchema) => {
       const rowDefaulted = mapNew();
       const rowNonDefaulted = setNew();
+      const rowRequiredNonDefaulted = setNew();
       mapMatch(
         mapEnsure(tablesSchemaMap, tableId, mapNew),
         tableSchema,
@@ -1225,12 +1277,23 @@ var createStore = () => {
           mapSet(tableSchemaMap, cellId, cellSchema);
           ifNotUndefined(
             cellSchema[DEFAULT],
-            (def) => mapSet(rowDefaulted, cellId, def),
-            () => setAdd(rowNonDefaulted, cellId)
+            (defaultCell) => {
+              mapSet(rowDefaulted, cellId, defaultCell);
+            },
+            () => {
+              setAdd(rowNonDefaulted, cellId);
+              if (cellSchema[REQUIRED] === true) {
+                setAdd(rowRequiredNonDefaulted, cellId);
+              }
+            }
           );
         }
       );
-      mapSet(tablesSchemaRowCache, tableId, [rowDefaulted, rowNonDefaulted]);
+      mapSet(tablesSchemaRowCache, tableId, [
+        rowDefaulted,
+        rowNonDefaulted,
+        rowRequiredNonDefaulted
+      ]);
     },
     (_tablesSchema, tableId) => {
       mapSet(tablesSchemaMap, tableId);
@@ -1244,14 +1307,27 @@ var createStore = () => {
       mapSet(valuesSchemaMap, valueId, valueSchema);
       ifNotUndefined(
         valueSchema[DEFAULT],
-        (def) => mapSet(valuesDefaulted, valueId, def),
-        () => setAdd(valuesNonDefaulted, valueId)
+        (defaultValue) => {
+          mapSet(valuesDefaulted, valueId, defaultValue);
+          collDel(valuesNonDefaulted, valueId);
+          collDel(valuesRequiredNonDefaulted, valueId);
+        },
+        () => {
+          mapSet(valuesDefaulted, valueId);
+          setAdd(valuesNonDefaulted, valueId);
+          if (valueSchema[REQUIRED] === true) {
+            setAdd(valuesRequiredNonDefaulted, valueId);
+          } else {
+            collDel(valuesRequiredNonDefaulted, valueId);
+          }
+        }
       );
     },
     (_valuesSchema, valueId) => {
       mapSet(valuesSchemaMap, valueId);
       mapSet(valuesDefaulted, valueId);
       collDel(valuesNonDefaulted, valueId);
+      collDel(valuesRequiredNonDefaulted, valueId);
     }
   );
   const setOrDelTables = (tables) => objIsEmpty(tables) ? delTables() : setTables(tables);

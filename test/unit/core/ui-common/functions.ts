@@ -896,9 +896,7 @@ export const testStoreReadFunctions = (
       expect(container.textContent).toEqual('true');
 
       await harness.act(() =>
-        store
-          .setCell('t1', 'r2', 'c1', 2)
-          .setCell('t1', 'r2', 'c2', 3),
+        store.setCell('t1', 'r2', 'c1', 2).setCell('t1', 'r2', 'c2', 3),
       );
       expect(container.textContent).toEqual('true');
 

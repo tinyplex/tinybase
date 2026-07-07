@@ -6732,9 +6732,9 @@
  */
 /// useIndexIds
 /**
- * The useHasIndex hook returns a boolean indicating whether a given Index exists
- * in the Indexes object, and registers a listener so that any changes to that
- * result will cause a re-render.
+ * The useHasIndex hook returns a boolean indicating whether a given Index
+ * exists in the Indexes object, and registers a listener so that any changes to
+ * that result will cause a re-render.
  *
  * This hook follows the same Indexes object resolution rules as the useIndexIds
  * hook.
@@ -6864,9 +6864,9 @@
  */
 /// useSliceIds
 /**
- * The useHasSlice hook returns a boolean indicating whether a given Slice exists
- * in an Index, and registers a listener so that any changes to that result will
- * cause a re-render.
+ * The useHasSlice hook returns a boolean indicating whether a given Slice
+ * exists in an Index, and registers a listener so that any changes to that
+ * result will cause a re-render.
  *
  * This hook follows the same Indexes object resolution rules as the useSliceIds
  * hook.

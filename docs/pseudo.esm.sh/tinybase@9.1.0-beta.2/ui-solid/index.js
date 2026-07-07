@@ -808,10 +808,22 @@ var useIndexIds = (indexesOrIndexesId) => useListenable(
   useIndexesOrIndexesById(indexesOrIndexesId),
   1
 );
+var useHasIndex = (indexId, indexesOrIndexesId) => useListenable(
+  INDEX,
+  useIndexesOrIndexesById(indexesOrIndexesId),
+  6,
+  [indexId]
+);
 var useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) => useListenable(
   SLICE + ROW_IDS,
   useIndexesOrIndexesById(indexesOrIndexesId),
   1,
+  [indexId, sliceId]
+);
+var useHasSlice = (indexId, sliceId, indexesOrIndexesId) => useListenable(
+  SLICE,
+  useIndexesOrIndexesById(indexesOrIndexesId),
+  6,
   [indexId, sliceId]
 );
 var useSliceIdsListener = (indexId, listener, indexesOrIndexesId) => useListener(
@@ -1762,8 +1774,10 @@ export {
   useGoToCallback,
   useHasCell,
   useHasCellListener,
+  useHasIndex,
   useHasRow,
   useHasRowListener,
+  useHasSlice,
   useHasTable,
   useHasTableCell,
   useHasTableCellListener,

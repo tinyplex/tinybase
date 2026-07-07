@@ -462,6 +462,7 @@ var REMOTE_ROW_ID2 = "Remote" + ROW2 + "Id";
 var CURRENT_TARGET = "currentTarget";
 var _VALUE = "value";
 var EXTRA = "extra";
+var REQUIRED = "required";
 var UNDEFINED = "\uFFFC";
 var JSON_PREFIX = "\uFFFD";
 var id = (key) => EMPTY_STRING2 + key;
@@ -1440,6 +1441,7 @@ var createStore = () => {
   const valuesSchemaMap = mapNew();
   const valuesDefaulted = mapNew();
   const valuesNonDefaulted = setNew();
+  const valuesRequiredNonDefaulted = setNew();
   const tablePoolFunctions = mapNew();
   const tableCellIds = mapNew();
   const tablesMap = mapNew();
@@ -1488,7 +1490,7 @@ var createStore = () => {
   const validateCellOrValueSchema = (schema) => {
     if (!objValidate(
       schema,
-      (_child, id2) => arrayHas([TYPE, DEFAULT, ALLOW_NULL], id2)
+      (_child, id2) => arrayHas([TYPE, DEFAULT, ALLOW_NULL, REQUIRED], id2)
     )) {
       return false;
     }
@@ -1517,18 +1519,24 @@ var createStore = () => {
     (row, rowId) => validateRow(tableId, rowId, row),
     () => cellInvalid(tableId)
   );
-  const validateRow = (tableId, rowId, row, skipDefaults) => objValidate(
-    skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
-    (cell, cellId) => ifNotUndefined2(
-      getValidatedCell(tableId, rowId, cellId, cell),
-      (validCell) => {
-        row[cellId] = validCell;
-        return true;
-      },
-      () => false
-    ),
-    () => cellInvalid(tableId, rowId)
-  );
+  const validateRow = (tableId, rowId, row, skipDefaults) => {
+    const rowWithDefaults = skipDefaults ? row : addDefaultsToRow(row, tableId, rowId);
+    return objValidate(
+      rowWithDefaults,
+      (cell, cellId) => ifNotUndefined2(
+        getValidatedCell(tableId, rowId, cellId, cell),
+        (validCell) => {
+          row[cellId] = validCell;
+          return true;
+        },
+        () => false
+      ),
+      () => cellInvalid(tableId, rowId)
+    ) && (skipDefaults ? true : arrayEvery2(
+      collValues(mapGet(tablesSchemaRowCache, tableId)?.[2]),
+      (cellId) => objHas(rowWithDefaults, cellId)
+    ));
+  };
   const getValidatedCell = (tableId, rowId, cellId, cell) => hasTablesSchema ? ifNotUndefined2(
     mapGet(mapGet(tablesSchemaMap, tableId), cellId),
     (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) === cellSchema[TYPE] ? encodeIfJson(cell) : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell) ? cell : cellInvalid(
@@ -1540,18 +1548,24 @@ var createStore = () => {
     ),
     () => cellInvalid(tableId, rowId, cellId, cell)
   ) : isUndefined2(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : encodeIfJson(cell);
-  const validateValues = (values, skipDefaults) => objValidate(
-    skipDefaults ? values : addDefaultsToValues(values),
-    (value, valueId) => ifNotUndefined2(
-      getValidatedValue(valueId, value),
-      (validValue) => {
-        values[valueId] = validValue;
-        return true;
-      },
-      () => false
-    ),
-    () => valueInvalid()
-  );
+  const validateValues = (values, skipDefaults) => {
+    const valuesWithDefaults = skipDefaults ? values : addDefaultsToValues(values);
+    return objValidate(
+      valuesWithDefaults,
+      (value, valueId) => ifNotUndefined2(
+        getValidatedValue(valueId, value),
+        (validValue) => {
+          values[valueId] = validValue;
+          return true;
+        },
+        () => false
+      ),
+      () => valueInvalid()
+    ) && (skipDefaults ? true : arrayEvery2(
+      collValues(valuesRequiredNonDefaulted),
+      (valueId) => objHas(valuesWithDefaults, valueId)
+    ));
+  };
   const getValidatedValue = (valueId, value) => hasValuesSchema ? ifNotUndefined2(
     mapGet(valuesSchemaMap, valueId),
     (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) === valueSchema[TYPE] ? encodeIfJson(value) : isJsonType(valueSchema[TYPE]) && isEncodedJson(value) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
@@ -1608,6 +1622,7 @@ var createStore = () => {
     (_tablesSchema, tableId, tableSchema) => {
       const rowDefaulted = mapNew();
       const rowNonDefaulted = setNew();
+      const rowRequiredNonDefaulted = setNew();
       mapMatch(
         mapEnsure(tablesSchemaMap, tableId, mapNew),
         tableSchema,
@@ -1615,12 +1630,23 @@ var createStore = () => {
           mapSet(tableSchemaMap, cellId, cellSchema);
           ifNotUndefined2(
             cellSchema[DEFAULT],
-            (def) => mapSet(rowDefaulted, cellId, def),
-            () => setAdd(rowNonDefaulted, cellId)
+            (defaultCell) => {
+              mapSet(rowDefaulted, cellId, defaultCell);
+            },
+            () => {
+              setAdd(rowNonDefaulted, cellId);
+              if (cellSchema[REQUIRED] === true) {
+                setAdd(rowRequiredNonDefaulted, cellId);
+              }
+            }
           );
         }
       );
-      mapSet(tablesSchemaRowCache, tableId, [rowDefaulted, rowNonDefaulted]);
+      mapSet(tablesSchemaRowCache, tableId, [
+        rowDefaulted,
+        rowNonDefaulted,
+        rowRequiredNonDefaulted
+      ]);
     },
     (_tablesSchema, tableId) => {
       mapSet(tablesSchemaMap, tableId);
@@ -1634,14 +1660,27 @@ var createStore = () => {
       mapSet(valuesSchemaMap, valueId, valueSchema);
       ifNotUndefined2(
         valueSchema[DEFAULT],
-        (def) => mapSet(valuesDefaulted, valueId, def),
-        () => setAdd(valuesNonDefaulted, valueId)
+        (defaultValue) => {
+          mapSet(valuesDefaulted, valueId, defaultValue);
+          collDel(valuesNonDefaulted, valueId);
+          collDel(valuesRequiredNonDefaulted, valueId);
+        },
+        () => {
+          mapSet(valuesDefaulted, valueId);
+          setAdd(valuesNonDefaulted, valueId);
+          if (valueSchema[REQUIRED] === true) {
+            setAdd(valuesRequiredNonDefaulted, valueId);
+          } else {
+            collDel(valuesRequiredNonDefaulted, valueId);
+          }
+        }
       );
     },
     (_valuesSchema, valueId) => {
       mapSet(valuesSchemaMap, valueId);
       mapSet(valuesDefaulted, valueId);
       collDel(valuesNonDefaulted, valueId);
+      collDel(valuesRequiredNonDefaulted, valueId);
     }
   );
   const setOrDelTables = (tables) => objIsEmpty(tables) ? delTables() : setTables(tables);

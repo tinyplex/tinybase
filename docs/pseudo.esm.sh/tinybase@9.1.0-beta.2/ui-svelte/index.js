@@ -368,11 +368,25 @@ var getIndexesIds = () => {
   };
 };
 var getIndexIds = (indexesOrIndexesId) => createListenable(resolveIndexes(indexesOrIndexesId), INDEX + IDS, EMPTY_ARR);
+var hasIndex = (indexId, indexesOrIndexesId) => createListenable(
+  resolveIndexes(indexesOrIndexesId),
+  INDEX,
+  false,
+  () => [maybeGet(indexId)],
+  1
+);
 var getSliceIds = (indexId, indexesOrIndexesId) => createListenable(
   resolveIndexes(indexesOrIndexesId),
   SLICE + IDS,
   EMPTY_ARR,
   () => [maybeGet(indexId)]
+);
+var hasSlice = (indexId, sliceId, indexesOrIndexesId) => createListenable(
+  resolveIndexes(indexesOrIndexesId),
+  SLICE,
+  false,
+  () => [maybeGet(indexId), maybeGet(sliceId)],
+  1
 );
 var getSliceRowIds = (indexId, sliceId, indexesOrIndexesId) => createListenable(
   resolveIndexes(indexesOrIndexesId),
@@ -2024,7 +2038,9 @@ export {
   getValueIds,
   getValues,
   hasCell,
+  hasIndex,
   hasRow,
+  hasSlice,
   hasTable,
   hasTableCell,
   hasTables,
