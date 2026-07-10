@@ -1479,8 +1479,8 @@ describe('Solid-specific', () => {
       positionalSortedRowIds = useSortedRowIds(
         't1',
         undefined,
-        false,
-        0,
+        undefined,
+        undefined,
         undefined,
         numericSorter,
         store,

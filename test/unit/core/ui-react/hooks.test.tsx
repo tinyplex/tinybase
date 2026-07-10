@@ -2216,16 +2216,29 @@ describe('React-specific', () => {
             {JSON.stringify(
               useSortedRowIds({tableId: 't2', sorter: numericSorter}, store),
             )}
+            {JSON.stringify(
+              useSortedRowIds(
+                't2',
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                numericSorter,
+                store,
+              ),
+            )}
           </>,
         );
       const {container, unmount} = render(<Test />);
 
       expect(container.textContent).toEqual(
-        JSON.stringify(['0', '1', '2', '10']),
+        JSON.stringify(['0', '1', '2', '10']) +
+          JSON.stringify(['0', '1', '2', '10']),
       );
       act(() => store.setRow('t2', '3', {c1: true}));
       expect(container.textContent).toEqual(
-        JSON.stringify(['0', '1', '2', '3', '10']),
+        JSON.stringify(['0', '1', '2', '3', '10']) +
+          JSON.stringify(['0', '1', '2', '3', '10']),
       );
 
       unmount();
@@ -3812,6 +3825,33 @@ describe('React-specific', () => {
       expect(store.getListenerStats().sortedRowIds).toEqual(0);
 
       unmount();
+    });
+
+    test('useSortedRowIdsListener, object arg, custom sorter', () => {
+      expect.assertions(3);
+      const numericSorter = (sortKey1: any, sortKey2: any) =>
+        Number(sortKey1) - Number(sortKey2);
+      ['1', '10', '2'].forEach((rowId) =>
+        store.setRow('t2', rowId, {c1: true}),
+      );
+      const listener = vi.fn();
+      const Test = () => {
+        useSortedRowIdsListener(
+          {tableId: 't2', sorter: numericSorter},
+          listener,
+          [listener],
+          false,
+          store,
+        );
+        return <button />;
+      };
+      const {unmount} = render(<Test />);
+
+      store.setRow('t2', '3', {c1: true});
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener.mock.calls[0][6]).toEqual(['1', '2', '3', '10']);
+      unmount();
+      expect(store.getListenerStats().sortedRowIds).toEqual(0);
     });
 
     test('useMetricListener (no deps)', () => {

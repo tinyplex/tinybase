@@ -2031,6 +2031,11 @@ describe('Miscellaneous', () => {
     expect(getIndexesObject(indexes)['i1']).toBeUndefined();
   });
 
+  test('removes missing index definition', () => {
+    expect(indexes.delIndexDefinition('i1')).toBe(indexes);
+    expect(indexes.getIndexIds()).toEqual([]);
+  });
+
   test('destroys', () => {
     expect(indexes.getStore().getListenerStats().table).toEqual(0);
     expect(indexes.getStore().getListenerStats().row).toEqual(0);
