@@ -20,8 +20,9 @@
  * into a TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string literals, nullable flags, and optional flags from Effect schemas.
- * Default values are not supported as they exist in Effect's runtime
+ * string literals, nullable flags, optional flags, and required flags from
+ * Effect schemas. Default values are not supported as they exist in Effect's
+ * runtime
  * transformations, not in the schema AST. Complex validation rules,
  * transformations, and refinements are ignored.
  * @param schemas - A mapping of table IDs to Effect Schema struct schemas.
@@ -59,8 +60,9 @@
  * TinyBase ValuesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string literals, nullable flags, and optional flags from Effect schemas.
- * Default values are not supported as they exist in Effect's runtime
+ * string literals, nullable flags, optional flags, and required flags from
+ * Effect schemas. Default values are not supported as they exist in Effect's
+ * runtime
  * transformations, not in the schema AST.
  * @param schemas - A mapping of value IDs to Effect Schema schemas.
  * @returns A TinyBase ValuesSchema.
@@ -109,7 +111,7 @@
  * });
  *
  * console.log(tablesSchema);
- * // -> {pets: {species: {type: 'string'}}}
+ * // -> {pets: {species: {type: 'string', required: true}}}
  * ```
  * @category Creation
  * @since v7.1.0

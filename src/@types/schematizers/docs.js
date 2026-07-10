@@ -49,11 +49,13 @@
  * optional/nullable/default wrappers from your library's schemas, and one to
  * extract object properties.
  * @param unwrapSchema - A function that unwraps a schema to extract the base
- * type, default value, and nullable flag. It should recursively unwrap
- * optional/nullable wrappers and return a tuple of [schema, defaultValue,
- * allowNull].
+ * type, default value, nullable flag, and optional required flag. It should
+ * recursively unwrap optional/nullable wrappers and return a tuple of
+ * [schema, defaultValue, allowNull, required].
  * @param getProperties - A function that extracts the properties/entries/shape
  * from an object schema. Returns undefined if the schema is not an object.
+ * @param getPropertyRequired - An optional function that extracts whether an
+ * object property is required.
  * @returns A new Schematizer instance.
  * @example
  * This example creates a custom schematizer for a hypothetical validation
@@ -65,14 +67,19 @@
  * // Hypothetical library has schemas like:
  * // {type: 'string'}, {type: 'optional', inner: ...}, etc.
  *
- * const unwrapSchema = (schema, defaultValue, allowNull) => {
+ * const unwrapSchema = (schema, defaultValue, allowNull, required = true) => {
  *   if (schema.type === 'optional') {
- *     return unwrapSchema(schema.inner, defaultValue, allowNull);
+ *     return unwrapSchema(schema.inner, defaultValue, allowNull, false);
  *   }
  *   if (schema.type === 'nullable') {
- *     return unwrapSchema(schema.inner, defaultValue, true);
+ *     return unwrapSchema(schema.inner, defaultValue, true, required);
  *   }
- *   return [schema, defaultValue ?? schema.default, allowNull ?? false];
+ *   return [
+ *     schema,
+ *     defaultValue ?? schema.default,
+ *     allowNull ?? false,
+ *     required,
+ *   ];
  * };
  *
  * const getProperties = (schema) => schema.fields;
@@ -83,7 +90,7 @@
  *   pets: {type: 'object', fields: {name: {type: 'string'}}},
  * });
  * console.log(tablesSchema);
- * // -> {pets: {name: {type: 'string'}}}
+ * // -> {pets: {name: {type: 'string', required: true}}}
  * ```
  * @category Creation
  * @since v7.1.0

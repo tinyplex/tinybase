@@ -20,9 +20,9 @@
  * TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, and nullable flags from TypeBox schemas.
- * Complex validation rules like min/max, patterns, formats, and custom
- * validators are ignored.
+ * string enums, default values, nullable flags, and required flags from TypeBox
+ * schemas. Complex validation rules like min/max, patterns, formats, and
+ * custom validators are ignored.
  * @param schemas - A mapping of table IDs to TypeBox object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -58,7 +58,8 @@
  * TinyBase ValuesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, and nullable flags from TypeBox schemas.
+ * string enums, default values, nullable flags, and required flags from TypeBox
+ * schemas.
  * @param schemas - A mapping of value IDs to TypeBox schemas.
  * @returns A TinyBase ValuesSchema.
  * @example
@@ -78,9 +79,9 @@
  * });
  *
  * const store = createStore().setValuesSchema(valuesSchema);
- * store.setValue('count', 42);
+ * store.setValues({count: 42, isOpen: true});
  * console.log(store.getValues());
- * // -> {theme: 'light', count: 42}
+ * // -> {theme: 'light', count: 42, isOpen: true}
  * ```
  * @category Conversion
  * @since v7.1.0
@@ -108,7 +109,7 @@
  *   }),
  * });
  * console.log(tablesSchema);
- * // -> {pets: {species: {type: 'string'}}}
+ * // -> {pets: {species: {type: 'string', required: true}}}
  * ```
  * @category Creation
  * @since v7.1.0

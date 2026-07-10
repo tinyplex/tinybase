@@ -19,9 +19,9 @@
  * TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, and nullable flags from Yup schemas. Complex
- * validation rules like min/max, regex patterns, tests, and transforms are
- * ignored.
+ * string enums, default values, nullable flags, and required flags from Yup
+ * schemas. Complex validation rules like min/max, regex patterns, tests, and
+ * transforms are ignored.
  * @param schemas - A mapping of table IDs to Yup object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -57,7 +57,8 @@
  * ValuesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, and nullable flags from Yup schemas.
+ * string enums, default values, nullable flags, and required flags from Yup
+ * schemas.
  * @param schemas - A mapping of value IDs to Yup schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

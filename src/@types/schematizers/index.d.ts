@@ -16,6 +16,12 @@ export function createCustomSchematizer(
     schema: any,
     defaultValue?: any,
     allowNull?: boolean,
-  ) => [any, any, boolean],
+    required?: boolean,
+  ) => [any, any, boolean] | [any, any, boolean, boolean | undefined],
   getProperties: (schema: any) => any | undefined,
+  getPropertyRequired?: (
+    schema: any,
+    propertyId: string,
+    propertySchema: any,
+  ) => boolean | undefined,
 ): Schematizer;

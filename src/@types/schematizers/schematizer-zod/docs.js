@@ -19,9 +19,9 @@
  * TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, and nullable flags from Zod schemas. Complex
- * validation rules like min/max, regex patterns, refinements, and transforms
- * are ignored.
+ * string enums, default values, nullable flags, and required flags from Zod
+ * schemas. Complex validation rules like min/max, regex patterns,
+ * refinements, and transforms are ignored.
  * @param schemas - A mapping of table IDs to Zod object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -56,8 +56,8 @@
  * The toValuesSchema method converts a mapping of Zod schemas into a TinyBase
  * ValuesSchema.
  *
- * This method extracts basic type information, string enums, and default
- * values from Zod schemas.
+ * This method extracts basic type information, string enums, default values,
+ * and required flags from Zod schemas.
  * @param schemas - A mapping of value IDs to Zod schemas.
  * @returns A TinyBase ValuesSchema.
  * @example
@@ -76,8 +76,9 @@
  * });
  *
  * const store = createStore().setValuesSchema(valuesSchema);
+ * store.setValues({count: 1});
  * console.log(store.getValues());
- * // -> {theme: 'light'}
+ * // -> {theme: 'light', count: 1}
  * ```
  * @category Conversion
  * @since v7.1.0
@@ -105,7 +106,7 @@
  *   }),
  * });
  * console.log(tablesSchema);
- * // -> {pets: {species: {type: 'string'}}}
+ * // -> {pets: {species: {type: 'string', required: true}}}
  * ```
  * @category Creation
  * @since v7.1.0
