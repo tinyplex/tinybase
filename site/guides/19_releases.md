@@ -36,6 +36,10 @@ console.log(requiredSchemaStore.getRow('pets', 'felix'));
 // -> {}
 ```
 
+The v9.1.1 patch also updates the schematizers for Zod, Valibot, ArkType,
+TypeBox, Yup, and Effect Schema so that required fields in those libraries are
+reflected as `required: true` in the generated TinyBase schemas.
+
 ## Custom Sorting
 
 This release adds custom sorting for sorted Row Id APIs, so applications can opt

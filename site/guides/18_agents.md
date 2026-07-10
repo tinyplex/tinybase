@@ -418,7 +418,7 @@ export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
 
 - Extract basic types only: `string`, `number`, `boolean`
 - Handle defaults via schema introspection
-- Support nullable and optional modifiers
+- Support nullable, optional, and required modifiers
 - **Ignore** complex types (arrays, objects, etc.) - they won't appear in output
 - Use recursive unwrapping for wrapper types (e.g., `ZodOptional`, `ZodNullable`,
   `ZodDefault`)
@@ -439,15 +439,21 @@ const unwrap = (
   schema: any,
   defaultValue?: any,
   allowNull?: boolean,
-): [any, any, boolean] => {
+  required = true,
+): [any, any, boolean, boolean] => {
   const typeName = schema._def?.typeName;
   return typeName === ZOD_OPTIONAL
-    ? unwrap(schema._def.innerType, defaultValue, allowNull)
+    ? unwrap(schema._def.innerType, defaultValue, allowNull, false)
     : typeName === ZOD_NULLABLE
-      ? unwrap(schema._def.innerType, defaultValue, true)
+      ? unwrap(schema._def.innerType, defaultValue, true, required)
       : typeName === ZOD_DEFAULT
-        ? unwrap(schema._def.innerType, schema._def.defaultValue(), allowNull)
-        : [schema, defaultValue, allowNull ?? false];
+        ? unwrap(
+            schema._def.innerType,
+            schema._def.defaultValue(),
+            allowNull,
+            false,
+          )
+        : [schema, defaultValue, allowNull ?? false, required];
 };
 ```
 

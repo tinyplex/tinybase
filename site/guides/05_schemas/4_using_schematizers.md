@@ -55,9 +55,9 @@ console.log(store.getRow('pets', 'fido'));
 
 The schematizer performs a best-effort conversion, extracting basic type
 information (string, number, boolean), string enums, defaults, and nullable
-settings from your Zod schemas. For example, a `z.enum(['dog', 'cat'])` field
-is converted to a TinyBase `string` cell type, leaving the original enum
-validation as a Zod concern.
+and required settings from your Zod schemas. For example, a
+`z.enum(['dog', 'cat'])` field is converted to a TinyBase `string` cell type,
+leaving the original enum validation as a Zod concern.
 
 ## Converting Values Schemas
 
@@ -68,18 +68,19 @@ const store2 = createStore().setValuesSchema(
   schematizer.toValuesSchema({
     theme: z.string().default('light'),
     count: z.number(),
-    isOpen: z.boolean(),
+    isOpen: z.boolean().optional(),
   }),
 );
 
-store2.setValue('count', 42);
+store2.setValues({count: 42});
 console.log(store2.getValues());
 // -> {theme: 'light', count: 42}
 ```
 
 In this example, only `theme` has a default value. The `count` and `isOpen`
-values don't have defaults, so they won't appear in the store until explicitly
-set.
+values don't have defaults, so they won't appear in the store unless explicitly
+set. Since `count` is required, the example uses setValues method so the Store
+receives a complete valid Values object.
 
 ## Handling Nullable And Optional Fields
 
