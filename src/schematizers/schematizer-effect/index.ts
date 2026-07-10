@@ -26,11 +26,14 @@ const unwrapSchema = (
   schema: TypeNode,
   defaultValue?: any,
   allowNull?: boolean,
-): [any, any, boolean] => {
+  required = true,
+): [any, any, boolean, boolean] => {
   const ast = schema.ast || schema;
-  const type = ast._tag;
+  const typeAst = ast.type || ast;
+  required = required && !ast.isOptional;
+  const type = typeAst._tag;
   if (type === UNION) {
-    const types = ast.types;
+    const types = typeAst.types;
     const nonNullType = arrayFind(
       types,
       (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
@@ -43,10 +46,16 @@ const unwrapSchema = (
           types,
           (t: TypeNode) => t._tag === LITERAL && isNull(t.literal),
         ),
+      required,
     ];
   }
 
-  return [{[TYPE]: getSimpleType(ast)}, defaultValue, allowNull || false];
+  return [
+    {[TYPE]: getSimpleType(typeAst)},
+    defaultValue,
+    allowNull || false,
+    required,
+  ];
 };
 
 const getSimpleType = (ast: TypeNode): string => {
@@ -86,5 +95,13 @@ const getProperties = (schema: any) => {
   }
 };
 
+const getPropertyRequired = (schema: any, propertyId: string) => {
+  const signatures = schema.ast?.[PROPERTY_SIGNATURES];
+  const signature = signatures
+    ? arrayFind(signatures, (sig: any) => sig.name === propertyId)
+    : undefined;
+  return signature ? !signature.isOptional : undefined;
+};
+
 export const createEffectSchematizer: typeof createEffectSchematizerDecl = () =>
-  createCustomSchematizer(unwrapSchema, getProperties);
+  createCustomSchematizer(unwrapSchema, getProperties, getPropertyRequired);

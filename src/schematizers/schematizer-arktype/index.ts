@@ -30,7 +30,8 @@ const unwrapSchema = (
   schema: any,
   defaultValue?: any,
   allowNull?: boolean,
-): [any, any, boolean] => {
+  required = true,
+): [any, any, boolean, boolean] => {
   const schemaData = schema?.json ?? schema;
 
   if (isArray(schemaData)) {
@@ -44,11 +45,11 @@ const unwrapSchema = (
       isFalse((schemaData[0] as any)?.[UNIT]) &&
       isTrue((schemaData[1] as any)?.[UNIT])
     ) {
-      return [{[TYPE]: BOOLEAN}, defaultValue, allowNull ?? false];
+      return [{[TYPE]: BOOLEAN}, defaultValue, allowNull ?? false, required];
     }
 
     if (arrayEvery(schemaData, (item: any) => isString(item?.[UNIT] ?? item))) {
-      return [{[TYPE]: STRING}, defaultValue, allowNull ?? false];
+      return [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required];
     }
 
     if (hasNull) {
@@ -57,23 +58,24 @@ const unwrapSchema = (
         (item: any) => !isNull(item?.[UNIT]) && !isNull(item) && item !== '=',
       );
       if (nonNullItem) {
-        return unwrapSchema(nonNullItem, defaultValue, true);
+        return unwrapSchema(nonNullItem, defaultValue, true, required);
       }
     }
   }
 
   if (!isArray(schemaData) && !isUndefined(schemaData?.[SEQUENCE])) {
-    return [{[TYPE]: ARRAY}, defaultValue, allowNull ?? false];
+    return [{[TYPE]: ARRAY}, defaultValue, allowNull ?? false, required];
   }
 
   if (!isArray(schemaData) && isString(schemaData?.[UNIT])) {
-    return [{[TYPE]: STRING}, defaultValue, allowNull ?? false];
+    return [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required];
   }
 
   return [
     {[TYPE]: schemaData?.[DOMAIN] || schemaData},
     defaultValue,
     allowNull ?? false,
+    required,
   ];
 };
 
@@ -100,22 +102,40 @@ const getProperties = (schema: any) => {
   return objIsEmpty(properties) ? undefined : properties;
 };
 
+const getPropertyRequired = (schema: any, fieldId: string) => {
+  const schemaData = schema?.json ?? schema;
+  return isArray(schemaData?.[REQUIRED]) || isArray(schemaData?.[OPTIONAL])
+    ? !isUndefined(
+        arrayFind(
+          schemaData?.[REQUIRED] ?? [],
+          (field: any) => field[KEY] === fieldId,
+        ),
+      )
+    : undefined;
+};
+
 const unwrapSchemaWithDefaults = (
   schema: any,
   defaultValue?: any,
   allowNull?: boolean,
-): [any, any, boolean] => {
+  required = true,
+): [any, any, boolean, boolean] => {
   if (isArray(schema) && size(schema) === 3 && schema[1] === '=') {
     const schemaValue = (schema[0] as any)?.json ?? schema[0];
-    return unwrapSchema(schemaValue, schema[2], allowNull);
+    return unwrapSchema(schemaValue, schema[2], allowNull, false);
   }
 
   if (schema?.[_VALUE] && !isUndefined(schema?.[DEFAULT])) {
-    return unwrapSchema(schema[_VALUE], schema[DEFAULT], allowNull);
+    return unwrapSchema(schema[_VALUE], schema[DEFAULT], allowNull, false);
   }
 
-  return unwrapSchema(schema, defaultValue, allowNull);
+  return unwrapSchema(schema, defaultValue, allowNull, required);
 };
 
 export const createArkTypeSchematizer: typeof createArkTypeSchematizerDecl =
-  () => createCustomSchematizer(unwrapSchemaWithDefaults, getProperties);
+  () =>
+    createCustomSchematizer(
+      unwrapSchemaWithDefaults,
+      getProperties,
+      getPropertyRequired,
+    );

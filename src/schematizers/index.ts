@@ -6,7 +6,7 @@ import type {
   ValuesSchema,
 } from '../@types/store/index.d.ts';
 import {objForEach, objFreeze, objIsEmpty, objNew} from '../common/obj.ts';
-import {ifNotUndefined} from '../common/other.ts';
+import {ifNotUndefined, isUndefined} from '../common/other.ts';
 import {
   ALLOW_NULL,
   ARRAY,
@@ -14,6 +14,7 @@ import {
   DEFAULT,
   NUMBER,
   OBJECT,
+  REQUIRED,
   STRING,
   TYPE,
 } from '../common/strings.ts';
@@ -21,11 +22,14 @@ import {
 export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
   unwrapSchema,
   getProperties,
+  getPropertyRequired,
 ) => {
   const toCellOrValueSchema = (
     schema: any,
+    required?: boolean,
   ): CellSchema | ValueSchema | undefined => {
-    const [unwrapped, defaultValue, allowNull] = unwrapSchema(schema);
+    const [unwrapped, defaultValue, allowNull, unwrappedRequired = required] =
+      unwrapSchema(schema, undefined, undefined, required);
     const type = unwrapped?.type;
 
     if (
@@ -45,6 +49,9 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
     if (allowNull) {
       (cellOrValueSchema as any)[ALLOW_NULL] = true;
     }
+    if (unwrappedRequired && isUndefined(defaultValue)) {
+      (cellOrValueSchema as any)[REQUIRED] = true;
+    }
     return cellOrValueSchema;
   };
 
@@ -54,9 +61,15 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
       const tableSchema: {[cellId: string]: CellSchema} = objNew();
       ifNotUndefined(getProperties(schema), (properties) =>
         objForEach(properties, (cellSchema, cellId) =>
-          ifNotUndefined(toCellOrValueSchema(cellSchema), (cellSchema) => {
-            tableSchema[cellId] = cellSchema;
-          }),
+          ifNotUndefined(
+            toCellOrValueSchema(
+              cellSchema,
+              getPropertyRequired?.(schema, cellId, cellSchema),
+            ),
+            (cellSchema) => {
+              tableSchema[cellId] = cellSchema;
+            },
+          ),
         ),
       );
       if (!objIsEmpty(tableSchema)) {

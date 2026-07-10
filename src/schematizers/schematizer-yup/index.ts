@@ -1,7 +1,13 @@
 import type {createYupSchematizer as createYupSchematizerDecl} from '../../@types/schematizers/schematizer-yup/index.d.ts';
 import {arrayEvery} from '../../common/array.ts';
 import {isString, size} from '../../common/other.ts';
-import {DEFAULT, NULLABLE, STRING, TYPE} from '../../common/strings.ts';
+import {
+  DEFAULT,
+  NULLABLE,
+  OPTIONAL,
+  STRING,
+  TYPE,
+} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
 
 const MIXED = 'mixed';
@@ -10,7 +16,8 @@ const unwrapSchema = (
   schema: any,
   defaultValue?: any,
   allowNull?: boolean,
-): [any, any, boolean] => {
+  required = schema?.spec?.[OPTIONAL] === false,
+): [any, any, boolean, boolean] => {
   const oneOf = schema?._whitelist
     ? Array.from(schema._whitelist as Set<any>)
     : [];
@@ -24,6 +31,7 @@ const unwrapSchema = (
     },
     defaultValue ?? schema?.spec?.[DEFAULT],
     allowNull || schema?.spec?.[NULLABLE] || false,
+    required,
   ];
 };
 

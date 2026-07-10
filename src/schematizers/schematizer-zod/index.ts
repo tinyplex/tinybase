@@ -21,23 +21,24 @@ const unwrapSchema = (
   schema: any,
   defaultValue?: any,
   allowNull?: boolean,
-): [any, any, boolean] => {
+  required = true,
+): [any, any, boolean, boolean] => {
   const def = getDef(schema);
   const type = def?.type;
 
   return type === OPTIONAL
-    ? unwrapSchema(def.innerType, defaultValue, allowNull)
+    ? unwrapSchema(def.innerType, defaultValue, allowNull, false)
     : type === NULLABLE
-      ? unwrapSchema(def.innerType, defaultValue, true)
+      ? unwrapSchema(def.innerType, defaultValue, true, required)
       : type === DEFAULT
-        ? unwrapSchema(def.innerType, def.defaultValue, allowNull)
+        ? unwrapSchema(def.innerType, def.defaultValue, allowNull, false)
         : type === RECORD
-          ? [{type: OBJECT}, defaultValue, allowNull ?? false]
+          ? [{type: OBJECT}, defaultValue, allowNull ?? false, required]
           : type === ENUM
-            ? [{[TYPE]: STRING}, defaultValue, allowNull ?? false]
+            ? [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required]
             : type === LITERAL && arrayEvery(def.values, isString)
-              ? [{[TYPE]: STRING}, defaultValue, allowNull ?? false]
-              : [schema, defaultValue, allowNull ?? false];
+              ? [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required]
+              : [schema, defaultValue, allowNull ?? false, required];
 };
 
 const getProperties = (schema: any) => getDef(schema)?.shape;
