@@ -67,7 +67,12 @@
  * // Hypothetical library has schemas like:
  * // {type: 'string'}, {type: 'optional', inner: ...}, etc.
  *
- * const unwrapSchema = (schema, defaultValue, allowNull, required = true) => {
+ * const unwrapSchema = (
+ *   schema,
+ *   defaultValue,
+ *   allowNull,
+ *   required = true,
+ * ) => {
  *   if (schema.type === 'optional') {
  *     return unwrapSchema(schema.inner, defaultValue, allowNull, false);
  *   }
