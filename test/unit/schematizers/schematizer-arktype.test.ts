@@ -25,9 +25,9 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'number'},
-          c3: {type: 'boolean'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'number', required: true},
+          c3: {type: 'boolean', required: true},
         },
       });
     });
@@ -43,7 +43,7 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
           c2: {type: 'boolean', default: false},
           c3: {type: 'number', default: 0},
         },
@@ -59,7 +59,7 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         ratings: {
-          rating: {type: 'string'},
+          rating: {type: 'string', required: true},
         },
       });
     });
@@ -74,8 +74,8 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string', allowNull: true},
-          c2: {type: 'number'},
+          c1: {type: 'string', allowNull: true, required: true},
+          c2: {type: 'number', required: true},
         },
       });
     });
@@ -90,7 +90,7 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
           c2: {type: 'string'},
         },
       });
@@ -109,11 +109,11 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
         t2: {
-          c1: {type: 'string'},
-          c2: {type: 'string'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'string', required: true},
         },
       });
     });
@@ -128,7 +128,7 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
       });
     });
@@ -144,9 +144,9 @@ describe('ArkType Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'array'},
-          c3: {type: 'object'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'array', required: true},
+          c3: {type: 'object', required: true},
         },
       });
     });
@@ -163,8 +163,8 @@ describe('ArkType Schematizer', () => {
 
       expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'number'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'number', required: true},
           c3: {type: 'boolean', default: false},
         },
       });
@@ -183,9 +183,9 @@ describe('ArkType Schematizer', () => {
           v3: 'boolean',
         }),
       ).toEqual({
-        v1: {type: 'string'},
-        v2: {type: 'number'},
-        v3: {type: 'boolean'},
+        v1: {type: 'string', required: true},
+        v2: {type: 'number', required: true},
+        v3: {type: 'boolean', required: true},
       });
     });
 
@@ -195,7 +195,7 @@ describe('ArkType Schematizer', () => {
           rating: type.enumerated('up', 'down'),
         }),
       ).toEqual({
-        rating: {type: 'string'},
+        rating: {type: 'string', required: true},
       });
     });
 
@@ -206,8 +206,8 @@ describe('ArkType Schematizer', () => {
           v2: type('string[]'),
         }),
       ).toEqual({
-        v1: {type: 'object'},
-        v2: {type: 'array'},
+        v1: {type: 'object', required: true},
+        v2: {type: 'array', required: true},
       });
     });
 
@@ -234,10 +234,10 @@ describe('ArkType Schematizer', () => {
 
       expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
         v1: {type: 'string', default: 'a'},
-        v2: {type: 'number'},
+        v2: {type: 'number', required: true},
       });
 
-      store.setValue('v2', 1);
+      store.setValues({v2: 1});
       expect(store.getValues()).toEqual({v1: 'a', v2: 1});
     });
   });

@@ -25,9 +25,9 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'number'},
-          c3: {type: 'boolean'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'number', required: true},
+          c3: {type: 'boolean', required: true},
         },
       });
     });
@@ -42,8 +42,8 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string', allowNull: true},
-          c2: {type: 'number'},
+          c1: {type: 'string', allowNull: true, required: true},
+          c2: {type: 'number', required: true},
         },
       });
     });
@@ -57,7 +57,7 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         ratings: {
-          rating: {type: 'string'},
+          rating: {type: 'string', required: true},
         },
       });
     });
@@ -72,7 +72,7 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
           c2: {type: 'string'},
         },
       });
@@ -90,10 +90,10 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
         t2: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
       });
     });
@@ -108,7 +108,7 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
       });
     });
@@ -124,9 +124,9 @@ describe('Effect Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'array'},
-          c3: {type: 'object'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'array', required: true},
+          c3: {type: 'object', required: true},
         },
       });
     });
@@ -155,8 +155,8 @@ describe('Effect Schematizer', () => {
           v2: S.Array(S.String),
         }),
       ).toEqual({
-        v1: {type: 'object'},
-        v2: {type: 'array'},
+        v1: {type: 'object', required: true},
+        v2: {type: 'array', required: true},
       });
     });
 
@@ -165,10 +165,12 @@ describe('Effect Schematizer', () => {
         schematizer.toValuesSchema({
           v1: S.Boolean,
           v2: S.Number,
+          v3: S.optional(S.String),
         }),
       ).toEqual({
-        v1: {type: 'boolean'},
-        v2: {type: 'number'},
+        v1: {type: 'boolean', required: true},
+        v2: {type: 'number', required: true},
+        v3: {type: 'string'},
       });
     });
 
@@ -178,7 +180,7 @@ describe('Effect Schematizer', () => {
           rating: S.Literal('up', 'down'),
         }),
       ).toEqual({
-        rating: {type: 'string'},
+        rating: {type: 'string', required: true},
       });
     });
 
@@ -189,8 +191,8 @@ describe('Effect Schematizer', () => {
           v2: S.NullOr(S.String),
         }),
       ).toEqual({
-        v1: {type: 'boolean'},
-        v2: {type: 'string', allowNull: true},
+        v1: {type: 'boolean', required: true},
+        v2: {type: 'string', allowNull: true, required: true},
       });
     });
 

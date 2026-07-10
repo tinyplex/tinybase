@@ -25,9 +25,9 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'number'},
-          c3: {type: 'boolean'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'number', required: true},
+          c3: {type: 'boolean', required: true},
         },
       });
     });
@@ -43,7 +43,7 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
           c2: {type: 'boolean', default: false},
           c3: {type: 'number', default: 0},
         },
@@ -61,8 +61,8 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         ratings: {
-          direction: {type: 'string'},
-          rating: {type: 'string'},
+          direction: {type: 'string', required: true},
+          rating: {type: 'string', required: true},
           status: {type: 'string', default: 'draft'},
         },
       });
@@ -78,8 +78,8 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string', allowNull: true},
-          c2: {type: 'number'},
+          c1: {type: 'string', allowNull: true, required: true},
+          c2: {type: 'number', required: true},
         },
       });
     });
@@ -94,7 +94,7 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
           c2: {type: 'string'},
         },
       });
@@ -113,11 +113,11 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
         t2: {
-          c1: {type: 'string'},
-          c2: {type: 'string'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'string', required: true},
         },
       });
     });
@@ -132,7 +132,7 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
         },
       });
     });
@@ -148,9 +148,9 @@ describe('Valibot Schematizer', () => {
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
-          c2: {type: 'array'},
-          c3: {type: 'object'},
+          c1: {type: 'string', required: true},
+          c2: {type: 'array', required: true},
+          c3: {type: 'object', required: true},
         },
       });
     });
@@ -184,8 +184,8 @@ describe('Valibot Schematizer', () => {
       expect(store.getTablesSchemaJson()).toEqual(
         JSON.stringify({
           t1: {
-            c1: {type: 'string'},
-            c2: {type: 'number'},
+            c1: {type: 'string', required: true},
+            c2: {type: 'number', required: true},
             c3: {type: 'boolean', default: false},
           },
         }),
@@ -205,9 +205,9 @@ describe('Valibot Schematizer', () => {
           v3: v.boolean(),
         }),
       ).toEqual({
-        v1: {type: 'string'},
-        v2: {type: 'number'},
-        v3: {type: 'boolean'},
+        v1: {type: 'string', required: true},
+        v2: {type: 'number', required: true},
+        v3: {type: 'boolean', required: true},
       });
     });
 
@@ -218,8 +218,8 @@ describe('Valibot Schematizer', () => {
           rating: v.picklist(['up', 'down']),
         }),
       ).toEqual({
-        direction: {type: 'string'},
-        rating: {type: 'string'},
+        direction: {type: 'string', required: true},
+        rating: {type: 'string', required: true},
       });
     });
 
@@ -230,8 +230,8 @@ describe('Valibot Schematizer', () => {
           v2: v.array(v.string()),
         }),
       ).toEqual({
-        v1: {type: 'object'},
-        v2: {type: 'array'},
+        v1: {type: 'object', required: true},
+        v2: {type: 'array', required: true},
       });
     });
 
@@ -259,11 +259,11 @@ describe('Valibot Schematizer', () => {
       expect(store.getValuesSchemaJson()).toEqual(
         JSON.stringify({
           v1: {type: 'string', default: 'a'},
-          v2: {type: 'number'},
+          v2: {type: 'number', required: true},
         }),
       );
 
-      store.setValue('v2', 1);
+      store.setValues({v2: 1});
       expect(store.getValues()).toEqual({v1: 'a', v2: 1});
     });
   });

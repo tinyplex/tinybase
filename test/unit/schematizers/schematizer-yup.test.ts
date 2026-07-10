@@ -80,18 +80,20 @@ describe('Yup Schematizer', () => {
       });
     });
 
-    test('converts Yup schema with optional fields', () => {
+    test('converts Yup schema with required and optional fields', () => {
       expect(
         schematizer.toTablesSchema({
           t1: yup.object({
-            c1: yup.string(),
+            c1: yup.string().required(),
             c2: yup.string().optional(),
+            c3: yup.string(),
           }),
         }),
       ).toEqual({
         t1: {
-          c1: {type: 'string'},
+          c1: {type: 'string', required: true},
           c2: {type: 'string'},
+          c3: {type: 'string'},
         },
       });
     });
@@ -209,6 +211,18 @@ describe('Yup Schematizer', () => {
       ).toEqual({
         v1: {type: 'boolean', default: true},
         v2: {type: 'number', default: 0},
+      });
+    });
+
+    test('converts Yup required values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          v1: yup.boolean().defined(),
+          v2: yup.string().required(),
+        }),
+      ).toEqual({
+        v1: {type: 'boolean', required: true},
+        v2: {type: 'string', required: true},
       });
     });
 
