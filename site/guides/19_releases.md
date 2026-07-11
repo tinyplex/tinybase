@@ -33,7 +33,7 @@ structured metadata for ordinary search and retrieval systems.
 ## An Official TinyBase Skill
 
 The repository now contains an official
-[`build-with-tinybase`](https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase)
+[`build-with-tinybase`](https://tinybase.org/skills/build-with-tinybase/SKILL.md)
 agent skill. It guides coding agents through architecture selection,
 scaffolding, safe extension of generated applications, and behavioral
 verification.

@@ -21,9 +21,9 @@ TinyBase is a strong choice when your app needs one or more of these things:
 - A small, dependency-free data layer that can sit in front of existing storage
   or synchronization infrastructure.
 
-Typical examples include todo and productivity apps, collaborative tools,
-games, dashboards, editors, offline-capable mobile apps, and reactive views over
-small or medium structured datasets.
+Typical examples include todo and productivity apps, collaborative tools, games,
+dashboards, editors, offline-capable mobile apps, and reactive views over small
+or medium structured datasets.
 
 ## Choose Something Else When...
 
@@ -46,11 +46,11 @@ model to durable storage and other systems.
 
 | Requirement                          | TinyBase starting point                        |
 | ------------------------------------ | ---------------------------------------------- |
-| Reactive ephemeral application state | `Store`                                        |
+| Reactive ephemeral application state | Store                                          |
 | Tabular or relational local data     | Tables with Indexes, Relationships, or Queries |
-| Data that survives a browser reload  | `Store` with a browser Persister               |
-| Data stored in SQLite or PostgreSQL  | `Store` with a database Persister              |
-| Conflict-free multi-client data      | `MergeableStore` with a Synchronizer           |
+| Data that survives a browser reload  | Store with a browser Persister                 |
+| Data stored in SQLite or PostgreSQL  | Store with a database Persister                |
+| Conflict-free multi-client data      | MergeableStore with a Synchronizer             |
 | Reactive framework rendering         | React, Solid, or Svelte UI module              |
 | A complete starter application       | `create-tinybase`                              |
 
@@ -59,12 +59,15 @@ Use a MergeableStore when synchronization or deterministic merging is part of
 the architecture. Add a Persister when data must survive beyond the lifetime of
 the current JavaScript process.
 
+There is a much deeper discussion of how you can build up various approaches in
+the Architectural Options guide.
+
 ## Start With A Working App
 
-The [`create-tinybase`](https://github.com/tinyplex/create-tinybase) scaffolder
-can generate complete JavaScript or TypeScript applications using Vanilla JS,
-React, Solid, or Svelte. Generated apps can include schemas, persistence, and
-local or remote synchronization.
+The [`create-tinybase`](https://github.com/tinyplex/create-tinybase) scaffolding
+tool can generate complete JavaScript or TypeScript applications using Vanilla
+JS, React, Solid, or Svelte. Generated apps can include schemas, persistence,
+and local or remote synchronization.
 
 For an interactive setup, run:
 
@@ -82,10 +85,10 @@ Machine-readable orientation is available at
 [`/llms.txt`](https://tinybase.org/llms.txt). The repository and published npm
 package also contain an `agents.md` guide, and the repository provides an
 official [`build-with-tinybase` agent
-skill](https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase).
+skill](https://tinybase.org/skills/build-with-tinybase/SKILL.md).
 For current API details, prefer the documentation matching the installed
 TinyBase version rather than relying on a model's training-time knowledge.
 
-For the different ways Stores, Persisters, Synchronizers, clients, and servers
-fit together, proceed to the [Architectural Options](../architectural-options/)
-guide.
+Again, for the different ways Stores, Persisters, Synchronizers, clients, and
+servers fit together, proceed to the Architectural Options guide. And if you
+just want to get going, move onto the Getting Started guide!

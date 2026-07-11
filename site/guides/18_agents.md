@@ -34,11 +34,10 @@ Start with these resources:
   https://tinybase.org/guides/the-basics/why-tinybase/
 - **Architecture guide**:
   https://tinybase.org/guides/the-basics/architectural-options/
-- **Getting started**:
-  https://tinybase.org/guides/the-basics/getting-started/
-- **Application scaffolder**: https://github.com/tinyplex/create-tinybase
+- **Getting started**: https://tinybase.org/guides/the-basics/getting-started/
+- **Application scaffolding tool**: https://github.com/tinyplex/create-tinybase
 - **Agent skill**:
-  https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase
+  https://tinybase.org/skills/build-with-tinybase/SKILL.md
 
 Use a regular Store for ordinary reactive in-memory state. Add a Persister when
 data must survive beyond the current JavaScript process. Use a MergeableStore
@@ -52,9 +51,8 @@ then customizing it. The generator supports interactive use:
 npm create tinybase@latest
 ```
 
-It also supports non-interactive use by coding agents. Pass
-`--non-interactive`, followed by an explicit value for every applicable option.
-For example:
+It also supports non-interactive use by coding agents. Pass `--non-interactive`,
+followed by an explicit value for every applicable option. For example:
 
 ```sh
 npm create tinybase@latest -- \
@@ -144,8 +142,8 @@ Synchronizers enable real-time data sync:
 
 Optional UI modules provide:
 
-- **React Hooks & Components**: `ui-react` with hooks like `useCell`,
-  `useRow`, `useTable`, `useTables`, `useValue`, and component/context support
+- **React Hooks & Components**: `ui-react` with hooks like `useCell`, `useRow`,
+  `useTable`, `useTables`, `useValue`, and component/context support
 - **React DOM Components**: `ui-react-dom` with interactive tables
 - **React Inspector**: `ui-react-inspector` for debugging and editing data
 - **Solid Primitives & Components**: `ui-solid` with primitives like `useCell`,
@@ -476,8 +474,8 @@ export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
 - Handle defaults via schema introspection
 - Support nullable, optional, and required modifiers
 - **Ignore** complex types (arrays, objects, etc.) - they won't appear in output
-- Use recursive unwrapping for wrapper types (e.g., `ZodOptional`, `ZodNullable`,
-  `ZodDefault`)
+- Use recursive unwrapping for wrapper types (e.g., `ZodOptional`,
+  `ZodNullable`, `ZodDefault`)
 
 ### Implementation Idioms
 
@@ -577,10 +575,10 @@ When adding a new feature:
    - Use past releases as template for structure
 
 2. **Update `/site/home/index.md`**:
-   - Update the "NEW!" link to point to new version:
-     `<a href='/guides/releases/#v7-1'>`
-   - Update the tagline:
-     `<span id="one-with">"The one with Schematizers!"</span>`
+   - Update the "NEW!" link to point to new version: `<a
+     href='/guides/releases/#v7-1'>`
+   - Update the tagline: `<span id="one-with">"The one with
+     Schematizers!"</span>`
 
 3. **Generated files update automatically** during build process
 

@@ -1,4 +1,4 @@
-import {readFileSync, writeFileSync} from 'fs';
+import {cpSync, readFileSync, rmSync, writeFileSync} from 'fs';
 import type {Docs, NodeTransform, ReflectionTransform} from 'tinydocs';
 import {createDocs, getSkippedChildren, getSorter} from 'tinydocs';
 import {addDemoDocs, getPublishedImportUrl} from './demo.ts';
@@ -288,6 +288,9 @@ export const build = async (
   });
 
   docs.publish();
+
+  rmSync(`${outDir}/skills`, {recursive: true, force: true});
+  cpSync('skills', `${outDir}/skills`, {recursive: true});
 
   writeFileSync(
     `${outDir}/llms-full.txt`,
