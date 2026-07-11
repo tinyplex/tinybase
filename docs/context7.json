@@ -1,4 +1,16 @@
 {
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "TinyBase",
+  "description": "A reactive in-memory data store with persistence and synchronization for local-first JavaScript and TypeScript apps.",
+  "rules": [
+    "Use a Store for ordinary reactive in-memory state.",
+    "Use a MergeableStore when data must be merged or synchronized.",
+    "Import integrations from their specific tinybase subpath.",
+    "Prefer documentation matching the installed TinyBase version.",
+    "Load persisted content before starting automatic saving.",
+    "Prefer create-tinybase when scaffolding a new application.",
+    "TinyBase is an in-memory application data layer, not a hosted database."
+  ],
   "url": "https://context7.com/websites/tinybase",
   "public_key": "pk_UQtABnUkT4OJWIdLZIza9"
 }
