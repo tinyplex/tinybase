@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Build with TinyBase'
+  short_description: 'Scaffold and extend local-first TinyBase apps'
+  default_prompt: 'Use $build-with-tinybase to scaffold a local-first TypeScript app and verify it works.'

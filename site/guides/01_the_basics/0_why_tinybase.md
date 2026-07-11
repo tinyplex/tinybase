@@ -80,9 +80,11 @@ commands.
 
 Machine-readable orientation is available at
 [`/llms.txt`](https://tinybase.org/llms.txt). The repository and published npm
-package also contain an `agents.md` guide. For current API details, prefer the
-documentation matching the installed TinyBase version rather than relying on a
-model's training-time knowledge.
+package also contain an `agents.md` guide, and the repository provides an
+official [`build-with-tinybase` agent
+skill](https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase).
+For current API details, prefer the documentation matching the installed
+TinyBase version rather than relying on a model's training-time knowledge.
 
 For the different ways Stores, Persisters, Synchronizers, clients, and servers
 fit together, proceed to the [Architectural Options](../architectural-options/)

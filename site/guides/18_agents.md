@@ -37,6 +37,8 @@ Start with these resources:
 - **Getting started**:
   https://tinybase.org/guides/the-basics/getting-started/
 - **Application scaffolder**: https://github.com/tinyplex/create-tinybase
+- **Agent skill**:
+  https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase
 
 Use a regular Store for ordinary reactive in-memory state. Add a Persister when
 data must survive beyond the current JavaScript process. Use a MergeableStore
