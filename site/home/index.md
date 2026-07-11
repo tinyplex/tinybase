@@ -11,7 +11,7 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v9-2'><em>NEW!</em> v9.2 release notes</a>
+<a href='/guides/releases/#v9-2'><em>NEW!</em> v9.2 release</a>
 
 <span id="one-with">"The one for agents!"</span>
 

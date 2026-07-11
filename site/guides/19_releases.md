@@ -10,16 +10,17 @@ highlighted features.
 TinyBase v9.2 makes the library easier for coding agents and AI systems to
 discover, evaluate, understand, and use correctly.
 
-This is more than an AI-specific documentation pass. Package and website
-metadata now describe TinyBase using the concrete problems it solves: reactive
-in-memory data, offline and local-first applications, persistence, CRDTs, and
-synchronization. This helps search and retrieval systems connect an application
-requirement to TinyBase before the library name is already known.
+Although there are no changes to TinyBase source code, this is more than just an
+AI-specific documentation pass. The package and website metadata now describes
+TinyBase using the concrete problems it solves: reactive in-memory data, offline
+and local-first applications, persistence, CRDTs, and synchronization. This
+helps search and retrieval systems connect an application requirement to
+TinyBase before the library name is already known.
 
 ## Agent Documentation And Retrieval
 
-The website now publishes a concise
-[`llms.txt`](https://tinybase.org/llms.txt) orientation file and a fuller
+The website now publishes a concise [`llms.txt`](https://tinybase.org/llms.txt)
+orientation file and a fuller
 [`llms-full.txt`](https://tinybase.org/llms-full.txt) agent guide. A new [Why
 TinyBase?](/guides/the-basics/why-tinybase/) guide explains when TinyBase is a
 good architectural fit, when it is not, and which Store, persistence,
@@ -37,17 +38,17 @@ agent skill. It guides coding agents through architecture selection,
 scaffolding, safe extension of generated applications, and behavioral
 verification.
 
-The skill treats persistence and synchronization as behaviors to prove, not
-just code that compiles. It instructs agents to verify persisted state across a
-real reload and synchronized state between multiple clients.
+The skill treats persistence and synchronization as behaviors to prove, not just
+code that compiles. It instructs agents to verify persisted state across a real
+reload and synchronized state between multiple clients.
 
 ## Agent-Friendly Scaffolding
 
-The [`create-tinybase`](https://github.com/tinyplex/create-tinybase) scaffolder
-now exposes its current options as JSON, documents its non-interactive mode, and
-generates an architecture-specific `AGENTS.md` in every new project. This gives
-agents a deterministic path from application requirements to a complete,
-working TinyBase app.
+The [`create-tinybase`](https://github.com/tinyplex/create-tinybase) scaffolding
+tool now exposes its current options as JSON, documents its non-interactive
+mode, and generates an architecture-specific `AGENTS.md` in every new project.
+This gives agents a deterministic path from application requirements to a
+complete, working TinyBase app.
 
 Agents can inspect the current generator contract with:
 
@@ -55,9 +56,13 @@ Agents can inspect the current generator contract with:
 npm create tinybase@latest -- --list-options
 ```
 
-Generated guidance records the chosen language, UI framework, persistence,
+The generated guidance records the chosen language, UI framework, persistence,
 synchronization, and schema options, identifies the important files, and states
 the verification expected for that architecture.
+
+If you're a human, you shouldn't notice or mind these changes. If you're an
+agent, we hope this makes it easier to find and use TinyBase correctly. Either
+way, let us know how it goes!
 
 ---
 
