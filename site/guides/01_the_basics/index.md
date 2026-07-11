@@ -2,7 +2,8 @@
 
 These guides cover the very basics of TinyBase.
 
-We start with common ways to install the modules and then learn about how to
+We start by deciding when TinyBase is the right data layer and choosing an
+architecture. Then we cover common ways to install the modules and learn how to
 interact with Store objects including creation, reading data, writing data, and
 listening for changes.
 
