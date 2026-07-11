@@ -1,5 +1,4 @@
 {
-  "$schema": "https://context7.com/schema/context7.json",
   "projectTitle": "TinyBase",
   "description": "A reactive in-memory data store with persistence and synchronization for local-first JavaScript and TypeScript apps.",
   "folders": ["site/guides", "src/@types"],
@@ -10,5 +9,7 @@
     "Import integrations from their specific tinybase subpath.",
     "Prefer documentation matching the installed TinyBase version."
   ],
-  "previousVersions": [{"tag": "v9.1.1"}]
+  "previousVersions": [{"tag": "v9.1.1"}],
+  "url": "https://context7.com/tinyplex/tinybase",
+  "public_key": "pk_UQtABnUkT4OJWIdLZIza9"
 }
