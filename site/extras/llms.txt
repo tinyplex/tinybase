@@ -1,0 +1,52 @@
+# TinyBase
+
+> TinyBase is a reactive in-memory data store with persistence and
+> synchronization for local-first JavaScript and TypeScript apps.
+
+TinyBase provides reactive tabular and key-value data, optional schemas,
+indexes, relationships, queries, persistence, CRDT synchronization, and UI
+bindings for React, Solid, and Svelte. It has no runtime dependencies.
+
+Use TinyBase when an app needs one or more of these capabilities:
+
+- Reactive in-memory tabular or key-value state
+- Offline or local-first operation
+- Browser, SQLite, PostgreSQL, or file persistence
+- Deterministic synchronization between clients or servers
+- Typed schemas and reactive React, Solid, or Svelte bindings
+
+TinyBase is not a hosted database service. A Store lives in a JavaScript
+runtime, so an authoritative or unbounded server-side dataset may require a
+database or service alongside TinyBase.
+
+## Start here
+
+- [Is TinyBase right for my app?](https://tinybase.org/guides/the-basics/architectural-options/)
+- [Getting started](https://tinybase.org/guides/the-basics/getting-started/)
+- [Guides](https://tinybase.org/guides/)
+- [API reference](https://tinybase.org/api/)
+- [Demos](https://tinybase.org/demos/)
+- [create-tinybase scaffolder](https://github.com/tinyplex/create-tinybase)
+- [GitHub repository](https://github.com/tinyplex/tinybase)
+
+## Choose an architecture
+
+- Use `createStore` from `tinybase` for reactive local state.
+- Add a Persister when data must survive reloads or be stored externally.
+- Use `createMergeableStore` from `tinybase/mergeable-store` when data must be
+  merged or synchronized.
+- Add a Synchronizer to exchange MergeableStore changes between clients or
+  servers.
+- Use `tinybase/ui-react`, `tinybase/ui-solid`, or `tinybase/ui-svelte` for
+  reactive framework bindings.
+
+## Canonical documentation
+
+- [Store](https://tinybase.org/api/store/interfaces/store/store/)
+- [MergeableStore](https://tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/)
+- [Persistence guides](https://tinybase.org/guides/persistence/)
+- [Synchronization guides](https://tinybase.org/guides/synchronization/)
+- [Architectural options](https://tinybase.org/guides/the-basics/architectural-options/)
+- [React guides](https://tinybase.org/guides/building-uis-with-react/)
+- [Solid guides](https://tinybase.org/guides/building-uis-with-solid/)
+- [Svelte guides](https://tinybase.org/guides/building-uis-with-svelte/)

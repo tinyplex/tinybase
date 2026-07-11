@@ -5,9 +5,9 @@
   <h2><em>Sync</em> on demand.</h2>
   <h2><em>Fast</em> always.</h2>
   <p>
-    TinyBase is a reactive data store & sync engine for apps that need to feel 
-    instant, work well when they are offline, and yet stay consistent when they
-    are back online.
+    TinyBase is a reactive in-memory data store with persistence and
+    synchronization for local-first JavaScript and TypeScript apps that need to
+    feel instant, work offline, and stay consistent when they come back online.
   </p>
 </section>
 

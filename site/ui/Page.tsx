@@ -35,7 +35,8 @@ export const Page: NoPropComponent = () => {
   const title =
     (pageNode.name != 'TinyBase' ? pageNode.name + ' | ' : '') + 'TinyBase';
   const description = isHome
-    ? 'A reactive data store and sync engine.'
+    ? 'A reactive in-memory data store with persistence and synchronization ' +
+      'for local-first JavaScript and TypeScript apps.'
     : pageNode.reflection == null
       ? getSummaryMarkdown(pageNode).replace(/\s+/g, ' ')
       : (NodeSummary({node: pageNode, asText: true}) as unknown as string);
