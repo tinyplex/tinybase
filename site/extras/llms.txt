@@ -28,6 +28,7 @@ database or service alongside TinyBase.
 - [Demos](https://tinybase.org/demos/)
 - [create-tinybase scaffolder](https://github.com/tinyplex/create-tinybase)
 - [Official build-with-tinybase agent skill](https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase)
+- [Full agent guide](https://tinybase.org/llms-full.txt)
 - [GitHub repository](https://github.com/tinyplex/tinybase)
 
 ## Choose an architecture

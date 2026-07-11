@@ -5,6 +5,62 @@ highlighted features.
 
 ---
 
+# v9.2
+
+TinyBase v9.2 makes the library easier for coding agents and AI systems to
+discover, evaluate, understand, and use correctly.
+
+This is more than an AI-specific documentation pass. Package and website
+metadata now describe TinyBase using the concrete problems it solves: reactive
+in-memory data, offline and local-first applications, persistence, CRDTs, and
+synchronization. This helps search and retrieval systems connect an application
+requirement to TinyBase before the library name is already known.
+
+## Agent Documentation And Retrieval
+
+The website now publishes a concise
+[`llms.txt`](https://tinybase.org/llms.txt) orientation file and a fuller
+[`llms-full.txt`](https://tinybase.org/llms-full.txt) agent guide. A new [Why
+TinyBase?](/guides/the-basics/why-tinybase/) guide explains when TinyBase is a
+good architectural fit, when it is not, and which Store, persistence,
+synchronization, and UI pieces to start with.
+
+The repository also includes configuration for current documentation to be
+indexed by [Context7](https://context7.com/), as well as machine-readable
+structured metadata for ordinary search and retrieval systems.
+
+## An Official TinyBase Skill
+
+The repository now contains an official
+[`build-with-tinybase`](https://github.com/tinyplex/tinybase/tree/main/skills/build-with-tinybase)
+agent skill. It guides coding agents through architecture selection,
+scaffolding, safe extension of generated applications, and behavioral
+verification.
+
+The skill treats persistence and synchronization as behaviors to prove, not
+just code that compiles. It instructs agents to verify persisted state across a
+real reload and synchronized state between multiple clients.
+
+## Agent-Friendly Scaffolding
+
+The [`create-tinybase`](https://github.com/tinyplex/create-tinybase) scaffolder
+now exposes its current options as JSON, documents its non-interactive mode, and
+generates an architecture-specific `AGENTS.md` in every new project. This gives
+agents a deterministic path from application requirements to a complete,
+working TinyBase app.
+
+Agents can inspect the current generator contract with:
+
+```sh
+npm create tinybase@latest -- --list-options
+```
+
+Generated guidance records the chosen language, UI framework, persistence,
+synchronization, and schema options, identifies the important files, and states
+the verification expected for that architecture.
+
+---
+
 # v9.1
 
 ## Required Schema Fields

@@ -11,9 +11,9 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v9-1'><em>NEW!</em> v9.1 release notes</a>
+<a href='/guides/releases/#v9-2'><em>NEW!</em> v9.2 release notes</a>
 
-<span id="one-with">"The one with required fields!"</span>
+<span id="one-with">"The one for agents!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

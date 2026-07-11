@@ -86,6 +86,33 @@ export const Page: NoPropComponent = () => {
           <link rel="stylesheet" href="/css/index.css" />
           <link rel="canonical" href={url} />
 
+          {isHome ? (
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  '@context': 'https://schema.org',
+                  '@type': 'SoftwareSourceCode',
+                  name: 'TinyBase',
+                  description,
+                  url: baseUrl,
+                  codeRepository: 'https://github.com/tinyplex/tinybase',
+                  license: 'https://opensource.org/license/mit',
+                  programmingLanguage: ['JavaScript', 'TypeScript'],
+                  runtimePlatform: 'JavaScript',
+                  keywords: [
+                    'local-first',
+                    'offline-first',
+                    'in-memory database',
+                    'reactive database',
+                    'CRDT',
+                    'synchronization',
+                  ],
+                }),
+              }}
+            />
+          ) : null}
+
           <script
             src={`/js/${isHome ? 'home' : isSingle ? 'single' : 'app'}.js`}
           />

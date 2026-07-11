@@ -289,6 +289,12 @@ export const build = async (
 
   docs.publish();
 
+  writeFileSync(
+    `${outDir}/llms-full.txt`,
+    readFileSync('site/guides/18_agents.md', 'utf-8'),
+    'utf-8',
+  );
+
   await Promise.all(
     internalEsm.map(async (module) => {
       const [mainModule, ...subModules] = module.split('/');
