@@ -1,5 +1,10 @@
 <script lang="ts">
-  import {hasWindow, isUndefined} from '../../common/other.ts';
+  import {
+    addEventListener,
+    hasWindow,
+    isUndefined,
+  } from '../../common/other.ts';
+  import {KEYDOWN} from '../../common/strings.ts';
   import Delete from './Delete.svelte';
   import NewId from './NewId.svelte';
   import {isNewIdAction, type InspectorAction} from './common.ts';
@@ -16,17 +21,14 @@
     confirming = undefined;
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (!isUndefined(confirming) && event.key == 'Escape') {
-      event.preventDefault();
-      handleDone();
-    }
-  };
-
   $effect(() => {
     if (!isUndefined(confirming) && hasWindow()) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
+      return addEventListener(document, KEYDOWN, (event: KeyboardEvent) => {
+        if (!isUndefined(confirming) && event.key == 'Escape') {
+          event.preventDefault();
+          handleDone();
+        }
+      });
     }
   });
 </script>

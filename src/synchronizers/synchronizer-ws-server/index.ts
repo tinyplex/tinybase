@@ -45,6 +45,8 @@ import {
 } from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {
+  CLOSE,
+  CONNECTION,
   EMPTY_STRING,
   ERROR,
   MESSAGE,
@@ -287,7 +289,7 @@ export const createWsServer = (<
     client.on(MESSAGE, (data) =>
       handleOrBufferMessage(pathId, clientId, data.toString(UTF8)),
     );
-    client.on('close', () => delClientFromPath(pathId, clientId));
+    client.on(CLOSE, () => delClientFromPath(pathId, clientId));
     await ready;
   };
 
@@ -364,14 +366,14 @@ export const createWsServer = (<
       }
     });
 
-    client.on('close', () =>
+    client.on(CLOSE, () =>
       promiseAll(
         mapMap(pathsByChannel, (pathId) => delClientFromPath(pathId, clientId)),
       ),
     );
   };
 
-  webSocketServer.on('connection', (client, request) =>
+  webSocketServer.on(CONNECTION, (client, request) =>
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
         if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {

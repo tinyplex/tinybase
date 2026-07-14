@@ -37,6 +37,24 @@ export const startTimeout = (callback: () => void, sec: number = 0) =>
   setTimeout(callback, sec * THOUSAND);
 export const stopTimeout = clearTimeout;
 
+export const addEventListener = (
+  target: any,
+  event: string,
+  listener: (...args: any[]) => void,
+) => {
+  target.addEventListener(event, listener);
+  return () => target.removeEventListener(event, listener);
+};
+
+export const addEmitterListener = (
+  target: any,
+  event: string,
+  listener: (...args: any[]) => void,
+) => {
+  target.on(event, listener);
+  return () => target.off(event, listener);
+};
+
 export const mathMax = math.max;
 export const mathMin = math.min;
 export const mathCeil = math.ceil;

@@ -33,13 +33,14 @@ import {
   weakMapNew,
 } from '../../common/map.ts';
 import {
+  addEventListener,
   isString,
   promiseNew,
   startTimeout,
   stopTimeout,
 } from '../../common/other.ts';
 import {weakSetNew} from '../../common/set.ts';
-import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
+import {CLOSE, ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
 import {
   MULTIPLE_VERSION,
   MultipleControl,
@@ -107,15 +108,10 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   let connected = false;
   let destroyed = false;
 
-  const addEventListener = (
+  const addWebSocketListener = (
     event: keyof WebSocketEventMap,
     handler: (...args: any[]) => void,
-  ) => {
-    webSocket.addEventListener(event, handler);
-    const removeListener = () => webSocket.removeEventListener(event, handler);
-    arrayPush(removeListeners, removeListener);
-    return removeListener;
-  };
+  ) => arrayPush(removeListeners, addEventListener(webSocket, event, handler));
 
   const rejectPendingControls = (error: Error) =>
     mapForEach(pendingControls, (requestId, [, , reject, timeout]) => {
@@ -200,7 +196,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     }
   };
 
-  addEventListener(MESSAGE, ({data}) => {
+  addWebSocketListener(MESSAGE, ({data}) => {
     const payload = data.toString(UTF8);
     ifMultipleControlPayloadValid(payload, (requestId, control, _body) => {
       const pendingControl = requestId
@@ -223,9 +219,9 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       }
     });
   });
-  addEventListener(OPEN, onOpen);
-  addEventListener('close', onClose);
-  addEventListener(ERROR, (error) => onIgnoredError?.(error));
+  addWebSocketListener(OPEN, onOpen);
+  addWebSocketListener(CLOSE, onClose);
+  addWebSocketListener(ERROR, (error) => onIgnoredError?.(error));
 
   if (webSocket.readyState == webSocket.OPEN) {
     onOpen();
@@ -371,20 +367,14 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   if (multipleStates.has(webSocket)) {
     errorThrow(ERROR_LEGACY_MULTIPLEX);
   }
-  const addEventListener = (
-    event: keyof WebSocketEventMap,
-    handler: (...args: any[]) => void,
-  ) => {
-    webSocket.addEventListener(event, handler);
-    return () => webSocket.removeEventListener(event, handler);
-  };
-
   const registerReceive = (receive: Receive) => {
     const receivePayload = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
     );
-    addEventListener(MESSAGE, ({data}) => receivePayload(data.toString(UTF8)));
+    addEventListener(webSocket, MESSAGE, ({data}) =>
+      receivePayload(data.toString(UTF8)),
+    );
   };
 
   const send = (
@@ -422,8 +412,10 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
         removeErrorListener();
         resolve(synchronizer);
       };
-      const removeOpenListener = addEventListener(OPEN, () => onAttempt());
-      const removeErrorListener = addEventListener(ERROR, onAttempt);
+      const removeOpenListener = addEventListener(webSocket, OPEN, () =>
+        onAttempt(),
+      );
+      const removeErrorListener = addEventListener(webSocket, ERROR, onAttempt);
     } else {
       resolve(synchronizer);
     }

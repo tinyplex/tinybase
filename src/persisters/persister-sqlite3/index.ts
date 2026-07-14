@@ -10,12 +10,9 @@ import type {
 } from '../../@types/persisters/persister-sqlite3/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
-import {noop, promiseNew} from '../../common/other.ts';
+import {addEmitterListener, noop, promiseNew} from '../../common/other.ts';
+import {CHANGE} from '../../common/strings.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-
-const CHANGE = 'change';
-
-type Observer = (_: any, _2: any, tableName: string) => void;
 
 export const createSqlite3Persister = ((
   store: Store | MergeableStore,
@@ -33,13 +30,11 @@ export const createSqlite3Persister = ((
           error ? reject(error) : resolve(rows),
         ),
       ),
-    (listener: DatabaseChangeListener): Observer => {
-      const observer = (_: any, _2: any, tableName: string) =>
-        listener(tableName);
-      db.on(CHANGE, observer);
-      return observer;
-    },
-    (observer: Observer): any => db.off(CHANGE, observer),
+    (listener: DatabaseChangeListener): (() => void) =>
+      addEmitterListener(db, CHANGE, (_: any, _2: any, tableName: string) =>
+        listener(tableName),
+      ),
+    (removeListener: () => void): void => removeListener(),
     onSqlCommand,
     onIgnoredError,
     noop,

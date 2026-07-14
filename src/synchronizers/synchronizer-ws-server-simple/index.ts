@@ -16,7 +16,14 @@ import {
 } from '../../common/map.ts';
 import {objFreeze} from '../../common/obj.ts';
 import {ifNotUndefined, isString, isUndefined} from '../../common/other.ts';
-import {EMPTY_STRING, MESSAGE, UTF8, strMatch} from '../../common/strings.ts';
+import {
+  CLOSE,
+  CONNECTION,
+  EMPTY_STRING,
+  MESSAGE,
+  UTF8,
+  strMatch,
+} from '../../common/strings.ts';
 import {
   MULTIPLE_VERSION,
   MultipleControl,
@@ -83,7 +90,7 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
     client.on(MESSAGE, (data) =>
       handleMessage(pathId, clientId, data.toString(UTF8)),
     );
-    client.on('close', () => delClientFromPath(pathId, clientId));
+    client.on(CLOSE, () => delClientFromPath(pathId, clientId));
   };
 
   const addMultipleClient = (
@@ -143,14 +150,14 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       }
     });
 
-    client.on('close', () =>
+    client.on(CLOSE, () =>
       mapForEach(pathsByChannel, (_channelId, pathId) =>
         delClientFromPath(pathId, clientId),
       ),
     );
   };
 
-  webSocketServer.on('connection', (client, request) =>
+  webSocketServer.on(CONNECTION, (client, request) =>
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], (clientId) =>
         client.protocol == WS_SYNCHRONIZER_PROTOCOL

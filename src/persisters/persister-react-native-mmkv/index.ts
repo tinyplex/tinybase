@@ -8,13 +8,12 @@ import type {
 } from '../../@types/persisters/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {isUndefined} from '../../common/other.ts';
+import {STORAGE} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 interface Listener {
   remove: () => void;
 }
-
-const STORAGE = 'storage';
 
 export const createReactNativeMmkvPersister = (
   store: Store | MergeableStore,

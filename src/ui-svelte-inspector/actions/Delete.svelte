@@ -1,5 +1,6 @@
 <script lang="ts">
-  import {hasWindow} from '../../common/other.ts';
+  import {addEventListener, hasWindow} from '../../common/other.ts';
+  import {KEYDOWN} from '../../common/strings.ts';
   import type {OnDoneProp} from './common.ts';
 
   let {
@@ -16,17 +17,14 @@
     onDone();
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key == 'Enter') {
-      event.preventDefault();
-      handleClick();
-    }
-  };
-
   $effect(() => {
     if (hasWindow()) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
+      return addEventListener(document, KEYDOWN, (event: KeyboardEvent) => {
+        if (event.key == 'Enter') {
+          event.preventDefault();
+          handleClick();
+        }
+      });
     }
   });
 </script>

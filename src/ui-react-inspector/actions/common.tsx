@@ -7,8 +7,9 @@ import type {
   ValueProps,
   ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
-import {isUndefined} from '../../common/other.ts';
+import {addEventListener, isUndefined} from '../../common/other.ts';
 import {useCallback, useEffect, useState} from '../../common/react.ts';
+import {KEYDOWN} from '../../common/strings.ts';
 
 export type OnDoneProp = {readonly onDone: () => void};
 
@@ -47,14 +48,12 @@ export const ConfirmableActions = <
 
   useEffect(() => {
     if (!isUndefined(confirming)) {
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (!isUndefined(confirming) && e.key === 'Escape') {
-          e.preventDefault();
+      return addEventListener(document, KEYDOWN, (event: KeyboardEvent) => {
+        if (!isUndefined(confirming) && event.key === 'Escape') {
+          event.preventDefault();
           handleDone();
         }
-      };
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
+      });
     }
   }, [confirming, handleDone]);
 
@@ -147,20 +146,16 @@ export const Delete = ({
   readonly onClick: () => void;
   readonly prompt?: string;
 }) => {
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        onClick();
-      }
-    },
+  useEffect(
+    () =>
+      addEventListener(document, KEYDOWN, (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          onClick();
+        }
+      }),
     [onClick],
   );
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
 
   return (
     <>
