@@ -103,8 +103,6 @@
  * return type natively as a Promise.
  * @param store The MergeableStore to synchronize.
  * @param webSocket The WebSocket to send synchronization messages over.
- * @param channelId An optional channel Id which, when provided, enables this
- * WebSocket to be shared with other WsSynchronizer instances, since v9.3.
  * @param requestTimeoutSeconds An optional time in seconds that the
  * Synchronizer will wait for responses to request messages, defaulting to 1.
  * @param onSend An optional handler for the messages that this Synchronizer
