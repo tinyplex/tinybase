@@ -9,7 +9,7 @@ import type {
   createPostgresPersister as createPostgresPersisterDecl,
 } from '../../@types/persisters/persister-postgres/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {tryCatch} from '../../common/other.ts';
+import {tryCatch} from '../../common/error.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPostgresPersister = (async (

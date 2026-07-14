@@ -9,8 +9,9 @@ import type {
   createPglitePersister as createPglitePersisterDecl,
 } from '../../@types/persisters/persister-pglite/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {tryCatch} from '../../common/error.ts';
 import {IdObj} from '../../common/obj.ts';
-import {noop, tryCatch} from '../../common/other.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPglitePersister = (async (

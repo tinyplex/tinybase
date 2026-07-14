@@ -141,33 +141,3 @@ export const promiseAll = async (promises: Promise<any>[]) =>
   promise.all(promises);
 
 export const structuredClone = GLOBAL.structuredClone as <T>(value: T) => T;
-
-export const errorNew = (message: string): never => {
-  throw new Error(message);
-};
-
-export const tryReturn = <Return>(
-  tryF: () => Return,
-  catchReturn?: Return,
-): Return | void => {
-  try {
-    return tryF();
-  } catch {
-    /*! istanbul ignore next */
-    return catchReturn;
-  }
-};
-
-export const tryCatch = async <Return>(
-  action: () => Return | Promise<Return>,
-  then1?: (error: any) => void,
-  then2?: (error: any) => void,
-): Promise<Return | void> => {
-  try {
-    return await action();
-  } catch (error) {
-    /*! istanbul ignore next */
-    then1?.(error);
-    then2?.(error);
-  }
-};

@@ -24,6 +24,7 @@ import type {
 } from '../@types/synchronizers/index.d.ts';
 import {getUniqueId} from '../common/codec.ts';
 import {collDel} from '../common/coll.ts';
+import {ERROR_SYNC_RESPONSE, errorNew, tryCatch} from '../common/error.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
 import {
@@ -32,7 +33,6 @@ import {
   isUndefined,
   promiseNew,
   startTimeout,
-  tryCatch,
 } from '../common/other.ts';
 import {getLatestHlc, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
@@ -109,8 +109,10 @@ export const createCustomSynchronizer = (
       const timeout = startTimeout(() => {
         collDel(pendingRequests, requestId);
         reject(
-          `No response from ${toClientId ?? 'anyone'} to ${requestId}, ` +
-            message,
+          errorNew(
+            ERROR_SYNC_RESPONSE,
+            (toClientId ?? EMPTY_STRING) + DOT + requestId + DOT + message,
+          ),
         );
       }, requestTimeoutSeconds);
       mapSet(pendingRequests, requestId, [

@@ -64,6 +64,7 @@ import {
   collSize4,
   collValues,
 } from '../common/coll.ts';
+import {tryCatch} from '../common/error.ts';
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
@@ -112,7 +113,6 @@ import {
   isUndefined,
   slice,
   structuredClone,
-  tryCatch,
 } from '../common/other.ts';
 import {
   Pair,

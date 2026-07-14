@@ -66,6 +66,11 @@ when no channel Id is provided. Multiplexing is supported by WsServer and
 WsServerSimple, while WsServerDurableObject continues to use one URL path and
 Durable Object per WebSocket.
 
+## Compact Error Codes
+
+Errors created by TinyBase now use compact numeric codes to reduce bundle size.
+The codes and their meanings are listed in the Error Codes guide.
+
 ---
 
 # v9.2

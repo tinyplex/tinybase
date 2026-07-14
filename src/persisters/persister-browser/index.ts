@@ -14,11 +14,12 @@ import type {
   SessionPersister,
 } from '../../@types/persisters/persister-browser/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {tryCatch} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import {tryCatch, WINDOW} from '../../common/other.ts';
+import {WINDOW} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 type StorageListener = (event: StorageEvent) => void;
