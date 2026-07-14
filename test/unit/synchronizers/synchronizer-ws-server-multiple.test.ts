@@ -43,6 +43,16 @@ class MockWebSocket {
     this.#listeners.message?.forEach((listener) => listener({data: payload}));
   }
 
+  disconnect(): void {
+    this.readyState = 3;
+    this.#listeners.close?.forEach((listener) => listener({}));
+  }
+
+  reconnect(): void {
+    this.readyState = this.OPEN;
+    this.#listeners.open?.forEach((listener) => listener({}));
+  }
+
   close(): void {
     this.closeCalls++;
     this.readyState = 3;
@@ -108,12 +118,95 @@ test('multiple channel Ids are validated and unique', async () => {
   await expect(
     createWsSynchronizer(createMergeableStore(), webSocket as any, 'files'),
   ).rejects.toThrow('Duplicate multiplex channel Id: files');
-  await expect(
-    createWsSynchronizer(createMergeableStore(), webSocket as any, '../files'),
-  ).rejects.toThrow('Invalid multiplex channel Id: ../files');
+  for (const channelId of [
+    '',
+    '../files',
+    './files',
+    'files//pets',
+    'files/..',
+    'files?pets',
+    'files#pets',
+    'files\npets',
+  ]) {
+    await expect(
+      createWsSynchronizer(createMergeableStore(), webSocket as any, channelId),
+    ).rejects.toThrow('Invalid multiplex channel Id: ' + channelId);
+  }
 
   await synchronizer.destroy();
   expect(webSocket.closeCalls).toBe(1);
+});
+
+test('multiple stores resubscribe after reconnecting', async () => {
+  const webSocket = new MockWebSocket();
+  const filesStore = createMergeableStore();
+  const editorStore = createMergeableStore();
+  const synchronizers = await Promise.all([
+    createWsSynchronizer(filesStore, webSocket as any, 'files', 0.01),
+    createWsSynchronizer(editorStore, webSocket as any, 'editor', 0.01),
+  ]);
+  await Promise.all(
+    synchronizers.map((synchronizer) => synchronizer.startSync()),
+  );
+
+  const sentPayloadCount = webSocket.sentPayloads.length;
+  webSocket.disconnect();
+  filesStore.setValue('updatedWhileOffline', true);
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  const reconnectedPayloads = webSocket.sentPayloads.slice(sentPayloadCount);
+  expect(
+    reconnectedPayloads.some((payload) => payload.includes('-1,[0,1]')),
+  ).toBe(true);
+  expect(
+    reconnectedPayloads.some((payload) => payload.includes('-1,[1,"files"]')),
+  ).toBe(true);
+  expect(
+    reconnectedPayloads.some((payload) => payload.includes('-1,[1,"editor"]')),
+  ).toBe(true);
+  expect(
+    reconnectedPayloads.some((payload) => payload.startsWith('M\nfiles\n')),
+  ).toBe(true);
+
+  await Promise.all(
+    synchronizers.map((synchronizer) => synchronizer.destroy()),
+  );
+  expect(webSocket.closeCalls).toBe(1);
+});
+
+test('legacy and multiple modes cannot share one WebSocket', async () => {
+  const multipleWebSocket = new MockWebSocket();
+  const multipleSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    multipleWebSocket as any,
+    'files',
+    0.01,
+  );
+  await expect(
+    createWsSynchronizer(
+      createMergeableStore(),
+      multipleWebSocket as any,
+      0.01,
+    ),
+  ).rejects.toThrow('WebSocket already has multiplexed synchronizers');
+  await multipleSynchronizer.destroy();
+
+  const legacyWebSocket = new MockWebSocket();
+  const legacySynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    legacyWebSocket as any,
+    0.01,
+  );
+  await expect(
+    createWsSynchronizer(
+      createMergeableStore(),
+      legacyWebSocket as any,
+      'files',
+      0.01,
+    ),
+  ).rejects.toThrow('WebSocket already has a legacy synchronizer');
+  await legacySynchronizer.destroy();
 });
 
 test('multiple stores synchronize over one WebSocket', async () => {
