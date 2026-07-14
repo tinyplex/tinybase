@@ -13,13 +13,21 @@ import type {
 import {arrayClear, arrayForEach, arrayPush} from '../../common/array.ts';
 import {getUniqueId} from '../../common/codec.ts';
 import {collDel, collHas, collIsEmpty} from '../../common/coll.ts';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
+import {
+  IdMap,
+  mapForEach,
+  mapGet,
+  mapNew,
+  mapSet,
+  weakMapNew,
+} from '../../common/map.ts';
 import {
   isString,
   promiseNew,
   startTimeout,
   stopTimeout,
 } from '../../common/other.ts';
+import {weakSetNew} from '../../common/set.ts';
 import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
 import {
   MULTIPLE_VERSION,
@@ -63,8 +71,8 @@ type MultipleState = {
   send: (channelId: Id, payload: string) => void;
 };
 
-const multipleStates = new WeakMap<WebSocketTypes, MultipleState>();
-const legacyWebSockets = new WeakSet<WebSocketTypes>();
+const multipleStates = weakMapNew<WebSocketTypes, MultipleState>();
+const legacyWebSockets = weakSetNew<WebSocketTypes>();
 
 const createConnection = (): Connection => {
   let resolve: () => void;

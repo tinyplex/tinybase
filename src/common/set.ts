@@ -14,6 +14,9 @@ export const setNew = <Value>(entryOrEntries?: Value | Value[]): Set<Value> =>
       : [entryOrEntries],
   );
 
+export const weakSetNew = <Value extends WeakKey>(): WeakSet<Value> =>
+  new WeakSet();
+
 export const setAdd = <Value>(
   set: Set<Value> | undefined,
   value: Value,
