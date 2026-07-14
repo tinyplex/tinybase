@@ -126,7 +126,6 @@ export const createWsServer = (<
   const configureServerClient = async (
     serverClient: ServerClient,
     pathId: Id,
-    clients: IdMap<Client>,
   ) =>
     ifNotUndefined(
       await createPersisterForPath?.(pathId),
@@ -216,11 +215,11 @@ export const createWsServer = (<
 
   const handleOrBufferMessage = (pathId: Id, clientId: Id, payload: string) => {
     const serverClient = mapGet(serverClientsByPath, pathId);
-    serverClient?.[Sc.State] == ScState.Ready
-      ? handleMessage(pathId, clientId, payload)
-      : serverClient
-        ? arrayPush(serverClient[Sc.Buffer], [clientId, payload])
-        : 0;
+    if (serverClient?.[Sc.State] == ScState.Ready) {
+      handleMessage(pathId, clientId, payload);
+    } else if (serverClient) {
+      arrayPush(serverClient[Sc.Buffer], [clientId, payload]);
+    }
   };
 
   const addClientToPath = async (
@@ -237,7 +236,7 @@ export const createWsServer = (<
     let configuring = mapGet(configuringByPath, pathId);
     if (!configuring) {
       callListeners(pathIdListeners, undefined, pathId, 1);
-      configuring = configureServerClient(serverClient, pathId, clients);
+      configuring = configureServerClient(serverClient, pathId);
       mapSet(configuringByPath, pathId, configuring);
     }
     await configuring;
@@ -375,9 +374,11 @@ export const createWsServer = (<
   webSocketServer.on('connection', (client, request) =>
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
-        client.protocol == WS_SYNCHRONIZER_PROTOCOL
-          ? addMultipleClient(client, clientId, pathId)
-          : addLegacyClient(client, clientId, pathId).catch(onIgnoredError);
+        if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
+          addMultipleClient(client, clientId, pathId);
+        } else {
+          addLegacyClient(client, clientId, pathId).catch(onIgnoredError);
+        }
         if (onIgnoredError) {
           client.on(ERROR, onIgnoredError);
         }
