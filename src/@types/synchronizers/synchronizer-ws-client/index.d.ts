@@ -19,6 +19,7 @@ export interface WsSynchronizer<
 export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
   store: MergeableStore,
   webSocket: WebSocketType,
+  channelId: Id,
   requestTimeoutSeconds?: number,
   onSend?: Send,
   onReceive?: Receive,
@@ -30,7 +31,6 @@ export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
 export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
   store: MergeableStore,
   webSocket: WebSocketType,
-  channelId: Id,
   requestTimeoutSeconds?: number,
   onSend?: Send,
   onReceive?: Receive,
