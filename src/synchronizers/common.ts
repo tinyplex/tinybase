@@ -17,12 +17,13 @@ import {
   startTimeout,
   stopTimeout,
 } from '../common/other.ts';
-import {EMPTY_STRING, strMatch, strSplit} from '../common/strings.ts';
+import {EMPTY_STRING, strMatch, strSplit, TINYBASE} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^(.+)\n(\d+)\n(\d+)\n([\s\S]*)$/;
+const INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
 
-export const WS_SYNCHRONIZER_PROTOCOL = 'tinybase';
+export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
 
 const MULTIPLE_CLIENT_ID = 'M';
@@ -180,7 +181,7 @@ export const ifMultipleControlPayloadValid = (
 
 export const isMultipleChannelIdValid = (channelId: Id): boolean =>
   channelId.length > 0 &&
-  !/[\n\r?#]/.test(channelId) &&
+  !INVALID_CHANNEL_ID_CHARACTERS.test(channelId) &&
   arrayEvery(
     strSplit(channelId, '/'),
     (part) => part.length > 0 && part != '.' && part != '..',
