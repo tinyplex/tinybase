@@ -196,9 +196,11 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     ifMultiplePayloadValid(payload, (channelId, channelPayload) => {
       const channel = mapGet(channels, channelId);
       if (channel) {
-        channel[0]
-          ? channel[0](channelPayload)
-          : arrayPush(channel[1], channelPayload);
+        if (channel[0]) {
+          channel[0](channelPayload);
+        } else {
+          arrayPush(channel[1], channelPayload);
+        }
       }
     });
   });
@@ -242,9 +244,11 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   const send = (channelId: Id, payload: string) => {
     const channel = mapGet(channels, channelId);
     if (channel) {
-      connected && channel[3]
-        ? webSocket.send(createMultiplePayload(channelId, payload))
-        : arrayPush(channel[2], payload);
+      if (connected && channel[3]) {
+        webSocket.send(createMultiplePayload(channelId, payload));
+      } else {
+        arrayPush(channel[2], payload);
+      }
     }
   };
 
