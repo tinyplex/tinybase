@@ -77,6 +77,17 @@
  * path in the WebSocket URL is used by a WsServer as the path that the client
  * joins. The MergeableStore Id does not select the server path.
  *
+ * By default, the WsSynchronizer owns the WebSocket and closes it when it is
+ * destroyed. You can instead share one WebSocket between multiple
+ * WsSynchronizer instances by constructing it with the `tinybase` WebSocket
+ * subprotocol and providing a channel Id as the third argument. Channel Ids
+ * are appended to the WebSocket URL path to form the server path. In this
+ * mode, destroying a WsSynchronizer unsubscribes its channel, and the
+ * WebSocket is closed when the last WsSynchronizer using it is destroyed.
+ *
+ * Sharing a WebSocket requires a WsServer or WsServerSimple from v9.3 or
+ * later. It is not supported by WsServerDurableObject.
+ *
  * Instead of the raw browser implementation of WebSocket, you may prefer to use
  * the [Reconnecting
  * WebSocket](https://github.com/pladaria/reconnecting-websocket) wrapper so
@@ -92,6 +103,8 @@
  * return type natively as a Promise.
  * @param store The MergeableStore to synchronize.
  * @param webSocket The WebSocket to send synchronization messages over.
+ * @param channelId An optional channel Id which, when provided, enables this
+ * WebSocket to be shared with other WsSynchronizer instances, since v9.3.
  * @param requestTimeoutSeconds An optional time in seconds that the
  * Synchronizer will wait for responses to request messages, defaulting to 1.
  * @param onSend An optional handler for the messages that this Synchronizer
@@ -145,6 +158,41 @@
  *
  * await synchronizer1.destroy();
  * await synchronizer2.destroy();
+ * await server.destroy();
+ * ```
+ * @example
+ * This example creates two WsSynchronizer objects for different
+ * MergeableStore instances that share one WebSocket.
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocket, WebSocketServer} from 'ws';
+ *
+ * const server = createWsServer(new WebSocketServer({port: 8048}));
+ * const webSocket = new WebSocket('ws://localhost:8048/petShop', 'tinybase');
+ * const petsSynchronizer = await createWsSynchronizer(
+ *   createMergeableStore(),
+ *   webSocket,
+ *   'pets',
+ * );
+ * const employeesSynchronizer = await createWsSynchronizer(
+ *   createMergeableStore(),
+ *   webSocket,
+ *   'employees',
+ * );
+ *
+ * console.log(petsSynchronizer.getWebSocket() == webSocket);
+ * // -> true
+ * console.log(employeesSynchronizer.getWebSocket() == webSocket);
+ * // -> true
+ *
+ * await petsSynchronizer.destroy();
+ * console.log(webSocket.readyState == WebSocket.OPEN);
+ * // -> true
+ *
+ * await employeesSynchronizer.destroy();
  * await server.destroy();
  * ```
  * @category Creation

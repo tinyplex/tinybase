@@ -494,6 +494,11 @@
  * clients connecting to `ws://localhost:8047/petShop` will share the `petShop`
  * path. The Id of a client's MergeableStore does not select this path.
  *
+ * Since v9.3, multiple WsSynchronizer instances can share one WebSocket by
+ * using channel Ids. Each channel Id is appended to the WebSocket URL path and
+ * treated as an ordinary server path. This means a multiplexed channel can
+ * interoperate with legacy clients connected directly to that full path.
+ *
  * You are responsible for creating a MergeableStore to pass to this Persister,
  * but starting and stopping its automatic saving and loading is taken care of
  * by the WsServer. As a result, the server MergeableStore will be kept in sync

@@ -5,6 +5,69 @@ highlighted features.
 
 ---
 
+# v9.3
+
+## Multiple Stores Over One WebSocket
+
+Multiple WebSocket Synchronizers can now share a single physical WebSocket
+connection ([#177](https://github.com/tinyplex/tinybase/issues/177)). This is
+useful when an application has several independently synchronized
+MergeableStore instances but needs to limit its connection count.
+
+Create the WebSocket with the `tinybase` subprotocol and provide a channel Id
+as the third argument to each createWsSynchronizer call:
+
+```js
+import {createMergeableStore as createMultistoreStore} from 'tinybase';
+import {createWsSynchronizer as createMultistoreSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createWsServer as createMultistoreServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {
+  WebSocket as MultistoreWebSocket,
+  WebSocketServer as MultistoreWebSocketServer,
+} from 'ws';
+
+const multistoreServer = createMultistoreServer(
+  new MultistoreWebSocketServer({port: 8052}),
+);
+const multistoreWebSocket = new MultistoreWebSocket(
+  'ws://localhost:8052/petShop',
+  'tinybase',
+);
+const petsSynchronizer = await createMultistoreSynchronizer(
+  createMultistoreStore(),
+  multistoreWebSocket,
+  'pets',
+);
+const employeesSynchronizer = await createMultistoreSynchronizer(
+  createMultistoreStore(),
+  multistoreWebSocket,
+  'employees',
+);
+
+console.log(petsSynchronizer.getWebSocket() == multistoreWebSocket);
+// -> true
+console.log(employeesSynchronizer.getWebSocket() == multistoreWebSocket);
+// -> true
+
+await petsSynchronizer.destroy();
+console.log(multistoreWebSocket.readyState == MultistoreWebSocket.OPEN);
+// -> true
+
+await employeesSynchronizer.destroy();
+await multistoreServer.destroy();
+```
+
+The URL path acts as a base path, so these channels use the logical server
+paths `petShop/pets` and `petShop/employees`. Legacy clients can connect
+directly to either full path and interoperate with multiplexed clients.
+
+The existing createWsSynchronizer signature and wire protocol are unchanged
+when no channel Id is provided. Multiplexing is supported by WsServer and
+WsServerSimple, while WsServerDurableObject continues to use one URL path and
+Durable Object per WebSocket.
+
+---
+
 # v9.2
 
 TinyBase v9.2 makes the library easier for coding agents and AI systems to
