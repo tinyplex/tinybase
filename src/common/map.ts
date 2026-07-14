@@ -13,9 +13,8 @@ const map = Map;
 const isMap = (value: unknown): value is Map<unknown, unknown> =>
   isInstanceOf(value, map);
 
-export const mapNew = /* @__PURE__ */ <Key, Value>(
-  entries?: [Key, Value][],
-): Map<Key, Value> => new map(entries);
+export const mapNew = <Key, Value>(entries?: [Key, Value][]): Map<Key, Value> =>
+  new map(entries);
 
 export const weakMapNew = <Key extends WeakKey, Value>(): WeakMap<Key, Value> =>
   new WeakMap();
