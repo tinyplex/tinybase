@@ -7,7 +7,11 @@ import type {
 } from '../../@types/persisters/persister-partykit-client/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {jsonStringWithMap} from '../../common/json.ts';
-import {ifNotUndefined, isString} from '../../common/other.ts';
+import {
+  addEventListener,
+  ifNotUndefined,
+  isString,
+} from '../../common/other.ts';
 import {EMPTY_STRING, MESSAGE} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 import {
@@ -17,8 +21,6 @@ import {
   construct,
   deconstruct,
 } from '../common/partykit.ts';
-
-type MessageListener = (event: MessageEvent) => void;
 
 export const createPartyKitPersister = ((
   store: Store,
@@ -68,10 +70,8 @@ export const createPartyKitPersister = ((
     }
   };
 
-  const addPersisterListener = (
-    listener: PersisterListener,
-  ): MessageListener => {
-    const messageListener = (event: MessageEvent) =>
+  const addPersisterListener = (listener: PersisterListener): (() => void) =>
+    addEventListener(connection, MESSAGE, (event: MessageEvent) =>
       ifNotUndefined(
         deconstruct(messagePrefix, event.data, 1),
         ([type, payload]) => {
@@ -79,14 +79,11 @@ export const createPartyKitPersister = ((
             listener(undefined, payload);
           }
         },
-      );
-    connection.addEventListener(MESSAGE, messageListener);
-    return messageListener;
-  };
+      ),
+    );
 
-  const delPersisterListener = (messageListener: MessageListener): void => {
-    connection.removeEventListener(MESSAGE, messageListener);
-  };
+  const delPersisterListener = (removeListener: () => void): void =>
+    removeListener();
 
   return createCustomPersister(
     store,

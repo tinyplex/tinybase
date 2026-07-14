@@ -17,11 +17,13 @@ import {
   objNew,
   objSize,
 } from '../../common/obj.ts';
-import {ifNotUndefined, isUndefined} from '../../common/other.ts';
-import {TINYBASE} from '../../common/strings.ts';
+import {
+  addEmitterListener,
+  ifNotUndefined,
+  isUndefined,
+} from '../../common/other.ts';
+import {CHANGE, TINYBASE} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
-
-type Observer = ({doc}: {doc: any}) => void;
 
 const ensureDocContent = (doc: any, docObjName: string) => {
   if (objIsEmpty(doc[docObjName])) {
@@ -153,16 +155,13 @@ export const createAutomergePersister = ((
       applyChangesToDoc(doc, docObjName, getContent, changes),
     );
 
-  const addPersisterListener = (listener: PersisterListener): Observer => {
-    const observer: Observer = ({doc}) =>
-      listener(getDocContent(doc, docObjName));
-    docHandle.on('change', observer);
-    return observer;
-  };
+  const addPersisterListener = (listener: PersisterListener): (() => void) =>
+    addEmitterListener(docHandle, CHANGE, ({doc}: {doc: any}) =>
+      listener(getDocContent(doc, docObjName)),
+    );
 
-  const delPersisterListener = (observer: Observer): void => {
-    docHandle.removeListener('change', observer);
-  };
+  const delPersisterListener = (removeListener: () => void): void =>
+    removeListener();
 
   return createCustomPersister(
     store,

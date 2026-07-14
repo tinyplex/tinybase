@@ -47,10 +47,16 @@ import {APP_STYLESHEET} from '../common/inspector/style.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
-import {isUndefined, mathFloor, number} from '../common/other.ts';
+import {
+  addEventListener,
+  isUndefined,
+  mathFloor,
+  number,
+} from '../common/other.ts';
 import {
   DEFAULT,
   EMPTY_STRING,
+  KEYDOWN,
   TABLE,
   TABLES,
   VALUES,
@@ -200,14 +206,14 @@ const ConfirmableActions = <
 
   createEffect(() => {
     if (!isUndefined(confirming())) {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (!isUndefined(confirming()) && event.key == 'Escape') {
-          event.preventDefault();
-          handleDone();
-        }
-      };
-      document.addEventListener('keydown', handleKeyDown);
-      onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+      onCleanup(
+        addEventListener(document, KEYDOWN, (event: KeyboardEvent) => {
+          if (!isUndefined(confirming()) && event.key == 'Escape') {
+            event.preventDefault();
+            handleDone();
+          }
+        }),
+      );
     }
   });
 
@@ -306,15 +312,14 @@ const Delete = (props: {
   readonly onClick: () => void;
   readonly prompt?: string;
 }) => {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key == 'Enter') {
-      event.preventDefault();
-      props.onClick();
-    }
-  };
-
-  document.addEventListener('keydown', handleKeyDown);
-  onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+  onCleanup(
+    addEventListener(document, KEYDOWN, (event: KeyboardEvent) => {
+      if (event.key == 'Enter') {
+        event.preventDefault();
+        props.onClick();
+      }
+    }),
+  );
 
   return (
     <>

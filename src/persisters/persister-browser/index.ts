@@ -19,16 +19,14 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import {WINDOW} from '../../common/other.ts';
+import {addEventListener, WINDOW} from '../../common/other.ts';
+import {STORAGE} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
-type StorageListener = (event: StorageEvent) => void;
 type FileSystemObserver = {
   observe: (handle: FileSystemFileHandle) => Promise<void>;
   disconnect: () => void;
 };
-
-const STORAGE = 'storage';
 
 const createStoragePersister = (
   store: Store | MergeableStore,
@@ -47,21 +45,18 @@ const createStoragePersister = (
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
-  ): StorageListener => {
-    const storageListener = (event: StorageEvent): void => {
+  ): (() => void) =>
+    addEventListener(WINDOW, STORAGE, (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
         tryCatch(
           () => listener(jsonParseWithUndefined(event.newValue as string)),
           listener,
         );
       }
-    };
-    WINDOW.addEventListener(STORAGE, storageListener);
-    return storageListener;
-  };
+    });
 
-  const delPersisterListener = (storageListener: StorageListener): void =>
-    WINDOW.removeEventListener(STORAGE, storageListener);
+  const delPersisterListener = (removeListener: () => void): void =>
+    removeListener();
 
   return createCustomPersister(
     store,

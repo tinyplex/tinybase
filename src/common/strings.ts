@@ -69,8 +69,13 @@ export const CURRENT_TARGET = 'currentTarget';
 export const _VALUE = 'value';
 
 export const OPEN = 'open';
+export const CLOSE = 'close';
 export const MESSAGE = 'message';
 export const ERROR = 'error';
+export const CHANGE = 'change';
+export const CONNECTION = 'connection';
+export const KEYDOWN = 'keydown';
+export const STORAGE = 'storage';
 export const EXTRA = 'extra';
 
 export const ANY_OF = 'anyOf';
