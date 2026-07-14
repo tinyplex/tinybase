@@ -62,7 +62,7 @@ test('multiple stores share one WebSocket', async () => {
     createMergeableStore(),
     webSocket as any,
     'files',
-    1,
+    0.01,
     undefined,
     (...args) => filesReceives.push(args),
   );
@@ -70,7 +70,7 @@ test('multiple stores share one WebSocket', async () => {
     createMergeableStore(),
     webSocket as any,
     'editor',
-    1,
+    0.01,
     undefined,
     (...args) => editorReceives.push(args),
   );
