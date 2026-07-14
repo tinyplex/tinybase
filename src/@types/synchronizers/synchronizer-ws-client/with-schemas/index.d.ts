@@ -24,6 +24,7 @@ export function createWsSynchronizer<
 >(
   store: MergeableStore<Schemas>,
   webSocket: WebSocketType,
+  channelId: Id,
   requestTimeoutSeconds?: number,
   onSend?: Send,
   onReceive?: Receive,
@@ -38,7 +39,6 @@ export function createWsSynchronizer<
 >(
   store: MergeableStore<Schemas>,
   webSocket: WebSocketType,
-  channelId: Id,
   requestTimeoutSeconds?: number,
   onSend?: Send,
   onReceive?: Receive,
