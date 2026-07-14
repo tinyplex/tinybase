@@ -1,4 +1,4 @@
-import type {IdOrNull} from '../../@types/common/index.d.ts';
+import type {Id, IdOrNull} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   Message,
@@ -10,15 +10,333 @@ import type {
   WsSynchronizer,
   createWsSynchronizer as createWsSynchronizerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-client/index.d.ts';
-import {arrayForEach} from '../../common/array.ts';
-import {promiseNew} from '../../common/other.ts';
+import {arrayClear, arrayForEach, arrayPush} from '../../common/array.ts';
+import {getUniqueId} from '../../common/codec.ts';
+import {collDel, collHas, collIsEmpty} from '../../common/coll.ts';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
+import {
+  isString,
+  promiseNew,
+  startTimeout,
+  stopTimeout,
+} from '../../common/other.ts';
 import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
-import {createPayloadReceiver, createPayloads} from '../common.ts';
+import {
+  MULTIPLE_VERSION,
+  MultipleControl,
+  createMultipleControlPayload,
+  createMultiplePayload,
+  createPayloadReceiver,
+  createPayloads,
+  ifMultipleControlPayloadValid,
+  ifMultiplePayloadValid,
+  isMultipleChannelIdValid,
+} from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
-export const createWsSynchronizer = (async <
+type Channel = [
+  receive: ((payload: string) => void) | undefined,
+  incoming: string[],
+  outgoing: string[],
+  subscribed: boolean,
+  subscribing: Promise<void> | undefined,
+];
+
+type PendingControl = [
+  control: MultipleControl,
+  resolve: () => void,
+  reject: (error: Error) => void,
+  timeout: ReturnType<typeof startTimeout>,
+];
+
+type Connection = [
+  promise: Promise<void>,
+  resolve: () => void,
+  reject: (error: Error) => void,
+];
+
+type MultipleState = {
+  addChannel: (channelId: Id, timeoutSeconds: number) => Promise<void>;
+  delChannel: (channelId: Id) => void;
+  destroyIfEmpty: () => void;
+  registerReceive: (channelId: Id, receive: (payload: string) => void) => void;
+  send: (channelId: Id, payload: string) => void;
+};
+
+const multipleStates = new WeakMap<WebSocketTypes, MultipleState>();
+const legacyWebSockets = new WeakSet<WebSocketTypes>();
+
+const createConnection = (): Connection => {
+  let resolve: () => void;
+  let reject: (error: Error) => void;
+  const promise = promiseNew<void>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return [promise, resolve!, reject!];
+};
+
+const createMultipleState = <WebSocketType extends WebSocketTypes>(
+  webSocket: WebSocketType,
+  requestTimeoutSeconds: number,
+  onIgnoredError?: (error: any) => void,
+) => {
+  const channels: IdMap<Channel> = mapNew();
+  const pendingControls: IdMap<PendingControl> = mapNew();
+  const removeListeners: (() => void)[] = [];
+  let connection = createConnection();
+  let connected = false;
+  let destroyed = false;
+
+  const addEventListener = (
+    event: keyof WebSocketEventMap,
+    handler: (...args: any[]) => void,
+  ) => {
+    webSocket.addEventListener(event, handler);
+    const removeListener = () => webSocket.removeEventListener(event, handler);
+    arrayPush(removeListeners, removeListener);
+    return removeListener;
+  };
+
+  const rejectPendingControls = (error: Error) =>
+    mapForEach(pendingControls, (requestId, [, , reject, timeout]) => {
+      stopTimeout(timeout);
+      collDel(pendingControls, requestId);
+      reject(error);
+    });
+
+  const sendControl = (
+    control: MultipleControl,
+    body: any,
+    timeoutSeconds: number,
+  ): Promise<void> => {
+    const requestId = getUniqueId();
+    return promiseNew((resolve, reject) => {
+      const timeout = startTimeout(() => {
+        collDel(pendingControls, requestId);
+        const error = new Error('No multiplex response for ' + control);
+        onIgnoredError?.(error);
+        reject(error);
+      }, timeoutSeconds);
+      mapSet(pendingControls, requestId, [control, resolve, reject, timeout]);
+      webSocket.send(createMultipleControlPayload(requestId, control, body));
+    });
+  };
+
+  const flushOutgoing = (channelId: Id, channel: Channel) => {
+    arrayForEach(channel[2], (payload) =>
+      webSocket.send(createMultiplePayload(channelId, payload)),
+    );
+    arrayClear(channel[2]);
+  };
+
+  const subscribe = async (
+    channelId: Id,
+    channel: Channel,
+    timeoutSeconds: number,
+  ) => {
+    if (!channel[3]) {
+      channel[4] ??= (async () => {
+        await connection[0];
+        await sendControl(MultipleControl.Subscribe, channelId, timeoutSeconds);
+        channel[3] = true;
+        channel[4] = undefined;
+        flushOutgoing(channelId, channel);
+      })();
+      await channel[4];
+    }
+  };
+
+  const onOpen = async () => {
+    const openingConnection = connection;
+    try {
+      await sendControl(
+        MultipleControl.Hello,
+        MULTIPLE_VERSION,
+        requestTimeoutSeconds,
+      );
+      connected = true;
+      openingConnection[1]();
+      mapForEach(channels, (channelId, channel) =>
+        subscribe(channelId, channel, requestTimeoutSeconds).catch(
+          onIgnoredError,
+        ),
+      );
+    } catch (error: any) {
+      openingConnection[2](error);
+    }
+  };
+
+  const onClose = () => {
+    if (!destroyed) {
+      connected = false;
+      const error = new Error('WebSocket closed while multiplexing');
+      connection[2](error);
+      rejectPendingControls(error);
+      connection = createConnection();
+      mapForEach(channels, (_channelId, channel) => {
+        channel[3] = false;
+        channel[4] = undefined;
+      });
+    }
+  };
+
+  addEventListener(MESSAGE, ({data}) => {
+    const payload = data.toString(UTF8);
+    ifMultipleControlPayloadValid(payload, (requestId, control, _body) => {
+      const pendingControl = requestId
+        ? mapGet(pendingControls, requestId)
+        : undefined;
+      if (pendingControl?.[0] == control) {
+        stopTimeout(pendingControl[3]);
+        collDel(pendingControls, requestId);
+        pendingControl[1]();
+      }
+    });
+    ifMultiplePayloadValid(payload, (channelId, channelPayload) => {
+      const channel = mapGet(channels, channelId);
+      if (channel) {
+        channel[0]
+          ? channel[0](channelPayload)
+          : arrayPush(channel[1], channelPayload);
+      }
+    });
+  });
+  addEventListener(OPEN, onOpen);
+  addEventListener('close', onClose);
+  addEventListener(ERROR, (error) => onIgnoredError?.(error));
+
+  if (webSocket.readyState == webSocket.OPEN) {
+    onOpen();
+  }
+
+  const addChannel = async (channelId: Id, timeoutSeconds: number) => {
+    if (!isMultipleChannelIdValid(channelId)) {
+      throw new Error('Invalid multiplex channel Id: ' + channelId);
+    }
+    if (collHas(channels, channelId)) {
+      throw new Error('Duplicate multiplex channel Id: ' + channelId);
+    }
+    const channel: Channel = [undefined, [], [], false, undefined];
+    mapSet(channels, channelId, channel);
+    try {
+      await subscribe(channelId, channel, timeoutSeconds);
+    } catch (error) {
+      delChannel(channelId);
+      throw error;
+    }
+  };
+
+  const registerReceive = (
+    channelId: Id,
+    receive: (payload: string) => void,
+  ) => {
+    const channel = mapGet(channels, channelId);
+    if (channel) {
+      channel[0] = receive;
+      arrayForEach(channel[1], receive);
+      arrayClear(channel[1]);
+    }
+  };
+
+  const send = (channelId: Id, payload: string) => {
+    const channel = mapGet(channels, channelId);
+    if (channel) {
+      connected && channel[3]
+        ? webSocket.send(createMultiplePayload(channelId, payload))
+        : arrayPush(channel[2], payload);
+    }
+  };
+
+  const destroyIfEmpty = () => {
+    if (collIsEmpty(channels) && !destroyed) {
+      destroyed = true;
+      rejectPendingControls(new Error('Multiplexing destroyed'));
+      arrayForEach(removeListeners, (removeListener) => removeListener());
+      multipleStates.delete(webSocket);
+      webSocket.close();
+    }
+  };
+
+  const delChannel = (channelId: Id) => {
+    const channel = mapGet(channels, channelId);
+    if (channel) {
+      if (connected && channel[3]) {
+        webSocket.send(
+          createMultipleControlPayload(
+            null,
+            MultipleControl.Unsubscribe,
+            channelId,
+          ),
+        );
+      }
+      collDel(channels, channelId);
+      destroyIfEmpty();
+    }
+  };
+
+  return {addChannel, delChannel, destroyIfEmpty, registerReceive, send};
+};
+
+const createMultipleWsSynchronizer = async <
   WebSocketType extends WebSocketTypes,
 >(
+  store: MergeableStore,
+  webSocket: WebSocketType,
+  channelId: Id,
+  requestTimeoutSeconds: number,
+  onSend?: Send,
+  onReceive?: Receive,
+  onIgnoredError?: (error: any) => void,
+  fragmentSize?: number,
+) => {
+  if (legacyWebSockets.has(webSocket)) {
+    throw new Error('WebSocket already has a legacy synchronizer');
+  }
+  const existingState = multipleStates.get(webSocket);
+  const state =
+    existingState ??
+    (() => {
+      const newState = createMultipleState(
+        webSocket,
+        requestTimeoutSeconds,
+        onIgnoredError,
+      );
+      multipleStates.set(webSocket, newState);
+      return newState;
+    })();
+
+  try {
+    await state.addChannel(channelId, requestTimeoutSeconds);
+  } catch (error) {
+    if (!existingState) {
+      state.destroyIfEmpty();
+    }
+    throw error;
+  }
+
+  return createCustomSynchronizer(
+    store,
+    (toClientId, requestId, message, body) =>
+      arrayForEach(
+        createPayloads(toClientId, requestId, message, body, fragmentSize),
+        (payload) => state.send(channelId, payload),
+      ),
+    (receive: Receive) =>
+      state.registerReceive(
+        channelId,
+        createPayloadReceiver(receive, requestTimeoutSeconds),
+      ),
+    () => state.delChannel(channelId),
+    requestTimeoutSeconds,
+    onSend,
+    onReceive,
+    onIgnoredError,
+    {getWebSocket: () => webSocket},
+  ) as WsSynchronizer<WebSocketType>;
+};
+
+const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   store: MergeableStore,
   webSocket: WebSocketType,
   requestTimeoutSeconds: number = 1,
@@ -27,6 +345,9 @@ export const createWsSynchronizer = (async <
   onIgnoredError?: (error: any) => void,
   fragmentSize?: number,
 ) => {
+  if (multipleStates.has(webSocket)) {
+    throw new Error('WebSocket already has multiplexed synchronizers');
+  }
   const addEventListener = (
     event: keyof WebSocketEventMap,
     handler: (...args: any[]) => void,
@@ -67,6 +388,7 @@ export const createWsSynchronizer = (async <
     {getWebSocket: () => webSocket},
   ) as WsSynchronizer<any>;
 
+  legacyWebSockets.add(webSocket);
   return promiseNew((resolve) => {
     if (webSocket.readyState != webSocket.OPEN) {
       const onAttempt = (error?: any) => {
@@ -83,4 +405,31 @@ export const createWsSynchronizer = (async <
       resolve(synchronizer);
     }
   });
-}) as typeof createWsSynchronizerDecl;
+};
+
+export const createWsSynchronizer = (async (
+  store: MergeableStore,
+  webSocket: WebSocketTypes,
+  channelIdOrRequestTimeout: Id | number = 1,
+  ...args: any[]
+) =>
+  isString(channelIdOrRequestTimeout)
+    ? createMultipleWsSynchronizer(
+        store,
+        webSocket,
+        channelIdOrRequestTimeout,
+        args[0] ?? 1,
+        args[1],
+        args[2],
+        args[3],
+        args[4],
+      )
+    : createLegacyWsSynchronizer(
+        store,
+        webSocket,
+        channelIdOrRequestTimeout,
+        args[0],
+        args[1],
+        args[2],
+        args[3],
+      )) as typeof createWsSynchronizerDecl;

@@ -1,6 +1,6 @@
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {Message, Receive} from '../@types/synchronizers/index.d.ts';
-import {arrayJoin, arrayMap} from '../common/array.ts';
+import {arrayEvery, arrayJoin, arrayMap} from '../common/array.ts';
 import {getUniqueId} from '../common/codec.ts';
 import {collDel} from '../common/coll.ts';
 import {
@@ -9,6 +9,7 @@ import {
 } from '../common/json.ts';
 import {IdMap, mapEnsure, mapNew} from '../common/map.ts';
 import {
+  isArray,
   isUndefined,
   mathFloor,
   size,
@@ -16,10 +17,24 @@ import {
   startTimeout,
   stopTimeout,
 } from '../common/other.ts';
-import {EMPTY_STRING, strMatch} from '../common/strings.ts';
+import {EMPTY_STRING, strMatch, strSplit} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^(.+)\n(\d+)\n(\d+)\n([\s\S]*)$/;
+
+export const WS_SYNCHRONIZER_PROTOCOL = 'tinybase';
+export const SERVER_CLIENT_ID = 'S';
+
+const MULTIPLE_CLIENT_ID = 'M';
+const MULTIPLE_MESSAGE = -1;
+
+export const enum MultipleControl {
+  Hello,
+  Subscribe,
+  Unsubscribe,
+}
+
+export const MULTIPLE_VERSION = 1;
 
 type Pending = [
   fragments: string[],
@@ -116,6 +131,60 @@ export const createPayload = (
 
 export const createRawPayload = (clientId: Id, remainder: string): string =>
   clientId + MESSAGE_SEPARATOR + remainder;
+
+export const createMultiplePayload = (channelId: Id, payload: string): string =>
+  createRawPayload(MULTIPLE_CLIENT_ID, createRawPayload(channelId, payload));
+
+export const ifMultiplePayloadValid = (
+  payload: string,
+  then: (channelId: Id, payload: string) => void,
+) =>
+  ifPayloadValid(payload, (multipleClientId, remainder) =>
+    multipleClientId == MULTIPLE_CLIENT_ID
+      ? ifPayloadValid(remainder, then)
+      : 0,
+  );
+
+export const createMultipleControlPayload = (
+  requestId: IdOrNull,
+  control: MultipleControl,
+  body: any,
+): string =>
+  createRawPayload(
+    SERVER_CLIENT_ID,
+    jsonStringWithUndefined([requestId, MULTIPLE_MESSAGE, [control, body]]),
+  );
+
+export const ifMultipleControlPayloadValid = (
+  payload: string,
+  then: (requestId: IdOrNull, control: MultipleControl, body: any) => void,
+) =>
+  ifPayloadValid(payload, (serverClientId, remainder) => {
+    if (serverClientId == SERVER_CLIENT_ID) {
+      const [requestId, message, controlAndBody] = jsonParseWithUndefined(
+        remainder,
+      ) as [IdOrNull, number, any];
+      if (
+        message == MULTIPLE_MESSAGE &&
+        isArray(controlAndBody) &&
+        controlAndBody.length == 2
+      ) {
+        then(
+          requestId,
+          controlAndBody[0] as MultipleControl,
+          controlAndBody[1],
+        );
+      }
+    }
+  });
+
+export const isMultipleChannelIdValid = (channelId: Id): boolean =>
+  channelId.length > 0 &&
+  !/[\n\r?#]/.test(channelId) &&
+  arrayEvery(
+    strSplit(channelId, '/'),
+    (part) => part.length > 0 && part != '.' && part != '..',
+  );
 
 export const createPayloads = (
   toClientId: IdOrNull,
