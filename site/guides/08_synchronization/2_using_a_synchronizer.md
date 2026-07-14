@@ -146,6 +146,59 @@ listeners:
 await server.destroy();
 ```
 
+### Sharing One WebSocket Between Stores
+
+When an application synchronizes several MergeableStore instances, they can
+share one physical WebSocket. Create the WebSocket with the `tinybase`
+subprotocol, and provide a different channel Id as the third argument to each
+createWsSynchronizer call:
+
+```js
+const multipleServer = createWsServer(new WebSocketServer({port: 8049}));
+const multipleWebSocket = new WebSocket(
+  'ws://localhost:8049/petShop',
+  'tinybase',
+);
+const filesStore = createMergeableStore();
+const employeesStore = createMergeableStore();
+const filesSynchronizer = await createWsSynchronizer(
+  filesStore,
+  multipleWebSocket,
+  'files',
+);
+const employeesSynchronizer = await createWsSynchronizer(
+  employeesStore,
+  multipleWebSocket,
+  'employees',
+);
+```
+
+The WebSocket URL path is a base path. In this example, the two server paths
+are `petShop/files` and `petShop/employees`. A client using the original
+one-WebSocket-per-store form can join the first path by connecting directly to
+`ws://localhost:8049/petShop/files`.
+
+The channel Id is explicit and is not taken from the MergeableStore Id. Channel
+Ids can contain multiple path segments, but cannot be empty, contain empty,
+`.` or `..` segments, or include query, fragment, or newline characters.
+
+Each WsSynchronizer is started and stopped normally. Destroying one only
+unsubscribes its channel. The shared WebSocket is closed when the last
+WsSynchronizer using it is destroyed:
+
+```js
+await filesSynchronizer.destroy();
+console.log(multipleWebSocket.readyState == WebSocket.OPEN);
+// -> true
+
+await employeesSynchronizer.destroy();
+await multipleServer.destroy();
+```
+
+Shared WebSockets are supported by WsServer and WsServerSimple. They are not
+supported by WsServerDurableObject, where each URL path identifies a distinct
+Durable Object instance.
+
 ### Persisting Data On The Server
 
 New in TinyBase v5.1, the createWsServer function lets you specify a way to

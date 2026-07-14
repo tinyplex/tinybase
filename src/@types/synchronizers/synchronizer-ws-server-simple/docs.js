@@ -91,6 +91,9 @@
  * the complications of listeners, persistence, or statistics. This makes it
  * more suitable to be used as a reference implementation for other server
  * environments.
+ *
+ * Since v9.3, it also supports multiple channel-based WsSynchronizer instances
+ * sharing one WebSocket.
  * @param webSocketServer A WebSocketServer object from your server environment.
  * @returns A reference to the new WsServerSimple object.
  * @example

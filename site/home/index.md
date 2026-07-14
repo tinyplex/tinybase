@@ -11,9 +11,9 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v9-2'><em>NEW!</em> v9.2 release</a>
+<a href='/guides/releases/#v9-3'><em>NEW!</em> v9.3 release</a>
 
-<span id="one-with">"The one for agents!"</span>
+<span id="one-with">"The one with fewer sockets!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
