@@ -105,18 +105,14 @@ import type {
   SynchronizerOrSynchronizerId,
   UndoOrRedoInformation,
 } from '../@types/ui-solid/index.d.ts';
-import {
-  arrayIsEmpty,
-  arrayIsEqual,
-  arrayMap,
-  arrayOrValueEqual,
-} from '../common/array.ts';
+import {arrayIsEqual, arrayMap, arrayOrValueEqual} from '../common/array.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
   getArg,
   getUndefined,
   ifNotUndefined,
+  isEmpty,
   isFunction,
   isUndefined,
 } from '../common/other.ts';
@@ -369,7 +365,7 @@ const argsOrGetArgs = <Parameter>(
 ) =>
   arrayMap(args, (arg) =>
     isFunction(arg)
-      ? arg.length == 0
+      ? isEmpty(arg)
         ? getThing(arg as MaybeAccessor<Id>)
         : (
             arg as (parameter: Parameter, storeOrQueries: Store | Queries) => Id
@@ -1928,7 +1924,7 @@ export const useUndoInformation = (
   );
   const [backwardIds, currentId] = getThing(useCheckpointIds(checkpoints));
   return [
-    !arrayIsEmpty(backwardIds),
+    !isEmpty(backwardIds),
     useGoBackwardCallback(checkpoints),
     currentId,
     ifNotUndefined(currentId, (id) =>

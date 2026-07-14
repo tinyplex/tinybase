@@ -1,9 +1,9 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {IndexProps, SliceProps} from '../@types/ui-react/index.d.ts';
-import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {arrayMap} from '../common/array.ts';
 import {getUniqueId, sortedIdsMap} from '../common/inspector/common.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
-import {isUndefined} from '../common/other.ts';
+import {isEmpty, isUndefined} from '../common/other.ts';
 import {DEFAULT} from '../common/strings.ts';
 import {SliceInHtmlTable} from '../ui-react-dom/index.tsx';
 import {useIndexIds, useIndexes, useSliceIds} from '../ui-react/index.ts';
@@ -73,7 +73,7 @@ export const IndexesView = ({
       title={'Indexes: ' + (indexesId ?? DEFAULT)}
       s={s}
     >
-      {arrayIsEmpty(indexIds)
+      {isEmpty(indexIds)
         ? 'No indexes defined'
         : sortedIdsMap(indexIds, (indexId) => (
             <IndexView

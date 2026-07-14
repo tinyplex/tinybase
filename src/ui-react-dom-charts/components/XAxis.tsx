@@ -1,6 +1,7 @@
-import {arrayIsEmpty, arrayMap} from '../../common/array.ts';
+import {arrayMap} from '../../common/array.ts';
 import {
   dateNew,
+  isEmpty,
   isNullish,
   isNumber,
   mathMax,
@@ -68,7 +69,7 @@ export const XAxis = ({
         strokeWidth={1}
       />
       <g className="ticks">
-        {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax)
+        {isEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax)
           ? arrayMap(points, ([rowId, xValue, , x]) => (
               <text
                 key={rowId}

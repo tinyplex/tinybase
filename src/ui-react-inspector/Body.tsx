@@ -1,12 +1,12 @@
 import type {SyntheticEvent} from 'react';
-import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {arrayMap} from '../common/array.ts';
 import {NO_PROVIDED_OBJECTS_MESSAGE} from '../common/inspector/common.ts';
 import {
   cancelInspectorIdleCallback,
   requestInspectorIdleCallback,
 } from '../common/inspector/idle.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
-import {isUndefined, mathFloor} from '../common/other.ts';
+import {isEmpty, isUndefined, mathFloor} from '../common/other.ts';
 import {
   useCallback,
   useLayoutEffect,
@@ -81,15 +81,15 @@ export const Body = ({s}: StoreProp) => {
   const queriesIds = useQueriesIds();
 
   return isUndefined(store) &&
-    arrayIsEmpty(storeIds) &&
+    isEmpty(storeIds) &&
     isUndefined(metrics) &&
-    arrayIsEmpty(metricsIds) &&
+    isEmpty(metricsIds) &&
     isUndefined(indexes) &&
-    arrayIsEmpty(indexesIds) &&
+    isEmpty(indexesIds) &&
     isUndefined(relationships) &&
-    arrayIsEmpty(relationshipsIds) &&
+    isEmpty(relationshipsIds) &&
     isUndefined(queries) &&
-    arrayIsEmpty(queriesIds) ? (
+    isEmpty(queriesIds) ? (
     <span className="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
   ) : (
     <article ref={articleRef} onScroll={handleScroll}>

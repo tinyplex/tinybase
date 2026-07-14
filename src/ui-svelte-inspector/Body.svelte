@@ -6,8 +6,7 @@
     requestInspectorIdleCallback,
   } from '../common/inspector/idle.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
-  import {arrayIsEmpty} from '../common/array.ts';
-  import {isUndefined, mathFloor, number} from '../common/other.ts';
+  import {isEmpty, isUndefined, mathFloor, number} from '../common/other.ts';
   import {
     getIndexes,
     getIndexesIds,
@@ -78,15 +77,15 @@
   };
   const noProvidedObjects = $derived(
     isUndefined(store) &&
-      arrayIsEmpty(storeIds.current) &&
+      isEmpty(storeIds.current) &&
       isUndefined(metrics) &&
-      arrayIsEmpty(metricsIds.current) &&
+      isEmpty(metricsIds.current) &&
       isUndefined(indexes) &&
-      arrayIsEmpty(indexesIds.current) &&
+      isEmpty(indexesIds.current) &&
       isUndefined(relationships) &&
-      arrayIsEmpty(relationshipsIds.current) &&
+      isEmpty(relationshipsIds.current) &&
       isUndefined(queries) &&
-      arrayIsEmpty(queriesIds.current),
+      isEmpty(queriesIds.current),
   );
 </script>
 

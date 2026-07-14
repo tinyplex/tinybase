@@ -9,9 +9,9 @@ import type {
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
+import {arrayJoin, arrayMap} from '../../common/array.ts';
 import {IdObj, objToArray} from '../../common/obj.ts';
-import {noop} from '../../common/other.ts';
+import {isEmpty, noop, size} from '../../common/other.ts';
 import {COMMA} from '../../common/strings.ts';
 import {
   INSERT,
@@ -92,7 +92,7 @@ const powerSyncUpdateThenInsert: Upsert = async (
   ])) {
     const rowParams = arrayMap(row, (value) => value ?? null);
     if (
-      arrayIsEmpty(
+      isEmpty(
         await executeCommand(
           UPDATE +
             escapeId(tableName) +
@@ -102,7 +102,7 @@ const powerSyncUpdateThenInsert: Upsert = async (
             WHERE +
             escapeId(rowIdColumnName) +
             '=$' +
-            (row.length + 1) +
+            (size(row) + 1) +
             ' RETURNING' +
             escapeId(rowIdColumnName),
           [...rowParams, id],

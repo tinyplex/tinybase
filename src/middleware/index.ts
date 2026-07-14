@@ -33,7 +33,7 @@ import type {
 import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
 import {getCreateFunction} from '../common/definable.ts';
 import {objFreeze} from '../common/obj.ts';
-import {isUndefined} from '../common/other.ts';
+import {isEmpty, isUndefined} from '../common/other.ts';
 import {ProtectedStore} from '../store/index.ts';
 
 const reduceCallbacks = (
@@ -178,7 +178,7 @@ export const createMiddleware = getCreateFunction(
       willDelValues,
       willDelValue,
       willApplyChanges,
-      () => willSetRowCallbacks.length > 0,
+      () => !isEmpty(willSetRowCallbacks),
     );
 
     return middleware;

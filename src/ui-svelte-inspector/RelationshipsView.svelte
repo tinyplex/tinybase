@@ -3,8 +3,7 @@
   import {DEFAULT} from '../common/strings.ts';
   import {getUniqueId, sortedIdsMap} from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
-  import {arrayIsEmpty} from '../common/array.ts';
-  import {isUndefined} from '../common/other.ts';
+  import {isEmpty, isUndefined} from '../common/other.ts';
   import {
     getRelationshipIds,
     getRelationships,
@@ -25,7 +24,7 @@
 
 {#if !isUndefined(relationships)}
   <Details uniqueId={getUniqueId('r', relationshipsId)} {title} {s}>
-    {#if arrayIsEmpty(relationshipIds.current)}
+    {#if isEmpty(relationshipIds.current)}
       No relationships defined
     {:else}
       {#each sortedRelationshipIds as relationshipId (relationshipId)}

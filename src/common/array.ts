@@ -59,8 +59,6 @@ export const arrayMap = <Value, Return>(
 export const arraySum = (array: number[]): number =>
   arrayReduce<number, number>(array, (i, j) => i + j, 0);
 
-export const arrayIsEmpty = (array: unknown[]): boolean => size(array) == 0;
-
 export const arrayReduce = <Value, Result>(
   array: Value[],
   cb: (previous: Result, current: Value) => Result,

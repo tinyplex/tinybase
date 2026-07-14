@@ -261,7 +261,6 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {
   arrayFilter,
-  arrayIsEmpty,
   arrayIsEqual,
   arrayMap,
   arrayOrValueEqual,
@@ -274,6 +273,7 @@ import {
   getUndefined,
   ifNotUndefined,
   isArray,
+  isEmpty,
   isFunction,
   isUndefined,
 } from '../common/other.ts';
@@ -2317,7 +2317,7 @@ export const useUndoInformation: typeof useUndoInformationDecl = (
   );
   const [backwardIds, currentId] = useCheckpointIds(checkpoints);
   return [
-    !arrayIsEmpty(backwardIds),
+    !isEmpty(backwardIds),
     useGoBackwardCallback(checkpoints),
     currentId,
     ifNotUndefined(currentId, (id) => checkpoints?.getCheckpoint(id)) ??

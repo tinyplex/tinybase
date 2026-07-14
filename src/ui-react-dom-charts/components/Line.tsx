@@ -1,5 +1,5 @@
-import {arrayIsEmpty, arrayJoin, arrayMap} from '../../common/array.ts';
-import {size} from '../../common/other.ts';
+import {arrayJoin, arrayMap} from '../../common/array.ts';
+import {isEmpty, size} from '../../common/other.ts';
 import {CURRENT_COLOR} from '../common/strings.ts';
 import {
   type PlotFrame,
@@ -69,7 +69,7 @@ const getAreaPath = (
   plotY: number,
   height: number,
 ) =>
-  arrayIsEmpty(points)
+  isEmpty(points)
     ? ''
     : `${getLinePath(points, plotX, plotY)} L${
         plotX + points[size(points) - 1][3]

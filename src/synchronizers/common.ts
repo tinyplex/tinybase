@@ -10,6 +10,7 @@ import {
 import {IdMap, mapEnsure, mapNew} from '../common/map.ts';
 import {
   isArray,
+  isEmpty,
   isUndefined,
   mathFloor,
   size,
@@ -168,7 +169,7 @@ export const ifMultipleControlPayloadValid = (
       if (
         message == MULTIPLE_MESSAGE &&
         isArray(controlAndBody) &&
-        controlAndBody.length == 2
+        size(controlAndBody) == 2
       ) {
         then(
           requestId,
@@ -180,11 +181,11 @@ export const ifMultipleControlPayloadValid = (
   });
 
 export const isMultipleChannelIdValid = (channelId: Id): boolean =>
-  channelId.length > 0 &&
+  !isEmpty(channelId) &&
   !INVALID_CHANNEL_ID_CHARACTERS.test(channelId) &&
   arrayEvery(
     strSplit(channelId, '/'),
-    (part) => part.length > 0 && part != '.' && part != '..',
+    (part) => !isEmpty(part) && part != '.' && part != '..',
   );
 
 export const createPayloads = (

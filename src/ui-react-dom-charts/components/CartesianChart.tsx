@@ -13,7 +13,6 @@ import {
   arrayForEach,
   arrayHas,
   arrayIndexOf,
-  arrayIsEmpty,
   arrayIsEqual,
   arrayJoin,
   arrayMap,
@@ -22,6 +21,7 @@ import {
 } from '../../common/array.ts';
 import {objValues} from '../../common/obj.ts';
 import {
+  isEmpty,
   isFiniteNumber,
   isNullish,
   isNumber,
@@ -179,7 +179,7 @@ export const CartesianChart = ({
     yAxis,
   );
   const [dataXMin, dataXMax] = dataBounds;
-  const axisKind = continuousX || arrayIsEmpty(barSeriesIds) ? LINE : BAR;
+  const axisKind = continuousX || isEmpty(barSeriesIds) ? LINE : BAR;
   const xTicks =
     continuousX && !isNullish(xAxis?.ticks)
       ? getAxisTicks(xAxis.ticks, xScale, timestampUnit)
@@ -466,7 +466,7 @@ const getTitle = (
       arrayPush(titles, title);
     }
   });
-  return arrayIsEmpty(titles) ? '' : arrayJoin(titles, TITLE_SEPARATOR);
+  return isEmpty(titles) ? '' : arrayJoin(titles, TITLE_SEPARATOR);
 };
 
 const getAxisBounds = (

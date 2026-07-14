@@ -13,10 +13,15 @@ import type {
   Tables,
   Values,
 } from '../../@types/store/index.d.ts';
-import {arrayForEach, arrayIsEmpty, arrayShift} from '../../common/array.ts';
+import {arrayForEach, arrayShift} from '../../common/array.ts';
 import {mapForEach} from '../../common/map.ts';
 import {IdObj, objEnsure, objHas, objMap, objNew} from '../../common/obj.ts';
-import {ifNotUndefined, isUndefined, size} from '../../common/other.ts';
+import {
+  ifNotUndefined,
+  isEmpty,
+  isUndefined,
+  size,
+} from '../../common/other.ts';
 import {T, TINYBASE, V} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
@@ -30,7 +35,7 @@ const getChangesFromYDoc = (
   yContent: YMap<any>,
   events: YEvent<any>[],
 ): Changes => {
-  if (size(events) == 1 && arrayIsEmpty(events[0].path)) {
+  if (size(events) == 1 && isEmpty(events[0].path)) {
     return [yContent.get(T).toJSON(), yContent.get(V).toJSON(), 1];
   }
   const [yTables, yValues] = getYContent(yContent);

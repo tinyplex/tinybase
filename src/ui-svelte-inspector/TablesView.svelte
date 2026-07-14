@@ -4,7 +4,7 @@
   import {getUniqueId, sortedIdsMap} from '../common/inspector/common.ts';
   import {TABLES} from '../common/strings.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
-  import {arrayIsEmpty} from '../common/array.ts';
+  import {isEmpty} from '../common/other.ts';
   import {getTableIds} from '../ui-svelte/functions.svelte.ts';
   import TablesActions from './actions/TablesActions.svelte';
   import Details from './Details.svelte';
@@ -32,7 +32,7 @@
   {handleEditable}
   {s}
 >
-  {#if arrayIsEmpty(tableIds.current)}
+  {#if isEmpty(tableIds.current)}
     <p>No tables.</p>
   {:else}
     {#each sortedTableIds as tableId (tableId)}

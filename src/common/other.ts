@@ -136,8 +136,10 @@ export const slice = <ArrayOrString extends string | any[]>(
   end?: number,
 ): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;
 
-export const size = (arrayOrString: string | readonly any[]): number =>
-  arrayOrString.length;
+export const size = (thing: {readonly length: number}): number => thing.length;
+
+export const isEmpty = (thing: {readonly length: number}): boolean =>
+  size(thing) == 0;
 
 export const test = (regex: RegExp, subject: string): boolean =>
   regex.test(subject);

@@ -1,6 +1,6 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
-import {arrayIsEmpty} from '../common/array.ts';
+
 import {
   SORT_CELL,
   STATE_TABLE,
@@ -9,7 +9,7 @@ import {
 } from '../common/inspector/common.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
-import {isUndefined} from '../common/other.ts';
+import {isEmpty, isUndefined} from '../common/other.ts';
 import {DEFAULT} from '../common/strings.ts';
 import {ResultSortedTableInHtmlTable} from '../ui-react-dom/index.tsx';
 import {
@@ -71,7 +71,7 @@ export const QueriesView = ({
       title={'Queries: ' + (queriesId ?? DEFAULT)}
       s={s}
     >
-      {arrayIsEmpty(queryIds)
+      {isEmpty(queryIds)
         ? 'No queries defined'
         : sortedIdsMap(queryIds, (queryId) => (
             <QueryView

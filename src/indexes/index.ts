@@ -42,7 +42,12 @@ import {
   mapSet,
 } from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
-import {ifNotUndefined, isArray, isUndefined} from '../common/other.ts';
+import {
+  ifNotUndefined,
+  isArray,
+  isEmpty,
+  isUndefined,
+} from '../common/other.ts';
 import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {EMPTY_STRING, id} from '../common/strings.ts';
 
@@ -272,7 +277,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     delDefinition(indexId);
     if (hadIndex) {
       callListeners(hasIndexListeners, [indexId], false);
-      if (sliceIds.length > 0) {
+      if (!isEmpty(sliceIds)) {
         callListeners(sliceIdsListeners, [indexId]);
         arrayForEach(sliceIds, (sliceId) => {
           callListeners(hasSliceListeners, [indexId, sliceId], false);

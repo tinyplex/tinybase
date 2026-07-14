@@ -3,7 +3,7 @@
   import type {Store} from '../@types/store/index.d.ts';
   import {getUniqueId} from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
-  import {arrayIsEmpty} from '../common/array.ts';
+  import {isEmpty} from '../common/other.ts';
   import {VALUES} from '../common/strings.ts';
   import {getValueIds} from '../ui-svelte/functions.svelte.ts';
   import {ValuesInHtmlTable} from '../ui-svelte-dom/index.ts';
@@ -31,7 +31,7 @@
   {handleEditable}
   {s}
 >
-  {#if arrayIsEmpty(valueIds.current)}
+  {#if isEmpty(valueIds.current)}
     <p>No values.</p>
   {:else}
     <ValuesInHtmlTable

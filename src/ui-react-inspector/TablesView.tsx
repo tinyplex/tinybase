@@ -4,7 +4,7 @@ import type {
   TableProps,
   TablesProps,
 } from '../@types/ui-react/index.d.ts';
-import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {arrayMap} from '../common/array.ts';
 import {
   SORT_CELL,
   STATE_TABLE,
@@ -14,6 +14,7 @@ import {
 import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
+import {isEmpty} from '../common/other.ts';
 import {TABLE, TABLES} from '../common/strings.ts';
 import {
   EditableCellView,
@@ -125,7 +126,7 @@ export const TablesView = ({
       handleEditable={handleEditable}
       s={s}
     >
-      {arrayIsEmpty(tableIds) ? (
+      {isEmpty(tableIds) ? (
         <p>No tables.</p>
       ) : (
         sortedIdsMap(tableIds, (tableId) => (

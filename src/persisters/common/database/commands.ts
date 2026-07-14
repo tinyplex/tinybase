@@ -11,7 +11,6 @@ import type {
 } from '../../../@types/store/index.d.ts';
 import {
   arrayFilter,
-  arrayIsEmpty,
   arrayJoin,
   arrayMap,
   arrayPush,
@@ -27,7 +26,7 @@ import {
   objNew,
   objToArray,
 } from '../../../common/obj.ts';
-import {isUndefined, promiseAll} from '../../../common/other.ts';
+import {isEmpty, isUndefined, promiseAll} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {COMMA, TRUE} from '../../../common/strings.ts';
 import {
@@ -181,7 +180,7 @@ export const getCommandFunctions = (
       !partial &&
       deleteEmptyTable &&
       condition == TRUE &&
-      arrayIsEmpty(settingColumnNames) &&
+      isEmpty(settingColumnNames) &&
       collHas(schemaMap, tableName)
     ) {
       await databaseExecuteCommand('DROP ' + TABLE + escapeId(tableName));
@@ -197,7 +196,7 @@ export const getCommandFunctions = (
           columnName == rowIdColumnName || includeContentSubId(columnName),
       ),
     );
-    if (!arrayIsEmpty(settingColumnNames)) {
+    if (!isEmpty(settingColumnNames)) {
       if (!collHas(schemaMap, tableName)) {
         // Create the table
         await databaseExecuteCommand(
@@ -286,13 +285,13 @@ export const getCommandFunctions = (
                   `AND(${escapeId(rowIdColumnName)}=$1)`,
                 [rowId],
               );
-            } else if (!arrayIsEmpty(settingColumnNames)) {
+            } else if (!isEmpty(settingColumnNames)) {
               // Upsert row (partial)
               const changingColumnNames = arrayFilter(
                 objIds(row),
                 includeContentSubId,
               );
-              if (!arrayIsEmpty(changingColumnNames)) {
+              if (!isEmpty(changingColumnNames)) {
                 await upsert(
                   databaseExecuteCommand,
                   tableName,
@@ -311,7 +310,7 @@ export const getCommandFunctions = (
         );
       }
     } else {
-      if (!arrayIsEmpty(settingColumnNames)) {
+      if (!isEmpty(settingColumnNames)) {
         const changingColumnNames = arrayFilter(
           collValues(mapGet(schemaMap, tableName)),
           (changingColumnName) =>
