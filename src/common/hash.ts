@@ -18,7 +18,7 @@ import {jsonStringWithMap} from './json.ts';
 import {objEntries} from './obj.ts';
 import {GLOBAL} from './other.ts';
 
-const textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
+const textEncoder = new GLOBAL.TextEncoder();
 
 // fnv1a
 export const getHash: typeof getHashDecl = (string: string): Hash => {
