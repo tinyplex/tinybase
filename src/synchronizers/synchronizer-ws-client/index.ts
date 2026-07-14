@@ -14,6 +14,17 @@ import {arrayClear, arrayForEach, arrayPush} from '../../common/array.ts';
 import {getUniqueId} from '../../common/codec.ts';
 import {collDel, collHas, collIsEmpty} from '../../common/coll.ts';
 import {
+  ERROR_LEGACY_MULTIPLEX,
+  ERROR_MULTIPLEX_CHANNEL,
+  ERROR_MULTIPLEX_CHANNEL_DUPLICATE,
+  ERROR_MULTIPLEX_DESTROYED,
+  ERROR_MULTIPLEX_LEGACY,
+  ERROR_MULTIPLEX_RESPONSE,
+  ERROR_MULTIPLEX_SOCKET,
+  errorNew,
+  errorThrow,
+} from '../../common/error.ts';
+import {
   IdMap,
   mapForEach,
   mapGet,
@@ -122,7 +133,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     return promiseNew((resolve, reject) => {
       const timeout = startTimeout(() => {
         collDel(pendingControls, requestId);
-        const error = new Error('No multiplex response for ' + control);
+        const error = errorNew(ERROR_MULTIPLEX_RESPONSE, control);
         onIgnoredError?.(error);
         reject(error);
       }, timeoutSeconds);
@@ -178,7 +189,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   const onClose = () => {
     if (!destroyed) {
       connected = false;
-      const error = new Error('WebSocket closed while multiplexing');
+      const error = errorNew(ERROR_MULTIPLEX_SOCKET);
       connection[2](error);
       rejectPendingControls(error);
       connection = createConnection();
@@ -222,10 +233,10 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 
   const addChannel = async (channelId: Id, timeoutSeconds: number) => {
     if (!isMultipleChannelIdValid(channelId)) {
-      throw new Error('Invalid multiplex channel Id: ' + channelId);
+      errorThrow(ERROR_MULTIPLEX_CHANNEL, channelId);
     }
     if (collHas(channels, channelId)) {
-      throw new Error('Duplicate multiplex channel Id: ' + channelId);
+      errorThrow(ERROR_MULTIPLEX_CHANNEL_DUPLICATE, channelId);
     }
     const channel: Channel = [undefined, [], [], false, undefined];
     mapSet(channels, channelId, channel);
@@ -263,7 +274,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   const destroyIfEmpty = () => {
     if (collIsEmpty(channels) && !destroyed) {
       destroyed = true;
-      rejectPendingControls(new Error('Multiplexing destroyed'));
+      rejectPendingControls(errorNew(ERROR_MULTIPLEX_DESTROYED));
       arrayForEach(removeListeners, (removeListener) => removeListener());
       multipleStates.delete(webSocket);
       webSocket.close();
@@ -303,7 +314,7 @@ const createMultipleWsSynchronizer = async <
   fragmentSize?: number,
 ) => {
   if (legacyWebSockets.has(webSocket)) {
-    throw new Error('WebSocket already has a legacy synchronizer');
+    errorThrow(ERROR_MULTIPLEX_LEGACY);
   }
   const existingState = multipleStates.get(webSocket);
   const state =
@@ -358,7 +369,7 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   fragmentSize?: number,
 ) => {
   if (multipleStates.has(webSocket)) {
-    throw new Error('WebSocket already has multiplexed synchronizers');
+    errorThrow(ERROR_LEGACY_MULTIPLEX);
   }
   const addEventListener = (
     event: keyof WebSocketEventMap,

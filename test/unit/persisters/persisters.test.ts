@@ -468,9 +468,7 @@ test('errors when custom persister returns invalid content', async () => {
   );
   await persister.load();
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-  expect(ignoredErrors.map((error) => error.message)).toEqual([
-    'Content is not an array: 1',
-  ]);
+  expect(ignoredErrors.map((error) => error.message)).toEqual(['tinybase:1:1']);
 });
 
 test('does not error on persister listener returning undefined', async () => {

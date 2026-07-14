@@ -6,6 +6,12 @@ import type {
 } from '../../@types/persisters/persister-indexed-db/index.d.ts';
 import type {Content, Store, Table} from '../../@types/store/index.d.ts';
 import {arrayMap, arrayPush} from '../../common/array.ts';
+import {
+  ERROR_INDEXED_DB_OPEN,
+  ERROR_INDEXED_DB_STORE,
+  errorNew,
+  tryCatch,
+} from '../../common/error.ts';
 import {IdObj, objHas, objNew, objToArray} from '../../common/obj.ts';
 import {
   WINDOW,
@@ -13,7 +19,6 @@ import {
   promiseNew,
   startInterval,
   stopInterval,
-  tryCatch,
 } from '../../common/other.ts';
 import {T, V} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
@@ -44,7 +49,7 @@ const execObjectStore = async (
   promiseNew((resolve, reject) => {
     const request = objectStore[func](arg);
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(`objectStore.${func} error`);
+    request.onerror = () => reject(errorNew(ERROR_INDEXED_DB_STORE, func));
   });
 
 export const createIndexedDbPersister = ((
@@ -93,7 +98,7 @@ export const createIndexedDbPersister = ((
             reject(error);
           },
         );
-      request.onerror = () => reject('indexedDB.open error');
+      request.onerror = () => reject(errorNew(ERROR_INDEXED_DB_OPEN));
     });
 
   const getPersisted = async (): Promise<Content> =>

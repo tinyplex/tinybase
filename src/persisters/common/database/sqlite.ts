@@ -8,6 +8,7 @@ import type {
   Persists,
 } from '../../../@types/persisters/index.d.ts';
 import {collValues} from '../../../common/coll.ts';
+import {tryCatch} from '../../../common/error.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {
   isFalse,
@@ -15,7 +16,6 @@ import {
   isTrue,
   startInterval,
   stopInterval,
-  tryCatch,
 } from '../../../common/other.ts';
 import {EMPTY_STRING} from '../../../common/strings.ts';
 import {

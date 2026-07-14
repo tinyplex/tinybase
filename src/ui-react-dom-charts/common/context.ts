@@ -5,7 +5,8 @@ import type {
   QuerySourceProps,
   TableSourceProps,
 } from '../../@types/ui-react-dom-charts/index.d.ts';
-import {errorNew, isFunction, isNullish} from '../../common/other.ts';
+import {ERROR_CHART, errorThrow} from '../../common/error.ts';
+import {isFunction, isNullish} from '../../common/other.ts';
 import {createContext, useContext} from '../../common/react.ts';
 import {SERIES, X_AXIS, Y_AXIS} from './strings.ts';
 import type {
@@ -82,7 +83,7 @@ export const CartesianChartContext =
 export const useCartesianChartContext = (): CartesianChartContextValue => {
   const context = useContext(CartesianChartContext);
   if (isNullish(context)) {
-    errorNew('Series components must be used inside a CartesianChart');
+    errorThrow(ERROR_CHART);
   }
   return context as CartesianChartContextValue;
 };

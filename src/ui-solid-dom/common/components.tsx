@@ -9,6 +9,7 @@ import {
   getCellOrValueType,
   getTypeCase,
 } from '../../common/cell.ts';
+import {tryReturn} from '../../common/error.ts';
 import {jsonParse, jsonString} from '../../common/json.ts';
 import {isObject, objToArray} from '../../common/obj.ts';
 import {
@@ -18,7 +19,6 @@ import {
   isUndefined,
   number,
   string,
-  tryReturn,
 } from '../../common/other.ts';
 import {getProps, getValue} from '../../common/solid.ts';
 import {

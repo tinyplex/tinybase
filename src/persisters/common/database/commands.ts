@@ -17,6 +17,7 @@ import {
   arrayPush,
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
+import {tryCatch} from '../../../common/error.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
   objDel,
@@ -26,7 +27,7 @@ import {
   objNew,
   objToArray,
 } from '../../../common/obj.ts';
-import {isUndefined, promiseAll, tryCatch} from '../../../common/other.ts';
+import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {COMMA, TRUE} from '../../../common/strings.ts';
 import {

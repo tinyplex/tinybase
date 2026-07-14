@@ -117,7 +117,7 @@ test('multiple channel Ids are validated and unique', async () => {
 
   await expect(
     createWsSynchronizer(createMergeableStore(), webSocket as any, 'files'),
-  ).rejects.toThrow('Duplicate multiplex channel Id: files');
+  ).rejects.toThrow('tinybase:7:files');
   for (const channelId of [
     '',
     '../files',
@@ -130,7 +130,7 @@ test('multiple channel Ids are validated and unique', async () => {
   ]) {
     await expect(
       createWsSynchronizer(createMergeableStore(), webSocket as any, channelId),
-    ).rejects.toThrow('Invalid multiplex channel Id: ' + channelId);
+    ).rejects.toThrow('tinybase:6:' + channelId);
   }
 
   await synchronizer.destroy();
@@ -189,7 +189,7 @@ test('legacy and multiple modes cannot share one WebSocket', async () => {
       multipleWebSocket as any,
       0.01,
     ),
-  ).rejects.toThrow('WebSocket already has multiplexed synchronizers');
+  ).rejects.toThrow('tinybase:10');
   await multipleSynchronizer.destroy();
 
   const legacyWebSocket = new MockWebSocket();
@@ -205,7 +205,7 @@ test('legacy and multiple modes cannot share one WebSocket', async () => {
       'files',
       0.01,
     ),
-  ).rejects.toThrow('WebSocket already has a legacy synchronizer');
+  ).rejects.toThrow('tinybase:9');
   await legacySynchronizer.destroy();
 });
 
@@ -329,7 +329,7 @@ test('multiplexing fails cleanly against a legacy server', async () => {
 
   await expect(
     createWsSynchronizer(createMergeableStore(), webSocket, 'files', 0.01),
-  ).rejects.toThrow('No multiplex response');
+  ).rejects.toThrow('tinybase:4');
   expect([WebSocket.CLOSING, WebSocket.CLOSED]).toContain(webSocket.readyState);
 
   await new Promise<void>((resolve) => legacyServer.close(() => resolve()));

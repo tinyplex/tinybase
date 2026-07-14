@@ -16,10 +16,16 @@ import type {
 } from '../../@types/persisters/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {arrayClear, arrayPush, arrayShift} from '../../common/array.ts';
+import {
+  ERROR_CONTENT,
+  ERROR_STORE_TYPE,
+  errorThrow,
+  tryCatch,
+} from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
-import {errorNew, isArray, isUndefined, tryCatch} from '../../common/other.ts';
+import {isArray, isUndefined} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {ProtectedMergeableStore} from '../../mergeable-store/index.ts';
 import {ProtectedStore} from '../../store/index.ts';
@@ -95,7 +101,7 @@ const getStoreFunctions = (
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setContent,
         ]
-      : errorNew('Store type not supported by this Persister');
+      : errorThrow(ERROR_STORE_TYPE);
 
 export const createCustomPersister = <
   ListenerHandle,
@@ -214,7 +220,7 @@ export const createCustomPersister = <
             } else if (isUndefined(content) && initialContent) {
               setDefaultContent(initialContent);
             } else if (!isUndefined(content)) {
-              errorNew(`Content is not an array: ${content}`);
+              errorThrow(ERROR_CONTENT, content);
             }
           },
           (error) => {
