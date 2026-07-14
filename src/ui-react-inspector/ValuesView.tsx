@@ -1,8 +1,9 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {ValuesProps} from '../@types/ui-react/index.d.ts';
-import {arrayIsEmpty} from '../common/array.ts';
+
 import {getUniqueId} from '../common/inspector/common.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
+import {isEmpty} from '../common/other.ts';
 import {VALUES} from '../common/strings.ts';
 import {ValuesInHtmlTable} from '../ui-react-dom/index.tsx';
 import {useValueIds} from '../ui-react/index.ts';
@@ -27,7 +28,7 @@ export const ValuesView = ({
       handleEditable={handleEditable}
       s={s}
     >
-      {arrayIsEmpty(useValueIds(store)) ? (
+      {isEmpty(useValueIds(store)) ? (
         <p>No values.</p>
       ) : (
         <ValuesInHtmlTable

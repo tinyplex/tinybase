@@ -1,10 +1,5 @@
-import {
-  arrayFilter,
-  arrayIsEmpty,
-  arrayJoin,
-  arrayMap,
-} from '../../common/array.ts';
-import {isNullish, isNumber} from '../../common/other.ts';
+import {arrayFilter, arrayJoin, arrayMap} from '../../common/array.ts';
+import {isEmpty, isNullish, isNumber} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {CURRENT_COLOR} from '../common/strings.ts';
 import {
@@ -55,7 +50,7 @@ export const Grid = ({
           )}
         />
       )}
-      {arrayIsEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax) ? (
+      {isEmpty(xTicks) || !isNumber(xMin) || !isNumber(xMax) ? (
         <path
           className="x"
           d={arrayJoin(

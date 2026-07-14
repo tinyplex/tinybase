@@ -21,7 +21,7 @@ import type {
   ValueProps,
   ValuesProps,
 } from '../@types/ui-solid/index.d.ts';
-import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {arrayMap} from '../common/array.ts';
 import {
   EDITABLE_CELL,
   INSPECTOR_ERROR_MESSAGE,
@@ -49,6 +49,7 @@ import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
 import {
   addEventListener,
+  isEmpty,
   isUndefined,
   mathFloor,
   number,
@@ -610,7 +611,7 @@ const ValuesView = (
     get children() {
       return (
         <>
-          {arrayIsEmpty(valueIds()) ? (
+          {isEmpty(valueIds()) ? (
             <p>No values.</p>
           ) : (
             <ValuesInHtmlTable
@@ -713,7 +714,7 @@ const TablesView = (
     get children() {
       return (
         <>
-          {arrayIsEmpty(tableIds()) ? (
+          {isEmpty(tableIds()) ? (
             <p>No tables.</p>
           ) : (
             sortedIdsMap(tableIds(), (tableId) => (
@@ -777,7 +778,7 @@ const MetricsView = (props: {readonly metricsId?: Id} & StoreProp) => {
           title={'Metrics: ' + (props.metricsId ?? DEFAULT)}
           s={props.s}
         >
-          {arrayIsEmpty(metricIds()) ? (
+          {isEmpty(metricIds()) ? (
             'No metrics defined'
           ) : (
             <table>
@@ -872,7 +873,7 @@ const IndexesView = (props: {readonly indexesId?: Id} & StoreProp) => {
           title={'Indexes: ' + (props.indexesId ?? DEFAULT)}
           s={props.s}
         >
-          {arrayIsEmpty(indexIds())
+          {isEmpty(indexIds())
             ? 'No indexes defined'
             : sortedIdsMap(indexIds(), (indexId) => (
                 <IndexView
@@ -937,7 +938,7 @@ const QueriesView = (props: {readonly queriesId?: Id} & StoreProp) => {
           title={'Queries: ' + (props.queriesId ?? DEFAULT)}
           s={props.s}
         >
-          {arrayIsEmpty(queryIds())
+          {isEmpty(queryIds())
             ? 'No queries defined'
             : sortedIdsMap(queryIds(), (queryId) => (
                 <QueryView
@@ -999,7 +1000,7 @@ const RelationshipsView = (
           title={'Relationships: ' + (props.relationshipsId ?? DEFAULT)}
           s={props.s}
         >
-          {arrayIsEmpty(relationshipIds())
+          {isEmpty(relationshipIds())
             ? 'No relationships defined'
             : sortedIdsMap(relationshipIds(), (relationshipId) => (
                 <RelationshipView
@@ -1107,15 +1108,15 @@ const Body = (props: StoreProp) => {
     <>
       {state() &&
       isUndefined(store()) &&
-      arrayIsEmpty(storeIds()) &&
+      isEmpty(storeIds()) &&
       isUndefined(metrics()) &&
-      arrayIsEmpty(metricsIds()) &&
+      isEmpty(metricsIds()) &&
       isUndefined(indexes()) &&
-      arrayIsEmpty(indexesIds()) &&
+      isEmpty(indexesIds()) &&
       isUndefined(relationships()) &&
-      arrayIsEmpty(relationshipsIds()) &&
+      isEmpty(relationshipsIds()) &&
       isUndefined(queries()) &&
-      arrayIsEmpty(queriesIds()) ? (
+      isEmpty(queriesIds()) ? (
         <span class="warn">{NO_PROVIDED_OBJECTS_MESSAGE}</span>
       ) : (
         <article ref={article} onScroll={handleScroll}>

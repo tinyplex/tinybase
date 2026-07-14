@@ -17,7 +17,6 @@ import type {
 } from '../../@types/store/index.d.ts';
 import {
   arrayEvery,
-  arrayIsEmpty,
   arrayMap,
   arrayPush,
   arrayUnshift,
@@ -27,6 +26,7 @@ import {mapForEach} from '../../common/map.ts';
 import {objEnsure, objNew, objToArray} from '../../common/obj.ts';
 import {
   ifNotUndefined,
+  isEmpty,
   isUndefined,
   promiseAll,
   slice,
@@ -203,7 +203,7 @@ const saveStore = async (
     }),
   );
 
-  if (!arrayIsEmpty(keyPrefixesToDel)) {
+  if (!isEmpty(keyPrefixesToDel)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
       arrayEvery(
         keyPrefixesToDel,

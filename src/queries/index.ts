@@ -31,12 +31,7 @@ import type {
   Store,
 } from '../@types/store/index.d.ts';
 import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
-import {
-  arrayEvery,
-  arrayForEach,
-  arrayIsEmpty,
-  arrayPush,
-} from '../common/array.ts';
+import {arrayEvery, arrayForEach, arrayPush} from '../common/array.ts';
 import {getCellOrValueType} from '../common/cell.ts';
 import {
   collClear,
@@ -61,6 +56,7 @@ import {objFreeze, objGet, objIsEmpty, objMap} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
+  isEmpty,
   isFunction,
   isTrue,
   isUndefined,
@@ -519,8 +515,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           );
           const groups: IdMap<GroupClause> = mapNew(groupEntries);
 
-          const hasGroupsOrHavings =
-            !collIsEmpty(groups) || !arrayIsEmpty(havings);
+          const hasGroupsOrHavings = !collIsEmpty(groups) || !isEmpty(havings);
           const selectJoinWhereStore = hasGroupsOrHavings
             ? getPreStore(queryId)
             : resultStore;

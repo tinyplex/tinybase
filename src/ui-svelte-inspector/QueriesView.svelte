@@ -3,8 +3,7 @@
   import {DEFAULT} from '../common/strings.ts';
   import {getUniqueId, sortedIdsMap} from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
-  import {arrayIsEmpty} from '../common/array.ts';
-  import {isUndefined} from '../common/other.ts';
+  import {isEmpty, isUndefined} from '../common/other.ts';
   import {getQueries, getQueryIds} from '../ui-svelte/functions.svelte.ts';
   import Details from './Details.svelte';
   import QueryView from './QueryView.svelte';
@@ -22,7 +21,7 @@
 
 {#if !isUndefined(queries)}
   <Details uniqueId={getUniqueId('q', queriesId)} {title} {s}>
-    {#if arrayIsEmpty(queryIds.current)}
+    {#if isEmpty(queryIds.current)}
       No queries defined
     {:else}
       {#each sortedQueryIds as queryId (queryId)}

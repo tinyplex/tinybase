@@ -1,6 +1,6 @@
 import type {createYupSchematizer as createYupSchematizerDecl} from '../../@types/schematizers/schematizer-yup/index.d.ts';
 import {arrayEvery} from '../../common/array.ts';
-import {isString, size} from '../../common/other.ts';
+import {isEmpty, isString} from '../../common/other.ts';
 import {
   DEFAULT,
   NULLABLE,
@@ -25,7 +25,7 @@ const unwrapSchema = (
   return [
     {
       [TYPE]:
-        schema?.type === MIXED && size(oneOf) > 0 && arrayEvery(oneOf, isString)
+        schema?.type === MIXED && !isEmpty(oneOf) && arrayEvery(oneOf, isString)
           ? STRING
           : schema?.type,
     },

@@ -1,10 +1,12 @@
+import {arrayForEach, arrayMap, arraySort} from '../../common/array.ts';
 import {
-  arrayForEach,
-  arrayIsEmpty,
-  arrayMap,
-  arraySort,
-} from '../../common/array.ts';
-import {infinity, mathAbs, mathMax, mathMin, size} from '../../common/other.ts';
+  infinity,
+  isEmpty,
+  mathAbs,
+  mathMax,
+  mathMin,
+  size,
+} from '../../common/other.ts';
 import {getScale} from '../common/data.ts';
 import {
   type PlotFrame,
@@ -37,7 +39,7 @@ export const Bars = ({
   const baselineY = height - getScale(0, yMin, yMax, height);
   const pointsSize = size(points);
   const resolvedFullBarWidth =
-    fullBarWidth ?? (arrayIsEmpty(points) ? 0 : width / pointsSize);
+    fullBarWidth ?? (isEmpty(points) ? 0 : width / pointsSize);
   const barCount = mathMax(barSeriesCount, 1);
   const barIndex = mathMax(barSeriesIndex, 0);
   const barGroupWidth = mathMax(resolvedFullBarWidth - barGap, 0);

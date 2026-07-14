@@ -3,8 +3,7 @@
   import {DEFAULT} from '../common/strings.ts';
   import {getUniqueId} from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
-  import {arrayIsEmpty} from '../common/array.ts';
-  import {isUndefined} from '../common/other.ts';
+  import {isEmpty, isUndefined} from '../common/other.ts';
   import {getMetricIds, getMetrics} from '../ui-svelte/functions.svelte.ts';
   import MetricView from '../ui-svelte/MetricView.svelte';
   import Details from './Details.svelte';
@@ -19,7 +18,7 @@
 
 {#if !isUndefined(metrics)}
   <Details uniqueId={getUniqueId('m', metricsId)} {title} {s}>
-    {#if arrayIsEmpty(metricIds.current)}
+    {#if isEmpty(metricIds.current)}
       No metrics defined
     {:else}
       <table>

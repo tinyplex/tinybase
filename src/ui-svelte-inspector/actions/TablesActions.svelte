@@ -2,6 +2,7 @@
   import type {Id} from '../../@types/common/index.d.ts';
   import type {StoreOrStoreId} from '../../@types/ui-svelte/index.d.ts';
   import {arrayHas} from '../../common/array.ts';
+  import {isEmpty} from '../../common/other.ts';
   import {getNewIdFromSuggestedId} from '../../common/inspector/common.ts';
   import {getTableIds, resolveStore} from '../../ui-svelte/functions.svelte.ts';
   import Actions from './Actions.svelte';
@@ -30,7 +31,7 @@
     },
   ]);
   const rightActions = $derived(
-    tableIds.current.length > 0
+    !isEmpty(tableIds.current)
       ? [
           {
             icon: 'delete',
@@ -48,7 +49,7 @@
     <ConfirmableActions actions={addActions} />
   {/snippet}
   {#snippet right()}
-    {#if rightActions.length > 0}
+    {#if !isEmpty(rightActions)}
       <ConfirmableActions actions={rightActions} />
     {/if}
   {/snippet}

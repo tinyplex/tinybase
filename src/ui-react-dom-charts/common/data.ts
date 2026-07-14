@@ -6,7 +6,6 @@ import {
   arrayFilter,
   arrayForEach,
   arrayHas,
-  arrayIsEmpty,
   arrayMap,
   arrayPush,
 } from '../../common/array.ts';
@@ -15,6 +14,7 @@ import {mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {
   dateNew,
   infinity,
+  isEmpty,
   isFalse,
   isFiniteNumber,
   isInteger,
@@ -97,7 +97,7 @@ export const getScaledPoints = (
   const xCategories = mapNew<XValue, number>();
 
   arrayForEach(
-    isNullish(xValues) || arrayIsEmpty(xValues)
+    isNullish(xValues) || isEmpty(xValues)
       ? arrayMap(points, ([, xValue]) => xValue)
       : xValues,
     (xValue) =>
@@ -169,12 +169,12 @@ export const getScale = (
     : mathRound(((size * (value - min)) / (max - min)) * 1000000) / 1000000;
 
 export const getBounds = (kind: Kind, points: DataPoint[]): Bounds => {
-  if (arrayIsEmpty(points)) {
+  if (isEmpty(points)) {
     return [];
   }
   const [yMin, yMax] = getYDomain(points, kind);
 
-  if (arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)))) {
+  if (isEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)))) {
     const [xMin, xMax] = getDomain(
       arrayMap(points, ([, xValue]) => xValue as number),
     );
@@ -232,9 +232,9 @@ export const getResolvedXScale = (
 ): XScale =>
   xAxisScale == CATEGORY || xAxisScale == LINEAR || xAxisScale == TIME
     ? xAxisScale
-    : continuousX || (arrayIsEmpty(xValues) && hasLinearAxisDefinition)
+    : continuousX || (isEmpty(xValues) && hasLinearAxisDefinition)
       ? LINEAR
-      : !arrayIsEmpty(xValues) &&
+      : !isEmpty(xValues) &&
           arrayEvery(
             xValues,
             (xValue) =>
@@ -260,7 +260,7 @@ export const getXScaleDomain = (
             arrayPush(timestamps, timestamp as number);
           }
         }),
-        arrayIsEmpty(timestamps) ? [] : getDomain(timestamps))
+        isEmpty(timestamps) ? [] : getDomain(timestamps))
       : [xMin, xMax];
 };
 
@@ -285,20 +285,18 @@ export const getTickBounds = (
   xTicks: Ticks,
   yTicks: Ticks,
 ): Bounds => [
-  arrayIsEmpty(xTicks)
+  isEmpty(xTicks)
     ? xMin
     : isNumber(xMin)
       ? mathMin(xMin, xTicks[0])
       : xTicks[0],
-  arrayIsEmpty(xTicks)
+  isEmpty(xTicks)
     ? xMax
     : isNumber(xMax)
       ? mathMax(xMax, xTicks[size(xTicks) - 1])
       : xTicks[size(xTicks) - 1],
-  arrayIsEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
-  arrayIsEmpty(yTicks)
-    ? yMax
-    : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1]),
+  isEmpty(yTicks) ? yMin : mathMin(yMin ?? infinity, yTicks[0]),
+  isEmpty(yTicks) ? yMax : mathMax(yMax ?? -infinity, yTicks[size(yTicks) - 1]),
 ];
 
 export const getSeriesSummary = (
@@ -312,7 +310,7 @@ export const getSeriesSummary = (
   const xValues: XValue[] = [];
   const continuousX =
     kind == LINE &&
-    arrayIsEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
+    isEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
 
   arrayForEach(points, ([, xValue]) => {
     if (!arrayHas(xValues, xValue)) {
@@ -367,12 +365,12 @@ export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
 
   return {
     bounds: [
-      arrayIsEmpty(xMins) ? xMin : mathMin(...xMins),
-      arrayIsEmpty(xMaxes) ? xMax : mathMax(...xMaxes),
-      arrayIsEmpty(yMins) ? undefined : mathMin(...yMins),
-      arrayIsEmpty(yMaxes) ? undefined : mathMax(...yMaxes),
+      isEmpty(xMins) ? xMin : mathMin(...xMins),
+      isEmpty(xMaxes) ? xMax : mathMax(...xMaxes),
+      isEmpty(yMins) ? undefined : mathMin(...yMins),
+      isEmpty(yMaxes) ? undefined : mathMax(...yMaxes),
     ],
-    continuousX: !arrayIsEmpty(summaries) && continuousX,
+    continuousX: !isEmpty(summaries) && continuousX,
     xValues,
   };
 };

@@ -3,9 +3,15 @@ import type {Id, Ids} from '../../@types/common/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
 import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
 import type {Receive} from '../../@types/synchronizers/index.d.ts';
-import {arrayForEach, arrayIsEmpty, arrayMap} from '../../common/array.ts';
+import {arrayForEach, arrayMap} from '../../common/array.ts';
 import {objValues} from '../../common/obj.ts';
-import {ifNotUndefined, noop, size, startTimeout} from '../../common/other.ts';
+import {
+  ifNotUndefined,
+  isEmpty,
+  noop,
+  size,
+  startTimeout,
+} from '../../common/other.ts';
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import {
   createPayload,
@@ -87,7 +93,7 @@ export class WsServerDurableObject<Env = unknown>
       getClientId(request),
       (clientId) => {
         const [webSocket, client] = objValues(new WebSocketPair());
-        if (arrayIsEmpty(this.#getClients())) {
+        if (isEmpty(this.#getClients())) {
           this.onPathId(pathId, 1);
         }
         this.ctx.acceptWebSocket(client, [clientId, pathId]);

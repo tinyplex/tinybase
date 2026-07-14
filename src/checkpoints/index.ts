@@ -19,7 +19,6 @@ import {
   arrayClear,
   arrayForEach,
   arrayHas,
-  arrayIsEmpty,
   arrayPop,
   arrayPush,
   arrayShift,
@@ -40,7 +39,7 @@ import {
   mapSet,
 } from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
-import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
+import {ifNotUndefined, isEmpty, isUndefined, size} from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {ProtectedStore} from '../index.ts';
@@ -143,7 +142,7 @@ export const createCheckpoints = getCreateFunction(
     };
 
     const goBackwardImpl = () => {
-      if (!arrayIsEmpty(backwardIds)) {
+      if (!isEmpty(backwardIds)) {
         arrayUnshift(forwardIds, addCheckpointImpl());
         updateStore(0, currentId as Id);
         currentId = arrayPop(backwardIds);
@@ -152,7 +151,7 @@ export const createCheckpoints = getCreateFunction(
     };
 
     const goForwardImpl = () => {
-      if (!arrayIsEmpty(forwardIds)) {
+      if (!isEmpty(forwardIds)) {
         arrayPush(backwardIds, currentId as Id);
         currentId = arrayShift(forwardIds);
         updateStore(1, currentId as Id);
@@ -257,7 +256,7 @@ export const createCheckpoints = getCreateFunction(
     };
 
     const clearForward = (): Checkpoints => {
-      if (!arrayIsEmpty(forwardIds)) {
+      if (!isEmpty(forwardIds)) {
         clearCheckpointIds(forwardIds);
         callListeners(checkpointIdsListeners);
       }
