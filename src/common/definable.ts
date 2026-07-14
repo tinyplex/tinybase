@@ -18,6 +18,7 @@ import {
   mapKeys,
   mapNew,
   mapSet,
+  weakMapNew,
 } from './map.ts';
 import {ifNotUndefined, isArray, isString, isUndefined} from './other.ts';
 import {IdSet2, setAdd, setNew} from './set.ts';
@@ -234,7 +235,7 @@ export const getCreateFunction = <
   getFunction: (store: Store) => Thing,
   initFunction?: (thing: Thing) => void,
 ): ((store: Store) => Thing) => {
-  const thingsByStore: WeakMap<Store, Thing> = new WeakMap();
+  const thingsByStore: WeakMap<Store, Thing> = weakMapNew();
   return (store: Store): Thing => {
     if (!thingsByStore.has(store)) {
       thingsByStore.set(store, getFunction(store));
