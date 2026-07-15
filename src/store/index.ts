@@ -211,6 +211,8 @@ type ProtectedMethods = [
   ) => Store,
   getEncodedContent: () => Content,
   getEncodedTransactionChanges: () => Changes,
+  setEncodedContent: (content: Content) => Store,
+  applyEncodedChanges: (changes: Changes) => Store,
 ];
 
 type TablesSchemaMap = IdMap2<CellSchema>;
@@ -287,6 +289,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       defaulted: 0 | 1,
     ) => void,
   ] = [];
+  let acceptingEncodedData: 0 | 1 = 0;
   let mutating: 0 | 1 = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
@@ -348,6 +351,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
+  const whileAcceptingEncodedData = <Return>(action: () => Return): Return => {
+    const wasAcceptingEncodedData = acceptingEncodedData;
+    acceptingEncodedData = 1;
+    try {
+      return action();
+    } finally {
+      acceptingEncodedData = wasAcceptingEncodedData;
+    }
+  };
+
   const ifTransformed = <Value, Result>(
     snapshot: Value,
     getResult: () => Value | undefined,
@@ -388,7 +401,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
       return false;
     }
     if (!isNull(defaultValue)) {
-      if (getCellOrValueType(defaultValue) != type) {
+      if (
+        getCellOrValueType(defaultValue) != type ||
+        isEncodedJson(defaultValue)
+      ) {
         objDel(schema as any, DEFAULT);
       } else {
         (schema as any)[DEFAULT] = encodeIfJson(defaultValue as Cell);
@@ -459,9 +475,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ? cellSchema[ALLOW_NULL]
                 ? cell
                 : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
-              : getCellOrValueType(cell) === cellSchema[TYPE]
-                ? encodeIfJson(cell)
-                : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell)
+              : isEncodedJson(cell) && !acceptingEncodedData
+                ? isJsonType(cellSchema[TYPE])
                   ? cell
                   : cellInvalid(
                       tableId,
@@ -469,10 +484,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
                       cellId,
                       cell,
                       cellSchema[DEFAULT],
-                    ),
+                    )
+                : getCellOrValueType(cell) === cellSchema[TYPE]
+                  ? encodeIfJson(cell)
+                  : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell)
+                    ? cell
+                    : cellInvalid(
+                        tableId,
+                        rowId,
+                        cellId,
+                        cell,
+                        cellSchema[DEFAULT],
+                      ),
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
-      : isUndefined(getCellOrValueType(cell))
+      : isUndefined(getCellOrValueType(cell)) ||
+          (isEncodedJson(cell) && !acceptingEncodedData)
         ? cellInvalid(tableId, rowId, cellId, cell)
         : encodeIfJson(cell);
 
@@ -511,14 +538,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ? valueSchema[ALLOW_NULL]
                 ? value
                 : valueInvalid(valueId, value, valueSchema[DEFAULT])
-              : getCellOrValueType(value) === valueSchema[TYPE]
-                ? encodeIfJson(value)
-                : isJsonType(valueSchema[TYPE]) && isEncodedJson(value)
+              : isEncodedJson(value) && !acceptingEncodedData
+                ? isJsonType(valueSchema[TYPE])
                   ? value
-                  : valueInvalid(valueId, value, valueSchema[DEFAULT]),
+                  : valueInvalid(valueId, value, valueSchema[DEFAULT])
+                : getCellOrValueType(value) === valueSchema[TYPE]
+                  ? encodeIfJson(value)
+                  : isJsonType(valueSchema[TYPE]) && isEncodedJson(value)
+                    ? value
+                    : valueInvalid(valueId, value, valueSchema[DEFAULT]),
           () => valueInvalid(valueId, value),
         )
-      : isUndefined(getCellOrValueType(value))
+      : isUndefined(getCellOrValueType(value)) ||
+          (isEncodedJson(value) && !acceptingEncodedData)
         ? valueInvalid(valueId, value)
         : encodeIfJson(value);
 
@@ -1840,26 +1872,37 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const setTablesJson = (tablesJson: Json): Store => {
-    tryCatch(() => setOrDelTables(jsonParse(tablesJson)));
+    tryCatch(() =>
+      whileAcceptingEncodedData(() => setOrDelTables(jsonParse(tablesJson))),
+    );
     return store;
   };
 
   const setValuesJson = (valuesJson: Json): Store => {
-    tryCatch(() => setOrDelValues(jsonParse(valuesJson)));
+    tryCatch(() =>
+      whileAcceptingEncodedData(() => setOrDelValues(jsonParse(valuesJson))),
+    );
     return store;
   };
 
   const setJson = (tablesAndValuesJson: Json): Store =>
     fluentTransaction(() =>
       tryCatch(
-        () => {
-          const [tables, values] = jsonParse(tablesAndValuesJson);
-          setOrDelTables(tables);
-          setOrDelValues(values);
-        },
+        () =>
+          whileAcceptingEncodedData(() => {
+            const [tables, values] = jsonParse(tablesAndValuesJson);
+            setOrDelTables(tables);
+            setOrDelValues(values);
+          }),
         () => setTablesJson(tablesAndValuesJson),
       ),
     );
+
+  const setEncodedContent = (content: Content): Store =>
+    whileAcceptingEncodedData(() => setContent(content));
+
+  const applyEncodedChanges = (changes: Changes): Store =>
+    whileAcceptingEncodedData(() => applyChanges(changes));
 
   const setTablesSchema = (tablesSchema: TablesSchema): Store =>
     fluentTransaction(() => {
@@ -2424,6 +2467,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
       setOrDelValue,
       getEncodedContent,
       getEncodedTransactionChanges,
+      setEncodedContent,
+      applyEncodedChanges,
     ] as ProtectedMethods,
   };
 

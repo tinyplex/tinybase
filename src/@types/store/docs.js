@@ -329,6 +329,9 @@
  * it back out again with the getCell method. A Cell is a JavaScript string,
  * number, boolean, or null (since v7.0), or a plain JavaScript object or array
  * (since v8.0).
+ *
+ * String Cells must not start with the Unicode replacement character
+ * `U+FFFD`, which TinyBase reserves for its internal object and array encoding.
  * @example
  * ```js
  * import type {Cell} from 'tinybase';
@@ -387,6 +390,9 @@
  * getting it back out again with the getValue method. A Value is a JavaScript
  * string, number, boolean, or null (since v7.0), or a plain JavaScript object
  * or array (since v8.0).
+ *
+ * String Values must not start with the Unicode replacement character
+ * `U+FFFD`, which TinyBase reserves for its internal object and array encoding.
  * @example
  * ```js
  * import type {Value} from 'tinybase';

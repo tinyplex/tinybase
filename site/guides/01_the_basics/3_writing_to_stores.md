@@ -70,6 +70,16 @@ The data in a Value or a Cell can be a string, a number, a boolean, or `null`.
 You can also store richer data as plain JavaScript objects or arrays, which
 TinyBase encodes internally as JSON strings.
 
+Because of this encoding, string Cells and Values must not start with the
+Unicode replacement character `U+FFFD`, which TinyBase reserves as an internal
+prefix for objects and arrays. The character is supported elsewhere in a string,
+including within strings nested inside objects and arrays.
+
+JSON-based persistence and synchronization also reserve the exact string
+`U+FFFC`, the Unicode object replacement character, to represent `undefined`. Do
+not use that exact string as a Cell or Value. Longer strings containing that
+character, and strings nested inside objects and arrays, are supported.
+
 It's worth mentioning here that there are two extra methods to manipulate Row
 objects. The addRow method is like the setRow method but automatically assigns
 it a new unique Id. And the setPartialRow method lets you update multiple Cell

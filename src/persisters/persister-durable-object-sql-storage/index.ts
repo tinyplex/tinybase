@@ -21,6 +21,7 @@ import {arrayForEach, arrayPush} from '../../common/array.ts';
 import {collHas} from '../../common/coll.ts';
 import {
   jsonParseWithUndefined,
+  jsonString,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
 import {
@@ -103,7 +104,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
   const insertTableSql = `INSERT INTO ${tablesTable} (type, table_id, row_id, cell_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?, ?, ?, ?)`;
   const insertValueSql = `INSERT INTO ${valuesTable} (value_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?)`;
   const getRowKey = (tableId: string, rowId: string) =>
-    jsonStringWithUndefined([tableId, rowId]);
+    jsonString([tableId, rowId]);
 
   // Initialize the SQL tables
   const initializeTables = () => {

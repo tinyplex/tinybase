@@ -4,8 +4,9 @@ import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createCustomPersister, Status} from 'tinybase/persisters';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import tmp from 'tmp';
-import {afterEach, beforeEach, describe, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {createStatusListener} from '../common/listeners.ts';
 import {noop, pause} from '../common/other.ts';
 import {ALL_VARIANTS} from './common/databases.ts';
@@ -504,4 +505,34 @@ test('does not error on persister listener returning invalid', async () => {
   await persister.startAutoLoad();
   triggerListener(1);
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+});
+
+test('reserves the undefined marker only as a complete string', async () => {
+  const storageName = 'reserved-undefined-marker';
+  const undefinedMarker = '\uFFFC';
+  const ignoredError = vi.fn();
+  const store = createStore().setValues({
+    longer: 'a' + undefinedMarker + 'b',
+    nested: {value: undefinedMarker},
+  });
+  const persister = createLocalPersister(store, storageName, ignoredError);
+
+  try {
+    await persister.save();
+    store.delValues();
+    await persister.load();
+    expect(store.getValues()).toEqual({
+      longer: 'a' + undefinedMarker + 'b',
+      nested: {value: undefinedMarker},
+    });
+    expect(ignoredError).not.toHaveBeenCalled();
+
+    store.setValue('reserved', undefinedMarker);
+    await persister.save();
+    expect(ignoredError).toHaveBeenCalledTimes(1);
+    expect(ignoredError.mock.calls[0][0].message).toEqual('tinybase:13:U+FFFC');
+  } finally {
+    await persister.destroy();
+    localStorage.removeItem(storageName);
+  }
 });

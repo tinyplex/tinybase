@@ -14,6 +14,7 @@ export const ERROR_MULTIPLEX_LEGACY = 9;
 export const ERROR_LEGACY_MULTIPLEX = 10;
 export const ERROR_INDEXED_DB_STORE = 11;
 export const ERROR_INDEXED_DB_OPEN = 12;
+export const ERROR_RESERVED_STRING = 13;
 
 export const errorNew = (code: number, details?: any): Error =>
   new Error(

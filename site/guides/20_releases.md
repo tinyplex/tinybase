@@ -11,11 +11,11 @@ highlighted features.
 
 Multiple WebSocket Synchronizers can now share a single physical WebSocket
 connection ([#177](https://github.com/tinyplex/tinybase/issues/177)). This is
-useful when an application has several independently synchronized
-MergeableStore instances but needs to limit its connection count.
+useful when an application has several independently synchronized MergeableStore
+instances but needs to limit its connection count.
 
-Create the WebSocket with the `tinybase` subprotocol and provide a channel Id
-as the third argument to each createWsSynchronizer call:
+Create the WebSocket with the `tinybase` subprotocol and provide a channel Id as
+the third argument to each createWsSynchronizer call:
 
 ```js
 import {createMergeableStore as createMultistoreStore} from 'tinybase';
@@ -57,12 +57,12 @@ await employeesSynchronizer.destroy();
 await multistoreServer.destroy();
 ```
 
-The URL path acts as a base path, so these channels use the logical server
-paths `petShop/pets` and `petShop/employees`. Legacy clients can connect
-directly to either full path and interoperate with multiplexed clients.
+The URL path acts as a base path, so these channels use the logical server paths
+`petShop/pets` and `petShop/employees`. Legacy clients can connect directly to
+either full path and interoperate with multiplexed clients.
 
-The existing createWsSynchronizer signature and wire protocol are unchanged
-when no channel Id is provided. Multiplexing is supported by WsServer and
+The existing createWsSynchronizer signature and wire protocol are unchanged when
+no channel Id is provided. Multiplexing is supported by WsServer and
 WsServerSimple, while WsServerDurableObject continues to use one URL path and
 Durable Object per WebSocket.
 
@@ -83,8 +83,8 @@ returned data, or altering object prototypes.
 ## Exception-Safe Transactions
 
 Store transactions now restore their internal state if an action or callback
-throws. Errors from transaction actions and other pre-commit callbacks roll
-back the transaction and are rethrown, while nested transaction errors mark the
+throws. Errors from transaction actions and other pre-commit callbacks roll back
+the transaction and are rethrown, while nested transaction errors mark the
 shared outer transaction for rollback. Errors from non-mutating or did-finish
 listeners happen after the commit, but no longer leave the Store unable to
 process later mutations or listeners.
@@ -92,6 +92,18 @@ process later mutations or listeners.
 Temporary mutation and listening flags are also restored unconditionally in
 Store, MergeableStore, and Checkpoints operations, preventing an exception from
 silently disabling later change tracking.
+
+## Reserved Serialization Strings
+
+String Cells and Values beginning with `U+FFFD` are now rejected as invalid,
+since TinyBase reserves that character as the prefix for its internal object and
+array encoding. This also applies to string defaults in schemas.
+
+JSON-based Persisters and Synchronizers now report error 13 when the exact
+string `U+FFFC`, which is reserved to represent `undefined`, is used as a Cell
+or Value. `U+FFFD` remains supported after the first character, while longer
+strings containing `U+FFFC` remain supported. Both are also supported in strings
+nested inside objects and arrays.
 
 ## PartyKit Authorization
 
@@ -516,7 +528,8 @@ The ui-solid-dom module provides browser-ready Solid components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Solid components and Accessors throughout.
 
-![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png
+'SortedTableInHtmlTable (Solid)')
 
 Alongside the table components, the new ui-solid-inspector module brings the
 TinyBase development inspector to Solid apps too, making it easy to inspect and
@@ -571,7 +584,8 @@ This release also adds a complete set of Solid UI component demos, plus a
 Countries demo and an Inspector demo, so you can see the new modules working
 across Stores, Indexes, Relationships, Queries, and editable views.
 
-![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png
+'EditableValueView (Solid)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -698,7 +712,8 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
+'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -745,7 +760,8 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
+'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -1452,7 +1468,8 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue,
+#[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 
