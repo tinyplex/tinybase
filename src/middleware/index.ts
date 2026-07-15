@@ -33,7 +33,7 @@ import type {
 import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
 import {decodeIfJson, encodeIfJson} from '../common/cell.ts';
 import {getCreateFunction} from '../common/definable.ts';
-import {objFreeze, objMap} from '../common/obj.ts';
+import {objFreeze, objMap, objMap2, objMap3} from '../common/obj.ts';
 import {ifNotUndefined, isEmpty, isUndefined} from '../common/other.ts';
 import {ProtectedStore} from '../store/index.ts';
 
@@ -48,12 +48,6 @@ const reduceCallbacks = (
       isUndefined(current) ? current : callback(...ids, current),
     thing,
   );
-
-const mapTable = (table: Table, mapCell: (cell: Cell) => Cell): Table =>
-  objMap(table, (row) => objMap(row, mapCell));
-
-const mapTables = (tables: Tables, mapCell: (cell: Cell) => Cell): Tables =>
-  objMap(tables, (table) => mapTable(table, mapCell));
 
 const mapChanges = (
   [tables, values, isChanges]: Changes,
@@ -130,17 +124,17 @@ export const createMiddleware = getCreateFunction(
             willSetContentCallbacks,
             content,
             ([tables, values], mapCellOrValue) => [
-              mapTables(tables, mapCellOrValue),
+              objMap3(tables, mapCellOrValue),
               objMap(values, mapCellOrValue),
             ],
           )
         : reduceCallbacks(willSetContentCallbacks, content);
 
     const willSetTables = (tables: Tables): Tables | undefined =>
-      reduceDecodedCallbacks(willSetTablesCallbacks, tables, mapTables);
+      reduceDecodedCallbacks(willSetTablesCallbacks, tables, objMap3);
 
     const willSetTable = (tableId: Id, table: Table): Table | undefined =>
-      reduceDecodedCallbacks(willSetTableCallbacks, table, mapTable, tableId);
+      reduceDecodedCallbacks(willSetTableCallbacks, table, objMap2, tableId);
 
     const willSetRow = (tableId: Id, rowId: Id, row: Row): Row | undefined =>
       reduceDecodedCallbacks(willSetRowCallbacks, row, objMap, tableId, rowId);
