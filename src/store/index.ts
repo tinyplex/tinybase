@@ -64,7 +64,7 @@ import {
   collSize4,
   collValues,
 } from '../common/coll.ts';
-import {tryCatch} from '../common/error.ts';
+import {tryCatch, tryFinally} from '../common/error.ts';
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
@@ -344,21 +344,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const whileMutating = <Return>(action: () => Return): Return => {
     const wasMutating = mutating;
     mutating = 1;
-    try {
-      return action();
-    } finally {
-      mutating = wasMutating;
-    }
+    return tryFinally(action, () => (mutating = wasMutating));
   };
 
   const whileAcceptingEncodedData = <Return>(action: () => Return): Return => {
     const wasAcceptingEncodedData = acceptingEncodedData;
     acceptingEncodedData = 1;
-    try {
-      return action();
-    } finally {
-      acceptingEncodedData = wasAcceptingEncodedData;
-    }
+    return tryFinally(
+      action,
+      () => (acceptingEncodedData = wasAcceptingEncodedData),
+    );
   };
 
   const ifTransformed = <Value, Result>(
@@ -2103,6 +2098,30 @@ export const createStore: typeof createStoreDecl = (): Store => {
     collClear(changedValues);
   };
 
+  const resetTransaction = (): void => {
+    transactions = 0;
+    rollbackRequested = 0;
+    hadTables = hasTables();
+    hadValues = hasValues();
+    arrayForEach(
+      [
+        changedTableIds,
+        changedTableCellIds,
+        changedRowCount,
+        changedRowIds,
+        changedCellIds,
+        changedCells,
+        defaultedCells,
+        invalidCells,
+        changedValueIds,
+        changedValues,
+        defaultedValues,
+        invalidValues,
+      ],
+      collClear,
+    );
+  };
+
   const finishTransaction = (doRollback?: DoRollback): Store => {
     if (transactions > 0) {
       transactions--;
@@ -2110,74 +2129,51 @@ export const createStore: typeof createStoreDecl = (): Store => {
       if (transactions == 0) {
         transactions = 1;
         let committed = false;
-        try {
-          try {
-            if (rollbackRequested) {
-              rollbackTransaction();
-            } else {
-              whileMutating(() => {
-                callInvalidCellListeners(1);
-                if (!collIsEmpty(changedCells)) {
-                  callTabularListenersForChanges(1);
-                }
-                callInvalidValueListeners(1);
-                if (!collIsEmpty(changedValues)) {
-                  callValuesListenersForChanges(1);
-                }
-              });
+        tryFinally(
+          () => {
+            try {
+              if (rollbackRequested) {
+                rollbackTransaction();
+              } else {
+                whileMutating(() => {
+                  callInvalidCellListeners(1);
+                  if (!collIsEmpty(changedCells)) {
+                    callTabularListenersForChanges(1);
+                  }
+                  callInvalidValueListeners(1);
+                  if (!collIsEmpty(changedValues)) {
+                    callValuesListenersForChanges(1);
+                  }
+                });
 
-              if (doRollback?.(store)) {
+                if (doRollback?.(store)) {
+                  rollbackTransaction();
+                }
+
+                callListeners(finishTransactionListeners[0], undefined);
+
+                transactions = -1;
+                committed = true;
+                callInvalidCellListeners(0);
+                if (!collIsEmpty(changedCells)) {
+                  callTabularListenersForChanges(0);
+                }
+                callInvalidValueListeners(0);
+                if (!collIsEmpty(changedValues)) {
+                  callValuesListenersForChanges(0);
+                }
+                internalListeners[1]?.();
+                callListeners(finishTransactionListeners[1], undefined);
+              }
+            } catch (error) {
+              if (!committed) {
                 rollbackTransaction();
               }
-
-              callListeners(finishTransactionListeners[0], undefined);
-
-              transactions = -1;
-              committed = true;
-              callInvalidCellListeners(0);
-              if (!collIsEmpty(changedCells)) {
-                callTabularListenersForChanges(0);
-              }
-              callInvalidValueListeners(0);
-              if (!collIsEmpty(changedValues)) {
-                callValuesListenersForChanges(0);
-              }
-              internalListeners[1]?.();
-              callListeners(finishTransactionListeners[1], undefined);
+              throw error;
             }
-          } catch (error) {
-            if (!committed) {
-              rollbackTransaction();
-            }
-            throw error;
-          }
-        } finally {
-          try {
-            internalListeners[2]?.();
-          } finally {
-            transactions = 0;
-            rollbackRequested = 0;
-            hadTables = hasTables();
-            hadValues = hasValues();
-            arrayForEach(
-              [
-                changedTableIds,
-                changedTableCellIds,
-                changedRowCount,
-                changedRowIds,
-                changedCellIds,
-                changedCells,
-                defaultedCells,
-                invalidCells,
-                changedValueIds,
-                changedValues,
-                defaultedValues,
-                invalidValues,
-              ],
-              collClear,
-            );
-          }
-        }
+          },
+          () => tryFinally(() => internalListeners[2]?.(), resetTransaction),
+        );
       }
     }
     return store;

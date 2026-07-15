@@ -27,6 +27,7 @@ import {
 
 import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
 import {getCreateFunction} from '../common/definable.ts';
+import {tryFinally} from '../common/error.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
 import {
   IdMap,
@@ -68,36 +69,36 @@ export const createCheckpoints = getCreateFunction(
 
     const updateStore = (oldOrNew: 0 | 1, checkpointId: Id) => {
       listening = 0;
-      try {
-        store.transaction(() => {
-          const [cellsDelta, valuesDelta] = mapGet(deltas, checkpointId) as [
-            CellsDelta,
-            ValuesDelta,
-          ];
-          collForEach(cellsDelta, (table, tableId) =>
-            collForEach(table, (row, rowId) =>
-              collForEach(row, (oldNew, cellId) =>
-                (store as ProtectedStore)._[5](
-                  tableId,
-                  rowId,
-                  cellId,
-                  oldNew[oldOrNew] as CellOrUndefined,
-                  true,
+      tryFinally(
+        () =>
+          store.transaction(() => {
+            const [cellsDelta, valuesDelta] = mapGet(deltas, checkpointId) as [
+              CellsDelta,
+              ValuesDelta,
+            ];
+            collForEach(cellsDelta, (table, tableId) =>
+              collForEach(table, (row, rowId) =>
+                collForEach(row, (oldNew, cellId) =>
+                  (store as ProtectedStore)._[5](
+                    tableId,
+                    rowId,
+                    cellId,
+                    oldNew[oldOrNew] as CellOrUndefined,
+                    true,
+                  ),
                 ),
               ),
-            ),
-          );
-          collForEach(valuesDelta, (oldNew, valueId) =>
-            (store as ProtectedStore)._[6](
-              valueId,
-              oldNew[oldOrNew] as ValueOrUndefined,
-              true,
-            ),
-          );
-        });
-      } finally {
-        listening = 1;
-      }
+            );
+            collForEach(valuesDelta, (oldNew, valueId) =>
+              (store as ProtectedStore)._[6](
+                valueId,
+                oldNew[oldOrNew] as ValueOrUndefined,
+                true,
+              ),
+            );
+          }),
+        () => (listening = 1),
+      );
     };
 
     const clearCheckpointId = (checkpointId: Id): void => {
