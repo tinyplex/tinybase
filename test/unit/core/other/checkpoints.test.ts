@@ -265,6 +265,20 @@ describe('Moving around', () => {
     expectNoChanges(listener);
   });
 
+  test('resumes listening after Store error', () => {
+    store.setCell('t1', 'r1', 'c1', 1);
+    checkpoints.addCheckpoint();
+    store.setCell('t1', 'r1', 'c1', 2);
+    const error = new Error('listener error');
+    const listenerId = store.addWillFinishTransactionListener(() => {
+      throw error;
+    });
+    expect(() => checkpoints.goBackward()).toThrow(error);
+    store.delListener(listenerId).setCell('t1', 'r1', 'c1', 3);
+    expect(checkpoints.getCheckpointIds()[1]).toBeUndefined();
+    expect(checkpoints.getCheckpointIds()[2]).toEqual([]);
+  });
+
   test('goBackward', () => {
     const [
       [id0, t0, v0],

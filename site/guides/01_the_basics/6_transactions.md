@@ -70,6 +70,18 @@ store.delListener(listenerId2);
 Note that transactions can be nested. Relevant listeners will be called only
 when the outermost one completes.
 
+If the transaction's actions throw an error, all changes made in the
+transaction are rolled back and the same error is rethrown. Nested transactions
+share the outer transaction rather than acting as savepoints, so an error in a
+nested transaction causes the whole outer transaction to be rolled back, even
+if the error is caught within the outer actions. Transaction finish listeners
+are not called for an aborted transaction.
+
+Errors thrown by start, mutating, `doRollback`, or will-finish callbacks also
+roll back the transaction. Once non-mutating listener dispatch has started, the
+transaction is committed: an error from a non-mutating or did-finish listener
+is still propagated, but does not roll back the transaction.
+
 ## Rolling Back Transactions
 
 The transaction method takes a second optional parameter, `doRollback`. This is

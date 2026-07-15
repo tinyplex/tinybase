@@ -919,6 +919,105 @@ describe.each([
       expect(actions).toHaveBeenCalledTimes(1);
     });
 
+    test('Action error rolls back and leaves Store usable', () => {
+      const error = new Error('action error');
+      const listener = vi.fn();
+      const finishListener = vi.fn(() => store.setValue('v2', 2));
+      store.addCellListener('t1', 'r1', 'c1', listener);
+      store.addWillFinishTransactionListener(finishListener);
+      expect(() =>
+        store.transaction(() => {
+          store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
+          throw error;
+        }),
+      ).toThrow(error);
+      expect(store.getTables()).toEqual(originalTables);
+      expect(store.getValues()).toEqual(originalValues);
+      expect(listener).not.toHaveBeenCalled();
+      expect(finishListener).not.toHaveBeenCalled();
+      store.setCell('t1', 'r1', 'c1', 2);
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    test('Nested action error rolls back outer transaction', () => {
+      store.transaction(() => {
+        store.setCell('t1', 'r1', 'c1', 2);
+        try {
+          store.transaction(() => {
+            store.setValue('v1', 2);
+            throw new Error('nested action error');
+          });
+        } catch {
+          store.setCell('t1', 'r1', 'c2', 2);
+        }
+      });
+      expect(store.getTables()).toEqual(originalTables);
+      expect(store.getValues()).toEqual(originalValues);
+    });
+
+    test('Rollback error rolls back and leaves Store usable', () => {
+      const error = new Error('rollback error');
+      const listener = vi.fn();
+      store.addCellListener('t1', 'r1', 'c1', listener);
+      expect(() =>
+        store.transaction(
+          () => store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2),
+          () => {
+            throw error;
+          },
+        ),
+      ).toThrow(error);
+      expect(store.getTables()).toEqual(originalTables);
+      expect(store.getValues()).toEqual(originalValues);
+      expect(listener).not.toHaveBeenCalled();
+      store.setCell('t1', 'r1', 'c1', 2);
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    test('Mutating listener error rolls back and restores state', () => {
+      const error = new Error('mutating listener error');
+      const listenerId = store.addCellListener(
+        't1',
+        'r1',
+        'c1',
+        () => {
+          throw error;
+        },
+        true,
+      );
+      expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(error);
+      expect(store.getTables()).toEqual(originalTables);
+      store.delListener(listenerId);
+      store.setCell('t1', 'r1', 'c1', 2);
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual(2);
+    });
+
+    test('Non-mutating listener error commits and restores state', () => {
+      const error = new Error('non-mutating listener error');
+      const listenerId = store.addCellListener('t1', 'r1', 'c1', () => {
+        throw error;
+      });
+      expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(error);
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual(2);
+      store.delListener(listenerId);
+      store.setCell('t1', 'r1', 'c1', 3);
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual(3);
+    });
+
+    test('Start listener error rolls back and restores state', () => {
+      const error = new Error('start listener error');
+      const listenerId = store.addStartTransactionListener(() => {
+        store.setValue('v1', 2);
+        throw error;
+      });
+      expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(error);
+      expect(store.getTables()).toEqual(originalTables);
+      expect(store.getValues()).toEqual(originalValues);
+      store.delListener(listenerId);
+      store.setCell('t1', 'r1', 'c1', 2);
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual(2);
+    });
+
     test('Debouncing to different', () => {
       listener.listenToTables('/');
       listener.listenToTableIds('/t');

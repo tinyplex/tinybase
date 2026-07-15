@@ -244,6 +244,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hasValuesSchema: boolean;
   let hadTables = false;
   let hadValues = false;
+  let rollbackRequested: 0 | 1 = 0;
   let transactions = 0;
   let middleware: [
     willSetContent?: (content: Content) => Content | undefined,
@@ -340,9 +341,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const whileMutating = <Return>(action: () => Return): Return => {
     const wasMutating = mutating;
     mutating = 1;
-    const result = action();
-    mutating = wasMutating;
-    return result;
+    try {
+      return action();
+    } finally {
+      mutating = wasMutating;
+    }
   };
 
   const ifTransformed = <Value, Result>(
@@ -1985,9 +1988,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): Return => {
     if (transactions != -1) {
       startTransaction();
-      const result = actions();
-      finishTransaction(doRollback);
-      return result as Return;
+      try {
+        const result = actions();
+        finishTransaction(doRollback);
+        return result as Return;
+      } catch (error) {
+        if (transactions > 0) {
+          rollbackRequested = 1;
+          try {
+            finishTransaction();
+          } catch {
+            // Preserve the original error from the transaction actions.
+          }
+        }
+        throw error;
+      }
     }
   };
 
@@ -1996,8 +2011,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions++;
     }
     if (transactions == 1) {
-      internalListeners[0]?.();
-      callListeners(startTransactionListeners);
+      try {
+        internalListeners[0]?.();
+        callListeners(startTransactionListeners);
+      } catch (error) {
+        rollbackRequested = 1;
+        try {
+          finishTransaction();
+        } catch {
+          // Preserve the original error from the transaction listener.
+        }
+        throw error;
+      }
     }
     return store;
   };
@@ -2020,74 +2045,96 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapToObj(changedValueIds),
   ];
 
+  const rollbackTransaction = (): void => {
+    collForEach(changedCells, (table, tableId) =>
+      collForEach(table, (row, rowId) =>
+        collForEach(row, ([oldCell], cellId) =>
+          setOrDelCell(tableId, rowId, cellId, oldCell, true),
+        ),
+      ),
+    );
+    collClear(changedCells);
+    collForEach(changedValues, ([oldValue], valueId) =>
+      setOrDelValue(valueId, oldValue, true),
+    );
+    collClear(changedValues);
+  };
+
   const finishTransaction = (doRollback?: DoRollback): Store => {
     if (transactions > 0) {
       transactions--;
 
       if (transactions == 0) {
         transactions = 1;
+        let committed = false;
+        try {
+          try {
+            if (rollbackRequested) {
+              rollbackTransaction();
+            } else {
+              whileMutating(() => {
+                callInvalidCellListeners(1);
+                if (!collIsEmpty(changedCells)) {
+                  callTabularListenersForChanges(1);
+                }
+                callInvalidValueListeners(1);
+                if (!collIsEmpty(changedValues)) {
+                  callValuesListenersForChanges(1);
+                }
+              });
 
-        whileMutating(() => {
-          callInvalidCellListeners(1);
-          if (!collIsEmpty(changedCells)) {
-            callTabularListenersForChanges(1);
+              if (doRollback?.(store)) {
+                rollbackTransaction();
+              }
+
+              callListeners(finishTransactionListeners[0], undefined);
+
+              transactions = -1;
+              committed = true;
+              callInvalidCellListeners(0);
+              if (!collIsEmpty(changedCells)) {
+                callTabularListenersForChanges(0);
+              }
+              callInvalidValueListeners(0);
+              if (!collIsEmpty(changedValues)) {
+                callValuesListenersForChanges(0);
+              }
+              internalListeners[1]?.();
+              callListeners(finishTransactionListeners[1], undefined);
+            }
+          } catch (error) {
+            if (!committed) {
+              rollbackTransaction();
+            }
+            throw error;
           }
-          callInvalidValueListeners(1);
-          if (!collIsEmpty(changedValues)) {
-            callValuesListenersForChanges(1);
+        } finally {
+          try {
+            internalListeners[2]?.();
+          } finally {
+            transactions = 0;
+            rollbackRequested = 0;
+            hadTables = hasTables();
+            hadValues = hasValues();
+            arrayForEach(
+              [
+                changedTableIds,
+                changedTableCellIds,
+                changedRowCount,
+                changedRowIds,
+                changedCellIds,
+                changedCells,
+                defaultedCells,
+                invalidCells,
+                changedValueIds,
+                changedValues,
+                defaultedValues,
+                invalidValues,
+              ],
+              collClear,
+            );
           }
-        });
-
-        if (doRollback?.(store)) {
-          collForEach(changedCells, (table, tableId) =>
-            collForEach(table, (row, rowId) =>
-              collForEach(row, ([oldCell], cellId) =>
-                setOrDelCell(tableId, rowId, cellId, oldCell, true),
-              ),
-            ),
-          );
-          collClear(changedCells);
-          collForEach(changedValues, ([oldValue], valueId) =>
-            setOrDelValue(valueId, oldValue, true),
-          );
-          collClear(changedValues);
         }
-
-        callListeners(finishTransactionListeners[0], undefined);
-
-        transactions = -1;
-        callInvalidCellListeners(0);
-        if (!collIsEmpty(changedCells)) {
-          callTabularListenersForChanges(0);
-        }
-        callInvalidValueListeners(0);
-        if (!collIsEmpty(changedValues)) {
-          callValuesListenersForChanges(0);
-        }
-        internalListeners[1]?.();
-        callListeners(finishTransactionListeners[1], undefined);
-        internalListeners[2]?.();
-
-        transactions = 0;
-        hadTables = hasTables();
-        hadValues = hasValues();
-        arrayForEach(
-          [
-            changedTableIds,
-            changedTableCellIds,
-            changedRowCount,
-            changedRowIds,
-            changedCellIds,
-            changedCells,
-            defaultedCells,
-            invalidCells,
-            changedValueIds,
-            changedValues,
-            defaultedValues,
-            invalidValues,
-          ],
-          collClear,
-        );
       }
     }
     return store;
