@@ -10,10 +10,9 @@ import type {
   Changes,
   Content,
   Row,
-  Tables,
+  Table,
   Value,
   ValueOrUndefined,
-  Values,
 } from '../../@types/store/index.d.ts';
 import {
   arrayEvery,
@@ -23,7 +22,7 @@ import {
 } from '../../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import {mapForEach} from '../../common/map.ts';
-import {objEnsure, objNew, objToArray} from '../../common/obj.ts';
+import {objEnsure, objNew, objSet, objToArray} from '../../common/obj.ts';
 import {
   ifNotUndefined,
   isEmpty,
@@ -65,21 +64,25 @@ export const loadStoreFromStorage = async (
   storage: Storage,
   storagePrefix = EMPTY_STRING,
 ): Promise<Content> => {
-  const tables: Tables = {};
-  const values: Values = {};
+  const tables = objNew<Table>();
+  const values = objNew<Value>();
   mapForEach(
     await storage.list<string | number | boolean>(),
     (key, cellOrValue) =>
       ifNotUndefined(deconstruct(storagePrefix, key), ([type, ids]) => {
         if (type == T) {
           const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
-          objEnsure(
-            objEnsure(tables, tableId, objNew<Row>),
-            rowId,
-            objNew<Cell>,
-          )[cellId] = cellOrValue;
+          objSet(
+            objEnsure(
+              objEnsure(tables, tableId, objNew<Row>),
+              rowId,
+              objNew<Cell>,
+            ),
+            cellId,
+            cellOrValue,
+          );
         } else if (type == V) {
-          values[ids] = cellOrValue;
+          objSet(values, ids, cellOrValue);
         }
       }),
   );
@@ -109,9 +112,7 @@ const saveStore = async (
   const storage = that.party.storage;
   const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
 
-  const keysToSet: {[key: string]: Cell | Value} = {
-    [storagePrefix + HAS_STORE]: 1,
-  };
+  const keysToSet = objNew<Cell | Value>([[storagePrefix + HAS_STORE, 1]]);
   const keysToDel: string[] = [];
   const keyPrefixesToDel: string[] = [];
 
@@ -170,7 +171,7 @@ const saveStore = async (
                           await storage.get(key),
                         )
                       ) {
-                        keysToSet[key] = cell;
+                        objSet(keysToSet, key, cell);
                       }
                     }),
                   )),
@@ -198,7 +199,7 @@ const saveStore = async (
           await storage.get(key),
         )
       ) {
-        keysToSet[key] = value;
+        objSet(keysToSet, key, value);
       }
     }),
   );

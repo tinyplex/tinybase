@@ -1,5 +1,5 @@
 import {arrayMap} from './array.ts';
-import {isObject, object, objMap} from './obj.ts';
+import {isObject, objMap, objNew} from './obj.ts';
 import {isArray, isInstanceOf, isUndefined} from './other.ts';
 import {UNDEFINED} from './strings.ts';
 
@@ -8,7 +8,7 @@ export const jsonParse = JSON.parse;
 
 export const jsonStringWithMap = (obj: unknown): string =>
   jsonString(obj, (_key, value) =>
-    isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
+    isInstanceOf(value, Map) ? objNew([...value]) : value,
   );
 
 export const jsonStringWithUndefined = (obj: unknown): string =>

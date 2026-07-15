@@ -19,7 +19,13 @@ import type {
 import type {Cell, Value} from '../../@types/store/index.d.ts';
 import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';
-import {objEnsure, objForEach, objIsEmpty} from '../../common/obj.ts';
+import {
+  objEnsure,
+  objForEach,
+  objIsEmpty,
+  objNew,
+  objSet,
+} from '../../common/obj.ts';
 import {ifNotUndefined, noop, size, slice} from '../../common/other.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
@@ -28,7 +34,8 @@ import {createCustomPersister} from '../common/create.ts';
 type StorageKeyType = typeof T | typeof V;
 type StoredValue = Stamp<0 | Cell | Value | undefined, true>;
 
-const stampNewObjectWithHash = () => stampNewWithHash({}, EMPTY_STRING, 0);
+const stampNewObjectWithHash = <Thing>() =>
+  stampNewWithHash(objNew<Thing>(), EMPTY_STRING, 0);
 
 export const createDurableObjectStoragePersister = ((
   store: MergeableStore,
@@ -78,7 +85,11 @@ export const createDurableObjectStoragePersister = ((
                       ifNotUndefined(
                         ids[2],
                         (cellId) =>
-                          (row[0][cellId] = [zeroOrCellOrValue, time, hash]),
+                          objSet(row[0], cellId, [
+                            zeroOrCellOrValue,
+                            time,
+                            hash,
+                          ]),
                         () => stampUpdate(row, time, hash),
                       );
                     },
@@ -91,7 +102,7 @@ export const createDurableObjectStoragePersister = ((
               ? ifNotUndefined(
                   ids[0],
                   (valueId) =>
-                    (values[0][valueId] = [zeroOrCellOrValue, time, hash]),
+                    objSet(values[0], valueId, [zeroOrCellOrValue, time, hash]),
                   () => stampUpdate(values, time, hash),
                 )
               : 0,

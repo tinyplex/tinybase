@@ -5,7 +5,7 @@ import {ifNotNullish, ifNotUndefined, isNullish, size} from './other.ts';
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
 
-export const object = Object;
+const object = Object;
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
 const objFrozen = object.isFrozen;
 
@@ -26,19 +26,40 @@ export const objIds = object.keys;
 
 export const objFreeze = object.freeze;
 
+export const objMerge = (...objs: IdObj<unknown>[]) =>
+  object.assign(object.create(null), ...objs);
+
 export const objNew = <Value>(
   entries: [id: string, value: Value][] = [],
-): IdObj<Value> => object.fromEntries(entries);
+): IdObj<Value> => objMerge(object.fromEntries(entries));
 
-export const objMerge = (...objs: IdObj<unknown>[]) =>
-  object.assign({}, ...objs);
+export const objHas = (obj: IdObj<unknown>, id: Id): boolean =>
+  object.hasOwn(obj, id);
 
 export const objGet = <Value>(
   obj: IdObj<Value> | Value[] | undefined,
   id: Id,
-): Value | undefined => ifNotUndefined(obj, (obj) => (obj as IdObj<Value>)[id]);
+): Value | undefined =>
+  ifNotUndefined(obj, (obj) =>
+    ifNotUndefined(
+      object.getOwnPropertyDescriptor(obj, id),
+      () => (obj as IdObj<Value>)[id],
+    ),
+  );
 
-export const objHas = (obj: IdObj<unknown>, id: Id): boolean => id in obj;
+export const objSet = <Value>(
+  obj: IdObj<Value>,
+  id: Id | number,
+  value: Value,
+): Value => {
+  object.defineProperty(obj, id, {
+    configurable: true,
+    enumerable: true,
+    value,
+    writable: true,
+  });
+  return value;
+};
 
 export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
   delete obj[id];
@@ -83,12 +104,14 @@ export const objIsEqual = (
   return (
     size(entries1) === objSize(obj2) &&
     arrayEvery(entries1, ([index, value1]) =>
-      isObject(value1)
-        ? /*! istanbul ignore next */
-          isObject(obj2[index])
-          ? objIsEqual(obj2[index] as any, value1 as any, isEqual)
-          : false
-        : isEqual(value1, obj2[index]),
+      objHas(obj2, index)
+        ? isObject(value1)
+          ? /*! istanbul ignore next */
+            isObject(obj2[index])
+            ? objIsEqual(obj2[index] as any, value1 as any, isEqual)
+            : false
+          : isEqual(value1, obj2[index])
+        : false,
     )
   );
 };
@@ -99,7 +122,7 @@ export const objEnsure = <Value>(
   getDefaultValue: () => Value,
 ): Value => {
   if (!objHas(obj, id as Id)) {
-    obj[id] = getDefaultValue();
+    objSet(obj, id, getDefaultValue());
   }
   return obj[id] as Value;
 };

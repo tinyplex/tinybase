@@ -102,6 +102,7 @@ import {
   objIsEmpty,
   objIsEqual,
   objMap,
+  objSet,
   objValidate,
 } from '../common/obj.ts';
 import {
@@ -425,7 +426,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ifNotUndefined(
             getValidatedCell(tableId, rowId, cellId, cell),
             (validCell) => {
-              row[cellId] = validCell;
+              objSet(row, cellId, validCell);
               return true;
             },
             () => false,
@@ -483,7 +484,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ifNotUndefined(
             getValidatedValue(valueId, value),
             (validValue) => {
-              values[valueId] = validValue;
+              objSet(values, valueId, validValue);
               return true;
             },
             () => false,
@@ -524,7 +525,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ([rowDefaulted, rowNonDefaulted]) => {
         collForEach(rowDefaulted, (cell, cellId) => {
           if (!objHas(row, cellId)) {
-            row[cellId] = cell;
+            objSet(row, cellId, cell);
             ifNotUndefined(rowId, (rowId) =>
               setAdd(
                 mapEnsure(
@@ -551,7 +552,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (hasValuesSchema) {
       collForEach(valuesDefaulted, (value, valueId) => {
         if (!objHas(values, valueId)) {
-          values[valueId] = value;
+          objSet(values, valueId, value);
           setAdd(defaultedValues, valueId);
         }
       });

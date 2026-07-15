@@ -9,32 +9,86 @@ import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {
   IdObj,
   objDel,
-  objEnsure,
   objGet,
   objHas,
   objIsEmpty,
   objMap,
   objNew,
+  objSet,
   objSize,
 } from '../../common/obj.ts';
 import {
   addEmitterListener,
   ifNotUndefined,
   isUndefined,
+  slice,
 } from '../../common/other.ts';
-import {CHANGE, TINYBASE} from '../../common/strings.ts';
+import {CHANGE, TINYBASE, strStartsWith} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
+const ID_ESCAPE = '\u0000';
+
+const encodeId = (id: Id): Id =>
+  objHas(Object.prototype as any, id) ||
+  id == 'prototype' ||
+  strStartsWith(id, ID_ESCAPE)
+    ? ID_ESCAPE + id
+    : id;
+
+const decodeId = (id: Id): Id =>
+  strStartsWith(id, ID_ESCAPE) ? slice(id, 1) : id;
+
+const docGet = (docObj: IdObj<any>, id: Id): any =>
+  objGet(docObj, encodeId(id));
+
+const docSet = (docObj: IdObj<any>, id: Id, value: any): any =>
+  (docObj[encodeId(id)] = value);
+
+const docDel = (docObj: IdObj<any>, id: Id): IdObj<any> =>
+  objDel(docObj, encodeId(id));
+
 const ensureDocContent = (doc: any, docObjName: string) => {
-  if (objIsEmpty(doc[docObjName])) {
-    doc[docObjName] = {t: {}, v: {}};
+  if (objIsEmpty(docGet(doc, docObjName))) {
+    docSet(doc, docObjName, {t: {}, v: {}});
   }
 };
 
-const getDocContent = (doc: any, docObjName: string): Content => [
-  doc[docObjName].t,
-  doc[docObjName].v,
-];
+const getDocObjects = (doc: any, docObjName: string): [any, any] => {
+  const docContent = docGet(doc, docObjName);
+  return [docContent.t, docContent.v];
+};
+
+const docObjToObj = (
+  docObj: IdObj<any>,
+  mapper: (value: any) => any = (value) => value,
+): IdObj<any> => {
+  const obj = objNew<any>();
+  objMap(docObj, (value, encodedId) =>
+    objSet(obj, decodeId(encodedId), mapper(value)),
+  );
+  return obj;
+};
+
+const getDocContent = (doc: any, docObjName: string): Content => {
+  const [docTables, docValues] = getDocObjects(doc, docObjName);
+  return [
+    docObjToObj(docTables, (docTable) =>
+      docObjToObj(docTable, (docRow) => docObjToObj(docRow)),
+    ),
+    docObjToObj(docValues),
+  ];
+};
+
+const docEnsure = (
+  docObj: IdObj<any>,
+  id: Id,
+  getDefaultValue: () => IdObj<any>,
+): IdObj<any> => {
+  if (isUndefined(docGet(docObj, id))) {
+    docSet(docObj, id, getDefaultValue());
+  }
+  return docGet(docObj, id);
+};
 
 const applyChangesToDoc = (
   doc: any,
@@ -43,7 +97,7 @@ const applyChangesToDoc = (
   changes?: Changes,
 ) => {
   ensureDocContent(doc, docObjName);
-  const [docTables, docValues] = getDocContent(doc, docObjName);
+  const [docTables, docValues] = getDocObjects(doc, docObjName);
   const changesDidFail = () => {
     changesFailed = 1;
   };
@@ -54,22 +108,22 @@ const applyChangesToDoc = (
       changesFailed
         ? 0
         : isUndefined(table)
-          ? objDel(docTables, tableId)
+          ? docDel(docTables, tableId)
           : ifNotUndefined(
-              docTables[tableId],
+              docGet(docTables, tableId),
               (docTable) =>
                 objMap(table, (row, rowId) =>
                   changesFailed
                     ? 0
                     : isUndefined(row)
-                      ? objDel(docTable, rowId)
+                      ? docDel(docTable, rowId)
                       : ifNotUndefined(
-                          objGet(docTable, rowId),
+                          docGet(docTable, rowId),
                           (docRow: any) =>
                             objMap(row, (cell, cellId) =>
                               isUndefined(cell)
-                                ? objDel(docRow, cellId)
-                                : (docRow[cellId] = cell),
+                                ? docDel(docRow, cellId)
+                                : docSet(docRow, cellId, cell),
                             ),
                           changesDidFail as any,
                         ),
@@ -81,8 +135,8 @@ const applyChangesToDoc = (
       changesFailed
         ? 0
         : isUndefined(value)
-          ? objDel(docValues, valueId)
-          : (docValues[valueId] = value),
+          ? docDel(docValues, valueId)
+          : docSet(docValues, valueId, value),
     );
   });
   if (changesFailed) {
@@ -90,16 +144,16 @@ const applyChangesToDoc = (
     docObjMatch(docTables, undefined, tables, (_, tableId, table) =>
       docObjMatch(docTables, tableId, table, (docTable, rowId, row) =>
         docObjMatch(docTable, rowId, row, (docRow, cellId, cell) => {
-          if (objGet(docRow, cellId) !== cell) {
-            docRow[cellId] = cell;
+          if (docGet(docRow, cellId) !== cell) {
+            docSet(docRow, cellId, cell);
             return 1;
           }
         }),
       ),
     );
     docObjMatch(docValues, undefined, values, (_, valueId, value) => {
-      if (objGet(docValues, valueId) !== value) {
-        docValues[valueId] = value;
+      if (docGet(docValues, valueId) !== value) {
+        docSet(docValues, valueId, value);
       }
     });
   }
@@ -113,21 +167,22 @@ const docObjMatch = (
 ): 1 | void => {
   const docObj = isUndefined(idInParent)
     ? docObjOrParent
-    : objEnsure(docObjOrParent, idInParent, () => ({}));
+    : docEnsure(docObjOrParent, idInParent, () => ({}));
   let changed: 1 | undefined;
   objMap(obj, (value, id) => {
     if (set(docObj, id, value)) {
       changed = 1;
     }
   });
-  objMap(docObj, (_: any, id: Id) => {
+  objMap(docObj, (_: any, encodedId: Id) => {
+    const id = decodeId(encodedId);
     if (!objHas(obj, id)) {
-      objDel(docObj, id);
+      objDel(docObj, encodedId);
       changed = 1;
     }
   });
   if (!isUndefined(idInParent) && objIsEmpty(docObj)) {
-    objDel(docObjOrParent, idInParent);
+    docDel(docObjOrParent, idInParent);
   }
   return changed;
 };
@@ -138,11 +193,11 @@ export const createAutomergePersister = ((
   docObjName = TINYBASE,
   onIgnoredError?: (error: any) => void,
 ): AutomergePersister => {
-  docHandle.change((doc: any) => objEnsure(doc, docObjName, objNew));
+  docHandle.change((doc: any) => docEnsure(doc, docObjName, () => ({})));
 
   const getPersisted = async (): Promise<Content | undefined> => {
     const doc = docHandle.doc();
-    return objSize(doc?.[docObjName]) == 2
+    return objSize(docGet(doc, docObjName)) == 2
       ? getDocContent(doc, docObjName)
       : undefined;
   };

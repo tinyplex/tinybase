@@ -310,6 +310,19 @@ describe.each([
         ]);
       });
 
+      test('reserved identifiers', async () => {
+        store1
+          .setCell('__proto__', 'constructor', 'prototype', 'safe')
+          .setValue('__proto__', 'safe');
+        await sync();
+
+        const [tables, values] = store2.getContent();
+        expect(Object.hasOwn(tables, '__proto__')).toEqual(true);
+        expect(tables['__proto__']['constructor']['prototype']).toEqual('safe');
+        expect(Object.hasOwn(values, '__proto__')).toEqual(true);
+        expect(values['__proto__']).toEqual('safe');
+      });
+
       test('defaulted value does not overwrite value', async () => {
         const valuesSchema = {v1: {type: 'number', default: 0}} as const;
         store1.setValuesSchema(valuesSchema);

@@ -223,6 +223,29 @@ describe('PartyKit persister integration', () => {
     ]);
   });
 
+  test('persists reserved identifiers', async () => {
+    const environment = createMockEnvironment();
+    fetchWas = globalThis.fetch;
+    globalThis.fetch = environment.fetch as typeof fetch;
+
+    const [store, persister] = createClient(environment);
+    persisters.push(persister);
+    await persister.startAutoPersisting();
+
+    store
+      .setCell('__proto__', 'constructor', 'prototype', 'safe')
+      .setValue('__proto__', 'safe');
+    await pause();
+
+    const [tables, values] = await loadStoreFromStorage(
+      environment.storage as any,
+    );
+    expect(Object.hasOwn(tables, '__proto__')).toEqual(true);
+    expect(tables['__proto__']['constructor']['prototype']).toEqual('safe');
+    expect(Object.hasOwn(values, '__proto__')).toEqual(true);
+    expect(values['__proto__']).toEqual('safe');
+  });
+
   test('persists updates to server storage', async () => {
     const environment = createMockEnvironment();
     fetchWas = globalThis.fetch;

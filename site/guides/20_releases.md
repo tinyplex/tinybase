@@ -71,6 +71,15 @@ Durable Object per WebSocket.
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
 The codes and their meanings are listed in the Error Codes guide.
 
+## Safe Arbitrary Identifiers
+
+Arbitrary string Ids, including names inherited from `Object.prototype` such as
+`__proto__`, `constructor`, and `toString`, are now preserved safely throughout
+Store, MergeableStore, synchronization, and persistence paths. Internal
+user-keyed dictionaries now use null-prototype objects and own-property checks,
+preventing these Ids from being omitted from getters or JSON, corrupting
+returned data, or altering object prototypes.
+
 ---
 
 # v9.2

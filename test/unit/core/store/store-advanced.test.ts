@@ -549,6 +549,43 @@ describe.each([
   });
 
   describe('Miscellaneous', () => {
+    test('Reserved identifiers', () => {
+      const reservedIds = [
+        ...Object.getOwnPropertyNames(Object.prototype),
+        'prototype',
+      ];
+      reservedIds.forEach((reservedId, index) =>
+        store
+          .setCell(reservedId, reservedId, reservedId, index)
+          .setValue(reservedId, index),
+      );
+
+      const tables = store.getTables();
+      const values = store.getValues();
+      const [jsonTables, jsonValues] = JSON.parse(store.getJson());
+      expect(Object.getPrototypeOf(tables)).toBeNull();
+      expect(Object.getPrototypeOf(values)).toBeNull();
+      reservedIds.forEach((reservedId, index) => {
+        expect(Object.hasOwn(tables, reservedId)).toEqual(true);
+        expect(Object.hasOwn(tables[reservedId], reservedId)).toEqual(true);
+        expect(
+          Object.hasOwn(tables[reservedId][reservedId], reservedId),
+        ).toEqual(true);
+        expect(tables[reservedId][reservedId][reservedId]).toEqual(index);
+        expect(values[reservedId]).toEqual(index);
+        expect(jsonTables[reservedId][reservedId][reservedId]).toEqual(index);
+        expect(jsonValues[reservedId]).toEqual(index);
+      });
+
+      const objectPrototype = Object.prototype as {[id: string]: unknown};
+      try {
+        store.setCell('constructor', 'prototype', 'polluted', 1);
+        expect(Object.hasOwn(objectPrototype, 'polluted')).toEqual(false);
+      } finally {
+        delete objectPrototype.polluted;
+      }
+    });
+
     test('Null prototype objects', () => {
       const tables = Object.create(null);
       const table = Object.create(null);

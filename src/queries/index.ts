@@ -52,7 +52,14 @@ import {
   mapSet,
   visitTree,
 } from '../common/map.ts';
-import {objFreeze, objGet, objIsEmpty, objMap} from '../common/obj.ts';
+import {
+  objFreeze,
+  objGet,
+  objIsEmpty,
+  objMap,
+  objNew,
+  objSet,
+} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -576,11 +583,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                               oldNewSet as Set<ChangedCell>,
                               aggregators,
                             );
-                            groupRow[groupedCellId] = (
-                              isUndefined(getCellOrValueType(aggregateValue))
+                            objSet(
+                              groupRow,
+                              groupedCellId,
+                              (isUndefined(getCellOrValueType(aggregateValue))
                                 ? undefined
-                                : aggregateValue
-                            ) as Cell;
+                                : aggregateValue) as Cell,
+                            );
                           },
                         );
                       }
@@ -659,16 +668,19 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                         tree,
                         newPath,
                         () => {
-                          const groupRow: Row = {};
+                          const groupRow = objNew<Cell>();
                           collForEach(
                             groupBySelectedCellIds,
                             (selectedCellId) =>
-                              (groupRow[selectedCellId] =
+                              objSet(
+                                groupRow,
+                                selectedCellId,
                                 selectJoinWhereStore.getCell(
                                   queryId,
                                   selectedRowId,
                                   selectedCellId,
-                                ) as Cell),
+                                ) as Cell,
+                              ),
                           );
                           return [mapNew(), setNew(), undefined, groupRow];
                         },

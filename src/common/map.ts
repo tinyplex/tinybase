@@ -1,7 +1,7 @@
 import type {Id} from '../@types/common/index.d.ts';
 import {arrayEvery, arrayMap} from './array.ts';
 import {collDel, collForEach, collHas, collIsEmpty, collSize} from './coll.ts';
-import {IdObj, objHas, objIsEmpty, objMap} from './obj.ts';
+import {IdObj, objHas, objIsEmpty, objMap, objNew, objSet} from './obj.ts';
 import {ifNotUndefined, isInstanceOf, isUndefined, size} from './other.ts';
 
 export type IdMap<Value> = Map<Id, Value>;
@@ -90,14 +90,14 @@ export const mapToObj = <MapValue, ObjValue = MapValue>(
   excludeMapValue?: (mapValue: MapValue, id: Id) => boolean,
   excludeObjValue?: (objValue: ObjValue) => boolean,
 ): IdObj<ObjValue> => {
-  const obj: IdObj<ObjValue> = {};
+  const obj = objNew<ObjValue>();
   collForEach(map, (mapValue, id) => {
     if (!excludeMapValue?.(mapValue, id)) {
       const objValue = valueMapper
         ? valueMapper(mapValue, id)
         : (mapValue as any as ObjValue);
       if (!excludeObjValue?.(objValue)) {
-        obj[id] = objValue;
+        objSet(obj, id, objValue);
       }
     }
   });

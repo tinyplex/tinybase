@@ -23,7 +23,14 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import {IdObj, isObject, objEnsure, objForEach} from '../../common/obj.ts';
+import {
+  IdObj,
+  isObject,
+  objEnsure,
+  objForEach,
+  objNew,
+  objSet,
+} from '../../common/obj.ts';
 import {isNull, noop, number, string} from '../../common/other.ts';
 import {setAdd, setNew} from '../../common/set.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
@@ -81,7 +88,8 @@ export const createDurableObjectSqlStoragePersister = (
   ) as DurableObjectSqlStoragePersister;
 };
 
-const stampNewObjectWithHash = () => stampNewWithHash({}, EMPTY_STRING, 0);
+const stampNewObjectWithHash = <Thing>() =>
+  stampNewWithHash(objNew<Thing>(), EMPTY_STRING, 0);
 
 const createDurableObjectFragmentedSqlStoragePersister = ((
   store: MergeableStore,
@@ -216,7 +224,11 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
           table_id,
           stampNewObjectWithHash,
         ) as TableStamp<true>;
-        table[0][row_id] = [zeroOrCells as RowStamp<true>[0], timestamp, hash];
+        objSet(table[0], row_id, [
+          zeroOrCells as RowStamp<true>[0],
+          timestamp,
+          hash,
+        ]);
         setAdd(rowDataKeys, getRowKey(table_id, row_id));
       }
     });
@@ -246,7 +258,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
               row_id,
               stampNewObjectWithHash,
             ) as RowStamp<true>;
-            tableRow[0][cell_id] = [zeroOrCellOrValue, timestamp, hash];
+            objSet(tableRow[0], cell_id, [zeroOrCellOrValue, timestamp, hash]);
           }
         } else if (table_id && row_id) {
           // Row level
@@ -290,7 +302,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
         const [zeroOrCellOrValue] = jsonParseWithUndefined(value_data);
 
         if (value_id) {
-          values[0][value_id] = [zeroOrCellOrValue, timestamp, hash];
+          objSet(values[0], value_id, [zeroOrCellOrValue, timestamp, hash]);
         } else {
           stampUpdate(values, timestamp, hash);
         }

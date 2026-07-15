@@ -10,12 +10,20 @@ import type {
   Changes,
   Content,
   Store,
+  Table,
   Tables,
-  Values,
+  Value,
 } from '../../@types/store/index.d.ts';
 import {arrayForEach, arrayShift} from '../../common/array.ts';
 import {mapForEach} from '../../common/map.ts';
-import {IdObj, objEnsure, objHas, objMap, objNew} from '../../common/obj.ts';
+import {
+  IdObj,
+  objEnsure,
+  objHas,
+  objMap,
+  objNew,
+  objSet,
+} from '../../common/obj.ts';
 import {
   ifNotUndefined,
   isEmpty,
@@ -31,16 +39,35 @@ const DELETE = 'delete';
 
 const getYContent = (yContent: YMap<any>) => [yContent.get(T), yContent.get(V)];
 
+const yMapToObj = <From, To = From>(
+  yMap: YMap<From>,
+  mapper?: (value: From) => To,
+): IdObj<To> => {
+  const obj = objNew<To>();
+  yMap.forEach((value, id) =>
+    objSet(obj, id, mapper ? mapper(value) : (value as any as To)),
+  );
+  return obj;
+};
+
+const yTablesToObj = (yTables: YMap<YMap<YMap<Cell>>>): Tables =>
+  yMapToObj(yTables, (yTable) => yMapToObj(yTable, (yRow) => yMapToObj(yRow)));
+
+const getYContentAsContent = (yContent: YMap<any>): Content => {
+  const [yTables, yValues] = getYContent(yContent);
+  return [yTablesToObj(yTables), yMapToObj(yValues)];
+};
+
 const getChangesFromYDoc = (
   yContent: YMap<any>,
   events: YEvent<any>[],
 ): Changes => {
   if (size(events) == 1 && isEmpty(events[0].path)) {
-    return [yContent.get(T).toJSON(), yContent.get(V).toJSON(), 1];
+    return [...getYContentAsContent(yContent), 1];
   }
   const [yTables, yValues] = getYContent(yContent);
-  const tables = {} as any;
-  const values = {} as any;
+  const tables = objNew<Table>();
+  const values = objNew<Value>();
   arrayForEach(events, ({path, changes: {keys}}) =>
     arrayShift(path) == T
       ? ifNotUndefined(
@@ -53,39 +80,46 @@ const getChangesFromYDoc = (
               (yRowId) => {
                 const row = objEnsure(table, yRowId, objNew) as any;
                 const yRow = yTable.get(yRowId) as YMap<Cell>;
-                mapForEach(
-                  keys,
-                  (cellId, {action}) =>
-                    (row[cellId] =
-                      action == DELETE ? undefined : yRow.get(cellId)),
+                mapForEach(keys, (cellId, {action}) =>
+                  objSet(
+                    row,
+                    cellId,
+                    action == DELETE ? undefined : yRow.get(cellId),
+                  ),
                 );
               },
               () =>
-                mapForEach(
-                  keys,
-                  (rowId, {action}) =>
-                    (table[rowId] =
-                      action == DELETE
-                        ? undefined
-                        : yTable.get(rowId)?.toJSON()),
+                mapForEach(keys, (rowId, {action}) =>
+                  objSet(
+                    table,
+                    rowId,
+                    action == DELETE
+                      ? undefined
+                      : yMapToObj(yTable.get(rowId) as YMap<Cell>),
+                  ),
                 ),
             );
           },
           () =>
-            mapForEach(
-              keys,
-              (tableId, {action}) =>
-                (tables[tableId] =
-                  action == DELETE
-                    ? undefined
-                    : yTables.get(tableId)?.toJSON()),
+            mapForEach(keys, (tableId, {action}) =>
+              objSet(
+                tables,
+                tableId,
+                action == DELETE
+                  ? undefined
+                  : yMapToObj(
+                      yTables.get(tableId) as YMap<YMap<Cell>>,
+                      (yRow) => yMapToObj(yRow),
+                    ),
+              ),
             ),
         )
-      : mapForEach(
-          keys,
-          (valueId, {action}) =>
-            (values[valueId] =
-              action == DELETE ? undefined : yValues.get(valueId)),
+      : mapForEach(keys, (valueId, {action}) =>
+          objSet(
+            values,
+            valueId,
+            action == DELETE ? undefined : yValues.get(valueId),
+          ),
         ),
   );
   return [tables, values, 1];
@@ -199,12 +233,7 @@ export const createYjsPersister = ((
   const yContent: YMap<any> = yDoc.getMap(yMapName);
 
   const getPersisted = async (): Promise<Content | undefined> =>
-    yContent.size
-      ? ([yContent.get(T).toJSON(), yContent.get(V).toJSON()] as [
-          Tables,
-          Values,
-        ])
-      : undefined;
+    yContent.size ? getYContentAsContent(yContent) : undefined;
 
   const setPersisted = async (
     getContent: () => Content,

@@ -130,6 +130,22 @@ describe('Two stores, one doc', () => {
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 
+  test('reserved identifiers', async () => {
+    await persister2.startAutoLoad();
+    store1
+      .setCell('__proto__', 'constructor', 'prototype', 'safe')
+      .setValue('__proto__', 'safe')
+      .setValue('\u0000__proto__', 'escaped');
+    await persister1.save();
+
+    const [tables, values] = store2.getContent();
+    expect(Object.hasOwn(tables, '__proto__')).toEqual(true);
+    expect(tables['__proto__']['constructor']['prototype']).toEqual('safe');
+    expect(Object.hasOwn(values, '__proto__')).toEqual(true);
+    expect(values['__proto__']).toEqual('safe');
+    expect(values['\u0000__proto__']).toEqual('escaped');
+  });
+
   test('autoSave1', async () => {
     await persister1.startAutoSave();
     store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
