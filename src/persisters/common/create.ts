@@ -184,11 +184,11 @@ export const createCustomPersister = <
   ): void => {
     (isMergeableStore && isArray(contentOrChanges?.[0])
       ? contentOrChanges?.[2] === 1
-        ? (store as MergeableStore).applyMergeableChanges
-        : (store as MergeableStore).setMergeableContent
+        ? (store as ProtectedMergeableStore).__[4]
+        : (store as ProtectedMergeableStore).__[3]
       : contentOrChanges?.[2] === 1
-        ? store.applyChanges
-        : store.setContent)(
+        ? (store as ProtectedStore)._[10]
+        : (store as ProtectedStore)._[9])(
       contentOrChanges as Content &
         MergeableContent &
         Changes &

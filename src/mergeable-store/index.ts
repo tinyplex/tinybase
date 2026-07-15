@@ -90,6 +90,10 @@ type ProtectedMethods = [
   getEncodedTransactionMergeableChanges: (
     withHashes: boolean,
   ) => MergeableChanges<typeof withHashes>,
+  setEncodedMergeableContent: (content: MergeableContent) => MergeableStore,
+  applyEncodedMergeableChanges: (
+    changes: MergeableChanges | MergeableContent,
+  ) => MergeableStore,
 ];
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -651,18 +655,30 @@ export const createMergeableStore = ((
     return stampNew(values, valuesHlc);
   };
 
-  const setMergeableContent = (
+  const setMergeableContentImpl = (
     mergeableContent: MergeableContent,
+    encoded?: boolean,
   ): MergeableStore =>
     disableListeningToRawStoreChanges(() =>
       validateMergeableContent(mergeableContent)
         ? store.transaction(() => {
             store.delTables().delValues();
             contentStampMap = newContentStampMap();
-            store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
+            const changes = mergeContentOrChanges(mergeableContent, 1);
+            (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
+              changes,
+            );
           })
         : 0,
     );
+
+  const setMergeableContent = (
+    mergeableContent: MergeableContent,
+  ): MergeableStore => setMergeableContentImpl(mergeableContent);
+
+  const setEncodedMergeableContent = (
+    mergeableContent: MergeableContent,
+  ): MergeableStore => setMergeableContentImpl(mergeableContent, true);
 
   const setDefaultContent = (
     content: Content | (() => Content),
@@ -688,12 +704,23 @@ export const createMergeableStore = ((
   ): MergeableChanges<typeof withHashes> =>
     getTransactionMergeableChangesImpl(withHashes, true);
 
-  const applyMergeableChanges = (
+  const applyMergeableChangesImpl = (
     mergeableChanges: MergeableChanges | MergeableContent,
+    encoded?: boolean,
   ): MergeableStore =>
     disableListeningToRawStoreChanges(() =>
-      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+      (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
+        mergeContentOrChanges(mergeableChanges),
+      ),
     );
+
+  const applyMergeableChanges = (
+    mergeableChanges: MergeableChanges | MergeableContent,
+  ): MergeableStore => applyMergeableChangesImpl(mergeableChanges);
+
+  const applyEncodedMergeableChanges = (
+    mergeableChanges: MergeableChanges | MergeableContent,
+  ): MergeableStore => applyMergeableChangesImpl(mergeableChanges, true);
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
@@ -730,6 +757,8 @@ export const createMergeableStore = ((
       hadMutated,
       getEncodedMergeableContent,
       getEncodedTransactionMergeableChanges,
+      setEncodedMergeableContent,
+      applyEncodedMergeableChanges,
     ] as ProtectedMethods,
   };
 

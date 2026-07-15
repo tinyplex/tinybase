@@ -1648,6 +1648,64 @@ describe.each([
     });
   });
 
+  describe('Reserved strings', () => {
+    const jsonPrefix = '\uFFFD';
+
+    test('leading JSON prefix is invalid string data', () => {
+      const invalidCell = vi.fn();
+      const invalidValue = vi.fn();
+      const cell = jsonPrefix + '{"a":1}';
+      const value = jsonPrefix + '[1]';
+      store.addInvalidCellListener(null, null, null, invalidCell);
+      store.addInvalidValueListener(null, invalidValue);
+
+      store.setCell('t1', 'r1', 'c1', cell).setValue('v1', value);
+
+      expect(store.getContent()).toEqual([{}, {}]);
+      expect(invalidCell).toHaveBeenCalledWith(store, 't1', 'r1', 'c1', [cell]);
+      expect(invalidValue).toHaveBeenCalledWith(store, 'v1', [value]);
+
+      const schemaStore = createStore()
+        .setTablesSchema({t1: {c1: {type: 'string'}}})
+        .setValuesSchema({v1: {type: 'string'}})
+        .setCell('t1', 'r1', 'c1', cell)
+        .setValue('v1', value);
+      expect(schemaStore.getContent()).toEqual([{}, {}]);
+
+      const defaultStore = createStore()
+        .setTablesSchema({t1: {c1: {type: 'string', default: cell}}})
+        .setValuesSchema({v1: {type: 'string', default: value}});
+      expect(JSON.parse(defaultStore.getSchemaJson())).toEqual([
+        {t1: {c1: {type: 'string'}}},
+        {v1: {type: 'string'}},
+      ]);
+    });
+
+    test('JSON prefix is valid elsewhere', () => {
+      const cell = 'a' + jsonPrefix + 'b';
+      const value = 'a' + jsonPrefix;
+      const nested = jsonPrefix;
+
+      store
+        .setCell('t1', 'r1', 'c1', cell)
+        .setCell('t1', 'r1', 'c2', {nested})
+        .setValue('v1', value)
+        .setValue('v2', [nested]);
+
+      expect(store.getContent()).toEqual([
+        {t1: {r1: {c1: cell, c2: {nested}}}},
+        {v1: value, v2: [nested]},
+      ]);
+    });
+
+    test('encoded object and array data round-trips through JSON', () => {
+      store.setCell('t1', 'r1', 'c1', {a: 1}).setValue('v1', [1, 2]);
+      const restoredStore = createStore().setJson(store.getJson());
+
+      expect(restoredStore.getContent()).toEqual(store.getContent());
+    });
+  });
+
   describe('Stats', () => {
     let expectedListenerStats: any = {};
 
@@ -1797,5 +1855,19 @@ describe('Encoded persistence paths', () => {
     expect(persisted[0][0].t1[0].r1[0].c1[0]).toContain('"a":1');
     expect(typeof persisted[1][0].v1[0]).toEqual('string');
     expect(persisted[1][0].v1[0]).toContain('"b":2');
+
+    const restoredStore = createMergeableStore('s2');
+    const loadingPersister = createCustomPersister(
+      restoredStore,
+      async () => persisted,
+      async () => undefined,
+      async () => undefined,
+      async () => undefined,
+      undefined,
+      Persists.StoreOrMergeableStore,
+    );
+    await loadingPersister.load();
+    await loadingPersister.destroy();
+    expect(restoredStore.getContent()).toEqual(store.getContent());
   });
 });

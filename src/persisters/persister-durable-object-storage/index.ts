@@ -17,7 +17,7 @@ import type {
   createDurableObjectStoragePersister as createDurableObjectStoragePersisterDecl,
 } from '../../@types/persisters/persister-durable-object-storage/index.d.ts';
 import type {Cell, Value} from '../../@types/store/index.d.ts';
-import {jsonStringWithUndefined} from '../../common/json.ts';
+import {jsonString} from '../../common/json.ts';
 import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';
 import {
   objEnsure,
@@ -44,7 +44,7 @@ export const createDurableObjectStoragePersister = ((
   onIgnoredError?: (error: any) => void,
 ): DurableObjectStoragePersister => {
   const constructKey = (type: StorageKeyType, ...ids: Ids) =>
-    storagePrefix + type + slice(jsonStringWithUndefined(ids), 1, -1);
+    storagePrefix + type + slice(jsonString(ids), 1, -1);
 
   const deconstructKey = (
     key: string,
