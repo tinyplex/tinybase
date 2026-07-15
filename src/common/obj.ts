@@ -4,6 +4,7 @@ import {ifNotNullish, ifNotUndefined, isNullish, size} from './other.ts';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
+export type IdObj3<Value> = IdObj<IdObj2<Value>>;
 
 const object = Object;
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
@@ -84,6 +85,16 @@ export const objMap = <FromValue, ToValue>(
   cb: (value: FromValue, id: string) => ToValue,
 ): IdObj<ToValue> =>
   objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
+
+export const objMap2 = <FromValue, ToValue>(
+  obj: IdObj2<FromValue>,
+  cb: (value: FromValue, id: string) => ToValue,
+): IdObj2<ToValue> => objMap(obj, (obj) => objMap(obj, cb));
+
+export const objMap3 = <FromValue, ToValue>(
+  obj: IdObj3<FromValue>,
+  cb: (value: FromValue, id: string) => ToValue,
+): IdObj3<ToValue> => objMap(obj, (obj) => objMap2(obj, cb));
 
 export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
   object.values(obj);
