@@ -26,7 +26,7 @@ import {getUniqueId} from '../common/codec.ts';
 import {collDel} from '../common/coll.ts';
 import {ERROR_SYNC_RESPONSE, errorNew, tryCatch} from '../common/error.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
-import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
+import {objEnsure, objForEach, objIsEmpty, objSet} from '../common/obj.ts';
 import {
   ifNotUndefined,
   isNull,
@@ -142,10 +142,8 @@ export const createCustomSynchronizer = (
           rowId,
           stampNewObj<CellStamp>,
         );
-        objForEach(
-          cellStamps2,
-          ([cell2, cellTime2], cellId) =>
-            (rowStamp[0][cellId] = stampNew(cell2, cellTime2)),
+        objForEach(cellStamps2, ([cell2, cellTime2], cellId) =>
+          objSet(rowStamp[0], cellId, stampNew(cell2, cellTime2)),
         );
         rowStamp[1] = getLatestHlc(rowStamp[1], rowTime2);
       });

@@ -24,6 +24,7 @@ import {
   objIsEmpty,
   objMap,
   objNew,
+  objSet,
   objToArray,
 } from '../../../common/obj.ts';
 import {isEmpty, isUndefined, promiseAll} from '../../../common/other.ts';
@@ -317,11 +318,15 @@ export const getCommandFunctions = (
             changingColumnName != rowIdColumnName &&
             includeContentSubId(changingColumnName),
         );
-        const rows: {[id: string]: any[]} = {};
+        const rows = objNew<any[]>();
         const deleteRowIds: string[] = [];
         objMap(content ?? {}, (row, rowId) => {
-          rows[rowId] = arrayMap(changingColumnNames, (cellId) =>
-            encode ? encode(row?.[cellId]) : row?.[cellId],
+          objSet(
+            rows,
+            rowId,
+            arrayMap(changingColumnNames, (cellId) =>
+              encode ? encode(row?.[cellId]) : row?.[cellId],
+            ),
           );
           arrayPush(deleteRowIds, rowId);
         });

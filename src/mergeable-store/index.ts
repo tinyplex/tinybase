@@ -42,9 +42,11 @@ import {
   objEnsure,
   objForEach,
   objFreeze,
+  objGet,
   objHas,
   objMap,
   objNew,
+  objSet,
   objValidate,
 } from '../common/obj.ts';
 import {ifNotUndefined, isArray, noop, size, slice} from '../common/other.ts';
@@ -185,8 +187,8 @@ export const createMergeableStore = ((
     contentOrChanges: MergeableChanges | MergeableContent,
     isContent: 0 | 1 = 0,
   ): Changes => {
-    const tablesChanges = {};
-    const valuesChanges = {};
+    const tablesChanges = objNew<IdObj<IdObj<CellOrUndefined>>>();
+    const valuesChanges = objNew<ValueOrUndefined>();
     const [
       [tablesObj, incomingTablesHlc = EMPTY_STRING, incomingTablesHash = 0],
       values,
@@ -303,7 +305,7 @@ export const createMergeableStore = ((
             isContent ? incomingThingHash : getValueHash(thing, thingHlc),
           );
           thingStampMap[0] = thing;
-          thingsChanges[thingId] = thing;
+          objSet(thingsChanges, thingId, thing);
           thingsHash ^= isContent
             ? 0
             : addOrRemoveHash(
@@ -431,47 +433,49 @@ export const createMergeableStore = ((
 
     const newStamp = withHashes ? stampNewWithHash : stampNew;
 
-    const tablesObj: TablesStamp<typeof withHashes>[0] = {};
+    const tablesObj: TablesStamp<typeof withHashes>[0] = objNew();
     collForEach(touchedCells, (touchedTable, tableId) =>
       ifNotUndefined(
         mapGet(tableStampMaps, tableId),
         ([rowStampMaps, tableHlc, tableHash]) => {
-          const tableObj: TableStamp<typeof withHashes>[0] = {};
+          const tableObj: TableStamp<typeof withHashes>[0] = objNew();
           collForEach(touchedTable, (touchedRow, rowId) =>
             ifNotUndefined(
               mapGet(rowStampMaps, rowId),
               ([cellStampMaps, rowHlc, rowHash]) => {
-                const rowObj: RowStamp<typeof withHashes>[0] = {};
+                const rowObj: RowStamp<typeof withHashes>[0] = objNew();
                 collForEach(touchedRow, (cellId) => {
                   ifNotUndefined(
                     mapGet(cellStampMaps, cellId),
                     ([cell, time, hash]) =>
-                      (rowObj[cellId] = newStamp(
-                        encoded ? cell : decodeIfJson(cell),
-                        time,
-                        hash,
-                      )),
+                      objSet(
+                        rowObj,
+                        cellId,
+                        newStamp(
+                          encoded ? cell : decodeIfJson(cell),
+                          time,
+                          hash,
+                        ),
+                      ),
                   );
                 });
-                tableObj[rowId] = newStamp(rowObj, rowHlc, rowHash);
+                objSet(tableObj, rowId, newStamp(rowObj, rowHlc, rowHash));
               },
             ),
           );
-          tablesObj[tableId] = newStamp(tableObj, tableHlc, tableHash);
+          objSet(tablesObj, tableId, newStamp(tableObj, tableHlc, tableHash));
         },
       ),
     );
 
-    const valuesObj: ValuesStamp<typeof withHashes>[0] = {};
+    const valuesObj: ValuesStamp<typeof withHashes>[0] = objNew();
     collForEach(touchedValues, (valueId) =>
-      ifNotUndefined(
-        mapGet(valueStampMaps, valueId),
-        ([value, time, hash]) =>
-          (valuesObj[valueId] = newStamp(
-            encoded ? value : decodeIfJson(value),
-            time,
-            hash,
-          )),
+      ifNotUndefined(mapGet(valueStampMaps, valueId), ([value, time, hash]) =>
+        objSet(
+          valuesObj,
+          valueId,
+          newStamp(encoded ? value : decodeIfJson(value), time, hash),
+        ),
       ),
     );
 
@@ -501,33 +505,35 @@ export const createMergeableStore = ((
     otherTableHashes: TableHashes,
   ): [newTables: TablesStamp, differingTableHashes: TableHashes] => {
     const newTables: TablesStamp = stampNewObj(contentStampMap[0][1]);
-    const differingTableHashes: TableHashes = {};
+    const differingTableHashes = objNew<number>();
     mapForEach(
       contentStampMap[0][0],
       (tableId, [tableStampMap, tableHlc, hash]) =>
         objHas(otherTableHashes, tableId)
           ? hash != otherTableHashes[tableId]
-            ? (differingTableHashes[tableId] = hash)
+            ? objSet(differingTableHashes, tableId, hash)
             : 0
-          : (newTables[0][tableId] = stampMapToObjWithoutHash(
-              [tableStampMap, tableHlc],
-              (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
-            )),
+          : objSet(
+              newTables[0],
+              tableId,
+              stampMapToObjWithoutHash(
+                [tableStampMap, tableHlc],
+                (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
+              ),
+            ),
     );
     return [newTables, differingTableHashes];
   };
 
   const getMergeableRowHashes = (otherTableHashes: TableHashes): RowHashes => {
-    const rowHashes: RowHashes = {};
+    const rowHashes = objNew<IdObj<number>>();
     objForEach(otherTableHashes, (otherTableHash, tableId) =>
       ifNotUndefined(
         mapGet(contentStampMap[0][0], tableId),
         ([rowStampMaps, , tableHash]) =>
           tableHash != otherTableHash
-            ? mapForEach(
-                rowStampMaps,
-                (rowId, [, , rowHash]) =>
-                  (objEnsure(rowHashes, tableId, objNew)[rowId] = rowHash),
+            ? mapForEach(rowStampMaps, (rowId, [, , rowHash]) =>
+                objSet(objEnsure(rowHashes, tableId, objNew), rowId, rowHash),
               )
             : 0,
       ),
@@ -539,17 +545,24 @@ export const createMergeableStore = ((
     otherTableRowHashes: RowHashes,
   ): [newRows: TablesStamp, differingRowHashes: RowHashes] => {
     const newRows: TablesStamp = stampNewObj(contentStampMap[0][1]);
-    const differingRowHashes: RowHashes = {};
+    const differingRowHashes = objNew<IdObj<number>>();
     objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
       mapForEach(
         mapGet(contentStampMap[0][0], tableId)?.[0],
         (rowId, [rowStampMap, rowHlc, hash]) =>
           objHas(otherRowHashes, rowId)
             ? hash !== otherRowHashes[rowId]
-              ? (objEnsure(differingRowHashes, tableId, objNew)[rowId] = hash)
+              ? objSet(
+                  objEnsure(differingRowHashes, tableId, objNew),
+                  rowId,
+                  hash,
+                )
               : 0
-            : (objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] =
-                stampMapToObjWithoutHash([rowStampMap, rowHlc])),
+            : objSet(
+                objEnsure(newRows[0], tableId, stampNewObj)[0],
+                rowId,
+                stampMapToObjWithoutHash([rowStampMap, rowHlc]),
+              ),
       ),
     );
     return [newRows, differingRowHashes];
@@ -558,7 +571,7 @@ export const createMergeableStore = ((
   const getMergeableCellHashes = (
     otherTableRowHashes: RowHashes,
   ): CellHashes => {
-    const cellHashes: CellHashes = {};
+    const cellHashes = objNew<IdObj<IdObj<number>>>();
     objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
       ifNotUndefined(mapGet(contentStampMap[0][0], tableId), ([rowStampMaps]) =>
         objForEach(otherRowHashes, (otherRowHash, rowId) =>
@@ -566,14 +579,16 @@ export const createMergeableStore = ((
             mapGet(rowStampMaps, rowId),
             ([cellStampMaps, , rowHash]) =>
               rowHash !== otherRowHash
-                ? mapForEach(
-                    cellStampMaps,
-                    (cellId, [, , cellHash]) =>
-                      (objEnsure(
+                ? mapForEach(cellStampMaps, (cellId, [, , cellHash]) =>
+                    objSet(
+                      objEnsure(
                         objEnsure<CellHashes[Id]>(cellHashes, tableId, objNew),
                         rowId,
                         objNew,
-                      )[cellId] = cellHash),
+                      ),
+                      cellId,
+                      cellHash,
+                    ),
                   )
                 : 0,
           ),
@@ -587,7 +602,7 @@ export const createMergeableStore = ((
     otherTableRowCellHashes: CellHashes,
   ): TablesStamp => {
     const [[tableStampMaps, tablesHlc]] = contentStampMap;
-    const tablesObj: TablesStamp[0] = {};
+    const tablesObj: TablesStamp[0] = objNew();
     objForEach(otherTableRowCellHashes, (otherRowCellHashes, tableId) =>
       objForEach(otherRowCellHashes, (otherCellHashes, rowId) =>
         ifNotUndefined(
@@ -597,14 +612,18 @@ export const createMergeableStore = ((
               mapGet(rowStampMaps, rowId),
               ([cellStampMaps, rowHlc]) =>
                 mapForEach(cellStampMaps, (cellId, [cell, cellHlc, hash]) =>
-                  hash !== otherCellHashes[cellId]
-                    ? (objEnsure(
-                        objEnsure(tablesObj, tableId, () =>
-                          stampNewObj(tableHlc),
+                  hash !== objGet(otherCellHashes, cellId)
+                    ? objSet(
+                        objEnsure(
+                          objEnsure(tablesObj, tableId, () =>
+                            stampNewObj(tableHlc),
+                          )[0],
+                          rowId,
+                          () => stampNewObj(rowHlc),
                         )[0],
-                        rowId,
-                        () => stampNewObj(rowHlc),
-                      )[0][cellId] = [cell, cellHlc])
+                        cellId,
+                        [cell, cellHlc],
+                      )
                     : 0,
                 ),
             ),
@@ -624,7 +643,7 @@ export const createMergeableStore = ((
     const values = mapToObj(
       valueStampMaps,
       stampClone,
-      ([, , hash], valueId) => hash == otherValueHashes?.[valueId],
+      ([, , hash], valueId) => hash == objGet(otherValueHashes, valueId),
     );
     return stampNew(values, valuesHlc);
   };

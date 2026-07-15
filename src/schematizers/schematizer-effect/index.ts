@@ -1,5 +1,6 @@
 import type {createEffectSchematizer as createEffectSchematizerDecl} from '../../@types/schematizers/schematizer-effect/index.d.ts';
 import {arrayFind} from '../../common/array.ts';
+import {objNew, objSet} from '../../common/obj.ts';
 import {isNull} from '../../common/other.ts';
 import {
   ARRAY,
@@ -86,9 +87,9 @@ const getProperties = (schema: any) => {
   if (ast._tag === TYPE_LITERAL) {
     const signatures = ast[PROPERTY_SIGNATURES];
     if (signatures) {
-      const properties: any = {};
+      const properties = objNew<any>();
       signatures.forEach((sig: any) => {
-        properties[sig.name] = sig.type;
+        objSet(properties, sig.name, sig.type);
       });
       return properties;
     }

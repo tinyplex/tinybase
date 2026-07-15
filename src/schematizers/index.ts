@@ -5,7 +5,13 @@ import type {
   ValueSchema,
   ValuesSchema,
 } from '../@types/store/index.d.ts';
-import {objForEach, objFreeze, objIsEmpty, objNew} from '../common/obj.ts';
+import {
+  objForEach,
+  objFreeze,
+  objIsEmpty,
+  objNew,
+  objSet,
+} from '../common/obj.ts';
 import {ifNotUndefined, isUndefined} from '../common/other.ts';
 import {
   ALLOW_NULL,
@@ -67,13 +73,13 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
               getPropertyRequired?.(schema, cellId, cellSchema),
             ),
             (cellSchema) => {
-              tableSchema[cellId] = cellSchema;
+              objSet(tableSchema, cellId, cellSchema);
             },
           ),
         ),
       );
       if (!objIsEmpty(tableSchema)) {
-        tablesSchema[tableId] = tableSchema;
+        objSet(tablesSchema, tableId, tableSchema);
       }
     });
     return tablesSchema;
@@ -83,7 +89,7 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
     const valuesSchema: ValuesSchema = objNew();
     objForEach(schemas, (schema, valueId) =>
       ifNotUndefined(toCellOrValueSchema(schema), (valueSchema) => {
-        valuesSchema[valueId] = valueSchema as ValueSchema;
+        objSet(valuesSchema, valueId, valueSchema as ValueSchema);
       }),
     );
     return valuesSchema;
