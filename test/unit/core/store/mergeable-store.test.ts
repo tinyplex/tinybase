@@ -6,7 +6,7 @@ import type {
   MergeableContent,
   MergeableStore,
 } from 'tinybase';
-import {createMergeableStore} from 'tinybase';
+import {createMergeableStore, createMiddleware} from 'tinybase';
 import {
   getTimeFunctions,
   nullStamped,
@@ -615,6 +615,21 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
+  test('restores raw change listening after apply error', () => {
+    const error = new Error('listener error');
+    const listenerId = store.addValueListener('v1', () => {
+      throw error;
+    });
+    expect(() =>
+      store.applyMergeableChanges([
+        stamped(0, 0, {}),
+        stamped(0, 0, {v1: stamped(0, 0, 1)}),
+      ] as MergeableContent),
+    ).toThrow(error);
+    store.delListener(listenerId).setValue('v2', 2);
+    expect(store.getMergeableContent()[1][0].v2[0]).toEqual(2);
+  });
+
   test('apply with missing cell hlc', () => {
     store.applyMergeableChanges([
       // @ts-ignore
@@ -665,6 +680,16 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     store.setDefaultContent([{t0: {r0: {c0: 0}}}, {v0: 0}]);
     expect(store.getContent()).toEqual([{t0: {r0: {c0: 0}}}, {v0: 0}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
+  });
+
+  test('restores defaulting state after error', () => {
+    const error = new Error('middleware error');
+    createMiddleware(store).addWillSetContentCallback(() => {
+      throw error;
+    });
+    expect(() => store.setDefaultContent([{}, {v0: 0}])).toThrow(error);
+    store.setValue('v1', 1);
+    expect(store.getMergeableContent()[1][0].v1[1]).not.toEqual('');
   });
 
   test('set tables schema default', () => {

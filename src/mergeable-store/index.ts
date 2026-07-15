@@ -178,8 +178,11 @@ export const createMergeableStore = ((
   ): MergeableStore => {
     const wasListening = listeningToRawStoreChanges;
     listeningToRawStoreChanges = 0;
-    actions();
-    listeningToRawStoreChanges = wasListening;
+    try {
+      actions();
+    } finally {
+      listeningToRawStoreChanges = wasListening;
+    }
     return mergeableStore as MergeableStore;
   };
 
@@ -666,8 +669,11 @@ export const createMergeableStore = ((
   ): MergeableStore => {
     store.transaction(() => {
       defaultingContent = 1;
-      store.setContent(content);
-      defaultingContent = 0;
+      try {
+        store.setContent(content);
+      } finally {
+        defaultingContent = 0;
+      }
     });
     return mergeableStore as MergeableStore;
   };
