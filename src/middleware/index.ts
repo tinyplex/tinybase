@@ -31,9 +31,10 @@ import type {
   Values,
 } from '../@types/store/index.d.ts';
 import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
+import {decodeIfJson, encodeIfJson} from '../common/cell.ts';
 import {getCreateFunction} from '../common/definable.ts';
-import {objFreeze} from '../common/obj.ts';
-import {isEmpty, isUndefined} from '../common/other.ts';
+import {objFreeze, objMap} from '../common/obj.ts';
+import {ifNotUndefined, isEmpty, isUndefined} from '../common/other.ts';
 import {ProtectedStore} from '../store/index.ts';
 
 const reduceCallbacks = (
@@ -47,6 +48,46 @@ const reduceCallbacks = (
       isUndefined(current) ? current : callback(...ids, current),
     thing,
   );
+
+const mapTable = (table: Table, mapCell: (cell: Cell) => Cell): Table =>
+  objMap(table, (row) => objMap(row, mapCell));
+
+const mapTables = (tables: Tables, mapCell: (cell: Cell) => Cell): Tables =>
+  objMap(tables, (table) => mapTable(table, mapCell));
+
+const mapChanges = (
+  [tables, values, isChanges]: Changes,
+  mapCellOrValue: (cellOrValue: Cell | Value) => Cell | Value,
+): Changes => [
+  objMap(tables, (table) =>
+    isUndefined(table)
+      ? table
+      : objMap(table, (row) =>
+          isUndefined(row)
+            ? row
+            : objMap(row, (cell) =>
+                isUndefined(cell) ? cell : mapCellOrValue(cell),
+              ),
+        ),
+  ),
+  objMap(values, (value) =>
+    isUndefined(value) ? value : mapCellOrValue(value),
+  ),
+  isChanges,
+];
+
+const reduceDecodedCallbacks = (
+  callbacks: ((...args: any[]) => any)[],
+  thing: any,
+  mapThing: (thing: any, mapCellOrValue: (value: any) => any) => any,
+  ...ids: Id[]
+): any =>
+  isEmpty(callbacks)
+    ? thing
+    : ifNotUndefined(
+        reduceCallbacks(callbacks, mapThing(thing, decodeIfJson), ...ids),
+        (thing) => mapThing(thing, encodeIfJson),
+      );
 
 const everyCallback = (
   callbacks: ((...args: any[]) => boolean)[],
@@ -80,17 +121,29 @@ export const createMiddleware = getCreateFunction(
     const willDelValueCallbacks: WillDelValueCallback[] = [];
     const willApplyChangesCallbacks: WillApplyChangesCallback[] = [];
 
-    const willSetContent = (content: Content): Content | undefined =>
-      reduceCallbacks(willSetContentCallbacks, content);
+    const willSetContent = (
+      content: Content,
+      encoded?: 0 | 1,
+    ): Content | undefined =>
+      encoded
+        ? reduceDecodedCallbacks(
+            willSetContentCallbacks,
+            content,
+            ([tables, values], mapCellOrValue) => [
+              mapTables(tables, mapCellOrValue),
+              objMap(values, mapCellOrValue),
+            ],
+          )
+        : reduceCallbacks(willSetContentCallbacks, content);
 
     const willSetTables = (tables: Tables): Tables | undefined =>
-      reduceCallbacks(willSetTablesCallbacks, tables);
+      reduceDecodedCallbacks(willSetTablesCallbacks, tables, mapTables);
 
     const willSetTable = (tableId: Id, table: Table): Table | undefined =>
-      reduceCallbacks(willSetTableCallbacks, table, tableId);
+      reduceDecodedCallbacks(willSetTableCallbacks, table, mapTable, tableId);
 
     const willSetRow = (tableId: Id, rowId: Id, row: Row): Row | undefined =>
-      reduceCallbacks(willSetRowCallbacks, row, tableId, rowId);
+      reduceDecodedCallbacks(willSetRowCallbacks, row, objMap, tableId, rowId);
 
     const willSetCell = (
       tableId: Id,
@@ -98,13 +151,25 @@ export const createMiddleware = getCreateFunction(
       cellId: Id,
       cell: Cell,
     ): CellOrUndefined =>
-      reduceCallbacks(willSetCellCallbacks, cell, tableId, rowId, cellId);
+      reduceDecodedCallbacks(
+        willSetCellCallbacks,
+        cell,
+        (cell, mapCell) => mapCell(cell),
+        tableId,
+        rowId,
+        cellId,
+      );
 
     const willSetValues = (values: Values): Values | undefined =>
-      reduceCallbacks(willSetValuesCallbacks, values);
+      reduceDecodedCallbacks(willSetValuesCallbacks, values, objMap);
 
     const willSetValue = (valueId: Id, value: Value): ValueOrUndefined =>
-      reduceCallbacks(willSetValueCallbacks, value, valueId);
+      reduceDecodedCallbacks(
+        willSetValueCallbacks,
+        value,
+        (value, mapValue) => mapValue(value),
+        valueId,
+      );
 
     const willDelTables = (): boolean => everyCallback(willDelTablesCallbacks);
 
@@ -122,8 +187,13 @@ export const createMiddleware = getCreateFunction(
     const willDelValue = (valueId: Id): boolean =>
       everyCallback(willDelValueCallbacks, valueId);
 
-    const willApplyChanges = (changes: Changes): Changes | undefined =>
-      reduceCallbacks(willApplyChangesCallbacks, changes);
+    const willApplyChanges = (
+      changes: Changes,
+      encoded?: 0 | 1,
+    ): Changes | undefined =>
+      encoded
+        ? reduceDecodedCallbacks(willApplyChangesCallbacks, changes, mapChanges)
+        : reduceCallbacks(willApplyChangesCallbacks, changes);
 
     const getStore = (): Store => store;
 

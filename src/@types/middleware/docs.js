@@ -101,7 +101,9 @@
  *
  * The callback receives the table Id, row Id, cell Id, and the Cell value that
  * is about to be set. It can return the Cell value (possibly transformed) to
- * allow the write, or `undefined` to prevent the Cell from being set.
+ * allow the write, or `undefined` to prevent the Cell from being set. Object
+ * and array Cells are provided in their public JavaScript form as a deep clone,
+ * never as TinyBase's private internal encoding.
  *
  * Multiple WillSetCellCallback functions can be registered and they will be
  * called sequentially, the Cell value being updated successively. If any
@@ -141,7 +143,9 @@
  *
  * The callback receives the value Id and the Value that is about to be set. It
  * can return the Value (possibly transformed) to allow the write, or
- * `undefined` to prevent the Value from being set.
+ * `undefined` to prevent the Value from being set. Object and array Values are
+ * provided in their public JavaScript form as a deep clone, never as TinyBase's
+ * private internal encoding.
  *
  * Multiple WillSetValueCallback functions can be registered and they will be
  * called sequentially, the Value being updated successively. If any callback

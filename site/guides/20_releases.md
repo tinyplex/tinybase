@@ -115,6 +115,13 @@ across multiple Stores or supplied as a frozen object.
 The getTablesSchemaJson, getValuesSchemaJson, and getSchemaJson methods also
 return object and array defaults in their original form.
 
+## Public Middleware Values
+
+Middleware callbacks now receive object and array Cells and Values in their
+public JavaScript form, rather than TinyBase's private encoded-string form.
+Rich values are cloned before callbacks run, and callback results are validated
+against Store schemas and encoded only at the storage boundary.
+
 ## PartyKit Authorization
 
 The PartyKit persister server now broadcasts only the changes accepted by its
