@@ -15,11 +15,10 @@ export interface WsSynchronizer<
   getWebSocket(): WebSocketType;
 }
 
-/// createWsSynchronizer
+/// createWsSynchronizer.1
 export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
   store: MergeableStore,
   webSocket: WebSocketType,
-  channelId: Id,
   requestTimeoutSeconds?: number,
   onSend?: Send,
   onReceive?: Receive,
@@ -27,10 +26,11 @@ export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
   fragmentSize?: number,
 ): Promise<WsSynchronizer<WebSocketType>>;
 
-/// createWsSynchronizer
+/// createWsSynchronizer.2
 export function createWsSynchronizer<WebSocketType extends WebSocketTypes>(
   store: MergeableStore,
   webSocket: WebSocketType,
+  channelId: Id,
   requestTimeoutSeconds?: number,
   onSend?: Send,
   onReceive?: Receive,
