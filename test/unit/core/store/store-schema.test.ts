@@ -2897,6 +2897,68 @@ describe.each([
   });
 
   describe('Miscellaneous', () => {
+    test('Schema defaults are private and reusable', () => {
+      const tablesSchema: TablesSchema = {
+        t1: {
+          c1: {type: 'object', default: {a: 1}},
+          c2: {type: 'array', default: [2, 3]},
+        },
+      };
+      const valuesSchema = {
+        v1: {type: 'object' as const, default: {a: 1}},
+        v2: {type: 'array' as const, default: [2, 3]},
+      };
+      const expectedTablesSchema = structuredClone(tablesSchema);
+      const expectedValuesSchema = structuredClone(valuesSchema);
+      const store1 = createStore().setSchema(tablesSchema, valuesSchema);
+
+      expect(tablesSchema).toEqual(expectedTablesSchema);
+      expect(valuesSchema).toEqual(expectedValuesSchema);
+      expect(JSON.parse(store1.getTablesSchemaJson())).toEqual(
+        expectedTablesSchema,
+      );
+      expect(JSON.parse(store1.getValuesSchemaJson())).toEqual(
+        expectedValuesSchema,
+      );
+      expect(JSON.parse(store1.getSchemaJson())).toEqual([
+        expectedTablesSchema,
+        expectedValuesSchema,
+      ]);
+
+      const store2 = createStore().setSchema(tablesSchema, valuesSchema);
+      expect(JSON.parse(store1.getSchemaJson())).toEqual([
+        expectedTablesSchema,
+        expectedValuesSchema,
+      ]);
+      expect(JSON.parse(store2.getSchemaJson())).toEqual([
+        expectedTablesSchema,
+        expectedValuesSchema,
+      ]);
+    });
+
+    test('Frozen schemas can be used', () => {
+      const tablesSchema = Object.freeze({
+        t1: Object.freeze({
+          c1: Object.freeze({
+            type: 'object' as const,
+            default: Object.freeze({a: 1}),
+          }),
+        }),
+      });
+      const valuesSchema = Object.freeze({
+        v1: Object.freeze({
+          type: 'object' as const,
+          default: Object.freeze({a: 1}),
+        }),
+      });
+      const store = createStore().setSchema(tablesSchema, valuesSchema);
+
+      expect(JSON.parse(store.getSchemaJson())).toEqual([
+        {t1: {c1: {type: 'object', default: {a: 1}}}},
+        {v1: {type: 'object', default: {a: 1}}},
+      ]);
+    });
+
     test('Both TablesSchema and ValuesSchema', () => {
       const store = createStore()
         .setTablesSchema({

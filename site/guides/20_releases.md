@@ -105,6 +105,16 @@ or Value. `U+FFFD` remains supported after the first character, while longer
 strings containing `U+FFFC` remain supported. Both are also supported in strings
 nested inside objects and arrays.
 
+## Reusable Schemas
+
+Stores now clone TablesSchema and ValuesSchema objects before validating and
+normalizing them. Object and array defaults are no longer replaced with
+TinyBase's internal encoding on caller-owned objects, so a schema can be reused
+across multiple Stores or supplied as a frozen object.
+
+The getTablesSchemaJson, getValuesSchemaJson, and getSchemaJson methods also
+return object and array defaults in their original form.
+
 ## PartyKit Authorization
 
 The PartyKit persister server now broadcasts only the changes accepted by its
