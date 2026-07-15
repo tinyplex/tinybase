@@ -80,6 +80,14 @@ user-keyed dictionaries now use null-prototype objects and own-property checks,
 preventing these Ids from being omitted from getters or JSON, corrupting
 returned data, or altering object prototypes.
 
+## PartyKit Authorization
+
+The PartyKit persister server now broadcasts only the changes accepted by its
+authorization callbacks. Rejected writes therefore remain absent from durable
+storage and are no longer propagated to other clients. Fully rejected initial
+writes also no longer mark a room as initialized, and the PartyKit client now
+handles empty HTTP responses without reporting ignored JSON parsing errors.
+
 ---
 
 # v9.2

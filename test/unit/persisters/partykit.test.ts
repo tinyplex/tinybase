@@ -107,14 +107,20 @@ const createMockEnvironment = (
 const createClient = (
   environment: MockEnvironment,
   config: PartyKitPersisterConfig = {},
+  onIgnoredError?: (error: any) => void,
 ): [Store, PartyKitPersister] => {
   const store = createStore();
   return [
     store,
-    createPartyKitPersister(store, environment.createSocket(), {
-      storeProtocol: 'http',
-      ...config,
-    }),
+    createPartyKitPersister(
+      store,
+      environment.createSocket(),
+      {
+        storeProtocol: 'http',
+        ...config,
+      },
+      onIgnoredError,
+    ),
   ];
 };
 
@@ -160,6 +166,129 @@ describe('PartyKit persister integration', () => {
       expectedContent,
     );
     expect(await hasStoreInStorage(environment.storage as any)).toEqual(true);
+  });
+
+  test('broadcasts only authorized writes', async () => {
+    const environment = createMockEnvironment();
+    environment.server.canSetCell = async (_tableId, _rowId, cellId) =>
+      cellId != 'secret';
+    environment.server.canSetValue = async (valueId) => valueId != 'secret';
+    fetchWas = globalThis.fetch;
+    globalThis.fetch = environment.fetch as typeof fetch;
+
+    const [store1, persister1] = createClient(environment);
+    const [store2, persister2] = createClient(environment);
+    persisters.push(persister1, persister2);
+
+    await persister1.startAutoPersisting();
+    await persister2.startAutoPersisting();
+
+    store1.transaction(() => {
+      store1.setCell('pets', 'fido', 'species', 'dog');
+      store1.setCell('pets', 'fido', 'secret', 'classified');
+      store1.setValue('open', true);
+      store1.setValue('secret', 'classified');
+    });
+    await pause();
+
+    const expectedContent = [{pets: {fido: {species: 'dog'}}}, {open: true}];
+    expect(store2.getContent()).toEqual(expectedContent);
+    expect(await loadStoreFromStorage(environment.storage as any)).toEqual(
+      expectedContent,
+    );
+  });
+
+  test('broadcasts only authorized deletions', async () => {
+    const environment = createMockEnvironment();
+    environment.server.canDelTable = async (tableId) => tableId != 'keptTable';
+    environment.server.canDelRow = async (_tableId, rowId) =>
+      rowId != 'keptRow';
+    environment.server.canDelCell = async (_tableId, _rowId, cellId) =>
+      cellId != 'keptCell';
+    environment.server.canDelValue = async (valueId) => valueId != 'keptValue';
+    fetchWas = globalThis.fetch;
+    globalThis.fetch = environment.fetch as typeof fetch;
+
+    const [store1, persister1] = createClient(environment);
+    const [store2, persister2] = createClient(environment);
+    persisters.push(persister1, persister2);
+    store1.setContent([
+      {
+        keptTable: {row: {cell: 1}},
+        removedTable: {row: {cell: 1}},
+        pets: {
+          anchor: {cell: 1},
+          keptRow: {cell: 1},
+          removedRow: {cell: 1},
+          cells: {anchorCell: 1, keptCell: 1, removedCell: 1},
+        },
+      },
+      {keptValue: 1, removedValue: 1},
+    ]);
+
+    await persister1.startAutoPersisting();
+    await persister2.startAutoPersisting();
+
+    store1.transaction(() => {
+      store1.delTable('keptTable');
+      store1.delTable('removedTable');
+      store1.delRow('pets', 'keptRow');
+      store1.delRow('pets', 'removedRow');
+      store1.delCell('pets', 'cells', 'keptCell');
+      store1.delCell('pets', 'cells', 'removedCell');
+      store1.delValue('keptValue');
+      store1.delValue('removedValue');
+    });
+    await pause();
+
+    const expectedContent = [
+      {
+        keptTable: {row: {cell: 1}},
+        pets: {
+          anchor: {cell: 1},
+          keptRow: {cell: 1},
+          cells: {anchorCell: 1, keptCell: 1},
+        },
+      },
+      {keptValue: 1},
+    ];
+    expect(store2.getContent()).toEqual(expectedContent);
+    expect(await loadStoreFromStorage(environment.storage as any)).toEqual(
+      expectedContent,
+    );
+  });
+
+  test('does not initialize a store when all writes are rejected', async () => {
+    const environment = createMockEnvironment();
+    const ignoredErrors: any[] = [];
+    environment.server.canSetCell = async () => false;
+    fetchWas = globalThis.fetch;
+    globalThis.fetch = environment.fetch as typeof fetch;
+
+    const [store, persister] = createClient(environment, {}, (error) =>
+      ignoredErrors.push(error),
+    );
+    persisters.push(persister);
+    store.setCell('pets', 'fido', 'species', 'dog');
+
+    await persister.startAutoPersisting();
+
+    expect(await hasStoreInStorage(environment.storage as any)).toEqual(false);
+    expect(await loadStoreFromStorage(environment.storage as any)).toEqual([
+      {},
+      {},
+    ]);
+
+    environment.server.canSetCell = async () => true;
+    await persister.save();
+    await persister.save();
+
+    expect(await hasStoreInStorage(environment.storage as any)).toEqual(true);
+    expect(await loadStoreFromStorage(environment.storage as any)).toEqual([
+      {pets: {fido: {species: 'dog'}}},
+      {},
+    ]);
+    expect(ignoredErrors).toEqual([]);
   });
 
   test('supports non-default server and client configuration', async () => {
