@@ -38,6 +38,154 @@ describe('Destroys', () => {
   });
 });
 
+describe('rich Cell and Value data', () => {
+  test('callbacks receive public values throughout the cascade', () => {
+    const seen: any[] = [];
+    middleware
+      .addWillSetContentCallback((content) => {
+        seen.push(content[0].t1.r1.c1);
+        return content;
+      })
+      .addWillSetTablesCallback((tables) => {
+        seen.push(tables.t1.r1.c1);
+        return tables;
+      })
+      .addWillSetTableCallback((_tableId, table) => {
+        seen.push(table.r1.c1);
+        return table;
+      })
+      .addWillSetRowCallback((_tableId, _rowId, row) => {
+        seen.push(row.c1);
+        return row;
+      })
+      .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        seen.push(cell);
+        return cell;
+      })
+      .addWillSetValuesCallback((values) => {
+        seen.push(values.v1);
+        return values;
+      })
+      .addWillSetValueCallback((_valueId, value) => {
+        seen.push(value);
+        return value;
+      });
+
+    store.setContent([{t1: {r1: {c1: {species: 'dog'}}}}, {v1: ['cat']}]);
+
+    expect(seen).toEqual([
+      {species: 'dog'},
+      {species: 'dog'},
+      {species: 'dog'},
+      {species: 'dog'},
+      {species: 'dog'},
+      ['cat'],
+      ['cat'],
+    ]);
+  });
+
+  test('Cell and Value callbacks receive clones', () => {
+    const cell = {species: 'dog'};
+    const value = ['cat'];
+    middleware
+      .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        (cell as any).name = 'Fido';
+        return cell;
+      })
+      .addWillSetValueCallback((_valueId, value) => {
+        (value as any[]).push('dog');
+        return value;
+      });
+
+    store.setCell('pets', 'fido', 'details', cell).setValue('species', value);
+
+    expect(cell).toEqual({species: 'dog'});
+    expect(value).toEqual(['cat']);
+    expect(store.getCell('pets', 'fido', 'details')).toEqual({
+      species: 'dog',
+      name: 'Fido',
+    });
+    expect(store.getValue('species')).toEqual(['cat', 'dog']);
+  });
+
+  test('setCell prospective Row contains public values', () => {
+    store.setCell('pets', 'fido', 'details', {species: 'dog'});
+    let seen: any;
+    middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+      seen = row;
+      return row;
+    });
+
+    store.setCell('pets', 'fido', 'visits', ['checkup']);
+
+    expect(seen).toEqual({
+      details: {species: 'dog'},
+      visits: ['checkup'],
+    });
+    expect(store.getRow('pets', 'fido')).toEqual(seen);
+  });
+
+  test('encoded internal content is public before callbacks', () => {
+    let seen: any;
+    store
+      .setTablesSchema({pets: {details: {type: 'object'}}})
+      .setValuesSchema({species: {type: 'array'}});
+    middleware.addWillSetContentCallback((content) => {
+      seen = content;
+      return content;
+    });
+
+    (store as any)._[9]([
+      {pets: {fido: {details: '\uFFFD{"species":"dog"}'}}},
+      {species: '\uFFFD["cat"]'},
+    ]);
+
+    expect(seen).toEqual([
+      {pets: {fido: {details: {species: 'dog'}}}},
+      {species: ['cat']},
+    ]);
+    expect(store.getContent()).toEqual(seen);
+  });
+
+  test('encoded internal changes preserve deletions', () => {
+    store.setContent([
+      {
+        pets: {
+          fido: {species: 'dog', age: 4},
+          rex: {species: 'dog'},
+        },
+        species: {dog: {price: 5}},
+      },
+      {active: true},
+    ]);
+    let seen: any;
+    middleware.addWillApplyChangesCallback((changes) => {
+      seen = changes;
+      return changes;
+    });
+
+    (store as any)._[10]([
+      {
+        pets: {fido: {species: undefined}, rex: undefined},
+        species: undefined,
+      },
+      {active: undefined},
+      1,
+    ]);
+
+    expect(seen).toEqual([
+      {
+        pets: {fido: {species: undefined}, rex: undefined},
+        species: undefined,
+      },
+      {active: undefined},
+      1,
+    ]);
+    expect(store.getTables()).toEqual({pets: {fido: {age: 4}}});
+    expect(store.getValues()).toEqual({});
+  });
+});
+
 describe('willSetContent', () => {
   describe('passthrough', () => {
     test('returns same content', () => {
@@ -2972,6 +3120,22 @@ describe('schema interaction', () => {
     });
   });
 
+  describe('middleware results are revalidated', () => {
+    test('schema-rejected Cell and Value results are not stored', () => {
+      store
+        .setTablesSchema({t1: {c1: {type: 'string'}}})
+        .setValuesSchema({v1: {type: 'string'}});
+      middleware
+        .addWillSetCellCallback(() => 1)
+        .addWillSetValueCallback(() => 1);
+
+      store.setCell('t1', 'r1', 'c1', 'a').setValue('v1', 'a');
+
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+    });
+  });
+
   describe('schema defaults and middleware interaction', () => {
     test('callback receives defaulted cell value', () => {
       const calls: any[] = [];
@@ -4017,6 +4181,53 @@ describe('middleware with synchronization', () => {
     await pause();
 
     expect(store2.getValue('v1')).toBe('A');
+
+    await sync1.destroy();
+    await sync2.destroy();
+  });
+
+  test('middleware receives public rich data from sync', async () => {
+    const seenChanges: any[] = [];
+    let seenCell: any;
+    let seenValue: any;
+    middleware2
+      .addWillApplyChangesCallback((changes) => {
+        if (changes[0].pets?.fido?.details) {
+          seenChanges.push(changes[0].pets.fido.details);
+        }
+        if (changes[1].species) {
+          seenChanges.push(changes[1].species);
+        }
+        return changes;
+      })
+      .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        seenCell = cell;
+        return {...(cell as any), synced: true};
+      })
+      .addWillSetValueCallback((_valueId, value) => {
+        seenValue = value;
+        return [...(value as any[]), 'synced'];
+      });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1
+      .setCell('pets', 'fido', 'details', {species: 'dog'})
+      .setValue('species', ['cat']);
+    await pause();
+
+    expect(seenChanges).toEqual([{species: 'dog'}, ['cat']]);
+    expect(seenCell).toEqual({species: 'dog'});
+    expect(seenValue).toEqual(['cat']);
+    expect(store2.getCell('pets', 'fido', 'details')).toEqual({
+      species: 'dog',
+      synced: true,
+    });
+    expect(store2.getValue('species')).toEqual(['cat', 'synced']);
 
     await sync1.destroy();
     await sync2.destroy();

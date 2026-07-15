@@ -175,7 +175,7 @@ type ProtectedMethods = [
     ) => void,
   ) => void,
   setMiddleware: (
-    willSetContent: (content: Content) => Content | undefined,
+    willSetContent: (content: Content, encoded?: 0 | 1) => Content | undefined,
     willSetTables: (tables: Tables) => Tables | undefined,
     willSetTable: (tableId: Id, table: Table) => Table | undefined,
     willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
@@ -193,7 +193,10 @@ type ProtectedMethods = [
     willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
-    willApplyChanges: (changes: Changes) => Changes | undefined,
+    willApplyChanges: (
+      changes: Changes,
+      encoded?: 0 | 1,
+    ) => Changes | undefined,
     hasWillSetRowCallbacks: () => boolean,
   ) => void,
   setOrDelCell: (
@@ -263,7 +266,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let rollbackRequested: 0 | 1 = 0;
   let transactions = 0;
   let middleware: [
-    willSetContent?: (content: Content) => Content | undefined,
+    willSetContent?: (content: Content, encoded?: 0 | 1) => Content | undefined,
     willSetTables?: (tables: Tables) => Tables | undefined,
     willSetTable?: (tableId: Id, table: Table) => Table | undefined,
     willSetRow?: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
@@ -281,7 +284,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelCell?: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValues?: () => boolean,
     willDelValue?: (valueId: Id) => boolean,
-    willApplyChanges?: (changes: Changes) => Changes | undefined,
+    willApplyChanges?: (
+      changes: Changes,
+      encoded?: 0 | 1,
+    ) => Changes | undefined,
     hasWillSetRowCallbacks?: () => boolean,
   ] = [];
   let internalListeners: [
@@ -721,7 +727,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ifNotUndefined(
           middleware[0],
           (willSetContent) =>
-            whileMutating(() => willSetContent(structuredClone(content))),
+            whileMutating(() =>
+              willSetContent(structuredClone(content), acceptingEncodedData),
+            ),
           () => content,
         ),
       ([tables, values]) => {
@@ -836,7 +844,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       row,
       (rowMap, cellId, cell) =>
         ifNotUndefined(
-          getValidatedCell(tableId, rowId, cellId, cell as Cell),
+          getValidatedCell(tableId, rowId, cellId, decodeIfJson(cell as Cell)),
           (validCell) =>
             setValidCell(
               tableId,
@@ -869,16 +877,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
             whileMutating(() => willSetCell(tableId, rowId, cellId, cell)),
           () => cell,
         ),
-      (cell) => {
-        if (!collHas(rowMap, cellId)) {
-          cellIdsChanged(tableId, rowId, cellId, 1);
-        }
-        const oldCell = mapGet(rowMap, cellId);
-        if (cell !== oldCell) {
-          cellChanged(tableId, rowId, cellId, oldCell, cell);
-          mapSet(rowMap, cellId, cell);
-        }
-      },
+      (cell) =>
+        ifNotUndefined(
+          mutating
+            ? getValidatedCell(tableId, rowId, cellId, decodeIfJson(cell))
+            : cell,
+          (validCell) => {
+            if (!collHas(rowMap, cellId)) {
+              cellIdsChanged(tableId, rowId, cellId, 1);
+            }
+            const oldCell = mapGet(rowMap, cellId);
+            if (validCell !== oldCell) {
+              cellChanged(tableId, rowId, cellId, oldCell, validCell);
+              mapSet(rowMap, cellId, validCell);
+            }
+          },
+        ),
     );
 
   const setCellIntoNewRow = (
@@ -950,16 +964,20 @@ export const createStore: typeof createStoreDecl = (): Store => {
           (willSetValue) => whileMutating(() => willSetValue(valueId, value)),
           () => value,
         ),
-      (value) => {
-        if (!collHas(valuesMap, valueId)) {
-          valueIdsChanged(valueId, 1);
-        }
-        const oldValue = mapGet(valuesMap, valueId);
-        if (value !== oldValue) {
-          valueChanged(valueId, oldValue, value);
-          mapSet(valuesMap, valueId, value);
-        }
-      },
+      (value) =>
+        ifNotUndefined(
+          mutating ? getValidatedValue(valueId, decodeIfJson(value)) : value,
+          (validValue) => {
+            if (!collHas(valuesMap, valueId)) {
+              valueIdsChanged(valueId, 1);
+            }
+            const oldValue = mapGet(valuesMap, valueId);
+            if (validValue !== oldValue) {
+              valueChanged(valueId, oldValue, validValue);
+              mapSet(valuesMap, valueId, validValue);
+            }
+          },
+        ),
     );
 
   const getNewRowId = (tableId: Id, reuse: 0 | 1): Id => {
@@ -1855,7 +1873,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ifNotUndefined(
             middleware[13],
             (willApplyChanges) =>
-              whileMutating(() => willApplyChanges(structuredClone(changes))),
+              whileMutating(() =>
+                willApplyChanges(
+                  structuredClone(changes),
+                  acceptingEncodedData,
+                ),
+              ),
             () => changes,
           ),
         (changes): void => {
@@ -2321,7 +2344,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   });
 
   const setMiddleware = (
-    willSetContent: (content: Content) => Content | undefined,
+    willSetContent: (content: Content, encoded?: 0 | 1) => Content | undefined,
     willSetTables: (tables: Tables) => Tables | undefined,
     willSetTable: (tableId: Id, table: Table) => Table | undefined,
     willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
@@ -2339,7 +2362,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
-    willApplyChanges: (changes: Changes) => Changes | undefined,
+    willApplyChanges: (
+      changes: Changes,
+      encoded?: 0 | 1,
+    ) => Changes | undefined,
     hasWillSetRowCallbacks: () => boolean,
   ) =>
     (middleware = [

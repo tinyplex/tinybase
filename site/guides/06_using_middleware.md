@@ -137,10 +137,14 @@ for `setCell` calls.
 
 ## Complex Object Callbacks
 
-Callbacks for Cell and Value operations (`willSetCell`, `willSetValue`) receive
-primitive values directly. But callbacks for Row, Table, Tables, Content, and
-Changes operations receive more complex objects — and the Store passes a deep
-clone of the original data to the callback, not the original itself.
+Callbacks always receive Cell and Value data in their public JavaScript form.
+Objects and arrays are never exposed as the private strings that TinyBase uses
+to encode them internally.
+
+The Store also passes a deep clone of object and array data to callbacks, not
+the original itself. This includes a rich Cell or Value received by
+`willSetCell` or `willSetValue`, as well as the larger objects received by Row,
+Table, Tables, Content, and Changes callbacks.
 
 This means you can safely mutate the received object in place and return it, or
 you can return a completely new object. Both approaches work:
@@ -221,19 +225,15 @@ store.setCell('pets', 'fido', 'species', 123);
 // (no output, callback not called)
 ```
 
-It is very important to note that there is no further schema validation again
-_after_ the Middleware has been applied. Your Middleware callbacks are powerful!
-And they need to be implicitly aware of the schema and ensure that they return
-values that are compliant with it.
-
-So, for example, if a Middleware callback returns a transformed value that is
-the wrong type, that value will be set in the Store, which might lead to all
-sorts of surprises.
+Middleware results are validated again at the Cell or Value boundary before they
+are stored. If a callback returns a value of the wrong schema type, the normal
+schema behavior applies: the schema's default is used when it has one, or the
+Cell or Value is rejected when it does not. Invalid data listeners are also
+notified as usual.
 
 That said, the power of Middleware is that it can be used to implement your own
 custom validation, defaulting, and correction logic that is not easily captured
-in a plain type-based schema. Just be aware of the relationship between
-Middleware and schemas, and use that power wisely!
+in a plain type-based schema.
 
 ## When Middleware Is Not Called
 
