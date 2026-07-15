@@ -225,6 +225,20 @@ type ChangedIdsMap = IdMap<IdAddedOrRemoved>;
 type ChangedIdsMap2 = IdMap2<IdAddedOrRemoved>;
 type ChangedIdsMap3 = IdMap3<IdAddedOrRemoved>;
 
+const cloneSchema = <Schema>(schema: Schema): Schema =>
+  (isArray(schema)
+    ? arrayMap(schema, cloneSchema)
+    : isObject(schema)
+      ? objMap(schema, cloneSchema)
+      : schema) as Schema;
+
+const decodeSchema = <Schema extends CellSchema | ValueSchema>(
+  schema: Schema,
+): Schema =>
+  objMap(schema as any, (value, id) =>
+    id == DEFAULT ? decodeIfJson(value as Cell) : value,
+  ) as Schema;
+
 const idsChanged = (
   changedIds: ChangedIdsMap,
   id: Id,
@@ -1671,12 +1685,17 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getJson = (): Json => jsonStringWithMap([tablesMap, valuesMap]);
 
-  const getTablesSchemaJson = (): Json => jsonStringWithMap(tablesSchemaMap);
+  const getTablesSchemaJson = (): Json =>
+    jsonStringWithMap(mapToObj2(tablesSchemaMap, decodeSchema));
 
-  const getValuesSchemaJson = (): Json => jsonStringWithMap(valuesSchemaMap);
+  const getValuesSchemaJson = (): Json =>
+    jsonStringWithMap(mapToObj(valuesSchemaMap, decodeSchema));
 
   const getSchemaJson = (): Json =>
-    jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
+    jsonStringWithMap([
+      mapToObj2(tablesSchemaMap, decodeSchema),
+      mapToObj(valuesSchemaMap, decodeSchema),
+    ]);
 
   const setContent = (content: Content | (() => Content)): Store =>
     fluentTransaction(() => {
@@ -1901,8 +1920,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setTablesSchema = (tablesSchema: TablesSchema): Store =>
     fluentTransaction(() => {
-      if ((hasTablesSchema = validateTablesSchema(tablesSchema))) {
-        setValidTablesSchema(tablesSchema);
+      const tablesSchema2 = cloneSchema(tablesSchema);
+      if ((hasTablesSchema = validateTablesSchema(tablesSchema2))) {
+        setValidTablesSchema(tablesSchema2);
         if (!collIsEmpty(tablesMap)) {
           const tables = getTables();
           delTables();
@@ -1913,12 +1933,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setValuesSchema = (valuesSchema: ValuesSchema): Store =>
     fluentTransaction(() => {
-      if ((hasValuesSchema = validateValuesSchema(valuesSchema))) {
+      const valuesSchema2 = cloneSchema(valuesSchema);
+      if ((hasValuesSchema = validateValuesSchema(valuesSchema2))) {
         const values = getValues();
         delValuesSchema();
         delValues();
         hasValuesSchema = true;
-        setValidValuesSchema(valuesSchema);
+        setValidValuesSchema(valuesSchema2);
         setValues(values);
       }
     });
