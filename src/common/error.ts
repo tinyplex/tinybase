@@ -53,3 +53,14 @@ export const tryCatch = async <Return>(
     then2?.(error);
   }
 };
+
+export const tryFinally = <Return>(
+  action: () => Return,
+  finallyAction: () => void,
+): Return => {
+  try {
+    return action();
+  } finally {
+    finallyAction();
+  }
+};

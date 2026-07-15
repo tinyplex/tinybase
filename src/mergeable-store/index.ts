@@ -24,6 +24,7 @@ import type {
 } from '../@types/store/index.d.ts';
 import {decodeIfJson, isCellOrValueOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
+import {tryFinally} from '../common/error.ts';
 import {
   addOrRemoveHash,
   getValueHash,
@@ -182,11 +183,7 @@ export const createMergeableStore = ((
   ): MergeableStore => {
     const wasListening = listeningToRawStoreChanges;
     listeningToRawStoreChanges = 0;
-    try {
-      actions();
-    } finally {
-      listeningToRawStoreChanges = wasListening;
-    }
+    tryFinally(actions, () => (listeningToRawStoreChanges = wasListening));
     return mergeableStore as MergeableStore;
   };
 
@@ -685,11 +682,10 @@ export const createMergeableStore = ((
   ): MergeableStore => {
     store.transaction(() => {
       defaultingContent = 1;
-      try {
-        store.setContent(content);
-      } finally {
-        defaultingContent = 0;
-      }
+      tryFinally(
+        () => store.setContent(content),
+        () => (defaultingContent = 0),
+      );
     });
     return mergeableStore as MergeableStore;
   };
