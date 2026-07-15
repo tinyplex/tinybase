@@ -6,10 +6,11 @@ import type {
   createPartyKitPersister as createPartyKitPersisterDecl,
 } from '../../@types/persisters/persister-partykit-client/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
-import {jsonStringWithMap} from '../../common/json.ts';
+import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import {
   addEventListener,
   ifNotUndefined,
+  isEmpty,
   isString,
 } from '../../common/other.ts';
 import {EMPTY_STRING, MESSAGE} from '../../common/strings.ts';
@@ -48,14 +49,18 @@ export const createPartyKitPersister = ((
     room +
     storePath;
 
-  const getOrSetStore = async (content?: Content): Promise<Content> =>
-    await (
+  const getOrSetStore = async (
+    content?: Content,
+  ): Promise<Content | undefined> => {
+    const responseText = await (
       await fetch(storeUrl, {
         ...(content ? {method: PUT, body: jsonStringWithMap(content)} : {}),
         mode: 'cors',
         cache: 'no-store',
       })
-    ).json();
+    ).text();
+    return isEmpty(responseText) ? undefined : jsonParse(responseText);
+  };
 
   const getPersisted = getOrSetStore;
 

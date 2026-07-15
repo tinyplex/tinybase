@@ -22,7 +22,13 @@ import {
 } from '../../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import {mapForEach} from '../../common/map.ts';
-import {objEnsure, objNew, objSet, objToArray} from '../../common/obj.ts';
+import {
+  objEnsure,
+  objIsEmpty,
+  objNew,
+  objSet,
+  objToArray,
+} from '../../common/obj.ts';
 import {
   ifNotUndefined,
   isEmpty,
@@ -54,6 +60,9 @@ const RESPONSE_HEADERS = objNew(
     '*',
   ]),
 );
+
+type CellChanges = {[cellId: Id]: CellOrUndefined};
+type RowChanges = {[rowId: Id]: CellChanges | undefined};
 
 export const hasStoreInStorage = async (
   storage: Storage,
@@ -105,83 +114,111 @@ export const broadcastChanges = async (
 
 const saveStore = async (
   that: TinyBasePartyKitServer,
-  changes: Changes,
+  contentOrChanges: Content | Changes,
   initialSave: boolean,
   requestOrConnection: Request | Connection,
-) => {
+): Promise<Changes> => {
   const storage = that.party.storage;
   const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
 
-  const keysToSet = objNew<Cell | Value>([[storagePrefix + HAS_STORE, 1]]);
+  const acceptedTables = objNew<RowChanges | undefined>();
+  const acceptedValues = objNew<ValueOrUndefined>();
+  const keysToSet = objNew<Cell | Value>();
   const keysToDel: string[] = [];
   const keyPrefixesToDel: string[] = [];
 
+  const getAcceptedTable = (tableId: Id): RowChanges =>
+    objEnsure(
+      acceptedTables,
+      tableId,
+      objNew<CellChanges | undefined>,
+    ) as RowChanges;
+  const getAcceptedRow = (tableId: Id, rowId: Id): CellChanges =>
+    objEnsure(
+      getAcceptedTable(tableId),
+      rowId,
+      objNew<CellOrUndefined>,
+    ) as CellChanges;
+
   await promiseAll(
-    objToArray(changes[0], async (table, tableId) =>
-      isUndefined(table)
-        ? !initialSave &&
-          (await that.canDelTable(
-            tableId,
-            requestOrConnection as Connection,
-          )) &&
+    objToArray(contentOrChanges[0], async (table, tableId) => {
+      if (isUndefined(table)) {
+        if (
+          !initialSave &&
+          (await that.canDelTable(tableId, requestOrConnection as Connection))
+        ) {
           arrayUnshift(
             keyPrefixesToDel,
             constructStorageKey(storagePrefix, T, tableId),
-          )
-        : (await that.canSetTable(tableId, initialSave, requestOrConnection)) &&
-          (await promiseAll(
-            objToArray(table, async (row, rowId) =>
-              isUndefined(row)
-                ? !initialSave &&
-                  (await that.canDelRow(
-                    tableId,
-                    rowId,
-                    requestOrConnection as Connection,
-                  )) &&
-                  arrayPush(
-                    keyPrefixesToDel,
-                    constructStorageKey(storagePrefix, T, tableId, rowId),
-                  )
-                : (await that.canSetRow(
-                    tableId,
-                    rowId,
-                    initialSave,
-                    requestOrConnection,
-                  )) &&
-                  (await promiseAll(
-                    objToArray(row, async (cell, cellId) => {
-                      const ids: [Id, Id, Id] = [tableId, rowId, cellId];
-                      const key = constructStorageKey(storagePrefix, T, ...ids);
-                      if (isUndefined(cell)) {
-                        if (
-                          !initialSave &&
-                          (await that.canDelCell(
-                            ...ids,
-                            requestOrConnection as Connection,
-                          ))
-                        ) {
-                          arrayPush(keysToDel, key);
-                        }
-                      } else if (
-                        await that.canSetCell(
-                          ...ids,
-                          cell,
-                          initialSave,
-                          requestOrConnection,
-                          await storage.get(key),
-                        )
-                      ) {
-                        objSet(keysToSet, key, cell);
-                      }
-                    }),
-                  )),
-            ),
-          )),
-    ),
+          );
+          objSet(acceptedTables, tableId, undefined);
+        }
+      } else if (
+        await that.canSetTable(tableId, initialSave, requestOrConnection)
+      ) {
+        await promiseAll(
+          objToArray(table, async (row, rowId) => {
+            if (isUndefined(row)) {
+              if (
+                !initialSave &&
+                (await that.canDelRow(
+                  tableId,
+                  rowId,
+                  requestOrConnection as Connection,
+                ))
+              ) {
+                arrayPush(
+                  keyPrefixesToDel,
+                  constructStorageKey(storagePrefix, T, tableId, rowId),
+                );
+                objSet(getAcceptedTable(tableId), rowId, undefined);
+              }
+            } else if (
+              await that.canSetRow(
+                tableId,
+                rowId,
+                initialSave,
+                requestOrConnection,
+              )
+            ) {
+              await promiseAll(
+                objToArray(row, async (cell, cellId) => {
+                  const ids: [Id, Id, Id] = [tableId, rowId, cellId];
+                  const key = constructStorageKey(storagePrefix, T, ...ids);
+                  if (isUndefined(cell)) {
+                    if (
+                      !initialSave &&
+                      (await that.canDelCell(
+                        ...ids,
+                        requestOrConnection as Connection,
+                      ))
+                    ) {
+                      arrayPush(keysToDel, key);
+                      objSet(getAcceptedRow(tableId, rowId), cellId, undefined);
+                    }
+                  } else if (
+                    await that.canSetCell(
+                      ...ids,
+                      cell,
+                      initialSave,
+                      requestOrConnection,
+                      await storage.get(key),
+                    )
+                  ) {
+                    objSet(keysToSet, key, cell);
+                    objSet(getAcceptedRow(tableId, rowId), cellId, cell);
+                  }
+                }),
+              );
+            }
+          }),
+        );
+      }
+    }),
   );
 
   await promiseAll(
-    objToArray(changes[1], async (value, valueId) => {
+    objToArray(contentOrChanges[1], async (value, valueId) => {
       const key = storagePrefix + V + valueId;
       if (isUndefined(value)) {
         if (
@@ -189,6 +226,7 @@ const saveStore = async (
           (await that.canDelValue(valueId, requestOrConnection as Connection))
         ) {
           arrayPush(keysToDel, key);
+          objSet(acceptedValues, valueId, undefined);
         }
       } else if (
         await that.canSetValue(
@@ -200,6 +238,7 @@ const saveStore = async (
         )
       ) {
         objSet(keysToSet, key, value);
+        objSet(acceptedValues, valueId, value);
       }
     }),
   );
@@ -215,8 +254,20 @@ const saveStore = async (
     );
   }
 
+  if (
+    initialSave &&
+    ((objIsEmpty(contentOrChanges[0]) && objIsEmpty(contentOrChanges[1])) ||
+      !objIsEmpty(acceptedTables) ||
+      !objIsEmpty(acceptedValues))
+  ) {
+    objSet(keysToSet, storagePrefix + HAS_STORE, 1);
+  }
+
   await storage.delete(keysToDel);
-  await storage.put(keysToSet);
+  if (!objIsEmpty(keysToSet)) {
+    await storage.put(keysToSet);
+  }
+  return [acceptedTables, acceptedValues, 1];
 };
 
 const constructStorageKey = (
@@ -284,8 +335,18 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
           type == SET_CHANGES &&
           (await hasStoreInStorage(this.party.storage, storagePrefix))
         ) {
-          await saveStore(this, payload, false, connection);
-          broadcastChanges(this, payload, [connection.id]);
+          const acceptedChanges = await saveStore(
+            this,
+            payload,
+            false,
+            connection,
+          );
+          if (
+            !objIsEmpty(acceptedChanges[0]) ||
+            !objIsEmpty(acceptedChanges[1])
+          ) {
+            await broadcastChanges(this, acceptedChanges, [connection.id]);
+          }
         }
       },
     );
