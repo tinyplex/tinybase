@@ -46,8 +46,9 @@
  * value can be when an explicit value is not specified.
  *
  * For `object` and `array` types, TinyBase automatically serializes values to
- * and from JSON when storing and retrieving them. This means you can set an
- * object or array Cell directly, and get back the same structure.
+ * and from JSON when storing and retrieving them. Their contents should
+ * recursively be strings, finite numbers, booleans, `null`, plain objects, or
+ * arrays to ensure they are preserved.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that that Cell will always be present in a Row. You can also set `required`
@@ -83,7 +84,7 @@
  * ```
  * @example
  * When applied to a Store, this CellSchema allows an object Cell containing
- * arbitrary data, defaulting to an empty object.
+ * JSON-compatible data, defaulting to an empty object.
  *
  * ```js
  * import type {CellSchema} from 'tinybase';
@@ -127,12 +128,14 @@
  * value can be when an explicit value is not specified.
  *
  * For `object` and `array` types, TinyBase automatically serializes values to
- * and from JSON when storing and retrieving them.
+ * and from JSON when storing and retrieving them. Their contents should
+ * recursively be strings, finite numbers, booleans, `null`, plain objects, or
+ * arrays to ensure they are preserved.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that the Value will always be present in a Store. You can also set `required`
- * to `true` to indicate to schema-based typing that the Value should be
- * present even if it does not have a default.
+ * to `true` to indicate to schema-based typing that the Value should be present
+ * even if it does not have a default.
  *
  * If neither a default value nor `required: true` is provided, the Value may
  * not be present in the Store, but when present you can be guaranteed it is of
@@ -330,8 +333,13 @@
  * number, boolean, or null (since v7.0), or a plain JavaScript object or array
  * (since v8.0).
  *
- * String Cells must not start with the Unicode replacement character
- * `U+FFFD`, which TinyBase reserves for its internal object and array encoding.
+ * Object and array contents should recursively be strings, finite numbers,
+ * booleans, `null`, plain objects, or arrays. TinyBase validates the top-level
+ * container and then uses JSON serialization, so other nested values can be
+ * changed, omitted, or cause an error.
+ *
+ * String Cells must not start with the Unicode replacement character `U+FFFD`,
+ * which TinyBase reserves for its internal object and array encoding.
  * @example
  * ```js
  * import type {Cell} from 'tinybase';
@@ -391,8 +399,13 @@
  * string, number, boolean, or null (since v7.0), or a plain JavaScript object
  * or array (since v8.0).
  *
- * String Values must not start with the Unicode replacement character
- * `U+FFFD`, which TinyBase reserves for its internal object and array encoding.
+ * Object and array contents should recursively be strings, finite numbers,
+ * booleans, `null`, plain objects, or arrays. TinyBase validates the top-level
+ * container and then uses JSON serialization, so other nested values can be
+ * changed, omitted, or cause an error.
+ *
+ * String Values must not start with the Unicode replacement character `U+FFFD`,
+ * which TinyBase reserves for its internal object and array encoding.
  * @example
  * ```js
  * import type {Value} from 'tinybase';
@@ -2019,9 +2032,9 @@
    *
    * By default the sorting of the rows is alphanumeric, and you can indicate
    * whether it should be in descending order. The `offset` and `limit`
-   * parameters are used to paginate results, but default to `0` and
-   * `undefined` to return all available Row Ids if not specified. The `sorter`
-   * parameter can provide a custom comparison function.
+   * parameters are used to paginate results, but default to `0` and `undefined`
+   * to return all available Row Ids if not specified. The `sorter` parameter
+   * can provide a custom comparison function.
    *
    * Note that every call to this method will perform the sorting afresh - there
    * is no caching of the results - and so you are advised to memoize the
@@ -4007,7 +4020,7 @@
    *
    * If the `actions` function throws an error, all changes made in the
    * transaction are rolled back and the same error is rethrown. Nested
-   * transactions share the outer transaction rather than acting as savepoints,
+   * transactions share the outer transaction rather than acting as save-points,
    * so an error in a nested transaction causes the whole outer transaction to
    * be rolled back, even if the error is caught within the outer `actions`
    * function. Transaction finish listeners are not called for an aborted

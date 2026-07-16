@@ -105,6 +105,14 @@ or Value. `U+FFFD` remains supported after the first character, while longer
 strings containing `U+FFFC` remain supported. Both are also supported in strings
 nested inside objects and arrays.
 
+## JSON-Compatible Object And Array Contents
+
+Object and array Cells and Values are now documented as supporting contents
+that recursively consist of strings, finite numbers, booleans, `null`, plain
+objects, and arrays. TinyBase validates the top-level container but relies on
+JSON serialization for nested contents, so other JavaScript values may be
+changed, omitted, or cause the write to throw.
+
 ## Reusable Schemas
 
 Stores now clone TablesSchema and ValuesSchema objects before validating and

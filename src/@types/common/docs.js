@@ -20,6 +20,11 @@
  * It is used to indicate that the value should be considered to be a plain
  * JavaScript object, as can be stored in a Cell or Value with the `object`
  * schema type.
+ *
+ * The object's values should recursively be strings, finite numbers, booleans,
+ * `null`, plain objects, or arrays. The permissive `unknown` type does not
+ * imply that other JavaScript values will survive TinyBase's JSON
+ * serialization.
  * @category General
  * @since v8.0.0
  */
@@ -29,6 +34,11 @@
  *
  * It is used to indicate that the value should be considered to be a JavaScript
  * array, as can be stored in a Cell or Value with the `array` schema type.
+ *
+ * The array's values should recursively be strings, finite numbers, booleans,
+ * `null`, plain objects, or arrays. The permissive `unknown` type does not
+ * imply that other JavaScript values will survive TinyBase's JSON
+ * serialization.
  * @category General
  * @since v8.0.0
  */
