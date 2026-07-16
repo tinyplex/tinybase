@@ -33,25 +33,27 @@ export const createLibSqlPersister = ((
     client,
     'getClient',
     undefined,
-    async (actions) => {
-      onSqlCommand?.('BEGIN');
-      const transaction = await client.transaction('write');
-      try {
-        const result = await actions(
-          async (sql: string, args: any[] = []): Promise<IdObj<any>[]> => {
-            onSqlCommand?.(sql, args);
-            return (await transaction.execute({sql, args})).rows;
-          },
-        );
-        await transaction.commit();
-        onSqlCommand?.('END');
-        return result;
-      } catch (error) {
-        await tryCatch(() => transaction.rollback());
-        onSqlCommand?.('ROLLBACK');
-        throw error;
-      } finally {
-        transaction.close();
-      }
-    },
+    (client as Client & {protocol?: string}).protocol == 'file'
+      ? undefined
+      : async (actions) => {
+          onSqlCommand?.('BEGIN');
+          const transaction = await client.transaction('write');
+          try {
+            const result = await actions(
+              async (sql: string, args: any[] = []): Promise<IdObj<any>[]> => {
+                onSqlCommand?.(sql, args);
+                return (await transaction.execute({sql, args})).rows;
+              },
+            );
+            await transaction.commit();
+            onSqlCommand?.('END');
+            return result;
+          } catch (error) {
+            await tryCatch(() => transaction.rollback());
+            onSqlCommand?.('ROLLBACK');
+            throw error;
+          } finally {
+            transaction.close();
+          }
+        },
   ) as LibSqlPersister) as typeof createLibSqlPersisterDecl;
