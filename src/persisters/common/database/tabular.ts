@@ -19,7 +19,10 @@ import {mapMap} from '../../../common/map.ts';
 import {objHas, objIsEmpty, objNew, objToArray} from '../../../common/obj.ts';
 import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {createCustomPersister} from '../create.ts';
-import {getCommandFunctions} from './commands.ts';
+import {
+  DatabaseTransaction,
+  getCommandFunctions,
+} from './commands.ts';
 import {
   DEFAULT_ROW_ID_COLUMN_NAME,
   QuerySchema,
@@ -62,17 +65,18 @@ export const createTabularPersister = <
   upsert?: Upsert,
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
+  executeTransaction?: DatabaseTransaction,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
       executeCommand,
       managedTableNames,
       querySchema,
-      onIgnoredError,
       columnType,
       upsert,
       encode,
       decode,
+      executeTransaction,
     );
 
   const saveTables = (

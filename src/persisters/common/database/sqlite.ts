@@ -30,6 +30,7 @@ import {
   getWrappedCommand,
 } from './common.ts';
 import {getConfigStructures} from './config.ts';
+import {DatabaseTransaction} from './commands.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
 
@@ -49,6 +50,7 @@ export const createCustomSqlitePersister = <
   thing: any,
   getThing = 'getDb',
   upsert?: Upsert,
+  executeTransaction?: DatabaseTransaction,
 ): Persister<Persist> => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
@@ -140,5 +142,6 @@ export const createCustomSqlitePersister = <
     (cellOrValue: any) =>
       isTrue(cellOrValue) ? 1 : isFalse(cellOrValue) ? 0 : cellOrValue,
     undefined,
+    executeTransaction,
   );
 };
