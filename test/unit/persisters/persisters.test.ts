@@ -598,3 +598,31 @@ test('waits for old auto-load cleanup before restarting', async () => {
   expect(addCount).toBe(2);
   expect(persister.isAutoLoading()).toBe(true);
 });
+
+test('observes changes during the initial auto-load', async () => {
+  let listener = (_content: any) => {};
+  let releaseInitialLoad = noop;
+  const initialLoadGate = new Promise<void>(
+    (resolve) => (releaseInitialLoad = resolve),
+  );
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    async () => {
+      await initialLoadGate;
+      return [{pets: {fido: {species: 'dog'}}}, {}];
+    },
+    asyncNoop,
+    (newListener) => (listener = newListener),
+    noop,
+  );
+
+  const starting = persister.startAutoLoad();
+  await pause(0);
+  listener([{pets: {fido: {species: 'cat'}}}, {}]);
+  releaseInitialLoad();
+  await starting;
+
+  expect(store.getCell('pets', 'fido', 'species')).toBe('cat');
+  expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+});
