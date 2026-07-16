@@ -7,6 +7,7 @@ import {
   onCleanup,
   untrack,
 } from 'solid-js';
+import {isServer} from 'solid-js/web';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
@@ -269,13 +270,16 @@ const useListenable = (
     const resolvedThing = getThing(thing);
     const listenerArguments = getListenerArguments();
     updateResult();
-    const cleanup = addAndDelListener(
-      resolvedThing,
-      (returnType == ReturnType.Boolean ? HAS : EMPTY_STRING) + listenable,
-      ...listenerArguments,
-      updateResult,
-    );
-    onCleanup(cleanup);
+    if (!isServer) {
+      onCleanup(
+        addAndDelListener(
+          resolvedThing,
+          (returnType == ReturnType.Boolean ? HAS : EMPTY_STRING) + listenable,
+          ...listenerArguments,
+          updateResult,
+        ),
+      );
+    }
   });
   return result;
 };
@@ -286,17 +290,21 @@ const useListener = (
   listener: (...args: any[]) => void,
   preListenerArgGetters: ListenerArgGetters = EMPTY_LISTENER_ARG_GETTERS,
   ...postListenerArgGetters: MaybeAccessor<ListenerArgument>[]
-): void =>
-  createRenderEffect(() => {
-    const cleanup = addAndDelListener(
-      getThing(thing),
-      listenable,
-      ...arrayMap(preListenerArgGetters, getThing),
-      listener,
-      ...arrayMap(postListenerArgGetters, getThing),
+): void => {
+  if (!isServer) {
+    createRenderEffect(() =>
+      onCleanup(
+        addAndDelListener(
+          getThing(thing),
+          listenable,
+          ...arrayMap(preListenerArgGetters, getThing),
+          listener,
+          ...arrayMap(postListenerArgGetters, getThing),
+        ),
+      ),
     );
-    onCleanup(cleanup);
-  });
+  }
+};
 
 const useSetCallback =
   <Parameter, Thing, StoreOrQueries extends Store | Queries>(
