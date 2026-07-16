@@ -155,6 +155,12 @@ storage and are no longer propagated to other clients. Fully rejected initial
 writes also no longer mark a room as initialized, and the PartyKit client now
 handles empty HTTP responses without reporting ignored JSON parsing errors.
 
+## Unicode-Safe WebSocket Fragmentation
+
+WebSocket synchronization payloads are now fragmented by UTF-8 byte size and
+only at Unicode code point boundaries. Non-BMP characters therefore remain
+intact when a fragment is encoded and sent as an individual WebSocket message.
+
 ---
 
 # v9.2

@@ -95,15 +95,16 @@
    * @param onSend An optional handler for the messages that this Synchronizer
    * sends. This is suitable for debugging synchronization issues in a
    * development environment, since v5.1.
-   * @param onReceive An optional handler for the messages that this Synchronizer
-   * receives. This is suitable for debugging synchronization issues in a
-   * development environment, since v5.1.
+   * @param onReceive An optional handler for the messages that this
+   * Synchronizer receives. This is suitable for debugging synchronization
+   * issues in a development environment, since v5.1.
    * @param onIgnoredError An optional handler for the errors that the
    * Synchronizer would otherwise ignore when trying to synchronize data. This
    * is suitable for debugging synchronization issues in a development
    * environment.
-   * @param fragmentSize An optional maximum size for each WebSocket message
-   * fragment. When set, larger synchronization payloads are split into
+   * @param fragmentSize An optional target maximum UTF-8 byte size for each
+   * WebSocket message fragment. Unicode code points are never split and can
+   * exceed this size. When set, larger synchronization payloads are split into
    * fragments and reassembled by the receiving WsSynchronizer, since v9.0.
    * @returns A reference to the new WsSynchronizer object.
    * @example
@@ -177,13 +178,14 @@
    * @param onSend An optional handler for the messages that this Synchronizer
    * sends. This is suitable for debugging synchronization issues in a
    * development environment.
-   * @param onReceive An optional handler for the messages that this Synchronizer
-   * receives. This is suitable for debugging synchronization issues in a
-   * development environment.
+   * @param onReceive An optional handler for the messages that this
+   * Synchronizer receives. This is suitable for debugging synchronization
+   * issues in a development environment.
    * @param onIgnoredError An optional handler for errors that the Synchronizer
    * would otherwise ignore when trying to synchronize data.
-   * @param fragmentSize An optional maximum size for each WebSocket message
-   * fragment.
+   * @param fragmentSize An optional target maximum UTF-8 byte size for each
+   * WebSocket message fragment. Unicode code points are never split and can
+   * exceed this size.
    * @returns A reference to the new WsSynchronizer object.
    * @example
    * This example creates two WsSynchronizer objects for different
