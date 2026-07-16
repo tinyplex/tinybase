@@ -11,7 +11,7 @@ through from platforms or third-party libraries retain their original format.
 | 2    | A chart series was used outside a CartesianChart.                |
 | 3    | A Synchronizer request timed out.                                |
 | 4    | A multiplexed WebSocket control request timed out.               |
-| 5    | A multiplexed WebSocket closed.                                  |
+| 5    | A WebSocket connection closed.                                   |
 | 6    | A multiplexed WebSocket channel Id is invalid.                   |
 | 7    | A multiplexed WebSocket channel Id is already in use.            |
 | 8    | A multiplexed WebSocket was destroyed.                           |
@@ -21,3 +21,4 @@ through from platforms or third-party libraries retain their original format.
 | 12   | An IndexedDB database could not be opened.                       |
 | 13   | A MergeableStore could not create a later HLC.                   |
 | 14   | A Synchronizer protocol message was invalid.                     |
+| 15   | A synchronization capacity limit was exceeded.                   |

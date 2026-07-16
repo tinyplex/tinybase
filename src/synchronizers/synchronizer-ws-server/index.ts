@@ -1,4 +1,4 @@
-import {WebSocket, WebSocketServer} from 'ws';
+import type {WebSocket, WebSocketServer} from 'ws';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
@@ -14,6 +14,7 @@ import type {
   createWsServer as createWsServerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
 import {
+  arrayFilter,
   arrayForEach,
   arrayMap,
   arrayPush,
@@ -27,7 +28,12 @@ import {
   collSize,
   collValues,
 } from '../../common/coll.ts';
-import {ERROR_SYNC_MESSAGE, errorNew, tryCatch} from '../../common/error.ts';
+import {
+  ERROR_SYNC_MESSAGE,
+  ERROR_SYNC_OVERFLOW,
+  errorNew,
+  tryCatch,
+} from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {
   IdMap,
@@ -49,6 +55,9 @@ import {
   noop,
   promiseAll,
   promiseNew,
+  size,
+  startTimeout,
+  stopTimeout,
 } from '../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../common/set.ts';
 import {
@@ -61,6 +70,8 @@ import {
   strMatch,
 } from '../../common/strings.ts';
 import {
+  MAX_WEBSOCKET_BUFFER_SIZE,
+  MAX_WEBSOCKET_QUEUE_SIZE,
   MULTIPLE_VERSION,
   MultipleControl,
   SERVER_CLIENT_ID,
@@ -72,10 +83,14 @@ import {
   createPayloadReceiver,
   createPayloads,
   createRawPayload,
+  getPayloadCoalesceKey,
+  getWebSocketPayloadSize,
   ifMultipleControlPayloadValid,
   ifMultiplePayloadValid,
   ifPayloadValid,
   isMultipleChannelIdValid,
+  isWebSocketBackpressured,
+  isWebSocketPayloadTooLarge,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
@@ -87,6 +102,8 @@ enum ServerClient {
   Send = 3,
   Buffer = 4,
   Then = 5,
+  BufferSize = 6,
+  BufferTimeout = 7,
 }
 enum State {
   Configuring,
@@ -123,13 +140,16 @@ export const createWsServer = (<
   fragmentSize?: number,
 ) => {
   type Client = [webSocket: WebSocket, channelId?: Id];
+  type Buffered = [clientId: Id, payload: string, coalesceKey?: string];
   type ServerClient = [
     state: State,
     persister: PathPersister,
     synchronizer: Synchronizer,
     send: (payload: string) => void,
-    buffer: [clientId: Id, payload: string][],
+    buffer: Buffered[],
     then: (store: MergeableStore) => void,
+    bufferSize: number,
+    bufferTimeout?: ReturnType<typeof startTimeout>,
   ];
   type Path = [
     clients: IdMap<Client>,
@@ -238,12 +258,106 @@ export const createWsServer = (<
     }
   };
 
-  const sendToClient = ([client, channelId]: Client, payload: string) =>
-    client.send(
-      isUndefined(channelId)
-        ? payload
-        : createMultiplePayload(channelId, payload),
+  const overflowClient = (client: WebSocket, details: string) => {
+    if (client.readyState == client.OPEN) {
+      const error = errorNew(ERROR_SYNC_OVERFLOW, details);
+      onIgnoredError?.(error);
+      client.close(1013, error.message);
+    }
+  };
+
+  const sendToClient = ([client, channelId]: Client, payload: string) => {
+    const outgoingPayload = isUndefined(channelId)
+      ? payload
+      : createMultiplePayload(channelId, payload);
+    if (
+      isWebSocketPayloadTooLarge(outgoingPayload) ||
+      isWebSocketBackpressured(client, outgoingPayload)
+    ) {
+      overflowClient(client, 'socket');
+    } else if (client.readyState == client.OPEN) {
+      client.send(outgoingPayload);
+    }
+  };
+
+  const clearServerBuffer = (serverClient: ServerClient) => {
+    if (serverClient[ServerClient.BufferTimeout]) {
+      stopTimeout(serverClient[ServerClient.BufferTimeout]);
+      serverClient[ServerClient.BufferTimeout] = undefined;
+    }
+    serverClient[ServerClient.Buffer] = [];
+    serverClient[ServerClient.BufferSize] = 0;
+  };
+
+  const delBufferedClient = (serverClient: ServerClient, clientId: Id) => {
+    serverClient[ServerClient.Buffer] = arrayFilter(
+      serverClient[ServerClient.Buffer],
+      ([bufferedClientId]) => bufferedClientId != clientId,
     );
+    serverClient[ServerClient.BufferSize] = arrayReduce(
+      serverClient[ServerClient.Buffer],
+      (total, [, payload]) => total + getWebSocketPayloadSize(payload),
+      0,
+    );
+    if (!size(serverClient[ServerClient.Buffer])) {
+      clearServerBuffer(serverClient);
+    }
+  };
+
+  const expireServerBuffer = (path: Path) => {
+    const serverClient = path[Path.ServerClient];
+    const clients = setNew<WebSocket>();
+    arrayForEach(serverClient[ServerClient.Buffer], ([clientId]) =>
+      ifNotUndefined(mapGet(path[Path.Clients], clientId), ([client]) =>
+        setAdd(clients, client),
+      ),
+    );
+    clearServerBuffer(serverClient);
+    arrayForEach(collValues(clients), (client) =>
+      overflowClient(client, 'server'),
+    );
+  };
+
+  const bufferMessage = (path: Path, clientId: Id, payload: string) => {
+    const serverClient = path[Path.ServerClient];
+    const buffer = serverClient[ServerClient.Buffer];
+    const coalesceKey = getPayloadCoalesceKey(clientId, payload);
+    let coalesceIndex = -1;
+    if (coalesceKey) {
+      arrayForEach(buffer, ([, , bufferedKey], index) => {
+        if (bufferedKey == coalesceKey) {
+          coalesceIndex = index;
+        }
+      });
+    }
+    const replacedSize =
+      coalesceIndex > -1
+        ? getWebSocketPayloadSize(buffer[coalesceIndex][1])
+        : 0;
+    const payloadSize = getWebSocketPayloadSize(payload);
+    if (
+      (coalesceIndex < 0 && size(buffer) >= MAX_WEBSOCKET_QUEUE_SIZE) ||
+      serverClient[ServerClient.BufferSize] + payloadSize - replacedSize >
+        MAX_WEBSOCKET_BUFFER_SIZE
+    ) {
+      delBufferedClient(serverClient, clientId);
+      ifNotUndefined(mapGet(path[Path.Clients], clientId), ([client]) =>
+        overflowClient(client, 'server'),
+      );
+      return;
+    }
+    const buffered: Buffered = [clientId, payload, coalesceKey];
+    if (coalesceIndex > -1) {
+      buffer[coalesceIndex] = buffered;
+    } else {
+      arrayPush(buffer, buffered);
+    }
+    serverClient[ServerClient.BufferSize] += payloadSize - replacedSize;
+    serverClient[ServerClient.BufferTimeout] ??= startTimeout(
+      () => expireServerBuffer(path),
+      requestTimeoutSeconds * 10,
+    );
+  };
 
   const handleMessage = (path: Path, clientId: Id, payload: string) => {
     const clients = path[Path.Clients];
@@ -278,7 +392,7 @@ export const createWsServer = (<
     ) {
       handleMessage(path, clientId, payload);
     } else if (!path[Path.Stopping] && collHas(path[Path.Clients], clientId)) {
-      arrayPush(serverClient[ServerClient.Buffer], [clientId, payload]);
+      bufferMessage(path, clientId, payload);
     }
   };
 
@@ -303,6 +417,7 @@ export const createWsServer = (<
         let failed = false;
         await tryCatch(() => path[Path.Configuring]);
         await tryCatch(() => path[Path.Ready]);
+        clearServerBuffer(path[Path.ServerClient]);
         await tryCatch(
           () => stopServerClient(path[Path.ServerClient]),
           (error) => {
@@ -326,7 +441,7 @@ export const createWsServer = (<
   const createPath = (pathId: Id, replacing: boolean): Path => {
     const path = [
       mapNew(),
-      [State.Configuring, undefined, undefined, undefined, []],
+      [State.Configuring, undefined, undefined, undefined, [], undefined, 0],
     ] as unknown as Path;
     mapSet(paths, pathId, path);
     if (!replacing) {
@@ -343,12 +458,11 @@ export const createWsServer = (<
         if (serverClient[ServerClient.State] == State.Configured) {
           await startServerClient(serverClient);
         }
-        arrayForEach(
-          serverClient[ServerClient.Buffer],
-          ([fromClientId, payload]) =>
-            handleMessage(path, fromClientId, payload),
+        const buffer = serverClient[ServerClient.Buffer];
+        clearServerBuffer(serverClient);
+        arrayForEach(buffer, ([fromClientId, payload]) =>
+          handleMessage(path, fromClientId, payload),
         );
-        serverClient[ServerClient.Buffer] = [];
       })();
     }
     return path[Path.Ready];
@@ -357,6 +471,7 @@ export const createWsServer = (<
   const delClientFromPath = async (pathId: Id, path: Path, clientId: Id) => {
     const clients = path[Path.Clients];
     if (collHas(clients, clientId)) {
+      delBufferedClient(path[Path.ServerClient], clientId);
       collDel(clients, clientId);
       callListeners(clientIdListeners, [pathId], clientId, -1);
       if (collIsEmpty(clients)) {
@@ -442,7 +557,17 @@ export const createWsServer = (<
       requestId: IdOrNull,
       control: MultipleControl,
       body: any,
-    ) => client.send(createMultipleControlPayload(requestId, control, body));
+    ) => {
+      const payload = createMultipleControlPayload(requestId, control, body);
+      if (
+        isWebSocketPayloadTooLarge(payload) ||
+        isWebSocketBackpressured(client, payload)
+      ) {
+        overflowClient(client, 'socket');
+      } else if (client.readyState == client.OPEN) {
+        client.send(payload);
+      }
+    };
 
     const handleControl = async (
       requestId: IdOrNull,
@@ -603,7 +728,7 @@ export const createWsServer = (<
   });
 
   const closeWebSocket = async (client: WebSocket) => {
-    if (client.readyState != WebSocket.CLOSED) {
+    if (client.readyState != client.CLOSED) {
       await promiseNew<void>((resolve) => {
         const removeCloseListener = addEmitterListener(client, CLOSE, () => {
           removeCloseListener();

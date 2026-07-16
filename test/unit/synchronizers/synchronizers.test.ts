@@ -137,6 +137,36 @@ test('Malformed custom Synchronizer messages are ignored', async () => {
   await synchronizer.destroy();
 });
 
+test('Custom Synchronizer pending requests are bounded', async () => {
+  const errors: Error[] = [];
+  let receive: Receive = () => {};
+  const synchronizer = createCustomSynchronizer(
+    createMergeableStore(),
+    () => {},
+    (registeredReceive) => (receive = registeredReceive),
+    () => {},
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  void synchronizer.startSync();
+  for (let request = 0; request < 101; request++) {
+    receive(
+      'peer' + request,
+      'transaction' + request,
+      Message.ContentHashes,
+      [1, 1],
+    );
+  }
+  await pause();
+
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:requests');
+
+  await synchronizer.destroy();
+});
+
 describe.each([
   ['LocalSynchronizer', mockLocalSynchronizer],
   ['WsSynchronizer', mockWsSynchronizer],

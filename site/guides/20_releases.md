@@ -173,6 +173,25 @@ so malformed traffic is not forwarded to other clients or multiplexed channels.
 WsServerDurableObject subclasses can override onIgnoredError to observe these
 failures.
 
+## Bounded WebSocket Buffering
+
+WebSocket synchronization now bounds offline client queues, server queues used
+while persisted paths start, pending request maps, and incomplete fragment
+buffers. Queued protocol traffic and incomplete fragments expire, while
+repeated offline Store changes are coalesced into a current content-hash
+announcement so the peer can request the latest diff after reconnection.
+
+WebSocket `bufferedAmount` is also checked before sending. Queue, fragment, and
+socket buffer overflows report error 15 and close the overloaded peer with
+WebSocket status code `1013`. Pending request overflows report error 15 and stop
+accepting additional requests.
+
+Multiplexed clients now keep timeout and ignored-error handling with each
+channel instead of inheriting them from the channel that first initialized the
+shared WebSocket. Failed subscription promises are cleared for retry, and
+creating a Synchronizer around a WebSocket that is already closing or closed
+now settles immediately instead of leaving its creation Promise pending.
+
 ## Reliable WebSocket Server Lifecycle
 
 WsServer now handles asynchronous path setup and teardown without leaving failed
