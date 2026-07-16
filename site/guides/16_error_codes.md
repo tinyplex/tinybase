@@ -20,3 +20,4 @@ through from platforms or third-party libraries retain their original format.
 | 11   | An IndexedDB object store operation failed.                      |
 | 12   | An IndexedDB database could not be opened.                       |
 | 13   | A MergeableStore could not create a later HLC.                   |
+| 14   | A Synchronizer protocol message was invalid.                     |

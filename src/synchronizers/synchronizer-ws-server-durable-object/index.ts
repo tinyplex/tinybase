@@ -14,7 +14,9 @@ import {
 } from '../../common/other.ts';
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import {
+  createInvalidPayloadHandler,
   createPayload,
+  createPayloadDecoder,
   createPayloadReceiver,
   createPayloads,
   createRawPayload,
@@ -48,6 +50,7 @@ export class WsServerDurableObject<Env = unknown>
 {
   // @ts-expect-error See blockConcurrencyWhile
   #serverClientSend: (payload: string) => void;
+  #payloadDecoders = new WeakMap<WebSocket, (payload: string) => void>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -106,12 +109,31 @@ export class WsServerDurableObject<Env = unknown>
   }
 
   webSocketMessage(client: WebSocket, message: ArrayBuffer | string) {
-    ifNotUndefined(this.ctx.getTags(client)[0], (clientId) =>
-      this.#handleMessage(clientId, message.toString(), client),
-    );
+    ifNotUndefined(this.ctx.getTags(client)[0], (clientId) => {
+      let decode = this.#payloadDecoders.get(client);
+      if (!decode) {
+        decode = createPayloadDecoder(
+          (toClientId, remainders) =>
+            arrayForEach(remainders, (remainder) =>
+              this.#handleMessage(
+                clientId,
+                createRawPayload(toClientId, remainder),
+                client,
+              ),
+            ),
+          this.getRequestTimeoutSeconds(),
+          createInvalidPayloadHandler(client, (error) =>
+            this.onIgnoredError(error),
+          ),
+        );
+        this.#payloadDecoders.set(client, decode);
+      }
+      decode(message.toString());
+    });
   }
 
   webSocketClose(client: WebSocket) {
+    this.#payloadDecoders.delete(client);
     const [clientId, pathId] = this.ctx.getTags(client);
     this.onClientId(pathId, clientId, -1);
     if (size(this.#getClients()) == 1) {
@@ -173,6 +195,8 @@ export class WsServerDurableObject<Env = unknown>
   getRequestTimeoutSeconds(): number {
     return 1;
   }
+
+  onIgnoredError(_error: any) {}
 
   onPathId(_pathId: Id, _addedOrRemoved: IdAddedOrRemoved) {}
 

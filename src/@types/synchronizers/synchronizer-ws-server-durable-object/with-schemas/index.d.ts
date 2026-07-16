@@ -37,6 +37,9 @@ export class WsServerDurableObject<
   /// WsServerDurableObject.getRequestTimeoutSeconds
   getRequestTimeoutSeconds(): number;
 
+  /// WsServerDurableObject.onIgnoredError
+  onIgnoredError(error: any): void;
+
   /// WsServerDurableObject.onPathId
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
 
