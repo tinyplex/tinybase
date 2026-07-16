@@ -34,7 +34,20 @@ describe('Creates', () => {
 
 describe('Destroys', () => {
   test('basic', () => {
+    middleware.addWillSetValueCallback(() => undefined);
+    store.setValue('v1', 1);
+    expect(store.hasValue('v1')).toBe(false);
+
     middleware.destroy();
+    store.setValue('v1', 1);
+    expect(store.getValue('v1')).toBe(1);
+
+    const middleware2 = createMiddleware(store);
+    expect(middleware2).not.toBe(middleware);
+    middleware2.addWillSetValueCallback(() => 2);
+    middleware.destroy();
+    store.setValue('v2', 1);
+    expect(store.getValue('v2')).toBe(2);
   });
 });
 
