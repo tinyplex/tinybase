@@ -1,3 +1,4 @@
+import {once} from 'events';
 import {readFileSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import type {Id, MergeableStore} from 'tinybase';
@@ -78,6 +79,43 @@ const getFragmentGroup = (
 
 const getPayloadFromClient = (clientId: string, payload: string) =>
   clientId + payload.slice(payload.indexOf('\n'));
+
+const getPromiseResolvers = <Value = void>() => {
+  let resolve: (value: Value) => void;
+  let reject: (error: any) => void;
+  const promise = new Promise<Value>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return [promise, resolve!, reject!] as const;
+};
+
+const openWebSocket = async (pathId: Id, port: number): Promise<WebSocket> => {
+  const webSocket = new WebSocket('ws://localhost:' + port + '/' + pathId);
+  await once(webSocket, 'open');
+  return webSocket;
+};
+
+const closeWebSocket = async (webSocket: WebSocket) => {
+  if (webSocket.readyState != WebSocket.CLOSED) {
+    const closed = once(webSocket, 'close');
+    webSocket.close();
+    await closed;
+  }
+};
+
+const createTestPersister = (
+  startAutoLoad: () => Promise<void> = async () => {},
+  destroy: () => Promise<void> = async () => {},
+) => {
+  const store = createMergeableStore();
+  return {
+    destroy,
+    getStore: () => store,
+    startAutoLoad,
+    startAutoSave: async () => {},
+  } as any;
+};
 
 beforeEach(() => {
   reset();
@@ -552,6 +590,163 @@ describe('Multiple connections', () => {
       {p1: {[c2]: -1}},
     ]);
     expect(clientIdsLog2).toEqual([{p2: {[c3]: 1}}]);
+  });
+});
+
+describe('Lifecycle', () => {
+  test('failed setup can be retried', async () => {
+    const port = 8059;
+    const setupError = new Error('setup');
+    const errors: Error[] = [];
+    let attempts = 0;
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() => {
+        attempts++;
+        if (attempts == 1) {
+          throw setupError;
+        }
+        return createTestPersister();
+      }) as any,
+      (error) => errors.push(error),
+      0.01,
+    );
+
+    const webSocket1 = await openWebSocket('path', port);
+    await pause();
+    expect(errors).toEqual([setupError]);
+    expect(wsServer.getStats()).toEqual({clients: 0, paths: 0});
+    await closeWebSocket(webSocket1);
+
+    const webSocket2 = await openWebSocket('path', port);
+    await pause();
+    expect(attempts).toBe(2);
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    await closeWebSocket(webSocket2);
+    await wsServer.destroy();
+  });
+
+  test('closed pending client does not replace a new generation', async () => {
+    const port = 8060;
+    const [firstSetup, resolveFirstSetup] = getPromiseResolvers<any>();
+    let attempts = 0;
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() => (++attempts == 1 ? firstSetup : createTestPersister())) as any,
+      undefined,
+      0.01,
+    );
+
+    const webSocket1 = await openWebSocket('path', port);
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+    await closeWebSocket(webSocket1);
+    await pause();
+    expect(wsServer.getStats()).toEqual({clients: 0, paths: 1});
+
+    const webSocket2 = await openWebSocket('path', port);
+    await pause();
+    expect(attempts).toBe(2);
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    resolveFirstSetup(createTestPersister());
+    await pause();
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    await closeWebSocket(webSocket2);
+    await wsServer.destroy();
+  });
+
+  test('pending cleanup does not delete a replacement path', async () => {
+    const port = 8061;
+    const [firstDestroy, resolveFirstDestroy] = getPromiseResolvers();
+    let firstDestroyStarted = false;
+    let attempts = 0;
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() =>
+        ++attempts == 1
+          ? createTestPersister(undefined, async () => {
+              firstDestroyStarted = true;
+              await firstDestroy;
+            })
+          : createTestPersister()) as any,
+      undefined,
+      0.01,
+    );
+
+    const webSocket1 = await openWebSocket('path', port);
+    await pause();
+    await closeWebSocket(webSocket1);
+    await pause();
+    expect(firstDestroyStarted).toBe(true);
+
+    const webSocket2 = await openWebSocket('path', port);
+    await pause();
+    expect(attempts).toBe(2);
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    resolveFirstDestroy();
+    await pause();
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    await closeWebSocket(webSocket2);
+    await wsServer.destroy();
+  });
+
+  test('failed cleanup still deletes path state', async () => {
+    const port = 8062;
+    const cleanupError = new Error('cleanup');
+    const errors: Error[] = [];
+    let attempts = 0;
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() =>
+        ++attempts == 1
+          ? createTestPersister(undefined, async () => {
+              throw cleanupError;
+            })
+          : createTestPersister()) as any,
+      (error) => errors.push(error),
+      0.01,
+    );
+
+    const webSocket1 = await openWebSocket('path', port);
+    await pause();
+    await closeWebSocket(webSocket1);
+    await pause();
+    expect(errors).toContain(cleanupError);
+    expect(wsServer.getStats()).toEqual({clients: 0, paths: 0});
+
+    const webSocket2 = await openWebSocket('path', port);
+    await pause();
+    expect(attempts).toBe(2);
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    await closeWebSocket(webSocket2);
+    await wsServer.destroy();
+  });
+
+  test('destroy waits for server and client closure', async () => {
+    const port = 8063;
+    const webSocketServer = new WebSocketServer({port});
+    const wsServer = createWsServer(webSocketServer);
+    let closed = 0;
+    webSocketServer.on('connection', (client) =>
+      client.on('close', () => closed++),
+    );
+    const webSocket1 = await openWebSocket('path1', port);
+    const webSocket2 = await openWebSocket('path2', port);
+    await pause();
+
+    await wsServer.destroy();
+    expect(closed).toBe(2);
+    expect(webSocketServer.clients.size).toBe(0);
+    expect(webSocketServer.address()).toBeNull();
+    expect(wsServer.getStats()).toEqual({clients: 0, paths: 0});
+    await closeWebSocket(webSocket1);
+    await closeWebSocket(webSocket2);
+    await wsServer.destroy();
   });
 });
 
