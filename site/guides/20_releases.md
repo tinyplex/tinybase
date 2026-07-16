@@ -18,28 +18,23 @@ Create the WebSocket with the `tinybase` subprotocol and provide a channel Id as
 the third argument to each createWsSynchronizer call:
 
 ```js
-import {createMergeableStore as createMultistoreStore} from 'tinybase';
-import {createWsSynchronizer as createMultistoreSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {createWsServer as createMultistoreServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {
-  WebSocket as MultistoreWebSocket,
-  WebSocketServer as MultistoreWebSocketServer,
-} from 'ws';
+import {createMergeableStore} from 'tinybase';
+import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {WebSocket, WebSocketServer} from 'ws';
 
-const multistoreServer = createMultistoreServer(
-  new MultistoreWebSocketServer({port: 8052}),
-);
-const multistoreWebSocket = new MultistoreWebSocket(
+const multistoreServer = createWsServer(new WebSocketServer({port: 8052}));
+const multistoreWebSocket = new WebSocket(
   'ws://localhost:8052/petShop',
   'tinybase',
 );
-const petsSynchronizer = await createMultistoreSynchronizer(
-  createMultistoreStore(),
+const petsSynchronizer = await createWsSynchronizer(
+  createMergeableStore(),
   multistoreWebSocket,
   'pets',
 );
-const employeesSynchronizer = await createMultistoreSynchronizer(
-  createMultistoreStore(),
+const employeesSynchronizer = await createWsSynchronizer(
+  createMergeableStore(),
   multistoreWebSocket,
   'employees',
 );
@@ -50,7 +45,7 @@ console.log(employeesSynchronizer.getWebSocket() == multistoreWebSocket);
 // -> true
 
 await petsSynchronizer.destroy();
-console.log(multistoreWebSocket.readyState == MultistoreWebSocket.OPEN);
+console.log(multistoreWebSocket.readyState == WebSocket.OPEN);
 // -> true
 
 await employeesSynchronizer.destroy();
@@ -1993,10 +1988,7 @@ creates a Persister instance (for which also need to create or provide a
 MergeableStore) for a given path:
 
 ```js
-import {createMergeableStore} from 'tinybase';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
-import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {WebSocketServer} from 'ws';
 
 const persistingServer = createWsServer(
   new WebSocketServer({port: 8051}),
@@ -2094,9 +2086,6 @@ MergeableStore objects to be merged together. This can be across a network,
 using WebSockets, for example:
 
 ```js
-import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {WebSocket} from 'ws';
-
 // On a server machine:
 const server = createWsServer(new WebSocketServer({port: 8043}));
 
