@@ -12542,8 +12542,8 @@
  * // -> '<span>{\"pets\":{\"fido\":{\"species\":\"dog\"}}}</span>'
  *
  * root.render(<App sessionKey="cujoStore" />); // !act
- * // -> 'Persister created for session key cujoStore'
  * // -> 'Persister destroyed for session key fidoStore'
+ * // -> 'Persister created for session key cujoStore'
  *
  * // ... // !act
  * console.log(app.innerHTML);
@@ -13083,8 +13083,8 @@
  *
  * root.render(<App url="ws://localhost:8045/" />); // !act
  * // ... // !act
- * // -> 'Synchronizer created for ws://localhost:8045/'
  * // -> 'Synchronizer destroyed for ws://localhost:8044/'
+ * // -> 'Synchronizer created for ws://localhost:8045/'
  *
  * root.unmount(); // !act
  * // -> 'Synchronizer destroyed for ws://localhost:8045/'
