@@ -239,13 +239,20 @@ export const getCreateFunction = <
   Thing extends
     Metrics | Middleware | Indexes | Relationships | Checkpoints | Queries,
 >(
-  getFunction: (store: Store) => Thing,
+  getFunction: (store: Store, destroyThing: () => boolean) => Thing,
   initFunction?: (thing: Thing) => void,
 ): ((store: Store) => Thing) => {
   const thingsByStore: WeakMap<Store, Thing> = weakMapNew();
   return (store: Store): Thing => {
     if (!thingsByStore.has(store)) {
-      thingsByStore.set(store, getFunction(store));
+      const thing = getFunction(store, () => {
+        if (thingsByStore.get(store) === thing) {
+          thingsByStore.delete(store);
+          return true;
+        }
+        return false;
+      });
+      thingsByStore.set(store, thing);
     }
     const thing = thingsByStore.get(store) as Thing;
     initFunction?.(thing);

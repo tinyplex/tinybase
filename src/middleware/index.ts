@@ -30,7 +30,13 @@ import type {
   ValueOrUndefined,
   Values,
 } from '../@types/store/index.d.ts';
-import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
+import {
+  arrayClear,
+  arrayEvery,
+  arrayForEach,
+  arrayPush,
+  arrayReduce,
+} from '../common/array.ts';
 import {decodeIfJson, encodeIfJson} from '../common/cell.ts';
 import {getCreateFunction} from '../common/definable.ts';
 import {tryReturn} from '../common/error.ts';
@@ -93,7 +99,7 @@ const everyCallback = (
 ): boolean => arrayEvery(callbacks, (callback) => callback(...ids));
 
 export const createMiddleware = getCreateFunction(
-  (store: Store): Middleware => {
+  (store: Store, destroyThing): Middleware => {
     const fluent = (actions: () => void): Middleware => {
       actions();
       return middleware;
@@ -118,6 +124,22 @@ export const createMiddleware = getCreateFunction(
     const willDelValuesCallbacks: WillDelValuesCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
     const willApplyChangesCallbacks: WillApplyChangesCallback[] = [];
+    const allCallbacks = [
+      willSetContentCallbacks,
+      willSetTablesCallbacks,
+      willSetTableCallbacks,
+      willSetRowCallbacks,
+      willSetCellCallbacks,
+      willSetValuesCallbacks,
+      willSetValueCallbacks,
+      willDelTablesCallbacks,
+      willDelTableCallbacks,
+      willDelRowCallbacks,
+      willDelCellCallbacks,
+      willDelValuesCallbacks,
+      willDelValueCallbacks,
+      willApplyChangesCallbacks,
+    ];
 
     const willSetContent = (
       content: Content,
@@ -210,7 +232,12 @@ export const createMiddleware = getCreateFunction(
     const addWillDelValueCallback = addCallback(willDelValueCallbacks);
     const addWillApplyChangesCallback = addCallback(willApplyChangesCallbacks);
 
-    const destroy = (): void => {};
+    const destroy = (): void => {
+      if (destroyThing()) {
+        (store as ProtectedStore)._[4]();
+        arrayForEach(allCallbacks, arrayClear);
+      }
+    };
 
     const middleware: Middleware = objFreeze({
       getStore,
