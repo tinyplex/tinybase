@@ -47,3 +47,49 @@ test('omits If-None-Match until an etag has been seen', async () => {
   expect(headRequestIndex).toBeGreaterThan(-1);
   expect(inits[headRequestIndex]?.headers).toEqual({'If-None-Match': 'etag1'});
 });
+
+test('loads changed content with the previously consumed etag', async () => {
+  let content = '[{"pets":{"fido":{"species":"dog"}}},{}]';
+  let etag = 'etag1';
+  const requests: Request[] = [];
+  fetchWas = globalThis.fetch;
+  globalThis.fetch = (async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response> => {
+    const request =
+      input instanceof Request ? input : new Request(String(input), init);
+    requests.push(request);
+    if (request.method == 'HEAD') {
+      return new Response('', {headers: {ETag: etag}});
+    }
+    const notModified = request.headers.get('If-None-Match') == etag;
+    return new Response(notModified ? '' : content, {
+      status: notModified ? 304 : 200,
+      headers: {ETag: etag},
+    });
+  }) as typeof fetch;
+
+  const store = createStore();
+  const persister = createRemotePersister(
+    store,
+    'http://example.com/load',
+    'http://example.com/save',
+    0.01,
+  );
+  await persister.startAutoLoad();
+
+  content = '[{"pets":{"fido":{"species":"cat"}}},{}]';
+  etag = 'etag2';
+  await pause(20);
+  await persister.stopAutoLoad();
+
+  expect(store.getCell('pets', 'fido', 'species')).toBe('cat');
+  const headRequestIndex = requests.findIndex(
+    (request) => request.method == 'HEAD',
+  );
+  expect(headRequestIndex).toBeGreaterThan(-1);
+  expect(requests[headRequestIndex + 1].headers.get('If-None-Match')).toBe(
+    'etag1',
+  );
+});
