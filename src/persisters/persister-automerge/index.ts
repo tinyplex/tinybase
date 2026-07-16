@@ -8,6 +8,7 @@ import type {
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {
   IdObj,
+  isObject,
   objDel,
   objGet,
   objHas,
@@ -15,7 +16,6 @@ import {
   objMap,
   objNew,
   objSet,
-  objSize,
 } from '../../common/obj.ts';
 import {
   addEmitterListener,
@@ -197,7 +197,8 @@ export const createAutomergePersister = ((
 
   const getPersisted = async (): Promise<Content | undefined> => {
     const doc = docHandle.doc();
-    return objSize(docGet(doc, docObjName)) == 2
+    const docContent = docGet(doc, docObjName);
+    return isObject(docContent?.t) && isObject(docContent?.v)
       ? getDocContent(doc, docObjName)
       : undefined;
   };

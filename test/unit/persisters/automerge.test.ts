@@ -3,7 +3,7 @@ import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
-import {beforeEach, describe, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 import {
   AutomergeTestNetworkAdapter,
   resetNetwork,
@@ -102,6 +102,35 @@ describe('Load from doc', () => {
     );
     await persister1.load();
     expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
+
+  test('content with metadata', async () => {
+    docHandler1.change(
+      (doc: any) =>
+        (doc['tinybase'] = {
+          t: {t1: {r1: {c1: 1}}},
+          v: {v1: 1},
+          metadata: 'safe',
+        }),
+    );
+    await persister1.load();
+    expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
+
+  test('malformed two-key content', async () => {
+    const ignoredError = vi.fn();
+    docHandler1.change(
+      (doc: any) => (doc['tinybase'] = {t: 1, v: {v1: 1}}),
+    );
+    const persister = createAutomergePersister(
+      store1,
+      docHandler1,
+      'tinybase',
+      ignoredError,
+    );
+    await persister.load();
+    expect(store1.getContent()).toEqual([{}, {}]);
+    expect(ignoredError).not.toHaveBeenCalled();
   });
 
   test('persister after data', async () => {
