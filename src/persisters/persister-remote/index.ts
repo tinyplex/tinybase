@@ -27,8 +27,9 @@ export const createRemotePersister = ((
     const response = await fetch(loadUrl, {
       headers: getIfNoneMatchHeaders(lastEtag),
     });
+    const content = jsonParse(await response.text());
     lastEtag = getETag(response);
-    return jsonParse(await response.text());
+    return content;
   };
 
   const setPersisted = async (getContent: () => Content): Promise<any> =>
@@ -48,7 +49,6 @@ export const createRemotePersister = ((
       });
       const currentEtag = getETag(response);
       if (currentEtag != lastEtag) {
-        lastEtag = currentEtag;
         listener();
       }
     }, autoLoadIntervalSeconds);
