@@ -2,7 +2,12 @@
 import type {PGlite} from '@electric-sql/pglite';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
-import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
+import type {
+  DatabasePersisterConfig,
+  DpcJson,
+  Persister,
+  Persists,
+} from '../index.d.ts';
 
 /// PglitePersister
 export interface PglitePersister extends Persister<Persists.StoreOrMergeableStore> {
@@ -11,10 +16,14 @@ export interface PglitePersister extends Persister<Persists.StoreOrMergeableStor
 }
 
 /// createPglitePersister
-export function createPglitePersister(
-  store: Store | MergeableStore,
+export function createPglitePersister<StoreType extends Store>(
+  store: StoreType,
   pglite: PGlite,
-  configOrStoreTableName?: DatabasePersisterConfig | string,
+  configOrStoreTableName?:
+    | (NoInfer<StoreType> extends MergeableStore
+        ? DpcJson
+        : DatabasePersisterConfig)
+    | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PglitePersister>;

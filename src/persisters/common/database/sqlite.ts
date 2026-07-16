@@ -8,7 +8,11 @@ import type {
   Persists,
 } from '../../../@types/persisters/index.d.ts';
 import {collValues} from '../../../common/coll.ts';
-import {tryCatch} from '../../../common/error.ts';
+import {
+  ERROR_STORE_TYPE,
+  errorThrow,
+  tryCatch,
+} from '../../../common/error.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {
   isFalse,
@@ -64,6 +68,9 @@ export const createCustomSqlitePersister = <
     defaultedConfig,
     managedTableNamesSet,
   ] = getConfigStructures(configOrStoreTableName);
+  if (!isJson && store.isMergeable()) {
+    errorThrow(ERROR_STORE_TYPE);
+  }
 
   const addPersisterListener = (
     listener: PersisterListener<Persist>,
