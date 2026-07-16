@@ -1,11 +1,11 @@
-import {writeFile} from 'fs/promises';
+import {mkdir, writeFile} from 'fs/promises';
 import {
+  DefaultReporter,
   SerializedError,
   TestCase,
   TestModule,
   TestRunEndReason,
 } from 'vitest/node';
-import {DefaultReporter} from 'vitest/reporters';
 
 export default class extends DefaultReporter {
   tests: number = 0;
@@ -23,6 +23,7 @@ export default class extends DefaultReporter {
   ) {
     super.onTestRunEnd(testModules, unhandledErrors, reason);
     this.ctx.logger.log(`\nTotal Assertions: ${this.assertions}`);
+    await mkdir('./tmp', {recursive: true});
     await writeFile(
       './tmp/counts.json',
       JSON.stringify({tests: this.tests, assertions: this.assertions}),
