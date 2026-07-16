@@ -108,6 +108,29 @@ describe('rich Cell and Value data', () => {
     expect(store.getValue('species')).toEqual(['cat', 'dog']);
   });
 
+  test('unserializable callback results are invalid', () => {
+    const invalidCell = vi.fn();
+    const invalidValue = vi.fn();
+    const cyclic: any = {};
+    const bigint = [1n] as any;
+    cyclic.self = cyclic;
+    middleware
+      .addWillSetCellCallback(() => cyclic)
+      .addWillSetValueCallback(() => bigint);
+    store.addInvalidCellListener(null, null, null, invalidCell);
+    store.addInvalidValueListener(null, invalidValue);
+
+    expect(() =>
+      store
+        .setCell('pets', 'fido', 'details', {species: 'dog'})
+        .setValue('species', ['cat']),
+    ).not.toThrow();
+
+    expect(store.getContent()).toEqual([{}, {}]);
+    expect(invalidCell.mock.calls[0][4][0]).toBe(cyclic);
+    expect(invalidValue.mock.calls[0][2][0]).toBe(bigint);
+  });
+
   test('setCell prospective Row contains public values', () => {
     store.setCell('pets', 'fido', 'details', {species: 'dog'});
     let seen: any;

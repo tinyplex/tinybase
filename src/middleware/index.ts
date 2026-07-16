@@ -33,6 +33,7 @@ import type {
 import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
 import {decodeIfJson, encodeIfJson} from '../common/cell.ts';
 import {getCreateFunction} from '../common/definable.ts';
+import {tryReturn} from '../common/error.ts';
 import {objFreeze, objMap, objMap2, objMap3} from '../common/obj.ts';
 import {ifNotUndefined, isEmpty, isUndefined} from '../common/other.ts';
 import {ProtectedStore} from '../store/index.ts';
@@ -80,7 +81,10 @@ const reduceDecodedCallbacks = (
     ? thing
     : ifNotUndefined(
         reduceCallbacks(callbacks, mapThing(thing, decodeIfJson), ...ids),
-        (thing) => mapThing(thing, encodeIfJson),
+        (thing) =>
+          mapThing(thing, (cellOrValue) =>
+            tryReturn(() => encodeIfJson(cellOrValue), cellOrValue),
+          ),
       );
 
 const everyCallback = (

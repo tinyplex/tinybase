@@ -76,17 +76,17 @@ booleans, `null`, plain objects, and arrays. TinyBase validates the top-level
 object or array, but relies on `JSON.stringify` for its contents. This means
 that nested `undefined` values and functions are omitted from objects (or become
 `null` in arrays), non-finite numbers become `null`, and Dates become strings.
-BigInts and cyclic structures cause the write to throw.
+BigInts and cyclic structures cannot be serialized, so the Cell or Value is
+invalid and the write is ignored silently.
 
-Because of this encoding, string Cells and Values must not start with the
-Unicode replacement character `U+FFFD`, which TinyBase reserves as an internal
-prefix for objects and arrays. The character is supported elsewhere in a string,
-including within strings nested inside objects and arrays.
-
-JSON-based persistence and synchronization also reserve the exact string
-`U+FFFC`, the Unicode object replacement character, to represent `undefined`. Do
-not use that exact string as a Cell or Value. Longer strings containing that
-character, and strings nested inside objects and arrays, are supported.
+Because of this encoding, string Cells and Values must not start with the Unicode
+replacement character `U+FFFD`, which TinyBase reserves as an internal prefix
+for objects and arrays, or be the exact string `U+FFFC`, the Unicode object
+replacement character, which represents `undefined` in serialized data. These
+strings are invalid and writes that use them are ignored silently. `U+FFFD` is
+supported elsewhere in a string, longer strings containing `U+FFFC` are also
+supported, and both characters can be used within strings nested inside objects
+and arrays.
 
 It's worth mentioning here that there are two extra methods to manipulate Row
 objects. The addRow method is like the setRow method but automatically assigns

@@ -102,15 +102,14 @@ mergeable representation.
 
 ## Reserved Serialization Strings
 
-String Cells and Values beginning with `U+FFFD` are now rejected as invalid,
-since TinyBase reserves that character as the prefix for its internal object and
-array encoding. This also applies to string defaults in schemas.
+String Cells and Values beginning with `U+FFFD`, or equal to the exact string
+`U+FFFC`, are now rejected as invalid and ignored silently. TinyBase reserves
+these strings for its internal object, array, and `undefined` encodings. This
+also applies to string defaults in schemas.
 
-JSON-based Persisters and Synchronizers now report error 13 when the exact
-string `U+FFFC`, which is reserved to represent `undefined`, is used as a Cell
-or Value. `U+FFFD` remains supported after the first character, while longer
-strings containing `U+FFFC` remain supported. Both are also supported in strings
-nested inside objects and arrays.
+`U+FFFD` remains supported after the first character, while longer strings
+containing `U+FFFC` remain supported. Both are also supported in strings nested
+inside objects and arrays.
 
 ## JSON-Compatible Object And Array Contents
 
@@ -118,7 +117,8 @@ Object and array Cells and Values are now documented as supporting contents
 that recursively consist of strings, finite numbers, booleans, `null`, plain
 objects, and arrays. TinyBase validates the top-level container but relies on
 JSON serialization for nested contents, so other JavaScript values may be
-changed, omitted, or cause the write to throw.
+changed or omitted. Values that cannot be serialized are rejected as invalid
+and ignored silently.
 
 ## Stable Object And Array Grouping And Indexing
 

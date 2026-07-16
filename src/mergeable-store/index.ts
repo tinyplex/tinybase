@@ -22,7 +22,11 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
-import {decodeIfJson, isCellOrValueOrUndefined} from '../common/cell.ts';
+import {
+  decodeIfJson,
+  isCellOrValueOrUndefined,
+  isReservedString,
+} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
 import {ERROR_HLC, errorThrow, tryFinally} from '../common/error.ts';
 import {
@@ -145,6 +149,7 @@ const validateMergeable = (
   mergeable: MergeableChanges | MergeableContent,
   maxLogicalTime: number,
   hasHashes: 0 | 1,
+  encoded: 0 | 1,
 ): boolean => {
   if (!isArray(mergeable)) {
     return false;
@@ -159,6 +164,9 @@ const validateMergeable = (
   }
   const validate = (stamp: any, validateThing: (thing: any) => boolean) =>
     validateStamp(stamp, validateThing, maxLogicalTime, hasHashes);
+  const validateCellOrValue = (cellOrValue: any): boolean =>
+    isCellOrValueOrUndefined(cellOrValue) &&
+    !isReservedString(cellOrValue, encoded);
   return (
     validate(mergeable[0], (tableStamps) =>
       objValidate(
@@ -171,8 +179,7 @@ const validateMergeable = (
                 validate(rowStamp, (cellStamps) =>
                   objValidate(
                     cellStamps,
-                    (cellStamp) =>
-                      validate(cellStamp, isCellOrValueOrUndefined),
+                    (cellStamp) => validate(cellStamp, validateCellOrValue),
                     undefined,
                     1,
                   ),
@@ -188,7 +195,7 @@ const validateMergeable = (
     validate(mergeable[1], (values) =>
       objValidate(
         values,
-        (value) => validate(value, isCellOrValueOrUndefined),
+        (value) => validate(value, validateCellOrValue),
         undefined,
         1,
       ),
@@ -690,7 +697,12 @@ export const createMergeableStore = ((
     mergeableContent: MergeableContent,
     encoded?: boolean,
   ): MergeableStore =>
-    validateMergeable(mergeableContent, getNow() + HLC_MAX_FUTURE_OFFSET, 1)
+    validateMergeable(
+      mergeableContent,
+      getNow() + HLC_MAX_FUTURE_OFFSET,
+      1,
+      encoded ? 1 : 0,
+    )
       ? disableListeningToRawStoreChanges(() =>
           store.transaction(() => {
             store.delTables().delValues();
@@ -738,7 +750,12 @@ export const createMergeableStore = ((
     mergeableChanges: MergeableChanges | MergeableContent,
     encoded?: boolean,
   ): MergeableStore =>
-    validateMergeable(mergeableChanges, getNow() + HLC_MAX_FUTURE_OFFSET, 0)
+    validateMergeable(
+      mergeableChanges,
+      getNow() + HLC_MAX_FUTURE_OFFSET,
+      0,
+      encoded ? 1 : 0,
+    )
       ? disableListeningToRawStoreChanges(() =>
           (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
             mergeContentOrChanges(mergeableChanges),

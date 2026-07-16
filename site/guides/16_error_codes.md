@@ -19,5 +19,4 @@ through from platforms or third-party libraries retain their original format.
 | 10   | Legacy synchronization was requested on a multiplexed WebSocket. |
 | 11   | An IndexedDB object store operation failed.                      |
 | 12   | An IndexedDB database could not be opened.                       |
-| 13   | The reserved `U+FFFC` string could not be serialized.            |
-| 14   | A MergeableStore could not create a later HLC.                   |
+| 13   | A MergeableStore could not create a later HLC.                   |

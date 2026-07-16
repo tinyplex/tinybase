@@ -1650,6 +1650,7 @@ describe.each([
 
   describe('Reserved strings', () => {
     const jsonPrefix = '\uFFFD';
+    const undefinedMarker = '\uFFFC';
 
     test('leading JSON prefix is invalid string data', () => {
       const invalidCell = vi.fn();
@@ -1672,9 +1673,52 @@ describe.each([
         .setValue('v1', value);
       expect(schemaStore.getContent()).toEqual([{}, {}]);
 
+      const jsonSchemaStore = createStore()
+        .setTablesSchema({t1: {c1: {type: 'object'}}})
+        .setValuesSchema({v1: {type: 'array'}})
+        .setCell('t1', 'r1', 'c1', cell)
+        .setValue('v1', value);
+      expect(jsonSchemaStore.getContent()).toEqual([{}, {}]);
+
       const defaultStore = createStore()
         .setTablesSchema({t1: {c1: {type: 'string', default: cell}}})
         .setValuesSchema({v1: {type: 'string', default: value}});
+      expect(JSON.parse(defaultStore.getSchemaJson())).toEqual([
+        {t1: {c1: {type: 'string'}}},
+        {v1: {type: 'string'}},
+      ]);
+    });
+
+    test('exact undefined marker is invalid string data', () => {
+      const invalidCell = vi.fn();
+      const invalidValue = vi.fn();
+      store.addInvalidCellListener(null, null, null, invalidCell);
+      store.addInvalidValueListener(null, invalidValue);
+
+      store
+        .setCell('t1', 'r1', 'c1', undefinedMarker)
+        .setValue('v1', undefinedMarker);
+
+      expect(store.getContent()).toEqual([{}, {}]);
+      expect(invalidCell).toHaveBeenCalledWith(store, 't1', 'r1', 'c1', [
+        undefinedMarker,
+      ]);
+      expect(invalidValue).toHaveBeenCalledWith(store, 'v1', [undefinedMarker]);
+
+      const schemaStore = createStore()
+        .setTablesSchema({t1: {c1: {type: 'string'}}})
+        .setValuesSchema({v1: {type: 'string'}})
+        .setCell('t1', 'r1', 'c1', undefinedMarker)
+        .setValue('v1', undefinedMarker);
+      expect(schemaStore.getContent()).toEqual([{}, {}]);
+
+      const defaultStore = createStore()
+        .setTablesSchema({
+          t1: {c1: {type: 'string', default: undefinedMarker}},
+        })
+        .setValuesSchema({
+          v1: {type: 'string', default: undefinedMarker},
+        });
       expect(JSON.parse(defaultStore.getSchemaJson())).toEqual([
         {t1: {c1: {type: 'string'}}},
         {v1: {type: 'string'}},
@@ -1703,6 +1747,45 @@ describe.each([
       const restoredStore = createStore().setJson(store.getJson());
 
       expect(restoredStore.getContent()).toEqual(store.getContent());
+    });
+
+    test('unserializable object and array data is invalid', () => {
+      const invalidCell = vi.fn();
+      const invalidValue = vi.fn();
+      const cyclic: any = {};
+      const bigint = [1n] as any;
+      const bigintObject = {value: 1n} as any;
+      cyclic.self = cyclic;
+      store.addInvalidCellListener(null, null, null, invalidCell);
+      store.addInvalidValueListener(null, invalidValue);
+
+      expect(() =>
+        store.setCell('t1', 'r1', 'c1', cyclic).setValue('v1', bigint),
+      ).not.toThrow();
+
+      expect(store.getContent()).toEqual([{}, {}]);
+      expect(invalidCell.mock.calls[0][4][0]).toBe(cyclic);
+      expect(invalidValue.mock.calls[0][2][0]).toBe(bigint);
+
+      const schemaStore = createStore()
+        .setTablesSchema({t1: {c1: {type: 'object'}}})
+        .setValuesSchema({v1: {type: 'array'}});
+      expect(() =>
+        schemaStore.setCell('t1', 'r1', 'c1', cyclic).setValue('v1', bigint),
+      ).not.toThrow();
+      expect(schemaStore.getContent()).toEqual([{}, {}]);
+
+      const defaultStore = createStore()
+        .setTablesSchema({
+          t1: {c1: {type: 'object', default: bigintObject}},
+        })
+        .setValuesSchema({
+          v1: {type: 'array', default: bigint},
+        });
+      expect(JSON.parse(defaultStore.getSchemaJson())).toEqual([
+        {t1: {c1: {type: 'object'}}},
+        {v1: {type: 'array'}},
+      ]);
     });
   });
 

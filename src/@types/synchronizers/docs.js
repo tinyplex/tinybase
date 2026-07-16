@@ -1,11 +1,6 @@
 /**
  * The synchronizers module of the TinyBase project lets you synchronize
  * MergeableStore data to and from other MergeableStore instances.
- *
- * Synchronizers reserve the exact string `U+FFFC` (the Unicode object
- * replacement character) to represent `undefined`. Do not use that exact
- * string as a Cell or Value. Longer strings containing the character, and
- * strings nested inside objects and arrays, are supported.
  * @see Synchronization guide
  * @packageDocumentation
  * @module synchronizers

@@ -336,10 +336,13 @@
  * Object and array contents should recursively be strings, finite numbers,
  * booleans, `null`, plain objects, or arrays. TinyBase validates the top-level
  * container and then uses JSON serialization, so other nested values can be
- * changed, omitted, or cause an error.
+ * changed or omitted. If the value cannot be serialized, the Cell is invalid
+ * and the write is ignored silently.
  *
  * String Cells must not start with the Unicode replacement character `U+FFFD`,
- * which TinyBase reserves for its internal object and array encoding.
+ * which TinyBase reserves for its internal object and array encoding, or be the
+ * exact Unicode object replacement character `U+FFFC`, which TinyBase reserves
+ * to represent `undefined` in serialized data.
  * @example
  * ```js
  * import type {Cell} from 'tinybase';
@@ -402,10 +405,13 @@
  * Object and array contents should recursively be strings, finite numbers,
  * booleans, `null`, plain objects, or arrays. TinyBase validates the top-level
  * container and then uses JSON serialization, so other nested values can be
- * changed, omitted, or cause an error.
+ * changed or omitted. If the value cannot be serialized, the Value is invalid
+ * and the write is ignored silently.
  *
  * String Values must not start with the Unicode replacement character `U+FFFD`,
- * which TinyBase reserves for its internal object and array encoding.
+ * which TinyBase reserves for its internal object and array encoding, or be the
+ * exact Unicode object replacement character `U+FFFC`, which TinyBase reserves
+ * to represent `undefined` in serialized data.
  * @example
  * ```js
  * import type {Value} from 'tinybase';

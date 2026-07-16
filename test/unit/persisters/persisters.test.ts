@@ -507,7 +507,7 @@ test('does not error on persister listener returning invalid', async () => {
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
 });
 
-test('reserves the undefined marker only as a complete string', async () => {
+test('supports the undefined marker except as a complete string', async () => {
   const storageName = 'reserved-undefined-marker';
   const undefinedMarker = '\uFFFC';
   const ignoredError = vi.fn();
@@ -527,10 +527,15 @@ test('reserves the undefined marker only as a complete string', async () => {
     });
     expect(ignoredError).not.toHaveBeenCalled();
 
+    const invalidValue = vi.fn();
+    store.addInvalidValueListener('reserved', invalidValue);
     store.setValue('reserved', undefinedMarker);
     await persister.save();
-    expect(ignoredError).toHaveBeenCalledTimes(1);
-    expect(ignoredError.mock.calls[0][0].message).toEqual('tinybase:13:U+FFFC');
+    expect(store.hasValue('reserved')).toEqual(false);
+    expect(invalidValue).toHaveBeenCalledWith(store, 'reserved', [
+      undefinedMarker,
+    ]);
+    expect(ignoredError).not.toHaveBeenCalled();
   } finally {
     await persister.destroy();
     localStorage.removeItem(storageName);

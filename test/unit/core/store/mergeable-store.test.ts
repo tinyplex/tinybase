@@ -674,6 +674,30 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toEqual(content);
   });
 
+  test('reject reserved strings before changing mergeable state', () => {
+    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    const content = store.getMergeableContent();
+
+    ['\uFFFD{}', '\uFFFC'].forEach((reserved, index) =>
+      store.applyMergeableChanges([
+        [
+          {
+            t1: [
+              {
+                r1: [{c1: [reserved, time(index + 1, 0, 's2')]}],
+              },
+            ],
+          },
+        ],
+        [{v1: [reserved, time(index + 1, 0, 's2')]}],
+        1,
+      ] as MergeableChanges),
+    );
+
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toEqual(content);
+  });
+
   test('carries a remote maximum counter into a local write', () => {
     const remoteChanges: MergeableChanges = [
       [
@@ -712,9 +736,9 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     ] as MergeableChanges);
 
     expect(() => cellStore.setCell('t1', 'r1', 'c1', 2)).toThrowError(
-      'tinybase:14',
+      'tinybase:13',
     );
-    expect(() => valueStore.setValue('v1', 2)).toThrowError('tinybase:14');
+    expect(() => valueStore.setValue('v1', 2)).toThrowError('tinybase:13');
     expect(cellStore.getCell('t1', 'r1', 'c1')).toEqual(1);
     expect(valueStore.getValue('v1')).toEqual(1);
     expect(cellStore.getMergeableContent()[0][0].t1[0].r1[0].c1[0]).toEqual(1);
