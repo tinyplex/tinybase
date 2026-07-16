@@ -25,6 +25,7 @@ import {
   arrayUnshift,
 } from '../common/array.ts';
 
+import {encodeIfJson} from '../common/cell.ts';
 import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
 import {getCreateFunction} from '../common/definable.ts';
 import {tryFinally} from '../common/error.ts';
@@ -48,8 +49,17 @@ import {ProtectedStore} from '../index.ts';
 type CellsDelta = IdMap3<ChangedCell>;
 type ValuesDelta = IdMap<ChangedValue>;
 
+const cellOrValueIsEqual = (
+  value1: CellOrUndefined | ValueOrUndefined,
+  value2: CellOrUndefined | ValueOrUndefined,
+): boolean =>
+  value1 === value2 ||
+  (!isUndefined(value1) &&
+    !isUndefined(value2) &&
+    encodeIfJson(value1) === encodeIfJson(value2));
+
 export const createCheckpoints = getCreateFunction(
-  (store: Store): Checkpoints => {
+  (store: Store, destroyThing): Checkpoints => {
     let backwardIdsSize = 100;
     let currentId: Id | undefined;
     let cellsDelta: CellsDelta = mapNew();
@@ -268,8 +278,10 @@ export const createCheckpoints = getCreateFunction(
     };
 
     const destroy = (): void => {
-      store.delListener(cellListenerId);
-      store.delListener(valueListenerId);
+      if (destroyThing()) {
+        store.delListener(cellListenerId);
+        store.delListener(valueListenerId);
+      }
     };
 
     const getListenerStats = (): CheckpointsListenerStats => ({
@@ -297,7 +309,7 @@ export const createCheckpoints = getCreateFunction(
             ]);
             oldNew[1] = newCell;
             if (
-              oldNew[0] === newCell &&
+              cellOrValueIsEqual(oldNew[0], newCell) &&
               collIsEmpty(mapSet(row, cellId)) &&
               collIsEmpty(mapSet(table, rowId)) &&
               collIsEmpty(mapSet(cellsDelta, tableId))
@@ -321,7 +333,7 @@ export const createCheckpoints = getCreateFunction(
             );
             oldNew[1] = newValue;
             if (
-              oldNew[0] === newValue &&
+              cellOrValueIsEqual(oldNew[0], newValue) &&
               collIsEmpty(mapSet(valuesDelta, valueId))
             ) {
               storeUnchanged();
