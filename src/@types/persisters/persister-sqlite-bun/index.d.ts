@@ -2,7 +2,12 @@
 import type {Database} from 'bun:sqlite';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
-import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
+import type {
+  DatabasePersisterConfig,
+  DpcJson,
+  Persister,
+  Persists,
+} from '../index.d.ts';
 
 /// SqliteBunPersister
 export interface SqliteBunPersister extends Persister<Persists.StoreOrMergeableStore> {
@@ -11,10 +16,14 @@ export interface SqliteBunPersister extends Persister<Persists.StoreOrMergeableS
 }
 
 /// createSqliteBunPersister
-export function createSqliteBunPersister(
-  store: Store | MergeableStore,
+export function createSqliteBunPersister<StoreType extends Store>(
+  store: StoreType,
   db: Database,
-  configOrStoreTableName?: DatabasePersisterConfig | string,
+  configOrStoreTableName?:
+    | (NoInfer<StoreType> extends MergeableStore
+        ? DpcJson
+        : DatabasePersisterConfig)
+    | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): SqliteBunPersister;

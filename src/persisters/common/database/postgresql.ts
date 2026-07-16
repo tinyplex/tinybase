@@ -9,6 +9,7 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {collHas, collValues} from '../../../common/coll.ts';
+import {ERROR_STORE_TYPE, errorThrow} from '../../../common/error.ts';
 import {getHash} from '../../../common/hash.ts';
 import {
   jsonParse,
@@ -73,6 +74,9 @@ export const createCustomPostgreSqlPersister = <
   const [isJson, , defaultedConfig, managedTableNamesSet] = getConfigStructures(
     configOrStoreTableName,
   );
+  if (!isJson && store.isMergeable()) {
+    errorThrow(ERROR_STORE_TYPE);
+  }
   const configHash =
     EMPTY_STRING + getHash(jsonStringWithUndefined(defaultedConfig));
   const channel = TINYBASE + '_' + configHash;

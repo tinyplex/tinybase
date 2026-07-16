@@ -1,9 +1,16 @@
-import sqlite3 from 'sqlite3';
-import {createStore} from 'tinybase';
+import sqlite3, {type Database} from 'sqlite3';
+import {createMergeableStore, createStore} from 'tinybase';
 import {createCustomSqlitePersister, Persists} from 'tinybase/persisters';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
+
+if (false) {
+  const db = {} as Database;
+  // @ts-expect-error Tabular persistence cannot preserve merge metadata
+  createSqlite3Persister(createMergeableStore(), db, {mode: 'tabular'});
+  createSqlite3Persister(createMergeableStore(), db, {mode: 'json'});
+}
 
 test('replaces every table name placeholder', async () => {
   const db = new sqlite3.Database(':memory:');
@@ -152,4 +159,21 @@ test('adds collision-safe unique row ID indexes', async () => {
   });
   await persister.destroy();
   db.close();
+});
+
+test('rejects tabular persistence for MergeableStore', () => {
+  expect(() =>
+    createCustomSqlitePersister(
+      createMergeableStore(),
+      {mode: 'tabular'},
+      async () => [],
+      () => undefined,
+      () => {},
+      undefined,
+      undefined,
+      () => {},
+      Persists.StoreOrMergeableStore,
+      {},
+    ),
+  ).toThrow('tinybase:0');
 });
