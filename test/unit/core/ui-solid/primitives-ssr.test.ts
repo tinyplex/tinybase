@@ -11,7 +11,7 @@ test('does not subscribe during server rendering', () => {
     expect(
       renderToString(() => {
         const species = useCell('pets', 'fido', 'species', store);
-        useCellListener('pets', 'fido', 'species', listener, store);
+        useCellListener('pets', 'fido', 'species', listener, undefined, store);
         return species();
       }),
     ).toBe('dog');
