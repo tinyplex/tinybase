@@ -7,7 +7,7 @@ import {useCallbackOrUndefined} from './common/hooks.tsx';
 
 import type {ComponentType, ReactNode} from 'react';
 import type {Id} from '../@types/index.d.ts';
-import {useCallback, useMemo, useState} from '../common/react.ts';
+import {useCallback, useEffect, useMemo, useState} from '../common/react.ts';
 import {HandleSort, SortAndOffset} from './common/index.tsx';
 
 const LEFT_ARROW = '\u2190';
@@ -87,9 +87,13 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
   singular = 'row',
   plural = singular + 's',
 }: SortedTablePaginatorProps) => {
+  useEffect(() => {
+    if (offset > total || offset < 0) {
+      onChange(0);
+    }
+  }, [onChange, offset, total]);
   if (offset > total || offset < 0) {
     offset = 0;
-    onChange(0);
   }
   const handlePrevClick = useCallbackOrUndefined(
     () => onChange(offset - limit),
