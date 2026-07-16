@@ -135,13 +135,14 @@
    */
   /// WsServerDurableObject.getClientIds
   /**
-   * The getFragmentSize method is used to specify a maximum size for each
-   * WebSocket message fragment sent by the Durable Object.
+   * The getFragmentSize method is used to specify a target maximum UTF-8 byte
+   * size for each WebSocket message fragment sent by the Durable Object.
+   * Unicode code points are never split and can exceed this size.
    *
    * Return a number to split larger synchronization payloads into fragments
    * that are reassembled by the receiving WsSynchronizer. Return `undefined`
    * to send each payload as a single WebSocket message.
-   * @returns The maximum fragment size, or `undefined` to disable
+   * @returns The target maximum fragment size, or `undefined` to disable
    * fragmentation.
    * @example
    * This example limits outbound Durable Object synchronization message

@@ -1,6 +1,12 @@
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {Message, Receive} from '../@types/synchronizers/index.d.ts';
-import {arrayEvery, arrayJoin, arrayMap} from '../common/array.ts';
+import {
+  arrayEvery,
+  arrayForEach,
+  arrayJoin,
+  arrayMap,
+  arrayPush,
+} from '../common/array.ts';
 import {getUniqueId} from '../common/codec.ts';
 import {collDel} from '../common/coll.ts';
 import {
@@ -22,6 +28,7 @@ import {EMPTY_STRING, strMatch, strSplit, TINYBASE} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^(.+)\n(\d+)\n(\d+)\n([\s\S]*)$/;
+const CODE_POINTS = /[\s\S]/gu;
 const INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
 
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
@@ -134,6 +141,32 @@ export const createPayload = (
 export const createRawPayload = (clientId: Id, remainder: string): string =>
   clientId + MESSAGE_SEPARATOR + remainder;
 
+const getFragments = (remainder: string, maxFragmentSize: number): string[] => {
+  const fragments: string[] = [];
+  let fragment = EMPTY_STRING;
+  let fragmentSize = 0;
+  arrayForEach(strMatch(remainder, CODE_POINTS) ?? [], (codePoint) => {
+    const firstCodeUnit = codePoint.charCodeAt(0);
+    const codePointSize =
+      size(codePoint) > 1
+        ? 4
+        : firstCodeUnit < 0x80
+          ? 1
+          : firstCodeUnit < 0x800
+            ? 2
+            : 3;
+    if (fragmentSize > 0 && fragmentSize + codePointSize > maxFragmentSize) {
+      arrayPush(fragments, fragment);
+      fragment = EMPTY_STRING;
+      fragmentSize = 0;
+    }
+    fragment += codePoint;
+    fragmentSize += codePointSize;
+  });
+  arrayPush(fragments, fragment);
+  return fragments;
+};
+
 export const createMultiplePayload = (channelId: Id, payload: string): string =>
   createRawPayload(MULTIPLE_CLIENT_ID, createRawPayload(channelId, payload));
 
@@ -198,20 +231,16 @@ export const createPayloads = (
   const clientId = toClientId ?? EMPTY_STRING;
   const remainder = jsonStringWithUndefined([requestId, message, body]);
   const maxFragmentSize = mathFloor(fragmentSize ?? 0);
-  if (
-    isUndefined(fragmentSize) ||
-    maxFragmentSize < 1 ||
-    size(remainder) <= maxFragmentSize
-  ) {
+  if (isUndefined(fragmentSize) || maxFragmentSize < 1) {
     return [createRawPayload(clientId, remainder)];
   }
-  const fragments = strMatch(
-    remainder,
-    new RegExp(`.{1,${maxFragmentSize}}`, 'g'),
-  );
-  const total = size(fragments ?? []);
+  const fragments = getFragments(remainder, maxFragmentSize);
+  const total = size(fragments);
+  if (total == 1) {
+    return [createRawPayload(clientId, remainder)];
+  }
   const messageId = getUniqueId();
-  return arrayMap(fragments ?? [], (fragment, index) =>
+  return arrayMap(fragments, (fragment, index) =>
     createRawPayload(
       clientId,
       arrayJoin([messageId, index, total, fragment], MESSAGE_SEPARATOR),

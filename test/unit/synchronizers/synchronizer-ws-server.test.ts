@@ -46,6 +46,11 @@ class MockWebSocket {
   }
 }
 
+const getFragments = (payloads: string[]): string[] =>
+  payloads.map(
+    (payload) => payload.match(/^[^\n]*\n.+\n\d+\n\d+\n([\s\S]*)$/)?.[1] ?? '',
+  );
+
 const getFragmentGroup = (
   payloads: string[],
   contains: string,
@@ -59,13 +64,10 @@ const getFragmentGroup = (
       );
     }
   });
-  return [...groups.values()].find((group) => {
-    const fragments = group.map(
-      (payload) =>
-        payload.match(/^[^\n]*\n.+\n\d+\n\d+\n([\s\S]*)$/)?.[1] ?? '',
-    );
-    return group.length > 1 && fragments.join('').includes(contains);
-  });
+  return [...groups.values()].find(
+    (group) =>
+      group.length > 1 && getFragments(group).join('').includes(contains),
+  );
 };
 
 const getPayloadFromClient = (clientId: string, payload: string) =>
@@ -281,6 +283,65 @@ test('fragmented websocket payloads', async () => {
     expect(s2.getTables()).toEqual({
       t1: {r1: {c1: 'abcdefghijklmnopqrstuvwxyz'}},
     });
+  } finally {
+    await synchronizer1?.destroy();
+    await synchronizer2?.destroy();
+    await wsServer.destroy();
+  }
+});
+
+test('fragmented websocket payloads preserve Unicode', async () => {
+  const fragmentSize = 5;
+  // This four-code-unit pattern walks the emoji before, across, and after each
+  // five-code-unit boundary.
+  const unicodeValue = 'a😀b'.repeat(8);
+  const sentPayloads: string[] = [];
+  const wsServer = createWsServer(new WebSocketServer({port: 8049}));
+  let synchronizer1: WsClient.WsSynchronizer<WebSocket> | undefined;
+  let synchronizer2: WsClient.WsSynchronizer<WebSocket> | undefined;
+  const s1 = createMergeableStore('s1', getNow);
+  const s2 = createMergeableStore('s2', getNow);
+  s1.setCell('t1', 'r1', 'c1', unicodeValue);
+
+  const webSocket1 = new WebSocket('ws://localhost:8049');
+  const send1 = webSocket1.send.bind(webSocket1);
+  webSocket1.send = ((payload: string) => {
+    sentPayloads.push(payload);
+    return send1(payload);
+  }) as any;
+
+  try {
+    synchronizer1 = await createWsSynchronizer(
+      s1,
+      webSocket1,
+      1,
+      undefined,
+      undefined,
+      undefined,
+      fragmentSize,
+    );
+    await synchronizer1.startSync();
+
+    synchronizer2 = await createWsSynchronizer(
+      s2,
+      new WebSocket('ws://localhost:8049'),
+      1,
+      undefined,
+      undefined,
+      undefined,
+      fragmentSize,
+    );
+    await synchronizer2.startSync();
+    await pause();
+
+    const fragmentGroup = getFragmentGroup(sentPayloads, unicodeValue) ?? [];
+    expect(fragmentGroup.length).toBeGreaterThan(1);
+    expect(
+      getFragments(fragmentGroup).every(
+        (fragment) => new TextEncoder().encode(fragment).length <= fragmentSize,
+      ),
+    ).toBe(true);
+    expect(s2.getCell('t1', 'r1', 'c1')).toBe(unicodeValue);
   } finally {
     await synchronizer1?.destroy();
     await synchronizer2?.destroy();

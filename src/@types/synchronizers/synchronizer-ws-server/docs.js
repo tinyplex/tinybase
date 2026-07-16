@@ -524,10 +524,11 @@
  * @param requestTimeoutSeconds An optional time in seconds that the server will
  * wait for responses to synchronization requests and incomplete fragments,
  * defaulting to `1`.
- * @param fragmentSize An optional maximum size for each WebSocket message
- * fragment. When set, larger synchronization payloads sent by the server are
- * split into fragments and reassembled by the receiving WsSynchronizer, since
- * v9.0.
+ * @param fragmentSize An optional target maximum UTF-8 byte size for each
+ * WebSocket message fragment. Unicode code points are never split and can
+ * exceed this size. When set, larger synchronization payloads sent by the
+ * server are split into fragments and reassembled by the receiving
+ * WsSynchronizer, since v9.0.
  * @returns A reference to the new WsServer object.
  * @example
  * This example creates a WsServer that synchronizes two clients on a shared
