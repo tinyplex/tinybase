@@ -17,6 +17,8 @@ import type {
   createDurableObjectStoragePersister as createDurableObjectStoragePersisterDecl,
 } from '../../@types/persisters/persister-durable-object-storage/index.d.ts';
 import type {Cell, Value} from '../../@types/store/index.d.ts';
+import {arrayEvery} from '../../common/array.ts';
+import {tryReturn} from '../../common/error.ts';
 import {jsonString} from '../../common/json.ts';
 import {IdMap, mapMap, mapNew, mapSet} from '../../common/map.ts';
 import {
@@ -26,7 +28,14 @@ import {
   objNew,
   objSet,
 } from '../../common/obj.ts';
-import {ifNotUndefined, noop, size, slice} from '../../common/other.ts';
+import {
+  ifNotUndefined,
+  isArray,
+  isString,
+  noop,
+  size,
+  slice,
+} from '../../common/other.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
@@ -53,9 +62,18 @@ export const createDurableObjectStoragePersister = ((
   ): [type: string, ...ids: Ids] | undefined => {
     if (strStartsWith(key, storagePrefix)) {
       const type = slice(key, size(storagePrefix), size(storagePrefix) + 1);
-      return type == T || type == V
-        ? [type, ...JSON.parse('[' + slice(key, size(storagePrefix) + 1) + ']')]
-        : undefined;
+      if (type == T || type == V) {
+        const ids = tryReturn(() =>
+          JSON.parse('[' + slice(key, size(storagePrefix) + 1) + ']'),
+        );
+        if (
+          isArray(ids) &&
+          size(ids) <= (type == T ? 3 : 1) &&
+          arrayEvery(ids, isString)
+        ) {
+          return [type, ...ids];
+        }
+      }
     }
   };
 

@@ -75,3 +75,23 @@ test('rolls back failed Durable Object write batches', async () => {
   expect([...getData()]).toEqual([['existing', 'safe']]);
   expect(ignoredError.mock.calls[0][0].message).toBe('batch failed');
 });
+
+test('ignores unrelated Durable Object keys', async () => {
+  const {getData, storage} = createStorage();
+  const store1 = createMergeableStore().setValue('species', 'dog');
+  await createDurableObjectStoragePersister(
+    store1,
+    storage,
+    'tinybase_',
+  ).save();
+  getData().set('tinybase_tnot-json', 'unrelated');
+
+  const store2 = createMergeableStore();
+  await createDurableObjectStoragePersister(
+    store2,
+    storage,
+    'tinybase_',
+  ).load();
+
+  expect(store2.getValue('species')).toBe('dog');
+});
