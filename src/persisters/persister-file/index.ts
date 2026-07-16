@@ -1,5 +1,6 @@
 import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
-import {readFile, writeFile} from 'fs/promises';
+import {readFile, rename, unlink, writeFile} from 'fs/promises';
+import {basename, dirname} from 'path';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
@@ -11,6 +12,8 @@ import type {
   createFilePersister as createFilePersisterDecl,
 } from '../../@types/persisters/persister-file/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {getUniqueId} from '../../common/codec.ts';
+import {tryCatch} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -29,8 +32,19 @@ export const createFilePersister = ((
 
   const setPersisted = async (
     getContent: () => PersistedContent<PersistsType.StoreOrMergeableStore>,
-  ): Promise<void> =>
-    await writeFile(filePath, jsonStringWithUndefined(getContent()), UTF8);
+  ): Promise<void> => {
+    const tempFilePath = filePath + '.' + getUniqueId() + '.tmp';
+    try {
+      await writeFile(
+        tempFilePath,
+        jsonStringWithUndefined(getContent()),
+        UTF8,
+      );
+      await rename(tempFilePath, filePath);
+    } finally {
+      await tryCatch(() => unlink(tempFilePath));
+    }
+  };
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
@@ -38,7 +52,11 @@ export const createFilePersister = ((
     if (!existsSync(filePath)) {
       writeFileSync(filePath, EMPTY_STRING, UTF8);
     }
-    return watch(filePath, () => listener());
+    return watch(dirname(filePath), (_, filename) => {
+      if (filename?.toString() == basename(filePath)) {
+        listener();
+      }
+    });
   };
 
   const delPersisterListener = (watcher: FSWatcher): void => watcher?.close();
