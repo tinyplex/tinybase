@@ -112,6 +112,17 @@ export default defineConfig({
             'test/unit/core/ui-solid/**/*.test.ts',
             'test/unit/core/ui-solid/**/*.test.tsx',
           ],
+          exclude: ['test/unit/core/ui-solid/primitives-ssr.test.ts'],
+        },
+      },
+      {
+        extends: true,
+        resolve: {conditions: ['node', 'development']},
+        test: {
+          name: 'solid-ssr',
+          environment: 'node',
+          server: {deps: {inline: [/solid-js/]}},
+          include: ['test/unit/core/ui-solid/primitives-ssr.test.ts'],
         },
       },
       {
