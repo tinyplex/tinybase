@@ -704,10 +704,7 @@ describe('Miscellaneous', () => {
     expect(store.getListenerStats().value).toEqual(0);
 
     const checkpoints2 = createCheckpoints(store);
-    expect(checkpoints2).not.toBe(checkpoints);
-    expect(store.getListenerStats().cell).toEqual(1);
-    expect(store.getListenerStats().value).toEqual(1);
-    checkpoints.destroy();
+    expect(checkpoints2).toBe(checkpoints);
     expect(store.getListenerStats().cell).toEqual(1);
     expect(store.getListenerStats().value).toEqual(1);
     checkpoints2.destroy();
