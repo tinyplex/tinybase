@@ -203,6 +203,38 @@ Path state is also cleared even if resource cleanup fails. The destroy method
 now closes active WebSockets, waits for the underlying WebSocketServer to close,
 and fully removes its path, client, and listener state before resolving.
 
+## Persister Reliability
+
+Persisters have received a broad reliability pass:
+
+- Remote Persisters retain the previous ETag until changed content has been
+  downloaded successfully.
+- Awaiting a Persister operation now waits for its queued work to run.
+- Restarting auto-load waits for the previous listener to stop, and subscribing
+  before the initial load closes the startup window for missed changes.
+- Destroyed Persisters now release shared scheduler state.
+- Database transaction failures now roll back instead of partially committing.
+- Remote libSQL transactions use one transaction session, while local file
+  clients preserve their existing connection.
+- Tabular database Persisters replace every table-name placeholder, ensure that
+  row Id columns have collision-safe unique constraints, and reject
+  MergeableStore configurations that cannot preserve merge metadata.
+- SQLite auto-load establishes its external-change baseline during startup.
+- IndexedDB saves wait for transaction completion and report aborts, blocked
+  opens, and other transaction failures. Loads use read-only transactions, and
+  polling loads only changed content without overlapping.
+- Durable Object KV saves split large writes into limit-safe batches within one
+  transaction, and loading ignores unrelated or malformed namespace keys.
+- Durable Object SQL persistence now preserves empty Table, Row, Cell, and Value
+  Ids.
+- React Native MMKV persistence preserves mergeable deletion tombstones.
+- Automerge persistence validates the expected TinyBase document roots while
+  allowing unrelated root metadata.
+- File persistence writes a sibling temporary file and atomically renames it
+  over the destination, avoiding a truncated destination after interruption.
+  Auto-load follows these replacements and suppresses duplicate self-loads.
+- OPFS persistence now always closes successful writes and aborts failed ones.
+
 ---
 
 # v9.2
