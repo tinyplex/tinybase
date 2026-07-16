@@ -627,6 +627,53 @@ describe('Queries tables', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
 
+    test('object and array group-by columns', () => {
+      store
+        .setRow('t1', 'r1', {c1: {group: 'same'}, c2: ['same'], c3: 1})
+        .setRow('t1', 'r2', {c1: {group: 'same'}, c2: ['same'], c3: 2});
+      queries
+        .setQueryDefinition('q1', 't1', ({select, group}) => {
+          select('c1');
+          select('c3');
+          group('c3', 'sum');
+        })
+        .setQueryDefinition('q2', 't1', ({select, group}) => {
+          select('c2');
+          select('c3');
+          group('c3', 'sum');
+        });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: {group: 'same'}, c3: 3},
+      });
+      expect(queries.getResultTable('q2')).toEqual({
+        0: {c2: ['same'], c3: 3},
+      });
+
+      store.setCell('t1', 'r1', 'c3', 3);
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: {group: 'same'}, c3: 5},
+      });
+      expect(queries.getResultTable('q2')).toEqual({
+        0: {c2: ['same'], c3: 5},
+      });
+
+      store.setCell('t1', 'r1', 'c1', {group: 'other'});
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: {group: 'same'}, c3: 2},
+        1: {c1: {group: 'other'}, c3: 3},
+      });
+
+      store.setCell('t1', 'r1', 'c2', ['other']);
+      expect(queries.getResultTable('q2')).toEqual({
+        0: {c2: ['same'], c3: 2},
+        1: {c2: ['other'], c3: 3},
+      });
+
+      store.delTables();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getResultTable('q2')).toEqual({});
+    });
+
     test('root table column by custom', () => {
       setCells();
       queries.setQueryDefinition('q1', 't1', ({select, group}) => {

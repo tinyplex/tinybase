@@ -113,6 +113,11 @@ objects, and arrays. TinyBase validates the top-level container but relies on
 JSON serialization for nested contents, so other JavaScript values may be
 changed, omitted, or cause the write to throw.
 
+## Stable Object And Array Query Groups
+
+Queries now group matching object and array Cells together correctly, without
+accumulating duplicate or stale aggregated ResultRows as source data changes.
+
 ## Reusable Schemas
 
 Stores now clone TablesSchema and ValuesSchema objects before validating and

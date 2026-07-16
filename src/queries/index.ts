@@ -32,7 +32,7 @@ import type {
 } from '../@types/store/index.d.ts';
 import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
 import {arrayEvery, arrayForEach, arrayPush} from '../common/array.ts';
-import {getCellOrValueType} from '../common/cell.ts';
+import {encodeIfJson, getCellOrValueType} from '../common/cell.ts';
 import {
   collClear,
   collDel,
@@ -548,7 +548,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 : setAdd(groupBySelectedCellIds, selectedCellId),
             );
 
-            const tree = mapNew<Cell, any>();
+            const tree = mapNew<CellOrUndefined, any>();
+            const getGroupKey = (cell: CellOrUndefined): CellOrUndefined =>
+              isUndefined(cell) ? undefined : encodeIfJson(cell);
 
             const writeGroupRow = (
               leaf: [IdMap2<Cell>, IdSet, Id, Row],
@@ -603,9 +605,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                   ) {
                     resultStore.delRow(queryId, groupRowId);
                   } else if (isUndefined(groupRowId)) {
-                    leaf[2] = resultStore.addRow(queryId, groupRow) as Id;
+                    leaf[2] = resultStore.addRow(queryId, {...groupRow}) as Id;
                   } else {
-                    resultStore.setRow(queryId, groupRowId, groupRow);
+                    resultStore.setRow(queryId, groupRowId, {...groupRow});
                   }
                 },
               );
@@ -630,8 +632,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                     const [changed, oldCell, newCell] = (
                       getCellChange as GetCellChange
                     )(queryId, selectedRowId, selectedCellId);
-                    arrayPush(oldPath, oldCell);
-                    arrayPush(newPath, newCell);
+                    arrayPush(oldPath, getGroupKey(oldCell));
+                    arrayPush(newPath, getGroupKey(newCell));
                     changedLeaf ||= changed;
                   });
                   mapForEach(groupedSelectedCellIds, (selectedCellId) => {
