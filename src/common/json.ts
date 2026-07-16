@@ -1,5 +1,4 @@
 import {arrayMap} from './array.ts';
-import {ERROR_RESERVED_STRING, errorThrow} from './error.ts';
 import {isObject, objMap, objNew} from './obj.ts';
 import {isArray, isInstanceOf, isUndefined} from './other.ts';
 import {UNDEFINED} from './strings.ts';
@@ -13,13 +12,7 @@ export const jsonStringWithMap = (obj: unknown): string =>
   );
 
 export const jsonStringWithUndefined = (obj: unknown): string =>
-  jsonString(obj, (_key, value) =>
-    isUndefined(value)
-      ? UNDEFINED
-      : value === UNDEFINED
-        ? errorThrow(ERROR_RESERVED_STRING, 'U+FFFC')
-        : value,
-  );
+  jsonString(obj, (_key, value) => (isUndefined(value) ? UNDEFINED : value));
 
 export const jsonParseWithUndefined = (str: string): any =>
   // JSON.parse reviver removes properties with undefined values

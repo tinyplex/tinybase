@@ -51,6 +51,7 @@ import {
   getCellOrValueType,
   isEncodedJson,
   isJsonType,
+  isReservedString,
 } from '../common/cell.ts';
 import {
   collClear,
@@ -64,7 +65,7 @@ import {
   collSize4,
   collValues,
 } from '../common/coll.ts';
-import {tryCatch, tryFinally} from '../common/error.ts';
+import {tryCatch, tryFinally, tryReturn} from '../common/error.ts';
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
@@ -418,15 +419,29 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isNull(defaultValue)) {
       if (
         getCellOrValueType(defaultValue) != type ||
-        isEncodedJson(defaultValue)
+        isReservedString(defaultValue)
       ) {
         objDel(schema as any, DEFAULT);
       } else {
-        (schema as any)[DEFAULT] = encodeIfJson(defaultValue as Cell);
+        ifNotUndefined(
+          tryReturn(() => encodeIfJson(defaultValue as Cell)),
+          (defaultValue) => ((schema as any)[DEFAULT] = defaultValue),
+          () => objDel(schema as any, DEFAULT),
+        );
       }
     }
     return true;
   };
+
+  const encodeValid = <CV extends Cell | Value>(
+    cellOrValue: CV,
+    invalid: () => CV | undefined,
+  ): CV | undefined =>
+    ifNotUndefined(
+      tryReturn(() => encodeIfJson(cellOrValue)) as CV | undefined,
+      (cellOrValue) => cellOrValue,
+      invalid,
+    );
 
   const validateContent = isArray;
 
@@ -490,18 +505,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ? cellSchema[ALLOW_NULL]
                 ? cell
                 : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
-              : isEncodedJson(cell) && !acceptingEncodedData
-                ? isJsonType(cellSchema[TYPE])
-                  ? cell
-                  : cellInvalid(
-                      tableId,
-                      rowId,
-                      cellId,
-                      cell,
-                      cellSchema[DEFAULT],
-                    )
+              : isReservedString(cell, acceptingEncodedData)
+                ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
                 : getCellOrValueType(cell) === cellSchema[TYPE]
-                  ? encodeIfJson(cell)
+                  ? encodeValid(cell, () =>
+                      cellInvalid(
+                        tableId,
+                        rowId,
+                        cellId,
+                        cell,
+                        cellSchema[DEFAULT],
+                      ),
+                    )
                   : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell)
                     ? cell
                     : cellInvalid(
@@ -514,9 +529,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
       : isUndefined(getCellOrValueType(cell)) ||
-          (isEncodedJson(cell) && !acceptingEncodedData)
+          isReservedString(cell, acceptingEncodedData)
         ? cellInvalid(tableId, rowId, cellId, cell)
-        : encodeIfJson(cell);
+        : encodeValid(cell, () => cellInvalid(tableId, rowId, cellId, cell));
 
   const validateValues = (values: Values, skipDefaults?: 1): boolean => {
     const valuesWithDefaults = skipDefaults
@@ -553,21 +568,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ? valueSchema[ALLOW_NULL]
                 ? value
                 : valueInvalid(valueId, value, valueSchema[DEFAULT])
-              : isEncodedJson(value) && !acceptingEncodedData
-                ? isJsonType(valueSchema[TYPE])
-                  ? value
-                  : valueInvalid(valueId, value, valueSchema[DEFAULT])
+              : isReservedString(value, acceptingEncodedData)
+                ? valueInvalid(valueId, value, valueSchema[DEFAULT])
                 : getCellOrValueType(value) === valueSchema[TYPE]
-                  ? encodeIfJson(value)
+                  ? encodeValid(value, () =>
+                      valueInvalid(valueId, value, valueSchema[DEFAULT]),
+                    )
                   : isJsonType(valueSchema[TYPE]) && isEncodedJson(value)
                     ? value
                     : valueInvalid(valueId, value, valueSchema[DEFAULT]),
           () => valueInvalid(valueId, value),
         )
       : isUndefined(getCellOrValueType(value)) ||
-          (isEncodedJson(value) && !acceptingEncodedData)
+          isReservedString(value, acceptingEncodedData)
         ? valueInvalid(valueId, value)
-        : encodeIfJson(value);
+        : encodeValid(value, () => valueInvalid(valueId, value));
 
   const addDefaultsToRow = (row: Row, tableId: Id, rowId?: Id): Row => {
     ifNotUndefined(

@@ -26,6 +26,7 @@ import {
   NUMBER,
   OBJECT,
   STRING,
+  UNDEFINED,
   getTypeOf,
 } from './strings.ts';
 
@@ -66,6 +67,9 @@ export const encodeIfJson = <CV extends Cell | Value>(value: CV): CV =>
 
 export const isEncodedJson = (value: any): value is string =>
   isString(value) && value[0] == JSON_PREFIX;
+
+export const isReservedString = (value: any, encoded: 0 | 1 = 0): boolean =>
+  value === UNDEFINED || (!encoded && isEncodedJson(value));
 
 export const decodeIfJson = <
   CV extends Cell | Value | CellOrUndefined | ValueOrUndefined,

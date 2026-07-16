@@ -40,11 +40,6 @@
  * persist MergeableStore data when used with the JSON-based DpcJson mode, and
  * not when using the DpcTabular mode.
  *
- * JSON-based Persisters reserve the exact string `U+FFFC` (the Unicode object
- * replacement character) to represent `undefined`. Do not use that exact
- * string as a Cell or Value. Longer strings containing the character, and
- * strings nested inside objects and arrays, are supported.
- *
  * Since persistence requirements can be different for every app, the
  * createCustomPersister function in this module can also be used to easily
  * create a fully customized way to save and load Store data.
