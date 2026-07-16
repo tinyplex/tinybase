@@ -67,27 +67,28 @@ export const createCustomSqlitePersister = <
 
   const addPersisterListener = (
     listener: PersisterListener<Persist>,
-  ): (() => void) => {
+  ): Promise<() => void> => {
     let interval: number | NodeJS.Timeout;
+
+    const checkForChanges = async (notify = true) => {
+      const [{d, s, c}] = (await executeCommand(
+        SELECT +
+          // eslint-disable-next-line max-len
+          ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
+      )) as [IdObj<number>];
+      if (d != dataVersion || s != schemaVersion || c != totalChanges) {
+        if (notify && !isNullish(dataVersion)) {
+          listener();
+        }
+        dataVersion = d;
+        schemaVersion = s;
+        totalChanges = c;
+      }
+    };
 
     const startPolling = () =>
       (interval = startInterval(
-        () =>
-          tryCatch(async () => {
-            const [{d, s, c}] = (await executeCommand(
-              SELECT +
-                // eslint-disable-next-line max-len
-                ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
-            )) as [IdObj<number>];
-            if (d != dataVersion || s != schemaVersion || c != totalChanges) {
-              if (!isNullish(dataVersion)) {
-                listener();
-              }
-              dataVersion = d;
-              schemaVersion = s;
-              totalChanges = c;
-            }
-          }),
+        () => tryCatch(checkForChanges),
         autoLoadIntervalSeconds as number,
       ));
 
@@ -104,11 +105,13 @@ export const createCustomSqlitePersister = <
       }
     });
 
-    startPolling();
-    return () => {
-      stopPolling();
-      delChangeListener(listeningHandle);
-    };
+    return checkForChanges(false).then(() => {
+      startPolling();
+      return () => {
+        stopPolling();
+        delChangeListener(listeningHandle);
+      };
+    });
   };
 
   const delPersisterListener = (
