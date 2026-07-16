@@ -12,6 +12,7 @@ import {
   errorNew,
   tryCatch,
 } from '../../common/error.ts';
+import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdObj, objHas, objNew, objToArray} from '../../common/obj.ts';
 import {
   WINDOW,
@@ -140,18 +141,28 @@ export const createIndexedDbPersister = ((
 
   const addPersisterListener = (
     listener: PersisterListener,
-  ): number | NodeJS.Timeout => {
+  ): Promise<number | NodeJS.Timeout> => {
     let listening = false;
-    return startInterval(async () => {
-      if (!listening) {
-        listening = true;
-        try {
-          await listener();
-        } finally {
-          listening = false;
+    return getPersisted().then((content) => {
+      let lastContent = jsonStringWithUndefined(content);
+      return startInterval(async () => {
+        if (!listening) {
+          listening = true;
+          try {
+            await tryCatch(async () => {
+              const content = await getPersisted();
+              const nextContent = jsonStringWithUndefined(content);
+              if (nextContent != lastContent) {
+                lastContent = nextContent;
+                await listener(content);
+              }
+            });
+          } finally {
+            listening = false;
+          }
         }
-      }
-    }, autoLoadIntervalSeconds);
+      }, autoLoadIntervalSeconds);
+    });
   };
 
   const delPersisterListener = (interval: number | NodeJS.Timeout): void =>
