@@ -4241,7 +4241,7 @@ describe('middleware with synchronization', () => {
     store1
       .setCell('pets', 'fido', 'details', {species: 'dog'})
       .setValue('species', ['cat']);
-    await pause();
+    await pause(100);
 
     expect(seenChanges).toEqual([{species: 'dog'}, ['cat']]);
     expect(seenCell).toEqual({species: 'dog'});
