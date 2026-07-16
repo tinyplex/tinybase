@@ -404,6 +404,67 @@ const useCreate = (
   return thing;
 };
 
+const useCreateAsync = <
+  StoreType,
+  Thing extends {destroy: () => void},
+  ThingOrUndefined extends Thing | undefined,
+>(
+  store: StoreType | undefined,
+  create: (store: StoreType) => ThingOrUndefined | Promise<ThingOrUndefined>,
+  createDeps: DependencyList,
+  then: ((thing: Thing) => Promise<void>) | undefined,
+  thenDeps: DependencyList,
+  destroy: ((thing: Thing) => void) | undefined,
+  destroyDeps: DependencyList,
+): ThingOrUndefined => {
+  const [, rerender] = useState<[]>();
+  const [thing, setThing] = useState<ThingOrUndefined>();
+  const destroyRef = useRef(destroy);
+  useEffect(
+    () => {
+      destroyRef.current = destroy;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [...destroyDeps],
+  );
+  useEffect(
+    () => {
+      let current = true;
+      let createdThing: ThingOrUndefined;
+      const destroyThing = (thing: Thing): void => {
+        thing.destroy();
+        destroyRef.current?.(thing);
+      };
+      (async () => {
+        const nextThing = store ? await create(store) : undefined;
+        if (!current) {
+          if (nextThing) {
+            destroyThing(nextThing);
+          }
+          return;
+        }
+        createdThing = nextThing as ThingOrUndefined;
+        setThing(nextThing as ThingOrUndefined);
+        if (nextThing && then) {
+          await then(nextThing);
+          if (current) {
+            rerender([]);
+          }
+        }
+      })();
+      return () => {
+        current = false;
+        if (createdThing) {
+          destroyThing(createdThing);
+        }
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, ...createDeps, ...thenDeps],
+  );
+  return thing as ThingOrUndefined;
+};
+
 const addAndDelListener = (thing: any, listenable: string, ...args: any[]) => {
   const listenerId = thing?.[ADD + listenable + LISTENER]?.(...args);
   return () => thing?.delListener?.(listenerId);
@@ -2380,37 +2441,16 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   thenDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (persister: Persister<Persist>) => void,
   destroyDeps: DependencyList = EMPTY_ARRAY,
-): PersisterOrUndefined => {
-  const [, rerender] = useState<[]>();
-  const [persister, setPersister] = useState<any>();
-  useEffect(
-    () => {
-      (async () => {
-        const persister = store ? await create(store) : undefined;
-        setPersister(persister);
-        if (persister && then) {
-          (async () => {
-            await then(persister);
-            rerender([]);
-          })();
-        }
-      })();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, ...createDeps, ...thenDeps],
+): PersisterOrUndefined =>
+  useCreateAsync(
+    store,
+    create,
+    createDeps,
+    then,
+    thenDeps,
+    destroy,
+    destroyDeps,
   );
-  useEffect(
-    () => () => {
-      if (persister) {
-        persister.destroy();
-        destroy?.(persister);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [persister, ...destroyDeps],
-  );
-  return persister;
-};
 
 export const usePersisterIds: typeof usePersisterIdsDecl = () =>
   useThingIds(OFFSET_PERSISTER);
@@ -2460,30 +2500,16 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   createDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (synchronizer: Synchronizer) => void,
   destroyDeps: DependencyList = EMPTY_ARRAY,
-): SynchronizerOrUndefined => {
-  const [synchronizer, setSynchronizer] = useState<any>();
-  useEffect(
-    () => {
-      (async () => {
-        const synchronizer = store ? await create(store) : undefined;
-        setSynchronizer(synchronizer);
-      })();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, ...createDeps],
+): SynchronizerOrUndefined =>
+  useCreateAsync(
+    store,
+    create,
+    createDeps,
+    undefined,
+    EMPTY_ARRAY,
+    destroy,
+    destroyDeps,
   );
-  useEffect(
-    () => () => {
-      if (synchronizer) {
-        synchronizer.destroy();
-        destroy?.(synchronizer);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [synchronizer, ...destroyDeps],
-  );
-  return synchronizer;
-};
 
 export const useSynchronizerIds: typeof useSynchronizerIdsDecl = () =>
   useThingIds(OFFSET_SYNCHRONIZER);
