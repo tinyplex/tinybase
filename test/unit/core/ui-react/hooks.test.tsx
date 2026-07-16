@@ -31,7 +31,7 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
-import type {AnyPersister, Persister} from 'tinybase/persisters';
+import type {AnyPersister, Persister, Persists} from 'tinybase/persisters';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
@@ -207,6 +207,15 @@ import {ContextPrimitiveThings} from './components/ContextPrimitiveThings.tsx';
 
 let store: Store;
 let didRender: Mock;
+
+type TestPersister = Persister<Persists.StoreOnly> & {destroy: Mock};
+type TestSynchronizer = Synchronizer & {destroy: Mock};
+
+const createTestPersister = (): TestPersister =>
+  ({destroy: vi.fn()}) as unknown as TestPersister;
+
+const createTestSynchronizer = (): TestSynchronizer =>
+  ({destroy: vi.fn()}) as unknown as TestSynchronizer;
 
 beforeEach(() => {
   store = createStore()
@@ -1237,7 +1246,7 @@ describe('React-specific', () => {
         _persister = createFilePersister(store, fileName);
         return _persister;
       });
-      const Test = ({id}: {id: number}) => {
+      const Test = ({id}: {readonly id: number}) => {
         const store = useCreateStore(initStore);
         const persister = useCreatePersister(store, createPersister, [id]);
         const cell = useCell('t1', 'r1', 'c1', store);
@@ -1390,6 +1399,86 @@ describe('React-specific', () => {
       unmount();
     });
 
+    test('useCreatePersister ignores stale resolutions', async () => {
+      const persister1 = createTestPersister();
+      const persister2 = createTestPersister();
+      const resolvers: ((persister: TestPersister) => void)[] = [];
+      const create = vi.fn(
+        () =>
+          new Promise<TestPersister>((resolve) => {
+            resolvers.push(resolve);
+          }),
+      );
+      const destroy1 = vi.fn();
+      const destroy2 = vi.fn();
+      let currentPersister: TestPersister | undefined;
+      const Test = ({
+        destroyId,
+        id,
+      }: {
+        readonly destroyId: number;
+        readonly id: number;
+      }) => {
+        currentPersister = useCreatePersister(
+          store,
+          create,
+          [id],
+          undefined,
+          [],
+          destroyId == 1 ? destroy1 : destroy2,
+          [destroyId],
+        );
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test destroyId={1} id={1} />);
+      await act(pause);
+      rerender(<Test destroyId={1} id={2} />);
+      await act(pause);
+
+      await act(async () => resolvers[1](persister2));
+      expect(currentPersister).toBe(persister2);
+      await act(async () => resolvers[0](persister1));
+      expect(currentPersister).toBe(persister2);
+      expect(persister1.destroy).toHaveBeenCalledTimes(1);
+      expect(persister2.destroy).not.toHaveBeenCalled();
+
+      rerender(<Test destroyId={2} id={2} />);
+      await act(pause);
+      expect(create).toHaveBeenCalledTimes(2);
+      expect(currentPersister).toBe(persister2);
+      expect(persister2.destroy).not.toHaveBeenCalled();
+
+      unmount();
+      expect(persister2.destroy).toHaveBeenCalledTimes(1);
+      expect(destroy1).toHaveBeenCalledWith(persister1);
+      expect(destroy2).toHaveBeenCalledWith(persister2);
+    });
+
+    test('useCreatePersister destroys post-unmount resolution', async () => {
+      const persister = createTestPersister();
+      let resolveCreate: (persister: TestPersister) => void;
+      const create = vi.fn(
+        () =>
+          new Promise<TestPersister>((resolve) => {
+            resolveCreate = resolve;
+          }),
+      );
+      const destroy = vi.fn();
+      const Test = () => {
+        useCreatePersister(store, create, [], undefined, [], destroy);
+        return null;
+      };
+
+      const {unmount} = render(<Test />);
+      await act(pause);
+      unmount();
+      await act(async () => resolveCreate!(persister));
+
+      expect(persister.destroy).toHaveBeenCalledTimes(1);
+      expect(destroy).toHaveBeenCalledWith(persister);
+    });
+
     test('useCreateSynchronizer, no destroy', async () => {
       let _synchronizer: Synchronizer | undefined;
       const initStore = vi.fn(() => createMergeableStore('s1'));
@@ -1398,7 +1487,7 @@ describe('React-specific', () => {
         await _synchronizer.load([{t1: {r1: {c1: 1}}}, {}]);
         return _synchronizer;
       });
-      const Test = ({id}: {id: number}) => {
+      const Test = ({id}: {readonly id: number}) => {
         const store = useCreateMergeableStore(initStore);
         const synchronizer = useCreateSynchronizer(store, createSynchronizer, [
           id,
@@ -1491,6 +1580,66 @@ describe('React-specific', () => {
       expect(container.textContent).toEqual('');
 
       unmount();
+    });
+
+    test('useCreateSynchronizer ignores stale resolutions', async () => {
+      const synchronizer1 = createTestSynchronizer();
+      const synchronizer2 = createTestSynchronizer();
+      const resolvers: ((synchronizer: TestSynchronizer) => void)[] = [];
+      const create = vi.fn(
+        () =>
+          new Promise<TestSynchronizer>((resolve) => {
+            resolvers.push(resolve);
+          }),
+      );
+      let currentSynchronizer: TestSynchronizer | undefined;
+      const Test = ({id}: {readonly id: number}) => {
+        currentSynchronizer = useCreateSynchronizer(
+          store as MergeableStore,
+          create,
+          [id],
+        );
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test id={1} />);
+      await act(pause);
+      rerender(<Test id={2} />);
+      await act(pause);
+
+      await act(async () => resolvers[1](synchronizer2));
+      expect(currentSynchronizer).toBe(synchronizer2);
+      await act(async () => resolvers[0](synchronizer1));
+      expect(currentSynchronizer).toBe(synchronizer2);
+      expect(synchronizer1.destroy).toHaveBeenCalledTimes(1);
+      expect(synchronizer2.destroy).not.toHaveBeenCalled();
+
+      unmount();
+      expect(synchronizer2.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    test('useCreateSynchronizer destroys post-unmount resolution', async () => {
+      const synchronizer = createTestSynchronizer();
+      let resolveCreate: (synchronizer: TestSynchronizer) => void;
+      const create = vi.fn(
+        () =>
+          new Promise<TestSynchronizer>((resolve) => {
+            resolveCreate = resolve;
+          }),
+      );
+      const destroy = vi.fn();
+      const Test = () => {
+        useCreateSynchronizer(createMergeableStore(), create, [], destroy);
+        return null;
+      };
+
+      const {unmount} = render(<Test />);
+      await act(pause);
+      unmount();
+      await act(async () => resolveCreate!(synchronizer));
+
+      expect(synchronizer.destroy).toHaveBeenCalledTimes(1);
+      expect(destroy).toHaveBeenCalledWith(synchronizer);
     });
   });
 
