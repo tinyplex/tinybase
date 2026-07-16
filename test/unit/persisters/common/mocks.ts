@@ -806,6 +806,21 @@ class MockDurableObjectStorage {
     }
   }
 
+  async transaction<T>(
+    closure: (transaction: DurableObjectTransaction) => Promise<T>,
+  ): Promise<T> {
+    const data = new Map(this.data);
+    const result = await closure({
+      put: async (entries: Record<string, any>) => {
+        for (const [key, value] of Object.entries(entries)) {
+          data.set(key, value);
+        }
+      },
+    } as DurableObjectTransaction);
+    this.data = data;
+    return result;
+  }
+
   async list<T>(options?: {prefix?: string}): Promise<Map<string, T>> {
     const result = new Map<string, T>();
     const prefix = options?.prefix ?? '';

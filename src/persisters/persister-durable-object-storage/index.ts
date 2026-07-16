@@ -18,7 +18,7 @@ import type {
 } from '../../@types/persisters/persister-durable-object-storage/index.d.ts';
 import type {Cell, Value} from '../../@types/store/index.d.ts';
 import {jsonString} from '../../common/json.ts';
-import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';
+import {IdMap, mapMap, mapNew, mapSet} from '../../common/map.ts';
 import {
   objEnsure,
   objForEach,
@@ -36,6 +36,8 @@ type StoredValue = Stamp<0 | Cell | Value | undefined, true>;
 
 const stampNewObjectWithHash = <Thing>() =>
   stampNewWithHash(objNew<Thing>(), EMPTY_STRING, 0);
+
+const MAX_BATCH_SIZE = 128;
 
 export const createDurableObjectStoragePersister = ((
   store: MergeableStore,
@@ -155,7 +157,17 @@ export const createDurableObjectStoragePersister = ((
     objForEach(valuesObj, (valueStamp, valueId) =>
       mapSet(keysToSet, constructKey(V, valueId), valueStamp),
     );
-    await storage.put(mapToObj(keysToSet));
+    const entries = mapMap(
+      keysToSet,
+      (value, key): [string, StoredValue] => [key, value],
+    );
+    await storage.transaction(async (transaction) => {
+      for (let index = 0; index < size(entries); index += MAX_BATCH_SIZE) {
+        await transaction.put(
+          objNew(slice(entries, index, index + MAX_BATCH_SIZE)),
+        );
+      }
+    });
   };
 
   return createCustomPersister(
