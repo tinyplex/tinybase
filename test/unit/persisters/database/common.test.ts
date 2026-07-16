@@ -1,23 +1,16 @@
-import sqlite3, {type Database} from 'sqlite3';
+import sqlite3 from 'sqlite3';
 import {createMergeableStore, createStore} from 'tinybase';
 import {createCustomSqlitePersister, Persists} from 'tinybase/persisters';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
 
-if (false) {
-  const db = {} as Database;
-  // @ts-expect-error Tabular persistence cannot preserve merge metadata
-  createSqlite3Persister(createMergeableStore(), db, {mode: 'tabular'});
-  createSqlite3Persister(createMergeableStore(), db, {mode: 'json'});
-}
-
 test('replaces every table name placeholder', async () => {
   const db = new sqlite3.Database(':memory:');
   await new Promise<void>((resolve, reject) =>
     db.exec(
       'CREATE TABLE pets (id TEXT PRIMARY KEY, species TEXT);' +
-        "INSERT INTO pets VALUES ('fido', 'dog'), ('felix', 'cat');",
+        `INSERT INTO pets VALUES ('fido', 'dog'), ('felix', 'cat');`,
       (error) => (error ? reject(error) : resolve()),
     ),
   );
@@ -29,8 +22,7 @@ test('replaces every table name placeholder', async () => {
         pets: {
           tableId: 'pets',
           rowIdColumnName: 'id',
-          condition:
-            "$tableName.species = 'dog' OR $tableName.species = 'cat'",
+          condition: `$tableName.species = 'dog' OR $tableName.species = 'cat'`,
         },
       },
     },
@@ -76,7 +68,7 @@ test('rolls back failed database transactions', async () => {
 
   expect(
     await executeCommand(
-      "SELECT name FROM sqlite_master WHERE type='table'AND name='tinybase'",
+      `SELECT name FROM sqlite_master WHERE type='table'AND name='tinybase'`,
     ),
   ).toEqual([]);
   expect(ignoredError).toHaveBeenCalledOnce();
@@ -145,7 +137,7 @@ test('adds collision-safe unique row ID indexes', async () => {
 
   const indexes = await new Promise<{name: string}[]>((resolve, reject) =>
     db.all(
-      "SELECT name FROM sqlite_master WHERE type='index'AND sql IS NOT NULL",
+      `SELECT name FROM sqlite_master WHERE type='index'AND sql IS NOT NULL`,
       (error, rows: {name: string}[]) =>
         error ? reject(error) : resolve(rows),
     ),

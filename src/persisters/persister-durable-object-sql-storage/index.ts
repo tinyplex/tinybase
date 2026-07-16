@@ -211,9 +211,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
     // Load tables data
     const tablesRows = getSqlRows(sqlStorage, `SELECT * FROM ${tablesTable}`);
     arrayForEach(tablesRows, (row) => {
-      const table_id = isNullish(row.table_id)
-        ? null
-        : string(row.table_id);
+      const table_id = isNullish(row.table_id) ? null : string(row.table_id);
       const row_id = isNullish(row.row_id) ? null : string(row.row_id);
       const cell_id = isNullish(row.cell_id) ? null : string(row.cell_id);
       const value_data = string(row.value_data);
@@ -243,9 +241,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
 
     arrayForEach(tablesRows, (row) => {
       const type = string(row.type);
-      const table_id = isNullish(row.table_id)
-        ? null
-        : string(row.table_id);
+      const table_id = isNullish(row.table_id) ? null : string(row.table_id);
       const row_id = isNullish(row.row_id) ? null : string(row.row_id);
       const cell_id = isNullish(row.cell_id) ? null : string(row.cell_id);
       const value_data = string(row.value_data);
@@ -255,11 +251,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
       const [zeroOrCellOrValue] = jsonParseWithUndefined(value_data);
 
       if (type === T) {
-        if (
-          !isNull(table_id) &&
-          !isNull(row_id) &&
-          !isNull(cell_id)
-        ) {
+        if (!isNull(table_id) && !isNull(row_id) && !isNull(cell_id)) {
           // Cell level
           if (!collHas(rowDataKeys, getRowKey(table_id, row_id))) {
             const table = objEnsure(
@@ -308,9 +300,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
     arrayForEach(
       getSqlRows(sqlStorage, `SELECT * FROM ${valuesTable}`),
       (row) => {
-        const value_id = isNullish(row.value_id)
-          ? null
-          : string(row.value_id);
+        const value_id = isNullish(row.value_id) ? null : string(row.value_id);
         const value_data = string(row.value_data);
         const timestamp = string(row.timestamp);
         const hash = number(row.hash);

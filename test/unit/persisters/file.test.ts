@@ -22,10 +22,7 @@ test('replaces persisted files atomically', async () => {
 
   const tempFilePath = mocks.writeFile.mock.calls[0][0];
   expect(tempFilePath).toMatch(/^\/data\/pets\.json\..+\.tmp$/);
-  expect(mocks.rename).toHaveBeenCalledWith(
-    tempFilePath,
-    '/data/pets.json',
-  );
+  expect(mocks.rename).toHaveBeenCalledWith(tempFilePath, '/data/pets.json');
   expect(mocks.unlink).toHaveBeenCalledWith(tempFilePath);
 });
 

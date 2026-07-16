@@ -175,10 +175,10 @@ export const createDurableObjectStoragePersister = ((
     objForEach(valuesObj, (valueStamp, valueId) =>
       mapSet(keysToSet, constructKey(V, valueId), valueStamp),
     );
-    const entries = mapMap(
-      keysToSet,
-      (value, key): [string, StoredValue] => [key, value],
-    );
+    const entries = mapMap(keysToSet, (value, key): [string, StoredValue] => [
+      key,
+      value,
+    ]);
     await storage.transaction(async (transaction) => {
       for (let index = 0; index < size(entries); index += MAX_BATCH_SIZE) {
         await transaction.put(

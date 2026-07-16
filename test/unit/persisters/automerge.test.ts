@@ -119,9 +119,7 @@ describe('Load from doc', () => {
 
   test('malformed two-key content', async () => {
     const ignoredError = vi.fn();
-    docHandler1.change(
-      (doc: any) => (doc['tinybase'] = {t: 1, v: {v1: 1}}),
-    );
+    docHandler1.change((doc: any) => (doc['tinybase'] = {t: 1, v: {v1: 1}}));
     const persister = createAutomergePersister(
       store1,
       docHandler1,
