@@ -1,6 +1,5 @@
-import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
+import {existsSync, unwatchFile, watchFile, writeFileSync} from 'fs';
 import {readFile, rename, unlink, writeFile} from 'fs/promises';
-import {basename, dirname} from 'path';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
@@ -26,6 +25,8 @@ export const createFilePersister = ((
   filePath: string,
   onIgnoredError?: (error: any) => void,
 ): FilePersister => {
+  let lastContent: string | null | undefined;
+
   const getPersisted = async (): Promise<
     PersistedContent<PersistsType.StoreOrMergeableStore>
   > => jsonParseWithUndefined(await readFile(filePath, UTF8));
@@ -34,13 +35,15 @@ export const createFilePersister = ((
     getContent: () => PersistedContent<PersistsType.StoreOrMergeableStore>,
   ): Promise<void> => {
     const tempFilePath = filePath + '.' + getUniqueId() + '.tmp';
+    const content = jsonStringWithUndefined(getContent());
+    const lastContentWas = lastContent;
+    lastContent = content;
     try {
-      await writeFile(
-        tempFilePath,
-        jsonStringWithUndefined(getContent()),
-        UTF8,
-      );
+      await writeFile(tempFilePath, content, UTF8);
       await rename(tempFilePath, filePath);
+    } catch (error) {
+      lastContent = lastContentWas;
+      throw error;
     } finally {
       await tryCatch(() => unlink(tempFilePath));
     }
@@ -48,18 +51,33 @@ export const createFilePersister = ((
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
-  ): FSWatcher => {
+  ): (() => void) => {
     if (!existsSync(filePath)) {
       writeFileSync(filePath, EMPTY_STRING, UTF8);
     }
-    return watch(dirname(filePath), (_, filename) => {
-      if (filename?.toString() == basename(filePath)) {
-        listener();
-      }
-    });
+    const notify = async () =>
+      await tryCatch(
+        async () => {
+          const content = await readFile(filePath, UTF8);
+          if (content != lastContent) {
+            lastContent = content;
+            listener();
+          }
+        },
+        () => {
+          if (lastContent !== null) {
+            lastContent = null;
+            listener();
+          }
+        },
+      );
+    const watchListener = () => notify();
+    watchFile(filePath, {interval: 50}, watchListener);
+    return watchListener;
   };
 
-  const delPersisterListener = (watcher: FSWatcher): void => watcher?.close();
+  const delPersisterListener = (watchListener: () => void): void =>
+    unwatchFile(filePath, watchListener);
 
   return createCustomPersister(
     store,
