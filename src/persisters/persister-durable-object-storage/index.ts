@@ -71,7 +71,7 @@ export const createDurableObjectStoragePersister = ((
           size(ids) <= (type == T ? 3 : 1) &&
           arrayEvery(ids, isString)
         ) {
-          return [type, ...ids];
+          return [type, ...(ids as Ids)];
         }
       }
     }
