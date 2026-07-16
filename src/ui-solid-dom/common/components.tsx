@@ -113,7 +113,9 @@ export const HtmlTable = (
         )}
         <tbody>
           {arrayMap(getValue(rowIds), (rowId) => {
-            const rowProps = mergeProps(cellComponentProps as any, {rowId});
+            const rowProps: any = mergeProps(cellComponentProps as any, {
+              rowId,
+            });
             return (
               <tr>
                 {extraRowCells(extraCellsBefore, rowProps)}
