@@ -16,7 +16,7 @@ import {
   arrayPush,
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
-import {tryCatch} from '../../../common/error.ts';
+import {tryCatch, tryFinallyAsync} from '../../../common/error.ts';
 import {getHash} from '../../../common/hash.ts';
 import {jsonString} from '../../../common/json.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
@@ -397,11 +397,9 @@ export const getCommandFunctions = (
       return await executeTransaction(async (transactionExecuteCommand) => {
         const executeCommandWas = executeCommand;
         executeCommand = transactionExecuteCommand;
-        try {
-          return await actions();
-        } finally {
+        return await tryFinallyAsync(actions, () => {
           executeCommand = executeCommandWas;
-        }
+        });
       });
     }
     await databaseExecuteCommand('BEGIN');

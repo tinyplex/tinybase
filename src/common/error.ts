@@ -66,3 +66,14 @@ export const tryFinally = <Return>(
     finallyAction();
   }
 };
+
+export const tryFinallyAsync = async <Return>(
+  action: () => Promise<Return>,
+  finallyAction: () => void | Promise<void>,
+): Promise<Return> => {
+  try {
+    return await action();
+  } finally {
+    await finallyAction();
+  }
+};

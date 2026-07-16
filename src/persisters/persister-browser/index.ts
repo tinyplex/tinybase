@@ -14,7 +14,7 @@ import type {
   SessionPersister,
 } from '../../@types/persisters/persister-browser/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {tryCatch} from '../../common/error.ts';
+import {tryCatch, tryFinallyAsync} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -108,16 +108,19 @@ export const createOpfsPersister = ((
   ): Promise<void> => {
     const writable = await handle.createWritable();
     let written = 0;
-    try {
-      await writable.write(jsonStringWithUndefined(getContent()));
-      written = 1;
-    } finally {
-      if (written) {
-        await writable.close();
-      } else {
-        await tryCatch(() => writable.abort());
-      }
-    }
+    await tryFinallyAsync(
+      async () => {
+        await writable.write(jsonStringWithUndefined(getContent()));
+        written = 1;
+      },
+      async () => {
+        if (written) {
+          await writable.close();
+        } else {
+          await tryCatch(() => writable.abort());
+        }
+      },
+    );
   };
 
   const addPersisterListener = async (

@@ -5,7 +5,7 @@ import type {
   createLibSqlPersister as createLibSqlPersisterDecl,
 } from '../../@types/persisters/persister-libsql/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {tryCatch} from '../../common/error.ts';
+import {tryCatch, tryFinallyAsync} from '../../common/error.ts';
 import {IdObj} from '../../common/obj.ts';
 import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
@@ -38,22 +38,28 @@ export const createLibSqlPersister = ((
       : async (actions) => {
           onSqlCommand?.('BEGIN');
           const transaction = await client.transaction('write');
-          try {
-            const result = await actions(
-              async (sql: string, args: any[] = []): Promise<IdObj<any>[]> => {
-                onSqlCommand?.(sql, args);
-                return (await transaction.execute({sql, args})).rows;
-              },
-            );
-            await transaction.commit();
-            onSqlCommand?.('END');
-            return result;
-          } catch (error) {
-            await tryCatch(() => transaction.rollback());
-            onSqlCommand?.('ROLLBACK');
-            throw error;
-          } finally {
-            transaction.close();
-          }
+          return await tryFinallyAsync(
+            async () => {
+              try {
+                const result = await actions(
+                  async (
+                    sql: string,
+                    args: any[] = [],
+                  ): Promise<IdObj<any>[]> => {
+                    onSqlCommand?.(sql, args);
+                    return (await transaction.execute({sql, args})).rows;
+                  },
+                );
+                await transaction.commit();
+                onSqlCommand?.('END');
+                return result;
+              } catch (error) {
+                await tryCatch(() => transaction.rollback());
+                onSqlCommand?.('ROLLBACK');
+                throw error;
+              }
+            },
+            () => transaction.close(),
+          );
         },
   ) as LibSqlPersister) as typeof createLibSqlPersisterDecl;

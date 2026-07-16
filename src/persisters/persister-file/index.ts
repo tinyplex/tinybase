@@ -12,7 +12,7 @@ import type {
 } from '../../@types/persisters/persister-file/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {getUniqueId} from '../../common/codec.ts';
-import {tryCatch} from '../../common/error.ts';
+import {tryCatch, tryFinallyAsync} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -38,15 +38,18 @@ export const createFilePersister = ((
     const content = jsonStringWithUndefined(getContent());
     const lastContentWas = lastContent;
     lastContent = content;
-    try {
-      await writeFile(tempFilePath, content, UTF8);
-      await rename(tempFilePath, filePath);
-    } catch (error) {
-      lastContent = lastContentWas;
-      throw error;
-    } finally {
-      await tryCatch(() => unlink(tempFilePath));
-    }
+    await tryFinallyAsync(
+      async () => {
+        try {
+          await writeFile(tempFilePath, content, UTF8);
+          await rename(tempFilePath, filePath);
+        } catch (error) {
+          lastContent = lastContentWas;
+          throw error;
+        }
+      },
+      () => tryCatch(() => unlink(tempFilePath)),
+    );
   };
 
   const addPersisterListener = (

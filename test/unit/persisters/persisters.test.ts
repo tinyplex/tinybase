@@ -665,3 +665,28 @@ test('releases shared scheduler state on destroy', async () => {
   await persister3.schedule(asyncNoop);
   await persister3.destroy();
 });
+
+test('stops auto-persistence before extra destruction', async () => {
+  const delPersisterListener = vi.fn();
+  const extraDestroy = vi.fn();
+  const store = createStore();
+  const persister = (createCustomPersister as any)(
+    store,
+    asyncNoop,
+    asyncNoop,
+    () => 1,
+    delPersisterListener,
+    undefined,
+    undefined,
+    {destroy: extraDestroy},
+  ) as Persister;
+
+  await persister.startAutoPersisting();
+  await persister.destroy();
+
+  expect(persister.isAutoLoading()).toBe(false);
+  expect(persister.isAutoSaving()).toBe(false);
+  expect(delPersisterListener).toHaveBeenCalledWith(1);
+  expect(extraDestroy).toHaveBeenCalledOnce();
+  expect(store.getListenerStats().transaction).toBe(0);
+});

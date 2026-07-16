@@ -27,6 +27,7 @@ import {
   ERROR_STORE_TYPE,
   errorThrow,
   tryCatch,
+  tryFinallyAsync,
 } from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
@@ -430,17 +431,14 @@ export const createCustomPersister = <
       );
       arrayClear(scheduledActions);
       arrayPush(scheduledActions, ...remainingActions);
-      try {
-        if (extraDestroy) {
-          await extraDestroy();
-        } else {
-          await stopAutoPersisting();
-        }
-      } finally {
-        const references = (mapGet(scheduleReferences, scheduleId) ?? 1) - 1;
-        mapSet(scheduleReferences, scheduleId, references || undefined);
-        pruneSchedule();
-      }
+      await tryFinallyAsync(
+        () => tryFinallyAsync(stopAutoPersisting, () => extraDestroy?.()),
+        () => {
+          const references = (mapGet(scheduleReferences, scheduleId) ?? 1) - 1;
+          mapSet(scheduleReferences, scheduleId, references || undefined);
+          pruneSchedule();
+        },
+      );
     }
     return persister;
   };
