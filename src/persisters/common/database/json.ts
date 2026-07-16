@@ -11,7 +11,10 @@ import {
   jsonStringWithUndefined,
 } from '../../../common/json.ts';
 import {createCustomPersister} from '../create.ts';
-import {getCommandFunctions} from './commands.ts';
+import {
+  DatabaseTransaction,
+  getCommandFunctions,
+} from './commands.ts';
 import {QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
 import type {DefaultedJsonConfig} from './config.ts';
 
@@ -37,15 +40,20 @@ export const createJsonPersister = <
   getThing: string,
   columnType: string,
   upsert?: Upsert,
+  _encode?: (cellOrValue: any) => string | number,
+  _decode?: (field: string | number) => any,
+  executeTransaction?: DatabaseTransaction,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
       executeCommand,
       managedTableNames,
       querySchema,
-      onIgnoredError,
       columnType,
       upsert,
+      undefined,
+      undefined,
+      executeTransaction,
     );
 
   const getPersisted = (): Promise<PersistedContent<Persist>> =>

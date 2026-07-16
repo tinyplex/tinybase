@@ -47,16 +47,19 @@ import {
 } from './common.ts';
 
 export type Schema = IdSet2;
+export type DatabaseTransaction = <Return>(
+  actions: (executeCommand: DatabaseExecuteCommand) => Promise<Return>,
+) => Promise<Return>;
 
 export const getCommandFunctions = (
   databaseExecuteCommand: DatabaseExecuteCommand,
   managedTableNames: string[],
   querySchema: QuerySchema,
-  onIgnoredError: ((error: any) => void) | undefined,
   columnType: string,
   upsert: Upsert = defaultUpsert,
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
+  executeTransaction?: DatabaseTransaction,
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (
@@ -84,6 +87,7 @@ export const getCommandFunctions = (
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
   const schemaMap: Schema = mapNew();
+  let executeCommand = databaseExecuteCommand;
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
     collHas(mapGet(schemaMap, tableName), rowIdColumnName);
@@ -91,7 +95,7 @@ export const getCommandFunctions = (
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
     arrayMap(
-      await querySchema(databaseExecuteCommand, managedTableNames),
+      await querySchema(executeCommand, managedTableNames),
       ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
     );
   };
@@ -111,7 +115,7 @@ export const getCommandFunctions = (
       ? objNew(
           arrayFilter(
             arrayMap(
-              await databaseExecuteCommand(
+              await executeCommand(
                 SELECT_STAR_FROM +
                   escapeId(tableName) +
                   getWhereCondition(tableName, condition),
@@ -184,7 +188,7 @@ export const getCommandFunctions = (
       isEmpty(settingColumnNames) &&
       collHas(schemaMap, tableName)
     ) {
-      await databaseExecuteCommand('DROP ' + TABLE + escapeId(tableName));
+      await executeCommand('DROP ' + TABLE + escapeId(tableName));
       mapSet(schemaMap, tableName);
       return;
     }
@@ -200,7 +204,7 @@ export const getCommandFunctions = (
     if (!isEmpty(settingColumnNames)) {
       if (!collHas(schemaMap, tableName)) {
         // Create the table
-        await databaseExecuteCommand(
+        await executeCommand(
           CREATE_TABLE +
             escapeId(tableName) +
             `(${escapeId(rowIdColumnName)}${columnType} PRIMARY KEY${arrayJoin(
@@ -223,7 +227,7 @@ export const getCommandFunctions = (
             [rowIdColumnName, ...settingColumnNames],
             async (settingColumnName, index) => {
               if (!collDel(unaccountedColumnNames, settingColumnName)) {
-                await databaseExecuteCommand(
+                await executeCommand(
                   ALTER_TABLE +
                     escapeId(tableName) +
                     'ADD' +
@@ -231,7 +235,7 @@ export const getCommandFunctions = (
                     columnType,
                 );
                 if (index == 0) {
-                  await databaseExecuteCommand(
+                  await executeCommand(
                     'CREATE UNIQUE INDEX pk ON ' +
                       escapeId(tableName) +
                       `(${escapeId(rowIdColumnName)})`,
@@ -251,7 +255,7 @@ export const getCommandFunctions = (
             collValues(unaccountedColumnNames),
             async (unaccountedColumnName) => {
               if (unaccountedColumnName != rowIdColumnName) {
-                await databaseExecuteCommand(
+                await executeCommand(
                   ALTER_TABLE +
                     escapeId(tableName) +
                     'DROP' +
@@ -268,7 +272,7 @@ export const getCommandFunctions = (
       if (isUndefined(content)) {
         // Delete all rows (partial)
         if (isUndefined(contentSubIdSet)) {
-          await databaseExecuteCommand(
+          await executeCommand(
             DELETE_FROM +
               escapeId(tableName) +
               getWhereCondition(tableName, condition),
@@ -279,7 +283,7 @@ export const getCommandFunctions = (
           objToArray(content, async (row, rowId) => {
             if (isUndefined(row)) {
               // Delete row (partial)
-              await databaseExecuteCommand(
+              await executeCommand(
                 DELETE_FROM +
                   escapeId(tableName) +
                   getWhereCondition(tableName, condition) +
@@ -294,7 +298,7 @@ export const getCommandFunctions = (
               );
               if (!isEmpty(changingColumnNames)) {
                 await upsert(
-                  databaseExecuteCommand,
+                  executeCommand,
                   tableName,
                   rowIdColumnName,
                   changingColumnNames,
@@ -332,7 +336,7 @@ export const getCommandFunctions = (
         });
         // Upsert row
         await upsert(
-          databaseExecuteCommand,
+          executeCommand,
           tableName,
           rowIdColumnName,
           changingColumnNames,
@@ -340,7 +344,7 @@ export const getCommandFunctions = (
           currentColumnNames,
         );
         // Delete rows
-        await databaseExecuteCommand(
+        await executeCommand(
           DELETE_FROM +
             escapeId(tableName) +
             getWhereCondition(tableName, condition) +
@@ -353,7 +357,7 @@ export const getCommandFunctions = (
         collHas(schemaMap, tableName)
       ) {
         // Delete all rows
-        await databaseExecuteCommand(
+        await executeCommand(
           DELETE_FROM +
             escapeId(tableName) +
             getWhereCondition(tableName, condition),
@@ -365,11 +369,26 @@ export const getCommandFunctions = (
   const transaction = async <Return>(
     actions: () => Promise<Return>,
   ): Promise<Return> => {
-    let result;
+    if (executeTransaction) {
+      return await executeTransaction(async (transactionExecuteCommand) => {
+        const executeCommandWas = executeCommand;
+        executeCommand = transactionExecuteCommand;
+        try {
+          return await actions();
+        } finally {
+          executeCommand = executeCommandWas;
+        }
+      });
+    }
     await databaseExecuteCommand('BEGIN');
-    await tryCatch(async () => (result = await actions()), onIgnoredError);
-    await databaseExecuteCommand('END');
-    return result as Return;
+    try {
+      const result = await actions();
+      await databaseExecuteCommand('END');
+      return result;
+    } catch (error) {
+      await tryCatch(() => databaseExecuteCommand('ROLLBACK'));
+      throw error;
+    }
   };
 
   return [refreshSchema, loadTable, saveTable, transaction];
