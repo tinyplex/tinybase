@@ -244,6 +244,21 @@ describe('Basics', () => {
     expectNoChanges(listener);
   });
 
+  test('make net-no rich changes after a checkpoint', () => {
+    store.setCell('t1', 'r1', 'c1', {species: 'dog'}).setValue('v1', ['cat']);
+    const checkpointId = checkpoints.addCheckpoint();
+
+    store.transaction(() => {
+      store
+        .setCell('t1', 'r1', 'c1', {species: 'cat'})
+        .setValue('v1', ['dog'])
+        .setCell('t1', 'r1', 'c1', {species: 'dog'})
+        .setValue('v1', ['cat']);
+    });
+
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], checkpointId, []]);
+  });
+
   test('listener stats', () => {
     listener.listenToCheckpoint('/c0', '0');
     expect(checkpoints.getListenerStats()).toEqual({
@@ -678,8 +693,25 @@ describe('Miscellaneous', () => {
   });
 
   test('destroys', () => {
-    expect(checkpoints.getStore().getListenerStats().cell).toEqual(1);
+    expect(store.getListenerStats().cell).toEqual(1);
+    expect(store.getListenerStats().value).toEqual(1);
+    expect(createCheckpoints(store)).toBe(checkpoints);
+    expect(store.getListenerStats().cell).toEqual(1);
+    expect(store.getListenerStats().value).toEqual(1);
+
     checkpoints.destroy();
-    expect(checkpoints.getStore().getListenerStats().cell).toEqual(0);
+    expect(store.getListenerStats().cell).toEqual(0);
+    expect(store.getListenerStats().value).toEqual(0);
+
+    const checkpoints2 = createCheckpoints(store);
+    expect(checkpoints2).not.toBe(checkpoints);
+    expect(store.getListenerStats().cell).toEqual(1);
+    expect(store.getListenerStats().value).toEqual(1);
+    checkpoints.destroy();
+    expect(store.getListenerStats().cell).toEqual(1);
+    expect(store.getListenerStats().value).toEqual(1);
+    checkpoints2.destroy();
+    expect(store.getListenerStats().cell).toEqual(0);
+    expect(store.getListenerStats().value).toEqual(0);
   });
 });
