@@ -29,9 +29,7 @@ export const createReactNativeMmkvPersister = (
     PersistedContent<PersistsType.StoreOrMergeableStore>
   > => {
     const data = storage.getString(storageName);
-    const value = isUndefined(data)
-      ? undefined
-      : jsonParseWithUndefined(data);
+    const value = isUndefined(data) ? undefined : jsonParseWithUndefined(data);
 
     return Promise.resolve(value);
   };

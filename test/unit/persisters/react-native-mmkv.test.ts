@@ -10,20 +10,14 @@ test('preserves mergeable deletion tombstones', async () => {
     addOnValueChangedListener: () => ({remove: () => {}}),
   };
   const store1 = createMergeableStore();
-  const persister1 = createReactNativeMmkvPersister(
-    store1,
-    storage as any,
-  );
+  const persister1 = createReactNativeMmkvPersister(store1, storage as any);
   store1.setCell('pets', 'fido', 'species', 'dog');
   await persister1.save();
   store1.delCell('pets', 'fido', 'species');
   await persister1.save();
 
   const store2 = createMergeableStore();
-  const persister2 = createReactNativeMmkvPersister(
-    store2,
-    storage as any,
-  );
+  const persister2 = createReactNativeMmkvPersister(store2, storage as any);
   await persister2.load();
 
   expect(store2.hasCell('pets', 'fido', 'species')).toBe(false);

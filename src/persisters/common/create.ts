@@ -396,14 +396,11 @@ export const createCustomPersister = <
       actions.length
         ? arrayPush(
             mapGet(scheduleActions, scheduleId) as ScheduledAction[],
-            ...arrayMap(
-              actions,
-              (action, index): ScheduledAction => [
-                action,
-                index == actions.length - 1 ? resolve : undefined,
-                scheduleOwner,
-              ],
-            ),
+            ...arrayMap(actions, (action, index): ScheduledAction => [
+              action,
+              index == actions.length - 1 ? resolve : undefined,
+              scheduleOwner,
+            ]),
           )
         : resolve(),
     );

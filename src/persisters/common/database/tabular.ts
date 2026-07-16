@@ -19,10 +19,7 @@ import {mapMap} from '../../../common/map.ts';
 import {objHas, objIsEmpty, objNew, objToArray} from '../../../common/obj.ts';
 import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {createCustomPersister} from '../create.ts';
-import {
-  DatabaseTransaction,
-  getCommandFunctions,
-} from './commands.ts';
+import {DatabaseTransaction, getCommandFunctions} from './commands.ts';
 import {
   DEFAULT_ROW_ID_COLUMN_NAME,
   QuerySchema,

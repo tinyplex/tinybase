@@ -163,7 +163,10 @@ test('fragmented mode preserves empty string identifiers', async () => {
   );
   await persister2.load();
 
-  expect(store2.getContent()).toEqual([{'': {'': {'': 'cell'}}}, {'': 'value'}]);
+  expect(store2.getContent()).toEqual([
+    {'': {'': {'': 'cell'}}},
+    {'': 'value'},
+  ]);
   await persister1.destroy();
   await persister2.destroy();
 });

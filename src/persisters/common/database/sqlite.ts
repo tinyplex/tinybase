@@ -8,11 +8,7 @@ import type {
   Persists,
 } from '../../../@types/persisters/index.d.ts';
 import {collValues} from '../../../common/coll.ts';
-import {
-  ERROR_STORE_TYPE,
-  errorThrow,
-  tryCatch,
-} from '../../../common/error.ts';
+import {ERROR_STORE_TYPE, errorThrow, tryCatch} from '../../../common/error.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {
   isFalse,
@@ -22,6 +18,7 @@ import {
   stopInterval,
 } from '../../../common/other.ts';
 import {EMPTY_STRING} from '../../../common/strings.ts';
+import {DatabaseTransaction} from './commands.ts';
 import {
   DATA_VERSION,
   PRAGMA,
@@ -34,7 +31,6 @@ import {
   getWrappedCommand,
 } from './common.ts';
 import {getConfigStructures} from './config.ts';
-import {DatabaseTransaction} from './commands.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
 
