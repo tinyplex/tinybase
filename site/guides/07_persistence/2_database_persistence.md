@@ -176,8 +176,6 @@ db.exec(`INSERT INTO pets (_id, species) VALUES ('cujo', 'wolf')`);
 await tabularPersister.load();
 console.log(store.getTable('pets'));
 // -> {felix: {species: 'cat'}, fido: {species: 'dog'}, cujo: {species: 'wolf'}}
-
-await tabularPersister.destroy();
 ```
 
 Store Values are saved into a separate table, normally called `tinybase_values`.
@@ -458,6 +456,8 @@ await tabularPersister.load();
 // After loading again, the Store now has a dense table with an explicit null:
 console.log(store.getRow('pets', 'fido'));
 // -> {species: 'dog', color: null}
+
+await tabularPersister.destroy();
 ```
 
 ### Important Implications
