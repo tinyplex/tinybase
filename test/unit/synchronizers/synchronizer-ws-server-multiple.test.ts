@@ -95,8 +95,8 @@ test('multiple stores share one WebSocket', async () => {
     webSocket.sentPayloads.some((payload) => payload.startsWith('M\neditor\n')),
   ).toBe(true);
 
-  webSocket.receive('M\nfiles\nremote\n[null,99,null]');
-  expect(filesReceives).toEqual([['remote', null, 99, null]]);
+  webSocket.receive('M\nfiles\nremote\n[null,1,""]');
+  expect(filesReceives).toEqual([['remote', null, 1, '']]);
   expect(editorReceives).toEqual([]);
 
   await filesSynchronizer.destroy();
@@ -105,6 +105,64 @@ test('multiple stores share one WebSocket', async () => {
 
   await editorSynchronizer.destroy();
   expect(webSocket.closeCalls).toBe(1);
+});
+
+test('malformed multiplexed traffic is reported and disconnected', async () => {
+  for (const payload of ['S\n{', 'M\nfiles\nremote\n{']) {
+    const errors: Error[] = [];
+    const webSocket = new MockWebSocket();
+    const synchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+      1,
+      undefined,
+      undefined,
+      (error) => errors.push(error),
+    );
+
+    expect(() => webSocket.receive(payload)).not.toThrow();
+    expect(errors.map(({message}) => message)).toEqual(['tinybase:14']);
+    expect(webSocket.closeCalls).toBe(1);
+
+    await synchronizer.destroy();
+  }
+});
+
+test('malformed multiplexed clients do not affect other clients', async () => {
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port: 8058}),
+    undefined,
+    (error) => errors.push(error),
+  );
+  const attacker = new WebSocket('ws://localhost:8058', 'tinybase');
+  const otherClient = new WebSocket('ws://localhost:8058', 'tinybase');
+  const attackerSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    attacker,
+    'files',
+  );
+  const otherSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    otherClient,
+    'files',
+  );
+  const closed = new Promise<void>((resolve) =>
+    attacker.on('close', () => resolve()),
+  );
+
+  attacker.send('M\nfiles\n\n{');
+  await closed;
+  await pause();
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:14']);
+  expect(otherClient.readyState).toBe(WebSocket.OPEN);
+  expect(server.getStats()).toEqual({clients: 1, paths: 1});
+
+  await attackerSynchronizer.destroy();
+  await otherSynchronizer.destroy();
+  await server.destroy();
 });
 
 test('multiple channel Ids are validated and unique', async () => {

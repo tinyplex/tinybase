@@ -19,6 +19,9 @@ class MockWebSocket {
   OPEN = 1;
   readyState = this.OPEN;
   sentPayloads: string[] = [];
+  closeCalls = 0;
+  closeCode: number | undefined;
+  closeReason: string | undefined;
   readonly #listeners: {[event: string]: ((event: any) => void)[]} = {};
 
   addEventListener(event: string, listener: (event: any) => void): void {
@@ -41,7 +44,10 @@ class MockWebSocket {
     );
   }
 
-  close(): void {
+  close(code?: number, reason?: string): void {
+    this.closeCalls++;
+    this.closeCode = code;
+    this.closeReason = reason;
     this.readyState = 3;
   }
 }
@@ -75,6 +81,73 @@ const getPayloadFromClient = (clientId: string, payload: string) =>
 
 beforeEach(() => {
   reset();
+});
+
+test('malformed websocket traffic is reported and disconnected', async () => {
+  for (const payload of [
+    'peer\n{',
+    'peer\n[null,2,[0,0],"extra"]',
+    'peer\n[null,2,{}]',
+    'peer\n[null,3,[[{},"invalid"],[{},"invalid"],1]]',
+    'peer\n[null,4,null]',
+    'peer\n[null,99,null]',
+    'peer\n0123456789ABCDEF\n0\n1000001\nx',
+  ]) {
+    const errors: Error[] = [];
+    const received: any[] = [];
+    const webSocket = new MockWebSocket();
+    const synchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      1,
+      undefined,
+      (...args) => received.push(args),
+      (error) => errors.push(error),
+    );
+
+    expect(() => webSocket.receive(payload)).not.toThrow();
+    expect(received).toEqual([]);
+    expect(errors.map(({message}) => message)).toEqual(['tinybase:14']);
+    expect(webSocket.closeCalls).toBe(1);
+    expect(webSocket.closeCode).toBe(1007);
+    expect(webSocket.closeReason).toBe('tinybase:14');
+
+    await synchronizer.destroy();
+  }
+});
+
+test('malformed websocket traffic is not relayed', async () => {
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port: 8049}),
+    undefined,
+    (error) => errors.push(error),
+  );
+  const attacker = new WebSocket('ws://localhost:8049');
+  const otherClient = new WebSocket('ws://localhost:8049');
+  const received: any[] = [];
+  otherClient.on('message', (message) => received.push(message));
+  await Promise.all(
+    [attacker, otherClient].map(
+      (webSocket) =>
+        new Promise<void>((resolve) => webSocket.on('open', () => resolve())),
+    ),
+  );
+  const closed = new Promise<void>((resolve) =>
+    attacker.on('close', () => resolve()),
+  );
+
+  attacker.send('\n0123456789ABCDEF\n0\n1\n{');
+  await closed;
+  await pause();
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:14']);
+  expect(received).toEqual([]);
+  expect(otherClient.readyState).toBe(WebSocket.OPEN);
+  expect(server.getStats()).toEqual({clients: 1, paths: 1});
+
+  otherClient.close();
+  await server.destroy();
 });
 
 test('Basics', async () => {

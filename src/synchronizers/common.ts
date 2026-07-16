@@ -7,16 +7,25 @@ import {
   arrayMap,
   arrayPush,
 } from '../common/array.ts';
+import {isCellOrValueOrUndefined} from '../common/cell.ts';
 import {getUniqueId} from '../common/codec.ts';
-import {collDel} from '../common/coll.ts';
+import {collClear, collDel} from '../common/coll.ts';
+import {ERROR_SYNC_MESSAGE, errorNew, tryReturn} from '../common/error.ts';
+import {isHlc} from '../common/hlc.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json.ts';
-import {IdMap, mapEnsure, mapNew} from '../common/map.ts';
+import {IdMap, mapEnsure, mapForEach, mapNew} from '../common/map.ts';
+import {isObject, objEntries} from '../common/obj.ts';
 import {
   isArray,
   isEmpty,
+  isFiniteNumber,
+  isInteger,
+  isNull,
+  isNumber,
+  isString,
   isUndefined,
   mathFloor,
   size,
@@ -27,9 +36,10 @@ import {
 import {EMPTY_STRING, strMatch, strSplit, TINYBASE} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
-const FRAGMENT = /^(.+)\n(\d+)\n(\d+)\n([\s\S]*)$/;
+const FRAGMENT = /^([-0-9A-Z_a-z]{16})\n(\d+)\n(\d+)\n([\s\S]*)$/;
 const CODE_POINTS = /[\s\S]/gu;
 const INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
+const MAX_FRAGMENT_COUNT = 1_000_000;
 
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
@@ -45,92 +55,241 @@ export const enum MultipleControl {
 
 export const MULTIPLE_VERSION = 1;
 
+export const createInvalidPayloadHandler = (
+  webSocket: {close: (code?: number, reason?: string) => void},
+  onIgnoredError?: (error: any) => void,
+) => {
+  let valid = true;
+  return (error: Error) => {
+    if (valid) {
+      valid = false;
+      onIgnoredError?.(error);
+      webSocket.close(1007, error.message);
+    }
+  };
+};
+
 type Pending = [
   fragments: string[],
+  remainders: string[],
   remaining: number,
   total: number,
   timeout: ReturnType<typeof startTimeout>,
 ];
 
+type DecodedPayload = [
+  clientId: Id,
+  remainders: string[],
+  requestId: IdOrNull,
+  message: number,
+  body: any,
+];
+
+const isHash = (hash: any): boolean =>
+  isNumber(hash) &&
+  isFiniteNumber(hash) &&
+  isInteger(hash) &&
+  hash >= 0 &&
+  hash <= 0xffffffff;
+
+const isHashTree = (tree: any, depth: number): boolean =>
+  isObject(tree) &&
+  arrayEvery(objEntries(tree), ([, child]) =>
+    depth ? isHashTree(child, depth - 1) : isHash(child),
+  );
+
+const isStamp = (stamp: any, depth: number): boolean =>
+  isArray(stamp) &&
+  (size(stamp) == 1 || (size(stamp) == 2 && isHlc(stamp[1], Infinity))) &&
+  (depth
+    ? isObject(stamp[0]) &&
+      arrayEvery(objEntries(stamp[0]), ([, child]) => isStamp(child, depth - 1))
+    : isCellOrValueOrUndefined(stamp[0]));
+
+const isContentHashes = (body: any): boolean =>
+  isArray(body) && size(body) == 2 && isHash(body[0]) && isHash(body[1]);
+
+const isMergeableContentOrChanges = (body: any): boolean =>
+  isArray(body) &&
+  (size(body) == 2 || (size(body) == 3 && body[2] === 1)) &&
+  isStamp(body[0], 3) &&
+  isStamp(body[1], 1);
+
+const isResponse = (body: any): boolean =>
+  isContentHashes(body) ||
+  isStamp(body, 3) ||
+  isStamp(body, 1) ||
+  (isArray(body) &&
+    size(body) == 2 &&
+    isStamp(body[0], 3) &&
+    (isHashTree(body[1], 0) || isHashTree(body[1], 1)));
+
+const isBodyValid = (message: number, body: any): boolean =>
+  message == 0
+    ? isResponse(body)
+    : message == 1
+      ? body === EMPTY_STRING
+      : message == 2
+        ? isContentHashes(body)
+        : message == 3
+          ? isMergeableContentOrChanges(body)
+          : message == 4
+            ? isHashTree(body, 0)
+            : message == 5
+              ? isHashTree(body, 1)
+              : message == 6
+                ? isHashTree(body, 2)
+                : message == 7
+                  ? isHashTree(body, 0)
+                  : false;
+
+export const isProtocolMessageValid = (
+  requestId: any,
+  message: any,
+  body: any,
+): boolean =>
+  (isNull(requestId) || isString(requestId)) &&
+  isNumber(message) &&
+  isFiniteNumber(message) &&
+  isInteger(message) &&
+  isBodyValid(message, body);
+
+const decodeProtocolMessage = (
+  remainder: string,
+  multipleControl = false,
+): [requestId: IdOrNull, message: number, body: any] | undefined =>
+  tryReturn(() => {
+    const message = jsonParseWithUndefined(remainder);
+    return isArray(message) &&
+      size(message) == 3 &&
+      (isProtocolMessageValid(message[0], message[1], message[2]) ||
+        (multipleControl &&
+          (isNull(message[0]) || isString(message[0])) &&
+          message[1] == MULTIPLE_MESSAGE))
+      ? (message as [IdOrNull, number, any])
+      : undefined;
+  }) as [IdOrNull, number, any] | undefined;
+
 export const ifPayloadValid = (
   payload: string,
   then: (clientId: string, remainder: string) => void,
-) => {
+): boolean => {
   const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
   if (splitAt !== -1) {
     then(slice(payload, 0, splitAt), slice(payload, splitAt + 1));
+    return true;
   }
+  return false;
 };
 
-const receivePayloadRemainder = (
-  fromClientId: Id,
-  remainder: string,
-  receive: Receive,
-) =>
-  receive(
-    fromClientId,
-    ...(jsonParseWithUndefined(remainder) as [
-      requestId: IdOrNull,
-      message: Message,
-      body: any,
-    ]),
-  );
-
 export const receivePayload = (payload: string, receive: Receive) =>
-  ifPayloadValid(payload, (fromClientId, remainder) =>
-    receivePayloadRemainder(fromClientId, remainder, receive),
-  );
+  createPayloadReceiver(receive)(payload);
 
-export const createPayloadReceiver = (
-  receive: Receive,
+export const createPayloadDecoder = (
+  receive: (...payload: DecodedPayload) => void,
   fragmentTimeoutSeconds: number = 1,
+  onInvalid?: (error: Error) => void,
 ) => {
   const buffer: IdMap<Pending> = mapNew();
+  let valid = true;
 
   const setPendingTimeout = (bufferKey: Id) =>
     startTimeout(() => collDel(buffer, bufferKey), fragmentTimeoutSeconds);
 
   const delPending = (bufferKey: Id, pending: Pending) => {
-    stopTimeout(pending[3]);
+    stopTimeout(pending[4]);
     collDel(buffer, bufferKey);
   };
 
-  return (payload: string) =>
-    ifPayloadValid(payload, (fromClientId, remainder) => {
-      const [, messageId, indexStr, totalStr, fragment] =
-        strMatch(remainder, FRAGMENT) ?? [];
-      if (messageId) {
-        const index = parseInt(indexStr);
-        const total = parseInt(totalStr);
-        if (total > 0 && index >= 0 && index < total) {
-          const bufferKey = fromClientId + MESSAGE_SEPARATOR + messageId;
-          const pending = mapEnsure(buffer, bufferKey, (): Pending => [
-            [],
-            total,
-            total,
-            setPendingTimeout(bufferKey),
-          ]);
-          const [fragments] = pending;
-          if (total == pending[2] && isUndefined(fragments[index])) {
-            stopTimeout(pending[3]);
-            pending[3] = setPendingTimeout(bufferKey);
-            fragments[index] = fragment;
-            pending[1]--;
-          }
-          if (pending[1] == 0) {
-            delPending(bufferKey, pending);
-            receivePayloadRemainder(
-              fromClientId,
-              arrayJoin(fragments),
-              receive,
-            );
+  const invalid = () => {
+    if (valid) {
+      valid = false;
+      mapForEach(buffer, (_bufferKey, pending) => stopTimeout(pending[4]));
+      collClear(buffer);
+      onInvalid?.(errorNew(ERROR_SYNC_MESSAGE));
+    }
+  };
+
+  const receiveRemainder = (
+    clientId: Id,
+    remainders: string[],
+    remainder: string,
+  ) => {
+    const message = decodeProtocolMessage(remainder);
+    if (message) {
+      receive(clientId, remainders, ...message);
+    } else {
+      invalid();
+    }
+  };
+
+  return (payload: string) => {
+    if (!valid) {
+      return;
+    }
+    if (
+      !ifPayloadValid(payload, (clientId, remainder) => {
+        const message = decodeProtocolMessage(remainder);
+        if (message) {
+          receive(clientId, [remainder], ...message);
+          return;
+        }
+        const [, messageId, indexStr, totalStr, fragment] =
+          strMatch(remainder, FRAGMENT) ?? [];
+        if (messageId) {
+          const index = parseInt(indexStr);
+          const total = parseInt(totalStr);
+          if (
+            total > 0 &&
+            total <= MAX_FRAGMENT_COUNT &&
+            index >= 0 &&
+            index < total
+          ) {
+            const bufferKey = clientId + MESSAGE_SEPARATOR + messageId;
+            const pending = mapEnsure(buffer, bufferKey, (): Pending => [
+              [],
+              [],
+              total,
+              total,
+              setPendingTimeout(bufferKey),
+            ]);
+            const [fragments, remainders] = pending;
+            if (total == pending[3] && isUndefined(fragments[index])) {
+              stopTimeout(pending[4]);
+              pending[4] = setPendingTimeout(bufferKey);
+              fragments[index] = fragment;
+              remainders[index] = remainder;
+              pending[2]--;
+            } else {
+              invalid();
+              return;
+            }
+            if (pending[2] == 0) {
+              delPending(bufferKey, pending);
+              receiveRemainder(clientId, remainders, arrayJoin(fragments));
+            }
+            return;
           }
         }
-      } else {
-        receivePayloadRemainder(fromClientId, remainder, receive);
-      }
-    });
+        invalid();
+      })
+    ) {
+      invalid();
+    }
+  };
 };
+
+export const createPayloadReceiver = (
+  receive: Receive,
+  fragmentTimeoutSeconds: number = 1,
+  onInvalid?: (error: Error) => void,
+) =>
+  createPayloadDecoder(
+    (fromClientId, _remainders, requestId, message, body) =>
+      receive(fromClientId, requestId, message as Message, body),
+    fragmentTimeoutSeconds,
+    onInvalid,
+  );
 
 export const createPayload = (
   toClientId: IdOrNull,
@@ -173,12 +332,20 @@ export const createMultiplePayload = (channelId: Id, payload: string): string =>
 export const ifMultiplePayloadValid = (
   payload: string,
   then: (channelId: Id, payload: string) => void,
-) =>
-  ifPayloadValid(payload, (multipleClientId, remainder) =>
-    multipleClientId == MULTIPLE_CLIENT_ID
-      ? ifPayloadValid(remainder, then)
-      : 0,
-  );
+): boolean => {
+  let valid = false;
+  ifPayloadValid(payload, (multipleClientId, remainder) => {
+    if (multipleClientId == MULTIPLE_CLIENT_ID) {
+      ifPayloadValid(remainder, (channelId, channelPayload) => {
+        if (isMultipleChannelIdValid(channelId)) {
+          valid = true;
+          then(channelId, channelPayload);
+        }
+      });
+    }
+  });
+  return valid;
+};
 
 export const createMultipleControlPayload = (
   requestId: IdOrNull,
@@ -193,25 +360,36 @@ export const createMultipleControlPayload = (
 export const ifMultipleControlPayloadValid = (
   payload: string,
   then: (requestId: IdOrNull, control: MultipleControl, body: any) => void,
-) =>
+) => {
+  let valid = false;
   ifPayloadValid(payload, (serverClientId, remainder) => {
     if (serverClientId == SERVER_CLIENT_ID) {
-      const [requestId, message, controlAndBody] = jsonParseWithUndefined(
-        remainder,
-      ) as [IdOrNull, number, any];
+      const [requestId, message, controlAndBody] =
+        decodeProtocolMessage(remainder, true) ?? [];
+      const control = controlAndBody?.[0];
+      const body = controlAndBody?.[1];
       if (
         message == MULTIPLE_MESSAGE &&
         isArray(controlAndBody) &&
-        size(controlAndBody) == 2
+        size(controlAndBody) == 2 &&
+        (control == MultipleControl.Hello
+          ? isString(requestId) && body == MULTIPLE_VERSION
+          : control == MultipleControl.Subscribe
+            ? isString(requestId) &&
+              isString(body) &&
+              isMultipleChannelIdValid(body)
+            : control == MultipleControl.Unsubscribe &&
+              isNull(requestId) &&
+              isString(body) &&
+              isMultipleChannelIdValid(body))
       ) {
-        then(
-          requestId,
-          controlAndBody[0] as MultipleControl,
-          controlAndBody[1],
-        );
+        valid = true;
+        then(requestId as IdOrNull, control as MultipleControl, body);
       }
     }
   });
+  return valid;
+};
 
 export const isMultipleChannelIdValid = (channelId: Id): boolean =>
   !isEmpty(channelId) &&

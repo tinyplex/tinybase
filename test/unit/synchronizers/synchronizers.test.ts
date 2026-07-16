@@ -1,7 +1,7 @@
 import type {Content, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
-import {createCustomSynchronizer} from 'tinybase/synchronizers';
+import {Message, createCustomSynchronizer} from 'tinybase/synchronizers';
 import {createBroadcastChannelSynchronizer} from 'tinybase/synchronizers/synchronizer-broadcast-channel';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
@@ -115,6 +115,27 @@ const mockCustomSynchronizer: Synchronizable<
   },
   pauseMilliseconds: 10,
 };
+
+test('Malformed custom Synchronizer messages are ignored', async () => {
+  const errors: Error[] = [];
+  let receive: Receive = () => {};
+  const synchronizer = createCustomSynchronizer(
+    createMergeableStore(),
+    () => {},
+    (registeredReceive) => (receive = registeredReceive),
+    () => {},
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  expect(() => receive('peer', null, Message.GetTableDiff, null)).not.toThrow();
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:14']);
+  expect(synchronizer.getSynchronizerStats()).toEqual({receives: 0, sends: 0});
+
+  await synchronizer.destroy();
+});
 
 describe.each([
   ['LocalSynchronizer', mockLocalSynchronizer],

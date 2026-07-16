@@ -21,6 +21,7 @@ import {
   ERROR_MULTIPLEX_LEGACY,
   ERROR_MULTIPLEX_RESPONSE,
   ERROR_MULTIPLEX_SOCKET,
+  ERROR_SYNC_MESSAGE,
   errorNew,
   errorThrow,
 } from '../../common/error.ts';
@@ -44,6 +45,7 @@ import {CLOSE, ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
 import {
   MULTIPLE_VERSION,
   MultipleControl,
+  createInvalidPayloadHandler,
   createMultipleControlPayload,
   createMultiplePayload,
   createPayloadReceiver,
@@ -79,6 +81,7 @@ type MultipleState = {
   addChannel: (channelId: Id, timeoutSeconds: number) => Promise<void>;
   delChannel: (channelId: Id) => void;
   destroyIfEmpty: () => void;
+  invalid: (error: Error) => void;
   registerReceive: (channelId: Id, receive: (payload: string) => void) => void;
   send: (channelId: Id, payload: string) => void;
 };
@@ -107,6 +110,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   let connection = createConnection();
   let connected = false;
   let destroyed = false;
+  const invalid = createInvalidPayloadHandler(webSocket, onIgnoredError);
 
   const addWebSocketListener = (
     event: keyof WebSocketEventMap,
@@ -198,26 +202,37 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 
   addWebSocketListener(MESSAGE, ({data}) => {
     const payload = data.toString(UTF8);
-    ifMultipleControlPayloadValid(payload, (requestId, control, _body) => {
-      const pendingControl = requestId
-        ? mapGet(pendingControls, requestId)
-        : undefined;
-      if (pendingControl?.[0] == control) {
-        stopTimeout(pendingControl[3]);
-        collDel(pendingControls, requestId);
-        pendingControl[1]();
-      }
-    });
-    ifMultiplePayloadValid(payload, (channelId, channelPayload) => {
-      const channel = mapGet(channels, channelId);
-      if (channel) {
-        if (channel[0]) {
-          channel[0](channelPayload);
-        } else {
-          arrayPush(channel[1], channelPayload);
+    const control = ifMultipleControlPayloadValid(
+      payload,
+      (requestId, control, _body) => {
+        const pendingControl = requestId
+          ? mapGet(pendingControls, requestId)
+          : undefined;
+        if (pendingControl?.[0] == control) {
+          stopTimeout(pendingControl[3]);
+          collDel(pendingControls, requestId);
+          pendingControl[1]();
         }
-      }
-    });
+      },
+    );
+    const channel = ifMultiplePayloadValid(
+      payload,
+      (channelId, channelPayload) => {
+        const channel = mapGet(channels, channelId);
+        if (channel) {
+          if (channel[0]) {
+            channel[0](channelPayload);
+          } else {
+            arrayPush(channel[1], channelPayload);
+          }
+        } else {
+          invalid(errorNew(ERROR_SYNC_MESSAGE));
+        }
+      },
+    );
+    if (!control && !channel) {
+      invalid(errorNew(ERROR_SYNC_MESSAGE));
+    }
   });
   addWebSocketListener(OPEN, onOpen);
   addWebSocketListener(CLOSE, onClose);
@@ -294,7 +309,14 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     }
   };
 
-  return {addChannel, delChannel, destroyIfEmpty, registerReceive, send};
+  return {
+    addChannel,
+    delChannel,
+    destroyIfEmpty,
+    invalid,
+    registerReceive,
+    send,
+  };
 };
 
 const createMultipleWsSynchronizer = async <
@@ -344,7 +366,7 @@ const createMultipleWsSynchronizer = async <
     (receive: Receive) =>
       state.registerReceive(
         channelId,
-        createPayloadReceiver(receive, requestTimeoutSeconds),
+        createPayloadReceiver(receive, requestTimeoutSeconds, state.invalid),
       ),
     () => state.delChannel(channelId),
     requestTimeoutSeconds,
@@ -368,9 +390,11 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
     errorThrow(ERROR_LEGACY_MULTIPLEX);
   }
   const registerReceive = (receive: Receive) => {
+    const invalid = createInvalidPayloadHandler(webSocket, onIgnoredError);
     const receivePayload = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
+      invalid,
     );
     addEventListener(webSocket, MESSAGE, ({data}) =>
       receivePayload(data.toString(UTF8)),

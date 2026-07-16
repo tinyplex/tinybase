@@ -53,6 +53,33 @@ test('Accessors', async () => {
   await wsServerSimple.destroy();
 });
 
+test('Malformed traffic is disconnected before relay', async () => {
+  const server = createWsServerSimple(new WebSocketServer({port: 8054}));
+  const attacker = new WebSocket('ws://localhost:8054');
+  const otherClient = new WebSocket('ws://localhost:8054');
+  const received: any[] = [];
+  otherClient.on('message', (message) => received.push(message));
+  await Promise.all(
+    [attacker, otherClient].map(
+      (webSocket) =>
+        new Promise<void>((resolve) => webSocket.on('open', () => resolve())),
+    ),
+  );
+  const closed = new Promise<void>((resolve) =>
+    attacker.on('close', () => resolve()),
+  );
+
+  attacker.send('\n{');
+  await closed;
+  await pause();
+
+  expect(received).toEqual([]);
+  expect(otherClient.readyState).toBe(WebSocket.OPEN);
+
+  otherClient.close();
+  await server.destroy();
+});
+
 test('Multiple stores', async () => {
   const wsServerSimple = createWsServerSimple(
     new WebSocketServer({port: 8054}),

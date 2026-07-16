@@ -24,7 +24,12 @@ import type {
 } from '../@types/synchronizers/index.d.ts';
 import {getUniqueId} from '../common/codec.ts';
 import {collDel} from '../common/coll.ts';
-import {ERROR_SYNC_RESPONSE, errorNew, tryCatch} from '../common/error.ts';
+import {
+  ERROR_SYNC_MESSAGE,
+  ERROR_SYNC_RESPONSE,
+  errorNew,
+  tryCatch,
+} from '../common/error.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objEnsure, objForEach, objIsEmpty, objSet} from '../common/obj.ts';
 import {
@@ -37,6 +42,7 @@ import {
 import {getLatestHlc, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
 import {createCustomPersister} from '../persisters/index.ts';
+import {isProtocolMessageValid} from './common.ts';
 
 const enum MessageValues {
   Response = 0,
@@ -287,6 +293,10 @@ export const createCustomSynchronizer = (
       message: MessageEnum | any,
       body: any,
     ) => {
+      if (!isProtocolMessageValid(transactionOrRequestId, message, body)) {
+        onIgnoredError?.(errorNew(ERROR_SYNC_MESSAGE));
+        return;
+      }
       const isAutoLoading = syncing || persister.isAutoLoading();
       receives++;
       onReceive?.(fromClientId, transactionOrRequestId, message, body);

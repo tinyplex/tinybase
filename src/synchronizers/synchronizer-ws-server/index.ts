@@ -22,6 +22,7 @@ import {
   collSize,
   collSize2,
 } from '../../common/coll.ts';
+import {ERROR_SYNC_MESSAGE, errorNew} from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {
   IdMap,
@@ -58,8 +59,10 @@ import {
   MultipleControl,
   SERVER_CLIENT_ID,
   WS_SYNCHRONIZER_PROTOCOL,
+  createInvalidPayloadHandler,
   createMultipleControlPayload,
   createMultiplePayload,
+  createPayloadDecoder,
   createPayloadReceiver,
   createPayloads,
   createRawPayload,
@@ -224,6 +227,20 @@ export const createWsServer = (<
     }
   };
 
+  const handleDecodedMessage = (
+    pathId: Id,
+    clientId: Id,
+    toClientId: Id,
+    remainders: string[],
+  ) =>
+    arrayForEach(remainders, (remainder) =>
+      handleOrBufferMessage(
+        pathId,
+        clientId,
+        createRawPayload(toClientId, remainder),
+      ),
+    );
+
   const addClientToPath = async (
     pathId: Id,
     clientId: Id,
@@ -286,9 +303,13 @@ export const createWsServer = (<
     pathId: Id,
   ) => {
     const {ready} = await addClientToPath(pathId, clientId, [client]);
-    client.on(MESSAGE, (data) =>
-      handleOrBufferMessage(pathId, clientId, data.toString(UTF8)),
+    const decode = createPayloadDecoder(
+      (toClientId, remainders) =>
+        handleDecodedMessage(pathId, clientId, toClientId, remainders),
+      requestTimeoutSeconds,
+      createInvalidPayloadHandler(client, onIgnoredError),
     );
+    client.on(MESSAGE, (data) => decode(data.toString(UTF8)));
     client.on(CLOSE, () => delClientFromPath(pathId, clientId));
     await ready;
   };
@@ -299,6 +320,8 @@ export const createWsServer = (<
     basePathId: Id,
   ) => {
     const pathsByChannel: IdMap<Id> = mapNew();
+    const decodersByChannel: IdMap<(payload: string) => void> = mapNew();
+    const invalid = createInvalidPayloadHandler(client, onIgnoredError);
     let negotiated = false;
 
     const sendControl = (
@@ -345,24 +368,46 @@ export const createWsServer = (<
           delClientFromPath(pathId, clientId),
         );
         collDel(pathsByChannel, body);
+        collDel(decodersByChannel, body);
       }
     };
 
     client.on(MESSAGE, (data) => {
       const payload = data.toString(UTF8);
-      let control: Promise<void> | undefined;
-      ifMultipleControlPayloadValid(
+      let controlPromise: Promise<void> | undefined;
+      const control = ifMultipleControlPayloadValid(
         payload,
         (requestId, controlType, body) =>
-          (control = handleControl(requestId, controlType, body)),
+          (controlPromise = handleControl(requestId, controlType, body)),
       );
-      control?.catch(onIgnoredError);
-      if (negotiated) {
-        ifMultiplePayloadValid(payload, (channelId, channelPayload) =>
-          ifNotUndefined(mapGet(pathsByChannel, channelId), (pathId) =>
-            handleOrBufferMessage(pathId, clientId, channelPayload),
-          ),
-        );
+      controlPromise?.catch(onIgnoredError);
+      const channel = ifMultiplePayloadValid(
+        payload,
+        (channelId, channelPayload) => {
+          const pathId = negotiated
+            ? mapGet(pathsByChannel, channelId)
+            : undefined;
+          if (isUndefined(pathId)) {
+            invalid(errorNew(ERROR_SYNC_MESSAGE));
+          } else {
+            mapEnsure(decodersByChannel, channelId, () =>
+              createPayloadDecoder(
+                (toClientId, remainders) =>
+                  handleDecodedMessage(
+                    pathId,
+                    clientId,
+                    toClientId,
+                    remainders,
+                  ),
+                requestTimeoutSeconds,
+                invalid,
+              ),
+            )(channelPayload);
+          }
+        },
+      );
+      if (!control && !channel) {
+        invalid(errorNew(ERROR_SYNC_MESSAGE));
       }
     });
 

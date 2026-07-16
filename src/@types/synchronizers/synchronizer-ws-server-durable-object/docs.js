@@ -185,6 +185,28 @@
    */
   /// WsServerDurableObject.getRequestTimeoutSeconds
   /**
+   * The onIgnoredError method is called when the Durable Object receives an
+   * invalid synchronization protocol message. The sending client is
+   * disconnected after this method is called. The default implementation does
+   * nothing.
+   * @param error The error that was encountered.
+   * @example
+   * This example logs ignored Durable Object synchronization errors.
+   *
+   * ```js ignore
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+   *
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   onIgnoredError(error) {
+   *     console.error(error);
+   *   }
+   * }
+   * ```
+   * @category Event
+   * @since v9.3.0
+   */
+  /// WsServerDurableObject.onIgnoredError
+  /**
    * The onPathId method is called when the first client connects to, or the
    * last client disconnects from, the server with a given path Id.
    *

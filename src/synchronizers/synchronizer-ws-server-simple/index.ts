@@ -4,7 +4,9 @@ import type {
   WsServerSimple,
   createWsServerSimple as createWsServerSimpleDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server-simple/index.d.ts';
+import {arrayForEach} from '../../common/array.ts';
 import {collClear, collDel, collHas, collIsEmpty} from '../../common/coll.ts';
+import {ERROR_SYNC_MESSAGE, errorNew} from '../../common/error.ts';
 import {
   IdMap,
   IdMap2,
@@ -28,8 +30,10 @@ import {
   MULTIPLE_VERSION,
   MultipleControl,
   WS_SYNCHRONIZER_PROTOCOL,
+  createInvalidPayloadHandler,
   createMultipleControlPayload,
   createMultiplePayload,
+  createPayloadDecoder,
   createRawPayload,
   ifMultipleControlPayloadValid,
   ifMultiplePayloadValid,
@@ -68,6 +72,16 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       }
     });
 
+  const handleDecodedMessage = (
+    pathId: Id,
+    clientId: Id,
+    toClientId: Id,
+    remainders: string[],
+  ) =>
+    arrayForEach(remainders, (remainder) =>
+      handleMessage(pathId, clientId, createRawPayload(toClientId, remainder)),
+    );
+
   const addClientToPath = (pathId: Id, clientId: Id, client: Client) =>
     mapSet(
       mapEnsure(clientsByPath, pathId, mapNew<Id, Client>),
@@ -87,9 +101,13 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
 
   const addLegacyClient = (client: WebSocket, clientId: Id, pathId: Id) => {
     addClientToPath(pathId, clientId, [client]);
-    client.on(MESSAGE, (data) =>
-      handleMessage(pathId, clientId, data.toString(UTF8)),
+    const decode = createPayloadDecoder(
+      (toClientId, remainders) =>
+        handleDecodedMessage(pathId, clientId, toClientId, remainders),
+      1,
+      createInvalidPayloadHandler(client),
     );
+    client.on(MESSAGE, (data) => decode(data.toString(UTF8)));
     client.on(CLOSE, () => delClientFromPath(pathId, clientId));
   };
 
@@ -99,6 +117,8 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
     basePathId: Id,
   ) => {
     const pathsByChannel: IdMap<Id> = mapNew();
+    const decodersByChannel: IdMap<(payload: string) => void> = mapNew();
+    const invalid = createInvalidPayloadHandler(client);
     let negotiated = false;
 
     const sendControl = (
@@ -109,44 +129,70 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
 
     client.on(MESSAGE, (data) => {
       const payload = data.toString(UTF8);
-      ifMultipleControlPayloadValid(payload, (requestId, control, body) => {
-        if (
-          control == MultipleControl.Hello &&
-          body == MULTIPLE_VERSION &&
-          requestId
-        ) {
-          negotiated = true;
-          sendControl(requestId, control, body);
-        } else if (
-          negotiated &&
-          control == MultipleControl.Subscribe &&
-          isString(body) &&
-          isMultipleChannelIdValid(body) &&
-          requestId
-        ) {
-          const pathId = basePathId + (basePathId ? '/' : EMPTY_STRING) + body;
-          if (!collHas(pathsByChannel, body)) {
-            addClientToPath(pathId, clientId, [client, body]);
-            mapSet(pathsByChannel, body, pathId);
+      const control = ifMultipleControlPayloadValid(
+        payload,
+        (requestId, control, body) => {
+          if (
+            control == MultipleControl.Hello &&
+            body == MULTIPLE_VERSION &&
+            requestId
+          ) {
+            negotiated = true;
+            sendControl(requestId, control, body);
+          } else if (
+            negotiated &&
+            control == MultipleControl.Subscribe &&
+            isString(body) &&
+            isMultipleChannelIdValid(body) &&
+            requestId
+          ) {
+            const pathId =
+              basePathId + (basePathId ? '/' : EMPTY_STRING) + body;
+            if (!collHas(pathsByChannel, body)) {
+              addClientToPath(pathId, clientId, [client, body]);
+              mapSet(pathsByChannel, body, pathId);
+            }
+            sendControl(requestId, control, body);
+          } else if (
+            negotiated &&
+            control == MultipleControl.Unsubscribe &&
+            isString(body)
+          ) {
+            ifNotUndefined(mapGet(pathsByChannel, body), (pathId) =>
+              delClientFromPath(pathId, clientId),
+            );
+            collDel(pathsByChannel, body);
+            collDel(decodersByChannel, body);
           }
-          sendControl(requestId, control, body);
-        } else if (
-          negotiated &&
-          control == MultipleControl.Unsubscribe &&
-          isString(body)
-        ) {
-          ifNotUndefined(mapGet(pathsByChannel, body), (pathId) =>
-            delClientFromPath(pathId, clientId),
-          );
-          collDel(pathsByChannel, body);
-        }
-      });
-      if (negotiated) {
-        ifMultiplePayloadValid(payload, (channelId, channelPayload) =>
-          ifNotUndefined(mapGet(pathsByChannel, channelId), (pathId) =>
-            handleMessage(pathId, clientId, channelPayload),
-          ),
-        );
+        },
+      );
+      const channel = ifMultiplePayloadValid(
+        payload,
+        (channelId, channelPayload) => {
+          const pathId = negotiated
+            ? mapGet(pathsByChannel, channelId)
+            : undefined;
+          if (isUndefined(pathId)) {
+            invalid(errorNew(ERROR_SYNC_MESSAGE));
+          } else {
+            mapEnsure(decodersByChannel, channelId, () =>
+              createPayloadDecoder(
+                (toClientId, remainders) =>
+                  handleDecodedMessage(
+                    pathId,
+                    clientId,
+                    toClientId,
+                    remainders,
+                  ),
+                1,
+                invalid,
+              ),
+            )(channelPayload);
+          }
+        },
+      );
+      if (!control && !channel) {
+        invalid(errorNew(ERROR_SYNC_MESSAGE));
       }
     });
 

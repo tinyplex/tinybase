@@ -161,6 +161,19 @@ WebSocket synchronization payloads are now fragmented by UTF-8 byte size and
 only at Unicode code point boundaries. Non-BMP characters therefore remain
 intact when a fragment is encoded and sent as an individual WebSocket message.
 
+## Validated WebSocket Protocol Traffic
+
+WebSocket synchronization traffic is now decoded without throwing and
+validated before dispatch or relay. Invalid JSON, tuple shapes, standard
+message bodies, multiplexing envelopes, and fragment metadata are reported as
+error 14, and the peer that sent them is closed with WebSocket status code
+`1007`.
+
+Servers wait for fragmented messages to be fully decoded before relaying them,
+so malformed traffic is not forwarded to other clients or multiplexed
+channels. WsServerDurableObject subclasses can override onIgnoredError to
+observe these failures.
+
 ---
 
 # v9.2
