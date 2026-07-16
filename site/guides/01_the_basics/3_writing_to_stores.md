@@ -70,6 +70,14 @@ The data in a Value or a Cell can be a string, a number, a boolean, or `null`.
 You can also store richer data as plain JavaScript objects or arrays, which
 TinyBase encodes internally as JSON strings.
 
+For reliable round trips, the contents of those objects and arrays should
+recursively use the same JSON-compatible types: strings, finite numbers,
+booleans, `null`, plain objects, and arrays. TinyBase validates the top-level
+object or array, but relies on `JSON.stringify` for its contents. This means
+that nested `undefined` values and functions are omitted from objects (or become
+`null` in arrays), non-finite numbers become `null`, and Dates become strings.
+BigInts and cyclic structures cause the write to throw.
+
 Because of this encoding, string Cells and Values must not start with the
 Unicode replacement character `U+FFFD`, which TinyBase reserves as an internal
 prefix for objects and arrays. The character is supported elsewhere in a string,
