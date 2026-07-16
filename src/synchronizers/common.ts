@@ -9,14 +9,19 @@ import {
 } from '../common/array.ts';
 import {isCellOrValueOrUndefined} from '../common/cell.ts';
 import {getUniqueId} from '../common/codec.ts';
-import {collClear, collDel} from '../common/coll.ts';
-import {ERROR_SYNC_MESSAGE, errorNew, tryReturn} from '../common/error.ts';
+import {collClear, collDel, collSize} from '../common/coll.ts';
+import {
+  ERROR_SYNC_MESSAGE,
+  ERROR_SYNC_OVERFLOW,
+  errorNew,
+  tryReturn,
+} from '../common/error.ts';
 import {isHlc} from '../common/hlc.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json.ts';
-import {IdMap, mapEnsure, mapForEach, mapNew} from '../common/map.ts';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {isObject, objEntries} from '../common/obj.ts';
 import {
   isArray,
@@ -33,13 +38,47 @@ import {
   startTimeout,
   stopTimeout,
 } from '../common/other.ts';
-import {EMPTY_STRING, strMatch, strSplit, TINYBASE} from '../common/strings.ts';
+import {
+  EMPTY_STRING,
+  strMatch,
+  strSplit,
+  strStartsWith,
+  TINYBASE,
+} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^([-0-9A-Z_a-z]{16})\n(\d+)\n(\d+)\n([\s\S]*)$/;
 const CODE_POINTS = /[\s\S]/gu;
 const INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
-const MAX_FRAGMENT_COUNT = 1_000_000;
+const MAX_FRAGMENT_BUFFERS = 100;
+const MAX_FRAGMENT_COUNT = 1_000;
+
+export const MAX_PENDING_REQUESTS = 100;
+export const MAX_WEBSOCKET_BUFFER_SIZE = 16_777_216;
+export const MAX_WEBSOCKET_QUEUE_SIZE = 1_000;
+
+export const getWebSocketPayloadSize = (value: string): number => {
+  let byteSize = 0;
+  for (let index = 0; index < size(value); index++) {
+    const codeUnit = value.charCodeAt(index);
+    if (codeUnit < 0x80) {
+      byteSize++;
+    } else if (codeUnit < 0x800) {
+      byteSize += 2;
+    } else if (
+      codeUnit >= 0xd800 &&
+      codeUnit <= 0xdbff &&
+      value.charCodeAt(index + 1) >= 0xdc00 &&
+      value.charCodeAt(index + 1) <= 0xdfff
+    ) {
+      byteSize += 4;
+      index++;
+    } else {
+      byteSize += 3;
+    }
+  }
+  return byteSize;
+};
 
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
@@ -64,7 +103,12 @@ export const createInvalidPayloadHandler = (
     if (valid) {
       valid = false;
       onIgnoredError?.(error);
-      webSocket.close(1007, error.message);
+      webSocket.close(
+        strStartsWith(error.message, TINYBASE + ':' + ERROR_SYNC_OVERFLOW)
+          ? 1013
+          : 1007,
+        error.message,
+      );
     }
   };
 };
@@ -75,6 +119,7 @@ type Pending = [
   remaining: number,
   total: number,
   timeout: ReturnType<typeof startTimeout>,
+  size: number,
 ];
 
 type DecodedPayload = [
@@ -100,7 +145,8 @@ const isHashTree = (tree: any, depth: number): boolean =>
 
 const isStamp = (stamp: any, depth: number): boolean =>
   isArray(stamp) &&
-  (size(stamp) == 1 || (size(stamp) == 2 && isHlc(stamp[1], Infinity))) &&
+  (size(stamp) == 1 ||
+    (size(stamp) == 2 && isString(stamp[1]) && isHlc(stamp[1], Infinity))) &&
   (depth
     ? isObject(stamp[0]) &&
       arrayEvery(objEntries(stamp[0]), ([, child]) => isStamp(child, depth - 1))
@@ -191,22 +237,22 @@ export const createPayloadDecoder = (
   onInvalid?: (error: Error) => void,
 ) => {
   const buffer: IdMap<Pending> = mapNew();
+  let bufferedSize = 0;
   let valid = true;
-
-  const setPendingTimeout = (bufferKey: Id) =>
-    startTimeout(() => collDel(buffer, bufferKey), fragmentTimeoutSeconds);
 
   const delPending = (bufferKey: Id, pending: Pending) => {
     stopTimeout(pending[4]);
+    bufferedSize -= pending[5];
     collDel(buffer, bufferKey);
   };
 
-  const invalid = () => {
+  const invalid = (error = errorNew(ERROR_SYNC_MESSAGE)) => {
     if (valid) {
       valid = false;
       mapForEach(buffer, (_bufferKey, pending) => stopTimeout(pending[4]));
       collClear(buffer);
-      onInvalid?.(errorNew(ERROR_SYNC_MESSAGE));
+      bufferedSize = 0;
+      onInvalid?.(error);
     }
   };
 
@@ -239,27 +285,45 @@ export const createPayloadDecoder = (
         if (messageId) {
           const index = parseInt(indexStr);
           const total = parseInt(totalStr);
-          if (
-            total > 0 &&
-            total <= MAX_FRAGMENT_COUNT &&
-            index >= 0 &&
-            index < total
-          ) {
+          if (total > MAX_FRAGMENT_COUNT) {
+            invalid(errorNew(ERROR_SYNC_OVERFLOW, 'fragments'));
+            return;
+          }
+          if (total > 0 && index >= 0 && index < total) {
             const bufferKey = clientId + MESSAGE_SEPARATOR + messageId;
-            const pending = mapEnsure(buffer, bufferKey, (): Pending => [
-              [],
-              [],
-              total,
-              total,
-              setPendingTimeout(bufferKey),
-            ]);
+            let pending = mapGet(buffer, bufferKey);
+            if (!pending) {
+              if (collSize(buffer) >= MAX_FRAGMENT_BUFFERS) {
+                invalid(errorNew(ERROR_SYNC_OVERFLOW, 'fragments'));
+                return;
+              }
+              pending = [
+                [],
+                [],
+                total,
+                total,
+                startTimeout(() => {
+                  const timedOut = mapGet(buffer, bufferKey);
+                  if (timedOut) {
+                    delPending(bufferKey, timedOut);
+                  }
+                }, fragmentTimeoutSeconds),
+                0,
+              ];
+              mapSet(buffer, bufferKey, pending);
+            }
             const [fragments, remainders] = pending;
             if (total == pending[3] && isUndefined(fragments[index])) {
-              stopTimeout(pending[4]);
-              pending[4] = setPendingTimeout(bufferKey);
+              const fragmentLength = getWebSocketPayloadSize(fragment);
+              if (bufferedSize + fragmentLength > MAX_WEBSOCKET_BUFFER_SIZE) {
+                invalid(errorNew(ERROR_SYNC_OVERFLOW, 'fragments'));
+                return;
+              }
               fragments[index] = fragment;
               remainders[index] = remainder;
               pending[2]--;
+              pending[5] += fragmentLength;
+              bufferedSize += fragmentLength;
             } else {
               invalid();
               return;
@@ -278,6 +342,29 @@ export const createPayloadDecoder = (
     }
   };
 };
+
+export const getPayloadCoalesceKey = (
+  clientId: Id,
+  payload: string,
+): string | undefined => {
+  let key: string | undefined;
+  ifPayloadValid(payload, (toClientId, remainder) => {
+    if (decodeProtocolMessage(remainder)?.[1] == 2) {
+      key = clientId + MESSAGE_SEPARATOR + toClientId;
+    }
+  });
+  return key;
+};
+
+export const isWebSocketPayloadTooLarge = (payload: string): boolean =>
+  getWebSocketPayloadSize(payload) > MAX_WEBSOCKET_BUFFER_SIZE;
+
+export const isWebSocketBackpressured = (
+  webSocket: {bufferedAmount?: number},
+  payload: string,
+): boolean =>
+  (webSocket.bufferedAmount ?? 0) + getWebSocketPayloadSize(payload) >
+  MAX_WEBSOCKET_BUFFER_SIZE;
 
 export const createPayloadReceiver = (
   receive: Receive,
@@ -305,15 +392,7 @@ const getFragments = (remainder: string, maxFragmentSize: number): string[] => {
   let fragment = EMPTY_STRING;
   let fragmentSize = 0;
   arrayForEach(strMatch(remainder, CODE_POINTS) ?? [], (codePoint) => {
-    const firstCodeUnit = codePoint.charCodeAt(0);
-    const codePointSize =
-      size(codePoint) > 1
-        ? 4
-        : firstCodeUnit < 0x80
-          ? 1
-          : firstCodeUnit < 0x800
-            ? 2
-            : 3;
+    const codePointSize = getWebSocketPayloadSize(codePoint);
     if (fragmentSize > 0 && fragmentSize + codePointSize > maxFragmentSize) {
       arrayPush(fragments, fragment);
       fragment = EMPTY_STRING;

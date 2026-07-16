@@ -9,9 +9,12 @@ const [, getNow, pause] = getTimeFunctions();
 
 class MockWebSocket {
   OPEN = 1;
+  CLOSED = 3;
   readyState = this.OPEN;
+  bufferedAmount = 0;
   sentPayloads: string[] = [];
   closeCalls = 0;
+  ignoredChannels = new Set<string>();
   readonly #listeners: {[event: string]: ((event: any) => void)[]} = {};
 
   addEventListener(event: string, listener: (event: any) => void): void {
@@ -29,7 +32,11 @@ class MockWebSocket {
     const [toClientId, remainder] = splitPayload(payload);
     if (toClientId == 'S') {
       const [requestId, message, controlAndBody] = JSON.parse(remainder);
-      if (message == -1 && controlAndBody[0] != 2) {
+      if (
+        message == -1 &&
+        controlAndBody[0] != 2 &&
+        !this.ignoredChannels.has(controlAndBody[1])
+      ) {
         queueMicrotask(() =>
           this.receive(
             'S\n' + JSON.stringify([requestId, message, controlAndBody]),
@@ -51,6 +58,10 @@ class MockWebSocket {
   reconnect(): void {
     this.readyState = this.OPEN;
     this.#listeners.open?.forEach((listener) => listener({}));
+  }
+
+  error(error: Error): void {
+    this.#listeners.error?.forEach((listener) => listener(error));
   }
 
   close(): void {
@@ -209,7 +220,9 @@ test('multiple stores resubscribe after reconnecting', async () => {
 
   const sentPayloadCount = webSocket.sentPayloads.length;
   webSocket.disconnect();
-  filesStore.setValue('updatedWhileOffline', true);
+  filesStore
+    .setValue('updatedWhileOffline', true)
+    .setValue('alsoUpdatedWhileOffline', true);
   webSocket.reconnect();
   await new Promise((resolve) => setTimeout(resolve, 20));
 
@@ -226,11 +239,160 @@ test('multiple stores resubscribe after reconnecting', async () => {
   expect(
     reconnectedPayloads.some((payload) => payload.startsWith('M\nfiles\n')),
   ).toBe(true);
+  expect(
+    reconnectedPayloads.filter(
+      (payload) => payload.startsWith('M\nfiles\n') && payload.includes(',2,['),
+    ),
+  ).toHaveLength(1);
 
   await Promise.all(
     synchronizers.map((synchronizer) => synchronizer.destroy()),
   );
   expect(webSocket.closeCalls).toBe(1);
+});
+
+test('multiplexed channel errors and timeouts keep their owners', async () => {
+  const filesErrors: any[] = [];
+  const editorErrors: any[] = [];
+  const webSocket = new MockWebSocket();
+  const filesSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    0.1,
+    undefined,
+    undefined,
+    (error) => filesErrors.push(error),
+  );
+  const editorSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+    0.01,
+    undefined,
+    undefined,
+    (error) => editorErrors.push(error),
+  );
+  const socketError = new Error('socket');
+
+  webSocket.error(socketError);
+  expect(filesErrors).toEqual([socketError]);
+  expect(editorErrors).toEqual([socketError]);
+  filesErrors.length = 0;
+  editorErrors.length = 0;
+
+  webSocket.ignoredChannels.add('editor');
+  webSocket.disconnect();
+  filesErrors.length = 0;
+  editorErrors.length = 0;
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  expect(filesErrors).toEqual([]);
+  expect(editorErrors.map(({message}) => message)).toEqual(['tinybase:4:1']);
+
+  const editorSubscriptions = () =>
+    webSocket.sentPayloads.filter((payload) =>
+      payload.includes('-1,[1,"editor"]'),
+    ).length;
+  const subscriptionsBeforeRetry = editorSubscriptions();
+  webSocket.ignoredChannels.delete('editor');
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  expect(editorSubscriptions()).toBe(subscriptionsBeforeRetry + 1);
+
+  await filesSynchronizer.destroy();
+  await editorSynchronizer.destroy();
+});
+
+test('queued multiplexed protocol traffic expires', async () => {
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    0.01,
+  );
+
+  webSocket.disconnect();
+  webSocket.receive('M\nfiles\nremote\n["expired",4,{}]');
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  expect(
+    webSocket.sentPayloads.some((payload) => payload.includes('"expired",0')),
+  ).toBe(false);
+
+  await synchronizer.destroy();
+});
+
+test('multiplexed queues have explicit overflow behavior', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const filesSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+  const editorSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+  );
+
+  webSocket.disconnect();
+  for (let request = 0; request < 1_001; request++) {
+    const channelId = request % 2 ? 'files' : 'editor';
+    webSocket.receive(
+      'M\n' + channelId + '\nremote\n["request' + request + '",4,{}]',
+    );
+  }
+
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:client');
+  expect(webSocket.closeCalls).toBe(1);
+
+  await filesSynchronizer.destroy();
+  await editorSynchronizer.destroy();
+});
+
+test('closed and backpressured WebSockets settle creation', async () => {
+  const closedWebSocket = new MockWebSocket();
+  closedWebSocket.readyState = closedWebSocket.CLOSED;
+  await expect(
+    createWsSynchronizer(
+      createMergeableStore(),
+      closedWebSocket as any,
+      'files',
+    ),
+  ).rejects.toThrow('tinybase:5');
+
+  const legacyWebSocket = new MockWebSocket();
+  legacyWebSocket.readyState = legacyWebSocket.CLOSED;
+  await expect(
+    createWsSynchronizer(createMergeableStore(), legacyWebSocket as any),
+  ).rejects.toThrow('tinybase:5');
+
+  const errors: Error[] = [];
+  const backpressuredWebSocket = new MockWebSocket();
+  backpressuredWebSocket.bufferedAmount = 16_777_216;
+  await expect(
+    createWsSynchronizer(
+      createMergeableStore(),
+      backpressuredWebSocket as any,
+      'files',
+      1,
+      undefined,
+      undefined,
+      (error) => errors.push(error),
+    ),
+  ).rejects.toThrow('tinybase:15:socket');
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:socket');
+  expect(backpressuredWebSocket.closeCalls).toBe(1);
 });
 
 test('legacy and multiple modes cannot share one WebSocket', async () => {

@@ -19,6 +19,7 @@ const {createWsSynchronizer} = WsClient;
 class MockWebSocket {
   OPEN = 1;
   readyState = this.OPEN;
+  bufferedAmount = 0;
   sentPayloads: string[] = [];
   closeCalls = 0;
   closeCode: number | undefined;
@@ -129,7 +130,6 @@ test('malformed websocket traffic is reported and disconnected', async () => {
     'peer\n[null,3,[[{},"invalid"],[{},"invalid"],1]]',
     'peer\n[null,4,null]',
     'peer\n[null,99,null]',
-    'peer\n0123456789ABCDEF\n0\n1000001\nx',
   ]) {
     const errors: Error[] = [];
     const received: any[] = [];
@@ -152,6 +152,68 @@ test('malformed websocket traffic is reported and disconnected', async () => {
 
     await synchronizer.destroy();
   }
+});
+
+test('fragment buffering limits are explicit', async () => {
+  for (const receiveOverflow of [
+    (webSocket: MockWebSocket) =>
+      webSocket.receive('peer\n0123456789ABCDEF\n0\n1001\nx'),
+    (webSocket: MockWebSocket) => {
+      for (let message = 0; message < 101; message++) {
+        webSocket.receive(
+          'peer\n' + message.toString().padStart(16, '0') + '\n0\n2\nx',
+        );
+      }
+    },
+    (webSocket: MockWebSocket) =>
+      webSocket.receive(
+        'peer\n0123456789ABCDEF\n0\n2\n' + 'x'.repeat(16_777_217),
+      ),
+  ]) {
+    const errors: Error[] = [];
+    const webSocket = new MockWebSocket();
+    const synchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      1,
+      undefined,
+      undefined,
+      (error) => errors.push(error),
+    );
+
+    receiveOverflow(webSocket);
+
+    expect(errors.map(({message}) => message)).toEqual([
+      'tinybase:15:fragments',
+    ]);
+    expect(webSocket.closeCalls).toBe(1);
+    expect(webSocket.closeCode).toBe(1013);
+    expect(webSocket.closeReason).toBe('tinybase:15:fragments');
+
+    await synchronizer.destroy();
+  }
+});
+
+test('legacy WebSocket backpressure is explicit', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    0.01,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  webSocket.bufferedAmount = 16_777_216;
+  await synchronizer.startSync();
+
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:socket');
+  expect(webSocket.closeCalls).toBe(1);
+  expect(webSocket.closeCode).toBe(1013);
+
+  await synchronizer.destroy();
 });
 
 test('malformed websocket traffic is not relayed', async () => {
@@ -624,6 +686,81 @@ describe('Lifecycle', () => {
     expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
 
     await closeWebSocket(webSocket2);
+    await wsServer.destroy();
+  });
+
+  test('pre-readiness content hashes are coalesced', async () => {
+    const port = 8064;
+    const [setup, resolveSetup] = getPromiseResolvers<any>();
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() => setup) as any,
+    );
+    const webSocket1 = await openWebSocket('path', port);
+    const webSocket2 = await openWebSocket('path', port);
+    const received: string[] = [];
+    webSocket2.on('message', (message) => received.push(message.toString()));
+
+    webSocket1.send('\n["one",2,[1,1]]');
+    webSocket1.send('\n["two",2,[2,2]]');
+    await pause();
+    resolveSetup(undefined);
+    await pause();
+
+    expect(received.filter((payload) => payload.includes(',2,['))).toHaveLength(
+      1,
+    );
+    expect(received[0]).toContain('["two",2,[2,2]]');
+
+    await closeWebSocket(webSocket1);
+    await closeWebSocket(webSocket2);
+    await wsServer.destroy();
+  });
+
+  test('pre-readiness queues expire', async () => {
+    const port = 8065;
+    const [setup, resolveSetup] = getPromiseResolvers<any>();
+    const errors: Error[] = [];
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() => setup) as any,
+      (error) => errors.push(error),
+      0.01,
+    );
+    const webSocket = await openWebSocket('path', port);
+    const closed = once(webSocket, 'close');
+
+    webSocket.send('\n["request",4,{}]');
+    await closed;
+
+    expect(errors.map(({message}) => message)).toContain('tinybase:15:server');
+
+    resolveSetup(undefined);
+    await pause();
+    await wsServer.destroy();
+  });
+
+  test('pre-readiness queues have a message cap', async () => {
+    const port = 8066;
+    const [setup, resolveSetup] = getPromiseResolvers<any>();
+    const errors: Error[] = [];
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      (() => setup) as any,
+      (error) => errors.push(error),
+    );
+    const webSocket = await openWebSocket('path', port);
+    const closed = once(webSocket, 'close');
+
+    for (let request = 0; request < 1_001; request++) {
+      webSocket.send('\n["request' + request + '",4,{}]');
+    }
+    await closed;
+
+    expect(errors.map(({message}) => message)).toContain('tinybase:15:server');
+
+    resolveSetup(undefined);
+    await pause();
     await wsServer.destroy();
   });
 
