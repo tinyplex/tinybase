@@ -11,6 +11,7 @@ import type {
   Relationships,
   Store,
 } from 'tinybase';
+import {createStore} from 'tinybase';
 import type {AnyPersister} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import type {
@@ -92,6 +93,7 @@ import {
 } from 'tinybase/ui-react';
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {NoSchemas, Store as StoreWithSchemas} from 'tinybase/with-schemas';
+import {expect, test} from 'vitest';
 import {
   testComponents,
   testCustomCheckpointComponents,
@@ -870,4 +872,57 @@ testProviderComponents('ui-react', componentHarness, {
   NestedDifferent: ContextNestedDifferent,
   ProvideThings: ContextProvideThings,
   NestedDefaults: ContextNestedDefaults,
+});
+
+const DuplicateProvidedStore = ({store}: {readonly store: Store}) => {
+  useProvideStore('store1', store);
+  return null;
+};
+
+const DuplicateProvidedStoreReader = ({
+  store1,
+  store2,
+}: {
+  readonly store1: Store;
+  readonly store2: Store;
+}) => {
+  const store = useStore('store1');
+  return <>{store == store1 ? 1 : store == store2 ? 2 : 0}</>;
+};
+
+const DuplicateProvidedStores = ({
+  show1,
+  show2,
+  store1,
+  store2,
+}: {
+  readonly show1: boolean;
+  readonly show2: boolean;
+  readonly store1: Store;
+  readonly store2: Store;
+}) => (
+  <Provider>
+    {show1 ? <DuplicateProvidedStore store={store1} /> : null}
+    {show2 ? <DuplicateProvidedStore store={store2} /> : null}
+    <DuplicateProvidedStoreReader store1={store1} store2={store2} />
+  </Provider>
+);
+
+test('duplicate provider registrations retain ownership', async () => {
+  const store1 = createStore();
+  const store2 = createStore();
+  const {container, rerender, unmount} = componentHarness.render(
+    DuplicateProvidedStores,
+    {show1: true, show2: true, store1, store2},
+  );
+  expect(container.textContent).toBe('2');
+
+  await rerender({show2: false});
+  expect(container.textContent).toBe('1');
+  await rerender({show2: true});
+  expect(container.textContent).toBe('2');
+  await rerender({show1: false});
+  expect(container.textContent).toBe('2');
+
+  unmount();
 });

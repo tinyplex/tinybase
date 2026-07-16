@@ -4,9 +4,17 @@ import type {
   Provider as ProviderDecl,
   ProviderProps,
 } from '../@types/ui-react/index.d.ts';
-import {arrayNew, arrayWith} from '../common/array.ts';
-import {objDel, objGet, objHas} from '../common/obj.ts';
-import {useCallback, useContext, useMemo, useState} from '../common/react.ts';
+import {arrayFilter, arrayNew, arrayPush, arrayWith} from '../common/array.ts';
+import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {objDel, objGet} from '../common/obj.ts';
+import {isUndefined, size} from '../common/other.ts';
+import {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from '../common/react.ts';
 import {ExtraThingsById, ThingsById} from './common/index.tsx';
 import {Context, ContextValue, ThingsByOffset} from './context.ts';
 
@@ -28,6 +36,8 @@ export const OFFSET_QUERIES = 4;
 export const OFFSET_CHECKPOINTS = 5;
 export const OFFSET_PERSISTER = 6;
 export const OFFSET_SYNCHRONIZER = 7;
+
+type ThingRegistration = [owner: object, thing: ThingsByOffset[Offsets]];
 
 const mergeParentThings = <Offset extends Offsets>(
   offset: Offset,
@@ -68,35 +78,69 @@ export const Provider: typeof ProviderDecl = ({
   const [extraThingsById, setExtraThingsById] = useState<ExtraThingsById>(
     () => arrayNew(8, () => ({})) as ExtraThingsById,
   );
+  const extraThingRegistrations = useRef<IdMap<ThingRegistration[]>[]>(
+    arrayNew(8, () => mapNew<Id, ThingRegistration[]>()),
+  ).current;
+  const setExtraThingById = useCallback(
+    <Offset extends Offsets>(
+      thingOffset: Offset,
+      id: Id,
+      thing: ThingsByOffset[Offset] | undefined,
+    ) =>
+      setExtraThingsById((extraThingsById) =>
+        objGet(extraThingsById[thingOffset] as any, id) == thing
+          ? extraThingsById
+          : (arrayWith(
+              extraThingsById,
+              thingOffset,
+              isUndefined(thing)
+                ? objDel(extraThingsById[thingOffset] as any, id)
+                : {
+                    ...extraThingsById[thingOffset],
+                    [id]: thing,
+                  },
+            ) as ExtraThingsById),
+      ),
+    [],
+  );
   const addExtraThingById = useCallback(
     <Offset extends Offsets>(
       thingOffset: Offset,
       id: Id,
       thing: ThingsByOffset[Offset],
-    ) =>
-      setExtraThingsById((extraThingsById) =>
-        objGet(extraThingsById[thingOffset] as any, id) == thing
-          ? extraThingsById
-          : (arrayWith(extraThingsById, thingOffset, {
-              ...extraThingsById[thingOffset],
-              [id]: thing,
-            } as any) as ExtraThingsById),
-      ),
-    [],
+      owner: object,
+    ) => {
+      const registrationsById = extraThingRegistrations[thingOffset];
+      const registrations = arrayFilter(
+        mapGet(registrationsById, id) ?? [],
+        ([registrationOwner]) => registrationOwner != owner,
+      );
+      arrayPush(registrations, [owner, thing]);
+      mapSet(registrationsById, id, registrations);
+      setExtraThingById(thingOffset, id, thing);
+    },
+    [extraThingRegistrations, setExtraThingById],
   );
 
   const delExtraThingById = useCallback(
-    (thingOffset: Offsets, id: Id) =>
-      setExtraThingsById((extraThingsById) =>
-        !objHas(extraThingsById[thingOffset], id)
-          ? extraThingsById
-          : (arrayWith(
-              extraThingsById,
-              thingOffset,
-              objDel(extraThingsById[thingOffset] as any, id),
-            ) as ExtraThingsById),
-      ),
-    [],
+    (thingOffset: Offsets, id: Id, owner: object) => {
+      const registrationsById = extraThingRegistrations[thingOffset];
+      const registrations = arrayFilter(
+        mapGet(registrationsById, id) ?? [],
+        ([registrationOwner]) => registrationOwner != owner,
+      );
+      mapSet(
+        registrationsById,
+        id,
+        isUndefined(registrations[0]) ? undefined : registrations,
+      );
+      setExtraThingById(
+        thingOffset,
+        id,
+        registrations[size(registrations) - 1]?.[1],
+      );
+    },
+    [extraThingRegistrations, setExtraThingById],
   );
 
   return (
