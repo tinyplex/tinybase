@@ -147,12 +147,28 @@ public JavaScript form, rather than TinyBase's private encoded-string form. Rich
 values are cloned before callbacks run, and callback results are validated
 against Store schemas and encoded only at the storage boundary.
 
-## Reactive Solid Undo And Redo Information
+## Lifecycle And UI Reliability
 
-The useUndoInformation and useRedoInformation primitives now return Accessor
-functions for their availability, checkpoint Id, and label entries. Existing
-tuples previously captured plain values when the primitive was created, so they
-did not update as checkpoint state changed.
+Middleware and Checkpoints now clean up and reuse their Store registrations
+safely across destroy-and-recreate cycles. Destroyed Middleware callbacks no
+longer remain active, repeated createCheckpoints calls no longer duplicate
+listeners, and transactions that return rich Store content to a structurally
+equivalent state no longer create phantom checkpoints.
+
+Solid primitives no longer register Store listeners during server rendering.
+React hooks that create Persisters and Synchronizers asynchronously now destroy
+stale or post-unmount results without replacing or destroying the current
+resource.
+
+Solid DOM table wrappers now keep table, query, and slice metadata reactive as
+their inputs change. The useUndoInformation and useRedoInformation primitives
+also now return Accessor functions for their availability, checkpoint Id, and
+label entries.
+
+React and Solid sorted-table paginators now defer offset corrections until
+after rendering. Provider registrations in both UI modules also track ownership
+when Ids are duplicated, so removing one registration preserves or restores the
+correct remaining resource.
 
 ## PartyKit Authorization
 
