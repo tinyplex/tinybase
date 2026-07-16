@@ -17,6 +17,7 @@ import type {
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {
   arrayClear,
+  arrayFilter,
   arrayMap,
   arrayPush,
   arrayShift,
@@ -60,10 +61,15 @@ export const Persists = {
 };
 
 type Action = () => Promise<any>;
-type ScheduledAction = [action: Action, complete?: () => void];
+type ScheduledAction = [
+  action: Action,
+  complete: (() => void) | undefined,
+  owner: object,
+];
 
 const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, ScheduledAction[]> = mapNew();
+const scheduleReferences: Map<any, number> = mapNew();
 
 const getStoreFunctions = (
   persist: PersistsEnum | any = PersistsValues.StoreOnly,
@@ -142,9 +148,17 @@ export const createCustomPersister = <
   let scheduledAction;
   let autoLoadHandle: ListenerHandle | undefined;
   let autoSaveListenerId: Id | undefined;
+  let destroyed = 0;
+  const scheduleOwner = {};
+  const extraDestroy = extra.destroy;
 
   mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
+  mapSet(
+    scheduleReferences,
+    scheduleId,
+    (mapGet(scheduleReferences, scheduleId) ?? 0) + 1,
+  );
 
   const statusListeners: IdSet2 = mapNew();
 
@@ -183,6 +197,19 @@ export const createCustomPersister = <
         complete?.();
       }
       mapSet(scheduleRunning, scheduleId, 0);
+      pruneSchedule();
+    }
+  };
+
+  const pruneSchedule = (): void => {
+    if (
+      !mapGet(scheduleReferences, scheduleId) &&
+      !mapGet(scheduleRunning, scheduleId) &&
+      !mapGet(scheduleActions, scheduleId)?.length
+    ) {
+      mapSet(scheduleRunning, scheduleId);
+      mapSet(scheduleActions, scheduleId);
+      mapSet(scheduleReferences, scheduleId);
     }
   };
 
@@ -374,6 +401,7 @@ export const createCustomPersister = <
               (action, index): ScheduledAction => [
                 action,
                 index == actions.length - 1 ? resolve : undefined,
+                scheduleOwner,
               ],
             ),
           )
@@ -386,14 +414,38 @@ export const createCustomPersister = <
 
   const getStore = (): Store => store;
 
-  const destroy = (): Promise<Persister<Persist>> => {
-    arrayMap(
-      arrayClear(
-        mapGet(scheduleActions, scheduleId) as ScheduledAction[],
-      ),
-      ([, complete]) => complete?.(),
-    );
-    return stopAutoPersisting();
+  const destroy = async (): Promise<Persister<Persist>> => {
+    if (!destroyed) {
+      destroyed = 1;
+      const scheduledActions = mapGet(
+        scheduleActions,
+        scheduleId,
+      ) as ScheduledAction[];
+      const remainingActions = arrayFilter(
+        scheduledActions,
+        ([, complete, owner]) => {
+          if (owner == scheduleOwner) {
+            complete?.();
+            return false;
+          }
+          return true;
+        },
+      );
+      arrayClear(scheduledActions);
+      arrayPush(scheduledActions, ...remainingActions);
+      try {
+        if (extraDestroy) {
+          await extraDestroy();
+        } else {
+          await stopAutoPersisting();
+        }
+      } finally {
+        const references = (mapGet(scheduleReferences, scheduleId) ?? 1) - 1;
+        mapSet(scheduleReferences, scheduleId, references || undefined);
+        pruneSchedule();
+      }
+    }
+    return persister;
   };
 
   const getStats = (): PersisterStats => ({loads, saves});
@@ -418,9 +470,9 @@ export const createCustomPersister = <
 
     schedule,
     getStore,
-    destroy,
     getStats,
     ...extra,
+    destroy,
   };
 
   return objFreeze(persister as Persister<Persist>);

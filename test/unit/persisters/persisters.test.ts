@@ -626,3 +626,42 @@ test('observes changes during the initial auto-load', async () => {
   expect(store.getCell('pets', 'fido', 'species')).toBe('cat');
   expect(persister.getStats()).toEqual({loads: 2, saves: 0});
 });
+
+test('releases shared scheduler state on destroy', async () => {
+  let releaseFirstAction = noop;
+  let secondActionRan = false;
+  const firstActionGate = new Promise<void>(
+    (resolve) => (releaseFirstAction = resolve),
+  );
+  const scheduleId = {};
+  const createPersister = () =>
+    (createCustomPersister as any)(
+      createStore(),
+      asyncNoop,
+      asyncNoop,
+      noop,
+      noop,
+      undefined,
+      undefined,
+      {},
+      0,
+      scheduleId,
+    ) as Persister;
+  const persister1 = createPersister();
+  const persister2 = createPersister();
+
+  const firstSchedule = persister1.schedule(() => firstActionGate);
+  const secondSchedule = persister2.schedule(async () => {
+    secondActionRan = true;
+  });
+  await persister1.destroy();
+  releaseFirstAction();
+  await firstSchedule;
+  await secondSchedule;
+  expect(secondActionRan).toBe(true);
+
+  await persister2.destroy();
+  const persister3 = createPersister();
+  await persister3.schedule(asyncNoop);
+  await persister3.destroy();
+});
