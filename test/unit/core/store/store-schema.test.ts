@@ -1950,14 +1950,17 @@ describe.each([
           expectNoChanges(listener);
         });
 
-        test('to object with pre-encoded json string', () => {
+        test('to object with reserved json string', () => {
           const store = createStore();
           store.setTablesSchema({t1: {c1: {type: 'object'}}});
           const listener = createStoreListener(store);
           listener.listenToInvalidCell('invalids', null, null, null);
           // @ts-ignore
           store.setCell('t1', 'r1', 'c1', '\uFFFD{"a":1}');
-          expect(store.getCell('t1', 'r1', 'c1')).toEqual({a: 1});
+          expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+          expectChanges(listener, 'invalids', {
+            t1: {r1: {c1: ['\uFFFD{"a":1}']}},
+          });
           expectNoChanges(listener);
         });
 
@@ -2855,19 +2858,19 @@ describe.each([
           // @ts-ignore
           .setValue('v1', [1, 2])
           .setValue('v1', {a: 1})
-          // @ts-ignore - pre-encoded JSON string (e.g., as loaded from persistence)
+          // @ts-ignore - reserved internal JSON encoding
           .setValue('v1', '\uFFFD{"b":2}')
           .setValue('v1', {c: 3});
         expect(store.getValues()).toEqual({v1: {c: 3}});
-        expectChanges(listener, '/', {v1: {a: 1}}, {v1: {b: 2}}, {v1: {c: 3}});
+        expectChanges(listener, '/', {v1: {a: 1}}, {v1: {c: 3}});
+        expectChanges(listener, '/v*', {v1: {a: 1}}, {v1: {c: 3}});
         expectChanges(
           listener,
-          '/v*',
-          {v1: {a: 1}},
-          {v1: {b: 2}},
-          {v1: {c: 3}},
+          'invalids',
+          {v1: [1]},
+          {v1: [[1, 2]]},
+          {v1: ['\uFFFD{"b":2}']},
         );
-        expectChanges(listener, 'invalids', {v1: [1]}, {v1: [[1, 2]]});
         expectNoChanges(listener);
       });
 
@@ -2884,13 +2887,19 @@ describe.each([
           // @ts-ignore
           .setValue('v1', {a: 1})
           .setValue('v1', [])
-          // @ts-ignore - pre-encoded JSON string (e.g., as loaded from persistence)
+          // @ts-ignore - reserved internal JSON encoding
           .setValue('v1', '\uFFFD[1,2]')
           .setValue('v1', [3, 4]);
         expect(store.getValues()).toEqual({v1: [3, 4]});
-        expectChanges(listener, '/', {v1: []}, {v1: [1, 2]}, {v1: [3, 4]});
-        expectChanges(listener, '/v*', {v1: []}, {v1: [1, 2]}, {v1: [3, 4]});
-        expectChanges(listener, 'invalids', {v1: [1]}, {v1: [{a: 1}]});
+        expectChanges(listener, '/', {v1: []}, {v1: [3, 4]});
+        expectChanges(listener, '/v*', {v1: []}, {v1: [3, 4]});
+        expectChanges(
+          listener,
+          'invalids',
+          {v1: [1]},
+          {v1: [{a: 1}]},
+          {v1: ['\uFFFD[1,2]']},
+        );
         expectNoChanges(listener);
       });
     });
