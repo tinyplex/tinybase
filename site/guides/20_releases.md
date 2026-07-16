@@ -113,12 +113,12 @@ inside objects and arrays.
 
 ## JSON-Compatible Object And Array Contents
 
-Object and array Cells and Values are now documented as supporting contents
-that recursively consist of strings, finite numbers, booleans, `null`, plain
-objects, and arrays. TinyBase validates the top-level container but relies on
-JSON serialization for nested contents, so other JavaScript values may be
-changed or omitted. Values that cannot be serialized are rejected as invalid
-and ignored silently.
+Object and array Cells and Values are now documented as supporting contents that
+recursively consist of strings, finite numbers, booleans, `null`, plain objects,
+and arrays. TinyBase validates the top-level container but relies on JSON
+serialization for nested contents, so other JavaScript values may be changed or
+omitted. Values that cannot be serialized are rejected as invalid and ignored
+silently.
 
 ## Stable Object And Array Grouping And Indexing
 
@@ -143,8 +143,8 @@ return object and array defaults in their original form.
 ## Public Middleware Values
 
 Middleware callbacks now receive object and array Cells and Values in their
-public JavaScript form, rather than TinyBase's private encoded-string form.
-Rich values are cloned before callbacks run, and callback results are validated
+public JavaScript form, rather than TinyBase's private encoded-string form. Rich
+values are cloned before callbacks run, and callback results are validated
 against Store schemas and encoded only at the storage boundary.
 
 ## PartyKit Authorization
@@ -163,16 +163,26 @@ intact when a fragment is encoded and sent as an individual WebSocket message.
 
 ## Validated WebSocket Protocol Traffic
 
-WebSocket synchronization traffic is now decoded without throwing and
-validated before dispatch or relay. Invalid JSON, tuple shapes, standard
-message bodies, multiplexing envelopes, and fragment metadata are reported as
-error 14, and the peer that sent them is closed with WebSocket status code
-`1007`.
+WebSocket synchronization traffic is now decoded without throwing and validated
+before dispatch or relay. Invalid JSON, tuple shapes, standard message bodies,
+multiplexing envelopes, and fragment metadata are reported as error 14, and the
+peer that sent them is closed with WebSocket status code `1007`.
 
 Servers wait for fragmented messages to be fully decoded before relaying them,
-so malformed traffic is not forwarded to other clients or multiplexed
-channels. WsServerDurableObject subclasses can override onIgnoredError to
-observe these failures.
+so malformed traffic is not forwarded to other clients or multiplexed channels.
+WsServerDurableObject subclasses can override onIgnoredError to observe these
+failures.
+
+## Reliable WebSocket Server Lifecycle
+
+WsServer now handles asynchronous path setup and teardown without leaving failed
+or disconnected clients behind. A rejected Persister factory can be retried,
+clients that disconnect during setup are removed, and cleanup for an old path
+cannot delete a replacement that connected in the meantime.
+
+Path state is also cleared even if resource cleanup fails. The destroy method
+now closes active WebSockets, waits for the underlying WebSocketServer to close,
+and fully removes its path, client, and listener state before resolving.
 
 ---
 

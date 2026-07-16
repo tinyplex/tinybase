@@ -13,20 +13,24 @@ import type {
   WsServerStats,
   createWsServer as createWsServerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
-import {arrayForEach, arrayPush} from '../../common/array.ts';
+import {
+  arrayForEach,
+  arrayMap,
+  arrayPush,
+  arrayReduce,
+} from '../../common/array.ts';
 import {
   collClear,
   collDel,
   collHas,
   collIsEmpty,
   collSize,
-  collSize2,
+  collValues,
 } from '../../common/coll.ts';
-import {ERROR_SYNC_MESSAGE, errorNew} from '../../common/error.ts';
+import {ERROR_SYNC_MESSAGE, errorNew, tryCatch} from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {
   IdMap,
-  IdMap2,
   mapEnsure,
   mapForEach,
   mapGet,
@@ -37,14 +41,16 @@ import {
 } from '../../common/map.ts';
 import {objFreeze} from '../../common/obj.ts';
 import {
+  addEmitterListener,
   ifNotUndefined,
   isArray,
   isString,
   isUndefined,
   noop,
   promiseAll,
+  promiseNew,
 } from '../../common/other.ts';
-import {IdSet2} from '../../common/set.ts';
+import {IdSet2, setAdd, setNew} from '../../common/set.ts';
 import {
   CLOSE,
   CONNECTION,
@@ -73,7 +79,8 @@ import {
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
-enum Sc {
+// Positional enums for better minification and performance
+enum ServerClient {
   State = 0,
   Persister = 1,
   Synchronizer = 2,
@@ -81,10 +88,18 @@ enum Sc {
   Buffer = 4,
   Then = 5,
 }
-enum ScState {
+enum State {
+  Configuring,
   Ready,
   Configured,
   Starting,
+}
+enum Path {
+  Clients,
+  ServerClient,
+  Configuring,
+  Ready,
+  Stopping,
 }
 
 const PATH_REGEX = /\/([^?]*)/;
@@ -109,82 +124,118 @@ export const createWsServer = (<
 ) => {
   type Client = [webSocket: WebSocket, channelId?: Id];
   type ServerClient = [
-    state: ScState,
+    state: State,
     persister: PathPersister,
     synchronizer: Synchronizer,
     send: (payload: string) => void,
     buffer: [clientId: Id, payload: string][],
     then: (store: MergeableStore) => void,
   ];
+  type Path = [
+    clients: IdMap<Client>,
+    serverClient: ServerClient,
+    configuring: Promise<void>,
+    ready?: Promise<void>,
+    stopping?: Promise<void>,
+  ];
+  type PathClient = [pathId: Id, path: Path];
 
   const pathIdListeners: IdSet2 = mapNew();
   const clientIdListeners: IdSet2 = mapNew();
-  const clientsByPath: IdMap2<Client> = mapNew();
-  const serverClientsByPath: IdMap<ServerClient> = mapNew();
-  const configuringByPath: IdMap<Promise<void>> = mapNew();
-  const readyByPath: IdMap<Promise<void>> = mapNew();
+  const paths: IdMap<Path> = mapNew();
+  const webSockets = setNew<WebSocket>();
+  const removeServerListeners: (() => void)[] = [];
+  const removeListenersByWebSocket = mapNew<WebSocket, (() => void)[]>();
+  let destroying: Promise<void> | undefined;
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => wsServer,
   );
 
-  const configureServerClient = async (
-    serverClient: ServerClient,
-    pathId: Id,
+  const addWebSocketListener = (
+    webSocket: WebSocket,
+    event: string,
+    listener: (...args: any[]) => void,
   ) =>
-    ifNotUndefined(
-      await createPersisterForPath?.(pathId),
-      (persisterMaybeThen) => {
-        serverClient[Sc.State] = 1;
-        serverClient[Sc.Persister] = isArray(persisterMaybeThen)
-          ? persisterMaybeThen[0]
-          : persisterMaybeThen;
-        serverClient[Sc.Synchronizer] = createCustomSynchronizer(
-          serverClient[Sc.Persister].getStore() as MergeableStore,
-          (toClientId, requestId, message, body) =>
-            arrayForEach(
-              createPayloads(
-                toClientId,
-                requestId,
-                message,
-                body,
-                fragmentSize,
-              ),
-              (payload) => handleMessage(pathId, SERVER_CLIENT_ID, payload),
-            ),
-          (receive: Receive) => {
-            serverClient[Sc.Send] = createPayloadReceiver(
-              receive,
-              requestTimeoutSeconds,
-            );
-          },
-          noop,
-          requestTimeoutSeconds,
-          undefined,
-          undefined,
-          onIgnoredError,
-        );
-        serverClient[Sc.Buffer] = [];
-        serverClient[Sc.Then] = isArray(persisterMaybeThen)
-          ? persisterMaybeThen[1]
-          : (_) => 0;
-      },
+    arrayPush(
+      mapEnsure(removeListenersByWebSocket, webSocket, () => []),
+      addEmitterListener(webSocket, event, listener),
     );
 
-  const startServerClient = async (serverClient: ServerClient) => {
-    serverClient[Sc.State] = ScState.Starting;
-    await serverClient[Sc.Persister].startAutoLoad();
-    await serverClient[Sc.Persister].startAutoSave();
-    await serverClient[Sc.Synchronizer].startSync();
-    serverClient[Sc.Then](
-      serverClient[Sc.Persister].getStore() as MergeableStore,
+  const removeWebSocketListeners = (webSocket: WebSocket) => {
+    ifNotUndefined(
+      mapGet(removeListenersByWebSocket, webSocket),
+      (removeListeners) => arrayForEach(removeListeners, (remove) => remove()),
     );
-    serverClient[Sc.State] = ScState.Ready;
+    collDel(removeListenersByWebSocket, webSocket);
+  };
+
+  const configureServerClient = async (path: Path, pathId: Id) => {
+    const serverClient = path[Path.ServerClient];
+    const persisterMaybeThen = await createPersisterForPath?.(pathId);
+    if (isUndefined(persisterMaybeThen)) {
+      serverClient[ServerClient.State] = State.Ready;
+      return;
+    }
+    serverClient[ServerClient.State] = State.Configured;
+    serverClient[ServerClient.Persister] = isArray(persisterMaybeThen)
+      ? persisterMaybeThen[0]
+      : persisterMaybeThen;
+    serverClient[ServerClient.Synchronizer] = createCustomSynchronizer(
+      serverClient[ServerClient.Persister].getStore() as MergeableStore,
+      (toClientId, requestId, message, body) =>
+        arrayForEach(
+          createPayloads(toClientId, requestId, message, body, fragmentSize),
+          (payload) => handleMessage(path, SERVER_CLIENT_ID, payload),
+        ),
+      (receive: Receive) => {
+        serverClient[ServerClient.Send] = createPayloadReceiver(
+          receive,
+          requestTimeoutSeconds,
+        );
+      },
+      noop,
+      requestTimeoutSeconds,
+      undefined,
+      undefined,
+      onIgnoredError,
+    );
+    serverClient[ServerClient.Then] = isArray(persisterMaybeThen)
+      ? persisterMaybeThen[1]
+      : (_) => 0;
+  };
+
+  const startServerClient = async (serverClient: ServerClient) => {
+    serverClient[ServerClient.State] = State.Starting;
+    await serverClient[ServerClient.Persister].startAutoLoad();
+    await serverClient[ServerClient.Persister].startAutoSave();
+    await serverClient[ServerClient.Synchronizer].startSync();
+    serverClient[ServerClient.Then](
+      serverClient[ServerClient.Persister].getStore() as MergeableStore,
+    );
+    serverClient[ServerClient.State] = State.Ready;
   };
 
   const stopServerClient = async (serverClient: ServerClient) => {
-    await serverClient[Sc.Persister]?.destroy();
-    await serverClient[Sc.Synchronizer]?.destroy();
+    let errorToThrow: any;
+    let failed = false;
+    const captureError = (error: any) => {
+      if (!failed) {
+        errorToThrow = error;
+      }
+      failed = true;
+    };
+    await tryCatch(
+      () => serverClient[ServerClient.Persister]?.destroy(),
+      captureError,
+    );
+    await tryCatch(
+      () => serverClient[ServerClient.Synchronizer]?.destroy(),
+      captureError,
+    );
+    if (failed) {
+      throw errorToThrow;
+    }
   };
 
   const sendToClient = ([client, channelId]: Client, payload: string) =>
@@ -194,14 +245,14 @@ export const createWsServer = (<
         : createMultiplePayload(channelId, payload),
     );
 
-  const handleMessage = (pathId: Id, clientId: Id, payload: string) => {
-    const clients = mapGet(clientsByPath, pathId);
-    const serverClient = mapGet(serverClientsByPath, pathId);
+  const handleMessage = (path: Path, clientId: Id, payload: string) => {
+    const clients = path[Path.Clients];
+    const serverClient = path[Path.ServerClient];
     ifPayloadValid(payload, (toClientId, remainder) => {
       const forwardedPayload = createRawPayload(clientId, remainder);
       if (toClientId === EMPTY_STRING) {
         if (clientId !== SERVER_CLIENT_ID) {
-          serverClient?.[Sc.Send]?.(forwardedPayload);
+          serverClient?.[ServerClient.Send]?.(forwardedPayload);
         }
         mapForEach(clients, (otherClientId, otherClient) =>
           otherClientId !== clientId
@@ -209,7 +260,7 @@ export const createWsServer = (<
             : 0,
         );
       } else if (toClientId === SERVER_CLIENT_ID) {
-        serverClient?.[Sc.Send]?.(forwardedPayload);
+        serverClient?.[ServerClient.Send]?.(forwardedPayload);
       } else {
         ifNotUndefined(mapGet(clients, toClientId), (client) =>
           sendToClient(client, forwardedPayload),
@@ -218,83 +269,140 @@ export const createWsServer = (<
     });
   };
 
-  const handleOrBufferMessage = (pathId: Id, clientId: Id, payload: string) => {
-    const serverClient = mapGet(serverClientsByPath, pathId);
-    if (serverClient?.[Sc.State] == ScState.Ready) {
-      handleMessage(pathId, clientId, payload);
-    } else if (serverClient) {
-      arrayPush(serverClient[Sc.Buffer], [clientId, payload]);
+  const handleOrBufferMessage = (path: Path, clientId: Id, payload: string) => {
+    const serverClient = path[Path.ServerClient];
+    if (
+      !path[Path.Stopping] &&
+      collHas(path[Path.Clients], clientId) &&
+      serverClient[ServerClient.State] == State.Ready
+    ) {
+      handleMessage(path, clientId, payload);
+    } else if (!path[Path.Stopping] && collHas(path[Path.Clients], clientId)) {
+      arrayPush(serverClient[ServerClient.Buffer], [clientId, payload]);
     }
   };
 
   const handleDecodedMessage = (
-    pathId: Id,
+    path: Path,
     clientId: Id,
     toClientId: Id,
     remainders: string[],
   ) =>
     arrayForEach(remainders, (remainder) =>
       handleOrBufferMessage(
-        pathId,
+        path,
         clientId,
         createRawPayload(toClientId, remainder),
       ),
     );
 
-  const addClientToPath = async (
-    pathId: Id,
-    clientId: Id,
-    client: Client,
-  ): Promise<{ready: Promise<void> | undefined}> => {
-    const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, Client>);
-    const serverClient: ServerClient = mapEnsure(
-      serverClientsByPath,
-      pathId,
-      () => [ScState.Ready] as any,
-    );
-    let configuring = mapGet(configuringByPath, pathId);
-    if (!configuring) {
-      callListeners(pathIdListeners, undefined, pathId, 1);
-      configuring = configureServerClient(serverClient, pathId);
-      mapSet(configuringByPath, pathId, configuring);
-    }
-    await configuring;
-
-    mapSet(clients, clientId, client);
-    callListeners(clientIdListeners, [pathId], clientId, 1);
-
-    let ready = mapGet(readyByPath, pathId);
-    if (!ready && serverClient[Sc.State] == ScState.Configured) {
-      ready = (async () => {
-        await startServerClient(serverClient);
-        arrayForEach(serverClient[Sc.Buffer], ([fromClientId, payload]) =>
-          handleMessage(pathId, fromClientId, payload),
+  const stopPath = (pathId: Id, path: Path): Promise<void> => {
+    if (!path[Path.Stopping]) {
+      path[Path.Stopping] = (async () => {
+        let errorToThrow: any;
+        let failed = false;
+        await tryCatch(() => path[Path.Configuring]);
+        await tryCatch(() => path[Path.Ready]);
+        await tryCatch(
+          () => stopServerClient(path[Path.ServerClient]),
+          (error) => {
+            errorToThrow = error;
+            failed = true;
+          },
         );
-        serverClient[Sc.Buffer] = [];
+        collClear(path[Path.Clients]);
+        if (mapGet(paths, pathId) === path) {
+          collDel(paths, pathId);
+          callListeners(pathIdListeners, undefined, pathId, -1);
+        }
+        if (failed) {
+          throw errorToThrow;
+        }
       })();
-      mapSet(readyByPath, pathId, ready);
     }
-    return {ready};
+    return path[Path.Stopping];
   };
 
-  const delClientFromPath = async (pathId: Id, clientId: Id) => {
-    const clients = mapGet(clientsByPath, pathId);
+  const createPath = (pathId: Id, replacing: boolean): Path => {
+    const path = [
+      mapNew(),
+      [State.Configuring, undefined, undefined, undefined, []],
+    ] as unknown as Path;
+    mapSet(paths, pathId, path);
+    if (!replacing) {
+      callListeners(pathIdListeners, undefined, pathId, 1);
+    }
+    path[Path.Configuring] = configureServerClient(path, pathId);
+    return path;
+  };
+
+  const startPath = (path: Path): Promise<void> | undefined => {
+    const serverClient = path[Path.ServerClient];
+    if (!path[Path.Ready]) {
+      path[Path.Ready] = (async () => {
+        if (serverClient[ServerClient.State] == State.Configured) {
+          await startServerClient(serverClient);
+        }
+        arrayForEach(
+          serverClient[ServerClient.Buffer],
+          ([fromClientId, payload]) =>
+            handleMessage(path, fromClientId, payload),
+        );
+        serverClient[ServerClient.Buffer] = [];
+      })();
+    }
+    return path[Path.Ready];
+  };
+
+  const delClientFromPath = async (pathId: Id, path: Path, clientId: Id) => {
+    const clients = path[Path.Clients];
     if (collHas(clients, clientId)) {
       collDel(clients, clientId);
       callListeners(clientIdListeners, [pathId], clientId, -1);
       if (collIsEmpty(clients)) {
-        await mapGet(readyByPath, pathId);
-        await ifNotUndefined(
-          mapGet(serverClientsByPath, pathId),
-          stopServerClient,
-        );
-        collDel(readyByPath, pathId);
-        collDel(configuringByPath, pathId);
-        collDel(serverClientsByPath, pathId);
-        collDel(clientsByPath, pathId);
-        callListeners(pathIdListeners, undefined, pathId, -1);
+        await stopPath(pathId, path);
       }
     }
+  };
+
+  const addClientToPath = (
+    pathId: Id,
+    clientId: Id,
+    client: Client,
+  ): [Path, Promise<void>] => {
+    const existingPath = mapGet(paths, pathId);
+    const path =
+      !existingPath || existingPath[Path.Stopping]
+        ? createPath(pathId, !!existingPath)
+        : existingPath;
+    mapSet(path[Path.Clients], clientId, client);
+    callListeners(clientIdListeners, [pathId], clientId, 1);
+    return [
+      path,
+      (async () => {
+        let errorToThrow: any;
+        let failed = false;
+        await tryCatch(
+          async () => {
+            await path[Path.Configuring];
+            if (collHas(path[Path.Clients], clientId) && !path[Path.Stopping]) {
+              await startPath(path);
+            }
+          },
+          (error) => {
+            errorToThrow = error;
+            failed = true;
+          },
+        );
+        if (failed) {
+          await tryCatch(
+            () => delClientFromPath(pathId, path, clientId),
+            onIgnoredError,
+          );
+          throw errorToThrow;
+        }
+      })(),
+    ];
   };
 
   const addLegacyClient = async (
@@ -302,15 +410,21 @@ export const createWsServer = (<
     clientId: Id,
     pathId: Id,
   ) => {
-    const {ready} = await addClientToPath(pathId, clientId, [client]);
+    const [path, ready] = addClientToPath(pathId, clientId, [client]);
     const decode = createPayloadDecoder(
       (toClientId, remainders) =>
-        handleDecodedMessage(pathId, clientId, toClientId, remainders),
+        handleDecodedMessage(path, clientId, toClientId, remainders),
       requestTimeoutSeconds,
       createInvalidPayloadHandler(client, onIgnoredError),
     );
-    client.on(MESSAGE, (data) => decode(data.toString(UTF8)));
-    client.on(CLOSE, () => delClientFromPath(pathId, clientId));
+    addWebSocketListener(client, MESSAGE, (data) =>
+      decode(data.toString(UTF8)),
+    );
+    addWebSocketListener(client, CLOSE, () =>
+      delClientFromPath(pathId, path, clientId).catch((error) =>
+        onIgnoredError?.(error),
+      ),
+    );
     await ready;
   };
 
@@ -319,7 +433,7 @@ export const createWsServer = (<
     clientId: Id,
     basePathId: Id,
   ) => {
-    const pathsByChannel: IdMap<Id> = mapNew();
+    const pathsByChannel: IdMap<PathClient> = mapNew();
     const decodersByChannel: IdMap<(payload: string) => void> = mapNew();
     const invalid = createInvalidPayloadHandler(client, onIgnoredError);
     let negotiated = false;
@@ -351,12 +465,19 @@ export const createWsServer = (<
       ) {
         const pathId = basePathId + (basePathId ? '/' : EMPTY_STRING) + body;
         if (!collHas(pathsByChannel, body)) {
-          const {ready} = await addClientToPath(pathId, clientId, [
+          const [path, ready] = addClientToPath(pathId, clientId, [
             client,
             body,
           ]);
-          mapSet(pathsByChannel, body, pathId);
-          await ready;
+          mapSet(pathsByChannel, body, [pathId, path]);
+          await tryCatch(
+            () => ready,
+            (error) => {
+              collDel(pathsByChannel, body);
+              collDel(decodersByChannel, body);
+              throw error;
+            },
+          );
         }
         sendControl(requestId, control, body);
       } else if (
@@ -364,15 +485,15 @@ export const createWsServer = (<
         control == MultipleControl.Unsubscribe &&
         isString(body)
       ) {
-        await ifNotUndefined(mapGet(pathsByChannel, body), (pathId) =>
-          delClientFromPath(pathId, clientId),
+        await ifNotUndefined(mapGet(pathsByChannel, body), ([pathId, path]) =>
+          delClientFromPath(pathId, path, clientId),
         );
         collDel(pathsByChannel, body);
         collDel(decodersByChannel, body);
       }
     };
 
-    client.on(MESSAGE, (data) => {
+    addWebSocketListener(client, MESSAGE, (data) => {
       const payload = data.toString(UTF8);
       let controlPromise: Promise<void> | undefined;
       const control = ifMultipleControlPayloadValid(
@@ -380,25 +501,21 @@ export const createWsServer = (<
         (requestId, controlType, body) =>
           (controlPromise = handleControl(requestId, controlType, body)),
       );
-      controlPromise?.catch(onIgnoredError);
+      controlPromise?.catch((error) => onIgnoredError?.(error));
       const channel = ifMultiplePayloadValid(
         payload,
         (channelId, channelPayload) => {
-          const pathId = negotiated
+          const pathClient = negotiated
             ? mapGet(pathsByChannel, channelId)
             : undefined;
-          if (isUndefined(pathId)) {
+          if (isUndefined(pathClient)) {
             invalid(errorNew(ERROR_SYNC_MESSAGE));
           } else {
+            const [, path] = pathClient;
             mapEnsure(decodersByChannel, channelId, () =>
               createPayloadDecoder(
                 (toClientId, remainders) =>
-                  handleDecodedMessage(
-                    pathId,
-                    clientId,
-                    toClientId,
-                    remainders,
-                  ),
+                  handleDecodedMessage(path, clientId, toClientId, remainders),
                 requestTimeoutSeconds,
                 invalid,
               ),
@@ -411,38 +528,57 @@ export const createWsServer = (<
       }
     });
 
-    client.on(CLOSE, () =>
+    addWebSocketListener(client, CLOSE, () =>
       promiseAll(
-        mapMap(pathsByChannel, (pathId) => delClientFromPath(pathId, clientId)),
-      ),
+        mapMap(pathsByChannel, ([pathId, path]) =>
+          delClientFromPath(pathId, path, clientId),
+        ),
+      ).catch((error) => onIgnoredError?.(error)),
     );
   };
 
-  webSocketServer.on(CONNECTION, (client, request) =>
-    ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
-      ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
-        if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
-          addMultipleClient(client, clientId, pathId);
-        } else {
-          addLegacyClient(client, clientId, pathId).catch(onIgnoredError);
-        }
-        if (onIgnoredError) {
-          client.on(ERROR, onIgnoredError);
-        }
-      }),
-    ),
+  arrayPush(
+    removeServerListeners,
+    addEmitterListener(webSocketServer, CONNECTION, (client, request) => {
+      setAdd(webSockets, client);
+      if (destroying) {
+        client.close();
+      } else {
+        ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
+          ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
+            if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
+              addMultipleClient(client, clientId, pathId);
+            } else {
+              addLegacyClient(client, clientId, pathId).catch((error) =>
+                onIgnoredError?.(error),
+              );
+            }
+            if (onIgnoredError) {
+              addWebSocketListener(client, ERROR, onIgnoredError);
+            }
+          }),
+        );
+      }
+      addWebSocketListener(client, CLOSE, () => {
+        collDel(webSockets, client);
+        removeWebSocketListeners(client);
+      });
+    }),
   );
 
   if (onIgnoredError) {
-    webSocketServer.on(ERROR, onIgnoredError);
+    arrayPush(
+      removeServerListeners,
+      addEmitterListener(webSocketServer, ERROR, onIgnoredError),
+    );
   }
 
   const getWebSocketServer = () => webSocketServer;
 
-  const getPathIds = (): string[] => mapKeys(clientsByPath);
+  const getPathIds = (): string[] => mapKeys(paths);
 
   const getClientIds = (pathId: Id): Ids =>
-    mapKeys(mapGet(clientsByPath, pathId));
+    mapKeys(mapGet(paths, pathId)?.[Path.Clients]);
 
   const addPathIdsListener = (listener: PathIdsListener) =>
     addListener(listener, pathIdListeners);
@@ -458,14 +594,62 @@ export const createWsServer = (<
   };
 
   const getStats = (): WsServerStats => ({
-    paths: collSize(clientsByPath),
-    clients: collSize2(clientsByPath),
+    paths: collSize(paths),
+    clients: arrayReduce(
+      mapMap(paths, (path) => collSize(path[Path.Clients])),
+      (total, pathSize) => total + pathSize,
+      0,
+    ),
   });
 
-  const destroy = async () => {
-    collClear(clientsByPath);
-    await promiseAll(mapMap(serverClientsByPath, stopServerClient));
-    webSocketServer.close();
+  const closeWebSocket = async (client: WebSocket) => {
+    if (client.readyState != WebSocket.CLOSED) {
+      await promiseNew<void>((resolve) => {
+        const removeCloseListener = addEmitterListener(client, CLOSE, () => {
+          removeCloseListener();
+          resolve();
+        });
+        client.close();
+      });
+    }
+  };
+
+  const closeWebSocketServer = async () => {
+    const clientsClosing = arrayMap(collValues(webSockets), closeWebSocket);
+    const serverClosing = promiseNew<void>((resolve) => {
+      webSocketServer.close(() => resolve());
+    });
+    await promiseAll([serverClosing, ...clientsClosing]);
+  };
+
+  const destroy = (): Promise<void> => {
+    if (!destroying) {
+      destroying = (async () => {
+        const serverClosing = closeWebSocketServer();
+        let errorToThrow: any;
+        let failed = false;
+        await tryCatch(
+          () =>
+            promiseAll(mapMap(paths, (path, pathId) => stopPath(pathId, path))),
+          (error) => {
+            errorToThrow = error;
+            failed = true;
+          },
+        );
+        await serverClosing;
+        arrayForEach(removeServerListeners, (remove) => remove());
+        mapForEach(removeListenersByWebSocket, (_webSocket, removers) =>
+          arrayForEach(removers, (remove) => remove()),
+        );
+        collClear(removeListenersByWebSocket);
+        collClear(paths);
+        collClear(webSockets);
+        if (failed) {
+          throw errorToThrow;
+        }
+      })();
+    }
+    return destroying;
   };
 
   const wsServer = {
