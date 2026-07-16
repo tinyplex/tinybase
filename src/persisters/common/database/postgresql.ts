@@ -22,7 +22,6 @@ import {
   TINYBASE,
   TRUE,
   strMatch,
-  strReplace,
 } from '../../../common/strings.ts';
 import {
   CREATE,
@@ -32,13 +31,13 @@ import {
   INSERT,
   OR_REPLACE,
   SELECT,
-  TABLE_NAME_PLACEHOLDER,
   UPDATE,
   WHERE,
   escapeId,
   escapeIds,
   getPlaceholders,
   getWrappedCommand,
+  replaceTableName,
 } from './common.ts';
 import {DefaultedTabularConfig, getConfigStructures} from './config.ts';
 import {createJsonPersister} from './json.ts';
@@ -124,12 +123,11 @@ export const createCustomPostgreSqlPersister = <
       ? TRUE
       : newOrOldOrBoth === 2
         ? when(tableName, 0) + ' OR ' + when(tableName, 1)
-        : strReplace(
+        : replaceTableName(
             mapGet(
               (defaultedConfig as DefaultedTabularConfig)[0],
               tableName,
             )?.[2] ?? TRUE,
-            TABLE_NAME_PLACEHOLDER,
             newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
           );
 

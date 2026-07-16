@@ -49,6 +49,7 @@ export const CREATE_TABLE = CREATE + TABLE;
 export const OR_REPLACE = 'OR REPLACE ';
 export const FUNCTION = 'FUNCTION';
 export const TABLE_NAME_PLACEHOLDER = '$tableName';
+const TABLE_NAME_PLACEHOLDER_REGEX = /\$tableName/g;
 
 export const getWrappedCommand = (
   executeCommand: DatabaseExecuteCommand,
@@ -83,4 +84,9 @@ export const getWhereCondition = (
   condition: DpcTabularCondition = TRUE,
 ) =>
   WHERE +
-  `(${strReplace(condition, TABLE_NAME_PLACEHOLDER, escapeId(tableName))})`;
+  `(${replaceTableName(condition, escapeId(tableName))})`;
+
+export const replaceTableName = (
+  condition: DpcTabularCondition,
+  tableName: string,
+) => strReplace(condition, TABLE_NAME_PLACEHOLDER_REGEX, tableName);
