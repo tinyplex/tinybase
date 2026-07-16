@@ -1,6 +1,6 @@
 /* @jsxImportSource solid-js */
 /* eslint-disable solid/reactivity */
-import {createRenderEffect, createSignal, untrack} from 'solid-js';
+import {createRenderEffect, createSignal, mergeProps, untrack} from 'solid-js';
 import type {Cell, Id, Value} from '../../@types/index.d.ts';
 import type {HtmlTableProps} from '../../@types/ui-solid-dom/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
@@ -113,7 +113,7 @@ export const HtmlTable = (
         )}
         <tbody>
           {arrayMap(getValue(rowIds), (rowId) => {
-            const rowProps = {...(cellComponentProps as any), rowId};
+            const rowProps = mergeProps(cellComponentProps as any, {rowId});
             return (
               <tr>
                 {extraRowCells(extraCellsBefore, rowProps)}
