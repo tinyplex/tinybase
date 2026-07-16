@@ -879,6 +879,8 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     // @ts-ignore
     store.setMergeableContent(invalid);
+    // @ts-ignore
+    expect(store.applyMergeableChanges(invalid)).toBe(store);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 });

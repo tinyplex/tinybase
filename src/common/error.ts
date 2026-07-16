@@ -23,7 +23,9 @@ export const errorNew = (code: number, details?: any): Error =>
     TINYBASE +
       ':' +
       code +
-      (isUndefined(details) ? EMPTY_STRING : ':' + details),
+      (isUndefined(details)
+        ? EMPTY_STRING
+        : /* istanbul ignore next */ ':' + details),
   );
 
 export const errorThrow = (code: number, details?: any): never => {
