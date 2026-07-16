@@ -3,6 +3,7 @@ import {createStore} from 'tinybase';
 import {createCustomSqlitePersister, Persists} from 'tinybase/persisters';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {expect, test, vi} from 'vitest';
+import {pause} from '../../common/other.ts';
 
 test('replaces every table name placeholder', async () => {
   const db = new sqlite3.Database(':memory:');
@@ -75,4 +76,39 @@ test('rolls back failed database transactions', async () => {
   expect(ignoredError.mock.calls[0][0].message).toBe('insert failed');
   await persister.destroy();
   db.close();
+});
+
+test('establishes the SQLite auto-load baseline before polling', async () => {
+  let content = '[{},{"species":"dog"}]';
+  let dataVersion = 1;
+  const persister = createCustomSqlitePersister(
+    createStore(),
+    {mode: 'json', autoLoadIntervalSeconds: 0.01},
+    async (sql) =>
+      sql.includes('data_version')
+        ? [{d: dataVersion, s: 1, c: 0}]
+        : sql.includes('pragma_table')
+          ? [
+              {tn: 'tinybase', cn: '_id'},
+              {tn: 'tinybase', cn: 'store'},
+            ]
+          : sql.startsWith('SELECT*')
+            ? [{_id: '_', store: content}]
+            : [],
+    () => undefined,
+    () => {},
+    undefined,
+    undefined,
+    () => {},
+    Persists.StoreOnly,
+    {},
+  );
+  await persister.startAutoLoad();
+
+  content = '[{},{"species":"cat"}]';
+  dataVersion++;
+  await pause(30);
+
+  expect(persister.getStore().getValue('species')).toBe('cat');
+  await persister.destroy();
 });
