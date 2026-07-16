@@ -21,17 +21,17 @@ export interface SqliteBunPersister<
 }
 
 /// createSqliteBunPersister
-export function createSqliteBunPersister<
-  Schemas extends OptionalSchemas,
-  StoreType extends Store<Schemas>,
->(
-  store: StoreType,
+export function createSqliteBunPersister<Schemas extends OptionalSchemas>(
+  store: MergeableStore<Schemas>,
   db: Database,
-  configOrStoreTableName?:
-    | (NoInfer<StoreType> extends MergeableStore<Schemas>
-        ? DpcJson
-        : DatabasePersisterConfig<Schemas>)
-    | string,
+  configOrStoreTableName?: DpcJson | string,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
+): SqliteBunPersister<Schemas>;
+export function createSqliteBunPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas> & {getMergeableContent?: never},
+  db: Database,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): SqliteBunPersister<Schemas>;

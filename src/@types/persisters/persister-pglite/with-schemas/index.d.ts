@@ -21,17 +21,17 @@ export interface PglitePersister<
 }
 
 /// createPglitePersister
-export function createPglitePersister<
-  Schemas extends OptionalSchemas,
-  StoreType extends Store<Schemas>,
->(
-  store: StoreType,
+export function createPglitePersister<Schemas extends OptionalSchemas>(
+  store: MergeableStore<Schemas>,
   pglite: PGlite,
-  configOrStoreTableName?:
-    | (NoInfer<StoreType> extends MergeableStore<Schemas>
-        ? DpcJson
-        : DatabasePersisterConfig<Schemas>)
-    | string,
+  configOrStoreTableName?: DpcJson | string,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
+): Promise<PglitePersister<Schemas>>;
+export function createPglitePersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas> & {getMergeableContent?: never},
+  pglite: PGlite,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PglitePersister<Schemas>>;
