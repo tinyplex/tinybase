@@ -80,12 +80,17 @@ export const useSortingAndPagination = (
 export const SortedTablePaginator: typeof SortedTablePaginatorDecl = (
   props: SortedTablePaginatorProps,
 ) => {
+  createEffect(() => {
+    const offset = props.offset ?? 0;
+    if (offset > props.total || offset < 0) {
+      props.onChange(0);
+    }
+  });
   const content = () => {
     let offset = props.offset ?? 0;
     const limit = props.limit ?? props.total;
     if (offset > props.total || offset < 0) {
       offset = 0;
-      props.onChange(0);
     }
     const singular = props.singular ?? 'row';
     const plural = props.plural ?? singular + 's';

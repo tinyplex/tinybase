@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
-import {act} from 'react';
+import {act, useState} from 'react';
 import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase';
 import {
   createIndexes,
@@ -21,7 +21,7 @@ import {
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/ui-react-dom';
-import {beforeEach, describe, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 let store: Store;
 let indexes: Indexes;
@@ -1213,6 +1213,28 @@ describe('EditableValueView', () => {
 });
 
 describe('SortedTablePaginator', () => {
+  test('defers invalid offset changes', () => {
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+    const Test = () => {
+      const [offset, setOffset] = useState(120);
+      return (
+        <SortedTablePaginator
+          onChange={setOffset}
+          total={100}
+          offset={offset}
+          limit={10}
+        />
+      );
+    };
+    const {unmount} = render(<Test />);
+
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(
       <SortedTablePaginator onChange={nullEvent} total={100} />,

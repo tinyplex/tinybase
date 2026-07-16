@@ -1314,6 +1314,27 @@ describe('EditableValueView', () => {
 });
 
 describe('SortedTablePaginator', () => {
+  test('defers invalid offset changes', async () => {
+    let rendering = true;
+    const changePhases: boolean[] = [];
+    const {unmount} = render(() => {
+      const paginator = (
+        <SortedTablePaginator
+          onChange={() => changePhases.push(rendering)}
+          total={100}
+          offset={120}
+          limit={10}
+        />
+      );
+      rendering = false;
+      return paginator;
+    });
+    await Promise.resolve();
+
+    expect(changePhases).toEqual([false]);
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(() => (
       <SortedTablePaginator onChange={nullEvent} total={100} />
