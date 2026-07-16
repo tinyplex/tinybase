@@ -142,3 +142,28 @@ test('fragmented mode loads and cleans up legacy cell rows', async () => {
 
   await persister.destroy();
 });
+
+test('fragmented mode preserves empty string identifiers', async () => {
+  const sqlStorage = createSqlStorage();
+  const store1 = createMergeableStore('s1', getNow)
+    .setCell('', '', '', 'cell')
+    .setValue('', 'value');
+  const persister1 = createDurableObjectSqlStoragePersister(
+    store1,
+    sqlStorage,
+    {mode: 'fragmented'},
+  );
+  await persister1.save();
+
+  const store2 = createMergeableStore('s2', getNow);
+  const persister2 = createDurableObjectSqlStoragePersister(
+    store2,
+    sqlStorage,
+    {mode: 'fragmented'},
+  );
+  await persister2.load();
+
+  expect(store2.getContent()).toEqual([{'': {'': {'': 'cell'}}}, {'': 'value'}]);
+  await persister1.destroy();
+  await persister2.destroy();
+});
