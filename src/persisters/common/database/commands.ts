@@ -17,6 +17,8 @@ import {
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
 import {tryCatch} from '../../../common/error.ts';
+import {getHash} from '../../../common/hash.ts';
+import {jsonString} from '../../../common/json.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
   objDel,
@@ -29,7 +31,7 @@ import {
 } from '../../../common/obj.ts';
 import {isEmpty, isUndefined, promiseAll} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
-import {COMMA, TRUE} from '../../../common/strings.ts';
+import {COMMA, TINYBASE, TRUE} from '../../../common/strings.ts';
 import {
   ALTER_TABLE,
   CREATE_TABLE,
@@ -87,6 +89,7 @@ export const getCommandFunctions = (
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
   const schemaMap: Schema = mapNew();
+  const uniqueSchemaMap: Schema = mapNew();
   let executeCommand = databaseExecuteCommand;
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
@@ -94,9 +97,15 @@ export const getCommandFunctions = (
 
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
+    collClear(uniqueSchemaMap);
     arrayMap(
       await querySchema(executeCommand, managedTableNames),
-      ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
+      ({tn, cn, uq}) => {
+        setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn);
+        if (uq) {
+          setAdd(mapEnsure(uniqueSchemaMap, tn, setNew<Id>), cn);
+        }
+      },
     );
   };
 
@@ -190,6 +199,7 @@ export const getCommandFunctions = (
     ) {
       await executeCommand('DROP ' + TABLE + escapeId(tableName));
       mapSet(schemaMap, tableName);
+      mapSet(uniqueSchemaMap, tableName);
       return;
     }
 
@@ -220,12 +230,13 @@ export const getCommandFunctions = (
           tableName,
           setNew([rowIdColumnName, ...settingColumnNames]),
         );
+        mapSet(uniqueSchemaMap, tableName, setNew([rowIdColumnName]));
       } else {
         // Add columns
         await promiseAll(
           arrayMap(
             [rowIdColumnName, ...settingColumnNames],
-            async (settingColumnName, index) => {
+            async (settingColumnName) => {
               if (!collDel(unaccountedColumnNames, settingColumnName)) {
                 await executeCommand(
                   ALTER_TABLE +
@@ -234,18 +245,31 @@ export const getCommandFunctions = (
                     escapeId(settingColumnName) +
                     columnType,
                 );
-                if (index == 0) {
-                  await executeCommand(
-                    'CREATE UNIQUE INDEX pk ON ' +
-                      escapeId(tableName) +
-                      `(${escapeId(rowIdColumnName)})`,
-                  );
-                }
                 setAdd(currentColumnNames, settingColumnName);
               }
             },
           ),
         );
+        if (
+          upsert == defaultUpsert &&
+          !collHas(mapGet(uniqueSchemaMap, tableName), rowIdColumnName)
+        ) {
+          const indexName =
+            TINYBASE +
+            '_pk_' +
+            getHash(jsonString([tableName, rowIdColumnName]));
+          await executeCommand(
+            'CREATE UNIQUE INDEX IF NOT EXISTS' +
+              escapeId(indexName) +
+              'ON' +
+              escapeId(tableName) +
+              `(${escapeId(rowIdColumnName)})`,
+          );
+          setAdd(
+            mapEnsure(uniqueSchemaMap, tableName, setNew<Id>),
+            rowIdColumnName,
+          );
+        }
       }
     }
     // Remove columns

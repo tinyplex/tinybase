@@ -135,7 +135,7 @@ export const createCustomSqlitePersister = <
       await executeCommand(
         SELECT +
           // eslint-disable-next-line max-len
-          ` t.name tn,c.name cn FROM ${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
+          ` t.name tn,c.name cn,c.pk OR EXISTS(${SELECT} 1 FROM ${PRAGMA}index_list(t.name)i,${PRAGMA}index_info(i.name)ii ${WHERE} i."unique"=1 AND ii.name=c.name AND(${SELECT} count(*) FROM ${PRAGMA}index_info(i.name))=1)uq FROM ${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
         managedTableNames,
       ),
     thing,
