@@ -2,6 +2,7 @@
 import {fireEvent, getAllByRole} from '@testing-library/dom';
 import '@testing-library/jest-dom/vitest';
 import type {JSXElement} from 'solid-js';
+import {createSignal} from 'solid-js';
 import {render as solidRender} from 'solid-js/web';
 import type {Id, Indexes, Queries, Relationships, Store} from 'tinybase';
 import {
@@ -77,6 +78,20 @@ beforeEach(() => {
 });
 
 describe('TableInHtmlTable', () => {
+  test('reactive table metadata', () => {
+    store.setTable('t3', {r1: {c1: 9}});
+    const [tableId, setTableId] = createSignal('t1');
+    const {container, unmount} = render(() => (
+      <TableInHtmlTable store={store} tableId={tableId()} />
+    ));
+
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('1');
+    setTableId('t3');
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('9');
+
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(() => (
       <TableInHtmlTable store={store} tableId="t2" />
@@ -169,6 +184,20 @@ describe('TableInHtmlTable', () => {
 });
 
 describe('SortedTableInHtmlTable', () => {
+  test('reactive table metadata', () => {
+    store.setTable('t3', {r1: {c1: 9}});
+    const [tableId, setTableId] = createSignal('t1');
+    const {container, unmount} = render(() => (
+      <SortedTableInHtmlTable store={store} tableId={tableId()} cellId="c1" />
+    ));
+
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('1');
+    setTableId('t3');
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('9');
+
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(() => (
       <SortedTableInHtmlTable
@@ -434,6 +463,29 @@ describe('ValuesInHtmlTable', () => {
 });
 
 describe('SliceInHtmlTable', () => {
+  test('reactive index metadata', () => {
+    store.setTable('t3', {r1: {c1: 9}});
+    indexes
+      .setIndexDefinition('i2', 't1', 'c1')
+      .setIndexDefinition('i3', 't3', 'c1');
+    const [indexId, setIndexId] = createSignal('i2');
+    const [sliceId, setSliceId] = createSignal('1');
+    const {container, unmount} = render(() => (
+      <SliceInHtmlTable
+        indexes={indexes}
+        indexId={indexId()}
+        sliceId={sliceId()}
+      />
+    ));
+
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('1');
+    setIndexId('i3');
+    setSliceId('9');
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('9');
+
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(() => (
       <SliceInHtmlTable indexes={indexes} indexId="i1" sliceId="2" />
@@ -673,6 +725,23 @@ describe('RelationshipInHtmlTable', () => {
 });
 
 describe('ResultTableInHtmlTable', () => {
+  test('reactive query metadata', () => {
+    store.setTable('t3', {r1: {c1: 9}});
+    queries
+      .setQueryDefinition('q2', 't1', ({select}) => select('c1'))
+      .setQueryDefinition('q3', 't3', ({select}) => select('c1'));
+    const [queryId, setQueryId] = createSignal('q2');
+    const {container, unmount} = render(() => (
+      <ResultTableInHtmlTable queries={queries} queryId={queryId()} />
+    ));
+
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('1');
+    setQueryId('q3');
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('9');
+
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(() => (
       <ResultTableInHtmlTable queries={queries} queryId="q1" />
@@ -768,6 +837,27 @@ describe('ResultTableInHtmlTable', () => {
 });
 
 describe('ResultSortedTableInHtmlTable', () => {
+  test('reactive query metadata', () => {
+    store.setTable('t3', {r1: {c1: 9}});
+    queries
+      .setQueryDefinition('q2', 't1', ({select}) => select('c1'))
+      .setQueryDefinition('q3', 't3', ({select}) => select('c1'));
+    const [queryId, setQueryId] = createSignal('q2');
+    const {container, unmount} = render(() => (
+      <ResultSortedTableInHtmlTable
+        queries={queries}
+        queryId={queryId()}
+        cellId="c1"
+      />
+    ));
+
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('1');
+    setQueryId('q3');
+    expect(getAllByRole(container, 'cell')[0]).toHaveTextContent('9');
+
+    unmount();
+  });
+
   test('basic', () => {
     const {container, unmount} = render(() => (
       <ResultSortedTableInHtmlTable

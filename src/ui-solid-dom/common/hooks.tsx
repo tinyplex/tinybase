@@ -21,16 +21,27 @@ import {
 } from './index.tsx';
 
 export const getStoreCellComponentProps = (
-  store: StoreOrStoreId | undefined,
-  tableId: Id,
-): {store: StoreOrStoreId | undefined; tableId: Id} => ({store, tableId});
+  store: MaybeAccessor<StoreOrStoreId | undefined>,
+  tableId: MaybeAccessor<Id>,
+): {store: StoreOrStoreId | undefined; tableId: Id} => ({
+  get store() {
+    return getValue(store);
+  },
+  get tableId() {
+    return getValue(tableId);
+  },
+});
 
 export const getQueriesCellComponentProps = (
-  queries: QueriesOrQueriesId | undefined,
-  queryId: Id,
+  queries: MaybeAccessor<QueriesOrQueriesId | undefined>,
+  queryId: MaybeAccessor<Id>,
 ): {queries: QueriesOrQueriesId | undefined; queryId: Id} => ({
-  queries,
-  queryId,
+  get queries() {
+    return getValue(queries);
+  },
+  get queryId() {
+    return getValue(queryId);
+  },
 });
 
 export const getCallbackOrUndefined = (callback: any, test: any): any =>
