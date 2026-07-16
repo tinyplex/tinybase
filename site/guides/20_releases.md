@@ -93,6 +93,18 @@ Temporary mutation and listening flags are also restored unconditionally in
 Store, MergeableStore, and Checkpoints operations, preventing an exception from
 silently disabling later change tracking.
 
+## Bounded MergeableStore Clocks
+
+MergeableStore now validates HLCs before applying mergeable content or changes.
+Incoming HLCs must use the canonical 16-character encoding and be no more than
+five minutes ahead of the local clock. Invalid payloads are ignored before they
+can alter either content or local clock state.
+
+The 24-bit logical counter now carries into the wall-clock portion when it
+overflows. Explicit local mutations also verify that their generated stamp was
+accepted, preventing the visible Store from silently diverging from its
+mergeable representation.
+
 ## Reserved Serialization Strings
 
 String Cells and Values beginning with `U+FFFD` are now rejected as invalid,

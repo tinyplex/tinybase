@@ -24,13 +24,13 @@ import type {
 } from '../@types/store/index.d.ts';
 import {decodeIfJson, isCellOrValueOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
-import {tryFinally} from '../common/error.ts';
+import {ERROR_HLC, errorThrow, tryFinally} from '../common/error.ts';
 import {
   addOrRemoveHash,
   getValueHash,
   getValueInValuesHash,
 } from '../common/hash.ts';
-import {getHlcFunctions} from '../common/hlc.ts';
+import {HLC_MAX_FUTURE_OFFSET, getHlcFunctions, isHlc} from '../common/hlc.ts';
 import {
   mapEnsure,
   mapForEach,
@@ -126,48 +126,79 @@ const newContentStampMap = (time = EMPTY_STRING): ContentStampMap => [
   stampNewMap(time),
 ];
 
-const validateMergeableContent = (
-  mergeableContent: MergeableContent,
+const validateStamp = (
+  stamp: any,
+  validateThing: (thing: any) => boolean,
+  maxLogicalTime: number,
+  hasHashes: 0 | 1,
 ): boolean =>
-  isArray(mergeableContent) &&
-  size(mergeableContent) == 2 &&
-  stampValidate(mergeableContent[0], (tableStamps) =>
-    objValidate(
-      tableStamps,
-      (tableStamp) =>
-        stampValidate(tableStamp, (rowStamps) =>
-          objValidate(
-            rowStamps,
-            (rowStamp) =>
-              stampValidate(rowStamp, (cellStamps) =>
-                objValidate(
-                  cellStamps,
-                  (cellStamp) =>
-                    stampValidate(cellStamp, isCellOrValueOrUndefined),
-                  undefined,
-                  1,
+  isArray(stamp) &&
+  validateThing(stamp[0]) &&
+  (size(stamp) == 3
+    ? stampValidate(stamp as any, validateThing) &&
+      isHlc(stamp[1], maxLogicalTime)
+    : !hasHashes &&
+      (size(stamp) == 1 ||
+        (size(stamp) == 2 && isHlc(stamp[1], maxLogicalTime))));
+
+const validateMergeable = (
+  mergeable: MergeableChanges | MergeableContent,
+  maxLogicalTime: number,
+  hasHashes: 0 | 1,
+): boolean => {
+  if (!isArray(mergeable)) {
+    return false;
+  }
+  if (
+    hasHashes
+      ? size(mergeable) != 2
+      : size(mergeable) != 2 &&
+        (size(mergeable) != 3 || (mergeable as MergeableChanges)[2] !== 1)
+  ) {
+    return false;
+  }
+  const validate = (stamp: any, validateThing: (thing: any) => boolean) =>
+    validateStamp(stamp, validateThing, maxLogicalTime, hasHashes);
+  return (
+    validate(mergeable[0], (tableStamps) =>
+      objValidate(
+        tableStamps,
+        (tableStamp) =>
+          validate(tableStamp, (rowStamps) =>
+            objValidate(
+              rowStamps,
+              (rowStamp) =>
+                validate(rowStamp, (cellStamps) =>
+                  objValidate(
+                    cellStamps,
+                    (cellStamp) =>
+                      validate(cellStamp, isCellOrValueOrUndefined),
+                    undefined,
+                    1,
+                  ),
                 ),
-              ),
-            undefined,
-            1,
+              undefined,
+              1,
+            ),
           ),
-        ),
-      undefined,
-      1,
-    ),
-  ) &&
-  stampValidate(mergeableContent[1], (values) =>
-    objValidate(
-      values,
-      (value) => stampValidate(value, isCellOrValueOrUndefined),
-      undefined,
-      1,
-    ),
+        undefined,
+        1,
+      ),
+    ) &&
+    validate(mergeable[1], (values) =>
+      objValidate(
+        values,
+        (value) => validate(value, isCellOrValueOrUndefined),
+        undefined,
+        1,
+      ),
+    )
   );
+};
 
 export const createMergeableStore = ((
   uniqueId?: Id,
-  getNow?: GetNow,
+  getNow: GetNow = Date.now,
 ): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
@@ -358,19 +389,16 @@ export const createMergeableStore = ((
       if (mutating) {
         mutated = 1;
       }
-      mergeContentOrChanges([
+      const localHlc =
+        defaultingContent || defaulted ? EMPTY_STRING : getNextHlc();
+      const [tablesChanges] = mergeContentOrChanges([
         [
           {
             [tableId]: [
               {
                 [rowId]: [
                   {
-                    [cellId]: [
-                      newCell,
-                      defaultingContent || defaulted
-                        ? EMPTY_STRING
-                        : getNextHlc(),
-                    ],
+                    [cellId]: [newCell, localHlc],
                   },
                 ],
               },
@@ -380,6 +408,10 @@ export const createMergeableStore = ((
         [{}],
         1,
       ]);
+      const rowChanges = objGet(objGet(tablesChanges, tableId), rowId);
+      if (localHlc && (!rowChanges || !objHas(rowChanges, cellId))) {
+        errorThrow(ERROR_HLC);
+      }
     }
   };
 
@@ -394,18 +426,20 @@ export const createMergeableStore = ((
       if (mutating) {
         mutated = 1;
       }
-      mergeContentOrChanges([
+      const localHlc =
+        defaultingContent || defaulted ? EMPTY_STRING : getNextHlc();
+      const [, valuesChanges] = mergeContentOrChanges([
         [{}],
         [
           {
-            [valueId]: [
-              newValue,
-              defaultingContent || defaulted ? EMPTY_STRING : getNextHlc(),
-            ],
+            [valueId]: [newValue, localHlc],
           },
         ],
         1,
       ]);
+      if (localHlc && !objHas(valuesChanges, valueId)) {
+        errorThrow(ERROR_HLC);
+      }
     }
   };
 
@@ -656,18 +690,18 @@ export const createMergeableStore = ((
     mergeableContent: MergeableContent,
     encoded?: boolean,
   ): MergeableStore =>
-    disableListeningToRawStoreChanges(() =>
-      validateMergeableContent(mergeableContent)
-        ? store.transaction(() => {
+    validateMergeable(mergeableContent, getNow() + HLC_MAX_FUTURE_OFFSET, 1)
+      ? disableListeningToRawStoreChanges(() =>
+          store.transaction(() => {
             store.delTables().delValues();
             contentStampMap = newContentStampMap();
             const changes = mergeContentOrChanges(mergeableContent, 1);
             (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
               changes,
             );
-          })
-        : 0,
-    );
+          }),
+        )
+      : (mergeableStore as MergeableStore);
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
@@ -704,11 +738,13 @@ export const createMergeableStore = ((
     mergeableChanges: MergeableChanges | MergeableContent,
     encoded?: boolean,
   ): MergeableStore =>
-    disableListeningToRawStoreChanges(() =>
-      (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
-        mergeContentOrChanges(mergeableChanges),
-      ),
-    );
+    validateMergeable(mergeableChanges, getNow() + HLC_MAX_FUTURE_OFFSET, 0)
+      ? disableListeningToRawStoreChanges(() =>
+          (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
+            mergeContentOrChanges(mergeableChanges),
+          ),
+        )
+      : (mergeableStore as MergeableStore);
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,

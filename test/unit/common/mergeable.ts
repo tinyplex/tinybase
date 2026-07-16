@@ -8,8 +8,10 @@ const SHIFT24 = 2 ** 24;
 const SHIFT18 = 2 ** 18;
 const SHIFT12 = 2 ** 12;
 const SHIFT6 = 2 ** 6;
+const ENCODE =
+  '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
 
-const toB64 = (num: number): string => String.fromCharCode(48 + (num & MASK6));
+const toB64 = (num: number): string => ENCODE[num & MASK6];
 
 const encodeHlc = (
   logicalTime42: number,

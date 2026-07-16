@@ -116,14 +116,13 @@
 /**
  * The Hlc type is a string that represents a Hybrid Logical Clock (HLC) value.
  *
- * HLCs are used to provide a globally unique timestamp that can be used to
- * order events across distributed systems. The Hlc type in TinyBase is a
- * sortable 16 character string that encodes a timestamp, a counter, and the
- * hash of a unique client identifier.
+ * HLCs are used to provide a timestamp that can be used to order events across
+ * distributed systems. The Hlc type in TinyBase is a sortable 16 character
+ * string that encodes a timestamp, a counter, and a client identifier.
  *
  * - 42 bits (7 chars) for the time in milliseconds (~139 years).
  * - 24 bits (4 chars) for the counter (~16 million).
- * - 30 bits (5 chars) for the hash of unique client id (~1 billion).
+ * - 30 bits (5 chars) for a client Id or its hash (~1 billion).
  * @category Stamps
  * @since v6.2.0
  */
@@ -292,13 +291,12 @@
  * console.log(getNextHlc());
  * // -> '03E3B-----0mmxrx'
  *
- * // Another client thinks it is 1973.
- * seenHlc('0WakTk-----jmx_3');
- * // Generate the next HLC.
+ * // Another client is 100 seconds ahead.
+ * seenHlc(encodeHlc(73267300000, 0, 'client2'));
  *
  * // What is the state for the current client?
  * console.log(getLastLogicalTime());
- * // -> 104803200000
+ * // -> 73267300000
  * console.log(getLastCounter());
  * // -> 0
  * console.log(getClientId());
