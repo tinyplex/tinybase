@@ -249,7 +249,6 @@ export const createCustomPersister = <
     initialContent?: Content | (() => Content),
   ): Promise<Persister<Persist>> => {
     await stopAutoLoad();
-    await load(initialContent);
     await tryCatch(
       async () =>
         (autoLoadHandle = await addPersisterListener(
@@ -259,9 +258,11 @@ export const createCustomPersister = <
               if (status != StatusValues.Saving) {
                 setStatus(StatusValues.Loading);
                 loads++;
-                setContentOrChanges(changes ?? content);
-                setStatus(StatusValues.Idle);
-                await saveAfterMutated();
+                await schedule(async () => {
+                  setContentOrChanges(changes ?? content);
+                  setStatus(StatusValues.Idle);
+                  await saveAfterMutated();
+                });
               }
             } else {
               await load();
@@ -270,6 +271,7 @@ export const createCustomPersister = <
         )),
       onIgnoredError,
     );
+    await load(initialContent);
     return persister;
   };
 
