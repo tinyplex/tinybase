@@ -2846,31 +2846,31 @@ exports[`applyMergeableChanges/setMergeableContent > apply into empty store 1`] 
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
-                4065945599,
+                "Nn1JUF-----7JQY8",
+                1003668370,
               ],
             },
-            "Hc2DO@000008DKS9",
-            1279994494,
+            "Nn1JUF-----7JQY8",
+            2467064377,
           ],
         },
-        "Hc2DO@000008DKS9",
-        1293085726,
+        "Nn1JUF-----7JQY8",
+        1586171819,
       ],
     },
-    "Hc2DO@000008DKS9",
-    4033596827,
+    "Nn1JUF-----7JQY8",
+    1817302006,
   ],
   [
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
-        4065945599,
+        "Nn1JUF-----7JQY8",
+        1003668370,
       ],
     },
-    "Hc2DO@000008DKS9",
-    2304392760,
+    "Nn1JUF-----7JQY8",
+    1257510643,
   ],
 ]
 `;
@@ -2890,20 +2890,20 @@ exports[`applyMergeableChanges/setMergeableContent > apply over existing content
               ],
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Nn1JUF----07JQY8",
+                1130939691,
               ],
             },
-            "Hc2DO@000018DKS9",
-            2230416255,
+            "Nn1JUF----07JQY8",
+            1733090028,
           ],
         },
-        "Hc2DO@000018DKS9",
-        123935377,
+        "Nn1JUF----07JQY8",
+        3793235333,
       ],
     },
-    "Hc2DO@000018DKS9",
-    3790108107,
+    "Nn1JUF----07JQY8",
+    4134576647,
   ],
   [
     {
@@ -2914,12 +2914,12 @@ exports[`applyMergeableChanges/setMergeableContent > apply over existing content
       ],
       "v1": [
         1,
-        "Hc2DO@000018DKS9",
-        3207404266,
+        "Nn1JUF----07JQY8",
+        1130939691,
       ],
     },
-    "Hc2DO@000018DKS9",
-    1782145011,
+    "Nn1JUF----07JQY8",
+    2944256800,
   ],
 ]
 `;
@@ -3012,7 +3012,7 @@ exports[`applyMergeableChanges/setMergeableContent > set over existing content 1
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
+                "Nn1JUF----07JQY8",
                 3207404266,
               ],
             },
@@ -3031,7 +3031,7 @@ exports[`applyMergeableChanges/setMergeableContent > set over existing content 1
     {
       "v1": [
         1,
-        "Hc2DO@000018DKS9",
+        "Nn1JUF----07JQY8",
         3207404266,
       ],
     },
@@ -3051,7 +3051,7 @@ exports[`applyMergeableChanges/setMergeableContent > set over existing content 2
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
+                "Nn1JUF----07JQY8",
                 3207404266,
               ],
               "c2": [
@@ -3075,7 +3075,7 @@ exports[`applyMergeableChanges/setMergeableContent > set over existing content 2
     {
       "v1": [
         1,
-        "Hc2DO@000018DKS9",
+        "Nn1JUF----07JQY8",
         3207404266,
       ],
     },
@@ -3095,11 +3095,11 @@ exports[`applyMergeableChanges/setMergeableContent > set with wrong hashes 1`] =
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
+                "Nn1JUF----07JQY8",
                 1,
               ],
             },
-            "0",
+            "",
             2,
           ],
         },
@@ -3114,7 +3114,7 @@ exports[`applyMergeableChanges/setMergeableContent > set with wrong hashes 1`] =
     {
       "v1": [
         1,
-        "Hc2DO@000018DKS9",
+        "Nn1JUF----07JQY8",
         5,
       ],
     },

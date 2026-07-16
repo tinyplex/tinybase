@@ -51,6 +51,23 @@ test('getHlcFunctions', () => {
   expect(getClientId()).toEqual('7JQY8');
 });
 
+test('getHlcFunctions validates and carries', () => {
+  const [getNextHlc, seenHlc, encodeHlc, , getLastLogicalTime, getLastCounter] =
+    getHlcFunctions('s1', getNow);
+  const now = 1704067200000;
+
+  seenHlc('~~~~~~~~~~~~~~~~');
+  seenHlc('-----------------');
+  seenHlc(encodeHlc(now + 300001, 0, 's2'));
+  expect(getLastLogicalTime()).toEqual(0);
+  expect(getLastCounter()).toEqual(-1);
+
+  seenHlc(encodeHlc(now, 2 ** 24 - 1, 's2'));
+  expect(getNextHlc()).toEqual(encodeHlc(now + 1, 0));
+  expect(getLastLogicalTime()).toEqual(now + 1);
+  expect(getLastCounter()).toEqual(0);
+});
+
 describe('hash functions', () => {
   test('getHash', () => {
     expect(getHash('Hello, world!')).toEqual(3985698964);

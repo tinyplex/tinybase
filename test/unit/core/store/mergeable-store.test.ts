@@ -655,6 +655,72 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
+  test('reject invalid and overly future hlcs', () => {
+    store.setCell('t1', 'r1', 'c1', 1);
+    const content = store.getMergeableContent();
+
+    store.applyMergeableChanges([
+      [{t1: [{r1: [{c1: [2, '~~~~~~~~~~~~~~~~']}]}]}],
+      [{}],
+      1,
+    ] as MergeableChanges);
+    store.applyMergeableChanges([
+      [{t1: [{r1: [{c1: [3, time(300001, 0, 's2')]}]}]}],
+      [{}],
+      1,
+    ] as MergeableChanges);
+
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
+    expect(store.getMergeableContent()).toEqual(content);
+  });
+
+  test('carries a remote maximum counter into a local write', () => {
+    const remoteChanges: MergeableChanges = [
+      [
+        {
+          t1: [{r1: [{c1: [1, time(0, 2 ** 24 - 1, 's2')]}]}],
+        },
+      ],
+      [{}],
+      1,
+    ];
+    store.applyMergeableChanges(remoteChanges);
+    store.setCell('t1', 'r1', 'c1', 2);
+    store.applyMergeableChanges(remoteChanges);
+
+    const cellStamp = store.getMergeableContent()[0][0].t1[0].r1[0].c1;
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(2);
+    expect(cellStamp[0]).toEqual(2);
+    expect(cellStamp[1]).toEqual(time(1, 0));
+  });
+
+  test('does not diverge when the hlc range is exhausted', () => {
+    const maxHlc = 'zzzzzzzzzzzzzzzz';
+    const maxTime = 2 ** 42 - 1;
+    const cellStore = createMergeableStore('s1', () => maxTime);
+    const valueStore = createMergeableStore('s1', () => maxTime);
+
+    cellStore.applyMergeableChanges([
+      [{t1: [{r1: [{c1: [1, maxHlc]}]}]}],
+      [{}],
+      1,
+    ] as MergeableChanges);
+    valueStore.applyMergeableChanges([
+      [{}],
+      [{v1: [1, maxHlc]}],
+      1,
+    ] as MergeableChanges);
+
+    expect(() => cellStore.setCell('t1', 'r1', 'c1', 2)).toThrowError(
+      'tinybase:14',
+    );
+    expect(() => valueStore.setValue('v1', 2)).toThrowError('tinybase:14');
+    expect(cellStore.getCell('t1', 'r1', 'c1')).toEqual(1);
+    expect(valueStore.getValue('v1')).toEqual(1);
+    expect(cellStore.getMergeableContent()[0][0].t1[0].r1[0].c1[0]).toEqual(1);
+    expect(valueStore.getMergeableContent()[1][0].v1[0]).toEqual(1);
+  });
+
   test('set into empty store', () => {
     store.setMergeableContent([
       [
@@ -729,7 +795,7 @@ describe('applyMergeableChanges/setMergeableContent', () => {
         {
           t1: [
             {
-              r1: [{c1: [1, 'Hc2DO@000018DKS9', 3207404266]}, '', 1254797189],
+              r1: [{c1: [1, 'Nn1JUF----07JQY8', 3207404266]}, '', 1254797189],
             },
             '',
             423436526,
@@ -738,7 +804,7 @@ describe('applyMergeableChanges/setMergeableContent', () => {
         '',
         639574078,
       ],
-      [{v1: [1, 'Hc2DO@000018DKS9', 3207404266]}, '', 2404136035],
+      [{v1: [1, 'Nn1JUF----07JQY8', 3207404266]}, '', 2404136035],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
@@ -751,12 +817,12 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     store.setMergeableContent([
       [
         {
-          t1: [{r1: [{c1: [1, 'Hc2DO@000018DKS9', 1]}, '0', 2]}, '', 3],
+          t1: [{r1: [{c1: [1, 'Nn1JUF----07JQY8', 1]}, '', 2]}, '', 3],
         },
         '',
         4,
       ],
-      [{v1: [1, 'Hc2DO@000018DKS9', 5]}, '', 6],
+      [{v1: [1, 'Nn1JUF----07JQY8', 5]}, '', 6],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
