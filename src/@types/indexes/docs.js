@@ -247,8 +247,10 @@
    * single Slice, keyed by an empty string. But more often you will specify a
    * Cell value containing the Slice Id that the Row should belong to.
    * Alternatively, a custom function can be provided that produces your own
-   * Slice Id from the local Row as a whole. Since v2.1, the custom function can
-   * return an array of Slice Ids, each of which the Row will then belong to.
+   * Slice Id from the local Row as a whole. Object and array Cells are encoded
+   * as a single Slice Id when referenced by Cell Id. Since v2.1, the custom
+   * function can return an array of Slice Ids, each of which the Row will then
+   * belong to.
    *
    * The fourth `getSortKey` parameter specifies a Cell Id to get a value (or a
    * function that processes a whole Row to get a value) that is used to sort
