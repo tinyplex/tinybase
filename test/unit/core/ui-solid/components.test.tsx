@@ -1,5 +1,6 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
+import {createSignal} from 'solid-js';
 import {render as solidRender} from 'solid-js/web';
 import type {
   Checkpoints,
@@ -687,8 +688,22 @@ const DuplicateProvidedStore = ({store}: {readonly store: Store}) => {
   return '';
 };
 
+const DuplicateProvidedStoreReader = ({
+  store1,
+  store2,
+}: {
+  readonly store1: Store;
+  readonly store2: Store;
+}) => {
+  const store = useStore('store1');
+  return <span>{store() == store1 ? 1 : store() == store2 ? 2 : 0}</span>;
+};
+
 test('covers context fallbacks and duplicate providers', async () => {
   const store = createStore();
+  const store2 = createStore();
+  const [show1, setShow1] = createSignal(true);
+  const [show2, setShow2] = createSignal(true);
   const container = document.createElement('div');
   const Context = (
     globalThis as unknown as {
@@ -701,8 +716,9 @@ test('covers context fallbacks and duplicate providers', async () => {
       <Context.Provider value={{value: undefined}}>
         <UndefinedContextChildren store={store} />
         <Provider>
-          <DuplicateProvidedStore store={store} />
-          <DuplicateProvidedStore store={store} />
+          {show1() ? <DuplicateProvidedStore store={store} /> : null}
+          {show2() ? <DuplicateProvidedStore store={store2} /> : null}
+          <DuplicateProvidedStoreReader store1={store} store2={store2} />
         </Provider>
       </Context.Provider>
     ),
@@ -710,7 +726,16 @@ test('covers context fallbacks and duplicate providers', async () => {
   );
 
   await pause();
-  expect(container.innerHTML).toBe('0[]{}');
+  expect(container.innerHTML).toBe('0[]{}<span>2</span>');
+  setShow2(false);
+  await pause();
+  expect(container.innerHTML).toBe('0[]{}<span>1</span>');
+  setShow2(true);
+  await pause();
+  expect(container.innerHTML).toBe('0[]{}<span>2</span>');
+  setShow1(false);
+  await pause();
+  expect(container.innerHTML).toBe('0[]{}<span>2</span>');
 
   unmount();
 });

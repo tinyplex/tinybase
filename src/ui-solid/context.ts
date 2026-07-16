@@ -64,8 +64,9 @@ export type ContextValue = [
     offset: Offset,
     id: string,
     thing: ThingsByOffset[Offset],
+    owner: object,
   ) => void,
-  delExtraThingById?: (offset: Offsets, id: string) => void,
+  delExtraThingById?: (offset: Offsets, id: string, owner: object) => void,
 ];
 export type ContextValueAccessor = {value: Accessor<ContextValue>};
 
@@ -142,11 +143,12 @@ export const useProvideThing = <Offset extends Offsets>(
   offset: Offset,
 ): void => {
   const contextValue = useContext(Context)?.value ?? EMPTY_CONTEXT;
+  const owner = {};
   createRenderEffect(() => {
     const {16: addExtraThingById, 17: delExtraThingById} =
       untrack(contextValue);
-    addExtraThingById?.(offset, thingId, thing);
-    onCleanup(() => delExtraThingById?.(offset, thingId));
+    addExtraThingById?.(offset, thingId, thing, owner);
+    onCleanup(() => delExtraThingById?.(offset, thingId, owner));
   });
 };
 
