@@ -62,12 +62,14 @@ export const createIndexedDbPersister = ((
     forObjectStore: (objectStore: IDBObjectStore, arg: any) => Promise<any>,
     params: any[] = [],
     create: 0 | 1 = 0,
+    mode: IDBTransactionMode = 'readonly',
   ): Promise<[any, any]> =>
     promiseNew((resolve, reject) => {
       const request = (WINDOW ? WINDOW.indexedDB : indexedDB).open(
         dbName,
         create ? 2 : undefined,
       );
+      let blocked = 0;
       request.onupgradeneeded = () =>
         create &&
         arrayMap(OBJECT_STORE_NAMES, (objectStoreName) =>
@@ -75,29 +77,46 @@ export const createIndexedDbPersister = ((
             request.result.createObjectStore(objectStoreName, KEY_PATH),
           ),
         );
+      request.onblocked = () => {
+        blocked = 1;
+        reject(errorNew(ERROR_INDEXED_DB_OPEN));
+      };
       request.onsuccess = () =>
-        tryCatch(
-          async () => {
-            const transaction = request.result.transaction(
-              OBJECT_STORE_NAMES,
-              'readwrite',
+        blocked
+          ? request.result.close()
+          : tryCatch(
+              async () => {
+                request.result.onversionchange = () => request.result.close();
+                const transaction = request.result.transaction(
+                  OBJECT_STORE_NAMES,
+                  mode,
+                );
+                const transactionComplete = promiseNew<void>(
+                  (resolve, reject) => {
+                    transaction.oncomplete = () => resolve();
+                    transaction.onerror = transaction.onabort = () =>
+                      reject(errorNew(ERROR_INDEXED_DB_STORE));
+                  },
+                );
+                const [result] = await promiseAll([
+                  promiseAll(
+                    arrayMap(OBJECT_STORE_NAMES, (objectStoreName, index) =>
+                      forObjectStore(
+                        transaction.objectStore(objectStoreName),
+                        params[index],
+                      ),
+                    ),
+                  ),
+                  transactionComplete,
+                ]);
+                request.result.close();
+                resolve(result as [any, any]);
+              },
+              (error) => {
+                request.result.close();
+                reject(error);
+              },
             );
-            const result = await promiseAll(
-              arrayMap(OBJECT_STORE_NAMES, (objectStoreName, index) =>
-                forObjectStore(
-                  transaction.objectStore(objectStoreName),
-                  params[index],
-                ),
-              ),
-            );
-            request.result.close();
-            resolve(result as [any, any]);
-          },
-          (error) => {
-            request.result.close();
-            reject(error);
-          },
-        );
       request.onerror = () => reject(errorNew(ERROR_INDEXED_DB_OPEN));
     });
 
@@ -116,6 +135,7 @@ export const createIndexedDbPersister = ((
       (objectStore, content) => objectStoreMatch(objectStore, content),
       getContent(),
       1,
+      'readwrite',
     ) as any;
 
   const addPersisterListener = (
