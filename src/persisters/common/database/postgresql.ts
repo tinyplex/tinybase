@@ -234,7 +234,7 @@ export const createCustomPostgreSqlPersister = <
       await executeCommand(
         SELECT +
           // eslint-disable-next-line max-len
-          ` table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
+          ` c.table_name tn,c.column_name cn,CASE WHEN tc.constraint_type IN('PRIMARY KEY','UNIQUE')AND(${SELECT} count(*) FROM information_schema.key_column_usage kcu2 ${WHERE} kcu2.constraint_schema=kcu.constraint_schema AND kcu2.constraint_name=kcu.constraint_name)=1 THEN 1 ELSE 0 END uq FROM information_schema.columns c LEFT JOIN information_schema.key_column_usage kcu ON kcu.table_schema=c.table_schema AND kcu.table_name=c.table_name AND kcu.column_name=c.column_name LEFT JOIN information_schema.table_constraints tc ON tc.constraint_schema=kcu.constraint_schema AND tc.constraint_name=kcu.constraint_name ${WHERE} c.table_schema='public'AND c.table_name IN(${getPlaceholders(managedTableNames)})`,
         managedTableNames,
       ),
     thing,

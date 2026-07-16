@@ -16,7 +16,7 @@ import {
 export type QuerySchema = (
   executeCommand: DatabaseExecuteCommand,
   managedTableNames: string[],
-) => Promise<{tn: string; cn: string}[]>;
+) => Promise<{tn: string; cn: string; uq?: number}[]>;
 
 export type Upsert = (
   executeCommand: DatabaseExecuteCommand,

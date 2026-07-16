@@ -112,3 +112,44 @@ test('establishes the SQLite auto-load baseline before polling', async () => {
   expect(persister.getStore().getValue('species')).toBe('cat');
   await persister.destroy();
 });
+
+test('adds collision-safe unique row ID indexes', async () => {
+  const db = new sqlite3.Database(':memory:');
+  await new Promise<void>((resolve, reject) =>
+    db.exec(
+      'CREATE TABLE pets (id TEXT, species TEXT);' +
+        'CREATE TABLE owners (id TEXT, name TEXT);',
+      (error) => (error ? reject(error) : resolve()),
+    ),
+  );
+  const store = createStore()
+    .setTable('pets', {fido: {species: 'dog'}})
+    .setTable('owners', {alice: {name: 'Alice'}});
+  const persister = createSqlite3Persister(store, db, {
+    mode: 'tabular',
+    tables: {
+      save: {
+        pets: {tableName: 'pets', rowIdColumnName: 'id'},
+        owners: {tableName: 'owners', rowIdColumnName: 'id'},
+      },
+    },
+  });
+  await persister.save();
+
+  const indexes = await new Promise<{name: string}[]>((resolve, reject) =>
+    db.all(
+      "SELECT name FROM sqlite_master WHERE type='index'AND sql IS NOT NULL",
+      (error, rows: {name: string}[]) =>
+        error ? reject(error) : resolve(rows),
+    ),
+  );
+  expect(indexes).toHaveLength(2);
+  expect(new Set(indexes.map(({name}) => name)).size).toBe(2);
+  expect(indexes.every(({name}) => name.startsWith('tinybase_pk_'))).toBe(true);
+  expect(store.getTables()).toEqual({
+    pets: {fido: {species: 'dog'}},
+    owners: {alice: {name: 'Alice'}},
+  });
+  await persister.destroy();
+  db.close();
+});
