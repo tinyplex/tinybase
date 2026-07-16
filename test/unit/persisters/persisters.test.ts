@@ -543,7 +543,7 @@ test('supports the undefined marker except as a complete string', async () => {
 });
 
 test('awaits queued scheduled actions', async () => {
-  let releaseFirstAction = noop;
+  let releaseFirstAction: () => void = noop;
   let secondActionRan = false;
   let secondScheduleResolved = false;
   const firstActionGate = new Promise<void>(
@@ -576,7 +576,7 @@ test('awaits queued scheduled actions', async () => {
 
 test('waits for old auto-load cleanup before restarting', async () => {
   let addCount = 0;
-  let releaseCleanup = noop;
+  let releaseCleanup: () => void = noop;
   const cleanupGate = new Promise<void>(
     (resolve) => (releaseCleanup = resolve),
   );
@@ -601,7 +601,7 @@ test('waits for old auto-load cleanup before restarting', async () => {
 
 test('observes changes during the initial auto-load', async () => {
   let listener = (_content: any) => {};
-  let releaseInitialLoad = noop;
+  let releaseInitialLoad: () => void = noop;
   const initialLoadGate = new Promise<void>(
     (resolve) => (releaseInitialLoad = resolve),
   );
@@ -628,7 +628,7 @@ test('observes changes during the initial auto-load', async () => {
 });
 
 test('releases shared scheduler state on destroy', async () => {
-  let releaseFirstAction = noop;
+  let releaseFirstAction: () => void = noop;
   let secondActionRan = false;
   const firstActionGate = new Promise<void>(
     (resolve) => (releaseFirstAction = resolve),
