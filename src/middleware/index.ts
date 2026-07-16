@@ -124,7 +124,7 @@ export const createMiddleware = getCreateFunction(
     const willDelValuesCallbacks: WillDelValuesCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
     const willApplyChangesCallbacks: WillApplyChangesCallback[] = [];
-    const allCallbacks = [
+    const allCallbacks: ((...args: any[]) => any)[][] = [
       willSetContentCallbacks,
       willSetTablesCallbacks,
       willSetTableCallbacks,
