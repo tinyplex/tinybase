@@ -140,8 +140,19 @@ export const createIndexedDbPersister = ((
 
   const addPersisterListener = (
     listener: PersisterListener,
-  ): number | NodeJS.Timeout =>
-    startInterval(listener, autoLoadIntervalSeconds);
+  ): number | NodeJS.Timeout => {
+    let listening = false;
+    return startInterval(async () => {
+      if (!listening) {
+        listening = true;
+        try {
+          await listener();
+        } finally {
+          listening = false;
+        }
+      }
+    }, autoLoadIntervalSeconds);
+  };
 
   const delPersisterListener = (interval: number | NodeJS.Timeout): void =>
     stopInterval(interval);
