@@ -11,6 +11,7 @@ import {
   ERROR_INDEXED_DB_STORE,
   errorNew,
   tryCatch,
+  tryFinallyAsync,
 } from '../../common/error.ts';
 import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdObj, objHas, objNew, objToArray} from '../../common/obj.ts';
@@ -148,18 +149,20 @@ export const createIndexedDbPersister = ((
       return startInterval(async () => {
         if (!listening) {
           listening = true;
-          try {
-            await tryCatch(async () => {
-              const content = await getPersisted();
-              const nextContent = jsonStringWithUndefined(content);
-              if (nextContent != lastContent) {
-                lastContent = nextContent;
-                await listener(content);
-              }
-            });
-          } finally {
-            listening = false;
-          }
+          await tryFinallyAsync(
+            () =>
+              tryCatch(async () => {
+                const content = await getPersisted();
+                const nextContent = jsonStringWithUndefined(content);
+                if (nextContent != lastContent) {
+                  lastContent = nextContent;
+                  await listener(content);
+                }
+              }),
+            () => {
+              listening = false;
+            },
+          );
         }
       }, autoLoadIntervalSeconds);
     });
