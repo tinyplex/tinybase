@@ -32,7 +32,7 @@ import {
   objNew,
   objSet,
 } from '../../common/obj.ts';
-import {isNull, noop, number, string} from '../../common/other.ts';
+import {isNull, isNullish, noop, number, string} from '../../common/other.ts';
 import {setAdd, setNew} from '../../common/set.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T} from '../../common/strings.ts';
@@ -211,15 +211,22 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
     // Load tables data
     const tablesRows = getSqlRows(sqlStorage, `SELECT * FROM ${tablesTable}`);
     arrayForEach(tablesRows, (row) => {
-      const table_id = row.table_id ? string(row.table_id) : null;
-      const row_id = row.row_id ? string(row.row_id) : null;
-      const cell_id = row.cell_id ? string(row.cell_id) : null;
+      const table_id = isNullish(row.table_id)
+        ? null
+        : string(row.table_id);
+      const row_id = isNullish(row.row_id) ? null : string(row.row_id);
+      const cell_id = isNullish(row.cell_id) ? null : string(row.cell_id);
       const value_data = string(row.value_data);
       const timestamp = string(row.timestamp);
       const hash = number(row.hash);
       const [zeroOrCells] = jsonParseWithUndefined(value_data);
 
-      if (table_id && row_id && !cell_id && isObject(zeroOrCells)) {
+      if (
+        !isNull(table_id) &&
+        !isNull(row_id) &&
+        isNull(cell_id) &&
+        isObject(zeroOrCells)
+      ) {
         const table = objEnsure(
           tables[0],
           table_id,
@@ -236,9 +243,11 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
 
     arrayForEach(tablesRows, (row) => {
       const type = string(row.type);
-      const table_id = row.table_id ? string(row.table_id) : null;
-      const row_id = row.row_id ? string(row.row_id) : null;
-      const cell_id = row.cell_id ? string(row.cell_id) : null;
+      const table_id = isNullish(row.table_id)
+        ? null
+        : string(row.table_id);
+      const row_id = isNullish(row.row_id) ? null : string(row.row_id);
+      const cell_id = isNullish(row.cell_id) ? null : string(row.cell_id);
       const value_data = string(row.value_data);
       const timestamp = string(row.timestamp);
       const hash = number(row.hash);
@@ -246,7 +255,11 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
       const [zeroOrCellOrValue] = jsonParseWithUndefined(value_data);
 
       if (type === T) {
-        if (table_id && row_id && cell_id) {
+        if (
+          !isNull(table_id) &&
+          !isNull(row_id) &&
+          !isNull(cell_id)
+        ) {
           // Cell level
           if (!collHas(rowDataKeys, getRowKey(table_id, row_id))) {
             const table = objEnsure(
@@ -261,7 +274,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
             ) as RowStamp<true>;
             objSet(tableRow[0], cell_id, [zeroOrCellOrValue, timestamp, hash]);
           }
-        } else if (table_id && row_id) {
+        } else if (!isNull(table_id) && !isNull(row_id)) {
           // Row level
           if (!isObject(zeroOrCellOrValue)) {
             const table = objEnsure(
@@ -276,7 +289,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
             ) as RowStamp<true>;
             stampUpdate(tableRow, timestamp, hash);
           }
-        } else if (table_id) {
+        } else if (!isNull(table_id)) {
           // Table level
           const table = objEnsure(
             tables[0],
@@ -295,14 +308,16 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
     arrayForEach(
       getSqlRows(sqlStorage, `SELECT * FROM ${valuesTable}`),
       (row) => {
-        const value_id = row.value_id ? string(row.value_id) : null;
+        const value_id = isNullish(row.value_id)
+          ? null
+          : string(row.value_id);
         const value_data = string(row.value_data);
         const timestamp = string(row.timestamp);
         const hash = number(row.hash);
 
         const [zeroOrCellOrValue] = jsonParseWithUndefined(value_data);
 
-        if (value_id) {
+        if (!isNull(value_id)) {
           objSet(values[0], value_id, [zeroOrCellOrValue, timestamp, hash]);
         } else {
           stampUpdate(values, timestamp, hash);
