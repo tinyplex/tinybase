@@ -248,7 +248,7 @@ export const createCustomPersister = <
   const startAutoLoad = async (
     initialContent?: Content | (() => Content),
   ): Promise<Persister<Persist>> => {
-    stopAutoLoad();
+    await stopAutoLoad();
     await load(initialContent);
     await tryCatch(
       async () =>

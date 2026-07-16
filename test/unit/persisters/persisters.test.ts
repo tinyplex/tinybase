@@ -573,3 +573,28 @@ test('awaits queued scheduled actions', async () => {
   expect(secondActionRan).toBe(true);
   expect(secondScheduleResolved).toBe(true);
 });
+
+test('waits for old auto-load cleanup before restarting', async () => {
+  let addCount = 0;
+  let releaseCleanup = noop;
+  const cleanupGate = new Promise<void>(
+    (resolve) => (releaseCleanup = resolve),
+  );
+  const persister = createCustomPersister(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    () => ++addCount,
+    async () => await cleanupGate,
+  );
+  await persister.startAutoLoad();
+
+  const restarting = persister.startAutoLoad();
+  await pause(0);
+  expect(addCount).toBe(1);
+
+  releaseCleanup();
+  await restarting;
+  expect(addCount).toBe(2);
+  expect(persister.isAutoLoading()).toBe(true);
+});
