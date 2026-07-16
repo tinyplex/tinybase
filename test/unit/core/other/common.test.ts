@@ -44,11 +44,17 @@ test('getHlcFunctions', () => {
 
   expect(encodeHlc(1704067201000, 2, 's2')).toEqual('Nn1JUUc---14JQFF');
   expect(decodeHlc('Nn1JUUc---14JQFF')).toEqual([1704067201000, 2, '4JQFF']);
+  expect(decodeHlc('!----------4JQFF')).toEqual([0, 0, '4JQFF']);
 
   seenHlc('Nn1JUUc---14JQFF');
   expect(getLastLogicalTime()).toEqual(1704067201000);
   expect(getLastCounter()).toEqual(2);
   expect(getClientId()).toEqual('7JQY8');
+});
+
+test('getHlcFunctions defaults', () => {
+  const [getNextHlc] = getHlcFunctions('s1');
+  expect(getNextHlc()).toHaveLength(16);
 });
 
 test('getHlcFunctions validates and carries', () => {

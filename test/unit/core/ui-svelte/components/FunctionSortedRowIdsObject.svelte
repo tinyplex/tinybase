@@ -16,8 +16,8 @@
   const positionalRowIds = getSortedRowIds(
     't1',
     undefined,
-    () => false,
-    () => 0,
+    () => undefined as any,
+    () => undefined as any,
     undefined,
     numericSorter,
     () => store,
