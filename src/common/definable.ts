@@ -253,8 +253,9 @@ export const getCreateFunction = <
         return false;
       });
       thingsByStore.set(store, thing);
-      initFunction?.(thing);
     }
-    return thingsByStore.get(store) as Thing;
+    const thing = thingsByStore.get(store) as Thing;
+    initFunction?.(thing);
+    return thing;
   };
 };

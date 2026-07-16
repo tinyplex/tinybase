@@ -59,12 +59,13 @@ const cellOrValueIsEqual = (
     encodeIfJson(value1) === encodeIfJson(value2));
 
 export const createCheckpoints = getCreateFunction(
-  (store: Store, destroyThing): Checkpoints => {
+  (store: Store): Checkpoints => {
     let backwardIdsSize = 100;
     let currentId: Id | undefined;
     let cellsDelta: CellsDelta = mapNew();
     let valuesDelta: ValuesDelta = mapNew();
     let listening = 1;
+    let listeningToStore = 0;
     let nextCheckpointId: number;
     let checkpointsChanged: 0 | 1;
     const checkpointIdsListeners: IdSet2 = mapNew();
@@ -278,7 +279,8 @@ export const createCheckpoints = getCreateFunction(
     };
 
     const destroy = (): void => {
-      if (destroyThing()) {
+      if (listeningToStore) {
+        listeningToStore = 0;
         store.delListener(cellListenerId);
         store.delListener(valueListenerId);
       }
@@ -290,58 +292,65 @@ export const createCheckpoints = getCreateFunction(
     });
 
     const _registerListeners = () => {
-      cellListenerId = store.addCellListener(
-        null,
-        null,
-        null,
-        (_store, tableId, rowId, cellId, newCell, oldCell) => {
-          if (listening) {
-            storeChanged();
-            const table = mapEnsure<Id, IdMap2<ChangedCell>>(
-              cellsDelta,
-              tableId,
-              mapNew,
-            );
-            const row = mapEnsure<Id, IdMap<ChangedCell>>(table, rowId, mapNew);
-            const oldNew = mapEnsure<Id, ChangedCell>(row, cellId, () => [
-              oldCell,
-              undefined,
-            ]);
-            oldNew[1] = newCell;
-            if (
-              cellOrValueIsEqual(oldNew[0], newCell) &&
-              collIsEmpty(mapSet(row, cellId)) &&
-              collIsEmpty(mapSet(table, rowId)) &&
-              collIsEmpty(mapSet(cellsDelta, tableId))
-            ) {
-              storeUnchanged();
+      if (!listeningToStore) {
+        listeningToStore = 1;
+        cellListenerId = store.addCellListener(
+          null,
+          null,
+          null,
+          (_store, tableId, rowId, cellId, newCell, oldCell) => {
+            if (listening) {
+              storeChanged();
+              const table = mapEnsure<Id, IdMap2<ChangedCell>>(
+                cellsDelta,
+                tableId,
+                mapNew,
+              );
+              const row = mapEnsure<Id, IdMap<ChangedCell>>(
+                table,
+                rowId,
+                mapNew,
+              );
+              const oldNew = mapEnsure<Id, ChangedCell>(row, cellId, () => [
+                oldCell,
+                undefined,
+              ]);
+              oldNew[1] = newCell;
+              if (
+                cellOrValueIsEqual(oldNew[0], newCell) &&
+                collIsEmpty(mapSet(row, cellId)) &&
+                collIsEmpty(mapSet(table, rowId)) &&
+                collIsEmpty(mapSet(cellsDelta, tableId))
+              ) {
+                storeUnchanged();
+              }
+              callListenersIfChanged();
             }
-            callListenersIfChanged();
-          }
-        },
-      );
+          },
+        );
 
-      valueListenerId = store.addValueListener(
-        null,
-        (_store, valueId, newValue, oldValue) => {
-          if (listening) {
-            storeChanged();
-            const oldNew = mapEnsure<Id, ChangedValue>(
-              valuesDelta,
-              valueId,
-              () => [oldValue, undefined],
-            );
-            oldNew[1] = newValue;
-            if (
-              cellOrValueIsEqual(oldNew[0], newValue) &&
-              collIsEmpty(mapSet(valuesDelta, valueId))
-            ) {
-              storeUnchanged();
+        valueListenerId = store.addValueListener(
+          null,
+          (_store, valueId, newValue, oldValue) => {
+            if (listening) {
+              storeChanged();
+              const oldNew = mapEnsure<Id, ChangedValue>(
+                valuesDelta,
+                valueId,
+                () => [oldValue, undefined],
+              );
+              oldNew[1] = newValue;
+              if (
+                cellOrValueIsEqual(oldNew[0], newValue) &&
+                collIsEmpty(mapSet(valuesDelta, valueId))
+              ) {
+                storeUnchanged();
+              }
+              callListenersIfChanged();
             }
-            callListenersIfChanged();
-          }
-        },
-      );
+          },
+        );
+      }
     };
 
     const checkpoints = {
