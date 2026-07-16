@@ -541,3 +541,35 @@ test('supports the undefined marker except as a complete string', async () => {
     localStorage.removeItem(storageName);
   }
 });
+
+test('awaits queued scheduled actions', async () => {
+  let releaseFirstAction = noop;
+  let secondActionRan = false;
+  let secondScheduleResolved = false;
+  const firstActionGate = new Promise<void>(
+    (resolve) => (releaseFirstAction = resolve),
+  );
+  const persister = createCustomPersister(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    noop,
+    noop,
+  );
+
+  const firstSchedule = persister.schedule(() => firstActionGate);
+  const secondSchedule = persister
+    .schedule(async () => {
+      secondActionRan = true;
+    })
+    .then(() => (secondScheduleResolved = true));
+  await pause(0);
+  expect(secondActionRan).toBe(false);
+  expect(secondScheduleResolved).toBe(false);
+
+  releaseFirstAction();
+  await firstSchedule;
+  await secondSchedule;
+  expect(secondActionRan).toBe(true);
+  expect(secondScheduleResolved).toBe(true);
+});

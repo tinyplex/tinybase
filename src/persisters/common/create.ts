@@ -15,7 +15,12 @@ import type {
   StatusListener,
 } from '../../@types/persisters/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
-import {arrayClear, arrayPush, arrayShift} from '../../common/array.ts';
+import {
+  arrayClear,
+  arrayMap,
+  arrayPush,
+  arrayShift,
+} from '../../common/array.ts';
 import {
   ERROR_CONTENT,
   ERROR_STORE_TYPE,
@@ -25,7 +30,7 @@ import {
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
-import {isArray, isUndefined} from '../../common/other.ts';
+import {isArray, isUndefined, promiseNew} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {ProtectedMergeableStore} from '../../mergeable-store/index.ts';
 import {ProtectedStore} from '../../store/index.ts';
@@ -55,9 +60,10 @@ export const Persists = {
 };
 
 type Action = () => Promise<any>;
+type ScheduledAction = [action: Action, complete?: () => void];
 
 const scheduleRunning: Map<any, 0 | 1> = mapNew();
-const scheduleActions: Map<any, Action[]> = mapNew();
+const scheduleActions: Map<any, ScheduledAction[]> = mapNew();
 
 const getStoreFunctions = (
   persist: PersistsEnum | any = PersistsValues.StoreOnly,
@@ -133,7 +139,7 @@ export const createCustomPersister = <
   let status: StatusValues = StatusValues.Idle;
   let loads = 0;
   let saves = 0;
-  let action;
+  let scheduledAction;
   let autoLoadHandle: ListenerHandle | undefined;
   let autoSaveListenerId: Id | undefined;
 
@@ -167,12 +173,14 @@ export const createCustomPersister = <
       mapSet(scheduleRunning, scheduleId, 1);
       while (
         !isUndefined(
-          (action = arrayShift(
-            mapGet(scheduleActions, scheduleId) as Action[],
+          (scheduledAction = arrayShift(
+            mapGet(scheduleActions, scheduleId) as ScheduledAction[],
           )),
         )
       ) {
+        const [action, complete] = scheduledAction;
         await tryCatch(action, onIgnoredError);
+        complete?.();
       }
       mapSet(scheduleRunning, scheduleId, 0);
     }
@@ -355,15 +363,34 @@ export const createCustomPersister = <
   };
 
   const schedule = async (...actions: Action[]): Promise<Persister> => {
-    arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
+    const completion = promiseNew<void>((resolve) =>
+      actions.length
+        ? arrayPush(
+            mapGet(scheduleActions, scheduleId) as ScheduledAction[],
+            ...arrayMap(
+              actions,
+              (action, index): ScheduledAction => [
+                action,
+                index == actions.length - 1 ? resolve : undefined,
+              ],
+            ),
+          )
+        : resolve(),
+    );
     await run();
+    await completion;
     return persister;
   };
 
   const getStore = (): Store => store;
 
   const destroy = (): Promise<Persister<Persist>> => {
-    arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
+    arrayMap(
+      arrayClear(
+        mapGet(scheduleActions, scheduleId) as ScheduledAction[],
+      ),
+      ([, complete]) => complete?.(),
+    );
     return stopAutoPersisting();
   };
 
