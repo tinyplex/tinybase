@@ -267,8 +267,8 @@ export const createCustomPersister = <
           },
         );
         setStatus(StatusValues.Idle);
-        await saveAfterMutated();
       });
+      await saveAfterMutated();
     }
     return persister;
   };
@@ -289,8 +289,8 @@ export const createCustomPersister = <
                 await schedule(async () => {
                   setContentOrChanges(changes ?? content);
                   setStatus(StatusValues.Idle);
-                  await saveAfterMutated();
                 });
+                await saveAfterMutated();
               }
             } else {
               await load();
