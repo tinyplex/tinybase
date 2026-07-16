@@ -147,6 +147,13 @@ public JavaScript form, rather than TinyBase's private encoded-string form. Rich
 values are cloned before callbacks run, and callback results are validated
 against Store schemas and encoded only at the storage boundary.
 
+## Reactive Solid Undo And Redo Information
+
+The useUndoInformation and useRedoInformation primitives now return Accessor
+functions for their availability, checkpoint Id, and label entries. Existing
+tuples previously captured plain values when the primitive was created, so they
+did not update as checkpoint state changed.
+
 ## PartyKit Authorization
 
 The PartyKit persister server now broadcasts only the changes accepted by its
@@ -650,8 +657,7 @@ The ui-solid-dom module provides browser-ready Solid components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Solid components and Accessors throughout.
 
-![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png
-'SortedTableInHtmlTable (Solid)')
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
 
 Alongside the table components, the new ui-solid-inspector module brings the
 TinyBase development inspector to Solid apps too, making it easy to inspect and
@@ -706,8 +712,7 @@ This release also adds a complete set of Solid UI component demos, plus a
 Countries demo and an Inspector demo, so you can see the new modules working
 across Stores, Indexes, Relationships, Queries, and editable views.
 
-![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png
-'EditableValueView (Solid)')
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -834,8 +839,7 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
-'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -882,8 +886,7 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
-'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -1590,8 +1593,7 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue,
-#[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 

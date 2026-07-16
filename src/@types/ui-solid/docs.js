@@ -197,6 +197,10 @@
  * This type is useful if you are building undo or redo buttons. See the
  * useUndoInformation primitive and the useRedoInformation primitive for more
  * details and examples.
+ *
+ * The first, third, and fourth entries are Accessor functions for the
+ * availability, checkpoint Id, and label respectively. The second entry is the
+ * callback that performs the action.
  * @category Checkpoints
  * @since v8.3.0
  */
@@ -11164,9 +11168,10 @@
  * to the previous checkpoint.
  *
  * This primitive is useful if you are building an undo button: the information
- * contains whether an undo action is available (to enable the button), the
- * callback to perform the undo action, the current checkpoint Id that will be
- * undone, and its label, if available.
+ * contains an Accessor for whether an undo action is available (to enable the
+ * button), the callback to perform the undo action, an Accessor for the current
+ * checkpoint Id that will be undone, and an Accessor for its label, if
+ * available.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
@@ -11242,9 +11247,10 @@
  * to a future checkpoint.
  *
  * This primitive is useful if you are building a redo button: the information
- * contains whether a redo action is available (to enable the button), the
- * callback to perform the redo action, the checkpoint Id that will be redone,
- * and its label, if available.
+ * contains an Accessor for whether a redo action is available (to enable the
+ * button), the callback to perform the redo action, an Accessor for the
+ * checkpoint Id that will be redone, and an Accessor for its label, if
+ * available.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.

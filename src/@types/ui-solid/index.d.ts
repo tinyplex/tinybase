@@ -115,7 +115,12 @@ export type PersisterOrPersisterId = AnyPersister | Id;
 export type SynchronizerOrSynchronizerId = Synchronizer | Id;
 
 /// ui-solid.UndoOrRedoInformation
-export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
+export type UndoOrRedoInformation = [
+  available: Accessor<boolean>,
+  action: Callback,
+  checkpointId: Accessor<Id | undefined>,
+  label: Accessor<string>,
+];
 
 /// ui-solid.GetId
 export type GetId<Parameter> = (parameter: Parameter, store: Store) => Id;

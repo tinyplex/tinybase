@@ -1924,39 +1924,37 @@ export const useGoToCallback = <Parameter>(
     );
 };
 
-export const useUndoInformation = (
+const useUndoOrRedoInformation = (
   checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
+  undo?: boolean,
 ): UndoOrRedoInformation => {
   const checkpoints = useCheckpointsOrCheckpointsById(
     checkpointsOrCheckpointsId,
   );
-  const [backwardIds, currentId] = getThing(useCheckpointIds(checkpoints));
+  const checkpointIds = useCheckpointIds(checkpoints);
+  const checkpointId = () =>
+    undo ? checkpointIds()[1] : checkpointIds()[2][0];
+  const checkpoint = useCheckpoint(
+    () => checkpointId() ?? EMPTY_STRING,
+    checkpoints,
+  );
   return [
-    !isEmpty(backwardIds),
-    useGoBackwardCallback(checkpoints),
-    currentId,
-    ifNotUndefined(currentId, (id) =>
-      getThing(checkpoints)?.getCheckpoint(id),
-    ) ?? EMPTY_STRING,
+    () => (undo ? !isEmpty(checkpointIds()[0]) : !isUndefined(checkpointId())),
+    useCheckpointAction(checkpoints, undo ? 'goBackward' : 'goForward'),
+    checkpointId,
+    () => checkpoint() ?? EMPTY_STRING,
   ];
 };
 
+export const useUndoInformation = (
+  checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
+): UndoOrRedoInformation =>
+  useUndoOrRedoInformation(checkpointsOrCheckpointsId, true);
+
 export const useRedoInformation = (
   checkpointsOrCheckpointsId?: MaybeCheckpointsOrCheckpointsId,
-): UndoOrRedoInformation => {
-  const checkpoints = useCheckpointsOrCheckpointsById(
-    checkpointsOrCheckpointsId,
-  );
-  const [, , [forwardId]] = getThing(useCheckpointIds(checkpoints));
-  return [
-    !isUndefined(forwardId),
-    useGoForwardCallback(checkpoints),
-    forwardId,
-    ifNotUndefined(forwardId, (id) =>
-      getThing(checkpoints)?.getCheckpoint(id),
-    ) ?? EMPTY_STRING,
-  ];
-};
+): UndoOrRedoInformation =>
+  useUndoOrRedoInformation(checkpointsOrCheckpointsId);
 
 export const useCheckpointIdsListener = (
   listener: CheckpointIdsListener,

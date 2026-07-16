@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type {Accessor, JSXElement, Setter} from 'solid-js';
-import {createRoot, createSignal} from 'solid-js';
+import {createRenderEffect, createRoot, createSignal} from 'solid-js';
 import {render as solidRender} from 'solid-js/web';
 import type {
   Checkpoints,
@@ -675,12 +675,21 @@ const CheckpointInfo = ({
 }) => {
   const undoInformation = useUndoInformation(checkpoints);
   const redoInformation = useRedoInformation(checkpoints);
+  const [available, action, checkpointId, label] =
+    mode == 'undoInformation' ? undoInformation : redoInformation;
   return (() => {
+    const text = document.createTextNode('');
     const button = document.createElement('button');
-    const [available, action, checkpointId, label] =
-      mode == 'undoInformation' ? undoInformation : redoInformation;
+    createRenderEffect(
+      () =>
+        (text.textContent = JSON.stringify([
+          available(),
+          checkpointId() ?? null,
+          label(),
+        ])),
+    );
     button.addEventListener('click', action);
-    return [JSON.stringify([available, checkpointId ?? null, label]), button];
+    return [text, button];
   }) as unknown as JSXElement;
 };
 
@@ -1369,15 +1378,21 @@ describe('Solid-specific', () => {
       undefinedUndoInfo = useUndoInformation();
     });
 
-    expect(undoInfo![3]).toEqual(expect.any(String));
-    expect(redoInfo![0]).toBe(true);
-    expect(redoInfo![3]).toEqual(expect.any(String));
-    expect(emptyUndoInfo![3]).toBe('');
-    expect(emptyRedoInfo![3]).toBe('');
-    expect(undefinedUndoInfo![3]).toBe('');
+    expect(undoInfo![0]()).toBe(false);
+    expect(undoInfo![3]()).toEqual(expect.any(String));
+    expect(redoInfo![0]()).toBe(true);
+    expect(redoInfo![3]()).toEqual(expect.any(String));
+    expect(emptyUndoInfo![3]()).toBe('');
+    expect(emptyRedoInfo![3]()).toBe('');
+    expect(undefinedUndoInfo![3]()).toBe('');
 
     redoInfo![1]();
     await pause();
+    expect(undoInfo![0]()).toBe(true);
+    expect(redoInfo![0]()).toBe(false);
+    expect(undoInfo![2]()).toBe('1');
+    checkpoints.setCheckpoint('1', 'one');
+    expect(undoInfo![3]()).toBe('one');
     setCheckpoint!();
     goTo!('0');
 
