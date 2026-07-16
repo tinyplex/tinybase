@@ -21,17 +21,17 @@ export interface PostgresPersister<
 }
 
 /// createPostgresPersister
-export function createPostgresPersister<
-  Schemas extends OptionalSchemas,
-  StoreType extends Store<Schemas>,
->(
-  store: StoreType,
+export function createPostgresPersister<Schemas extends OptionalSchemas>(
+  store: MergeableStore<Schemas>,
   sql: Sql,
-  configOrStoreTableName?:
-    | (NoInfer<StoreType> extends MergeableStore<Schemas>
-        ? DpcJson
-        : DatabasePersisterConfig<Schemas>)
-    | string,
+  configOrStoreTableName?: DpcJson | string,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
+): Promise<PostgresPersister<Schemas>>;
+export function createPostgresPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas> & {getMergeableContent?: never},
+  sql: Sql,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PostgresPersister<Schemas>>;

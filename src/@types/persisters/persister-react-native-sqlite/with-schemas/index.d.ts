@@ -23,15 +23,19 @@ export interface ReactNativeSqlitePersister<
 /// createReactNativeSqlitePersister
 export function createReactNativeSqlitePersister<
   Schemas extends OptionalSchemas,
-  StoreType extends Store<Schemas>,
 >(
-  store: StoreType,
+  store: MergeableStore<Schemas>,
   db: SQLiteDatabase,
-  configOrStoreTableName?:
-    | (NoInfer<StoreType> extends MergeableStore<Schemas>
-        ? DpcJson
-        : DatabasePersisterConfig<Schemas>)
-    | string,
+  configOrStoreTableName?: DpcJson | string,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
+): ReactNativeSqlitePersister<Schemas>;
+export function createReactNativeSqlitePersister<
+  Schemas extends OptionalSchemas,
+>(
+  store: Store<Schemas> & {getMergeableContent?: never},
+  db: SQLiteDatabase,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): ReactNativeSqlitePersister<Schemas>;

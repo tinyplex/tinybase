@@ -106,3 +106,16 @@ persisterListenerWhenSet?.([
   {v1: 1},
 ]);
 customPersisterWithSchema.getStore().getTables().t1;
+
+type Database = import('sqlite3').Database;
+type NoSchemas = import('tinybase/with-schemas').NoSchemas;
+type MergeableStore =
+  import('tinybase/mergeable-store/with-schemas').MergeableStore<NoSchemas>;
+type Sqlite3Module =
+  typeof import('tinybase/persisters/persister-sqlite3/with-schemas');
+type CreateSqlite3Persister = Sqlite3Module['createSqlite3Persister'];
+const database = null as unknown as Database;
+const mergeableStore = null as unknown as MergeableStore;
+const createSqlite3Persister = null as unknown as CreateSqlite3Persister;
+createSqlite3Persister(mergeableStore, database, {mode: 'tabular'}); // !
+createSqlite3Persister(mergeableStore, database, {mode: 'json'});

@@ -21,17 +21,17 @@ export interface ExpoSqlitePersister<
 }
 
 /// createExpoSqlitePersister
-export function createExpoSqlitePersister<
-  Schemas extends OptionalSchemas,
-  StoreType extends Store<Schemas>,
->(
-  store: StoreType,
+export function createExpoSqlitePersister<Schemas extends OptionalSchemas>(
+  store: MergeableStore<Schemas>,
   db: SQLiteDatabase,
-  configOrStoreTableName?:
-    | (NoInfer<StoreType> extends MergeableStore<Schemas>
-        ? DpcJson
-        : DatabasePersisterConfig<Schemas>)
-    | string,
+  configOrStoreTableName?: DpcJson | string,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
+): ExpoSqlitePersister<Schemas>;
+export function createExpoSqlitePersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas> & {getMergeableContent?: never},
+  db: SQLiteDatabase,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): ExpoSqlitePersister<Schemas>;

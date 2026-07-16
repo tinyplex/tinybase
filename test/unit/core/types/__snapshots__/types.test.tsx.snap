@@ -1134,6 +1134,8 @@ exports[`Types in persisters.ts > 91:3 1`] = `"Object literal may only specify k
 
 exports[`Types in persisters.ts > 104:13 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
+exports[`Types in persisters.ts > 119:0 1`] = `"No overload matches this call."`;
+
 exports[`Types in queries.ts > 18:9 1`] = `"No overload matches this call."`;
 
 exports[`Types in queries.ts > 22:17 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;

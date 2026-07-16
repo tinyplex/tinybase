@@ -20,18 +20,19 @@ export interface SqliteWasmPersister<
 }
 
 /// createSqliteWasmPersister
-export function createSqliteWasmPersister<
-  Schemas extends OptionalSchemas,
-  StoreType extends Store<Schemas>,
->(
-  store: StoreType,
+export function createSqliteWasmPersister<Schemas extends OptionalSchemas>(
+  store: MergeableStore<Schemas>,
   sqlite3: any,
   db: any,
-  configOrStoreTableName?:
-    | (NoInfer<StoreType> extends MergeableStore<Schemas>
-        ? DpcJson
-        : DatabasePersisterConfig<Schemas>)
-    | string,
+  configOrStoreTableName?: DpcJson | string,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
+): SqliteWasmPersister<Schemas>;
+export function createSqliteWasmPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas> & {getMergeableContent?: never},
+  sqlite3: any,
+  db: any,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): SqliteWasmPersister<Schemas>;
