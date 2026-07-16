@@ -10,13 +10,14 @@ import type {
   SliceRowIdsListener,
   createIndexes as createIndexesDecl,
 } from '../@types/indexes/index.d.ts';
-import type {GetCell, Store} from '../@types/store/index.d.ts';
+import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
 import {
   arrayForEach,
   arrayIsSorted,
   arrayMap,
   arraySort,
 } from '../common/array.ts';
+import {encodeIfJson} from '../common/cell.ts';
 import {
   collDel,
   collForEach,
@@ -46,6 +47,7 @@ import {
   ifNotUndefined,
   isArray,
   isEmpty,
+  isString,
   isUndefined,
 } from '../common/other.ts';
 import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
@@ -102,6 +104,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     ) => number = defaultSorter,
   ): Indexes => {
     const hadIndex = hasIndex(indexId);
+    const getSliceIdOrIdsFunction = getRowCellFunction(getSliceIdOrIds);
     const sliceIdArraySorter = isUndefined(sliceIdSorter)
       ? undefined
       : ([id1]: [Id, IdSet], [id2]: [Id, IdSet]): number =>
@@ -234,7 +237,12 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
           callListeners(sliceRowIdsListeners, [indexId, sliceId]),
         );
       },
-      getRowCellFunction(getSliceIdOrIds),
+      (getCell, rowId) => {
+        const sliceIdOrIds = getSliceIdOrIdsFunction(getCell, rowId);
+        return isString(getSliceIdOrIds) && !isUndefined(sliceIdOrIds)
+          ? (encodeIfJson(sliceIdOrIds as Cell) as Id)
+          : sliceIdOrIds;
+      },
       ifNotUndefined(getSortKey, getRowCellFunction),
     );
     if (!hadIndex) {

@@ -113,10 +113,15 @@ objects, and arrays. TinyBase validates the top-level container but relies on
 JSON serialization for nested contents, so other JavaScript values may be
 changed, omitted, or cause the write to throw.
 
-## Stable Object And Array Query Groups
+## Stable Object And Array Grouping And Indexing
 
 Queries now group matching object and array Cells together correctly, without
 accumulating duplicate or stale aggregated ResultRows as source data changes.
+
+Indexes now use stable encoded Slice Ids for object and array Cells referenced
+directly as keys, while arrays returned from custom functions continue to
+represent multiple Slice Ids. Equivalent rich sort keys also avoid unnecessary
+resorting.
 
 ## Reusable Schemas
 

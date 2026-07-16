@@ -8,6 +8,7 @@ import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
 import {arrayForEach, arrayIsEqual} from './array.ts';
 import {collClear, collDel, collForEach, collHas, collValues} from './coll.ts';
+import {jsonString} from './json.ts';
 import {AddListener, CallListeners} from './listeners.ts';
 import {
   IdMap,
@@ -20,6 +21,7 @@ import {
   mapSet,
   weakMapNew,
 } from './map.ts';
+import {isObject} from './obj.ts';
 import {ifNotUndefined, isArray, isString, isUndefined} from './other.ts';
 import {IdSet2, setAdd, setNew} from './set.ts';
 import {EMPTY_STRING} from './strings.ts';
@@ -32,6 +34,11 @@ type OnChangedDecl<RowValue> = (
   sortKeys?: IdMap<SortKey>,
   force?: boolean,
 ) => void;
+
+const sortKeyIsEqual = (sortKey1: SortKey, sortKey2: SortKey): boolean =>
+  sortKey1 === sortKey2 ||
+  ((isObject(sortKey1) || isArray(sortKey1)) &&
+    jsonString(sortKey1) === jsonString(sortKey2));
 
 export const getDefinableFunctions = <Thing, RowValue>(
   store: Store,
@@ -143,7 +150,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
         const newSortKey = hasRow(tableId, rowId)
           ? getSortKey(getCell as any, rowId)
           : undefined;
-        if (oldSortKey != newSortKey) {
+        if (!sortKeyIsEqual(oldSortKey, newSortKey)) {
           mapSet(changedSortKeys, rowId, newSortKey);
         }
       }
