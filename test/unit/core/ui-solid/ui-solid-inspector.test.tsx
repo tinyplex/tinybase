@@ -101,9 +101,10 @@ describe('Inspector', () => {
   afterEach(() => {
     expect(
       consoleError.mock.calls
-        .map(([msg]: [string, ...any[]]) => msg)
+        .map(([msg]: [unknown, ...unknown[]]) => msg)
         .filter(
-          (msg: string) =>
+          (msg: unknown) =>
+            typeof msg != 'string' ||
             !msg.startsWith('In HTML, %s cannot be a child of <%s>.%s'),
         ),
       'Unexpected Solid console.error calls',
