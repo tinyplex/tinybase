@@ -702,7 +702,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   );
 
   if (min) {
-    allOf(outputFiles, (outputFile) => gzipFile(outputFile));
+    await allOf(outputFiles, (outputFile) => gzipFile(outputFile));
   }
 };
 
