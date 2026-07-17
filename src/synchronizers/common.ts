@@ -52,6 +52,7 @@ import {
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^([-0-9A-Z_a-z]{16})\n(\d+)\n(\d+)\n([\s\S]*)$/;
+const FRAGMENT_PAYLOAD = /^[^\n]*\n[-0-9A-Z_a-z]{16}\n\d+\n\d+\n/;
 const INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
 const MAX_FRAGMENT_BUFFERS = 100;
 const MAX_FRAGMENT_COUNT = 1_000;
@@ -82,6 +83,9 @@ export const getWebSocketPayloadSize = (value: string): number => {
   }
   return byteSize;
 };
+
+export const isWebSocketPayloadTooLarge = (payload: string): boolean =>
+  getWebSocketPayloadSize(payload) > MAX_WEBSOCKET_BUFFER_SIZE;
 
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
@@ -279,6 +283,15 @@ export const createPayloadDecoder = (
     if (!valid) {
       return;
     }
+    if (isWebSocketPayloadTooLarge(payload)) {
+      invalid(
+        errorNew(
+          ERROR_SYNC_OVERFLOW,
+          strMatch(payload, FRAGMENT_PAYLOAD) ? 'fragments' : 'socket',
+        ),
+      );
+      return;
+    }
     if (
       !ifPayloadValid(payload, (clientId, remainder) => {
         const message = decodeProtocolMessage(remainder);
@@ -361,9 +374,6 @@ export const getPayloadCoalesceKey = (
   });
   return key;
 };
-
-export const isWebSocketPayloadTooLarge = (payload: string): boolean =>
-  getWebSocketPayloadSize(payload) > MAX_WEBSOCKET_BUFFER_SIZE;
 
 export const isWebSocketBackpressured = (
   webSocket: {bufferedAmount?: number},
@@ -557,6 +567,10 @@ export const createMultipleServerClient = <Channel>(
   };
 
   const handlePayload = (payload: string) => {
+    if (isWebSocketPayloadTooLarge(payload)) {
+      invalid(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
+      return;
+    }
     const control = ifMultipleControlPayloadValid(
       payload,
       (requestId, control, body) => {

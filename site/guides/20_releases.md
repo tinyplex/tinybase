@@ -68,6 +68,10 @@ backpressure policies remain specific to each server.
 Both servers also keep a safe error listener installed for their lifetime so a
 late Node.js `error` event cannot become an unhandled process-level error.
 
+Complete incoming payloads and outer multiplex envelopes are now limited to 16
+MiB before decoding or relay. Oversized traffic closes only the offending
+WebSocket and leaves other clients connected.
+
 Multiplexed channel Ids are not an authorization boundary. A client accepted on
 a base path can subscribe to any valid descendant channel, so applications with
 untrusted clients should authenticate and isolate WebSockets by authorized
