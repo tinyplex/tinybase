@@ -55,8 +55,9 @@
    * The destroy method provides a way to clean up the server at the end of its
    * use.
    *
-   * This closes the underlying WebSocketServer that was provided when the
-   * WsServerSimple was created. This method is asynchronous.
+   * This closes active client WebSockets and the underlying WebSocketServer
+   * that was provided when the WsServerSimple was created. This method is
+   * asynchronous and resolves once they have all closed.
    * @example
    * This example creates a WsServerSimple and then destroys it again, closing
    * the underlying WebSocketServer.

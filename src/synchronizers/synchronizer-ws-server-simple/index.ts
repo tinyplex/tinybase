@@ -4,13 +4,15 @@ import type {
   WsServerSimple,
   createWsServerSimple as createWsServerSimpleDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server-simple/index.d.ts';
-import {arrayForEach} from '../../common/array.ts';
+import {arrayForEach, arrayMap, arrayPush} from '../../common/array.ts';
 import {collClear, collDel, collHas, collIsEmpty} from '../../common/coll.ts';
+import {tryFinallyAsync, tryReturn} from '../../common/error.ts';
 import {
   IdMap2,
   mapEnsure,
   mapForEach,
   mapGet,
+  mapKeys,
   mapNew,
   mapSet,
 } from '../../common/map.ts';
@@ -20,6 +22,8 @@ import {
   ifNotUndefined,
   isUndefined,
   noop,
+  promiseAll,
+  promiseNew,
 } from '../../common/other.ts';
 import {
   CLOSE,
@@ -44,10 +48,45 @@ const PATH_REGEX = /\/([^?]*)/;
 
 export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
   type Client = [webSocket: WebSocket, channelId?: Id];
+  type WebSocketState = [
+    removeListeners: (() => void)[],
+    destroy?: () => void | Promise<any>,
+    destroying?: Promise<void>,
+  ];
 
   const clientsByPath: IdMap2<Client> = mapNew();
+  const webSocketStates = mapNew<WebSocket, WebSocketState>();
+  const removeServerListeners: (() => void)[] = [];
+  let destroying: Promise<void> | undefined;
 
-  addEmitterListener(webSocketServer, ERROR, noop);
+  arrayPush(
+    removeServerListeners,
+    addEmitterListener(webSocketServer, ERROR, noop),
+  );
+
+  const addWebSocketListener = (
+    webSocket: WebSocket,
+    event: string,
+    listener: (...args: any[]) => void,
+  ) =>
+    arrayPush(
+      mapEnsure(webSocketStates, webSocket, (): WebSocketState => [[]])[0],
+      addEmitterListener(webSocket, event, listener),
+    );
+
+  const destroyWebSocket = (webSocket: WebSocket): Promise<void> => {
+    const state = mapGet(webSocketStates, webSocket)!;
+    return (
+      state[2] ??
+      (state[2] = tryFinallyAsync(
+        async () => state[1]?.(),
+        () => {
+          arrayForEach(state[0], (remove) => tryReturn(remove));
+          collDel(webSocketStates, webSocket);
+        },
+      ))
+    );
+  };
 
   const sendToClient = ([client, channelId]: Client, payload: string) =>
     client.send(
@@ -108,8 +147,11 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       1,
       createInvalidPayloadHandler(client),
     );
-    client.on(MESSAGE, (data) => decode(data.toString(UTF8)));
-    client.on(CLOSE, () => delClientFromPath(pathId, clientId));
+    addWebSocketListener(client, MESSAGE, (data) =>
+      decode(data.toString(UTF8)),
+    );
+    mapGet(webSocketStates, client)![1] = () =>
+      delClientFromPath(pathId, clientId);
   };
 
   const addMultipleClient = (
@@ -131,26 +173,104 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       1,
       invalid,
     );
-    client.on(MESSAGE, (data) => handlePayload(data.toString(UTF8)));
-    client.on(CLOSE, destroy);
+    addWebSocketListener(client, MESSAGE, (data) =>
+      handlePayload(data.toString(UTF8)),
+    );
+    mapGet(webSocketStates, client)![1] = destroy;
   };
 
-  webSocketServer.on(CONNECTION, (client, request) => {
-    addEmitterListener(client, ERROR, noop);
-    ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
-      ifNotUndefined(request.headers['sec-websocket-key'], (clientId) =>
-        client.protocol == WS_SYNCHRONIZER_PROTOCOL
-          ? addMultipleClient(client, clientId, pathId)
-          : addLegacyClient(client, clientId, pathId),
-      ),
-    );
-  });
+  const removeConnectionListener = addEmitterListener(
+    webSocketServer,
+    CONNECTION,
+    (client, request) => {
+      mapSet(webSocketStates, client, [[]]);
+      addWebSocketListener(client, ERROR, noop);
+      addWebSocketListener(client, CLOSE, () =>
+        destroyWebSocket(client).catch(noop),
+      );
+      ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
+        ifNotUndefined(request.headers['sec-websocket-key'], (clientId) =>
+          client.protocol == WS_SYNCHRONIZER_PROTOCOL
+            ? addMultipleClient(client, clientId, pathId)
+            : addLegacyClient(client, clientId, pathId),
+        ),
+      );
+    },
+  );
+  arrayPush(removeServerListeners, removeConnectionListener);
 
   const getWebSocketServer = () => webSocketServer;
 
-  const destroy = async () => {
-    collClear(clientsByPath);
-    webSocketServer.close();
+  const closeWebSocket = (client: WebSocket): Promise<void> => {
+    const state = mapGet(webSocketStates, client)!;
+    const finishDestroy = () => state[2] ?? destroyWebSocket(client);
+    return client.readyState == client.CLOSED
+      ? finishDestroy()
+      : tryFinallyAsync(
+          () =>
+            promiseNew<void>((resolve, reject) => {
+              const removeCloseListener = addEmitterListener(
+                client,
+                CLOSE,
+                () => {
+                  removeCloseListener();
+                  resolve();
+                },
+              );
+              try {
+                client.close();
+              } catch (error) {
+                removeCloseListener();
+                reject(error);
+              }
+            }),
+          finishDestroy,
+        );
+  };
+
+  const closeWebSocketServer = async () => {
+    let errorToThrow: any;
+    let failed = false;
+    const close = async (action: () => void | Promise<void>) => {
+      try {
+        await action();
+      } catch (error) {
+        if (!failed) {
+          errorToThrow = error;
+        }
+        failed = true;
+      }
+    };
+    await promiseAll([
+      close(() =>
+        promiseNew<void>((resolve, reject) =>
+          webSocketServer.close((error) =>
+            isUndefined(error) ? resolve() : reject(error),
+          ),
+        ),
+      ),
+      ...arrayMap(mapKeys(webSocketStates), (client) =>
+        close(() => closeWebSocket(client)),
+      ),
+    ]);
+    if (failed) {
+      throw errorToThrow;
+    }
+  };
+
+  const destroy = (): Promise<void> => {
+    if (!destroying) {
+      tryReturn(removeConnectionListener);
+      destroying = tryFinallyAsync(closeWebSocketServer, () => {
+        arrayForEach(removeServerListeners, (remove) => tryReturn(remove));
+        mapForEach(webSocketStates, (_webSocket, [removeListeners]) =>
+          arrayForEach(removeListeners, (remove) => tryReturn(remove)),
+        );
+        collClear(clientsByPath);
+        collClear(webSocketStates);
+      });
+    }
+    return destroying;
   };
 
   const wsServerSimple = {
