@@ -1,5 +1,6 @@
 import {act, render} from '@testing-library/svelte';
 import {createRawSnippet} from 'svelte';
+import {createStore} from 'tinybase';
 import {
   BackwardCheckpointsView,
   CellView,
@@ -20,6 +21,7 @@ import {
   ValueView,
   ValuesView,
 } from 'tinybase/ui-svelte';
+import {expect, test} from 'vitest';
 import {
   testComponents,
   testCustomCheckpointComponents,
@@ -47,6 +49,7 @@ import TestValueView from './components/TestValueView.svelte';
 import TestValuesView from './components/TestValuesView.svelte';
 
 import ContextCheckpoints from './components/ContextCheckpoints.svelte';
+import ContextDuplicateProvidedStores from './components/ContextDuplicateProvidedStores.svelte';
 import ContextIndexes from './components/ContextIndexes.svelte';
 import ContextMetrics from './components/ContextMetrics.svelte';
 import ContextNested from './components/ContextNested.svelte';
@@ -143,4 +146,26 @@ testProviderComponents('ui-svelte', componentHarness, {
   NestedDifferent: ContextNestedDifferent,
   ProvideThings,
   NestedDefaults: ContextNestedDefaults,
+});
+
+test('duplicate provider registrations retain ownership', async () => {
+  const store1 = createStore().setCell('t1', 'r1', 'c1', 1);
+  const store2 = createStore().setCell('t1', 'r1', 'c1', 2);
+  const {container, rerender, unmount} = componentHarness.render(
+    ContextDuplicateProvidedStores,
+    {show1: true, show2: true, store1, store2},
+  );
+  const getText = () => container.textContent.trim();
+  expect(getText()).toBe('22');
+
+  await rerender({show2: false});
+  expect(getText()).toBe('11');
+  await rerender({show2: true});
+  expect(getText()).toBe('22');
+  await rerender({show1: false});
+  expect(getText()).toBe('22');
+  await rerender({show2: false});
+  expect(getText()).toBe('');
+
+  unmount();
 });

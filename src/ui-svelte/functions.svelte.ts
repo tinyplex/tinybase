@@ -1626,10 +1626,11 @@ export const onSynchronizerStatus = (
 
 const provideThing = (thingId: Id, thing: any, offset: number): void => {
   const contextValue = getContextValue();
+  const owner = {};
   if (hasWindow()) {
     $effect(() => {
-      contextValue[16]?.(offset, thingId, thing);
-      return () => contextValue[17]?.(offset, thingId);
+      contextValue[16]?.(offset, thingId, thing, owner);
+      return () => contextValue[17]?.(offset, thingId, owner);
     });
   }
 };
