@@ -77,6 +77,9 @@ Synchronizers now reject pending requests immediately when a transport fails
 and unregister built-in transport listeners when destroyed. The register
 callback for a custom Synchronizer now receives a transport-failure callback.
 
+BroadcastChannelSynchronizer now validates message envelopes before reading
+their fields, reporting malformed input as a synchronization message error.
+
 ## Compact Error Codes
 
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
