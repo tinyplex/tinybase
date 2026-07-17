@@ -188,6 +188,10 @@ channel beneath it. For untrusted clients, authenticate the upgrade request and
 either grant access to every descendant path or use a separate authenticated
 WebSocket for each authorized path.
 
+The client Ids exposed by WsServer are connection metadata derived from the
+`Sec-WebSocket-Key` header. They change across reconnections and are not
+authenticated user or session identities, so do not use them for authorization.
+
 Each WsSynchronizer is started and stopped normally. Destroying one only
 unsubscribes its channel. The shared WebSocket is closed when the last
 WsSynchronizer using it is destroyed:

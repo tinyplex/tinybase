@@ -42,6 +42,10 @@
  * of the path, the Id of the leaving client, and an `addedOrRemoved` value of
  * `-1`.
  *
+ * The client Id is connection metadata derived from the `Sec-WebSocket-Key`
+ * header. It is not stable across reconnections or an authenticated user or
+ * session identity, and must not be used for authorization.
+ *
  * A ClientIdsListener is provided when using the addClientIdsListener method.
  * See that method for specific examples.
  * @param wsServer A reference to the WsServer.
@@ -160,14 +164,16 @@
    */
   /// WsServer.getPathIds
   /**
-   * The getClientIds method method returns the active clients that the WsServer
-   * is handling for a given path.
+   * The getClientIds method returns the active clients that the WsServer is
+   * handling for a given path. These connection-scoped Ids are derived from
+   * the `Sec-WebSocket-Key` header. They are not authenticated identities and
+   * must not be used for authorization.
    * @param pathId The path for which to return the list of active clients.
    * @returns An array of the clients connected to the given path.
    * @example
    * This example creates a WsServer, sets some clients up to connect
    * to it, and then gets the number of clients on the given paths. (The client
-   * Ids themselves are unique, based on the `sec-websocket-key` header.)
+   * Ids themselves are unique, based on the `Sec-WebSocket-Key` header.)
    *
    * ```js
    * import {createMergeableStore} from 'tinybase';

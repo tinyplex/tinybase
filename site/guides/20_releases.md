@@ -70,6 +70,9 @@ a base path can subscribe to any valid descendant channel, so applications with
 untrusted clients should authenticate and isolate WebSockets by authorized
 path.
 
+WsServer client Ids derived from `Sec-WebSocket-Key` are connection metadata,
+not authenticated identities, and should not be used for authorization.
+
 ## Compact Error Codes
 
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
