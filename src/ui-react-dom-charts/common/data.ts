@@ -5,8 +5,9 @@ import {
   arrayEvery,
   arrayFilter,
   arrayForEach,
-  arrayHas,
   arrayMap,
+  arrayMax,
+  arrayMin,
   arrayPush,
 } from '../../common/array.ts';
 import {collHas, collSize} from '../../common/coll.ts';
@@ -29,6 +30,7 @@ import {
   mathRound,
   size,
 } from '../../common/other.ts';
+import {setAdd, setNew} from '../../common/set.ts';
 import {
   BAR,
   CATEGORY,
@@ -174,7 +176,7 @@ export const getBounds = (kind: Kind, points: DataPoint[]): Bounds => {
   }
   const [yMin, yMax] = getYDomain(points, kind);
 
-  if (isEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)))) {
+  if (arrayEvery(points, ([, xValue]) => isNumber(xValue))) {
     const [xMin, xMax] = getDomain(
       arrayMap(points, ([, xValue]) => xValue as number),
     );
@@ -308,12 +310,13 @@ export const getSeriesSummary = (
 ): SeriesSummary => {
   const [xMin, xMax, yMin, yMax] = getBounds(kind, points);
   const xValues: XValue[] = [];
+  const xValueSet = setNew<XValue>();
   const continuousX =
-    kind == LINE &&
-    isEmpty(arrayFilter(points, ([, xValue]) => !isNumber(xValue)));
+    kind == LINE && arrayEvery(points, ([, xValue]) => isNumber(xValue));
 
   arrayForEach(points, ([, xValue]) => {
-    if (!arrayHas(xValues, xValue)) {
+    if (!collHas(xValueSet, xValue)) {
+      setAdd(xValueSet, xValue);
       arrayPush(xValues, xValue);
     }
   });
@@ -333,42 +336,44 @@ export const getSeriesSummary = (
 
 export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
   const xValues: XValue[] = [];
-  const xMins: number[] = [];
-  const xMaxes: number[] = [];
-  const yMins: number[] = [];
-  const yMaxes: number[] = [];
+  const xValueSet = setNew<XValue>();
   let continuousX = true;
   let xMin: XValue | undefined;
   let xMax: XValue | undefined;
+  let numericXMin = infinity;
+  let numericXMax = -infinity;
+  let yMin = infinity;
+  let yMax = -infinity;
 
   arrayForEach(summaries, (summary) => {
     continuousX &&= summary.continuousX;
     arrayForEach(summary.xValues, (xValue) => {
-      if (!arrayHas(xValues, xValue)) {
+      if (!collHas(xValueSet, xValue)) {
+        setAdd(xValueSet, xValue);
         arrayPush(xValues, xValue);
       }
     });
     if (isNumber(summary.xMin) && isNumber(summary.xMax)) {
-      arrayPush(xMins, summary.xMin);
-      arrayPush(xMaxes, summary.xMax);
+      numericXMin = mathMin(numericXMin, summary.xMin);
+      numericXMax = mathMax(numericXMax, summary.xMax);
     } else {
       xMin ??= summary.xMin;
       xMax = summary.xMax ?? xMax;
     }
     if (!isUndefined(summary.yMin)) {
-      arrayPush(yMins, summary.yMin);
+      yMin = mathMin(yMin, summary.yMin);
     }
     if (!isUndefined(summary.yMax)) {
-      arrayPush(yMaxes, summary.yMax);
+      yMax = mathMax(yMax, summary.yMax);
     }
   });
 
   return {
     bounds: [
-      isEmpty(xMins) ? xMin : mathMin(...xMins),
-      isEmpty(xMaxes) ? xMax : mathMax(...xMaxes),
-      isEmpty(yMins) ? undefined : mathMin(...yMins),
-      isEmpty(yMaxes) ? undefined : mathMax(...yMaxes),
+      numericXMin == infinity ? xMin : numericXMin,
+      numericXMax == -infinity ? xMax : numericXMax,
+      yMin == infinity ? undefined : yMin,
+      yMax == -infinity ? undefined : yMax,
     ],
     continuousX: !isEmpty(summaries) && continuousX,
     xValues,
@@ -378,15 +383,19 @@ export const getDomainState = (summaries: SeriesSummary[]): DomainState => {
 export const getYDomain = (
   points: (DataPoint | ScaledPoint)[],
   kind: Kind = BAR,
-): Domain =>
-  getDomain([
-    ...(kind == BAR ? [0] : []),
-    ...arrayMap(points, ([, , yValue]) => yValue),
-  ]);
+): Domain => {
+  let min = kind == BAR ? 0 : infinity;
+  let max = kind == BAR ? 0 : -infinity;
+  arrayForEach(points, ([, , yValue]) => {
+    min = mathMin(min, yValue);
+    max = mathMax(max, yValue);
+  });
+  return min == infinity ? [0, 0] : [min, max];
+};
 
 const getDomain = (values: number[]): Domain => {
-  const min = mathMin(...values);
-  return min == infinity ? [0, 0] : [min, mathMax(...values)];
+  const min = arrayMin(values);
+  return min == infinity ? [0, 0] : [min, arrayMax(values)];
 };
 
 const getContinuousXValue = (

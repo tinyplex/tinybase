@@ -922,3 +922,22 @@ describe('CartesianChart', () => {
     unmount();
   });
 });
+
+test('LineChart supports datasets beyond the function argument limit', () => {
+  const rowCount = 125000;
+  const store = createStore().setTable(
+    't1',
+    Object.fromEntries(
+      Array.from({length: rowCount}, (_, index) => [
+        'r' + index,
+        {x: index, y: index},
+      ]),
+    ),
+  );
+  const {container, unmount} = render(
+    <LineChart store={store} tableId="t1" xCellId="x" yCellId="y" />,
+  );
+
+  expect(container.querySelector('.line-series .line')).not.toBeNull();
+  unmount();
+});
