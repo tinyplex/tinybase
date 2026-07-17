@@ -5,5 +5,8 @@
 
   let {store}: {store: Store} = $props();
 
-  provideStore('store1', untrack(() => store));
+  provideStore(
+    'store1',
+    untrack(() => store),
+  );
 </script>
