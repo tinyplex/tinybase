@@ -104,8 +104,10 @@
    * environment.
    * @param fragmentSize An optional target maximum UTF-8 byte size for each
    * WebSocket message fragment. Unicode code points are never split and can
-   * exceed this size. When set, larger synchronization payloads are split into
-   * fragments and reassembled by the receiving WsSynchronizer, since v9.0.
+   * exceed this size. TinyBase sends at most 1,000 fragments for one payload,
+   * increasing the target when needed. When set, larger synchronization
+   * payloads are split into fragments and reassembled by the receiving
+   * WsSynchronizer, since v9.0.
    * @returns A reference to the new WsSynchronizer object.
    * @example
    * This example creates two WsSynchronizer objects to synchronize one
@@ -185,7 +187,8 @@
    * would otherwise ignore when trying to synchronize data.
    * @param fragmentSize An optional target maximum UTF-8 byte size for each
    * WebSocket message fragment. Unicode code points are never split and can
-   * exceed this size.
+   * exceed this size. TinyBase sends at most 1,000 fragments for one payload,
+   * increasing the target when needed.
    * @returns A reference to the new WsSynchronizer object.
    * @example
    * This example creates two WsSynchronizer objects for different

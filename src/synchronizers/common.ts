@@ -35,7 +35,9 @@ import {
   isNumber,
   isString,
   isUndefined,
+  mathCeil,
   mathFloor,
+  mathMax,
   promiseAll,
   size,
   slice,
@@ -623,7 +625,13 @@ export const createPayloads = (
   if (isUndefined(fragmentSize) || maxFragmentSize < 1) {
     return [createRawPayload(clientId, remainder)];
   }
-  const fragments = getFragments(remainder, maxFragmentSize);
+  const fragments = getFragments(
+    remainder,
+    mathMax(
+      maxFragmentSize,
+      mathCeil(getWebSocketPayloadSize(remainder) / MAX_FRAGMENT_COUNT) + 3,
+    ),
+  );
   const total = size(fragments);
   if (total == 1) {
     return [createRawPayload(clientId, remainder)];
