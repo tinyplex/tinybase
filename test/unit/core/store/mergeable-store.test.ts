@@ -636,6 +636,21 @@ describe('applyMergeableChanges/setMergeableContent', () => {
   });
 
   test('restores raw change listening after apply error', () => {
+    const error = new Error('listener error');
+    const listenerId = store.addValueListener('v1', () => {
+      throw error;
+    });
+    expect(() =>
+      store.applyMergeableChanges([
+        stamped(0, 0, {}),
+        stamped(0, 0, {v1: stamped(0, 0, 1)}),
+      ] as MergeableContent),
+    ).toThrow(error);
+    store.delListener(listenerId).setValue('v2', 2);
+    expect(store.getMergeableContent()[1][0].v2[0]).toEqual(2);
+  });
+
+  test('rolls back mergeable stamps after apply error', () => {
     store.setValue('v0', 0);
     const content = store.getMergeableContent();
     const error = new Error('listener error');
