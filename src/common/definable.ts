@@ -8,6 +8,7 @@ import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
 import {arrayForEach, arrayIsEqual} from './array.ts';
 import {collClear, collDel, collForEach, collHas} from './coll.ts';
+import {tryCatchSync} from './error.ts';
 import {jsonString} from './json.ts';
 import {AddListener, CallListeners} from './listeners.ts';
 import {
@@ -110,7 +111,16 @@ export const getDefinableFunctions = <Thing, RowValue>(
       mapSet(things, id, getDefaultThing());
       mapSet(allRowValues, id, mapNew());
       mapSet(allSortKeys, id, mapNew());
-      callListeners(thingIdListeners);
+      tryCatchSync(
+        () => callListeners(thingIdListeners),
+        (error) => {
+          mapSet(tableIds, id);
+          mapSet(things, id);
+          mapSet(allRowValues, id);
+          mapSet(allSortKeys, id);
+          throw error;
+        },
+      );
     }
   };
 
