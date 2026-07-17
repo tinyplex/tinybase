@@ -144,9 +144,11 @@ test('PowerSync persister reports change iterator errors', async () => {
     {
       execute: async () => ({rows: {_array: []}}),
       onChange: () => ({
-        async *[Symbol.asyncIterator]() {
-          throw error;
-        },
+        [Symbol.asyncIterator]: () => ({
+          next: async () => {
+            throw error;
+          },
+        }),
       }),
     } as any,
     undefined,
