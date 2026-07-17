@@ -1096,6 +1096,24 @@ describe('EditableCellView', () => {
     unmount();
   });
 
+  test('rejects a mismatched JSON container', () => {
+    store.setCell('t1', 'r1', 'c1', {x: 1});
+    const {getAllByRole, unmount} = render(() => (
+      <EditableCellView store={store} tableId="t1" rowId="r1" cellId="c1" />
+    ));
+    const input = getAllByRole('textbox')[0];
+
+    fireEvent.input(input, {target: {value: '[]'}});
+    expect(input).toHaveClass('invalid');
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual({x: 1});
+
+    fireEvent.input(input, {target: {value: '{"x":2}'}});
+    expect(input).not.toHaveClass('invalid');
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual({x: 2});
+
+    unmount();
+  });
+
   test('change type and Cell', () => {
     const {container, getAllByRole, unmount} = render(() => (
       <EditableCellView store={store} tableId="t1" rowId="r1" cellId="c1" />
@@ -1333,6 +1351,34 @@ describe('SortedTablePaginator', () => {
 
     expect(changePhases).toEqual([false]);
     unmount();
+  });
+
+  test('normalizes boundary navigation', async () => {
+    const changes: number[] = [];
+    const first = render(() => (
+      <SortedTablePaginator
+        onChange={(offset) => changes.push(offset)}
+        total={100}
+        offset={5}
+        limit={10}
+      />
+    ));
+    fireEvent.click(first.getAllByRole('button')[0]);
+    expect(changes).toEqual([0]);
+    first.unmount();
+
+    const second = render(() => (
+      <SortedTablePaginator
+        onChange={(offset) => changes.push(offset)}
+        total={100}
+        offset={100}
+        limit={10}
+      />
+    ));
+    await Promise.resolve();
+    expect(changes).toEqual([0, 0]);
+    expect(second.container.textContent).toContain('1 to 10 of 100 rows');
+    second.unmount();
   });
 
   test('basic', () => {

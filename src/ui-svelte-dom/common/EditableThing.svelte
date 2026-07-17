@@ -88,6 +88,8 @@
           currentThingKey = getThingKey(object);
           onThingChange(object);
           setTypedClassName(EMPTY_STRING);
+        } else {
+          setTypedClassName(INVALID);
         }
       },
       () => setTypedClassName(INVALID),

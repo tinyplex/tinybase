@@ -203,6 +203,8 @@ export const EditableThing = (props: {
           setCurrentThing(() => object);
           props.onThingChange(object);
           setTypedClassName('');
+        } else {
+          setTypedClassName('invalid');
         }
       },
       () => setTypedClassName('invalid'),
