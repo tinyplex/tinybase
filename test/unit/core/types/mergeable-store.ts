@@ -1526,6 +1526,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   mergeableContent[1][0].v1![0] as undefined;
   mergeableContent[1][0].v1![0] as string; // !
   mergeableContent[1][0].v2; // !
+
+  const changes = storeWithSchemas.getTransactionMergeableChanges();
+  changes[0][2]; // !
+  const hashedChanges =
+    storeWithSchemas.getTransactionMergeableChanges(true);
+  hashedChanges[0][2] as number;
+  hashedChanges[0][2] as string; // !
 };
 
 // WhenSet flags
