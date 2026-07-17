@@ -273,6 +273,19 @@ describe.each([
       expectNoChanges(listener);
     });
 
+    test('Ignore invalid tablesSchema replacement', () => {
+      store.setTablesSchema({
+        t1: {c1: {type: 'number', default: 1}},
+      });
+      store.setTablesSchema({t1: {c1: {type: 'invalid'}}} as any);
+      expect(store.hasTablesSchema()).toBe(true);
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+        t1: {c1: {type: 'number', default: 1}},
+      });
+      store.setCell('t1', 'r1', 'c1', '1');
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    });
+
     test('Remove tablesSchema after creation', () => {
       const listenerId = addAllowCellMutator(store, 't1', 'c1', [2, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
@@ -377,6 +390,17 @@ describe.each([
       expect(store.getValues()).toEqual({v1: '1'});
       expectChanges(listener, 'invalids', {v1: ['1']}, {v1: [1]}, {v1: [2]});
       expectNoChanges(listener);
+    });
+
+    test('Ignore invalid valuesSchema replacement', () => {
+      store.setValuesSchema({v1: {type: 'number', default: 1}});
+      store.setValuesSchema({v1: {type: 'invalid'}} as any);
+      expect(store.hasValuesSchema()).toBe(true);
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+        v1: {type: 'number', default: 1},
+      });
+      store.setValue('v1', '1');
+      expect(store.getValues()).toEqual({v1: 1});
     });
 
     test('Remove valuesSchema after creation', () => {
