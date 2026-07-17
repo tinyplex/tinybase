@@ -26,6 +26,7 @@ import {
   ERROR_STORE_TYPE,
   errorThrow,
   tryCatch,
+  tryFinally,
   tryFinallyAsync,
 } from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
@@ -66,7 +67,7 @@ export const Persists = {
   StoreOrMergeableStore: PersistsValues.StoreOrMergeableStore,
 };
 
-type Action = () => Promise<any>;
+type Action = () => any;
 type ScheduledAction = [
   action: Action,
   complete: (() => void) | undefined,
@@ -154,6 +155,8 @@ export const createCustomPersister = <
   let autoLoadHandle: ListenerHandle | undefined;
   let autoLoadPromise: Promise<void> | undefined;
   let autoLoadGeneration = 0;
+  let pendingAutoLoads = 0;
+  let pendingScheduledAutoLoads = 0;
   let autoSaveListenerId: Id | undefined;
   let autoSaveGeneration = 0;
   let destroyed = 0;
@@ -308,24 +311,44 @@ export const createCustomPersister = <
     initialContent?: Content | (() => Content),
   ): Promise<Persister<Persist>> => {
     const generation = ++autoLoadGeneration;
+    let initialLoadPending = true;
     await stopAutoLoad(true);
     if (generation == autoLoadGeneration && !destroyed) {
       const listenerPromise = tryCatch(async () => {
         const handle = await addPersisterListener(async (content, changes) => {
           if (generation == autoLoadGeneration && !destroyed) {
             if (changes || content) {
-              /*! istanbul ignore else */
-              if (status != StatusValues.Saving) {
-                await tryFinallyAsync(
-                  async () => {
-                    setStatus(StatusValues.Loading);
-                    loads++;
-                    await schedule(async () =>
-                      setContentOrChanges(changes ?? content),
-                    );
-                  },
-                  () => setStatus(StatusValues.Idle),
-                );
+              const shouldSchedule =
+                initialLoadPending ||
+                status == StatusValues.Saving ||
+                !!pendingScheduledAutoLoads;
+              pendingAutoLoads++;
+              if (shouldSchedule) {
+                pendingScheduledAutoLoads++;
+              }
+              await tryFinallyAsync(
+                async () => {
+                  setStatus(StatusValues.Loading);
+                  loads++;
+                  await (shouldSchedule
+                    ? schedule(() =>
+                        setContentOrChanges(changes ?? content),
+                      )
+                    : tryFinally(
+                        () => setContentOrChanges(changes ?? content),
+                        () => setStatus(StatusValues.Idle),
+                      ));
+                },
+                () => {
+                  if (shouldSchedule) {
+                    pendingScheduledAutoLoads--;
+                  }
+                  if (!--pendingAutoLoads) {
+                    setStatus(StatusValues.Idle);
+                  }
+                },
+              );
+              if (!pendingAutoLoads) {
                 await saveAfterMutated();
               }
             } else {
@@ -341,7 +364,12 @@ export const createCustomPersister = <
       }, onIgnoredError);
       await trackAutoLoadPromise(listenerPromise);
       if (generation == autoLoadGeneration && !destroyed) {
-        await load(initialContent);
+        await tryFinallyAsync(
+          () => load(initialContent),
+          () => {
+            initialLoadPending = false;
+          },
+        );
       }
     }
     return persister;
@@ -473,7 +501,7 @@ export const createCustomPersister = <
   const schedule = async (...actions: Action[]): Promise<Persister> => {
     let failed = false;
     let firstError: any;
-    const completion = promiseNew<void>((resolve) => {
+    const completion = promiseNew<void>((resolve) =>
       !isEmpty(actions)
         ? arrayPush(
             mapGet(scheduleActions, scheduleId) as ScheduledAction[],
@@ -510,8 +538,8 @@ export const createCustomPersister = <
               ];
             }),
           )
-        : resolve();
-    });
+        : resolve(),
+    );
     await run();
     await completion;
     if (failed) {

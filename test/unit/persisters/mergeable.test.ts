@@ -6,7 +6,7 @@ import type {
   MergeableStore,
 } from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
-import type {Persister} from 'tinybase/persisters';
+import type {Persister, PersisterListener} from 'tinybase/persisters';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions} from '../common/mergeable.ts';
@@ -524,6 +524,56 @@ describe('Supported, MergeableStore', () => {
     await pause(1);
     await persister.destroy();
     expect(persisted).toMatchSnapshot();
+  });
+
+  test('applies loaded changes synchronously without re-saving', async () => {
+    const store = createMergeableStore('target', getNow);
+    const getChanges = (
+      storeId: string,
+      tableId: string,
+      rowId: string,
+      cellId: string,
+      cell: number,
+    ): MergeableChanges => {
+      const source = createMergeableStore(storeId, getNow).startTransaction();
+      source.setCell(tableId, rowId, cellId, cell);
+      const changes = source.getTransactionMergeableChanges();
+      source.finishTransaction();
+      return changes;
+    };
+    const changes1 = getChanges('source1', 't1', 'r1', 'c1', 1);
+    const changes2 = getChanges('source2', 't2', 'r2', 'c2', 2);
+    const changes3 = getChanges('source3', 't3', 'r3', 'c3', 3);
+    let listener: PersisterListener<Persists.MergeableStoreOnly> = noop;
+    let saves = 0;
+    const persister = (createCustomPersister as any)(
+      store,
+      asyncNoop,
+      async () => {
+        saves++;
+      },
+      (newListener: typeof listener) => (listener = newListener),
+      noop,
+      noop,
+      Persists.MergeableStoreOnly,
+      {},
+      1,
+    ) as Persister;
+    await persister.startAutoPersisting();
+    saves = 0;
+
+    const loading1 = listener(undefined, changes1);
+    const loading2 = listener(undefined, changes2);
+    const loading3 = listener(undefined, changes3);
+
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1}},
+      t2: {r2: {c2: 2}},
+      t3: {r3: {c3: 3}},
+    });
+    await Promise.all([loading1, loading2, loading3]);
+    expect(saves).toBe(0);
+    await persister.destroy();
   });
 
   test('loading from legacy', async () => {
