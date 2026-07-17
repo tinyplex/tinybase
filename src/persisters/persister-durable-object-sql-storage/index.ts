@@ -32,11 +32,19 @@ import {
   objNew,
   objSet,
 } from '../../common/obj.ts';
-import {isNull, isNullish, noop, number, string} from '../../common/other.ts';
+import {
+  isNull,
+  isNullish,
+  noop,
+  number,
+  string,
+  test,
+} from '../../common/other.ts';
 import {setAdd, setNew} from '../../common/set.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, strReplace, T} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
+import {escapeId} from '../common/database/common.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 type UnsubscribeFunction = () => void;
@@ -89,6 +97,9 @@ export const createDurableObjectSqlStoragePersister = (
 const stampNewObjectWithHash = <Thing>() =>
   stampNewWithHash(objNew<Thing>(), EMPTY_STRING, 0);
 
+const escapeGeneratedId = (id: string) =>
+  test(/^[a-zA-Z_][a-zA-Z0-9_]*$/, id) ? id : escapeId(id);
+
 const createDurableObjectFragmentedSqlStoragePersister = ((
   store: MergeableStore,
   sqlStorage: SqlStorage,
@@ -96,8 +107,8 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister => {
   const tablePrefix = strReplace(storagePrefix, /[^a-zA-Z0-9_]/g, '_');
-  const tablesTable = `${tablePrefix}tinybase_tables`;
-  const valuesTable = `${tablePrefix}tinybase_values`;
+  const tablesTable = escapeGeneratedId(`${tablePrefix}tinybase_tables`);
+  const valuesTable = escapeGeneratedId(`${tablePrefix}tinybase_values`);
   const insertTableSql = `INSERT INTO ${tablesTable} (type, table_id, row_id, cell_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?, ?, ?, ?)`;
   const insertValueSql = `INSERT INTO ${valuesTable} (value_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?)`;
   const getRowKey = (tableId: string, rowId: string) =>

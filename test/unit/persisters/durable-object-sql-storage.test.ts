@@ -170,3 +170,40 @@ test('fragmented mode preserves empty string identifiers', async () => {
   await persister1.destroy();
   await persister2.destroy();
 });
+
+test('fragmented mode escapes unsafe storage prefixes', async () => {
+  db.exec('CREATE TABLE protected (id INTEGER)');
+  db.prepare('INSERT INTO protected VALUES (?)').run(1);
+
+  const sqlStorage = createSqlStorage();
+  const storagePrefix = '123_"; DROP TABLE protected; --';
+  const store1 = createMergeableStore('s1', getNow)
+    .setCell('pets', 'fido', 'species', 'dog')
+    .setValue('open', true);
+  const persister1 = createDurableObjectSqlStoragePersister(
+    store1,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix},
+  );
+  await persister1.save();
+
+  const store2 = createMergeableStore('s2', getNow);
+  const persister2 = createDurableObjectSqlStoragePersister(
+    store2,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix},
+  );
+  await persister2.load();
+
+  expect(store2.getContent()).toEqual([
+    {pets: {fido: {species: 'dog'}}},
+    {open: true},
+  ]);
+  expect(db.prepare('SELECT * FROM protected').all()).toEqual([{id: 1}]);
+  expect(
+    sqlCommands.some((sql) => sql.includes('CREATE TABLE IF NOT EXISTS "123_')),
+  ).toBe(true);
+
+  await persister1.destroy();
+  await persister2.destroy();
+});
