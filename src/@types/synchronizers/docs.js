@@ -385,7 +385,8 @@
  * @param send A Send function for sending a message.
  * @param registerReceive A callback (called once when the Synchronizer is
  * created) that is passed a Receive function that you need to ensure will
- * receive messages addressed or broadcast to this client.
+ * receive messages addressed or broadcast to this client, and a failure
+ * callback for rejecting pending requests if the transport fails.
  * @param destroy A function called when destroying the Synchronizer which can
  * be used to clean up underlying resources.
  * @param requestTimeoutSeconds An number of seconds before a request sent from

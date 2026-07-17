@@ -28,7 +28,7 @@ export const createBroadcastChannelSynchronizer = ((
   ): void =>
     channel.postMessage([clientId, toClientId, requestId, message, body]);
 
-  const registerReceive = (receive: Receive): void => {
+  const registerReceive = (receive: Receive) => {
     channel.onmessage = ({
       data: [fromClientId, toClientId, requestId, message, body],
     }) =>
@@ -38,6 +38,7 @@ export const createBroadcastChannelSynchronizer = ((
   };
 
   const destroy = (): void => {
+    channel.onmessage = null;
     channel.close();
   };
 

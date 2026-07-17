@@ -92,6 +92,7 @@ const enum ChannelValue {
   IncomingSize,
   OutgoingSize,
   OutgoingCount,
+  Fail,
 }
 
 type Channel = [
@@ -106,6 +107,7 @@ type Channel = [
   incomingSize: number,
   outgoingSize: number,
   outgoingCount: number,
+  fail: ((error: Error) => void) | undefined,
 ];
 
 type PendingControl = [
@@ -130,7 +132,11 @@ type MultipleState = {
   delChannel: (channelId: Id) => void;
   destroyIfEmpty: () => void;
   invalid: (error: Error) => void;
-  registerReceive: (channelId: Id, receive: (payload: string) => void) => void;
+  registerReceive: (
+    channelId: Id,
+    receive: (payload: string) => void,
+    fail: (error: Error) => void,
+  ) => void;
   send: (channelId: Id, payloads: string[], coalesce?: () => string[]) => void;
 };
 
@@ -182,6 +188,11 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       reject(error);
     });
 
+  const failChannels = (error: Error) =>
+    mapForEach(channels, (_channelId, channel) =>
+      channel[ChannelValue.Fail]?.(error),
+    );
+
   const clearIncoming = (channel: Channel) => {
     arrayForEach(channel[ChannelValue.Incoming], ([, timeout]) =>
       stopTimeout(timeout),
@@ -213,6 +224,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       connected = false;
       notifyIgnoredError(error);
       rejectPendingControls(error);
+      failChannels(error);
       mapForEach(channels, (_channelId, channel) => {
         clearIncoming(channel);
         clearOutgoing(channel, true);
@@ -513,6 +525,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       }
       connection[2](error);
       rejectPendingControls(error);
+      failChannels(error);
       if (flushTimeout) {
         stopTimeout(flushTimeout);
         flushTimeout = undefined;
@@ -561,7 +574,10 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   });
   addWebSocketListener(OPEN, onOpen);
   addWebSocketListener(CLOSE, onClose);
-  addWebSocketListener(ERROR, notifyIgnoredError);
+  addWebSocketListener(ERROR, (error) => {
+    notifyIgnoredError(error);
+    failChannels(errorNew(ERROR_MULTIPLEX_SOCKET));
+  });
 
   const addChannel = async (
     channelId: Id,
@@ -586,6 +602,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       0,
       0,
       0,
+      undefined,
     ];
     mapSet(channels, channelId, channel);
     if (webSocket.readyState == webSocket.OPEN) {
@@ -606,10 +623,12 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   const registerReceive = (
     channelId: Id,
     receive: (payload: string) => void,
+    fail: (error: Error) => void,
   ) => {
     const channel = mapGet(channels, channelId);
     if (channel) {
       channel[ChannelValue.Receive] = receive;
+      channel[ChannelValue.Fail] = fail;
       queuedCount -= size(channel[ChannelValue.Incoming]);
       queuedSize -= channel[ChannelValue.IncomingSize];
       arrayForEach(channel[ChannelValue.Incoming], ([payload, timeout]) => {
@@ -746,10 +765,11 @@ const createMultipleWsSynchronizer = async <
               )
           : undefined,
       ),
-    (receive: Receive) =>
+    (receive: Receive, fail) =>
       state.registerReceive(
         channelId,
         createPayloadReceiver(receive, requestTimeoutSeconds, state.invalid),
+        fail,
       ),
     () => state.delChannel(channelId),
     requestTimeoutSeconds,
@@ -773,6 +793,7 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
     errorThrow(ERROR_LEGACY_MULTIPLEX);
   }
   let overflowing = false;
+  let removeTransportListeners = () => {};
   const overflow = () => {
     if (!overflowing) {
       overflowing = true;
@@ -781,16 +802,30 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
       webSocket.close(1013, error.message);
     }
   };
-  const registerReceive = (receive: Receive) => {
+  const registerReceive = (receive: Receive, fail: (error: Error) => void) => {
     const invalid = createInvalidPayloadHandler(webSocket, onIgnoredError);
     const receivePayload = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
       invalid,
     );
-    addEventListener(webSocket, MESSAGE, ({data}) =>
-      receivePayload(data.toString(UTF8)),
-    );
+    let removeListeners: (() => void)[] = [];
+    removeTransportListeners = () =>
+      arrayForEach(removeListeners, (removeListener) => removeListener());
+    const failTransport = () => {
+      fail(errorNew(ERROR_MULTIPLEX_SOCKET));
+      removeTransportListeners();
+    };
+    removeListeners = [
+      addEventListener(webSocket, MESSAGE, ({data}) =>
+        receivePayload(data.toString(UTF8)),
+      ),
+      addEventListener(webSocket, CLOSE, failTransport),
+      addEventListener(webSocket, ERROR, (error) => {
+        onIgnoredError?.(error);
+        failTransport();
+      }),
+    ];
   };
 
   const send = (
@@ -815,6 +850,7 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   };
 
   const destroy = (): void => {
+    removeTransportListeners();
     webSocket.close();
   };
 

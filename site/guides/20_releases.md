@@ -73,6 +73,10 @@ path.
 WsServer client Ids derived from `Sec-WebSocket-Key` are connection metadata,
 not authenticated identities, and should not be used for authorization.
 
+Synchronizers now reject pending requests immediately when a transport fails
+and unregister built-in transport listeners when destroyed. The register
+callback for a custom Synchronizer now receives a transport-failure callback.
+
 ## Compact Error Codes
 
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.

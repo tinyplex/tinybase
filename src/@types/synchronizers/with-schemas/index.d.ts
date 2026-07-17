@@ -68,7 +68,7 @@ export interface Synchronizer<
 export function createCustomSynchronizer<Schemas extends OptionalSchemas>(
   store: MergeableStore<Schemas>,
   send: Send,
-  registerReceive: (receive: Receive) => void,
+  registerReceive: (receive: Receive, fail: (error: Error) => void) => void,
   destroy: () => void,
   requestTimeoutSeconds: number,
   onSend?: Send,

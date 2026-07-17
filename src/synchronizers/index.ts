@@ -71,7 +71,7 @@ export const Message = {
 export const createCustomSynchronizer = (
   store: MergeableStore,
   send: Send,
-  registerReceive: (receive: Receive) => void,
+  registerReceive: (receive: Receive, fail: (error: Error) => void) => void,
   extraDestroy: () => void,
   requestTimeoutSeconds: number,
   onSend?: Send,
@@ -85,6 +85,7 @@ export const createCustomSynchronizer = (
     PersisterListener<PersistsEnum.MergeableStoreOnly> | undefined;
   let sends = 0;
   let receives = 0;
+  let destroyed = false;
 
   const pendingRequests: IdMap<
     [
@@ -96,6 +97,13 @@ export const createCustomSynchronizer = (
   > = mapNew();
 
   const getTransactionId = () => getUniqueId(11);
+
+  const rejectPendingRequests = (error: Error) =>
+    mapForEach(pendingRequests, (requestId, [, , reject, timeout]) => {
+      stopTimeout(timeout);
+      collDel(pendingRequests, requestId);
+      reject(error);
+    });
 
   const sendImpl = (
     toClientId: IdOrNull,
@@ -277,13 +285,9 @@ export const createCustomSynchronizer = (
   };
 
   const destroy = async () => {
+    destroyed = true;
     await persister.stopSync();
-    const error = errorNew(ERROR_SYNC_RESPONSE, 'destroyed');
-    mapForEach(pendingRequests, (requestId, [, , reject, timeout]) => {
-      stopTimeout(timeout);
-      collDel(pendingRequests, requestId);
-      reject(error);
-    });
+    rejectPendingRequests(errorNew(ERROR_SYNC_RESPONSE, 'destroyed'));
     extraDestroy();
     return persister;
   };
@@ -309,6 +313,9 @@ export const createCustomSynchronizer = (
       message: MessageEnum | any,
       body: any,
     ) => {
+      if (destroyed) {
+        return;
+      }
       if (!isProtocolMessageValid(transactionOrRequestId, message, body)) {
         onIgnoredError?.(errorNew(ERROR_SYNC_MESSAGE));
         return;
@@ -362,6 +369,7 @@ export const createCustomSynchronizer = (
         );
       }
     },
+    rejectPendingRequests,
   );
 
   return persister;
