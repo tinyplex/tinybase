@@ -98,9 +98,7 @@ The codes and their meanings are listed in the Error Codes guide.
 ## Build And Runtime Efficiency
 
 The build now classifies Svelte modules correctly when selecting framework
-replacements and externals. Every generated module is also asserted against the
-framework implied by its name, preventing future React, Solid, or Svelte
-classification drift.
+replacements and externals.
 
 Internal object iteration now walks own keys directly instead of allocating
 intermediate entries and mapped arrays. Side-effect-only transformations across
