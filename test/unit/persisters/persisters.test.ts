@@ -574,6 +574,93 @@ test('awaits queued scheduled actions', async () => {
   expect(secondScheduleResolved).toBe(true);
 });
 
+test('keeps scheduling after an ignored-error handler throws', async () => {
+  const handlerError = new Error('handler error');
+  let markSecondActionStarted: () => void = noop;
+  let releaseFirstAction: () => void = noop;
+  let releaseSecondAction: () => void = noop;
+  let secondActionRan = false;
+  const firstActionGate = new Promise<void>(
+    (resolve) => (releaseFirstAction = resolve),
+  );
+  const secondActionGate = new Promise<void>(
+    (resolve) => (releaseSecondAction = resolve),
+  );
+  const secondActionStarted = new Promise<void>(
+    (resolve) => (markSecondActionStarted = resolve),
+  );
+  const persister = createCustomPersister(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    noop,
+    noop,
+    () => {
+      throw handlerError;
+    },
+  );
+
+  const failedSchedule = expect(
+    persister.schedule(async () => {
+      await firstActionGate;
+      throw new Error('action error');
+    }),
+  ).rejects.toBe(handlerError);
+  const secondSchedule = persister.schedule(async () => {
+    secondActionRan = true;
+    markSecondActionStarted();
+    await secondActionGate;
+  });
+  releaseFirstAction();
+  await secondActionStarted;
+  await pause(0);
+  releaseSecondAction();
+
+  await failedSchedule;
+  await secondSchedule;
+  expect(secondActionRan).toBe(true);
+  await persister.destroy();
+});
+
+test('uses the scheduling owner error handler', async () => {
+  let releaseFirstAction: () => void = noop;
+  const firstActionGate = new Promise<void>(
+    (resolve) => (releaseFirstAction = resolve),
+  );
+  const firstIgnoredError = vi.fn();
+  const secondIgnoredError = vi.fn();
+  const scheduleId = {};
+  const createPersister = (onIgnoredError: (error: any) => void) =>
+    (createCustomPersister as any)(
+      createStore(),
+      asyncNoop,
+      asyncNoop,
+      noop,
+      noop,
+      onIgnoredError,
+      undefined,
+      {},
+      0,
+      scheduleId,
+    ) as Persister;
+  const persister1 = createPersister(firstIgnoredError);
+  const persister2 = createPersister(secondIgnoredError);
+  const error = new Error('second action error');
+
+  const firstSchedule = persister1.schedule(() => firstActionGate);
+  const secondSchedule = persister2.schedule(async () => {
+    throw error;
+  });
+  releaseFirstAction();
+  await firstSchedule;
+  await secondSchedule;
+
+  expect(firstIgnoredError).not.toHaveBeenCalled();
+  expect(secondIgnoredError).toHaveBeenCalledWith(error);
+  await persister1.destroy();
+  await persister2.destroy();
+});
+
 test('waits for old auto-load cleanup before restarting', async () => {
   let addCount = 0;
   let releaseCleanup: () => void = noop;
