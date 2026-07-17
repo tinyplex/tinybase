@@ -1033,6 +1033,55 @@ describe.each([
       expect(store.getCell('t1', 'r1', 'c1')).toEqual(3);
     });
 
+    test('Listener errors do not strand transaction finalizers', () => {
+      const error = new Error('listener error');
+      const targetListener = vi.fn();
+      const target = createStore();
+      store.addWillFinishTransactionListener(target.startTransaction);
+      store.addCellListener('t1', 'r1', 'c1', () => {
+        throw error;
+      });
+      store.addDidFinishTransactionListener(() => {
+        throw new Error('finalizer error');
+      });
+      store.addDidFinishTransactionListener(() => target.finishTransaction());
+      target.addValueListener('v1', targetListener);
+
+      expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(error);
+      target.setValue('v1', 1);
+      expect(targetListener).toHaveBeenCalledOnce();
+    });
+
+    test('Will-finish errors still run later finalizers', () => {
+      const error = new Error('will-finish error');
+      const targetListener = vi.fn();
+      const target = createStore();
+      const getMergeableState = () =>
+        (store as any).getMergeableContent
+          ? [
+              (store as any).getMergeableContent(),
+              (store as any).getTransactionMergeableChanges(),
+            ]
+          : undefined;
+      const originalMergeableState = getMergeableState();
+      let didMergeableState: any;
+      store.addWillFinishTransactionListener(() => {
+        throw error;
+      });
+      store.addWillFinishTransactionListener(target.startTransaction);
+      store.addDidFinishTransactionListener(
+        () => (didMergeableState = getMergeableState()),
+      );
+      store.addDidFinishTransactionListener(() => target.finishTransaction());
+      target.addValueListener('v1', targetListener);
+
+      expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(error);
+      expect(store.getTables()).toEqual(originalTables);
+      expect(didMergeableState).toEqual(originalMergeableState);
+      target.setValue('v1', 1);
+      expect(targetListener).toHaveBeenCalledOnce();
+    });
+
     test('Start listener error rolls back and restores state', () => {
       const error = new Error('start listener error');
       const listenerId = store.addStartTransactionListener(() => {

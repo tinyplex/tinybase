@@ -260,6 +260,20 @@ describe('getMergeableContent', () => {
     expect(store.getMergeableContent()).toEqual(content);
   });
 
+  test('Rollback finalizes mergeable changes before did listeners', () => {
+    let changesDuringDid: any;
+    store.addDidFinishTransactionListener(
+      () => (changesDuringDid = store.getTransactionMergeableChanges()),
+    );
+
+    store.transaction(
+      () => store.setCell('t1', 'r1', 'c1', 1),
+      () => true,
+    );
+
+    expect(changesDuringDid).toEqual(store.getTransactionMergeableChanges());
+  });
+
   test('Immutability', () => {
     store.setContent([
       {t1: {r1: {c1: 0, c2: 1}, r2: {c1: 2}}, t2: {r1: {c1: 3}}},

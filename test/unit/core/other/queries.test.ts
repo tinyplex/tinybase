@@ -5388,6 +5388,34 @@ describe('Miscellaneous', () => {
     expect(queries.getResultTable('q2')).toEqual({r1: {c1: 3}});
   });
 
+  test('recovers dependent queries after update evaluation throws', () => {
+    const error = new Error('select error');
+    const resultListener = vi.fn();
+    let fail = false;
+    store.setRow('t1', 'r1', {c1: 1});
+    queries
+      .setQueryDefinition('q1', 't1', ({select}) =>
+        select((getCell) => {
+          if (fail) {
+            throw error;
+          }
+          return getCell('c1') as number;
+        }).as('c1'),
+      )
+      .setQueryDefinition('q2', true, 'q1', ({select}) => select('c1'));
+    queries.addResultTableListener('q2', resultListener);
+
+    fail = true;
+    expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(error);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+    fail = false;
+    store.setCell('t1', 'r1', 'c1', 3);
+
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 3}});
+    expect(queries.getResultTable('q2')).toEqual({r1: {c1: 3}});
+    expect(resultListener).toHaveBeenCalledOnce();
+  });
+
   test('resets results when select changes', () => {
     setCells();
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
