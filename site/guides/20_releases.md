@@ -61,10 +61,30 @@ no channel Id is provided. Multiplexing is supported by WsServer and
 WsServerSimple, while WsServerDurableObject continues to use one URL path and
 Durable Object per WebSocket.
 
+WsServer and WsServerSimple now share the same negotiation, channel lifecycle,
+payload decoding, and cleanup implementation. Their path storage and
+backpressure policies remain specific to each server.
+
 ## Compact Error Codes
 
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
 The codes and their meanings are listed in the Error Codes guide.
+
+## Build And Runtime Efficiency
+
+The build now classifies Svelte modules correctly when selecting framework
+replacements and externals. Every generated module is also asserted against the
+framework implied by its name, preventing future React, Solid, or Svelte
+classification drift.
+
+Internal object iteration now walks own keys directly instead of allocating
+intermediate entries and mapped arrays. Side-effect-only transformations across
+Store, MergeableStore, Queries, database, Automerge, and Yjs paths also use the
+non-allocating iteration helper.
+
+Store JSON setters now handle invalid input synchronously without creating
+Promises or microtasks. Unused query-redefinition bookkeeping has also been
+removed.
 
 ## Consistent Module Exports
 
@@ -138,6 +158,10 @@ directly as keys, while arrays returned from custom functions continue to
 represent multiple Slice Ids. Equivalent rich sort keys also avoid unnecessary
 resorting.
 
+The defaultSorter function now returns zero when two sort keys are equal, in
+accordance with the JavaScript comparator contract. This includes the existing
+equivalence between an undefined sort key and zero.
+
 ## Reusable Schemas
 
 Stores now clone TablesSchema and ValuesSchema objects before validating and
@@ -195,6 +219,9 @@ handles empty HTTP responses without reporting ignored JSON parsing errors.
 WebSocket synchronization payloads are now fragmented by UTF-8 byte size and
 only at Unicode code point boundaries. Non-BMP characters therefore remain
 intact when a fragment is encoded and sent as an individual WebSocket message.
+
+The fragmenter now walks string boundaries directly instead of materializing a
+regular-expression match array for every payload.
 
 ## Validated WebSocket Protocol Traffic
 
