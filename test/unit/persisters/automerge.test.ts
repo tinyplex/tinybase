@@ -143,6 +143,28 @@ describe('Load from doc', () => {
 });
 
 describe('Observe doc', () => {
+  test('contains ignored-error handler failures', async () => {
+    const ignoredError = vi.fn(() => {
+      throw new Error('ignored-error handler failed');
+    });
+    const persister = createAutomergePersister(
+      store1,
+      docHandler1,
+      'tinybase',
+      ignoredError,
+    );
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await persister.save();
+    await persister.startAutoLoad();
+
+    docHandler1.change((doc: any) => (doc['tinybase'] = {t: {t1: 1}, v: {}}));
+    await pause();
+
+    expect(ignoredError).toHaveBeenCalledOnce();
+    expect(store1.getCell('t1', 'r1', 'c1')).toBe(1);
+    await persister.destroy();
+  });
+
   test('reports malformed roots without changing the Store', async () => {
     const ignoredErrors: Error[] = [];
     const persister = createAutomergePersister(
@@ -226,6 +248,22 @@ describe('Two stores, one doc', () => {
     await pause();
     await persister2.load();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
+
+  test('falls back when incremental containers are missing', async () => {
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await persister1.save();
+    await persister1.startAutoSave();
+
+    docHandler1.change((doc: any) => delete doc.tinybase.t.t1.r1);
+    store1.setCell('t1', 'r1', 'c1', 2);
+    await pause();
+    expect(docHandler1.doc().tinybase.t.t1.r1).toEqual({c1: 2});
+
+    docHandler1.change((doc: any) => delete doc.tinybase.t.t1);
+    store1.setCell('t1', 'r1', 'c1', 3);
+    await pause();
+    expect(docHandler1.doc().tinybase.t.t1.r1).toEqual({c1: 3});
   });
 
   test('autoLoad2', async () => {

@@ -13,6 +13,7 @@ import {
   ERROR_STORE_TYPE,
   errorThrow,
   tryCatch,
+  tryCatchIgnore,
   tryFinallyAsync,
 } from '../../../common/error.ts';
 import {getHash} from '../../../common/hash.ts';
@@ -285,21 +286,28 @@ export const createCustomPostgreSqlPersister = <
       const listenerHandle = await addChangeListener(
         channel,
         (prefixAndTableName) =>
-          ifNotUndefined(
-            strMatch(prefixAndTableName, EVENT_REGEX),
-            async ([, eventType, tableName]) => {
-              if (collHas(managedTableNamesSet, tableName)) {
-                if (eventType == 'c:') {
-                  await addDataChangedTriggers(tableName, resources[3]!);
-                }
-                listener();
-              }
-            },
+          void tryCatchIgnore(
+            () =>
+              ifNotUndefined(
+                strMatch(prefixAndTableName, EVENT_REGEX),
+                async ([, eventType, tableName]) => {
+                  if (collHas(managedTableNamesSet, tableName)) {
+                    if (eventType == 'c:') {
+                      await addDataChangedTriggers(tableName, resources[3]!);
+                    }
+                    await listener();
+                  }
+                },
+              ),
+            onIgnoredError,
           ),
       );
       return [listenerHandle, resources];
     } catch (error) {
-      await tryCatch(() => releaseListenerResources(resources), onIgnoredError);
+      await tryCatchIgnore(
+        () => releaseListenerResources(resources),
+        onIgnoredError,
+      );
       throw error;
     }
   };

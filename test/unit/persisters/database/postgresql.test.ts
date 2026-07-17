@@ -4,6 +4,7 @@ import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
 
+// eslint-disable-next-line max-len
 test('shares PostgreSQL listener resources until the last owner stops', async () => {
   const executeCommand = vi.fn(
     async (_sql: string, _params?: any[]): Promise<any[]> => [],
@@ -62,6 +63,48 @@ test('shares PostgreSQL listener resources until the last owner stops', async ()
   await persister2.destroy();
 });
 
+test('contains PostgreSQL notification failures', async () => {
+  let changeListener!: (tableName: string) => void;
+  let fail = false;
+  const executeCommand = vi.fn(async (): Promise<any[]> => {
+    if (fail) {
+      throw new Error('notification failed');
+    }
+    return [];
+  });
+  const ignoredError = vi.fn(() => {
+    if (fail) {
+      throw new Error('ignored-error handler failed');
+    }
+  });
+  const persister = createCustomPostgreSqlPersister(
+    createStore(),
+    undefined,
+    executeCommand,
+    async (_channel, listener) => {
+      changeListener = listener;
+      return 1;
+    },
+    async () => {},
+    undefined,
+    ignoredError,
+    () => {},
+    Persists.StoreOnly,
+    {},
+  );
+  await persister.startAutoLoad();
+
+  ignoredError.mockClear();
+  fail = true;
+  expect(changeListener('c:tinybase')).toBeUndefined();
+  await pause(0);
+  expect(ignoredError).toHaveBeenCalledOnce();
+
+  fail = false;
+  await persister.destroy();
+});
+
+// eslint-disable-next-line max-len
 test('releases reserved PostgreSQL connection on validation failure', async () => {
   const release = vi.fn();
   const sql = {

@@ -2,7 +2,7 @@ import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
-import {beforeEach, describe, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
 import {pause} from '../common/other.ts';
 
@@ -100,6 +100,28 @@ describe('Load from doc', () => {
 });
 
 describe('Observe doc', () => {
+  test('contains ignored-error handler failures', async () => {
+    const ignoredError = vi.fn(() => {
+      throw new Error('ignored-error handler failed');
+    });
+    const persister = createYjsPersister(
+      store1,
+      doc1,
+      'tinybase',
+      ignoredError,
+    );
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await persister.save();
+    await persister.startAutoLoad();
+
+    doc1.getMap('tinybase').set('t', new YMap([['t1', 1]]));
+    await pause();
+
+    expect(ignoredError).toHaveBeenCalledOnce();
+    expect(store1.getCell('t1', 'r1', 'c1')).toBe(1);
+    await persister.destroy();
+  });
+
   test('preserves event paths for other observers', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await persister1.save();
@@ -192,6 +214,25 @@ describe('Two stores, one doc', () => {
     await pause();
     await persister2.load();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
+
+  test('falls back when incremental containers are missing', async () => {
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await persister1.save();
+    await persister1.startAutoSave();
+    const yTables = doc1.getMap('tinybase').get('t') as YMap<
+      YMap<YMap<number>>
+    >;
+
+    yTables.get('t1')?.delete('r1');
+    store1.setCell('t1', 'r1', 'c1', 2);
+    await pause();
+    expect(yTables.get('t1')?.get('r1')?.toJSON()).toEqual({c1: 2});
+
+    yTables.delete('t1');
+    store1.setCell('t1', 'r1', 'c1', 3);
+    await pause();
+    expect(yTables.get('t1')?.get('r1')?.toJSON()).toEqual({c1: 3});
   });
 
   test('autoLoad2', async () => {

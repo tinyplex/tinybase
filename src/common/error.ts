@@ -56,6 +56,12 @@ export const tryCatch = async <Return>(
   }
 };
 
+export const tryCatchIgnore = <Return>(
+  action: () => Return | Promise<Return>,
+  onIgnoredError?: (error: any) => void,
+): Promise<Return | void> =>
+  tryCatch(action, (error) => void tryCatch(() => onIgnoredError?.(error)));
+
 export const tryCatchSync = <Return>(
   action: () => Return,
   onError?: (error: any) => void,
