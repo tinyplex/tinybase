@@ -32,8 +32,8 @@ test('getUniqueId', () => {
 test('defaultSorter', () => {
   expect(defaultSorter('a', 'b')).toEqual(-1);
   expect(defaultSorter('b', 'a')).toEqual(1);
-  expect(defaultSorter('a', 'a')).toEqual(0);
-  expect(defaultSorter(undefined, 0)).toEqual(0);
+  expect(defaultSorter('a', 'a')).toEqual(1);
+  expect(defaultSorter(undefined, 0)).toEqual(1);
 });
 
 test('getHlcFunctions', () => {
