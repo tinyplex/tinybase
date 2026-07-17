@@ -568,6 +568,7 @@ test('multiplexed queues have explicit overflow behavior', async () => {
   await editorSynchronizer.destroy();
 });
 
+// eslint-disable-next-line max-len
 test('throwing channel error handlers do not interrupt overflow cleanup', async () => {
   vi.useFakeTimers();
   try {
@@ -622,6 +623,7 @@ test('throwing channel error handlers do not interrupt overflow cleanup', async 
   }
 });
 
+// eslint-disable-next-line max-len
 test('throwing channel error handlers do not interrupt close cleanup', async () => {
   const handledErrors: Error[] = [];
   const webSocket = new MockWebSocket();
@@ -661,6 +663,7 @@ test('throwing channel error handlers do not interrupt close cleanup', async () 
   await editorSynchronizer.destroy();
 });
 
+// eslint-disable-next-line max-len
 test('failed multiplexed control sends release their pending state', async () => {
   vi.useFakeTimers();
   try {

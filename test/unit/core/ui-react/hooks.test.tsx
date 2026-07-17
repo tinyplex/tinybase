@@ -1520,6 +1520,7 @@ describe('React-specific', () => {
       unmount();
     });
 
+    // eslint-disable-next-line max-len
     test('useCreatePersister recovers from failed replacement cleanup', async () => {
       const persister1 = createTestPersister();
       const persister2 = createTestPersister();
