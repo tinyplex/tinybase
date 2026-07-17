@@ -1378,7 +1378,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: React.DependencyList,
     destroy?: (persister: Persister<Schemas, Persist>) => void,
     destroyDeps?: React.DependencyList,
-  ) => PersisterOrUndefined;
+  ) => PersisterOrUndefined | undefined;
 
   /// usePersisterIds
   usePersisterIds: () => Ids;
@@ -1422,7 +1422,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     createDeps?: React.DependencyList,
     destroy?: (synchronizer: Synchronizer<Schemas>) => void,
     destroyDeps?: React.DependencyList,
-  ) => SynchronizerOrUndefined;
+  ) => SynchronizerOrUndefined | undefined;
 
   /// useSynchronizerIds
   useSynchronizerIds: () => Ids;

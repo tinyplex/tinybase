@@ -11499,7 +11499,12 @@
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Persister being created every time the app renders or updates, since v5.0 the
  * this primitive performs the creation in an effect.
- * @returns A reference to the Persister.
+ *
+ * The returned Accessor yields `undefined` until the Persister has been created
+ * and while a replacement is being created. The optional `destroy` callback is
+ * called after the Persister's asynchronous destruction has completed.
+ * @returns An Accessor that returns the Persister, or `undefined` while it is
+ * being created.
  * @example
  * This example creates the TinyBase objects needed by the Solid primitive or
  * component and calls it from within a reactive root.
@@ -12016,14 +12021,18 @@
  * collaboration features.
  *
  * This primitive ensures the Synchronizer object is destroyed whenever a new
- * one is created or the component is unmounted.
+ * one is created or the component is unmounted. The returned Accessor yields
+ * `undefined` until the Synchronizer has been created and while a replacement
+ * is being created. The optional `destroy` callback is called after the
+ * Synchronizer's asynchronous destruction has completed.
  * @param store A reference to the MergeableStore for which to create a new
  * Synchronizer object.
  * @param create An asynchronous function for performing the creation steps of
  * the Synchronizer object for the Store.
  * @param destroy An optional callback whenever the Synchronizer is destroyed
  * when its create function observes different reactive input.
- * @returns A reference to the Synchronizer.
+ * @returns An Accessor that returns the Synchronizer, or `undefined` while it
+ * is being created.
  * @example
  * This example creates the TinyBase objects needed by the Solid primitive or
  * component and calls it from within a reactive root.

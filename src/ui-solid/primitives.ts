@@ -107,6 +107,7 @@ import type {
   UndoOrRedoInformation,
 } from '../@types/ui-solid/index.d.ts';
 import {arrayIsEqual, arrayMap, arrayOrValueEqual} from '../common/array.ts';
+import {tryFinallyAsync} from '../common/error.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
@@ -1997,10 +1998,8 @@ export const useCreatePersister = <
   createEffect(() => {
     let current = true;
     let createdPersister: PersisterOrUndefined | undefined;
-    const destroyPersister = (persister: Persister<Persist>) => {
-      persister.destroy();
-      destroy?.(persister);
-    };
+    const destroyPersister = (persister: Persister<Persist>) =>
+      tryFinallyAsync(() => persister.destroy(), () => destroy?.(persister));
     (async () => {
       const resolvedStore = getThing(store);
       createdPersister = resolvedStore
@@ -2008,7 +2007,7 @@ export const useCreatePersister = <
         : undefined;
       if (!current) {
         if (createdPersister) {
-          destroyPersister(createdPersister);
+          await destroyPersister(createdPersister);
         }
         return;
       }
@@ -2021,7 +2020,7 @@ export const useCreatePersister = <
       current = false;
       setPersister(() => undefined);
       if (createdPersister) {
-        destroyPersister(createdPersister);
+        void destroyPersister(createdPersister);
       }
     });
   });
@@ -2077,10 +2076,11 @@ export const useCreateSynchronizer = <
   createEffect(() => {
     let current = true;
     let createdSynchronizer: SynchronizerOrUndefined | undefined;
-    const destroySynchronizer = (synchronizer: Synchronizer) => {
-      synchronizer.destroy();
-      destroy?.(synchronizer);
-    };
+    const destroySynchronizer = (synchronizer: Synchronizer) =>
+      tryFinallyAsync(
+        () => synchronizer.destroy(),
+        () => destroy?.(synchronizer),
+      );
     (async () => {
       const resolvedStore = getThing(store);
       createdSynchronizer = resolvedStore
@@ -2088,7 +2088,7 @@ export const useCreateSynchronizer = <
         : undefined;
       if (!current) {
         if (createdSynchronizer) {
-          destroySynchronizer(createdSynchronizer);
+          await destroySynchronizer(createdSynchronizer);
         }
         return;
       }
@@ -2098,7 +2098,7 @@ export const useCreateSynchronizer = <
       current = false;
       setSynchronizer(() => undefined);
       if (createdSynchronizer) {
-        destroySynchronizer(createdSynchronizer);
+        void destroySynchronizer(createdSynchronizer);
       }
     });
   });

@@ -163,7 +163,7 @@ import {
   useValuesState,
   useWillFinishTransactionListener,
 } from 'tinybase/ui-solid';
-import {describe, expect, test, vi} from 'vitest';
+import {type Mock, describe, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
 import {
   testCheckpointCallbackFunctions,
@@ -178,8 +178,8 @@ import {testContextPrimitives} from '../ui-common/primitives.ts';
 import {ContextPrimitiveNoContext} from './components/ContextPrimitiveNoContext.tsx';
 import {ContextPrimitiveThings} from './components/ContextPrimitiveThings.tsx';
 
-type TestPersister = Persister<Persists.StoreOnly> & {destroy: () => void};
-type TestSynchronizer = Synchronizer & {destroy: () => void};
+type TestPersister = Persister<Persists.StoreOnly> & {destroy: Mock};
+type TestSynchronizer = Synchronizer & {destroy: Mock};
 
 const createTestPersister = () =>
   ({destroy: vi.fn()}) as unknown as TestPersister;
@@ -1572,6 +1572,13 @@ describe('Solid-specific', () => {
   test('destroys late persister when owner is disposed', async () => {
     const persister = createTestPersister();
     let resolveCreate: (persister: TestPersister) => void;
+    let resolveDestroy: () => void;
+    persister.destroy.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveDestroy = resolve;
+        }),
+    );
     const create = vi.fn(
       () =>
         new Promise<TestPersister>((resolve) => {
@@ -1579,9 +1586,10 @@ describe('Solid-specific', () => {
         }),
     );
     const then = vi.fn();
+    const destroy = vi.fn();
 
     const dispose = renderPrimitive(() => {
-      useCreatePersister(createStore(), create, then);
+      useCreatePersister(createStore(), create, then, destroy);
     });
 
     await pause();
@@ -1592,6 +1600,10 @@ describe('Solid-specific', () => {
     expect(create).toHaveBeenCalledTimes(1);
     expect(then).not.toHaveBeenCalled();
     expect(persister.destroy).toHaveBeenCalledTimes(1);
+    expect(destroy).not.toHaveBeenCalled();
+    resolveDestroy!();
+    await pause();
+    expect(destroy).toHaveBeenCalledWith(persister);
   });
 
   test('recreates persister when accessor store changes', async () => {
@@ -1627,15 +1639,23 @@ describe('Solid-specific', () => {
   test('destroys late synchronizer when owner is disposed', async () => {
     const synchronizer = createTestSynchronizer();
     let resolveCreate: (synchronizer: TestSynchronizer) => void;
+    let resolveDestroy: () => void;
+    synchronizer.destroy.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveDestroy = resolve;
+        }),
+    );
     const create = vi.fn(
       () =>
         new Promise<TestSynchronizer>((resolve) => {
           resolveCreate = resolve;
         }),
     );
+    const destroy = vi.fn();
 
     const dispose = renderPrimitive(() => {
-      useCreateSynchronizer(createMergeableStore(), create);
+      useCreateSynchronizer(createMergeableStore(), create, destroy);
     });
 
     await pause();
@@ -1645,6 +1665,10 @@ describe('Solid-specific', () => {
 
     expect(create).toHaveBeenCalledTimes(1);
     expect(synchronizer.destroy).toHaveBeenCalledTimes(1);
+    expect(destroy).not.toHaveBeenCalled();
+    resolveDestroy!();
+    await pause();
+    expect(destroy).toHaveBeenCalledWith(synchronizer);
   });
 
   test('recreates synchronizer when accessor store changes', async () => {

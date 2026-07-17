@@ -12396,15 +12396,16 @@
  * Since v4.3.0, the `create` function can return undefined, meaning that you
  * can enable or disable persistence conditionally within this hook. This is
  * useful for applications which might turn on or off their cloud persistence or
- * collaboration features. This hook can return `undefined` if the Store is not
- * yet defined, which you should defend against.
+ * collaboration features. This hook returns `undefined` until the current
+ * Persister has been created, while a replacement is being created, or if the
+ * Store is not yet defined, which you should defend against.
  *
  * Since v4.3.19, a `destroy` function can be provided which will be called
- * after an old Persister is destroyed due to a change in the `createDeps`
- * dependencies that causes a new one to be created. Use this to clean up any
- * underlying storage objects that you set up during the `then` function, for
- * example. If this callback itself contains additional dependencies, you can
- * provide them in an array in the seventh parameter.
+ * after an old Persister's asynchronous destruction has completed due to a
+ * change in the `createDeps` dependencies that causes a new one to be created.
+ * Use this to clean up any underlying storage objects that you set up during
+ * the `then` function, for example. If this callback itself contains additional
+ * dependencies, you can provide them in an array in the seventh parameter.
  *
  * Since v5.2, the `create` function can be asynchronous, which now makes it a
  * suitable place to call the Persister's startAutoLoad and startAutoSave
@@ -12429,9 +12430,10 @@
  * @param destroy An optional callback whenever the Persister is destroyed due
  * to a change in the `createDeps` dependencies.
  * @param destroyDeps An optional array of dependencies for the `destroy`
- * callback, which, if any change, result in `destroy` and `then` being rerun.
- * This parameter defaults to an empty array.
- * @returns A reference to the Persister.
+ * callback, which, if any change, updates the callback used for future cleanup
+ * without recreating the Persister. This parameter defaults to an empty array.
+ * @returns A reference to the Persister, or `undefined` while it is being
+ * created.
  * @example
  * This example creates a Persister at the top level of a React application.
  * Even though the App component is rendered twice, the Persister creation only
@@ -12980,10 +12982,13 @@
  * The `create` function can return undefined, meaning that you can enable or
  * disable synchronization conditionally within this hook. This is useful for
  * applications which might turn on or off their cloud synchronization or
- * collaboration features.
+ * collaboration features. This hook returns `undefined` until the current
+ * Synchronizer has been created, while a replacement is being created, or if
+ * the MergeableStore is not yet defined.
  *
  * This hook ensures the Synchronizer object is destroyed whenever a new one is
- * created or the component is unmounted.
+ * created or the component is unmounted. The optional `destroy` callback is
+ * called after the Synchronizer's asynchronous destruction has completed.
  * @param store A reference to the MergeableStore for which to create a new
  * Synchronizer object.
  * @param create An asynchronous function for performing the creation steps of
@@ -12994,9 +12999,11 @@
  * @param destroy An optional callback whenever the Synchronizer is destroyed
  * due to a change in the `createDeps` dependencies.
  * @param destroyDeps An optional array of dependencies for the `destroy`
- * callback, which, if any change, result in `destroy` and `then` being rerun.
- * This parameter defaults to an empty array.
- * @returns A reference to the Synchronizer.
+ * callback, which, if any change, updates the callback used for future cleanup
+ * without recreating the Synchronizer. This parameter defaults to an empty
+ * array.
+ * @returns A reference to the Synchronizer, or `undefined` while it is being
+ * created.
  * @example
  * This example creates a Synchronizer at the top level of a React application.
  * Even though the App component is rendered twice, the Synchronizer creation

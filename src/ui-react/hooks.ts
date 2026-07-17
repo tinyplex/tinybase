@@ -265,6 +265,7 @@ import {
   arrayMap,
   arrayOrValueEqual,
 } from '../common/array.ts';
+import {tryFinallyAsync} from '../common/error.ts';
 import {jsonString} from '../common/json.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
@@ -406,7 +407,7 @@ const useCreate = (
 
 const useCreateAsync = <
   StoreType,
-  Thing extends {destroy: () => void},
+  Thing extends {destroy: () => Promise<any>},
   ThingOrUndefined extends Thing | undefined,
 >(
   store: StoreType | undefined,
@@ -416,9 +417,15 @@ const useCreateAsync = <
   thenDeps: DependencyList,
   destroy: ((thing: Thing) => void) | undefined,
   destroyDeps: DependencyList,
-): ThingOrUndefined => {
+): ThingOrUndefined | undefined => {
   const [, rerender] = useState<[]>();
-  const [thing, setThing] = useState<ThingOrUndefined>();
+  const creation = useMemo(
+    () => [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, ...createDeps, ...thenDeps],
+  );
+  const [thing, setThing] =
+    useState<[creation: unknown[], thing: ThingOrUndefined]>();
   const destroyRef = useRef(destroy);
   useEffect(
     () => {
@@ -431,20 +438,20 @@ const useCreateAsync = <
     () => {
       let current = true;
       let createdThing: ThingOrUndefined;
-      const destroyThing = (thing: Thing): void => {
-        thing.destroy();
-        destroyRef.current?.(thing);
-      };
+      const destroyThing = (thing: Thing) =>
+        tryFinallyAsync(() => thing.destroy(), () =>
+          destroyRef.current?.(thing),
+        );
       (async () => {
         const nextThing = store ? await create(store) : undefined;
         if (!current) {
           if (nextThing) {
-            destroyThing(nextThing);
+            await destroyThing(nextThing);
           }
           return;
         }
         createdThing = nextThing as ThingOrUndefined;
-        setThing(nextThing as ThingOrUndefined);
+        setThing([creation, nextThing as ThingOrUndefined]);
         if (nextThing && then) {
           await then(nextThing);
           if (current) {
@@ -455,14 +462,14 @@ const useCreateAsync = <
       return () => {
         current = false;
         if (createdThing) {
-          destroyThing(createdThing);
+          void destroyThing(createdThing);
         }
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, ...createDeps, ...thenDeps],
   );
-  return thing as ThingOrUndefined;
+  return thing?.[0] === creation ? thing[1] : undefined;
 };
 
 const addAndDelListener = (thing: any, listenable: string, ...args: any[]) => {
@@ -2441,7 +2448,7 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   thenDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (persister: Persister<Persist>) => void,
   destroyDeps: DependencyList = EMPTY_ARRAY,
-): PersisterOrUndefined =>
+): PersisterOrUndefined | undefined =>
   useCreateAsync(
     store,
     create,
@@ -2500,7 +2507,7 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   createDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (synchronizer: Synchronizer) => void,
   destroyDeps: DependencyList = EMPTY_ARRAY,
-): SynchronizerOrUndefined =>
+): SynchronizerOrUndefined | undefined =>
   useCreateAsync(
     store,
     create,

@@ -237,7 +237,9 @@ equivalent state no longer create phantom checkpoints.
 Solid primitives no longer register Store listeners during server rendering.
 React hooks that create Persisters and Synchronizers asynchronously now destroy
 stale or post-unmount results without replacing or destroying the current
-resource.
+resource. They also return `undefined` while a replacement is pending instead
+of exposing a resource that has begun teardown. React and Solid cleanup
+callbacks now run after asynchronous resource destruction completes.
 
 The ui-solid-dom and ui-svelte-dom modules are now exported explicitly as
 client-only browser modules, so server builds fail during package resolution
