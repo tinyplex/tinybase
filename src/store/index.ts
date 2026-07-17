@@ -98,6 +98,7 @@ import {
 import {
   isObject,
   objDel,
+  objForEach,
   objFreeze,
   objHas,
   objIsEmpty,
@@ -926,7 +927,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         const rowMap: RowMap = mapNew();
         mapSet(tableMap, rowId, rowMap);
         rowIdsChanged(tableId, rowId, 1);
-        objMap(
+        objForEach(
           addDefaultsToRow({[cellId]: validCell}, tableId, rowId),
           (cell, cellId) =>
             setValidCell(
@@ -1780,7 +1781,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       (tableId, rowId) => {
         if (validateRow(tableId, rowId, partialRow, 1)) {
           const table = getOrCreateTable(tableId);
-          objMap(partialRow, (cell, cellId) =>
+          objForEach(partialRow, (cell, cellId) =>
             setCellIntoNewRow(tableId, table, rowId, cellId, cell as Cell),
           );
         }
@@ -1857,7 +1858,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setPartialValues = (partialValues: Values): Store =>
     fluentTransaction(() =>
       validateValues(partialValues, 1)
-        ? objMap(partialValues, (value, valueId) =>
+        ? objForEach(partialValues, (value, valueId) =>
             setValidValue(valueId, value as Value),
           )
         : 0,
@@ -1897,13 +1898,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
             () => changes,
           ),
         (changes): void => {
-          objMap(changes[0], (table, tableId) =>
+          objForEach(changes[0], (table, tableId) =>
             isUndefined(table)
               ? delTable(tableId)
-              : objMap(table, (row, rowId) =>
+              : objForEach(table, (row, rowId) =>
                   isUndefined(row)
                     ? delRow(tableId, rowId)
-                    : objMap(row, (cell, cellId) =>
+                    : objForEach(row, (cell, cellId) =>
                         setOrDelCell(
                           tableId,
                           rowId,
@@ -1915,7 +1916,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                       ),
                 ),
           );
-          objMap(changes[1], (value, valueId) =>
+          objForEach(changes[1], (value, valueId) =>
             setOrDelValue(valueId, value as ValueOrUndefined),
           );
         },
@@ -2531,7 +2532,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   // and now for some gentle meta-programming
-  objMap(
+  objForEach(
     {
       [HAS + TABLES]: [0, hasTablesListeners, [], () => [hasTables()]],
       [TABLES]: [0, tablesListeners],

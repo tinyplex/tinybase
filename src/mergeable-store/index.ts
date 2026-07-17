@@ -49,7 +49,6 @@ import {
   objFreeze,
   objGet,
   objHas,
-  objMap,
   objNew,
   objSet,
   objValidate,
@@ -819,7 +818,7 @@ export const createMergeableStore = ((
     valueChanged,
   );
 
-  objMap(
+  objForEach(
     store as IdObj<any>,
     (method, name) =>
       (mergeableStore[name] =

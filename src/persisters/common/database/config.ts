@@ -13,7 +13,7 @@ import {
 } from '../../../common/map.ts';
 import {
   IdObj,
-  objMap,
+  objForEach,
   objMerge,
   objSize,
   objValues,
@@ -106,7 +106,7 @@ const getDefaultedTabularConfigMap = (
   then: (id: string, firstValue: string) => void,
 ): IdMap<any[]> => {
   const configMap = mapNew<Id, any[]>();
-  objMap(configsObj, (configObj, id) => {
+  objForEach(configsObj, (configObj, id) => {
     const defaultedConfig = slice(
       objValues(
         objMerge(
