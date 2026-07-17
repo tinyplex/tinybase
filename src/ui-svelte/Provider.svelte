@@ -2,7 +2,10 @@
   import {getContext, setContext, untrack} from 'svelte';
   import type {Id} from '../@types/common/index.d.ts';
   import type {ProviderProps} from '../@types/ui-svelte/index.d.ts';
-  import {arrayNew} from '../common/array.ts';
+  import {arrayFilter, arrayNew, arrayPush} from '../common/array.ts';
+  import {type IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
+  import {objDel, objGet} from '../common/obj.ts';
+  import {isUndefined, size} from '../common/other.ts';
   import {type ContextValue, TINYBASE_CONTEXT_KEY} from './context.ts';
 
   const {
@@ -29,16 +32,49 @@
     (getContext(TINYBASE_CONTEXT_KEY) as ContextValue) ?? [];
 
   let extras: {[id: Id]: any}[] = $state(arrayNew(8, () => ({})));
+  type ThingRegistration = [owner: object, thing: any];
+  const registrationsByOffset: IdMap<ThingRegistration[]>[] = arrayNew(
+    8,
+    () => mapNew<Id, ThingRegistration[]>(),
+  );
 
-  const addThing = (offset: number, id: Id, thing: any): void => {
-    extras[offset] = {...untrack(() => extras[offset]), [id]: thing};
+  const setThing = (offset: number, id: Id, thing?: any): void => {
+    const thingsById = untrack(() => extras[offset]);
+    if (objGet(thingsById, id) != thing) {
+      extras[offset] = isUndefined(thing)
+        ? objDel({...thingsById}, id)
+        : {...thingsById, [id]: thing};
+    }
   };
 
-  const delThing = (offset: number, id: Id): void => {
-    const {[id]: _, ...rest} = untrack(() => extras[offset]) as {
-      [id: Id]: any;
-    };
-    extras[offset] = rest;
+  const addThing = (
+    offset: number,
+    id: Id,
+    thing: any,
+    owner: object,
+  ): void => {
+    const registrationsById = registrationsByOffset[offset];
+    const registrations = arrayFilter(
+      mapGet(registrationsById, id) ?? [],
+      ([registrationOwner]) => registrationOwner != owner,
+    );
+    arrayPush(registrations, [owner, thing]);
+    mapSet(registrationsById, id, registrations);
+    setThing(offset, id, thing);
+  };
+
+  const delThing = (offset: number, id: Id, owner: object): void => {
+    const registrationsById = registrationsByOffset[offset];
+    const registrations = arrayFilter(
+      mapGet(registrationsById, id) ?? [],
+      ([registrationOwner]) => registrationOwner != owner,
+    );
+    mapSet(
+      registrationsById,
+      id,
+      isUndefined(registrations[0]) ? undefined : registrations,
+    );
+    setThing(offset, id, registrations[size(registrations) - 1]?.[1]);
   };
 
   type ById = {[id: Id]: any};

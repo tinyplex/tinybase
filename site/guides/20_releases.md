@@ -251,9 +251,9 @@ also now return Accessor functions for their availability, checkpoint Id, and
 label entries.
 
 React and Solid sorted-table paginators now defer offset corrections until
-after rendering. Provider registrations in both UI modules also track ownership
-when Ids are duplicated, so removing one registration preserves or restores the
-correct remaining resource.
+after rendering. Provider registrations in all three UI modules also track
+ownership when Ids are duplicated, so removing one registration preserves or
+restores the correct remaining resource.
 
 ## PartyKit Authorization
 
