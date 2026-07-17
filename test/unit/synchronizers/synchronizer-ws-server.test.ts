@@ -250,6 +250,38 @@ test('malformed websocket traffic is not relayed', async () => {
   await server.destroy();
 });
 
+test('oversized websocket traffic is disconnected before relay', async () => {
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port: 8049}),
+    undefined,
+    (error) => errors.push(error),
+  );
+  const attacker = new WebSocket('ws://localhost:8049');
+  const otherClient = new WebSocket('ws://localhost:8049');
+  const received: any[] = [];
+  otherClient.on('message', (message) => received.push(message));
+  await Promise.all(
+    [attacker, otherClient].map(
+      (webSocket) =>
+        new Promise<void>((resolve) => webSocket.on('open', () => resolve())),
+    ),
+  );
+  const closed = once(attacker, 'close');
+
+  attacker.send('\n[null,1,""]' + ' '.repeat(16_777_216));
+  await closed;
+  await pause();
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:15:socket']);
+  expect(received).toEqual([]);
+  expect(otherClient.readyState).toBe(WebSocket.OPEN);
+  expect(server.getStats()).toEqual({clients: 1, paths: 1});
+
+  await closeWebSocket(otherClient);
+  await server.destroy();
+});
+
 test('Basics', async () => {
   const wsServer = createWsServer(new WebSocketServer({port: 8049}));
 

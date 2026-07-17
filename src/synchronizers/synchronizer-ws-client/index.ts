@@ -540,6 +540,10 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 
   addWebSocketListener(MESSAGE, ({data}) => {
     const payload = data.toString(UTF8);
+    if (isWebSocketPayloadTooLarge(payload)) {
+      invalid(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
+      return;
+    }
     const control = ifMultipleControlPayloadValid(
       payload,
       (requestId, control, _body) => {

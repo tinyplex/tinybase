@@ -144,6 +144,58 @@ test('malformed multiplexed traffic is reported and disconnected', async () => {
   }
 });
 
+test('oversized multiplexed traffic is reported and disconnected', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  webSocket.receive('S\n["request",-1,[0,1]]' + ' '.repeat(16_777_216));
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:15:socket']);
+  expect(webSocket.closeCalls).toBe(1);
+
+  await synchronizer.destroy();
+});
+
+test('oversized multiplexed clients do not affect other clients', async () => {
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port: 8058}),
+    undefined,
+    (error) => errors.push(error),
+  );
+  const attacker = new WebSocket('ws://localhost:8058', 'tinybase');
+  const otherClient = new WebSocket('ws://localhost:8058', 'tinybase');
+  await Promise.all(
+    [attacker, otherClient].map(
+      (webSocket) =>
+        new Promise<void>((resolve) => webSocket.on('open', () => resolve())),
+    ),
+  );
+  const closed = new Promise<void>((resolve) =>
+    attacker.on('close', () => resolve()),
+  );
+
+  attacker.send('S\n["request",-1,[0,1]]' + ' '.repeat(16_777_216));
+  await closed;
+  await pause();
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:15:socket']);
+  expect(otherClient.readyState).toBe(WebSocket.OPEN);
+  expect(server.getStats()).toEqual({clients: 0, paths: 0});
+
+  otherClient.close();
+  await server.destroy();
+});
+
 test('malformed multiplexed clients do not affect other clients', async () => {
   const errors: Error[] = [];
   const server = createWsServer(
