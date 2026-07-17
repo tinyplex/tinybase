@@ -443,6 +443,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
       invalid,
     );
 
+  const cloneRow = (row: Row): Row =>
+    isObject(row) ? objMap(row, (cell) => cell) : row;
+
+  const cloneTable = (table: Table): Table =>
+    isObject(table) ? objMap(table, cloneRow) : table;
+
+  const cloneTables = (tables: Tables): Tables =>
+    isObject(tables) ? objMap(tables, cloneTable) : tables;
+
+  const cloneValues = (values: Values): Values =>
+    isObject(values) ? objMap(values, (value) => value) : values;
+
   const validateContent = isArray;
 
   const validateTables = (tables: Tables): boolean =>
@@ -1738,23 +1750,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
     });
 
   const setTables = (tables: Tables): Store =>
-    fluentTransaction(() =>
-      validateTables(tables) ? setValidTables(tables) : 0,
-    );
+    fluentTransaction(() => {
+      const tables2 = cloneTables(tables);
+      return validateTables(tables2) ? setValidTables(tables2) : 0;
+    });
 
   const setTable = (tableId: Id, table: Table): Store =>
-    fluentTransaction(
-      (tableId) =>
-        validateTable(table, tableId) ? setValidTable(tableId, table) : 0,
-      tableId,
-    );
+    fluentTransaction((tableId) => {
+      const table2 = cloneTable(table);
+      return validateTable(table2, tableId)
+        ? setValidTable(tableId, table2)
+        : 0;
+    }, tableId);
 
   const setRow = (tableId: Id, rowId: Id, row: Row): Store =>
     fluentTransaction(
-      (tableId, rowId) =>
-        validateRow(tableId, rowId, row)
-          ? setValidRow(tableId, getOrCreateTable(tableId), rowId, row)
-          : 0,
+      (tableId, rowId) => {
+        const row2 = cloneRow(row);
+        return validateRow(tableId, rowId, row2)
+          ? setValidRow(tableId, getOrCreateTable(tableId), rowId, row2)
+          : 0;
+      },
       tableId,
       rowId,
     );
@@ -1762,13 +1778,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const addRow = (tableId: Id, row: Row, reuseRowIds = true): Id | undefined =>
     transaction(() => {
       let rowId: Id | undefined = undefined;
-      if (validateRow(tableId, rowId, row)) {
+      const row2 = cloneRow(row);
+      if (validateRow(tableId, rowId, row2)) {
         tableId = id(tableId);
         setValidRow(
           tableId,
           getOrCreateTable(tableId),
           (rowId = getNewRowId(tableId, reuseRowIds ? 1 : 0)),
-          row,
+          row2,
         );
       }
       return rowId;
@@ -1777,9 +1794,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setPartialRow = (tableId: Id, rowId: Id, partialRow: Row): Store =>
     fluentTransaction(
       (tableId, rowId) => {
-        if (validateRow(tableId, rowId, partialRow, 1)) {
+        const partialRow2 = cloneRow(partialRow);
+        if (validateRow(tableId, rowId, partialRow2, 1)) {
           const table = getOrCreateTable(tableId);
-          objForEach(partialRow, (cell, cellId) =>
+          objForEach(partialRow2, (cell, cellId) =>
             setCellIntoNewRow(tableId, table, rowId, cellId, cell as Cell),
           );
         }
@@ -1849,18 +1867,20 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const setValues = (values: Values): Store =>
-    fluentTransaction(() =>
-      validateValues(values) ? setValidValues(values) : 0,
-    );
+    fluentTransaction(() => {
+      const values2 = cloneValues(values);
+      return validateValues(values2) ? setValidValues(values2) : 0;
+    });
 
   const setPartialValues = (partialValues: Values): Store =>
-    fluentTransaction(() =>
-      validateValues(partialValues, 1)
-        ? objForEach(partialValues, (value, valueId) =>
+    fluentTransaction(() => {
+      const partialValues2 = cloneValues(partialValues);
+      return validateValues(partialValues2, 1)
+        ? objForEach(partialValues2, (value, valueId) =>
             setValidValue(valueId, value as Value),
           )
-        : 0,
-    );
+        : 0;
+    });
 
   const setValue = (
     valueId: Id,
