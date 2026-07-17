@@ -5281,6 +5281,23 @@ describe('Miscellaneous', () => {
     expect(queries.hasQuery('q1')).toBe(true);
   });
 
+  test('keeps a committed definition if a result listener throws', () => {
+    const error = new Error('result listener error');
+    store.setCell('t1', 'r1', 'c1', 1);
+    const listenerId = queries.addResultTableListener('q1', () => {
+      throw error;
+    });
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't1', ({select}) => select('c1')),
+    ).toThrow(error);
+    expect(queries.hasQuery('q1')).toBe(true);
+
+    queries.delListener(listenerId);
+    store.setCell('t1', 'r1', 'c1', 2);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 2}});
+  });
+
   test('keeps the previous definition if initial evaluation throws', () => {
     const error = new Error('evaluation error');
     const resultListener = vi.fn();
