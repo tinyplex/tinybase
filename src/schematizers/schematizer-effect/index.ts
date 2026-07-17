@@ -1,5 +1,5 @@
 import type {createEffectSchematizer as createEffectSchematizerDecl} from '../../@types/schematizers/schematizer-effect/index.d.ts';
-import {arrayFind} from '../../common/array.ts';
+import {arrayFind, arrayForEach} from '../../common/array.ts';
 import {objNew, objSet} from '../../common/obj.ts';
 import {isNull} from '../../common/other.ts';
 import {
@@ -18,6 +18,7 @@ import {
   TYPE,
   TYPE_LITERAL,
   UNION,
+  getTypeOf,
 } from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
 
@@ -61,7 +62,7 @@ const unwrapSchema = (
 
 const getSimpleType = (ast: TypeNode): string => {
   const tag = ast?._tag;
-  const literalType = typeof ast?.literal;
+  const literalType = getTypeOf(ast?.literal);
 
   return tag === LITERAL
     ? literalType === STRING ||
@@ -88,7 +89,7 @@ const getProperties = (schema: any) => {
     const signatures = ast[PROPERTY_SIGNATURES];
     if (signatures) {
       const properties = objNew<any>();
-      signatures.forEach((sig: any) => {
+      arrayForEach(signatures, (sig: any) => {
         objSet(properties, sig.name, sig.type);
       });
       return properties;
