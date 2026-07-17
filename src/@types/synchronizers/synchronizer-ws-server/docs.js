@@ -499,6 +499,12 @@
  * treated as an ordinary server path. This means a multiplexed channel can
  * interoperate with legacy clients connected directly to that full path.
  *
+ * The WsServer does not authenticate or authorize URL paths or channel Ids.
+ * Once a client WebSocket is accepted on a base path, it can subscribe to any
+ * valid channel beneath that path. For untrusted clients, authenticate the
+ * upgrade request and either grant access to all descendant paths or use a
+ * separate authenticated WebSocket for each authorized path.
+ *
  * You are responsible for creating a MergeableStore to pass to this Persister,
  * but starting and stopping its automatic saving and loading is taken care of
  * by the WsServer. As a result, the server MergeableStore will be kept in sync
