@@ -84,7 +84,7 @@ export const arrayFind = <Value>(
   cb: (value: Value, index: number) => boolean,
 ): Value | undefined => array.find(cb);
 
-export const arrayClear = <Value>(array: Value[], to?: number): Value[] =>
+export const arrayClear = <Value>(array: Value[], to = size(array)): Value[] =>
   array.splice(0, to);
 
 export const arrayPush = <Value>(array: Value[], ...values: Value[]): number =>
