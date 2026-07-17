@@ -288,9 +288,10 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         return;
       }
       const payload = createMultipleControlPayload(requestId, control, body);
+      const payloadSize = getWebSocketPayloadSize(payload);
       if (
-        isWebSocketPayloadTooLarge(payload) ||
-        isWebSocketBackpressured(webSocket, payload)
+        isWebSocketPayloadTooLarge(payloadSize) ||
+        isWebSocketBackpressured(webSocket, payloadSize)
       ) {
         reject(overflow('socket'));
         return;
@@ -417,11 +418,12 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     }
     for (let index = 0; index < size(payloads); index++) {
       const payload = createMultiplePayload(channelId, payloads[index]);
-      if (isWebSocketPayloadTooLarge(payload)) {
+      const payloadSize = getWebSocketPayloadSize(payload);
+      if (isWebSocketPayloadTooLarge(payloadSize)) {
         overflow('client');
         return false;
       }
-      if (isWebSocketBackpressured(webSocket, payload)) {
+      if (isWebSocketBackpressured(webSocket, payloadSize)) {
         if (coalesce) {
           channel[ChannelValue.Dirty] = coalesce;
         } else if (!queueOutgoing(channel, slice(payloads, index))) {
@@ -458,12 +460,13 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       while (payloadIndex < size(payloads)) {
         const queuedPayload = payloads[payloadIndex];
         const payload = createMultiplePayload(channelId, queuedPayload);
-        if (isWebSocketPayloadTooLarge(payload)) {
+        const payloadSize = getWebSocketPayloadSize(payload);
+        if (isWebSocketPayloadTooLarge(payloadSize)) {
           arrayClear(outgoingQueue, outgoingIndex);
           overflow('client');
           return;
         }
-        if (isWebSocketBackpressured(webSocket, payload)) {
+        if (isWebSocketBackpressured(webSocket, payloadSize)) {
           arrayClear(outgoingQueue, outgoingIndex);
           scheduleFlush();
           return;
@@ -597,7 +600,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 
   addWebSocketListener(MESSAGE, ({data}) => {
     const payload = data.toString(UTF8);
-    if (isWebSocketPayloadTooLarge(payload)) {
+    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
       invalid(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
       return;
     }
@@ -765,9 +768,10 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
             MultipleControl.Unsubscribe,
             channelId,
           );
+          const payloadSize = getWebSocketPayloadSize(payload);
           if (
-            isWebSocketPayloadTooLarge(payload) ||
-            isWebSocketBackpressured(webSocket, payload)
+            isWebSocketPayloadTooLarge(payloadSize) ||
+            isWebSocketBackpressured(webSocket, payloadSize)
           ) {
             overflow('socket');
           } else {
@@ -934,9 +938,11 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
       (payload) => {
         if (overflowing) {
           return;
-        } else if (
-          isWebSocketPayloadTooLarge(payload) ||
-          isWebSocketBackpressured(webSocket, payload)
+        }
+        const payloadSize = getWebSocketPayloadSize(payload);
+        if (
+          isWebSocketPayloadTooLarge(payloadSize) ||
+          isWebSocketBackpressured(webSocket, payloadSize)
         ) {
           overflow();
         } else {

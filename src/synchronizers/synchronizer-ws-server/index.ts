@@ -282,9 +282,10 @@ export const createWsServer = (<
     const outgoingPayload = isUndefined(channelId)
       ? payload
       : createMultiplePayload(channelId, payload);
+    const outgoingPayloadSize = getWebSocketPayloadSize(outgoingPayload);
     if (
-      isWebSocketPayloadTooLarge(outgoingPayload) ||
-      isWebSocketBackpressured(client, outgoingPayload)
+      isWebSocketPayloadTooLarge(outgoingPayloadSize) ||
+      isWebSocketBackpressured(client, outgoingPayloadSize)
     ) {
       overflowClient(client, 'socket');
     } else if (client.readyState == client.OPEN) {
@@ -570,9 +571,10 @@ export const createWsServer = (<
       ([, path], toClientId, remainders) =>
         handleDecodedMessage(path, clientId, toClientId, remainders),
       (payload) => {
+        const payloadSize = getWebSocketPayloadSize(payload);
         if (
-          isWebSocketPayloadTooLarge(payload) ||
-          isWebSocketBackpressured(client, payload)
+          isWebSocketPayloadTooLarge(payloadSize) ||
+          isWebSocketBackpressured(client, payloadSize)
         ) {
           overflowClient(client, 'socket');
         } else if (client.readyState == client.OPEN) {
