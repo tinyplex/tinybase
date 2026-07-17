@@ -80,6 +80,9 @@ callback for a custom Synchronizer now receives a transport-failure callback.
 BroadcastChannelSynchronizer now validates message envelopes before reading
 their fields, reporting malformed input as a synchronization message error.
 
+LocalSynchronizer now cancels scheduled messages when destroyed so they cannot
+be delivered after teardown.
+
 ## Compact Error Codes
 
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
