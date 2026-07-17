@@ -21,13 +21,12 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="function">getNextHlc</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> '03E3B-----0mmxrx'</span>
 
-<span class="comment">// Another client thinks it is 1973.</span>
-<span class="function">seenHlc</span><span class="punctuation">(</span><span class="string">'0WakTk-----jmx_3'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// Generate the next HLC.</span>
+<span class="comment">// Another client is 100 seconds ahead.</span>
+<span class="function">seenHlc</span><span class="punctuation">(</span><span class="function">encodeHlc</span><span class="punctuation">(</span><span class="number">73267300000</span><span class="punctuation">,</span> <span class="number">0</span><span class="punctuation">,</span> <span class="string">'client2'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="comment">// What is the state for the current client?</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="function">getLastLogicalTime</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> 104803200000</span>
+<span class="comment">// -> 73267300000</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="function">getLastCounter</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 0</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="function">getClientId</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
