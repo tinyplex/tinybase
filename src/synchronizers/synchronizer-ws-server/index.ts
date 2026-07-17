@@ -15,6 +15,8 @@ import type {
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
 import {
   arrayFilter,
+  arrayFind,
+  arrayFindIndex,
   arrayForEach,
   arrayMap,
   arrayPush,
@@ -166,7 +168,10 @@ export const createWsServer = (<
   const handleError = (error: any): void => {
     tryReturn(() => onIgnoredError?.(error));
   };
-  addEmitterListener(webSocketServer, ERROR, handleError);
+  arrayPush(
+    removeServerListeners,
+    addEmitterListener(webSocketServer, ERROR, handleError),
+  );
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => wsServer,
@@ -324,14 +329,12 @@ export const createWsServer = (<
     const serverClient = path[Path.ServerClient];
     const buffer = serverClient[ServerClient.Buffer];
     const coalesceKey = getPayloadCoalesceKey(clientId, payload);
-    let coalesceIndex = -1;
-    if (coalesceKey) {
-      arrayForEach(buffer, ([, , bufferedKey], index) => {
-        if (bufferedKey == coalesceKey) {
-          coalesceIndex = index;
-        }
-      });
-    }
+    const coalesceIndex = coalesceKey
+      ? arrayFindIndex(
+          buffer,
+          ([, , bufferedKey]) => bufferedKey == coalesceKey,
+        )
+      : -1;
     const replacedSize =
       coalesceIndex > -1
         ? getWebSocketPayloadSize(buffer[coalesceIndex][1])
@@ -583,11 +586,12 @@ export const createWsServer = (<
     addWebSocketListener(client, CLOSE, () => destroy().catch(handleError));
   };
 
-  arrayPush(
-    removeServerListeners,
-    addEmitterListener(webSocketServer, CONNECTION, (client, request) => {
+  const removeConnectionListener = addEmitterListener(
+    webSocketServer,
+    CONNECTION,
+    (client, request) => {
       setAdd(webSockets, client);
-      addEmitterListener(client, ERROR, handleError);
+      addWebSocketListener(client, ERROR, handleError);
       if (destroying) {
         client.close();
       } else {
@@ -605,8 +609,9 @@ export const createWsServer = (<
         collDel(webSockets, client);
         removeWebSocketListeners(client);
       });
-    }),
+    },
   );
+  arrayPush(removeServerListeners, removeConnectionListener);
 
   const getWebSocketServer = () => webSocketServer;
 
@@ -639,48 +644,77 @@ export const createWsServer = (<
 
   const closeWebSocket = async (client: WebSocket) => {
     if (client.readyState != client.CLOSED) {
-      await promiseNew<void>((resolve) => {
+      await promiseNew<void>((resolve, reject) => {
         const removeCloseListener = addEmitterListener(client, CLOSE, () => {
           removeCloseListener();
           resolve();
         });
-        client.close();
+        try {
+          client.close();
+        } catch (error) {
+          removeCloseListener();
+          reject(error);
+        }
       });
     }
   };
 
   const closeWebSocketServer = async () => {
-    const clientsClosing = arrayMap(collValues(webSockets), closeWebSocket);
-    const serverClosing = promiseNew<void>((resolve) => {
-      webSocketServer.close(() => resolve());
-    });
-    await promiseAll([serverClosing, ...clientsClosing]);
+    const close = async (
+      action: () => void | Promise<void>,
+    ): Promise<[failed: boolean, error: any]> => {
+      let failure: [boolean, any] = [false, undefined];
+      await tryCatch(action, (error) => (failure = [true, error]));
+      return failure;
+    };
+    const failures = await promiseAll([
+      close(() =>
+        promiseNew<void>((resolve, reject) =>
+          webSocketServer.close((error) => (error ? reject(error) : resolve())),
+        ),
+      ),
+      ...arrayMap(collValues(webSockets), (client) =>
+        close(() => closeWebSocket(client)),
+      ),
+    ]);
+    const failure = arrayFind(failures, ([failed]) => failed);
+    if (failure) {
+      throw failure[1];
+    }
   };
 
   const destroy = (): Promise<void> => {
     if (!destroying) {
       destroying = (async () => {
-        const serverClosing = closeWebSocketServer();
-        let errorToThrow: any;
-        let failed = false;
-        await tryCatch(
-          () =>
-            promiseAll(mapMap(paths, (path, pathId) => stopPath(pathId, path))),
-          (error) => {
-            errorToThrow = error;
-            failed = true;
-          },
+        tryReturn(removeConnectionListener);
+        let serverFailure: [boolean, any] = [false, undefined];
+        const serverClosing = tryCatch(
+          closeWebSocketServer,
+          (error) => (serverFailure = [true, error]),
+        );
+        const pathFailures = await promiseAll(
+          mapMap(paths, async (path, pathId) => {
+            let failure: [boolean, any] = [false, undefined];
+            await tryCatch(
+              () => stopPath(pathId, path),
+              (error) => (failure = [true, error]),
+            );
+            return failure;
+          }),
         );
         await serverClosing;
-        arrayForEach(removeServerListeners, (remove) => remove());
+        arrayForEach(removeServerListeners, (remove) => tryReturn(remove));
         mapForEach(removeListenersByWebSocket, (_webSocket, removers) =>
-          arrayForEach(removers, (remove) => remove()),
+          arrayForEach(removers, (remove) => tryReturn(remove)),
         );
         collClear(removeListenersByWebSocket);
         collClear(paths);
         collClear(webSockets);
-        if (failed) {
-          throw errorToThrow;
+        const failure = serverFailure[0]
+          ? serverFailure
+          : arrayFind(pathFailures, ([failed]) => failed);
+        if (failure) {
+          throw failure[1];
         }
       })();
     }

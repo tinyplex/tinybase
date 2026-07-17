@@ -1,4 +1,4 @@
-import {once} from 'events';
+import {EventEmitter, once} from 'events';
 import {readFileSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import type {Id, MergeableStore} from 'tinybase';
@@ -975,6 +975,58 @@ describe('Lifecycle', () => {
     await closeWebSocket(webSocket1);
     await closeWebSocket(webSocket2);
     await wsServer.destroy();
+  });
+
+  test('destroy removes owned listeners when closure fails', async () => {
+    const serverCloseError = new Error('server close');
+    const clientCloseError = new Error('client close');
+    const externalServerError = () => {};
+    const externalConnection = () => {};
+    const externalClientError = () => {};
+    const externalClientClose = () => {};
+    const webSocketServer = new EventEmitter() as any;
+    webSocketServer.on('error', externalServerError);
+    webSocketServer.on('connection', externalConnection);
+    webSocketServer.close = (() => {
+      throw serverCloseError;
+    }) as any;
+    const webSocket = new EventEmitter() as any;
+    webSocket.OPEN = 1;
+    webSocket.CLOSED = 3;
+    webSocket.protocol = 'tinybase';
+    webSocket.readyState = webSocket.OPEN;
+    webSocket.on('error', externalClientError);
+    webSocket.on('close', externalClientClose);
+    webSocket.close = () => {
+      throw clientCloseError;
+    };
+
+    const wsServer = createWsServer(webSocketServer);
+    webSocketServer.emit('connection', webSocket, {
+      headers: {'sec-websocket-key': 'client'},
+      url: '/path',
+    });
+    await pause();
+
+    await expect(wsServer.destroy()).rejects.toBe(serverCloseError);
+    expect(webSocketServer.listeners('error')).toEqual([externalServerError]);
+    expect(webSocketServer.listeners('connection')).toEqual([
+      externalConnection,
+    ]);
+    expect(webSocket.listeners('error')).toEqual([externalClientError]);
+    expect(webSocket.listeners('close')).toEqual([externalClientClose]);
+  });
+
+  test('destroy reports WebSocket server callback errors', async () => {
+    const closeError = new Error('not running');
+    const webSocketServer = new EventEmitter() as any;
+    webSocketServer.close = (callback: (error?: Error) => void) =>
+      callback(closeError);
+    const wsServer = createWsServer(webSocketServer);
+
+    await expect(wsServer.destroy()).rejects.toBe(closeError);
+    expect(webSocketServer.listenerCount('error')).toBe(0);
+    expect(webSocketServer.listenerCount('connection')).toBe(0);
   });
 });
 
