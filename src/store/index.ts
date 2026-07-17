@@ -158,8 +158,8 @@ type ProtectedMethods = [
   callListeners: CallListeners,
   setInternalListeners: (
     preStartTransaction: () => void,
-    preFinishTransaction: () => void,
-    postFinishTransaction: () => void,
+    preFinishTransaction: (rolledBack: boolean) => void,
+    postFinishTransaction: (rolledBack: boolean) => void,
     cellChanged: (
       tableId: Id,
       rowId: Id,
@@ -295,8 +295,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
-    preFinishTransaction?: () => void,
-    postFinishTransaction?: () => void,
+    preFinishTransaction?: (rolledBack: boolean) => void,
+    postFinishTransaction?: (rolledBack: boolean) => void,
     cellChanged?: (
       tableId: Id,
       rowId: Id,
@@ -2228,11 +2228,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
       if (transactions == 0) {
         transactions = 1;
         let committed = false;
+        let rolledBack = false;
+        const rollback = (): void => {
+          rolledBack = true;
+          rollbackTransaction();
+        };
         tryFinally(
           () => {
             try {
               if (rollbackRequested) {
-                rollbackTransaction();
+                rollback();
               } else {
                 whileMutating(() => {
                   callInvalidCellListeners(1);
@@ -2246,9 +2251,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 });
 
                 if (doRollback?.(store)) {
-                  rollbackTransaction();
+                  rollback();
                 }
 
+                internalListeners[1]?.(rolledBack);
                 callListeners(finishTransactionListeners[0], undefined);
 
                 transactions = -1;
@@ -2261,17 +2267,20 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 if (!collIsEmpty(changedValues)) {
                   callValuesListenersForChanges(0);
                 }
-                internalListeners[1]?.();
                 callListeners(finishTransactionListeners[1], undefined);
               }
             } catch (error) {
               if (!committed) {
-                rollbackTransaction();
+                rollback();
               }
               throw error;
             }
           },
-          () => tryFinally(() => internalListeners[2]?.(), resetTransaction),
+          () =>
+            tryFinally(
+              () => internalListeners[2]?.(rolledBack),
+              resetTransaction,
+            ),
         );
       }
     }
@@ -2443,8 +2452,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setInternalListeners = (
     preStartTransaction: () => void,
-    preFinishTransaction: () => void,
-    postFinishTransaction: () => void,
+    preFinishTransaction: (rolledBack: boolean) => void,
+    postFinishTransaction: (rolledBack: boolean) => void,
     cellChanged: (
       tableId: Id,
       rowId: Id,
