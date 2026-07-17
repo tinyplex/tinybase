@@ -87,8 +87,8 @@ export const getWebSocketPayloadSize = (value: string): number => {
   return byteSize;
 };
 
-export const isWebSocketPayloadTooLarge = (payload: string): boolean =>
-  getWebSocketPayloadSize(payload) > MAX_WEBSOCKET_BUFFER_SIZE;
+export const isWebSocketPayloadTooLarge = (payloadSize: number): boolean =>
+  payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
 
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
@@ -286,7 +286,7 @@ export const createPayloadDecoder = (
     if (!valid) {
       return;
     }
-    if (isWebSocketPayloadTooLarge(payload)) {
+    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
       invalid(
         errorNew(
           ERROR_SYNC_OVERFLOW,
@@ -380,10 +380,9 @@ export const getPayloadCoalesceKey = (
 
 export const isWebSocketBackpressured = (
   webSocket: {bufferedAmount?: number},
-  payload: string,
+  payloadSize: number,
 ): boolean =>
-  (webSocket.bufferedAmount ?? 0) + getWebSocketPayloadSize(payload) >
-  MAX_WEBSOCKET_BUFFER_SIZE;
+  (webSocket.bufferedAmount ?? 0) + payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
 
 export const createPayloadReceiver = (
   receive: Receive,
@@ -568,7 +567,7 @@ export const createMultipleServerClient = <Channel>(
   };
 
   const handlePayload = (payload: string) => {
-    if (isWebSocketPayloadTooLarge(payload)) {
+    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
       invalid(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
       return;
     }

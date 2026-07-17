@@ -46,6 +46,7 @@ import {
   createMultipleServerClient,
   createPayloadDecoder,
   createRawPayload,
+  getWebSocketPayloadSize,
   ifPayloadValid,
   isWebSocketBackpressured,
   isWebSocketPayloadTooLarge,
@@ -103,9 +104,10 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
   };
 
   const sendPayload = (client: WebSocket, payload: string) => {
+    const payloadSize = getWebSocketPayloadSize(payload);
     if (
-      isWebSocketPayloadTooLarge(payload) ||
-      isWebSocketBackpressured(client, payload)
+      isWebSocketPayloadTooLarge(payloadSize) ||
+      isWebSocketBackpressured(client, payloadSize)
     ) {
       overflowClient(client);
     } else if (client.readyState == client.OPEN) {
