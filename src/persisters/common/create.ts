@@ -20,7 +20,6 @@ import {
   arrayFilter,
   arrayMap,
   arrayPush,
-  arrayShift,
 } from '../../common/array.ts';
 import {
   ERROR_CONTENT,
@@ -71,7 +70,7 @@ type Action = () => Promise<any>;
 type ScheduledAction = [
   action: Action,
   complete: (() => void) | undefined,
-  owner: object,
+  owner: object | undefined,
 ];
 
 const scheduleRunning: Map<any, 0 | 1> = mapNew();
@@ -152,10 +151,10 @@ export const createCustomPersister = <
   let status: StatusValues = StatusValues.Idle;
   let loads = 0;
   let saves = 0;
-  let scheduledAction;
   let autoLoadHandle: ListenerHandle | undefined;
   let autoSaveListenerId: Id | undefined;
   let destroyed = 0;
+  let activeAction: Promise<void> | undefined;
   const scheduleOwner = {};
   const extraDestroy = extra.destroy;
 
@@ -192,19 +191,21 @@ export const createCustomPersister = <
     /*! istanbul ignore else */
     if (!mapGet(scheduleRunning, scheduleId)) {
       mapSet(scheduleRunning, scheduleId, 1);
+      const scheduledActions = mapGet(
+        scheduleActions,
+        scheduleId,
+      ) as ScheduledAction[];
+      let actionIndex = 0;
       await tryFinallyAsync(
         async () => {
-          while (
-            !isUndefined(
-              (scheduledAction = arrayShift(
-                mapGet(scheduleActions, scheduleId) as ScheduledAction[],
-              )),
-            )
-          ) {
+          while (actionIndex < size(scheduledActions)) {
+            const scheduledAction = scheduledActions[actionIndex++];
+            scheduledAction[2] = undefined;
             await scheduledAction[0]();
           }
         },
         () => {
+          arrayClear(scheduledActions, actionIndex);
           mapSet(scheduleRunning, scheduleId, 0);
           pruneSchedule();
         },
@@ -413,17 +414,29 @@ export const createCustomPersister = <
               const last = index == size(actions) - 1;
               return [
                 async () => {
-                  try {
-                    await tryCatch(action, onIgnoredError);
-                  } catch (error) {
-                    if (!failed) {
-                      failed = true;
-                      firstError = error;
-                    }
-                  }
-                  if (last) {
-                    resolve();
-                  }
+                  let completeActiveAction!: () => void;
+                  activeAction = promiseNew(
+                    (resolve) => (completeActiveAction = resolve),
+                  );
+                  await tryFinallyAsync(
+                    async () => {
+                      try {
+                        await tryCatch(action, onIgnoredError);
+                      } catch (error) {
+                        if (!failed) {
+                          failed = true;
+                          firstError = error;
+                        }
+                      }
+                      if (last) {
+                        resolve();
+                      }
+                    },
+                    () => {
+                      activeAction = undefined;
+                      completeActiveAction();
+                    },
+                  );
                 },
                 last ? resolve : undefined,
                 scheduleOwner,
@@ -459,10 +472,15 @@ export const createCustomPersister = <
           return true;
         },
       );
+      const actionToAwait = activeAction;
       arrayClear(scheduledActions);
       arrayPush(scheduledActions, ...remainingActions);
       await tryFinallyAsync(
-        () => tryFinallyAsync(stopAutoPersisting, () => extraDestroy?.()),
+        () =>
+          tryFinallyAsync(
+            () => tryFinallyAsync(stopAutoPersisting, () => actionToAwait),
+            () => extraDestroy?.(),
+          ),
         () => {
           const references = (mapGet(scheduleReferences, scheduleId) ?? 1) - 1;
           mapSet(scheduleReferences, scheduleId, references || undefined);

@@ -661,6 +661,61 @@ test('uses the scheduling owner error handler', async () => {
   await persister2.destroy();
 });
 
+test('awaits only its running action on destroy', async () => {
+  let markSecondActionStarted: () => void = noop;
+  let releaseFirstAction: () => void = noop;
+  let releaseSecondAction: () => void = noop;
+  const firstActionGate = new Promise<void>(
+    (resolve) => (releaseFirstAction = resolve),
+  );
+  const secondActionGate = new Promise<void>(
+    (resolve) => (releaseSecondAction = resolve),
+  );
+  const secondActionStarted = new Promise<void>(
+    (resolve) => (markSecondActionStarted = resolve),
+  );
+  const scheduleId = {};
+  const createPersister = () =>
+    (createCustomPersister as any)(
+      createStore(),
+      asyncNoop,
+      asyncNoop,
+      noop,
+      noop,
+      undefined,
+      undefined,
+      {},
+      0,
+      scheduleId,
+    ) as Persister;
+  const persister1 = createPersister();
+  const persister2 = createPersister();
+  const firstSchedule = persister1.schedule(() => firstActionGate);
+  const secondSchedule = persister2.schedule(async () => {
+    markSecondActionStarted();
+    await secondActionGate;
+  });
+  let destroyResolved = false;
+  const destroying = persister1.destroy().then(() => (destroyResolved = true));
+
+  try {
+    await pause(0);
+    expect(destroyResolved).toBe(false);
+
+    releaseFirstAction();
+    await secondActionStarted;
+    await pause(0);
+    expect(destroyResolved).toBe(true);
+  } finally {
+    releaseFirstAction();
+    releaseSecondAction();
+    await destroying;
+    await firstSchedule;
+    await secondSchedule;
+    await persister2.destroy();
+  }
+});
+
 test('waits for old auto-load cleanup before restarting', async () => {
   let addCount = 0;
   let releaseCleanup: () => void = noop;
@@ -741,8 +796,9 @@ test('releases shared scheduler state on destroy', async () => {
   const secondSchedule = persister2.schedule(async () => {
     secondActionRan = true;
   });
-  await persister1.destroy();
+  const destroying = persister1.destroy();
   releaseFirstAction();
+  await destroying;
   await firstSchedule;
   await secondSchedule;
   expect(secondActionRan).toBe(true);
