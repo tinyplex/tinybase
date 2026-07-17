@@ -178,7 +178,11 @@ export class WsServerDurableObject<Env = unknown>
   }
 
   getPathId(): Id {
-    return this.ctx.getTags(this.#getClients()[0])?.[1];
+    return ifNotUndefined(
+      this.#getClients()[0],
+      (client) => this.ctx.getTags(client)?.[1] ?? EMPTY_STRING,
+      EMPTY_STRING,
+    );
   }
 
   getClientIds(): Ids {
