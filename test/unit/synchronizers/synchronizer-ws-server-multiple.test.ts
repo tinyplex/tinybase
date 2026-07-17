@@ -64,6 +64,10 @@ class MockWebSocket {
     this.#listeners.error?.forEach((listener) => listener(error));
   }
 
+  listenerCount(event: string): number {
+    return this.#listeners[event]?.length ?? 0;
+  }
+
   close(): void {
     this.closeCalls++;
     this.readyState = 3;
@@ -303,6 +307,40 @@ test('multiplexed channel errors and timeouts keep their owners', async () => {
 
   await filesSynchronizer.destroy();
   await editorSynchronizer.destroy();
+});
+
+test('transport failure rejects pending synchronization requests', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  const syncing = synchronizer.startSync();
+  await new Promise((resolve) => setTimeout(resolve));
+  expect(
+    webSocket.sentPayloads.some((payload) =>
+      payload.startsWith('M\nfiles\n\n'),
+    ),
+  ).toBe(true);
+  webSocket.disconnect();
+  await syncing;
+  expect(errors.map(({message}) => message)).toEqual([
+    'tinybase:5',
+    'tinybase:5',
+  ]);
+
+  await synchronizer.destroy();
+  expect(webSocket.listenerCount('message')).toBe(0);
+  expect(webSocket.listenerCount('open')).toBe(0);
+  expect(webSocket.listenerCount('close')).toBe(0);
+  expect(webSocket.listenerCount('error')).toBe(0);
 });
 
 test('queued multiplexed protocol traffic expires', async () => {

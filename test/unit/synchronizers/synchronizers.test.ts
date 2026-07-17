@@ -7,7 +7,7 @@ import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {afterEach, beforeEach, describe, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 
@@ -165,6 +165,35 @@ test('Custom Synchronizer pending requests are bounded', async () => {
   expect(errors.map(({message}) => message)).toContain('tinybase:15:requests');
 
   await synchronizer.destroy();
+});
+
+test('Custom Synchronizer rejects and cleans up transport state', async () => {
+  const errors: Error[] = [];
+  const destroyTransport = vi.fn();
+  const send = vi.fn();
+  let fail: (error: Error) => void = () => {};
+  const synchronizer = createCustomSynchronizer(
+    createMergeableStore(),
+    send,
+    (_receive, registeredFail) => {
+      fail = registeredFail;
+    },
+    destroyTransport,
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  const syncing = synchronizer.startSync();
+  await vi.waitFor(() => expect(send).toHaveBeenCalled());
+  const transportError = new Error('transport');
+  fail(transportError);
+  await syncing;
+  expect(errors).toContain(transportError);
+
+  await synchronizer.destroy();
+  expect(destroyTransport).toHaveBeenCalledOnce();
 });
 
 describe.each([
