@@ -137,7 +137,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const resultStore = createStore();
   const preStores: IdMap<Store> = mapNew();
   const resultStores: IdMap<Store> = mapNew();
-  const redefiningQueryIds: IdSet = setNew();
   const routedResultListeners: Map<Id, RoutedResultListener> = mapNew();
   const routedResultListenerIds: IdSet2 = mapNew();
   const resultListenerStats: {[stat in ResultListenerStat]: number} = {
@@ -377,7 +376,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           const resultStore = getResultStore(queryId);
           const paramValues = getParamValues(queryId);
 
-          setAdd(redefiningQueryIds, queryId);
           resetPreStores(queryId);
           resetSourceStores(queryId);
 
@@ -507,7 +505,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
           const selects: IdMap<SelectClause> = mapNew(selectEntries);
           if (collIsEmpty(selects)) {
-            collDel(redefiningQueryIds, queryId);
             return queries;
           }
           const joins: Map<Id | undefined, JoinClause> = mapNew(joinEntries);
@@ -839,7 +836,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             );
           });
 
-          collDel(redefiningQueryIds, queryId);
           return queries;
         }) as Queries,
     );
