@@ -939,6 +939,35 @@ describe.each([
       expect(listener).toHaveBeenCalledTimes(1);
     });
 
+    test('Rollback restores schemas and schema-filtered content', () => {
+      const tablesSchema = {t1: {c1: {type: 'number' as const}}};
+      const valuesSchema = {v1: {type: 'number' as const}};
+      const error = new Error('schema error');
+      store.setSchema(tablesSchema, valuesSchema);
+
+      expect(() =>
+        store.transaction(() => {
+          store.setSchema({t1: {c1: {type: 'string'}}}, {v1: {type: 'string'}});
+          throw error;
+        }),
+      ).toThrow(error);
+      expect(JSON.parse(store.getSchemaJson())).toEqual([
+        tablesSchema,
+        valuesSchema,
+      ]);
+      expect(store.getTables()).toEqual(originalTables);
+      expect(store.getValues()).toEqual(originalValues);
+
+      store.transaction(
+        () => store.delSchema(),
+        () => true,
+      );
+      expect(JSON.parse(store.getSchemaJson())).toEqual([
+        tablesSchema,
+        valuesSchema,
+      ]);
+    });
+
     test('Nested action error rolls back outer transaction', () => {
       store.transaction(() => {
         store.setCell('t1', 'r1', 'c1', 2);

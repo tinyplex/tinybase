@@ -264,6 +264,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hasValuesSchema: boolean;
   let hadTables = false;
   let hadValues = false;
+  let oldTablesSchema: [boolean, TablesSchema] | undefined;
+  let oldValuesSchema: [boolean, ValuesSchema] | undefined;
   let rollbackRequested: 0 | 1 = 0;
   let transactions = 0;
   let middleware: [
@@ -711,6 +713,17 @@ export const createStore: typeof createStoreDecl = (): Store => {
         collDel(valuesRequiredNonDefaulted, valueId);
       },
     );
+
+  const saveTablesSchema = (): void => {
+    oldTablesSchema ??= [
+      !!hasTablesSchema,
+      mapToObj2<CellSchema>(tablesSchemaMap),
+    ];
+  };
+
+  const saveValuesSchema = (): void => {
+    oldValuesSchema ??= [!!hasValuesSchema, mapToObj(valuesSchemaMap)];
+  };
 
   const setOrDelTables = (tables: Tables) =>
     objIsEmpty(tables) ? delTables() : setTables(tables);
@@ -1979,6 +1992,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     fluentTransaction(() => {
       const tablesSchema2 = cloneSchema(tablesSchema);
       if (validateTablesSchema(tablesSchema2)) {
+        saveTablesSchema();
         hasTablesSchema = true;
         setValidTablesSchema(tablesSchema2);
         if (!collIsEmpty(tablesMap)) {
@@ -1993,6 +2007,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     fluentTransaction(() => {
       const valuesSchema2 = cloneSchema(valuesSchema);
       if (validateValuesSchema(valuesSchema2)) {
+        saveValuesSchema();
         const values = getValues();
         delValuesSchema();
         delValues();
@@ -2081,12 +2096,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delTablesSchema = (): Store =>
     fluentTransaction(() => {
+      saveTablesSchema();
       setValidTablesSchema({});
       hasTablesSchema = false;
     });
 
   const delValuesSchema = (): Store =>
     fluentTransaction(() => {
+      saveValuesSchema();
       setValidValuesSchema({});
       hasValuesSchema = false;
     });
@@ -2157,6 +2174,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ];
 
   const rollbackTransaction = (): void => {
+    ifNotUndefined(oldTablesSchema, ([hasSchema, schema]) => {
+      setValidTablesSchema(schema);
+      hasTablesSchema = hasSchema;
+    });
+    ifNotUndefined(oldValuesSchema, ([hasSchema, schema]) => {
+      setValidValuesSchema(schema);
+      hasValuesSchema = hasSchema;
+    });
     collForEach(changedCells, (table, tableId) =>
       collForEach(table, (row, rowId) =>
         collForEach(row, ([oldCell], cellId) =>
@@ -2174,6 +2199,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const resetTransaction = (): void => {
     transactions = 0;
     rollbackRequested = 0;
+    oldTablesSchema = oldValuesSchema = undefined;
     hadTables = hasTables();
     hadValues = hasValues();
     arrayForEach(
