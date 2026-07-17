@@ -116,6 +116,14 @@ removed.
 When a query definition is deleted, Queries now releases its cached pre- and
 result Stores once no listeners or dependent queries reference them.
 
+Query definitions are now staged before being committed. If a builder,
+evaluation callback, or definition Id listener throws, the previous definition,
+parameters, result, and listeners remain usable instead of leaving a partial
+replacement behind.
+
+Metric extrema and Cartesian chart data summaries now process large datasets
+without variadic argument limits or quadratic category de-duplication.
+
 The getTransactionMergeableChanges method declaration now matches its runtime
 behavior, returning unhashed changes by default and hashed changes when
 requested.
@@ -244,6 +252,9 @@ stale or post-unmount results without replacing or destroying the current
 resource. They also return `undefined` while a replacement is pending instead
 of exposing a resource that has begun teardown. React and Solid cleanup
 callbacks now run after asynchronous resource destruction completes.
+Factory, replacement, and cleanup failures are also contained without producing
+unhandled rejections, and Solid replacements wait for the previous cleanup to
+finish before creating the next resource.
 
 The ui-solid-dom, ui-solid-inspector, ui-svelte-dom, and ui-svelte-inspector
 modules are now exported explicitly as client-only browser modules, so server
@@ -267,6 +278,11 @@ authorization callbacks. Rejected writes therefore remain absent from durable
 storage and are no longer propagated to other clients. Fully rejected initial
 writes also no longer mark a room as initialized, and the PartyKit client now
 handles empty HTTP responses without reporting ignored JSON parsing errors.
+
+PartyKit storage writes are now serialized and committed in a single storage
+transaction. Incoming content and changes are validated before use, malformed
+stored keys are ignored, and concurrent initial writes cannot both initialize
+the same room.
 
 ## Unicode-Safe WebSocket Fragmentation
 
@@ -327,18 +343,34 @@ immediate resubscription cannot attach to a channel that is being destroyed.
 Servers acknowledge subscriptions before persisted path startup completes so
 multiplexed clients can begin the initial synchronization without timing out.
 
+Client reconnection handshakes are now tied to the exact connection that opened,
+so a stale connection cannot consume a replacement connection's open event.
+Failed queued multiplex replays also clear their channel and timer state, making
+the channel immediately reusable.
+
+Path and client Id listener failures no longer strand server state or prevent a
+later start or stop. All listeners are still called, while errors thrown by an
+ignored-error handler are contained. WsServerSimple also applies the same
+outbound size, socket-state, and backpressure checks as WsServer.
+
 ## Persister Reliability
 
 Persisters have received a broad reliability pass:
 
 - Remote Persisters retain the previous ETag until changed content has been
   downloaded successfully, reject unsuccessful HTTP responses, serialize
-  polling, and wait for in-flight polling to finish when stopped.
+  polling, and abort an active poll when stopped or destroyed.
 - Awaiting a Persister operation now waits for its queued work to run.
 - Shared schedulers now route ignored errors to the Persister that owns each
   action and remain usable if an ignored-error callback itself throws.
+- Repeated destroy calls now share one completion Promise and wait for active
+  work. Persister statuses also return to idle even if cleanup, status
+  listeners, or ignored-error handlers throw.
 - Restarting auto-load waits for the previous listener to stop, and subscribing
   before the initial load closes the startup window for missed changes.
+  Notifications during startup remain ordered behind the initial load, while
+  steady-state changes apply synchronously and concurrent changes avoid
+  redundant follow-up saves.
 - Destroyed Persisters now release shared scheduler state.
 - Database transaction failures now roll back instead of partially committing.
 - Remote libSQL transactions use one transaction session, while local file
@@ -346,20 +378,30 @@ Persisters have received a broad reliability pass:
 - Tabular database Persisters replace every table-name placeholder, ensure that
   row Id columns have collision-safe unique constraints, and reject
   MergeableStore configurations that cannot preserve merge metadata.
-- SQLite auto-load establishes its external-change baseline during startup.
+- PostgreSQL auto-load safely shares notification resources until their final
+  owner stops and releases reserved clients if setup fails.
+- SQLite auto-load establishes its external-change baseline during startup and
+  defers native update-hook work until the triggering write has completed.
 - IndexedDB saves wait for transaction completion and report aborts, blocked
   opens, and other transaction failures. Loads use read-only transactions, and
   polling loads only changed content without overlapping.
 - Durable Object KV saves split large writes into limit-safe batches within one
   transaction, and loading ignores unrelated or malformed namespace keys.
 - Durable Object SQL persistence now preserves empty Table, Row, Cell, and Value
-  Ids.
-- React Native MMKV persistence preserves mergeable deletion tombstones.
-- Automerge persistence validates the expected TinyBase document roots while
-  allowing unrelated root metadata.
+  Ids and safely quotes generated table names for arbitrary storage prefixes.
+- React Native MMKV persistence preserves mergeable deletion tombstones and
+  contains malformed observed content and listener failures.
+- Automerge and Yjs persistence validate the expected TinyBase document roots
+  before loading or applying observed changes. Automerge continues to allow
+  unrelated root metadata.
+- Asynchronous notifications from browser storage, IndexedDB, PowerSync,
+  SQLite, PostgreSQL, Automerge, and Yjs now report parsing and listener
+  failures through ignored-error handling instead of letting them escape event
+  or timer callbacks.
 - File persistence writes a sibling temporary file and atomically renames it
   over the destination, avoiding a truncated destination after interruption.
-  Auto-load follows these replacements and suppresses duplicate self-loads.
+  Saves retain permission modes and symbolic links, while auto-load follows
+  replacements and suppresses duplicate self-loads.
 - OPFS persistence now always closes successful writes and aborts failed ones.
 
 ---
