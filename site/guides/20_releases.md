@@ -146,6 +146,10 @@ Temporary mutation and listening flags are also restored unconditionally in
 Store, MergeableStore, and Checkpoints operations, preventing an exception from
 silently disabling later change tracking.
 
+Rollback also restores TablesSchema and ValuesSchema definitions before
+restoring content, so schema changes cannot survive a failed transaction or
+prevent previously valid data from being recovered.
+
 ## Bounded MergeableStore Clocks
 
 MergeableStore now validates HLCs before applying mergeable content or changes.
