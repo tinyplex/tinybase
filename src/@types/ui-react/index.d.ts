@@ -1156,7 +1156,7 @@ export function useCreatePersister<
   thenDeps?: React.DependencyList,
   destroy?: (persister: Persister<Persist>) => void,
   destroyDeps?: React.DependencyList,
-): PersisterOrUndefined;
+): PersisterOrUndefined | undefined;
 
 /// usePersisterIds
 export function usePersisterIds(): Ids;
@@ -1196,7 +1196,7 @@ export function useCreateSynchronizer<
   createDeps?: React.DependencyList,
   destroy?: (synchronizer: Synchronizer) => void,
   destroyDeps?: React.DependencyList,
-): SynchronizerOrUndefined;
+): SynchronizerOrUndefined | undefined;
 
 /// useSynchronizerIds
 export function useSynchronizerIds(): Ids;

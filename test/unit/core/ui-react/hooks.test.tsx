@@ -1451,13 +1451,53 @@ describe('React-specific', () => {
 
       unmount();
       expect(persister2.destroy).toHaveBeenCalledTimes(1);
+      await act(pause);
       expect(destroy1).toHaveBeenCalledWith(persister1);
       expect(destroy2).toHaveBeenCalledWith(persister2);
+    });
+
+    test('useCreatePersister clears while replacement is pending', async () => {
+      const persister1 = createTestPersister();
+      const persister2 = createTestPersister();
+      const resolvers: ((persister: TestPersister) => void)[] = [];
+      const create = vi.fn(
+        () =>
+          new Promise<TestPersister>((resolve) => {
+            resolvers.push(resolve);
+          }),
+      );
+      let currentPersister: TestPersister | undefined;
+      const Test = ({id}: {readonly id: number}) => {
+        currentPersister = useCreatePersister(store, create, [id]);
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test id={1} />);
+      await act(pause);
+      await act(async () => resolvers[0](persister1));
+      expect(currentPersister).toBe(persister1);
+
+      rerender(<Test id={2} />);
+      await act(pause);
+      expect(currentPersister).toBeUndefined();
+      expect(persister1.destroy).toHaveBeenCalledTimes(1);
+
+      await act(async () => resolvers[1](persister2));
+      expect(currentPersister).toBe(persister2);
+
+      unmount();
     });
 
     test('useCreatePersister destroys post-unmount resolution', async () => {
       const persister = createTestPersister();
       let resolveCreate: (persister: TestPersister) => void;
+      let resolveDestroy: () => void;
+      persister.destroy.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
       const create = vi.fn(
         () =>
           new Promise<TestPersister>((resolve) => {
@@ -1476,6 +1516,9 @@ describe('React-specific', () => {
       await act(async () => resolveCreate!(persister));
 
       expect(persister.destroy).toHaveBeenCalledTimes(1);
+      expect(destroy).not.toHaveBeenCalled();
+      resolveDestroy!();
+      await act(pause);
       expect(destroy).toHaveBeenCalledWith(persister);
     });
 
@@ -1621,6 +1664,13 @@ describe('React-specific', () => {
     test('useCreateSynchronizer destroys post-unmount resolution', async () => {
       const synchronizer = createTestSynchronizer();
       let resolveCreate: (synchronizer: TestSynchronizer) => void;
+      let resolveDestroy: () => void;
+      synchronizer.destroy.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
       const create = vi.fn(
         () =>
           new Promise<TestSynchronizer>((resolve) => {
@@ -1639,6 +1689,9 @@ describe('React-specific', () => {
       await act(async () => resolveCreate!(synchronizer));
 
       expect(synchronizer.destroy).toHaveBeenCalledTimes(1);
+      expect(destroy).not.toHaveBeenCalled();
+      resolveDestroy!();
+      await act(pause);
       expect(destroy).toHaveBeenCalledWith(synchronizer);
     });
   });
