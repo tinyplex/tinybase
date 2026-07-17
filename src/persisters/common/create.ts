@@ -192,19 +192,23 @@ export const createCustomPersister = <
     /*! istanbul ignore else */
     if (!mapGet(scheduleRunning, scheduleId)) {
       mapSet(scheduleRunning, scheduleId, 1);
-      while (
-        !isUndefined(
-          (scheduledAction = arrayShift(
-            mapGet(scheduleActions, scheduleId) as ScheduledAction[],
-          )),
-        )
-      ) {
-        const [action, complete] = scheduledAction;
-        await tryCatch(action, onIgnoredError);
-        complete?.();
-      }
-      mapSet(scheduleRunning, scheduleId, 0);
-      pruneSchedule();
+      await tryFinallyAsync(
+        async () => {
+          while (
+            !isUndefined(
+              (scheduledAction = arrayShift(
+                mapGet(scheduleActions, scheduleId) as ScheduledAction[],
+              )),
+            )
+          ) {
+            await scheduledAction[0]();
+          }
+        },
+        () => {
+          mapSet(scheduleRunning, scheduleId, 0);
+          pruneSchedule();
+        },
+      );
     }
   };
 
@@ -399,20 +403,40 @@ export const createCustomPersister = <
   };
 
   const schedule = async (...actions: Action[]): Promise<Persister> => {
-    const completion = promiseNew<void>((resolve) =>
+    let failed = false;
+    let firstError: any;
+    const completion = promiseNew<void>((resolve) => {
       !isEmpty(actions)
         ? arrayPush(
             mapGet(scheduleActions, scheduleId) as ScheduledAction[],
-            ...arrayMap(actions, (action, index): ScheduledAction => [
-              action,
-              index == size(actions) - 1 ? resolve : undefined,
-              scheduleOwner,
-            ]),
+            ...arrayMap(actions, (action, index): ScheduledAction => {
+              const last = index == size(actions) - 1;
+              return [
+                async () => {
+                  try {
+                    await tryCatch(action, onIgnoredError);
+                  } catch (error) {
+                    if (!failed) {
+                      failed = true;
+                      firstError = error;
+                    }
+                  }
+                  if (last) {
+                    resolve();
+                  }
+                },
+                last ? resolve : undefined,
+                scheduleOwner,
+              ];
+            }),
           )
-        : resolve(),
-    );
+        : resolve();
+    });
     await run();
     await completion;
+    if (failed) {
+      throw firstError;
+    }
     return persister;
   };
 
