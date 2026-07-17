@@ -9,6 +9,7 @@ import {
   ERROR_SYNC_OVERFLOW,
   errorNew,
   tryFinally,
+  tryFinallyAsync,
   tryReturn,
 } from '../common/error.ts';
 import {isHlc} from '../common/hlc.ts';
@@ -547,24 +548,22 @@ export const createMultipleServerClient = <Channel>(
         const pathId = basePathId + (basePathId ? '/' : EMPTY_STRING) + body;
         const [channel, ready] = addChannel(pathId, body);
         mapSet(channels, body, channel);
+        sendControl(requestId, control, body);
         if (ready) {
-          return ready.then(
-            () => sendControl(requestId, control, body),
-            (error) => {
-              delChannelAndDecoder(body);
-              throw error;
-            },
-          );
+          return ready.catch((error) => {
+            delChannelAndDecoder(body);
+            throw error;
+          });
         }
+        return;
       }
       sendControl(requestId, control, body);
     } else if (negotiated && control == MultipleControl.Unsubscribe) {
-      const finish = () => delChannelAndDecoder(body);
-      if (collHas(channels, body)) {
-        const deleted = delChannel(mapGet(channels, body) as Channel);
-        return deleted ? deleted.then(finish) : finish();
+      const channel = mapGet(channels, body);
+      delChannelAndDecoder(body);
+      if (!isUndefined(channel)) {
+        return (async () => delChannel(channel))();
       }
-      finish();
     }
   };
 
@@ -577,7 +576,7 @@ export const createMultipleServerClient = <Channel>(
       payload,
       (requestId, control, body) => {
         const result = handleControl(requestId, control, body);
-        result?.catch((error) => onIgnoredError?.(error));
+        result?.catch((error) => tryReturn(() => onIgnoredError?.(error)));
       },
     );
     const channel = ifMultiplePayloadValid(
@@ -603,11 +602,15 @@ export const createMultipleServerClient = <Channel>(
     }
   };
 
-  const destroy = async () => {
-    await promiseAll(mapMap(channels, async (channel) => delChannel(channel)));
-    collClear(channels);
-    collClear(decoders);
-  };
+  const destroy = () =>
+    tryFinallyAsync(
+      () =>
+        promiseAll(mapMap(channels, async (channel) => delChannel(channel))),
+      () => {
+        collClear(channels);
+        collClear(decoders);
+      },
+    );
 
   return [handlePayload, destroy] as const;
 };
