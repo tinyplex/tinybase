@@ -561,6 +561,12 @@ describe('Multiple connections', () => {
       )
     ).startSync();
     expect(wsServer.getWebSocketServer()).toEqual(wssServer);
+    expect(wssServer.listenerCount('error')).toBeGreaterThan(0);
+    expect(
+      [...wssServer.clients].every(
+        (webSocket) => webSocket.listenerCount('error') > 0,
+      ),
+    ).toBe(true);
     expect(wsServer.getPathIds()).toEqual(['p1', 'p2']);
     expect(wsServer.getClientIds('p1').length).toEqual(2);
     expect(wsServer.getClientIds('p2').length).toEqual(1);

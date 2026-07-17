@@ -50,7 +50,9 @@ test('Accessors', async () => {
   const wssServer = new WebSocketServer({port: 8054});
   const wsServerSimple = createWsServerSimple(wssServer);
   expect(wsServerSimple.getWebSocketServer()).toEqual(wssServer);
+  expect(wssServer.listenerCount('error')).toBeGreaterThan(0);
   await wsServerSimple.destroy();
+  expect(wssServer.listenerCount('error')).toBeGreaterThan(0);
 });
 
 test('Malformed traffic is disconnected before relay', async () => {
