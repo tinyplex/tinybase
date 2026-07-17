@@ -444,7 +444,7 @@ const useSortedRowIdsImpl = (
         ]) as any,
   );
 
-export const useSortedRowIdsListenerImpl = (
+const useSortedRowIdsListenerImpl = (
   tableId: MaybeAccessor<Id>,
   cellId: MaybeAccessor<Id | undefined>,
   descending: MaybeAccessor<boolean>,

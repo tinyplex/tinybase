@@ -670,7 +670,7 @@ const useSortedRowIdsImpl = (
   );
 };
 
-export const useSortedRowIdsListenerImpl = (
+const useSortedRowIdsListenerImpl = (
   tableId: Id,
   cellId: Id | undefined,
   descending: boolean,

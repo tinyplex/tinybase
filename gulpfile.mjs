@@ -531,6 +531,57 @@ const tsCheck = async (dir) => {
   }
 };
 
+const checkExportParity = async (dir = DIST_DIR) => {
+  const {default: tsc} = await import('typescript');
+  const modules = ALL_MODULES.map((module) => [
+    module || 'tinybase',
+    resolve(dir, module, 'index.js'),
+    resolve(dir, '@types', module, 'index.d.ts'),
+  ]);
+  const program = tsc.createProgram(
+    modules.flatMap(([, runtime, declarations]) => [runtime, declarations]),
+    {
+      allowJs: true,
+      checkJs: false,
+      module: tsc.ModuleKind.NodeNext,
+      moduleResolution: tsc.ModuleResolutionKind.NodeNext,
+      skipLibCheck: true,
+    },
+  );
+  const checker = program.getTypeChecker();
+  const getExports = (file, valuesOnly) =>
+    checker
+      .getExportsOfModule(
+        checker.getSymbolAtLocation(program.getSourceFile(file)),
+      )
+      .filter((symbol) => {
+        while (symbol.flags & tsc.SymbolFlags.Alias) {
+          symbol = checker.getAliasedSymbol(symbol);
+        }
+        return !valuesOnly || symbol.flags & tsc.SymbolFlags.Value;
+      })
+      .map(({name}) => name)
+      .sort();
+  const differences = modules.flatMap(([module, runtime, declarations]) => {
+    const runtimeExports = getExports(runtime);
+    const declarationExports = getExports(declarations, true);
+    const extra = runtimeExports.filter(
+      (name) => !declarationExports.includes(name),
+    );
+    const missing = declarationExports.filter(
+      (name) => !runtimeExports.includes(name),
+    );
+    return extra.length || missing.length ? [{module, extra, missing}] : [];
+  });
+  if (differences.length) {
+    throw `Runtime and declaration exports differ:\n${JSON.stringify(
+      differences,
+      undefined,
+      2,
+    )}`;
+  }
+};
+
 const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
@@ -702,6 +753,7 @@ const compileModulesForProd = async () => {
     await compileModule(module, `${DIST_DIR}/`);
     await compileModule(module, `${DIST_DIR}/min`, true);
   });
+  await checkExportParity();
 };
 
 const compileDocsAndAssets = async (api = true, pages = true) => {
@@ -742,6 +794,7 @@ export const compileForTest = async () => {
   await allModules(async (module) => {
     await compileModule(module, DIST_DIR);
   });
+  await checkExportParity();
 };
 
 export const compileForTestInspectorOnly = async () => {

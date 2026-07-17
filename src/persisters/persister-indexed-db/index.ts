@@ -28,7 +28,7 @@ import {createCustomPersister} from '../common/create.ts';
 const OBJECT_STORE_NAMES = [T, V];
 const KEY_PATH = {keyPath: 'k'};
 
-export const objectStoreMatch = async (
+const objectStoreMatch = async (
   objectStore: IDBObjectStore,
   obj: IdObj<any>,
 ): Promise<void> => {

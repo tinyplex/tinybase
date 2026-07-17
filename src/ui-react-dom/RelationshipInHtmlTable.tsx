@@ -30,7 +30,7 @@ const useDottedCellIds = (tableId: Id | undefined, store: Store | undefined) =>
     (cellId) => tableId + DOT + cellId,
   );
 
-export const RelationshipInHtmlRow = ({
+const RelationshipInHtmlRow = ({
   localRowId,
   params: [
     idColumn,
