@@ -5238,6 +5238,7 @@ describe('Miscellaneous', () => {
     expect(queries.getResultTable('q1')).toEqual({r1: {c1: 2}});
   });
 
+  // eslint-disable-next-line max-len
   test('keeps the previous definition if its replacement builder throws', () => {
     const error = new Error('build error');
     store.setCell('t1', 'r1', 'c1', 1).setCell('t2', 'r1', 'c2', 2);

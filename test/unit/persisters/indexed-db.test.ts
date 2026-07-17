@@ -183,7 +183,10 @@ test.each(['stopAutoLoad', 'destroy'] as const)(
       0.01,
       ignoredError,
     );
-    const content = [{}, {species: 'dog'}] as [{}, {species: string}];
+    const content: [{[id: string]: any}, {[id: string]: any}] = [
+      {},
+      {species: 'dog'},
+    ];
     const starting = persister.startAutoLoad();
     await finish(await getOperation(0), content);
     await finish(await getOperation(1), content);
