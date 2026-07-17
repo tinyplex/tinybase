@@ -12,7 +12,7 @@ import {
   hasStoreInStorage,
   loadStoreFromStorage,
 } from 'tinybase/persisters/persister-partykit-server';
-import {afterEach, describe, expect, test} from 'vitest';
+import {afterEach, describe, expect, test, vi} from 'vitest';
 import {pause} from '../common/other.ts';
 
 type StorageValue = string | number | boolean;
@@ -20,9 +20,16 @@ type MessageListener = (event: MessageEvent) => void;
 
 type MockStorage = {
   get: <Value>(key: string) => Promise<Value | undefined>;
-  list: <Value>() => Promise<Map<string, Value>>;
+  list: <Value>(options?: {prefix?: string}) => Promise<Map<string, Value>>;
   put: (entries: {[key: string]: StorageValue}) => Promise<void>;
   delete: (keys: string[]) => Promise<void>;
+  transaction: <Return>(
+    callback: (transaction: MockStorage) => Promise<Return>,
+  ) => Promise<Return>;
+  beforeTransaction?: () => void | Promise<void>;
+  listPrefixes: (string | undefined)[];
+  transactionLists: number;
+  transactions: number;
 };
 
 type MockSocket = PartySocket & {
@@ -38,18 +45,42 @@ type MockEnvironment = {
 
 const createMockStorage = (): MockStorage => {
   const map = new Map<string, StorageValue>();
-  return {
+  let inTransaction = 0;
+  const storage: MockStorage = {
     get: async <Value>(key: string): Promise<Value | undefined> =>
       map.get(key) as Value | undefined,
-    list: async <Value>(): Promise<Map<string, Value>> =>
-      map as unknown as Map<string, Value>,
+    list: async <Value>({prefix}: {prefix?: string} = {}): Promise<
+      Map<string, Value>
+    > => {
+      storage.listPrefixes.push(prefix);
+      storage.transactionLists += inTransaction;
+      return new Map(
+        [...map].filter(([key]) => prefix == null || key.startsWith(prefix)),
+      ) as Map<string, Value>;
+    },
     put: async (entries: {[key: string]: StorageValue}): Promise<void> => {
       Object.entries(entries).forEach(([key, value]) => map.set(key, value));
     },
     delete: async (keys: string[]): Promise<void> => {
       keys.forEach((key) => map.delete(key));
     },
+    transaction: async <Return>(
+      callback: (transaction: MockStorage) => Promise<Return>,
+    ): Promise<Return> => {
+      storage.transactions++;
+      await storage.beforeTransaction?.();
+      inTransaction++;
+      try {
+        return await callback(storage);
+      } finally {
+        inTransaction--;
+      }
+    },
+    listPrefixes: [],
+    transactionLists: 0,
+    transactions: 0,
   };
+  return storage;
 };
 
 const createMockEnvironment = (
@@ -229,6 +260,13 @@ describe('PartyKit persister integration', () => {
     await persister1.startAutoPersisting();
     await persister2.startAutoPersisting();
 
+    environment.storage.beforeTransaction = async () => {
+      environment.storage.beforeTransaction = undefined;
+      await environment.storage.put({
+        't"removedTable","late","cell"': 1,
+      });
+    };
+
     store1.transaction(() => {
       store1.delTable('keptTable');
       store1.delTable('removedTable');
@@ -256,6 +294,7 @@ describe('PartyKit persister integration', () => {
     expect(await loadStoreFromStorage(environment.storage as any)).toEqual(
       expectedContent,
     );
+    expect(environment.storage.transactionLists).toBeGreaterThan(0);
   });
 
   test('does not initialize a store when all writes are rejected', async () => {
@@ -326,6 +365,100 @@ describe('PartyKit persister integration', () => {
     expect(
       await loadStoreFromStorage(environment.storage as any, 'tb_'),
     ).toEqual([{pets: {fido: {species: 'cat'}}}, {}]);
+    expect(environment.storage.listPrefixes).toContain('tb_');
+    expect(environment.storage.transactions).toBeGreaterThan(0);
+  });
+
+  test('rejects unsuccessful empty HTTP responses', async () => {
+    const environment = createMockEnvironment();
+    const ignoredErrors: any[] = [];
+    const response = new Response(null, {status: 500});
+    fetchWas = globalThis.fetch;
+    globalThis.fetch = vi.fn(async () => response) as unknown as typeof fetch;
+
+    const [, persister] = createClient(environment, {}, (error) =>
+      ignoredErrors.push(error),
+    );
+    persisters.push(persister);
+    await persister.load();
+
+    expect(ignoredErrors).toEqual([response]);
+    expect(response.bodyUsed).toBe(false);
+  });
+
+  test('serializes concurrent initial saves', async () => {
+    const environment = createMockEnvironment();
+    fetchWas = globalThis.fetch;
+    const contents = [
+      [{pets: {fido: {species: 'dog'}}}, {}],
+      [{pets: {felix: {species: 'cat'}}}, {}],
+    ];
+
+    const responses = await Promise.all(
+      contents.map((content) =>
+        environment.server.onRequest(
+          new Request('https://example.com/store', {
+            method: 'PUT',
+            body: JSON.stringify(content),
+          }) as any,
+        ),
+      ),
+    );
+
+    expect(responses.map(({status}) => status).sort()).toEqual([201, 205]);
+    expect(contents).toContainEqual(
+      await loadStoreFromStorage(environment.storage as any),
+    );
+  });
+
+  test('rejects malformed initial content', async () => {
+    const environment = createMockEnvironment();
+    fetchWas = globalThis.fetch;
+
+    for (const body of ['{', '{}', '[{},{} ,1]']) {
+      const response = await environment.server.onRequest(
+        new Request('https://example.com/store', {method: 'PUT', body}) as any,
+      );
+      expect(response.status).toBe(400);
+    }
+    expect(await hasStoreInStorage(environment.storage as any)).toBe(false);
+  });
+
+  test('ignores malformed socket and namespaced storage payloads', async () => {
+    const environment = createMockEnvironment({storagePrefix: 'tb_'});
+    fetchWas = globalThis.fetch;
+    globalThis.fetch = environment.fetch as typeof fetch;
+    await environment.storage.put({
+      'other_t"ignored","row","cell"': 1,
+      tb_hasStore: 1,
+      'tb_tnot-json': 1,
+      'tb_t"pets","fido","species"': 'dog',
+      tb_vopen: true,
+    });
+
+    expect(
+      await loadStoreFromStorage(environment.storage as any, 'tb_'),
+    ).toEqual([{pets: {fido: {species: 'dog'}}}, {open: true}]);
+    expect(environment.storage.listPrefixes).toEqual(['tb_']);
+
+    const socket = environment.createSocket();
+    const store = createStore();
+    const persister = createPartyKitPersister(store, socket, {
+      storeProtocol: 'http',
+    });
+    persisters.push(persister);
+    await persister.startAutoLoad();
+
+    expect(() => socket.receive('s{')).not.toThrow();
+    expect(() => socket.receive('s{}')).not.toThrow();
+    socket.receive(
+      's' + JSON.stringify([{cats: {felix: {species: 'cat'}}}, {}, 1]),
+    );
+    await pause();
+    expect(store.getTables()).toEqual({
+      pets: {fido: {species: 'dog'}},
+      cats: {felix: {species: 'cat'}},
+    });
   });
 
   test('persists additions to server storage', async () => {

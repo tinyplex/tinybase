@@ -35,7 +35,7 @@ export const errorThrow = (code: number, details?: any): never => {
 export const tryReturn = <Return>(
   tryF: () => Return,
   catchReturn?: Return,
-): Return | void => {
+): Return | undefined => {
   try {
     return tryF();
   } catch {
