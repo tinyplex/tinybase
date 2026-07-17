@@ -3,7 +3,7 @@ import 'fake-indexeddb/auto';
 import type {Content, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions} from '../../common/mergeable.ts';
 import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
@@ -37,10 +37,22 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
     let store: MergeableStore;
     let persister: Persister;
 
-    const expectStoreContent = (store: MergeableStore, content: Content) =>
-      vi.waitFor(() => expect(store.getContent()).toEqual(content), {
-        interval: autoLoadPause,
-      });
+    const expectStoreContent = async (
+      store: MergeableStore,
+      content: Content,
+    ): Promise<void> => {
+      for (let attempts = 100; attempts; attempts--) {
+        try {
+          expect(store.getContent()).toEqual(content);
+          return;
+        } catch (error) {
+          if (attempts == 1) {
+            throw error;
+          }
+        }
+        await pause(autoLoadPause);
+      }
+    };
 
     beforeEach(async () => {
       db = await getOpenDatabase();
