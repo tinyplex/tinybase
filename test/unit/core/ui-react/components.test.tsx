@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom/vitest';
 import {render} from '@testing-library/react';
 import type {ComponentType} from 'react';
-import {act, createElement, useCallback} from 'react';
+import {act, createElement, useCallback, useContext, useEffect} from 'react';
 import type {
   Checkpoints,
   Indexes,
@@ -924,5 +924,35 @@ test('duplicate provider registrations retain ownership', async () => {
   await rerender({show1: false});
   expect(container.textContent).toBe('2');
 
+  unmount();
+});
+
+test('ignores stale cleanup for a missing provider registration', () => {
+  const Context = (
+    globalThis as unknown as {
+      readonly tinybase_uirc: any;
+    }
+  ).tinybase_uirc;
+  const StaleCleanup = () => {
+    const context = useContext(Context) as {
+      readonly 17?: (
+        thingOffset: number,
+        thingId: string,
+        owner: object,
+      ) => void;
+    };
+    useEffect(() => {
+      context[17]?.(0, 'missing', {});
+    }, [context]);
+    return <>{JSON.stringify(useStoreIds())}</>;
+  };
+
+  const {container, unmount} = render(
+    <Provider>
+      <StaleCleanup />
+    </Provider>,
+  );
+
+  expect(container.textContent).toBe('[]');
   unmount();
 });

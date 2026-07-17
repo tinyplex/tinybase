@@ -1,6 +1,6 @@
 /* @jsxImportSource solid-js */
 import type {JSXElement} from 'solid-js';
-import {createSignal} from 'solid-js';
+import {createSignal, onMount, useContext} from 'solid-js';
 import {render as solidRender} from 'solid-js/web';
 import type {
   Checkpoints,
@@ -737,5 +737,42 @@ test('covers context fallbacks and duplicate providers', async () => {
   await pause();
   expect(container.innerHTML).toBe('0[]{}<span>2</span>');
 
+  unmount();
+});
+
+test('ignores stale cleanup for a missing provider registration', async () => {
+  const container = document.createElement('div');
+  const Context = (
+    globalThis as unknown as {
+      readonly tinybase_uisc: any;
+    }
+  ).tinybase_uisc;
+  const StaleCleanup = () => {
+    const contextValue = (
+      useContext(Context) as {
+        readonly value?: () => {
+          readonly 17?: (
+            thingOffset: number,
+            thingId: string,
+            owner: object,
+          ) => void;
+        };
+      }
+    ).value;
+    onMount(() => contextValue?.()[17]?.(0, 'missing', {}));
+    return <>{JSON.stringify(useStoreIds()())}</>;
+  };
+
+  const unmount = solidRender(
+    () => (
+      <Provider>
+        <StaleCleanup />
+      </Provider>
+    ),
+    container,
+  );
+
+  await pause();
+  expect(container.textContent).toBe('[]');
   unmount();
 });
