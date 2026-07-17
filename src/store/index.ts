@@ -45,6 +45,7 @@ import {
   arraySort,
 } from '../common/array.ts';
 import {
+  type CellOrValueType,
   decodeIfJson,
   encodeIfJson,
   getCellOrValueType,
@@ -457,6 +458,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const cloneValues = (values: Values): Values =>
     isObject(values) ? objMap(values, (value) => value) : values;
 
+  const isValidEncodedJson = (
+    cellOrValue: any,
+    type?: CellOrValueType,
+  ): boolean =>
+    acceptingEncodedData == 1 &&
+    isEncodedJson(cellOrValue) &&
+    tryReturn(() => {
+      const encodedType = getCellOrValueType(decodeIfJson(cellOrValue));
+      return (
+        isJsonType(encodedType) && (isUndefined(type) || type == encodedType)
+      );
+    }, false) == true;
+
   const validateContent = isArray;
 
   const validateTables = (tables: Tables): boolean =>
@@ -520,18 +534,26 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
               : isReservedString(cell, acceptingEncodedData)
                 ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
-                : getCellOrValueType(cell) === cellSchema[TYPE]
-                  ? encodeValid(cell, () =>
-                      cellInvalid(
+                : isEncodedJson(cell)
+                  ? isValidEncodedJson(cell, cellSchema[TYPE])
+                    ? cell
+                    : cellInvalid(
                         tableId,
                         rowId,
                         cellId,
                         cell,
                         cellSchema[DEFAULT],
-                      ),
-                    )
-                  : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell)
-                    ? cell
+                      )
+                  : getCellOrValueType(cell) === cellSchema[TYPE]
+                    ? encodeValid(cell, () =>
+                        cellInvalid(
+                          tableId,
+                          rowId,
+                          cellId,
+                          cell,
+                          cellSchema[DEFAULT],
+                        ),
+                      )
                     : cellInvalid(
                         tableId,
                         rowId,
@@ -542,7 +564,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
       : isUndefined(getCellOrValueType(cell)) ||
-          isReservedString(cell, acceptingEncodedData)
+          isReservedString(cell, acceptingEncodedData) ||
+          (isEncodedJson(cell) && !isValidEncodedJson(cell))
         ? cellInvalid(tableId, rowId, cellId, cell)
         : encodeValid(cell, () => cellInvalid(tableId, rowId, cellId, cell));
 
@@ -583,17 +606,20 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 : valueInvalid(valueId, value, valueSchema[DEFAULT])
               : isReservedString(value, acceptingEncodedData)
                 ? valueInvalid(valueId, value, valueSchema[DEFAULT])
-                : getCellOrValueType(value) === valueSchema[TYPE]
-                  ? encodeValid(value, () =>
-                      valueInvalid(valueId, value, valueSchema[DEFAULT]),
-                    )
-                  : isJsonType(valueSchema[TYPE]) && isEncodedJson(value)
+                : isEncodedJson(value)
+                  ? isValidEncodedJson(value, valueSchema[TYPE])
                     ? value
+                    : valueInvalid(valueId, value, valueSchema[DEFAULT])
+                  : getCellOrValueType(value) === valueSchema[TYPE]
+                    ? encodeValid(value, () =>
+                        valueInvalid(valueId, value, valueSchema[DEFAULT]),
+                      )
                     : valueInvalid(valueId, value, valueSchema[DEFAULT]),
           () => valueInvalid(valueId, value),
         )
       : isUndefined(getCellOrValueType(value)) ||
-          isReservedString(value, acceptingEncodedData)
+          isReservedString(value, acceptingEncodedData) ||
+          (isEncodedJson(value) && !isValidEncodedJson(value))
         ? valueInvalid(valueId, value)
         : encodeValid(value, () => valueInvalid(valueId, value));
 

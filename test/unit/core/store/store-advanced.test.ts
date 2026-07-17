@@ -1778,6 +1778,38 @@ describe.each([
       expect(restoredStore.getContent()).toEqual(store.getContent());
     });
 
+    test('encoded JSON must contain a valid object or array', () => {
+      store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+
+      store.setJson(
+        JSON.stringify([
+          {t1: {r1: {c1: jsonPrefix + '{'}}},
+          {v1: jsonPrefix + '1'},
+        ]),
+      );
+
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    });
+
+    test('encoded JSON must match its schema container type', () => {
+      store
+        .setTablesSchema({t1: {c1: {type: 'object'}}})
+        .setValuesSchema({v1: {type: 'array'}, v2: {type: 'string'}})
+        .setContent([{t1: {r1: {c1: {a: 1}}}}, {v1: [1], v2: 'a'}]);
+
+      store.setJson(
+        JSON.stringify([
+          {t1: {r1: {c1: jsonPrefix + '[2]'}}},
+          {v1: jsonPrefix + '{"b":2}', v2: jsonPrefix + '{"c":3}'},
+        ]),
+      );
+
+      expect(store.getContent()).toEqual([
+        {t1: {r1: {c1: {a: 1}}}},
+        {v1: [1], v2: 'a'},
+      ]);
+    });
+
     test('bulk setters do not mutate caller input', () => {
       const cell = {a: 1};
       const row = {c1: cell, invalid: undefined as any};
