@@ -40,6 +40,7 @@ import {
   collHas,
   collIsEmpty,
   collSize,
+  collValues,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {
@@ -267,22 +268,23 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       collClear(queryStoreIds);
     });
 
-  const isResultStoreReferenced = (resultStore: Store): boolean => {
-    let referenced = false;
-    mapForEach(routedResultListeners, (_listenerId, [, storeListenerIds]) =>
-      mapForEach(storeListenerIds, (_queryId, [store]) => {
-        referenced ||= store === resultStore;
-      }),
+  const isResultStoreReferenced = (resultStore: Store): boolean =>
+    !(
+      arrayEvery(collValues(routedResultListeners), ([, storeListenerIds]) =>
+        arrayEvery(
+          collValues(storeListenerIds),
+          ([store]) => store !== resultStore,
+        ),
+      ) &&
+      arrayEvery(
+        [preStoreListenerIds, sourceStoreListenerIds],
+        (storeListenerIds) =>
+          arrayEvery(
+            collValues(storeListenerIds),
+            (stores) => !collHas(stores, resultStore),
+          ),
+      )
     );
-    arrayForEach(
-      [preStoreListenerIds, sourceStoreListenerIds],
-      (storeListenerIds) =>
-        mapForEach(storeListenerIds, (_queryId, stores) => {
-          referenced ||= collHas(stores, resultStore);
-        }),
-    );
-    return referenced;
-  };
 
   const cleanStores = (): void => {
     mapForEach(preStores, (queryId) =>
