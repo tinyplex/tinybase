@@ -245,9 +245,10 @@ resource. They also return `undefined` while a replacement is pending instead
 of exposing a resource that has begun teardown. React and Solid cleanup
 callbacks now run after asynchronous resource destruction completes.
 
-The ui-solid-dom and ui-svelte-dom modules are now exported explicitly as
-client-only browser modules, so server builds fail during package resolution
-instead of loading unusable client artifacts.
+The ui-solid-dom, ui-solid-inspector, ui-svelte-dom, and ui-svelte-inspector
+modules are now exported explicitly as client-only browser modules, so server
+builds fail during package resolution instead of loading unusable client
+artifacts.
 
 Solid DOM table wrappers now keep table, query, and slice metadata reactive as
 their inputs change. The useUndoInformation and useRedoInformation primitives
@@ -321,14 +322,21 @@ cannot delete a replacement that connected in the meantime.
 Path state is also cleared even if resource cleanup fails. The destroy method
 now closes active WebSockets, waits for the underlying WebSocketServer to close,
 and fully removes its path, client, and listener state before resolving.
+Multiplexed channels are also removed before asynchronous teardown so an
+immediate resubscription cannot attach to a channel that is being destroyed.
+Servers acknowledge subscriptions before persisted path startup completes so
+multiplexed clients can begin the initial synchronization without timing out.
 
 ## Persister Reliability
 
 Persisters have received a broad reliability pass:
 
 - Remote Persisters retain the previous ETag until changed content has been
-  downloaded successfully.
+  downloaded successfully, reject unsuccessful HTTP responses, serialize
+  polling, and wait for in-flight polling to finish when stopped.
 - Awaiting a Persister operation now waits for its queued work to run.
+- Shared schedulers now route ignored errors to the Persister that owns each
+  action and remain usable if an ignored-error callback itself throws.
 - Restarting auto-load waits for the previous listener to stop, and subscribing
   before the initial load closes the startup window for missed changes.
 - Destroyed Persisters now release shared scheduler state.
