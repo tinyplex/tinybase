@@ -303,7 +303,8 @@ export const build = async (
       const [mainModule, ...subModules] = module.split('/');
       subModules.unshift('');
       await esbuild.build({
-        entryPoints: [import.meta.resolve(module).replace('file://', '')],
+        entryPoints: [module],
+        conditions: ['browser'],
         target: 'esnext',
         bundle: true,
         jsx: 'transform',
@@ -316,6 +317,9 @@ export const build = async (
             name: 'published-external',
             setup: (build: any) => {
               build.onResolve({filter: /^[^./].*/}, (args: any) => {
+                if (args.kind == 'entry-point') {
+                  return;
+                }
                 const mapped = getPublishedImportUrl(
                   args.path,
                   version,

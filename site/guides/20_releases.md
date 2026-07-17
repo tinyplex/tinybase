@@ -75,10 +75,11 @@ untrusted clients by base path, and do not treat client Ids derived from
 
 - Arbitrary Ids such as `__proto__`, `constructor`, and `toString` are now safe
   throughout Store, MergeableStore, synchronization, and persistence.
-- Errors from transaction actions and pre-commit callbacks now roll back content,
-  schemas, MergeableStore stamps and hashes, and temporary state across Store,
-  MergeableStore, and Checkpoints; nested failures roll back the shared outer
-  transaction, while post-commit listener failures no longer strand the Store.
+- Errors from transaction actions and pre-commit callbacks now roll back
+  content, schemas, MergeableStore stamps and hashes, and temporary state across
+  Store, MergeableStore, and Checkpoints; nested failures roll back the shared
+  outer transaction, while post-commit listener failures no longer strand the
+  Store.
 - Query definitions are staged before commit, and new Index, Metric, Query, and
   Relationship definitions are discarded if their Ids listener throws.
 - Deleting a Query definition now releases cached pre- and result Stores once
@@ -195,8 +196,8 @@ untrusted clients by base path, and do not treat client Ids derived from
 - Solid and Svelte DOM and Inspector packages are explicitly client-only, so
   server builds fail cleanly during resolution.
 - Solid DOM table wrappers keep table, query, and slice metadata reactive, while
-  Solid Inspector actions and custom Cell renderers react to editability and Cell
-  Id changes.
+  Solid Inspector actions and custom Cell renderers react to editability and
+  Cell Id changes.
 - Solid useUndoInformation and useRedoInformation now return Accessors for
   availability, checkpoint Id, and label values.
 - Object and array editors mark JSON with the wrong container type invalid, and
@@ -638,7 +639,8 @@ The ui-solid-dom module provides browser-ready Solid components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Solid components and Accessors throughout.
 
-![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png
+'SortedTableInHtmlTable (Solid)')
 
 Alongside the table components, the new ui-solid-inspector module brings the
 TinyBase development inspector to Solid apps too, making it easy to inspect and
@@ -693,7 +695,8 @@ This release also adds a complete set of Solid UI component demos, plus a
 Countries demo and an Inspector demo, so you can see the new modules working
 across Stores, Indexes, Relationships, Queries, and editable views.
 
-![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png
+'EditableValueView (Solid)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -820,7 +823,8 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
+'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -867,7 +871,8 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
+'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -1574,7 +1579,8 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue,
+#[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 
