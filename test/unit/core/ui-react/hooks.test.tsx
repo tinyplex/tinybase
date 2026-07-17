@@ -1488,6 +1488,38 @@ describe('React-specific', () => {
       unmount();
     });
 
+    test('useCreatePersister waits for replacement cleanup', async () => {
+      const persister1 = createTestPersister();
+      const persister2 = createTestPersister();
+      let releaseDestroy = () => {};
+      const destroyGate = new Promise<void>(
+        (resolve) => (releaseDestroy = resolve),
+      );
+      persister1.destroy.mockReturnValue(destroyGate);
+      const create = vi.fn(() => persister2).mockReturnValueOnce(persister1);
+      let currentPersister: TestPersister | undefined;
+      const Test = ({id}: {readonly id: number}) => {
+        currentPersister = useCreatePersister(store, create, [id]);
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test id={1} />);
+      await act(pause);
+      expect(currentPersister).toBe(persister1);
+
+      rerender(<Test id={2} />);
+      await act(pause);
+      expect(currentPersister).toBeUndefined();
+      expect(create).toHaveBeenCalledTimes(1);
+
+      releaseDestroy();
+      await act(pause);
+      expect(currentPersister).toBe(persister2);
+      expect(create).toHaveBeenCalledTimes(2);
+
+      unmount();
+    });
+
     test('useCreatePersister destroys post-unmount resolution', async () => {
       const persister = createTestPersister();
       let resolveCreate: (persister: TestPersister) => void;
