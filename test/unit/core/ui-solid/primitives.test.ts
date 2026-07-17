@@ -1636,6 +1636,67 @@ describe('Solid-specific', () => {
     expect(persister2.destroy).toHaveBeenCalledTimes(1);
   });
 
+  test('waits for failed persister cleanup before recreating', async () => {
+    const store1 = createStore();
+    const store2 = createStore();
+    const persister1 = createTestPersister();
+    const persister2 = createTestPersister();
+    let rejectDestroy = (_error: Error) => {};
+    persister1.destroy.mockReturnValue(
+      new Promise<void>((_resolve, reject) => (rejectDestroy = reject)),
+    );
+    const create = vi
+      .fn()
+      .mockResolvedValueOnce(persister1)
+      .mockResolvedValueOnce(persister2);
+    let persister: Accessor<TestPersister | undefined>;
+    let setStore: Setter<Store>;
+
+    const dispose = renderPrimitive(() => {
+      const [store, setResolvedStore] = createSignal(store1);
+      persister = useCreatePersister(store, create);
+      setStore = setResolvedStore;
+    });
+
+    await pause();
+    setStore!(store2);
+    await pause();
+    expect(create).toHaveBeenCalledTimes(1);
+
+    rejectDestroy(new Error('destroy'));
+    await pause();
+    expect(create).toHaveBeenCalledTimes(2);
+    expect(persister!()).toBe(persister2);
+
+    dispose();
+  });
+
+  test('recreates persister after failed creation', async () => {
+    const store1 = createStore();
+    const store2 = createStore();
+    const persister = createTestPersister();
+    const create = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('create'))
+      .mockResolvedValueOnce(persister);
+    let currentPersister: Accessor<TestPersister | undefined>;
+    let setStore: Setter<Store>;
+
+    const dispose = renderPrimitive(() => {
+      const [store, setResolvedStore] = createSignal(store1);
+      currentPersister = useCreatePersister(store, create);
+      setStore = setResolvedStore;
+    });
+
+    await pause();
+    expect(currentPersister!()).toBeUndefined();
+    setStore!(store2);
+    await pause();
+    expect(currentPersister!()).toBe(persister);
+
+    dispose();
+  });
+
   test('destroys late synchronizer when owner is disposed', async () => {
     const synchronizer = createTestSynchronizer();
     let resolveCreate: (synchronizer: TestSynchronizer) => void;
@@ -1699,5 +1760,31 @@ describe('Solid-specific', () => {
 
     dispose();
     expect(synchronizer2.destroy).toHaveBeenCalledTimes(1);
+  });
+
+  test('recreates synchronizer after failed creation', async () => {
+    const store1 = createMergeableStore();
+    const store2 = createMergeableStore();
+    const synchronizer = createTestSynchronizer();
+    const create = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('create'))
+      .mockResolvedValueOnce(synchronizer);
+    let currentSynchronizer: Accessor<TestSynchronizer | undefined>;
+    let setStore: Setter<MergeableStore>;
+
+    const dispose = renderPrimitive(() => {
+      const [store, setResolvedStore] = createSignal(store1);
+      currentSynchronizer = useCreateSynchronizer(store, create);
+      setStore = setResolvedStore;
+    });
+
+    await pause();
+    expect(currentSynchronizer!()).toBeUndefined();
+    setStore!(store2);
+    await pause();
+    expect(currentSynchronizer!()).toBe(synchronizer);
+
+    dispose();
   });
 });

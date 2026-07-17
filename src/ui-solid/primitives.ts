@@ -107,7 +107,7 @@ import type {
   UndoOrRedoInformation,
 } from '../@types/ui-solid/index.d.ts';
 import {arrayIsEqual, arrayMap, arrayOrValueEqual} from '../common/array.ts';
-import {tryFinallyAsync} from '../common/error.ts';
+import {tryCatch, tryFinallyAsync} from '../common/error.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
@@ -1995,19 +1995,27 @@ export const useCreatePersister = <
   destroy?: (persister: Persister<Persist>) => void,
 ): Accessor<PersisterOrUndefined | undefined> => {
   const [persister, setPersister] = createSignal<PersisterOrUndefined>();
+  let destroying: Promise<any> | undefined;
   createEffect(() => {
     let current = true;
     let createdPersister: PersisterOrUndefined | undefined;
+    const resolvedStore = getThing(store);
     const destroyPersister = (persister: Persister<Persist>) =>
-      tryFinallyAsync(() => persister.destroy(), () => destroy?.(persister));
-    (async () => {
-      const resolvedStore = getThing(store);
+      tryFinallyAsync(
+        () => persister.destroy(),
+        () => destroy?.(persister),
+      );
+    void tryCatch(async () => {
+      await destroying;
+      if (!current) {
+        return;
+      }
       createdPersister = resolvedStore
         ? await create(resolvedStore)
         : undefined;
       if (!current) {
         if (createdPersister) {
-          await destroyPersister(createdPersister);
+          await tryCatch(() => destroyPersister(createdPersister!));
         }
         return;
       }
@@ -2015,12 +2023,12 @@ export const useCreatePersister = <
       if (createdPersister && then) {
         await then(createdPersister);
       }
-    })();
+    });
     onCleanup(() => {
       current = false;
       setPersister(() => undefined);
       if (createdPersister) {
-        void destroyPersister(createdPersister);
+        destroying = tryCatch(() => destroyPersister(createdPersister!));
       }
     });
   });
@@ -2073,32 +2081,37 @@ export const useCreateSynchronizer = <
 ): Accessor<SynchronizerOrUndefined | undefined> => {
   const [synchronizer, setSynchronizer] =
     createSignal<SynchronizerOrUndefined>();
+  let destroying: Promise<any> | undefined;
   createEffect(() => {
     let current = true;
     let createdSynchronizer: SynchronizerOrUndefined | undefined;
+    const resolvedStore = getThing(store);
     const destroySynchronizer = (synchronizer: Synchronizer) =>
       tryFinallyAsync(
         () => synchronizer.destroy(),
         () => destroy?.(synchronizer),
       );
-    (async () => {
-      const resolvedStore = getThing(store);
+    void tryCatch(async () => {
+      await destroying;
+      if (!current) {
+        return;
+      }
       createdSynchronizer = resolvedStore
         ? await create(resolvedStore)
         : undefined;
       if (!current) {
         if (createdSynchronizer) {
-          await destroySynchronizer(createdSynchronizer);
+          await tryCatch(() => destroySynchronizer(createdSynchronizer!));
         }
         return;
       }
       setSynchronizer(() => createdSynchronizer);
-    })();
+    });
     onCleanup(() => {
       current = false;
       setSynchronizer(() => undefined);
       if (createdSynchronizer) {
-        void destroySynchronizer(createdSynchronizer);
+        destroying = tryCatch(() => destroySynchronizer(createdSynchronizer!));
       }
     });
   });
