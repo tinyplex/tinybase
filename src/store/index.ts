@@ -1960,7 +1960,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setTablesSchema = (tablesSchema: TablesSchema): Store =>
     fluentTransaction(() => {
       const tablesSchema2 = cloneSchema(tablesSchema);
-      if ((hasTablesSchema = validateTablesSchema(tablesSchema2))) {
+      if (validateTablesSchema(tablesSchema2)) {
+        hasTablesSchema = true;
         setValidTablesSchema(tablesSchema2);
         if (!collIsEmpty(tablesMap)) {
           const tables = getTables();
@@ -1973,7 +1974,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValuesSchema = (valuesSchema: ValuesSchema): Store =>
     fluentTransaction(() => {
       const valuesSchema2 = cloneSchema(valuesSchema);
-      if ((hasValuesSchema = validateValuesSchema(valuesSchema2))) {
+      if (validateValuesSchema(valuesSchema2)) {
         const values = getValues();
         delValuesSchema();
         delValues();
