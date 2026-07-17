@@ -1,12 +1,6 @@
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {Message, Receive} from '../@types/synchronizers/index.d.ts';
-import {
-  arrayEvery,
-  arrayForEach,
-  arrayJoin,
-  arrayMap,
-  arrayPush,
-} from '../common/array.ts';
+import {arrayEvery, arrayJoin, arrayMap, arrayPush} from '../common/array.ts';
 import {isCellOrValueOrUndefined} from '../common/cell.ts';
 import {getUniqueId} from '../common/codec.ts';
 import {collClear, collDel, collSize} from '../common/coll.ts';
@@ -48,7 +42,6 @@ import {
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^([-0-9A-Z_a-z]{16})\n(\d+)\n(\d+)\n([\s\S]*)$/;
-const CODE_POINTS = /[\s\S]/gu;
 const INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
 const MAX_FRAGMENT_BUFFERS = 100;
 const MAX_FRAGMENT_COUNT = 1_000;
@@ -391,7 +384,17 @@ const getFragments = (remainder: string, maxFragmentSize: number): string[] => {
   const fragments: string[] = [];
   let fragment = EMPTY_STRING;
   let fragmentSize = 0;
-  arrayForEach(strMatch(remainder, CODE_POINTS) ?? [], (codePoint) => {
+  for (let index = 0; index < size(remainder); index++) {
+    const codeUnit = remainder.charCodeAt(index);
+    let codePoint = slice(remainder, index, index + 1);
+    if (
+      codeUnit >= 0xd800 &&
+      codeUnit <= 0xdbff &&
+      remainder.charCodeAt(index + 1) >= 0xdc00 &&
+      remainder.charCodeAt(index + 1) <= 0xdfff
+    ) {
+      codePoint += slice(remainder, ++index, index + 1);
+    }
     const codePointSize = getWebSocketPayloadSize(codePoint);
     if (fragmentSize > 0 && fragmentSize + codePointSize > maxFragmentSize) {
       arrayPush(fragments, fragment);
@@ -400,7 +403,7 @@ const getFragments = (remainder: string, maxFragmentSize: number): string[] => {
     }
     fragment += codePoint;
     fragmentSize += codePointSize;
-  });
+  }
   arrayPush(fragments, fragment);
   return fragments;
 };
