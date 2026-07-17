@@ -4,6 +4,9 @@
  *
  * The component in this module uses the Svelte DOM runtime and so is not
  * appropriate for non-DOM environments.
+ *
+ * This is a client-only module. Its package export is only available under the
+ * `browser` condition, and it does not provide server-side rendering.
  * @see <Inspector /> (Svelte) demo
  * @packageDocumentation
  * @module ui-svelte-inspector

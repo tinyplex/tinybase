@@ -15,6 +15,10 @@ ui-solid-inspector module, and the ui-svelte-inspector module. In each case, add
 the component inside a Provider component that is providing the Store context
 for the app that you want to inspect.
 
+The Solid and Svelte inspector modules are client-only: their package exports
+are available under the `browser` condition, and they do not support server-side
+rendering.
+
 With React, the boilerplate will look something like this:
 
 ```jsx ignore

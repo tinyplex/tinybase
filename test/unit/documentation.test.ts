@@ -55,7 +55,6 @@ import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactDomCharts from 'tinybase/ui-react-dom-charts';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
-import * as TinyBaseUiSvelteInspector from 'tinybase/ui-svelte-inspector';
 import * as valibot from 'valibot';
 import {beforeAll, describe, expect, test, vi} from 'vitest';
 import * as ws from 'ws';
@@ -96,11 +95,17 @@ const TinyBaseUiSolidDom =
   await importClientModule<typeof import('tinybase/ui-solid-dom')>(
     'ui-solid-dom',
   );
-const TinyBaseUiSolidInspector = await import('tinybase/ui-solid-inspector');
+const TinyBaseUiSolidInspector =
+  await importClientModule<typeof import('tinybase/ui-solid-inspector')>(
+    'ui-solid-inspector',
+  );
 const TinyBaseUiSvelteDom =
   await importClientModule<typeof import('tinybase/ui-svelte-dom')>(
     'ui-svelte-dom',
   );
+const TinyBaseUiSvelteInspector = await importClientModule<
+  typeof import('tinybase/ui-svelte-inspector')
+>('ui-svelte-inspector');
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
 const TinyBaseForTest = {
