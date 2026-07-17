@@ -96,7 +96,10 @@ const moduleIsSvelte = (module) =>
   module == 'ui-svelte-dom' ||
   module == 'ui-svelte-inspector';
 const moduleIsClientOnly = (module) =>
-  module == 'ui-solid-dom' || module == 'ui-svelte-dom';
+  module == 'ui-solid-dom' ||
+  module == 'ui-solid-inspector' ||
+  module == 'ui-svelte-dom' ||
+  module == 'ui-svelte-inspector';
 const getUiModule = (module) =>
   moduleIsSvelte(module)
     ? 'ui-svelte'
