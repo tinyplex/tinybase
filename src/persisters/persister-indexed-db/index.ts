@@ -143,34 +143,45 @@ export const createIndexedDbPersister = ((
 
   const addPersisterListener = (
     listener: PersisterListener,
-  ): Promise<number | NodeJS.Timeout> => {
-    let listening = false;
-    return getPersisted().then((content) => {
+  ): Promise<() => Promise<void>> =>
+    getPersisted().then((content) => {
+      let active = 1;
       let lastContent = jsonStringWithUndefined(content);
-      return startInterval(async () => {
-        if (!listening) {
-          listening = true;
-          await tryFinallyAsync(
+      let pollPromise: Promise<void> | undefined;
+      const interval = startInterval(() => {
+        if (active && !pollPromise) {
+          let newPollPromise!: Promise<void>;
+          newPollPromise = tryFinallyAsync(
             () =>
               tryCatch(async () => {
                 const content = await getPersisted();
-                const nextContent = jsonStringWithUndefined(content);
-                if (nextContent != lastContent) {
-                  lastContent = nextContent;
-                  await listener(content);
+                if (active) {
+                  const nextContent = jsonStringWithUndefined(content);
+                  if (nextContent != lastContent) {
+                    lastContent = nextContent;
+                    await listener(content);
+                  }
                 }
-              }),
+              }, onIgnoredError),
             () => {
-              listening = false;
+              if (pollPromise == newPollPromise) {
+                pollPromise = undefined;
+              }
             },
           );
+          pollPromise = newPollPromise;
         }
       }, autoLoadIntervalSeconds);
+      return async () => {
+        active = 0;
+        stopInterval(interval);
+        await pollPromise;
+      };
     });
-  };
 
-  const delPersisterListener = (interval: number | NodeJS.Timeout): void =>
-    stopInterval(interval);
+  const delPersisterListener = async (
+    stopListening: () => Promise<void>,
+  ): Promise<void> => await stopListening();
 
   return createCustomPersister(
     store,

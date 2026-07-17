@@ -297,7 +297,7 @@ export function createCustomSqlitePersister<
   configOrStoreTableName: DatabasePersisterConfig<Schemas> | string | undefined,
   executeCommand: DatabaseExecuteCommand,
   addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
-  delChangeListener: (listenerHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => void | Promise<void>,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,

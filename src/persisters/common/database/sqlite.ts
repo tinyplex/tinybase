@@ -7,13 +7,19 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
-import {collValues} from '../../../common/coll.ts';
-import {ERROR_STORE_TYPE, errorThrow, tryCatch} from '../../../common/error.ts';
+import {collHas, collValues} from '../../../common/coll.ts';
+import {
+  ERROR_STORE_TYPE,
+  errorThrow,
+  tryCatch,
+  tryFinallyAsync,
+} from '../../../common/error.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {
   isFalse,
   isNullish,
   isTrue,
+  isUndefined,
   startInterval,
   stopInterval,
 } from '../../../common/other.ts';
@@ -42,7 +48,7 @@ export const createCustomSqlitePersister = <
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
   rawExecuteCommand: DatabaseExecuteCommand,
   addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
-  delChangeListener: (listenerHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => void | Promise<void>,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,
@@ -70,8 +76,12 @@ export const createCustomSqlitePersister = <
 
   const addPersisterListener = (
     listener: PersisterListener<Persist>,
-  ): Promise<() => void> => {
-    let interval: number | NodeJS.Timeout;
+  ): Promise<() => Promise<void>> => {
+    let active = 1;
+    let baselineReady = 0;
+    let interval: number | NodeJS.Timeout | undefined;
+    let nativeChange = 0;
+    let task: Promise<void> | undefined;
 
     const checkForChanges = async (notify = true) => {
       const [{d, s, c}] = (await executeCommand(
@@ -79,47 +89,97 @@ export const createCustomSqlitePersister = <
           // eslint-disable-next-line max-len
           ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
       )) as [IdObj<number>];
-      if (d != dataVersion || s != schemaVersion || c != totalChanges) {
-        if (notify && !isNullish(dataVersion)) {
-          listener();
-        }
+      if (
+        active &&
+        (d != dataVersion || s != schemaVersion || c != totalChanges)
+      ) {
+        const shouldNotify = notify && !nativeChange && !isNullish(dataVersion);
         dataVersion = d;
         schemaVersion = s;
         totalChanges = c;
+        if (shouldNotify && active) {
+          await listener();
+        }
       }
     };
 
-    const startPolling = () =>
-      (interval = startInterval(
-        () => tryCatch(checkForChanges),
-        autoLoadIntervalSeconds as number,
-      ));
-
     const stopPolling = () => {
-      dataVersion = schemaVersion = totalChanges = null;
-      stopInterval(interval);
+      if (!isUndefined(interval)) {
+        stopInterval(interval);
+        interval = undefined;
+      }
+    };
+
+    const startPolling = () => {
+      if (active && isUndefined(interval)) {
+        interval = startInterval(
+          () => run(true),
+          autoLoadIntervalSeconds as number,
+        );
+      }
+    };
+
+    const run = (notify = false): Promise<void> => {
+      if (task) {
+        return task;
+      }
+      let newTask!: Promise<void>;
+      newTask = tryFinallyAsync(
+        () =>
+          tryCatch(async () => {
+            if (!baselineReady) {
+              await checkForChanges(false);
+              baselineReady = 1;
+            } else if (notify) {
+              await checkForChanges();
+            }
+            while (active && nativeChange) {
+              nativeChange = 0;
+              await checkForChanges(false);
+              if (active) {
+                await listener();
+                await checkForChanges();
+              }
+            }
+          }, onIgnoredError),
+        () => {
+          if (task == newTask) {
+            task = undefined;
+          }
+          if (active) {
+            nativeChange ? run() : startPolling();
+          }
+        },
+      );
+      task = newTask;
+      return newTask;
     };
 
     const listeningHandle = addChangeListener((tableName: string) => {
-      if (managedTableNamesSet.has(tableName)) {
+      if (active && collHas(managedTableNamesSet, tableName)) {
+        nativeChange = 1;
         stopPolling();
-        listener();
-        startPolling();
+        run();
       }
     });
 
-    return checkForChanges(false).then(() => {
-      startPolling();
-      return () => {
-        stopPolling();
-        delChangeListener(listeningHandle);
-      };
+    return run().then(() => async () => {
+      active = 0;
+      nativeChange = 0;
+      stopPolling();
+      await tryFinallyAsync(
+        async () => await task,
+        async () => {
+          dataVersion = schemaVersion = totalChanges = null;
+          await delChangeListener(listeningHandle);
+        },
+      );
     });
   };
 
   const delPersisterListener = (
-    stopPollingAndDelUpdateListener: () => void,
-  ): void => stopPollingAndDelUpdateListener();
+    stopPollingAndDelUpdateListener: () => void | Promise<void>,
+  ): void | Promise<void> => stopPollingAndDelUpdateListener();
 
   return (isJson ? createJsonPersister : createTabularPersister)(
     store,

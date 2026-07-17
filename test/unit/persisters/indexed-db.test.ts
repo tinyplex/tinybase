@@ -37,7 +37,67 @@ const createIndexedDbMock = () => {
   return {db, modes, request, requests, transaction};
 };
 
-afterEach(() => vi.restoreAllMocks());
+type ControlledRead = {
+  request: any;
+  requests: any[];
+  transaction: any;
+};
+
+const createControlledIndexedDbMock = () => {
+  const operations: ControlledRead[] = [];
+  const waiters: ((operation: ControlledRead) => void)[] = [];
+  const open = vi.fn(() => {
+    const requests: any[] = [];
+    const transaction: any = {
+      objectStore: () => ({
+        getAll: () => {
+          const request: any = {};
+          requests.push(request);
+          return request;
+        },
+      }),
+    };
+    const db: any = {
+      close: vi.fn(),
+      transaction: () => transaction,
+    };
+    const request: any = {result: db};
+    const operation = {request, requests, transaction};
+    const index = operations.push(operation) - 1;
+    waiters[index]?.(operation);
+    return request;
+  });
+  Object.defineProperty(window, 'indexedDB', {
+    configurable: true,
+    value: {open},
+  });
+  const getOperation = async (index: number): Promise<ControlledRead> =>
+    operations[index] ??
+    (await new Promise((resolve) => (waiters[index] = resolve)));
+  const finish = async (
+    operation: ControlledRead,
+    content: [{[id: string]: any}, {[id: string]: any}],
+  ): Promise<void> => {
+    operation.request.onsuccess();
+    content.forEach((obj, index) => {
+      operation.requests[index].result = Object.entries(obj).map(([k, v]) => ({
+        k,
+        v,
+      }));
+      operation.requests[index].onsuccess();
+    });
+    await Promise.resolve();
+    operation.transaction.oncomplete();
+    await Promise.resolve();
+    await Promise.resolve();
+  };
+  return {finish, getOperation, open};
+};
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
 
 test('waits for IndexedDB write transactions to complete', async () => {
   const {modes, request, transaction} = createIndexedDbMock();
@@ -109,3 +169,50 @@ test('reports blocked IndexedDB opens', async () => {
 
   expect(ignoredError.mock.calls[0][0].message).toBe('tinybase:12');
 });
+
+test.each(['stopAutoLoad', 'destroy'] as const)(
+  'drains IndexedDB polling on %s',
+  async (stopMethod) => {
+    vi.useFakeTimers();
+    const {finish, getOperation, open} = createControlledIndexedDbMock();
+    const ignoredError = vi.fn();
+    const store = createStore();
+    const persister = createIndexedDbPersister(
+      store,
+      'pets',
+      0.01,
+      ignoredError,
+    );
+    const content = [{}, {species: 'dog'}] as [{}, {species: string}];
+    const starting = persister.startAutoLoad();
+    await finish(await getOperation(0), content);
+    await finish(await getOperation(1), content);
+    await starting;
+
+    expect(store.getValue('species')).toBe('dog');
+    await vi.advanceTimersByTimeAsync(10);
+    const firstPoll = await getOperation(2);
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(open).toHaveBeenCalledTimes(3);
+    await finish(firstPoll, content);
+    await vi.advanceTimersByTimeAsync(10);
+    const failedPoll = await getOperation(3);
+    failedPoll.request.onerror();
+    await vi.advanceTimersByTimeAsync(10);
+    expect(ignoredError.mock.calls[0][0].message).toBe('tinybase:12');
+    const lastPoll = await getOperation(4);
+    const loads = persister.getStats().loads;
+    let stopped = false;
+    const stopping = persister[stopMethod]().then(() => (stopped = true));
+    await Promise.resolve();
+    expect(stopped).toBe(false);
+
+    await finish(lastPoll, [{}, {species: 'cat'}]);
+    await stopping;
+
+    expect(store.getValue('species')).toBe('dog');
+    expect(persister.getStats().loads).toBe(loads);
+    expect(vi.getTimerCount()).toBe(0);
+  },
+);
