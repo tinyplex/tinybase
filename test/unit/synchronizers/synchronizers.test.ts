@@ -196,6 +196,30 @@ test('Custom Synchronizer rejects and cleans up transport state', async () => {
   expect(destroyTransport).toHaveBeenCalledOnce();
 });
 
+test('BroadcastChannel Synchronizer validates messages', async () => {
+  const errors: Error[] = [];
+  const channelName = 'invalid-messages';
+  const synchronizer = createBroadcastChannelSynchronizer(
+    createMergeableStore(),
+    channelName,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+  const channel = new BroadcastChannel(channelName);
+
+  channel.postMessage(null);
+  channel.postMessage(['peer', null, null, Message.GetTableDiff, null]);
+  await pause();
+
+  expect(errors.map(({message}) => message)).toEqual([
+    'tinybase:14',
+    'tinybase:14',
+  ]);
+  channel.close();
+  await synchronizer.destroy();
+});
+
 describe.each([
   ['LocalSynchronizer', mockLocalSynchronizer],
   ['WsSynchronizer', mockWsSynchronizer],
