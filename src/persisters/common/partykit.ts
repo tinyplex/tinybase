@@ -1,3 +1,4 @@
+import {tryReturn} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -28,12 +29,20 @@ export const deconstruct = (
   stringified?: 1,
 ): [type: MessageType | StorageKeyType, payload: string | any] | undefined => {
   const prefixSize = size(prefix);
-  return strStartsWith(message, prefix)
-    ? [
-        message[prefixSize] as MessageType | StorageKeyType,
-        (stringified ? jsonParseWithUndefined : string)(
-          slice(message, prefixSize + 1),
-        ),
-      ]
+  return isString(message) &&
+    size(message) > prefixSize &&
+    strStartsWith(message, prefix)
+    ? stringified
+      ? tryReturn(
+          () =>
+            [
+              message[prefixSize] as MessageType | StorageKeyType,
+              jsonParseWithUndefined(slice(message, prefixSize + 1)),
+            ] as [MessageType | StorageKeyType, any],
+        )
+      : [
+          message[prefixSize] as MessageType | StorageKeyType,
+          string(slice(message, prefixSize + 1)),
+        ]
     : undefined;
 };

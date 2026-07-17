@@ -71,7 +71,8 @@
   /**
    * The prefix used before all the keys in the server's durable storage. Use
    * this in case you are worried about the Store data colliding with other data
-   * stored in the room. Defaults to an empty string.
+   * stored in the room. Use a collision-safe delimiter at the end of a non-empty
+   * prefix, such as `tinybase_`. Defaults to an empty string.
    * @category Configuration
    * @since v4.3.0
    */
@@ -233,13 +234,9 @@
    * the web socket connection, in those two cases respectively. You can, for
    * instance, use this to distinguish between different users.
    *
-   * Since v4.3.13, the final parameter is the Cell previously stored on the
-   * server, if any. Use this to distinguish between the addition of a new Cell
-   * (in which case it will be undefined) and the updating of an existing one.
-   *
    * Return `false` from this method to disallow changes to this Table on the
    * server, or `true` to allow them (subject to subsequent canSetRow method,
-   * canDelRow method, canSetCell method, and canSetCell method checks). The
+   * canDelRow method, canSetCell method, and canDelCell method checks). The
    * default implementation returns `true` to allow all changes.
    * @example
    * The following implementation will strip out any attempts by the client to
@@ -313,7 +310,7 @@
    *
    * Return `false` from this method to disallow changes to this Row on the
    * server, or `true` to allow them (subject to subsequent canSetCell method
-   * and canSetCell method checks). The default implementation returns `true` to
+   * and canDelCell method checks). The default implementation returns `true` to
    * allow all changes.
    * @example
    * The following implementation will strip out any attempts by the client to
@@ -386,6 +383,10 @@
    * The final `requestOrConnection` parameter will either be the HTTP(S)
    * request or the web socket connection, in those two cases respectively. You
    * can, for instance, use this to distinguish between different users.
+   *
+   * Since v4.3.13, the final parameter is the Cell previously stored on the
+   * server, if any. Use this to distinguish between the addition of a new Cell
+   * (in which case it will be undefined) and the updating of an existing one.
    *
    * Return `false` from this method to disallow changes to this Cell on the
    * server, or `true` to allow them. The default implementation returns `true`

@@ -6,6 +6,7 @@ import type {
   createPartyKitPersister as createPartyKitPersisterDecl,
 } from '../../@types/persisters/persister-partykit-client/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
+import {tryCatch} from '../../common/error.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import {
   addEventListener,
@@ -52,13 +53,15 @@ export const createPartyKitPersister = ((
   const getOrSetStore = async (
     content?: Content,
   ): Promise<Content | undefined> => {
-    const responseText = await (
-      await fetch(storeUrl, {
-        ...(content ? {method: PUT, body: jsonStringWithMap(content)} : {}),
-        mode: 'cors',
-        cache: 'no-store',
-      })
-    ).text();
+    const response = await fetch(storeUrl, {
+      ...(content ? {method: PUT, body: jsonStringWithMap(content)} : {}),
+      mode: 'cors',
+      cache: 'no-store',
+    });
+    if (!response.ok) {
+      throw response;
+    }
+    const responseText = await response.text();
     return isEmpty(responseText) ? undefined : jsonParse(responseText);
   };
 
@@ -76,16 +79,20 @@ export const createPartyKitPersister = ((
   };
 
   const addPersisterListener = (listener: PersisterListener): (() => void) =>
-    addEventListener(connection, MESSAGE, (event: MessageEvent) =>
-      ifNotUndefined(
-        deconstruct(messagePrefix, event.data, 1),
-        ([type, payload]) => {
-          if (type == SET_CHANGES) {
-            listener(undefined, payload);
-          }
-        },
-      ),
-    );
+    addEventListener(connection, MESSAGE, (event: MessageEvent) => {
+      void tryCatch(
+        async () =>
+          await ifNotUndefined(
+            deconstruct(messagePrefix, event.data, 1),
+            async ([type, payload]) => {
+              if (type == SET_CHANGES) {
+                await listener(undefined, payload);
+              }
+            },
+          ),
+        onIgnoredError,
+      );
+    });
 
   const delPersisterListener = (removeListener: () => void): void =>
     removeListener();
