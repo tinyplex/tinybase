@@ -68,9 +68,11 @@ export const createRemotePersister = ((
     listener: PersisterListener,
   ): ListenerHandle => {
     let active: Promise<void> | undefined;
+    let controller: AbortController | undefined;
     let stopped = false;
     const poll = (): void => {
       if (!stopped && isUndefined(active)) {
+        controller = new AbortController();
         active = tryFinallyAsync(
           () =>
             tryCatch(
@@ -78,6 +80,7 @@ export const createRemotePersister = ((
                 const response = await fetch(loadUrl, {
                   method: 'HEAD',
                   headers: getIfNoneMatchHeaders(lastEtag),
+                  signal: controller?.signal,
                 });
                 checkResponse(response, 1);
                 if (
@@ -88,10 +91,12 @@ export const createRemotePersister = ((
                   await listener();
                 }
               },
-              (error) => tryReturn(() => onIgnoredError?.(error)),
+              (error) =>
+                stopped ? 0 : tryReturn(() => onIgnoredError?.(error)),
             ),
           () => {
             active = undefined;
+            controller = undefined;
           },
         );
       }
@@ -100,6 +105,7 @@ export const createRemotePersister = ((
       startInterval(poll, autoLoadIntervalSeconds),
       async () => {
         stopped = true;
+        controller?.abort();
         await active;
       },
     ];

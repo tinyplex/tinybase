@@ -277,6 +277,46 @@ test('stops before a pending poll can load', async () => {
   await persister.destroy();
 });
 
+test('aborts a pending poll when stopped', async () => {
+  let markHeadStarted = () => {};
+  const headStarted = new Promise<void>(
+    (resolve) => (markHeadStarted = resolve),
+  );
+  const ignoredError = vi.fn();
+  fetchWas = globalThis.fetch;
+  globalThis.fetch = (async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response> => {
+    const request =
+      input instanceof Request ? input : new Request(String(input), init);
+    if (request.method == 'HEAD') {
+      markHeadStarted();
+      return await new Promise<Response>((_resolve, reject) =>
+        init?.signal?.addEventListener('abort', () =>
+          reject(init.signal?.reason),
+        ),
+      );
+    }
+    return new Response('[{},{}]', {headers: {ETag: 'etag1'}});
+  }) as typeof fetch;
+
+  const persister = createRemotePersister(
+    createStore(),
+    'http://example.com/load',
+    'http://example.com/save',
+    0.005,
+    ignoredError,
+  );
+  await persister.startAutoLoad();
+  await headStarted;
+  await persister.stopAutoLoad();
+
+  expect(persister.isAutoLoading()).toBe(false);
+  expect(ignoredError).not.toHaveBeenCalled();
+  await persister.destroy();
+});
+
 test('reports polling failures when the error handler throws', async () => {
   const pollError = new Error('poll failed');
   const handlerError = new Error('handler failed');
