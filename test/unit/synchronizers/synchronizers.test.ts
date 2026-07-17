@@ -1,3 +1,5 @@
+import {once} from 'node:events';
+import type {AddressInfo} from 'node:net';
 import type {Content, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
@@ -29,7 +31,7 @@ beforeEach(() => {
 });
 
 type Synchronizable<Environment> = {
-  createEnvironment?: () => Environment;
+  createEnvironment?: () => Environment | Promise<Environment>;
   destroyEnvironment?: (environment: Environment) => Promise<void>;
   getSynchronizer: (
     store: MergeableStore,
@@ -44,13 +46,25 @@ const mockLocalSynchronizer: Synchronizable<undefined> = {
   pauseMilliseconds: 20,
 };
 
-const mockWsSynchronizer: Synchronizable<WsServer> = {
-  createEnvironment: () => createWsServer(new WebSocketServer({port: 8042})),
-  destroyEnvironment: async (wsServer: WsServer) => {
+type WsEnvironment = {port: number; wsServer: WsServer};
+
+const mockWsSynchronizer: Synchronizable<WsEnvironment> = {
+  createEnvironment: async () => {
+    const webSocketServer = new WebSocketServer({
+      host: '127.0.0.1',
+      port: 0,
+    });
+    await once(webSocketServer, 'listening');
+    return {
+      port: (webSocketServer.address() as AddressInfo).port,
+      wsServer: createWsServer(webSocketServer),
+    };
+  },
+  destroyEnvironment: async ({wsServer}) => {
     await wsServer.destroy();
   },
-  getSynchronizer: async (store: MergeableStore) => {
-    const webSocket = new WebSocket('ws://localhost:8042');
+  getSynchronizer: async (store: MergeableStore, {port}) => {
+    const webSocket = new WebSocket(`ws://127.0.0.1:${port}`);
     return await createWsSynchronizer(store, webSocket, 0.04);
   },
   pauseMilliseconds: 50,
@@ -318,8 +332,8 @@ describe.each([
       ]).toMatchSnapshot('stats');
     };
 
-    beforeEach(() => {
-      environment = synchronizable.createEnvironment?.();
+    beforeEach(async () => {
+      environment = await synchronizable.createEnvironment?.();
     });
 
     afterEach(async () => {
