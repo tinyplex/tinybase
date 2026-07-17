@@ -6,6 +6,7 @@ import type {
   Send,
 } from '../../@types/synchronizers/index.d.ts';
 import type {createLocalSynchronizer as createLocalSynchronizerDecl} from '../../@types/synchronizers/synchronizer-local/index.d.ts';
+import {arrayForEach, arrayPush} from '../../common/array.ts';
 import {getUniqueId} from '../../common/codec.ts';
 import {collClear, collDel, collForEach} from '../../common/coll.ts';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
@@ -30,17 +31,17 @@ export const createLocalSynchronizer = ((
     message: Message,
     body: any,
   ): ReturnType<typeof startTimeout> => {
+    const toClientIds = isNull(toClientId) ? [] : [toClientId];
+    if (isNull(toClientId)) {
+      mapForEach(clients, (otherClientId) =>
+        otherClientId != clientId ? arrayPush(toClientIds, otherClientId) : 0,
+      );
+    }
     const timeout = startTimeout(() => {
       collDel(timeouts, timeout);
-      if (isNull(toClientId)) {
-        mapForEach(clients, (otherClientId, receive) =>
-          otherClientId != clientId
-            ? receive(clientId, requestId, message, body)
-            : 0,
-        );
-      } else {
-        mapGet(clients, toClientId)?.(clientId, requestId, message, body);
-      }
+      arrayForEach(toClientIds, (toClientId) =>
+        mapGet(clients, toClientId)?.(clientId, requestId, message, body),
+      );
     });
     setAdd(timeouts, timeout);
     return timeout;

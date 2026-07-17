@@ -422,21 +422,21 @@ const createCustomLocalSynchronizer = (
   return createCustomSynchronizer(
     store,
     (toClientId, requestId, messageType, messageBody): void => {
+      const toClientIds =
+        toClientId == null
+          ? [...clients.keys()].filter(
+              (otherClientId) => otherClientId != clientId,
+            )
+          : [toClientId];
       setTimeout(() => {
-        if (toClientId == null) {
-          clients.forEach((receive, otherClientId) =>
-            otherClientId != clientId
-              ? receive(clientId, requestId, messageType, messageBody)
-              : 0,
-          );
-        } else {
+        toClientIds.forEach((toClientId) =>
           clients.get(toClientId)?.(
             clientId,
             requestId,
             messageType,
             messageBody,
-          );
-        }
+          ),
+        );
       }, 0);
     },
     (receive: Receive): void => {
