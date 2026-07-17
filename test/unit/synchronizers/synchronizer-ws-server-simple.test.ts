@@ -52,7 +52,53 @@ test('Accessors', async () => {
   expect(wsServerSimple.getWebSocketServer()).toEqual(wssServer);
   expect(wssServer.listenerCount('error')).toBeGreaterThan(0);
   await wsServerSimple.destroy();
-  expect(wssServer.listenerCount('error')).toBeGreaterThan(0);
+  expect(wssServer.listenerCount('error')).toBe(0);
+});
+
+test('Destroy closes clients and removes only owned listeners', async () => {
+  const webSocketServer = new WebSocketServer({port: 8054});
+  const onError = () => 0;
+  let closeListeners: ReturnType<WebSocket['listeners']> = [];
+  let serverClient: WebSocket | undefined;
+  webSocketServer.on('error', onError);
+  webSocketServer.once('connection', (client) => {
+    serverClient = client;
+    closeListeners = client.listeners('close');
+  });
+  const server = createWsServerSimple(webSocketServer);
+  const client = new WebSocket('ws://localhost:8054');
+  await new Promise<void>((resolve) => client.on('open', () => resolve()));
+  const clientClosed = new Promise<void>((resolve) =>
+    client.on('close', () => resolve()),
+  );
+  const serverClosed = new Promise<void>((resolve) =>
+    webSocketServer.on('close', () => resolve()),
+  );
+
+  const destroying = server.destroy();
+  expect(server.destroy()).toBe(destroying);
+  expect(webSocketServer.listenerCount('connection')).toBe(0);
+  await destroying;
+  await Promise.all([clientClosed, serverClosed]);
+
+  expect(client.readyState).toBe(WebSocket.CLOSED);
+  expect(serverClient?.listenerCount('message')).toBe(0);
+  expect(serverClient?.listeners('close')).toEqual(closeListeners);
+  expect(serverClient?.listenerCount('error')).toBe(0);
+  expect(webSocketServer.listeners('error')).toEqual([onError]);
+  webSocketServer.off('error', onError);
+});
+
+test('Destroy clears listeners if server closure rejects', async () => {
+  const webSocketServer = new WebSocketServer({noServer: true});
+  await new Promise<void>((resolve) => webSocketServer.close(() => resolve()));
+  const server = createWsServerSimple(webSocketServer);
+
+  const destroying = server.destroy();
+  await expect(destroying).rejects.toThrow('The server is not running');
+  expect(server.destroy()).toBe(destroying);
+  expect(webSocketServer.listenerCount('connection')).toBe(0);
+  expect(webSocketServer.listenerCount('error')).toBe(0);
 });
 
 test('Malformed traffic is disconnected before relay', async () => {
