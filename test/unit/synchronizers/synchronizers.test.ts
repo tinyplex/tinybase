@@ -74,6 +74,12 @@ const mockCustomSynchronizer: Synchronizable<
     return createCustomSynchronizer(
       store,
       (toClientId, requestId, messageType, messageBody): void => {
+        const toClientIds =
+          toClientId == null
+            ? [...clients.keys()].filter(
+                (otherClientId) => otherClientId != clientId,
+              )
+            : [toClientId];
         setTimeout(() => {
           const requestKey = 'push ' + messages.size;
           if (!messages.has(requestKey)) {
@@ -88,20 +94,14 @@ const mockCustomSynchronizer: Synchronizable<
                 JSON.stringify(messageBody),
             );
 
-          if (toClientId == null) {
-            clients.forEach((receive, otherClientId) =>
-              otherClientId != clientId
-                ? receive(clientId, requestId, messageType, messageBody)
-                : 0,
-            );
-          } else {
+          toClientIds.forEach((toClientId) =>
             clients.get(toClientId)?.(
               clientId,
               requestId,
               messageType,
               messageBody,
-            );
-          }
+            ),
+          );
         }, 0);
       },
       (receive: Receive): void => {
@@ -267,6 +267,23 @@ test('Local Synchronizer cancels scheduled messages on destroy', async () => {
   await pause();
 
   expect(receive).not.toHaveBeenCalled();
+  await receiver.destroy();
+});
+
+test('Local Synchronizer excludes late recipients', async () => {
+  const receive = vi.fn();
+  const sender = createLocalSynchronizer(createMergeableStore());
+
+  await sender.save();
+  const receiver = createLocalSynchronizer(
+    createMergeableStore(),
+    undefined,
+    receive,
+  );
+  await pause();
+
+  expect(receive).not.toHaveBeenCalled();
+  await sender.destroy();
   await receiver.destroy();
 });
 
