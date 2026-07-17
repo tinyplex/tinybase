@@ -7,6 +7,7 @@ import type {
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {tryCatch, tryReturn} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -49,11 +50,15 @@ export const createReactNativeMmkvPersister = (
   ): Listener =>
     storage.addOnValueChangedListener((key) => {
       if (key === storageName) {
-        const value = storage.getString(storageName);
-
-        if (value) {
-          listener(jsonParseWithUndefined(value));
-        }
+        void tryCatch(
+          async () => {
+            const value = storage.getString(storageName);
+            if (!isUndefined(value)) {
+              await listener(jsonParseWithUndefined(value));
+            }
+          },
+          (error) => tryReturn(() => onIgnoredError?.(error)),
+        );
       }
     });
 
