@@ -6,6 +6,7 @@ import type {
   createAutomergePersister as createAutomergePersisterDecl,
 } from '../../@types/persisters/persister-automerge/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
+import {ERROR_CONTENT, errorThrow, tryCatch} from '../../common/error.ts';
 import {
   IdObj,
   isObject,
@@ -47,6 +48,9 @@ const docSet = (docObj: IdObj<any>, id: Id, value: any): any =>
 const docDel = (docObj: IdObj<any>, id: Id): IdObj<any> =>
   objDel(docObj, encodeId(id));
 
+const getDocObj = (docObj: unknown): IdObj<any> =>
+  isObject(docObj) ? docObj : errorThrow(ERROR_CONTENT);
+
 const ensureDocContent = (doc: any, docObjName: string) => {
   if (objIsEmpty(docGet(doc, docObjName))) {
     docSet(doc, docObjName, {t: {}, v: {}});
@@ -59,11 +63,11 @@ const getDocObjects = (doc: any, docObjName: string): [any, any] => {
 };
 
 const docObjToObj = (
-  docObj: IdObj<any>,
+  docObj: unknown,
   mapper: (value: any) => any = (value) => value,
 ): IdObj<any> => {
   const obj = objNew<any>();
-  objForEach(docObj, (value, encodedId) =>
+  objForEach(getDocObj(docObj), (value, encodedId) =>
     objSet(obj, decodeId(encodedId), mapper(value)),
   );
   return obj;
@@ -77,6 +81,16 @@ const getDocContent = (doc: any, docObjName: string): Content => {
     ),
     docObjToObj(docValues),
   ];
+};
+
+const getValidDocContent = (
+  doc: any,
+  docObjName: string,
+): Content | undefined => {
+  const docContent = docGet(doc, docObjName);
+  return isObject(docContent?.t) && isObject(docContent?.v)
+    ? getDocContent(doc, docObjName)
+    : undefined;
 };
 
 const docEnsure = (
@@ -195,13 +209,8 @@ export const createAutomergePersister = ((
 ): AutomergePersister => {
   docHandle.change((doc: any) => docEnsure(doc, docObjName, () => ({})));
 
-  const getPersisted = async (): Promise<Content | undefined> => {
-    const doc = docHandle.doc();
-    const docContent = docGet(doc, docObjName);
-    return isObject(docContent?.t) && isObject(docContent?.v)
-      ? getDocContent(doc, docObjName)
-      : undefined;
-  };
+  const getPersisted = async (): Promise<Content | undefined> =>
+    getValidDocContent(docHandle.doc(), docObjName);
 
   const setPersisted = async (
     getContent: () => Content,
@@ -213,7 +222,13 @@ export const createAutomergePersister = ((
 
   const addPersisterListener = (listener: PersisterListener): (() => void) =>
     addEmitterListener(docHandle, CHANGE, ({doc}: {doc: any}) =>
-      listener(getDocContent(doc, docObjName)),
+      tryCatch(
+        () =>
+          ifNotUndefined(getValidDocContent(doc, docObjName), listener, () =>
+            errorThrow(ERROR_CONTENT),
+          ),
+        onIgnoredError,
+      ),
     );
 
   const delPersisterListener = (removeListener: () => void): void =>

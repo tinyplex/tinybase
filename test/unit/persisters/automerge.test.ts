@@ -142,6 +142,53 @@ describe('Load from doc', () => {
   });
 });
 
+describe('Observe doc', () => {
+  test('reports malformed roots without changing the Store', async () => {
+    const ignoredErrors: Error[] = [];
+    const persister = createAutomergePersister(
+      store1,
+      docHandler1,
+      'tinybase',
+      (error) => ignoredErrors.push(error),
+    );
+    store1.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    await persister.save();
+    await persister.startAutoLoad();
+
+    expect(() =>
+      docHandler1.change((doc: any) => (doc['tinybase'] = {t: 1, v: {v1: 2}})),
+    ).not.toThrow();
+    expect(() =>
+      docHandler1.change(
+        (doc: any) => (doc['tinybase'] = {t: {t1: {r1: {c1: 2}}}, v: 1}),
+      ),
+    ).not.toThrow();
+    expect(() =>
+      docHandler1.change((doc: any) => (doc['tinybase'] = {t: {t1: 1}, v: {}})),
+    ).not.toThrow();
+    expect(() =>
+      docHandler1.change(
+        (doc: any) => (doc['tinybase'] = {t: {t1: {r1: 1}}, v: {}}),
+      ),
+    ).not.toThrow();
+    await pause();
+
+    expect(ignoredErrors.map(({message}) => message)).toEqual([
+      'tinybase:1',
+      'tinybase:1',
+      'tinybase:1',
+      'tinybase:1',
+    ]);
+    expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+
+    docHandler1.change(
+      (doc: any) => (doc['tinybase'] = {t: {t1: {r1: {c1: 2}}}, v: {v1: 2}}),
+    );
+    await pause();
+    expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+  });
+});
+
 describe('Two stores, one doc', () => {
   let store2: Store;
   let persister2: Persister;
