@@ -17,7 +17,6 @@ import {
   arrayIndexOf,
   arrayPush,
   arrayReduce,
-  arrayShift,
 } from '../../common/array.ts';
 import {getUniqueId} from '../../common/codec.ts';
 import {collDel, collHas, collIsEmpty, collSize} from '../../common/coll.ts';
@@ -33,6 +32,7 @@ import {
   ERROR_SYNC_OVERFLOW,
   errorNew,
   errorThrow,
+  tryReturn,
 } from '../../common/error.ts';
 import {
   IdMap,
@@ -52,7 +52,14 @@ import {
   stopTimeout,
 } from '../../common/other.ts';
 import {weakSetNew} from '../../common/set.ts';
-import {CLOSE, ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
+import {
+  CLOSE,
+  EMPTY_STRING,
+  ERROR,
+  MESSAGE,
+  OPEN,
+  UTF8,
+} from '../../common/strings.ts';
 import {
   MAX_PENDING_REQUESTS,
   MAX_WEBSOCKET_BUFFER_SIZE,
@@ -78,7 +85,11 @@ const CONTENT_DIFF = 3 as MessageType;
 
 type Incoming = [payload: string, timeout: ReturnType<typeof startTimeout>];
 
-type Outgoing = [payloads: string[], timeout: ReturnType<typeof startTimeout>];
+type Outgoing = [
+  payloads: string[],
+  timeout: ReturnType<typeof startTimeout>,
+  sent: number,
+];
 
 const enum ChannelValue {
   Receive,
@@ -163,16 +174,27 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   let connection = createConnection();
   let connected = false;
   let destroyed = false;
+  let disconnected = false;
+  let disconnect = () => {};
   let flushTimeout: ReturnType<typeof startTimeout> | undefined;
   let opening: Promise<void> | undefined;
   let overflowing = false;
   let queuedCount = 0;
   let queuedSize = 0;
 
+  const notifyChannelIgnoredError = (channel: Channel, error: any) =>
+    tryReturn(() => channel[ChannelValue.OnIgnoredError]?.(error));
+
   const notifyIgnoredError = (error: any) =>
     mapForEach(channels, (_channelId, channel) =>
-      channel[ChannelValue.OnIgnoredError]?.(error),
+      notifyChannelIgnoredError(channel, error),
     );
+
+  const handleSendError = (channel: Channel, error: any) => {
+    notifyChannelIgnoredError(channel, error);
+    disconnect();
+    tryReturn(() => webSocket.close());
+  };
 
   const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
 
@@ -190,7 +212,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 
   const failChannels = (error: Error) =>
     mapForEach(channels, (_channelId, channel) =>
-      channel[ChannelValue.Fail]?.(error),
+      tryReturn(() => channel[ChannelValue.Fail]?.(error)),
     );
 
   const clearIncoming = (channel: Channel) => {
@@ -277,7 +299,13 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         reject(errorNew(ERROR_MULTIPLEX_RESPONSE, control));
       }, timeoutSeconds);
       mapSet(pendingControls, requestId, [control, resolve, reject, timeout]);
-      webSocket.send(payload);
+      try {
+        webSocket.send(payload);
+      } catch (error) {
+        stopTimeout(timeout);
+        collDel(pendingControls, requestId);
+        reject(error);
+      }
     });
   };
 
@@ -331,10 +359,12 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         channel[ChannelValue.Outgoing],
         (_outgoing, outgoingIndex) => outgoingIndex != index,
       );
-      channel[ChannelValue.OutgoingSize] -= getPayloadsSize(outgoing[0]);
-      channel[ChannelValue.OutgoingCount] -= size(outgoing[0]);
-      queuedCount -= size(outgoing[0]);
-      queuedSize -= getPayloadsSize(outgoing[0]);
+      const remainingPayloads = slice(outgoing[0], outgoing[2]);
+      const remainingSize = getPayloadsSize(remainingPayloads);
+      channel[ChannelValue.OutgoingSize] -= remainingSize;
+      channel[ChannelValue.OutgoingCount] -= size(remainingPayloads);
+      queuedCount -= size(remainingPayloads);
+      queuedSize -= remainingSize;
     }
   };
 
@@ -353,6 +383,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         () => expireOutgoing(channel, outgoing),
         channel[ChannelValue.TimeoutSeconds],
       ),
+      0,
     ];
     arrayPush(channel[ChannelValue.Outgoing], outgoing);
     channel[ChannelValue.OutgoingSize] += payloadsSize;
@@ -398,7 +429,17 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         scheduleFlush();
         return false;
       }
-      webSocket.send(payload);
+      try {
+        webSocket.send(payload);
+      } catch (error) {
+        if (coalesce) {
+          channel[ChannelValue.Dirty] = coalesce;
+        } else if (!queueOutgoing(channel, slice(payloads, index))) {
+          return false;
+        }
+        handleSendError(channel, error);
+        return false;
+      }
     }
     return true;
   };
@@ -407,31 +448,43 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     if (!connected || !channel[ChannelValue.Subscribed]) {
       return;
     }
-    let outgoing = channel[ChannelValue.Outgoing][0];
-    while (outgoing) {
+    const outgoingQueue = channel[ChannelValue.Outgoing];
+    let outgoingIndex = 0;
+    while (outgoingIndex < size(outgoingQueue)) {
+      const outgoing = outgoingQueue[outgoingIndex];
       const payloads = outgoing[0];
-      while (size(payloads)) {
-        const payload = createMultiplePayload(channelId, payloads[0]);
+      let payloadIndex = outgoing[2];
+      while (payloadIndex < size(payloads)) {
+        const queuedPayload = payloads[payloadIndex];
+        const payload = createMultiplePayload(channelId, queuedPayload);
         if (isWebSocketPayloadTooLarge(payload)) {
+          arrayClear(outgoingQueue, outgoingIndex);
           overflow('client');
           return;
         }
         if (isWebSocketBackpressured(webSocket, payload)) {
+          arrayClear(outgoingQueue, outgoingIndex);
           scheduleFlush();
           return;
         }
-        webSocket.send(payload);
-        const sentPayload = arrayShift(payloads) ?? '';
-        const sentPayloadSize = getWebSocketPayloadSize(sentPayload);
+        try {
+          webSocket.send(payload);
+        } catch (error) {
+          handleSendError(channel, error);
+          return;
+        }
+        payloads[payloadIndex] = EMPTY_STRING;
+        outgoing[2] = ++payloadIndex;
+        const sentPayloadSize = getWebSocketPayloadSize(queuedPayload);
         channel[ChannelValue.OutgoingSize] -= sentPayloadSize;
         channel[ChannelValue.OutgoingCount]--;
         queuedSize -= sentPayloadSize;
         queuedCount--;
       }
       stopTimeout(outgoing[1]);
-      arrayShift(channel[ChannelValue.Outgoing]);
-      outgoing = channel[ChannelValue.Outgoing][0];
+      outgoingIndex++;
     }
+    arrayClear(outgoingQueue, outgoingIndex);
     const coalesce = channel[ChannelValue.Dirty];
     if (coalesce) {
       channel[ChannelValue.Dirty] = undefined;
@@ -475,6 +528,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     if (destroyed || opening) {
       return;
     }
+    disconnected = false;
     overflowing = false;
     const openingConnection = connection;
     const openingPromise = (async () => {
@@ -495,7 +549,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
             ).catch((error) =>
               error.message == errorNew(ERROR_MULTIPLEX_SOCKET).message
                 ? 0
-                : channel[ChannelValue.OnIgnoredError]?.(error),
+                : notifyChannelIgnoredError(channel, error),
             ),
           );
         }
@@ -514,8 +568,9 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     });
   };
 
-  const onClose = () => {
-    if (!destroyed) {
+  disconnect = () => {
+    if (!destroyed && !disconnected) {
+      disconnected = true;
       const wasOverflowing = overflowing;
       overflowing = false;
       connected = false;
@@ -537,6 +592,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       });
     }
   };
+  const onClose = disconnect;
 
   addWebSocketListener(MESSAGE, ({data}) => {
     const payload = data.toString(UTF8);
@@ -613,7 +669,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       onOpen();
     } else if (webSocket.readyState > webSocket.OPEN) {
       const error = errorNew(ERROR_MULTIPLEX_SOCKET);
-      onIgnoredError?.(error);
+      notifyChannelIgnoredError(channel, error);
       connection[2](error);
     }
     try {
@@ -674,11 +730,15 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       rejectPendingControls(error);
       if (flushTimeout) {
         stopTimeout(flushTimeout);
+        flushTimeout = undefined;
       }
-      arrayForEach(removeListeners, (removeListener) => removeListener());
+      arrayForEach(removeListeners, (removeListener) =>
+        tryReturn(removeListener),
+      );
+      arrayClear(removeListeners);
       multipleStates.delete(webSocket);
       if (!overflowing) {
-        webSocket.close();
+        tryReturn(() => webSocket.close());
       }
     }
   };
@@ -686,25 +746,30 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   const delChannel = (channelId: Id) => {
     const channel = mapGet(channels, channelId);
     if (channel) {
-      clearIncoming(channel);
-      clearOutgoing(channel, true);
-      if (connected && channel[ChannelValue.Subscribed]) {
-        const payload = createMultipleControlPayload(
-          null,
-          MultipleControl.Unsubscribe,
-          channelId,
-        );
-        if (
-          isWebSocketPayloadTooLarge(payload) ||
-          isWebSocketBackpressured(webSocket, payload)
-        ) {
-          overflow('socket');
-        } else {
-          webSocket.send(payload);
+      try {
+        clearIncoming(channel);
+        clearOutgoing(channel, true);
+        if (connected && channel[ChannelValue.Subscribed]) {
+          const payload = createMultipleControlPayload(
+            null,
+            MultipleControl.Unsubscribe,
+            channelId,
+          );
+          if (
+            isWebSocketPayloadTooLarge(payload) ||
+            isWebSocketBackpressured(webSocket, payload)
+          ) {
+            overflow('socket');
+          } else {
+            webSocket.send(payload);
+          }
         }
+      } catch (error) {
+        notifyChannelIgnoredError(channel, error);
+      } finally {
+        collDel(channels, channelId);
+        destroyIfEmpty();
       }
-      collDel(channels, channelId);
-      destroyIfEmpty();
     }
   };
 
@@ -796,38 +861,51 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   if (multipleStates.has(webSocket)) {
     errorThrow(ERROR_LEGACY_MULTIPLEX);
   }
+  let creating = true;
   let overflowing = false;
   let removeTransportListeners = () => {};
+  const notifyIgnoredError = (error: any) =>
+    tryReturn(() => onIgnoredError?.(error));
   const overflow = () => {
     if (!overflowing) {
       overflowing = true;
       const error = errorNew(ERROR_SYNC_OVERFLOW, 'socket');
-      onIgnoredError?.(error);
+      notifyIgnoredError(error);
       webSocket.close(1013, error.message);
     }
   };
   const registerReceive = (receive: Receive, fail: (error: Error) => void) => {
-    const invalid = createInvalidPayloadHandler(webSocket, onIgnoredError);
+    const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
     const receivePayload = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
       invalid,
     );
     let removeListeners: (() => void)[] = [];
-    removeTransportListeners = () =>
-      arrayForEach(removeListeners, (removeListener) => removeListener());
+    removeTransportListeners = () => {
+      arrayForEach(removeListeners, (removeListener) =>
+        tryReturn(removeListener),
+      );
+      arrayClear(removeListeners);
+    };
     const failTransport = () => {
-      fail(errorNew(ERROR_MULTIPLEX_SOCKET));
+      tryReturn(() => fail(errorNew(ERROR_MULTIPLEX_SOCKET)));
       removeTransportListeners();
     };
     removeListeners = [
       addEventListener(webSocket, MESSAGE, ({data}) =>
         receivePayload(data.toString(UTF8)),
       ),
-      addEventListener(webSocket, CLOSE, failTransport),
+      addEventListener(webSocket, CLOSE, () => {
+        if (!creating) {
+          failTransport();
+        }
+      }),
       addEventListener(webSocket, ERROR, (error) => {
-        onIgnoredError?.(error);
-        failTransport();
+        if (!creating) {
+          notifyIgnoredError(error);
+          failTransport();
+        }
       }),
     ];
   };
@@ -872,36 +950,41 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
 
   legacyWebSockets.add(webSocket);
   return promiseNew((resolve, reject) => {
+    let removeAttemptListeners = () => {};
+    const rejectCreation = (error: Error, ignoredError: any = error) => {
+      notifyIgnoredError(ignoredError);
+      removeAttemptListeners();
+      removeTransportListeners();
+      legacyWebSockets.delete(webSocket);
+      tryReturn(() => webSocket.close());
+      reject(error);
+    };
     if (webSocket.readyState != webSocket.OPEN) {
       if (webSocket.readyState > webSocket.OPEN) {
-        const error = errorNew(ERROR_MULTIPLEX_SOCKET);
-        legacyWebSockets.delete(webSocket);
-        onIgnoredError?.(error);
-        reject(error);
+        rejectCreation(errorNew(ERROR_MULTIPLEX_SOCKET));
         return;
       }
-      const onAttempt = (error?: any, closed = false) => {
-        if (error) {
-          onIgnoredError?.(error);
-        }
-        removeOpenListener();
-        removeErrorListener();
-        removeCloseListener();
-        if (closed) {
-          legacyWebSockets.delete(webSocket);
-          reject(error);
-        } else {
+      const removeAttemptListenersArray = [
+        addEventListener(webSocket, OPEN, () => {
+          creating = false;
+          removeAttemptListeners();
           resolve(synchronizer);
-        }
+        }),
+        addEventListener(webSocket, ERROR, (error) =>
+          rejectCreation(errorNew(ERROR_MULTIPLEX_SOCKET), error),
+        ),
+        addEventListener(webSocket, CLOSE, () =>
+          rejectCreation(errorNew(ERROR_MULTIPLEX_SOCKET)),
+        ),
+      ];
+      removeAttemptListeners = () => {
+        arrayForEach(removeAttemptListenersArray, (removeListener) =>
+          tryReturn(removeListener),
+        );
+        arrayClear(removeAttemptListenersArray);
       };
-      const removeOpenListener = addEventListener(webSocket, OPEN, () =>
-        onAttempt(),
-      );
-      const removeErrorListener = addEventListener(webSocket, ERROR, onAttempt);
-      const removeCloseListener = addEventListener(webSocket, CLOSE, () =>
-        onAttempt(errorNew(ERROR_MULTIPLEX_SOCKET), true),
-      );
     } else {
+      creating = false;
       resolve(synchronizer);
     }
   });

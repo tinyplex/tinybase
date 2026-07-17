@@ -2,7 +2,7 @@ import {createMergeableStore} from 'tinybase';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {expect, test} from 'vitest';
+import {expect, test, vi} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 
@@ -16,6 +16,8 @@ class MockWebSocket {
   sentPayloads: string[] = [];
   closeCalls = 0;
   ignoredChannels = new Set<string>();
+  onRemove?: () => void;
+  onSend?: (payload: string) => void;
   readonly #listeners: {[event: string]: ((event: any) => void)[]} = {};
 
   addEventListener(event: string, listener: (event: any) => void): void {
@@ -23,12 +25,14 @@ class MockWebSocket {
   }
 
   removeEventListener(event: string, listener: (event: any) => void): void {
+    this.onRemove?.();
     this.#listeners[event] = (this.#listeners[event] ?? []).filter(
       (testListener) => testListener != listener,
     );
   }
 
   send(payload: string): void {
+    this.onSend?.(payload);
     this.sentPayloads.push(payload);
     const [toClientId, remainder] = splitPayload(payload);
     if (toClientId == 'S') {
@@ -394,6 +398,7 @@ test('transport failure rejects pending synchronization requests', async () => {
   expect(webSocket.listenerCount('open')).toBe(0);
   expect(webSocket.listenerCount('close')).toBe(0);
   expect(webSocket.listenerCount('error')).toBe(0);
+  expect(webSocket.closeCalls).toBe(1);
 });
 
 test('queued multiplexed protocol traffic expires', async () => {
@@ -414,6 +419,42 @@ test('queued multiplexed protocol traffic expires', async () => {
   expect(
     webSocket.sentPayloads.some((payload) => payload.includes('"expired",0')),
   ).toBe(false);
+
+  await synchronizer.destroy();
+});
+
+test('queued multiplexed responses flush in batches', async () => {
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore().setCell(
+      'pets',
+      'fido',
+      'description',
+      'a'.repeat(100),
+    ),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    undefined,
+    12,
+  );
+
+  webSocket.disconnect();
+  webSocket.receive('M\nfiles\nremote\n["queued1",4,{}]');
+  webSocket.receive('M\nfiles\nremote\n["queued2",4,{}]');
+  const sentBeforeReconnect = webSocket.sentPayloads.length;
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve));
+
+  const flushed = webSocket.sentPayloads
+    .slice(sentBeforeReconnect)
+    .filter((payload) => payload.startsWith('M\nfiles\nremote\n'))
+    .join('');
+  expect(flushed.match(/queued1/g)).toHaveLength(1);
+  expect(flushed.match(/queued2/g)).toHaveLength(1);
+  expect(flushed.indexOf('queued1')).toBeLessThan(flushed.indexOf('queued2'));
 
   await synchronizer.destroy();
 });
@@ -451,6 +492,210 @@ test('multiplexed queues have explicit overflow behavior', async () => {
   await editorSynchronizer.destroy();
 });
 
+test('throwing channel error handlers do not interrupt overflow cleanup', async () => {
+  vi.useFakeTimers();
+  try {
+    const handledErrors: Error[] = [];
+    const webSocket = new MockWebSocket();
+    const filesSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+      1,
+      undefined,
+      undefined,
+      () => {
+        throw new Error('handler');
+      },
+    );
+    webSocket.onSend = (payload) => {
+      if (payload.includes('-1,[1,"editor"]')) {
+        for (let request = 0; request < 1_001; request++) {
+          webSocket.receive(
+            'M\neditor\nremote\n["request' + request + '",4,{}]',
+          );
+        }
+      }
+    };
+
+    await expect(
+      createWsSynchronizer(
+        createMergeableStore(),
+        webSocket as any,
+        'editor',
+        1,
+        undefined,
+        undefined,
+        (error) => handledErrors.push(error),
+      ),
+    ).rejects.toThrow('tinybase:15:client');
+
+    expect(handledErrors.map(({message}) => message)).toEqual([
+      'tinybase:15:client',
+    ]);
+    expect(vi.getTimerCount()).toBe(0);
+    expect(webSocket.closeCalls).toBe(1);
+
+    await filesSynchronizer.destroy();
+    expect(webSocket.listenerCount('message')).toBe(0);
+    expect(webSocket.listenerCount('open')).toBe(0);
+    expect(webSocket.listenerCount('close')).toBe(0);
+    expect(webSocket.listenerCount('error')).toBe(0);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test('throwing channel error handlers do not interrupt close cleanup', async () => {
+  const handledErrors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const filesSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    0.01,
+    undefined,
+    undefined,
+    () => {
+      throw new Error('handler');
+    },
+  );
+  const editorSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+    0.01,
+    undefined,
+    undefined,
+    (error) => handledErrors.push(error),
+  );
+  const subscriptionsBeforeClose = webSocket.sentPayloads.filter((payload) =>
+    payload.includes('-1,[1,'),
+  ).length;
+
+  expect(() => webSocket.disconnect()).not.toThrow();
+  expect(handledErrors.map(({message}) => message)).toEqual(['tinybase:5']);
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve));
+  expect(
+    webSocket.sentPayloads.filter((payload) => payload.includes('-1,[1,')),
+  ).toHaveLength(subscriptionsBeforeClose + 2);
+
+  await filesSynchronizer.destroy();
+  await editorSynchronizer.destroy();
+});
+
+test('failed multiplexed control sends release their pending state', async () => {
+  vi.useFakeTimers();
+  try {
+    const sendError = new Error('send');
+    const webSocket = new MockWebSocket();
+    const filesSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+    );
+    webSocket.onSend = (payload) => {
+      if (payload.includes('-1,[1,"editor"]')) {
+        throw sendError;
+      }
+    };
+
+    await expect(
+      createWsSynchronizer(createMergeableStore(), webSocket as any, 'editor'),
+    ).rejects.toBe(sendError);
+    expect(vi.getTimerCount()).toBe(0);
+
+    await filesSynchronizer.destroy();
+    expect(webSocket.listenerCount('message')).toBe(0);
+    expect(webSocket.listenerCount('open')).toBe(0);
+    expect(webSocket.listenerCount('close')).toBe(0);
+    expect(webSocket.listenerCount('error')).toBe(0);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test('failed unsubscribe sends still destroy their channel', async () => {
+  const sendError = new Error('send');
+  let handled = 0;
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    () => {
+      handled++;
+      throw new Error('handler');
+    },
+  );
+  webSocket.onSend = (payload) => {
+    if (payload.includes('-1,[2,"files"]')) {
+      throw sendError;
+    }
+  };
+
+  await expect(synchronizer.destroy()).resolves.toBe(synchronizer);
+  expect(handled).toBe(1);
+  expect(webSocket.closeCalls).toBe(1);
+  expect(webSocket.listenerCount('message')).toBe(0);
+  expect(webSocket.listenerCount('open')).toBe(0);
+  expect(webSocket.listenerCount('close')).toBe(0);
+  expect(webSocket.listenerCount('error')).toBe(0);
+});
+
+test('queued send failures disconnect without escaping the flush', async () => {
+  const sendError = new Error('send');
+  const errors: any[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  webSocket.disconnect();
+  errors.length = 0;
+  const syncing = synchronizer.startSync();
+  webSocket.onSend = (payload) => {
+    if (payload.startsWith('M\nfiles\n')) {
+      throw sendError;
+    }
+  };
+  expect(() => webSocket.reconnect()).not.toThrow();
+  await syncing;
+
+  expect(errors).toContain(sendError);
+  expect(errors.map((error) => error.message)).toContain('tinybase:5');
+  expect(webSocket.closeCalls).toBe(1);
+  await synchronizer.destroy();
+});
+
+test('throwing listener removers cannot strand multiplexed state', async () => {
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+  );
+  webSocket.onRemove = () => {
+    throw new Error('remove');
+  };
+
+  await expect(synchronizer.destroy()).resolves.toBe(synchronizer);
+  webSocket.onRemove = undefined;
+  await expect(
+    createWsSynchronizer(createMergeableStore(), webSocket as any),
+  ).rejects.toThrow('tinybase:5');
+});
+
 test('closed and backpressured WebSockets settle creation', async () => {
   const closedWebSocket = new MockWebSocket();
   closedWebSocket.readyState = closedWebSocket.CLOSED;
@@ -467,6 +712,10 @@ test('closed and backpressured WebSockets settle creation', async () => {
   await expect(
     createWsSynchronizer(createMergeableStore(), legacyWebSocket as any),
   ).rejects.toThrow('tinybase:5');
+  expect(legacyWebSocket.listenerCount('message')).toBe(0);
+  expect(legacyWebSocket.listenerCount('open')).toBe(0);
+  expect(legacyWebSocket.listenerCount('close')).toBe(0);
+  expect(legacyWebSocket.listenerCount('error')).toBe(0);
 
   const errors: Error[] = [];
   const backpressuredWebSocket = new MockWebSocket();
@@ -484,6 +733,32 @@ test('closed and backpressured WebSockets settle creation', async () => {
   ).rejects.toThrow('tinybase:15:socket');
   expect(errors.map(({message}) => message)).toContain('tinybase:15:socket');
   expect(backpressuredWebSocket.closeCalls).toBe(1);
+});
+
+test('legacy creation errors reject and remove all listeners', async () => {
+  const error = new Error('connection');
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  webSocket.readyState = 0;
+  const creation = createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+  const rejection = expect(creation).rejects.toThrow('tinybase:5');
+
+  webSocket.error(error);
+  await rejection;
+
+  expect(errors).toEqual([error]);
+  expect(webSocket.closeCalls).toBe(1);
+  expect(webSocket.listenerCount('message')).toBe(0);
+  expect(webSocket.listenerCount('open')).toBe(0);
+  expect(webSocket.listenerCount('close')).toBe(0);
+  expect(webSocket.listenerCount('error')).toBe(0);
 });
 
 test('legacy and multiple modes cannot share one WebSocket', async () => {
