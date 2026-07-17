@@ -994,15 +994,15 @@ exports[`Types in mergeable-store.ts > 1527:25 1`] = `"Property 'v2' does not ex
 
 exports[`Types in mergeable-store.ts > 1530:13 1`] = `"Tuple type '[thing: { t0?: [thing: { [rowId: string]: [thing: { c0?: [thing: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">, hlc?: string | undefined] | un...' of length '2' has no element at index '2'."`;
 
-exports[`Types in mergeable-store.ts > 1534:2 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types in mergeable-store.ts > 1533:2 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types in mergeable-store.ts > 1564:19 1`] = `"Type 'string' is not assignable to type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
+exports[`Types in mergeable-store.ts > 1563:19 1`] = `"Type 'string' is not assignable to type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
-exports[`Types in mergeable-store.ts > 1586:14 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '{ c1?: [thing: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">, hlc: string, hash: number] | undefined; c1d?: [thing: ...] | undefined; }'."`;
+exports[`Types in mergeable-store.ts > 1585:14 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '{ c1?: [thing: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">, hlc: string, hash: number] | undefined; c1d?: [thing: ...] | undefined; }'."`;
 
-exports[`Types in mergeable-store.ts > 1603:9 1`] = `"Type 'string' is not assignable to type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
+exports[`Types in mergeable-store.ts > 1602:9 1`] = `"Type 'string' is not assignable to type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
-exports[`Types in mergeable-store.ts > 1608:4 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type '{ v1?: [thing: ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, hlc?: string | undefined] | undefined; v1d?: [thing: ...] | undefined; }'."`;
+exports[`Types in mergeable-store.ts > 1607:4 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type '{ v1?: [thing: ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, hlc?: string | undefined] | undefined; v1d?: [thing: ...] | undefined; }'."`;
 
 exports[`Types in metrics.ts > 24:44 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
