@@ -32,13 +32,15 @@ export const createLocalSynchronizer = ((
   ): ReturnType<typeof startTimeout> => {
     const timeout = startTimeout(() => {
       collDel(timeouts, timeout);
-      isNull(toClientId)
-        ? mapForEach(clients, (otherClientId, receive) =>
-            otherClientId != clientId
-              ? receive(clientId, requestId, message, body)
-              : 0,
-          )
-        : mapGet(clients, toClientId)?.(clientId, requestId, message, body);
+      if (isNull(toClientId)) {
+        mapForEach(clients, (otherClientId, receive) =>
+          otherClientId != clientId
+            ? receive(clientId, requestId, message, body)
+            : 0,
+        );
+      } else {
+        mapGet(clients, toClientId)?.(clientId, requestId, message, body);
+      }
     });
     setAdd(timeouts, timeout);
     return timeout;
