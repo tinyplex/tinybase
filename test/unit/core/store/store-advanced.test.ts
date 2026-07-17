@@ -1082,6 +1082,22 @@ describe.each([
       expect(targetListener).toHaveBeenCalledOnce();
     });
 
+    test('First will-finish error wins when multiple listeners throw', () => {
+      const firstError = new Error('first error');
+      const finalizer = vi.fn();
+      store.addWillFinishTransactionListener(() => {
+        throw firstError;
+      });
+      store.addWillFinishTransactionListener(() => {
+        throw new Error('second error');
+      });
+      store.addWillFinishTransactionListener(finalizer);
+
+      expect(() => store.setCell('t1', 'r1', 'c1', 2)).toThrow(firstError);
+      expect(finalizer).toHaveBeenCalledOnce();
+      expect(store.getTables()).toEqual(originalTables);
+    });
+
     test('Start listener error rolls back and restores state', () => {
       const error = new Error('start listener error');
       const listenerId = store.addStartTransactionListener(() => {

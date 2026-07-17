@@ -711,4 +711,11 @@ describe('Miscellaneous', () => {
     expect(store.getListenerStats().cell).toEqual(0);
     expect(store.getListenerStats().value).toEqual(0);
   });
+
+  test('destroys idempotently', () => {
+    checkpoints.destroy();
+    checkpoints.destroy();
+    expect(store.getListenerStats().cell).toEqual(0);
+    expect(store.getListenerStats().value).toEqual(0);
+  });
 });
