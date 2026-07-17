@@ -362,8 +362,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const startTransactionListeners: IdSet2 = mapNew();
   const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
 
-  const [addListener, callListeners, delListenerImpl, callListenerImpl] =
-    getListenerFunctions(() => store);
+  const [
+    addListener,
+    callListeners,
+    delListenerImpl,
+    callListenerImpl,
+    callListenersThenThrow,
+  ] = getListenerFunctions(() => store);
 
   const whileMutating = <Return>(action: () => Return): Return => {
     const wasMutating = mutating;
@@ -2259,52 +2264,89 @@ export const createStore: typeof createStoreDecl = (): Store => {
           rolledBack = true;
           rollbackTransaction();
         };
+        let callDidFinish = false;
+        let internalPostFinished = false;
         tryFinally(
           () => {
-            try {
-              if (rollbackRequested) {
-                rollback();
-              } else {
-                whileMutating(() => {
-                  callInvalidCellListeners(1);
-                  if (!collIsEmpty(changedCells)) {
-                    callTabularListenersForChanges(1);
-                  }
-                  callInvalidValueListeners(1);
-                  if (!collIsEmpty(changedValues)) {
-                    callValuesListenersForChanges(1);
-                  }
-                });
+            let errorToThrow: any;
+            let failed = false;
+            const captureError = (error: any): void => {
+              if (!failed) {
+                errorToThrow = error;
+              }
+              failed = true;
+            };
+            tryCatchSync(() => {
+              try {
+                if (rollbackRequested) {
+                  rollback();
+                } else {
+                  whileMutating(() => {
+                    callInvalidCellListeners(1);
+                    if (!collIsEmpty(changedCells)) {
+                      callTabularListenersForChanges(1);
+                    }
+                    callInvalidValueListeners(1);
+                    if (!collIsEmpty(changedValues)) {
+                      callValuesListenersForChanges(1);
+                    }
+                  });
 
-                if (doRollback?.(store)) {
+                  if (doRollback?.(store)) {
+                    rollback();
+                  }
+
+                  internalListeners[1]?.(rolledBack);
+                  callDidFinish = true;
+                  callListenersThenThrow(
+                    finishTransactionListeners[0],
+                    undefined,
+                  );
+
+                  transactions = -1;
+                  committed = true;
+                  callInvalidCellListeners(0);
+                  if (!collIsEmpty(changedCells)) {
+                    callTabularListenersForChanges(0);
+                  }
+                  callInvalidValueListeners(0);
+                  if (!collIsEmpty(changedValues)) {
+                    callValuesListenersForChanges(0);
+                  }
+                }
+              } catch (error) {
+                if (!committed) {
                   rollback();
                 }
-
-                internalListeners[1]?.(rolledBack);
-                callListeners(finishTransactionListeners[0], undefined);
-
-                transactions = -1;
-                committed = true;
-                callInvalidCellListeners(0);
-                if (!collIsEmpty(changedCells)) {
-                  callTabularListenersForChanges(0);
-                }
-                callInvalidValueListeners(0);
-                if (!collIsEmpty(changedValues)) {
-                  callValuesListenersForChanges(0);
-                }
-                callListeners(finishTransactionListeners[1], undefined);
+                throw error;
               }
-            } catch (error) {
+            }, captureError);
+            if (callDidFinish && rolledBack) {
               if (!committed) {
-                rollback();
+                tryCatchSync(() => internalListeners[1]?.(true), captureError);
               }
-              throw error;
+              tryCatchSync(() => {
+                internalListeners[2]?.(true);
+                internalPostFinished = true;
+              }, captureError);
+            }
+            if (callDidFinish) {
+              tryCatchSync(() => {
+                transactions = -1;
+                callListenersThenThrow(
+                  finishTransactionListeners[1],
+                  undefined,
+                );
+              }, captureError);
+            }
+            if (failed) {
+              throw errorToThrow;
             }
           },
           () =>
             tryFinally(
-              () => internalListeners[2]?.(rolledBack),
+              () =>
+                internalPostFinished ? 0 : internalListeners[2]?.(rolledBack),
               resetTransaction,
             ),
         );

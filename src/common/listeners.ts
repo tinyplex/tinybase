@@ -61,6 +61,7 @@ import type {
 } from '../@types/synchronizers/synchronizer-ws-server/index.d.ts';
 import {arrayForEach, arrayPush} from './array.ts';
 import {collDel, collForEach, collIsEmpty} from './coll.ts';
+import {tryCatchSync} from './error.ts';
 import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map.ts';
 import {ifNotUndefined, isNull, size} from './other.ts';
 import {getPoolFunctions} from './pool.ts';
@@ -155,6 +156,7 @@ export const getListenerFunctions = (
   callListeners: CallListeners,
   delListener: DelListener,
   callListener: (id: Id) => void,
+  callListenersThenThrow: CallListeners,
 ] => {
   let thing: Store | Metrics | Indexes | Relationships | Checkpoints | WsServer;
 
@@ -190,20 +192,47 @@ export const getListenerFunctions = (
     return id;
   };
 
-  const callListeners = (
+  const callListenersImpl = (
+    continueAfterError: boolean,
     idSetNode: IdSetNode,
     ids?: Ids,
-    ...extraArgs: any[]
-  ): void =>
+    extraArgs: any[] = [],
+  ): void => {
+    let errorToThrow: any;
+    let failed = false;
     arrayForEach(getWildcardedLeaves(idSetNode, ids), (set) =>
-      collForEach(set, (id: Id) =>
-        (mapGet(allListeners, id) as any)[0](
-          thing,
-          ...(ids ?? []),
-          ...extraArgs,
-        ),
-      ),
+      collForEach(set, (id: Id) => {
+        const callListener = () =>
+          (mapGet(allListeners, id) as any)[0](
+            thing,
+            ...(ids ?? []),
+            ...extraArgs,
+          );
+        if (continueAfterError) {
+          tryCatchSync(callListener, (error) => {
+            if (!failed) {
+              errorToThrow = error;
+            }
+            failed = true;
+          });
+        } else {
+          callListener();
+        }
+      }),
     );
+    if (failed) {
+      throw errorToThrow;
+    }
+  };
+
+  const callListeners: CallListeners = (idSetNode, ids, ...extraArgs) =>
+    callListenersImpl(false, idSetNode, ids, extraArgs);
+
+  const callListenersThenThrow: CallListeners = (
+    idSetNode,
+    ids,
+    ...extraArgs
+  ) => callListenersImpl(true, idSetNode, ids, extraArgs);
 
   const delListener = (id: Id): Ids =>
     ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
@@ -241,5 +270,11 @@ export const getListenerFunctions = (
       },
     );
 
-  return [addListener, callListeners, delListener, callListener];
+  return [
+    addListener,
+    callListeners,
+    delListener,
+    callListener,
+    callListenersThenThrow,
+  ];
 };
