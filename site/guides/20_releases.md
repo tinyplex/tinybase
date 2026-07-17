@@ -178,6 +178,10 @@ serialization for nested contents, so other JavaScript values may be changed or
 omitted. Values that cannot be serialized are rejected as invalid and ignored
 silently.
 
+Store bulk setters now validate and normalize private container copies. Caller
+objects, including frozen Rows, Tables, and Values, are no longer modified while
+rich values are encoded or invalid properties are removed.
+
 ## Stable Object And Array Grouping And Indexing
 
 Queries now group matching object and array Cells together correctly, without

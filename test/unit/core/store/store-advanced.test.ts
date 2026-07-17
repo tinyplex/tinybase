@@ -1749,6 +1749,27 @@ describe.each([
       expect(restoredStore.getContent()).toEqual(store.getContent());
     });
 
+    test('bulk setters do not mutate caller input', () => {
+      const cell = {a: 1};
+      const row = {c1: cell, invalid: undefined as any};
+      const frozenRow = Object.freeze({c1: cell});
+      const table = Object.freeze({r1: frozenRow});
+      const tables = Object.freeze({t1: table});
+      const values = Object.freeze({v1: [1, 2]});
+
+      createStore().setTables(tables).setValues(values);
+      createStore().setTable('t1', table);
+      createStore().setRow('t1', 'r1', row);
+      createStore().addRow('t1', row);
+      createStore().setPartialRow('t1', 'r1', row);
+      createStore().setPartialValues(values);
+
+      expect(tables.t1.r1.c1).toBe(cell);
+      expect(values.v1).toEqual([1, 2]);
+      expect(row).toEqual({c1: cell, invalid: undefined});
+      expect(Object.hasOwn(row, 'invalid')).toEqual(true);
+    });
+
     test('unserializable object and array data is invalid', () => {
       const invalidCell = vi.fn();
       const invalidValue = vi.fn();
