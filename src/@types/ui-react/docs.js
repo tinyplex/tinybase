@@ -12552,6 +12552,7 @@
  * // -> '<span>{\"pets\":{\"cujo\":{\"species\":\"dog\"}}}</span>'
  *
  * root.unmount(); // !act
+ * // ... // !act
  * // -> 'Persister destroyed for session key cujoStore'
  * ```
  * @category Persister hooks

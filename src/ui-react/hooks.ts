@@ -427,6 +427,7 @@ const useCreateAsync = <
   const [thing, setThing] =
     useState<[creation: unknown[], thing: ThingOrUndefined]>();
   const destroyRef = useRef(destroy);
+  const destroyingRef = useRef<Promise<any> | undefined>(undefined);
   useEffect(
     () => {
       destroyRef.current = destroy;
@@ -439,10 +440,17 @@ const useCreateAsync = <
       let current = true;
       let createdThing: ThingOrUndefined;
       const destroyThing = (thing: Thing) =>
-        tryFinallyAsync(() => thing.destroy(), () =>
-          destroyRef.current?.(thing),
+        tryFinallyAsync(
+          () => thing.destroy(),
+          () => destroyRef.current?.(thing),
         );
       (async () => {
+        if (destroyingRef.current) {
+          await destroyingRef.current;
+        }
+        if (!current) {
+          return;
+        }
         const nextThing = store ? await create(store) : undefined;
         if (!current) {
           if (nextThing) {
@@ -462,7 +470,7 @@ const useCreateAsync = <
       return () => {
         current = false;
         if (createdThing) {
-          void destroyThing(createdThing);
+          destroyingRef.current = destroyThing(createdThing);
         }
       };
     },
