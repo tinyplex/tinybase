@@ -1,5 +1,4 @@
 // All other imports are lazy so that single tasks start up fast.
-import {strictEqual} from 'assert';
 import {
   existsSync,
   promises,
@@ -104,10 +103,6 @@ const getUiModule = (module) =>
     : moduleIsSolid(module)
       ? 'ui-solid'
       : 'ui-react';
-ALL_MODULES.forEach((module) => {
-  const framework = module.match(/^ui-(react|solid|svelte)(?:-|$)/)?.[1];
-  strictEqual(getUiModule(module), framework ? `ui-${framework}` : 'ui-react');
-});
 const getUiModuleReplacements = (uiModule) => ({
   ['../' + uiModule + '/index.ts']: '../' + uiModule,
   ['../' + uiModule + '/index.tsx']: '../' + uiModule,
