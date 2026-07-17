@@ -6,7 +6,12 @@ import type {
 } from '../../@types/synchronizers/synchronizer-ws-server-simple/index.d.ts';
 import {arrayForEach, arrayMap, arrayPush} from '../../common/array.ts';
 import {collClear, collDel, collHas, collIsEmpty} from '../../common/coll.ts';
-import {tryFinallyAsync, tryReturn} from '../../common/error.ts';
+import {
+  ERROR_SYNC_OVERFLOW,
+  errorNew,
+  tryFinallyAsync,
+  tryReturn,
+} from '../../common/error.ts';
 import {
   IdMap2,
   mapEnsure,
@@ -42,6 +47,8 @@ import {
   createPayloadDecoder,
   createRawPayload,
   ifPayloadValid,
+  isWebSocketBackpressured,
+  isWebSocketPayloadTooLarge,
 } from '../common.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
@@ -88,8 +95,27 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
     );
   };
 
+  const overflowClient = (client: WebSocket) => {
+    if (client.readyState == client.OPEN) {
+      const error = errorNew(ERROR_SYNC_OVERFLOW, 'socket');
+      client.close(1013, error.message);
+    }
+  };
+
+  const sendPayload = (client: WebSocket, payload: string) => {
+    if (
+      isWebSocketPayloadTooLarge(payload) ||
+      isWebSocketBackpressured(client, payload)
+    ) {
+      overflowClient(client);
+    } else if (client.readyState == client.OPEN) {
+      client.send(payload);
+    }
+  };
+
   const sendToClient = ([client, channelId]: Client, payload: string) =>
-    client.send(
+    sendPayload(
+      client,
       isUndefined(channelId)
         ? payload
         : createMultiplePayload(channelId, payload),
@@ -169,7 +195,7 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       (pathId) => delClientFromPath(pathId, clientId),
       (pathId, toClientId, remainders) =>
         handleDecodedMessage(pathId, clientId, toClientId, remainders),
-      (payload) => client.send(payload),
+      (payload) => sendPayload(client, payload),
       1,
       invalid,
     );

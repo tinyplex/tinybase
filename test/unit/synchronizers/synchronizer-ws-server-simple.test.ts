@@ -1,3 +1,4 @@
+import {EventEmitter} from 'events';
 import {createMergeableStore} from 'tinybase';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
@@ -6,6 +7,30 @@ import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
+
+class MockWebSocket extends EventEmitter {
+  OPEN = 1;
+  CLOSED = 3;
+  bufferedAmount = 0;
+  closeCalls = 0;
+  closeCode: number | undefined;
+  closeReason: string | undefined;
+  protocol = '';
+  readyState = this.OPEN;
+  sentPayloads: string[] = [];
+
+  close(code?: number, reason?: string): void {
+    this.closeCalls++;
+    this.closeCode = code;
+    this.closeReason = reason;
+    this.readyState = this.CLOSED;
+    this.emit('close');
+  }
+
+  send(payload: string): void {
+    this.sentPayloads.push(payload);
+  }
+}
 
 beforeEach(() => {
   reset();
@@ -125,6 +150,69 @@ test('Malformed traffic is disconnected before relay', async () => {
   expect(otherClient.readyState).toBe(WebSocket.OPEN);
 
   otherClient.close();
+  await server.destroy();
+});
+
+test('Outbound traffic is bounded for every client mode', async () => {
+  const webSocketServer = new EventEmitter() as any;
+  webSocketServer.close = (callback: () => void) => callback();
+  const server = createWsServerSimple(webSocketServer);
+  const connect = (
+    client: MockWebSocket,
+    clientId: string,
+    pathId: string,
+    protocol = '',
+  ) => {
+    client.protocol = protocol;
+    webSocketServer.emit('connection', client, {
+      headers: {'sec-websocket-key': clientId},
+      url: '/' + pathId,
+    });
+  };
+  const send = (client: MockWebSocket, payload = '\n[null,1,""]') =>
+    client.emit('message', payload);
+
+  const largeSender = new MockWebSocket();
+  const largeRecipient = new MockWebSocket();
+  connect(largeSender, 'x'.repeat(16_777_216), 'large');
+  connect(largeRecipient, 'recipient', 'large');
+  send(largeSender);
+
+  expect(largeRecipient.sentPayloads).toEqual([]);
+  expect(largeRecipient.closeCode).toBe(1013);
+  expect(largeRecipient.closeReason).toBe('tinybase:15:socket');
+
+  const pressuredSender = new MockWebSocket();
+  const pressuredRecipient = new MockWebSocket();
+  pressuredRecipient.bufferedAmount = 16_777_216;
+  connect(pressuredSender, 'sender', 'pressured');
+  connect(pressuredRecipient, 'recipient', 'pressured');
+  send(pressuredSender);
+
+  expect(pressuredRecipient.sentPayloads).toEqual([]);
+  expect(pressuredRecipient.closeCode).toBe(1013);
+  expect(pressuredRecipient.closeReason).toBe('tinybase:15:socket');
+
+  const closedSender = new MockWebSocket();
+  const closedRecipient = new MockWebSocket();
+  connect(closedSender, 'sender', 'closed');
+  connect(closedRecipient, 'recipient', 'closed');
+  closedRecipient.bufferedAmount = 16_777_216;
+  closedRecipient.readyState = closedRecipient.CLOSED;
+  send(closedSender);
+
+  expect(closedRecipient.sentPayloads).toEqual([]);
+  expect(closedRecipient.closeCalls).toBe(0);
+
+  const multipleClient = new MockWebSocket();
+  multipleClient.bufferedAmount = 16_777_216;
+  connect(multipleClient, 'multiple', 'multiple', 'tinybase');
+  send(multipleClient, 'S\n["request",-1,[0,1]]');
+
+  expect(multipleClient.sentPayloads).toEqual([]);
+  expect(multipleClient.closeCode).toBe(1013);
+  expect(multipleClient.closeReason).toBe('tinybase:15:socket');
+
   await server.destroy();
 });
 

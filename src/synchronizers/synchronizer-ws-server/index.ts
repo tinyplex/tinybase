@@ -34,6 +34,7 @@ import {
   ERROR_SYNC_OVERFLOW,
   errorNew,
   tryCatch,
+  tryCatchSync,
   tryFinally,
   tryReturn,
 } from '../../common/error.ts';
@@ -173,9 +174,13 @@ export const createWsServer = (<
     addEmitterListener(webSocketServer, ERROR, handleError),
   );
 
-  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
-    () => wsServer,
-  );
+  const [addListener, , delListenerImpl, , callListenersThenThrow] =
+    getListenerFunctions(() => wsServer);
+  const callListeners = (
+    ...args: Parameters<typeof callListenersThenThrow>
+  ): void => {
+    tryCatchSync(() => callListenersThenThrow(...args), handleError);
+  };
 
   const addWebSocketListener = (
     webSocket: WebSocket,
