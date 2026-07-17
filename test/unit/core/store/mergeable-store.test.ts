@@ -879,6 +879,46 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
+  test('rejects changes atomically without modifying them', () => {
+    store.setContent([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+    const content = store.getMergeableContent();
+    const changes = [
+      stamped(1, 0, {
+        t1: stamped(1, 0, {
+          r1: stamped(1, 0, {
+            c1: stamped(1, 0, 1),
+            c2: stamped(1, 0, '\uFFFC'),
+          }),
+        }),
+      }),
+      stamped(1, 0, {v1: stamped(1, 0, 1)}),
+      1,
+    ] as MergeableChanges;
+    const originalChanges = structuredClone(changes);
+
+    store.applyMergeableChanges(changes);
+
+    expect(changes).toEqual(originalChanges);
+    expect(store.getMergeableContent()).toEqual(content);
+  });
+
+  test('rejects content atomically without modifying it', () => {
+    store.setContent([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+    const content = store.getMergeableContent();
+    const incomingStore = createMergeableStore('s2', getNow).setContent([
+      {t1: {r1: {c1: 1, c2: 2}}},
+      {v1: 1},
+    ]);
+    const invalidContent = incomingStore.getMergeableContent();
+    invalidContent[0][0].t1[0].r1[0].c2[0] = '\uFFFC';
+    const originalInvalidContent = structuredClone(invalidContent);
+
+    store.setMergeableContent(invalidContent);
+
+    expect(invalidContent).toEqual(originalInvalidContent);
+    expect(store.getMergeableContent()).toEqual(content);
+  });
+
   test.each([
     [''],
     [1],
