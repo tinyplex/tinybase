@@ -149,7 +149,13 @@ export const createCustomSynchronizer = (
         reject,
         timeout,
       ]);
-      sendImpl(toClientId, requestId, message, body);
+      try {
+        sendImpl(toClientId, requestId, message, body);
+      } catch (error) {
+        stopTimeout(timeout);
+        collDel(pendingRequests, requestId);
+        reject(error);
+      }
     });
 
   const mergeTablesStamps = (
