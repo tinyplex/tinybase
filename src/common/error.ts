@@ -58,6 +58,17 @@ export const tryCatch = async <Return>(
   }
 };
 
+export const tryCatchSync = <Return>(
+  action: () => Return,
+  onError?: (error: any) => void,
+): Return | void => {
+  try {
+    return action();
+  } catch (error) {
+    onError?.(error);
+  }
+};
+
 export const tryFinally = <Return>(
   action: () => Return,
   finallyAction: () => void,
