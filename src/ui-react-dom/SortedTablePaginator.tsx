@@ -2,7 +2,7 @@ import type {
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
 } from '../@types/ui-react-dom/index.d.ts';
-import {isFalse, isTrue, mathMin} from '../common/other.ts';
+import {isFalse, isTrue, mathMax, mathMin} from '../common/other.ts';
 import {useCallbackOrUndefined} from './common/hooks.tsx';
 
 import type {ComponentType, ReactNode} from 'react';
@@ -87,16 +87,17 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
   singular = 'row',
   plural = singular + 's',
 }: SortedTablePaginatorProps) => {
+  const invalidOffset = offset < 0 || (offset > 0 && offset >= total);
   useEffect(() => {
-    if (offset > total || offset < 0) {
+    if (invalidOffset) {
       onChange(0);
     }
   }, [onChange, offset, total]);
-  if (offset > total || offset < 0) {
+  if (invalidOffset) {
     offset = 0;
   }
   const handlePrevClick = useCallbackOrUndefined(
-    () => onChange(offset - limit),
+    () => onChange(mathMax(0, offset - limit)),
     [onChange, offset, limit],
     offset > 0,
   );

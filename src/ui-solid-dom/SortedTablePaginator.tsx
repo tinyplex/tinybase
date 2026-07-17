@@ -6,7 +6,7 @@ import type {
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
 } from '../@types/ui-solid-dom/index.d.ts';
-import {isFalse, isTrue, mathMin} from '../common/other.ts';
+import {isFalse, isTrue, mathMax, mathMin} from '../common/other.ts';
 import type {MaybeAccessor} from '../common/solid.ts';
 import {getValue} from '../common/solid.ts';
 import {getCallbackOrUndefined} from './common/hooks.tsx';
@@ -82,14 +82,14 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = (
 ) => {
   createEffect(() => {
     const offset = props.offset ?? 0;
-    if (offset > props.total || offset < 0) {
+    if (offset < 0 || (offset > 0 && offset >= props.total)) {
       props.onChange(0);
     }
   });
   const content = () => {
     let offset = props.offset ?? 0;
     const limit = props.limit ?? props.total;
-    if (offset > props.total || offset < 0) {
+    if (offset < 0 || (offset > 0 && offset >= props.total)) {
       offset = 0;
     }
     const singular = props.singular ?? 'row';
@@ -102,7 +102,7 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = (
               class="previous"
               disabled={offset == 0}
               onClick={getCallbackOrUndefined(
-                () => props.onChange(offset - limit),
+                () => props.onChange(mathMax(0, offset - limit)),
                 offset > 0,
               )}
             >

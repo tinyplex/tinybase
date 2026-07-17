@@ -201,6 +201,8 @@ export const EditableThing = ({
             setCurrentThing(object);
             onThingChange(object);
             setTypedClassName('');
+          } else {
+            setTypedClassName('invalid');
           }
         },
         () => setTypedClassName('invalid'),
