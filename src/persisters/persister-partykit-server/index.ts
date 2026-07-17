@@ -299,7 +299,7 @@ const saveStore = async (
     if (initialSave && (await transaction.get<1>(storagePrefix + HAS_STORE))) {
       return false;
     }
-    const transactionKeysToDel = arrayMap(keysToDel, (key) => key);
+    const transactionKeysToDel = slice(keysToDel, 0);
     if (!isEmpty(keyPrefixesToDel)) {
       mapForEach(
         await transaction.list<string | number | boolean>({

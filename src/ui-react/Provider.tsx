@@ -7,7 +7,7 @@ import type {
 import {arrayFilter, arrayNew, arrayPush, arrayWith} from '../common/array.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objDel, objGet} from '../common/obj.ts';
-import {isUndefined, size} from '../common/other.ts';
+import {isEmpty, isUndefined, size} from '../common/other.ts';
 import {
   useCallback,
   useContext,
@@ -132,7 +132,7 @@ export const Provider: typeof ProviderDecl = ({
       mapSet(
         registrationsById,
         id,
-        isUndefined(registrations[0]) ? undefined : registrations,
+        isEmpty(registrations) ? undefined : registrations,
       );
       setExtraThingById(
         thingOffset,

@@ -6,7 +6,7 @@ import type {ProviderProps} from '../@types/ui-solid/index.d.ts';
 import {arrayFilter, arrayNew, arrayPush, arrayWith} from '../common/array.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {IdObj, objDel, objGet} from '../common/obj.ts';
-import {isUndefined, size} from '../common/other.ts';
+import {isEmpty, isUndefined, size} from '../common/other.ts';
 import {ExtraThingsById, ThingsById} from './common/index.tsx';
 import {Context, ContextValue, ThingsByOffset} from './context.ts';
 
@@ -126,7 +126,7 @@ export const Provider = (
     mapSet(
       registrationsById,
       id,
-      isUndefined(registrations[0]) ? undefined : registrations,
+      isEmpty(registrations) ? undefined : registrations,
     );
     setExtraThingById(
       thingOffset,
