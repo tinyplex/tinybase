@@ -7,6 +7,11 @@ highlighted features.
 
 # v9.3
 
+TinyBase v9.3 lets multiple independently synchronized MergeableStores share one
+WebSocket connection. It also includes broad reliability and hardening work
+across core data, synchronization, persistence, UI integrations, packaging, and
+performance.
+
 ## Multiple Stores Over One WebSocket
 
 Multiple WebSocket Synchronizers can now share a single physical WebSocket
@@ -52,373 +57,171 @@ await employeesSynchronizer.destroy();
 await multistoreServer.destroy();
 ```
 
-The URL path acts as a base path, so these channels use the logical server paths
+Each channel extends the base URL path, so the example uses the logical paths
 `petShop/pets` and `petShop/employees`. Legacy clients can connect directly to
-either full path and interoperate with multiplexed clients.
-
-The existing createWsSynchronizer signature and wire protocol are unchanged when
-no channel Id is provided. Multiplexing is supported by WsServer and
-WsServerSimple, while WsServerDurableObject continues to use one URL path and
-Durable Object per WebSocket.
-
-WsServer and WsServerSimple now share the same negotiation, channel lifecycle,
-payload decoding, and cleanup implementation. Their path storage and
-backpressure policies remain specific to each server.
-
-Both servers also keep a safe error listener installed for their lifetime so a
-late Node.js `error` event cannot become an unhandled process-level error.
-
-Complete incoming payloads and outer multiplex envelopes are now limited to 16
-MiB before decoding or relay. Oversized traffic closes only the offending
-WebSocket and leaves other clients connected.
-
-Multiplexed channel Ids are not an authorization boundary. A client accepted on
-a base path can subscribe to any valid descendant channel, so applications with
-untrusted clients should authenticate and isolate WebSockets by authorized
-path.
-
-WsServer client Ids derived from `Sec-WebSocket-Key` are connection metadata,
-not authenticated identities, and should not be used for authorization.
-
-Synchronizers now reject pending requests immediately when a transport fails
-and unregister built-in transport listeners when destroyed. The register
-callback for a custom Synchronizer now receives a transport-failure callback.
-
-BroadcastChannelSynchronizer now validates message envelopes before reading
-their fields, reporting malformed input as a synchronization message error.
-
-LocalSynchronizer now snapshots broadcast recipients when a message is
-scheduled, so Synchronizers created later cannot receive earlier traffic. It
-also cancels scheduled messages when destroyed so they cannot be delivered
-after teardown.
-
-WsServerDurableObject now returns an empty path Id when queried before any
-clients have connected. Its fetch helper type also reflects both synchronous
-error responses and asynchronous Durable Object namespace responses.
-
-## Compact Error Codes
-
-Errors created by TinyBase now use compact numeric codes to reduce bundle size.
-The codes and their meanings are listed in the Error Codes guide.
-
-## Build And Runtime Efficiency
-
-The build now classifies Svelte modules correctly when selecting framework
-replacements and externals.
-
-Internal object iteration now walks own keys directly instead of allocating
-intermediate entries and mapped arrays. Side-effect-only transformations across
-Store, MergeableStore, Queries, database, Automerge, and Yjs paths also use the
-non-allocating iteration helper.
-
-Store JSON setters now handle invalid input synchronously without creating
-Promises or microtasks. Unused query-redefinition bookkeeping has also been
-removed.
-
-When a query definition is deleted, Queries now releases its cached pre- and
-result Stores once no listeners or dependent queries reference them.
-
-Query definitions are now staged before being committed. If a builder or
-evaluation callback throws, the previous definition, parameters, result, and
-listeners remain usable instead of leaving a partial replacement behind. New
-Index, Metric, Query, and Relationship definitions are also discarded if their
-Id listener throws.
-
-Metric extrema and Cartesian chart data summaries now process large datasets
-without variadic argument limits or quadratic category de-duplication.
-
-The getTransactionMergeableChanges method declaration now matches its runtime
-behavior, returning unhashed changes by default and hashed changes when
-requested.
-
-## Consistent Module Exports
-
-Generated JavaScript exports are now checked against their public value
-declarations during every build. Undeclared React, Solid, DOM, and IndexedDB
-implementation helpers are no longer exposed, and the
-createDurableObjectSqlStoragePersister function is now available from the omni
-module as declared.
-
-## Safe Arbitrary Identifiers
-
-Arbitrary string Ids, including names inherited from `Object.prototype` such as
-`__proto__`, `constructor`, and `toString`, are now preserved safely throughout
-Store, MergeableStore, synchronization, and persistence paths. Internal
-user-keyed dictionaries now use null-prototype objects and own-property checks,
-preventing these Ids from being omitted from getters or JSON, corrupting
-returned data, or altering object prototypes.
-
-## Exception-Safe Transactions
-
-Store transactions now restore their internal state if an action or callback
-throws. Errors from transaction actions and other pre-commit callbacks roll back
-the transaction and are rethrown, while nested transaction errors mark the
-shared outer transaction for rollback. Errors from non-mutating or did-finish
-listeners happen after the commit, but no longer leave the Store unable to
-process later mutations or listeners.
-
-Temporary mutation and listening flags are also restored unconditionally in
-Store, MergeableStore, and Checkpoints operations, preventing an exception from
-silently disabling later change tracking.
-
-Rollback also restores TablesSchema and ValuesSchema definitions before
-restoring content, so schema changes cannot survive a failed transaction or
-prevent previously valid data from being recovered.
-
-MergeableStore rollback now restores CRDT stamps and hashes alongside visible
-content, preventing failed local or remote changes from leaving hidden
-tombstones that could reject later synchronization.
-
-## Bounded MergeableStore Clocks
-
-MergeableStore now validates HLCs before applying mergeable content or changes.
-Incoming HLCs must use the canonical 16-character encoding and be no more than
-five minutes ahead of the local clock. Invalid payloads are ignored before they
-can alter either content or local clock state. Validation is now atomic and
-does not remove invalid entries from caller-owned payloads.
-
-The 24-bit logical counter now carries into the wall-clock portion when it
-overflows. Explicit local mutations also verify that their generated stamp was
-accepted, preventing the visible Store from silently diverging from its
-mergeable representation.
-
-## Reserved Serialization Strings
-
-String Cells and Values beginning with `U+FFFD`, or equal to the exact string
-`U+FFFC`, are now rejected as invalid and ignored silently. TinyBase reserves
-these strings for its internal object, array, and `undefined` encodings. This
-also applies to string defaults in schemas.
-
-`U+FFFD` remains supported after the first character, while longer strings
-containing `U+FFFC` remain supported. Both are also supported in strings nested
-inside objects and arrays.
-
-Persisted internal JSON encodings are now parsed and checked before being
-accepted. Malformed encodings, encoded primitives, and object/array encodings
-that do not match a schema are ignored instead of corrupting later reads or
-bypassing schema types.
-
-## JSON-Compatible Object And Array Contents
-
-Object and array Cells and Values are now documented as supporting contents that
-recursively consist of strings, finite numbers, booleans, `null`, plain objects,
-and arrays. TinyBase validates the top-level container but relies on JSON
-serialization for nested contents, so other JavaScript values may be changed or
-omitted. Values that cannot be serialized are rejected as invalid and ignored
-silently.
-
-Store bulk setters now validate and normalize private container copies. Caller
-objects, including frozen Rows, Tables, and Values, are no longer modified while
-rich values are encoded or invalid properties are removed.
-
-## Stable Object And Array Grouping And Indexing
-
-Queries now group matching object and array Cells together correctly, without
-accumulating duplicate or stale aggregated ResultRows as source data changes.
-
-Indexes now use stable encoded Slice Ids for object and array Cells referenced
-directly as keys, while arrays returned from custom functions continue to
-represent multiple Slice Ids. Equivalent rich sort keys also avoid unnecessary
-resorting.
-
-## Reusable Schemas
-
-Stores now clone TablesSchema and ValuesSchema objects before validating and
-normalizing them. Object and array defaults are no longer replaced with
-TinyBase's internal encoding on caller-owned objects, so a schema can be reused
-across multiple Stores or supplied as a frozen object.
-
-The getTablesSchemaJson, getValuesSchemaJson, and getSchemaJson methods also
-return object and array defaults in their original form.
-
-If a replacement TablesSchema or ValuesSchema is invalid, the Store now keeps
-the previous valid schema active consistently.
-
-## Public Middleware Values
-
-Middleware callbacks now receive object and array Cells and Values in their
-public JavaScript form, rather than TinyBase's private encoded-string form. Rich
-values are cloned before callbacks run, and callback results are validated
-against Store schemas and encoded only at the storage boundary.
-
-## Lifecycle And UI Reliability
-
-Middleware and Checkpoints now clean up and reuse their Store registrations
-safely across destroy-and-recreate cycles. Destroyed Middleware callbacks no
-longer remain active, repeated createCheckpoints calls no longer duplicate
-listeners, and transactions that return rich Store content to a structurally
-equivalent state no longer create phantom checkpoints.
-
-Solid primitives no longer register Store listeners during server rendering.
-React hooks that create Persisters and Synchronizers asynchronously now destroy
-stale or post-unmount results without replacing or destroying the current
-resource. They also return `undefined` while a replacement is pending instead
-of exposing a resource that has begun teardown. React and Solid cleanup
-callbacks now run after asynchronous resource destruction completes.
-Factory, replacement, and cleanup failures are also contained without producing
-unhandled rejections, and Solid replacements wait for the previous cleanup to
-finish before creating the next resource.
-
-The ui-solid-dom, ui-solid-inspector, ui-svelte-dom, and ui-svelte-inspector
-modules are now exported explicitly as client-only browser modules, so server
-builds fail during package resolution instead of loading unusable client
-artifacts.
-
-Solid DOM table wrappers now keep table, query, and slice metadata reactive as
-their inputs change. The useUndoInformation and useRedoInformation primitives
-also now return Accessor functions for their availability, checkpoint Id, and
-label entries.
-
-Solid Inspector table actions and custom Cell renderers also remain reactive as
-editable state and Cell Ids change. Editable Cell and Value components now mark
-object or array JSON input invalid when its container type does not match the
-existing value.
-
-React and Solid sorted-table paginators now defer offset corrections until
-after rendering. All three DOM modules normalize out-of-range offsets, including
-positive offsets equal to the total, and clamp previous-page navigation at zero.
-Provider registrations in all three UI modules also track ownership when Ids
-are duplicated, so removing one registration preserves or restores the correct
-remaining resource.
-
-## PartyKit Authorization
-
-The PartyKit persister server now broadcasts only the changes accepted by its
-authorization callbacks. Rejected writes therefore remain absent from durable
-storage and are no longer propagated to other clients. Fully rejected initial
-writes also no longer mark a room as initialized, and the PartyKit client now
-handles empty HTTP responses without reporting ignored JSON parsing errors.
-
-PartyKit storage writes are now serialized and committed in a single storage
-transaction. Incoming content and changes are validated before use, malformed
-stored keys are ignored, and concurrent initial writes cannot both initialize
-the same room.
-
-## Unicode-Safe WebSocket Fragmentation
-
-WebSocket synchronization payloads are now fragmented by UTF-8 byte size and
-only at Unicode code point boundaries. Non-BMP characters therefore remain
-intact when a fragment is encoded and sent as an individual WebSocket message.
-
-Generated groups are also capped at 1,000 fragments. TinyBase raises an
-undersized fragment target when necessary so a sender cannot create a group the
-receiver must reject for exceeding the protocol limit.
-
-The fragmenter now walks string boundaries directly instead of materializing a
-regular-expression match array for every payload.
-
-## Validated WebSocket Protocol Traffic
-
-WebSocket synchronization traffic is now decoded without throwing and validated
-before dispatch or relay. Invalid JSON, tuple shapes, standard message bodies,
-multiplexing envelopes, and fragment metadata are reported as error 14, and the
-peer that sent them is closed with WebSocket status code `1007`.
-
-Servers wait for fragmented messages to be fully decoded before relaying them,
-so malformed traffic is not forwarded to other clients or multiplexed channels.
-WsServerDurableObject subclasses can override onIgnoredError to observe these
-failures.
-
-## Bounded WebSocket Buffering
-
-WebSocket synchronization now bounds offline client queues, server queues used
-while persisted paths start, pending request maps, and incomplete fragment
-buffers. Queued protocol traffic and incomplete fragments expire, while
-repeated offline Store changes are coalesced into a current content-hash
-announcement so the peer can request the latest diff after reconnection.
-
-WebSocket `bufferedAmount` is also checked before sending. Queue, fragment, and
-socket buffer overflows report error 15 and close the overloaded peer with
-WebSocket status code `1013`. Pending request overflows report error 15 and stop
-accepting additional requests.
-
-Multiplexed clients now keep timeout and ignored-error handling with each
-channel instead of inheriting them from the channel that first initialized the
-shared WebSocket. Failed subscription promises are cleared for retry, and
-creating a Synchronizer around a WebSocket that is already closing or closed
-now settles immediately instead of leaving its creation Promise pending.
-
-## Reliable WebSocket Server Lifecycle
-
-WsServer now handles asynchronous path setup and teardown without leaving failed
-or disconnected clients behind. A rejected Persister factory can be retried,
-clients that disconnect during setup are removed, and cleanup for an old path
-cannot delete a replacement that connected in the meantime.
-
-Path state is also cleared even if resource cleanup fails. The destroy method
-now closes active WebSockets, waits for the underlying WebSocketServer to close,
-and fully removes its path, client, and listener state before resolving.
-Multiplexed channels are also removed before asynchronous teardown so an
-immediate resubscription cannot attach to a channel that is being destroyed.
-Servers acknowledge subscriptions before persisted path startup completes so
-multiplexed clients can begin the initial synchronization without timing out.
-
-Client reconnection handshakes are now tied to the exact connection that opened,
-so a stale connection cannot consume a replacement connection's open event.
-Failed queued multiplex replays also clear their channel and timer state, making
-the channel immediately reusable.
-
-Path and client Id listener failures no longer strand server state or prevent a
-later start or stop. All listeners are still called, while errors thrown by an
-ignored-error handler are contained. WsServerSimple also applies the same
-outbound size, socket-state, and backpressure checks as WsServer.
-
-## Persister Reliability
-
-Persisters have received a broad reliability pass:
-
-- Remote Persisters retain the previous ETag until changed content has been
-  downloaded successfully, reject unsuccessful HTTP responses, serialize
-  polling, and abort an active poll when stopped or destroyed.
-- Awaiting a Persister operation now waits for its queued work to run.
-- Shared schedulers now route ignored errors to the Persister that owns each
-  action and remain usable if an ignored-error callback itself throws.
-- Repeated destroy calls now share one completion Promise and wait for active
-  work. Persister statuses also return to idle even if cleanup, status
-  listeners, or ignored-error handlers throw.
-- Concurrent auto-load and auto-save starts now leave only the latest
-  registration active. Stopping or destroying waits for in-flight registration
-  and cleanup work, and restarting auto-load waits for the previous listener to
-  stop. Subscribing before the initial load closes the startup window for missed
-  changes. Notifications during startup remain ordered behind the initial load,
-  while steady-state changes apply synchronously and concurrent changes avoid
-  redundant follow-up saves.
-- Auto-load notifications without inline content that arrive during a save are
-  coalesced into a trailing load, preventing an external write from being
-  missed in the save-completion window.
-- Destroyed Persisters now release shared scheduler state.
-- Database transaction failures now roll back instead of partially committing.
-- Remote libSQL transactions use one transaction session, while local file
-  clients preserve their existing connection.
-- Tabular database Persisters replace every table-name placeholder, ensure that
-  row Id columns have collision-safe unique constraints, and reject
-  MergeableStore configurations that cannot preserve merge metadata.
-- PostgreSQL auto-load safely shares notification resources until their final
-  owner stops and releases reserved clients if setup fails.
-- Custom SQLite listener cleanup may now be asynchronous and is awaited. SQLite
-  auto-load establishes its external-change baseline during startup and defers
-  native update-hook work until the triggering write has completed.
-- IndexedDB saves wait for transaction completion and report aborts, blocked
-  opens, and other transaction failures. Loads use read-only transactions, and
-  polling loads only changed content without overlapping.
-- Durable Object KV saves split large writes into limit-safe batches within one
-  transaction, and loading ignores unrelated or malformed namespace keys.
-- Durable Object SQL persistence now preserves empty Table, Row, Cell, and Value
-  Ids and safely quotes generated table names for arbitrary storage prefixes.
-- React Native MMKV persistence preserves mergeable deletion tombstones and
-  contains malformed observed content and listener failures.
-- Automerge and Yjs persistence validate the expected TinyBase document roots
-  before loading or applying observed changes. Automerge continues to allow
-  unrelated root metadata.
-- Asynchronous notifications from browser storage, IndexedDB, PowerSync,
-  SQLite, PostgreSQL, Automerge, and Yjs now report parsing and listener
-  failures through ignored-error handling instead of letting them escape event
-  or timer callbacks.
-- File persistence writes a sibling temporary file and atomically renames it
-  over the destination, avoiding a truncated destination after interruption.
-  Saves retain permission modes and symbolic links, while auto-load follows
-  replacements and suppresses duplicate self-loads.
-- OPFS persistence now always closes successful writes and aborts failed ones.
+those full paths, while omitting the channel Id retains the existing signature
+and wire protocol. Multiplexing is supported by WsServer and WsServerSimple;
+WsServerDurableObject continues to use one URL path and Durable Object per
+WebSocket.
+
+Channel Ids are not an authorization boundary: a client accepted on a base path
+can subscribe to any valid descendant channel. Authenticate and isolate
+untrusted clients by base path, and do not treat client Ids derived from
+`Sec-WebSocket-Key` as authenticated identities.
+
+## Reliability And Hardening
+
+### Core Data And APIs
+
+- Arbitrary Ids such as `__proto__`, `constructor`, and `toString` are now safe
+  throughout Store, MergeableStore, synchronization, and persistence.
+- Errors from transaction actions and pre-commit callbacks now roll back content,
+  schemas, MergeableStore stamps and hashes, and temporary state across Store,
+  MergeableStore, and Checkpoints; nested failures roll back the shared outer
+  transaction, while post-commit listener failures no longer strand the Store.
+- Query definitions are staged before commit, and new Index, Metric, Query, and
+  Relationship definitions are discarded if their Ids listener throws.
+- Deleting a Query definition now releases cached pre- and result Stores once
+  nothing still references them.
+- MergeableStore now atomically rejects HLCs that are not exactly 16 characters
+  or are over five minutes in the future, carries overflowing 24-bit counters
+  into wall-clock time, and verifies local stamps without mutating rejected
+  caller payloads.
+- String Cells, Values, and schema defaults using TinyBase's reserved leading
+  `U+FFFD` or exact `U+FFFC` encodings are rejected, while invalid or
+  schema-incompatible persisted encodings are ignored safely.
+- Object and array Cells and Values now have an explicit JSON-compatible content
+  contract, reject unserializable data, and no longer modify caller-owned or
+  frozen containers during bulk writes.
+- Queries and Indexes now group, sort, and index equivalent object and array
+  values consistently without stale results; direct rich Index keys remain
+  distinct from custom-function arrays that select multiple Slices.
+- TablesSchema and ValuesSchema objects are cloned before normalization, making
+  frozen schemas reusable and preserving the previous schema after an invalid
+  replacement; schema JSON getters also preserve object and array defaults.
+- Middleware receives cloned object and array values in public JavaScript form,
+  with callback results validated and encoded only at the Store boundary.
+- Middleware and Checkpoints now clean up Store registrations safely, avoid
+  duplicate listeners after recreation, and skip phantom checkpoints for
+  structurally unchanged rich content.
+
+### Synchronization
+
+- WsServer and WsServerSimple now share multiplex negotiation, decoding,
+  channel-lifecycle, and cleanup behavior, and retain safe error listeners for
+  their lifetimes.
+- Synchronizers reject pending requests on transport failure, remove built-in
+  listeners when destroyed, and expose transport failures to custom register
+  callbacks.
+- BroadcastChannelSynchronizer validates message envelopes, while
+  LocalSynchronizer snapshots scheduled recipients and cancels deliveries when
+  destroyed.
+- WebSocket fragments now split by UTF-8 byte size at code-point boundaries and
+  use at most 1,000 fragments.
+- Malformed WebSocket traffic reports error 14 and closes the offending peer
+  with status `1007` before relay; complete messages and multiplex envelopes are
+  limited to 16 MiB, with oversize input closing only its sender.
+- Offline and startup queues, pending requests, incomplete fragments, and socket
+  buffering are bounded; queued traffic expires or coalesces, while overload
+  reports error 15, closes peers with status `1013` where appropriate, and stops
+  accepting new requests when the pending map is full.
+- Multiplexed channels keep independent timeout and error handling, clear failed
+  subscriptions for retry, and settle immediately around closing or closed
+  sockets; reconnect handshakes and queued replays cannot consume replacement
+  connection state.
+- WsServer setup, teardown, Persister retries, path resubscription, and
+  destruction now clean up deterministically; subscriptions are acknowledged
+  before persisted startup, destroy closes clients and awaits the
+  WebSocketServer, and stale path cleanup cannot remove replacements.
+- All path and client Id listeners still run when one throws, listener and
+  ignored-error failures no longer strand server state, and WsServerSimple
+  applies the same outbound safety checks as WsServer.
+- WsServerDurableObject reports an empty path before its first connection,
+  correctly types synchronous errors and asynchronous namespace responses, and
+  lets subclasses observe malformed traffic.
+- PartyKit now persists and broadcasts only authorized changes, leaves rooms
+  uninitialized after fully rejected first writes, serializes writes, validates
+  incoming content and stored keys, and accepts empty HTTP responses on the
+  client.
+
+### Persistence
+
+- Remote Persisters preserve ETags until successful downloads, reject failed
+  responses, serialize polling, and abort active polls when stopped or
+  destroyed.
+- Persister operations now await queued work; shared schedulers attribute errors
+  to the correct owner and survive failures in ignored-error handlers.
+- Repeated destruction shares one completion Promise, waits for active work,
+  restores idle status despite cleanup failures, and releases shared scheduler
+  state.
+- Concurrent automatic lifecycle calls support falsey handles, retain only the
+  latest registration, wait for setup and cleanup during stop or destroy, and
+  stop both auto-load and auto-save even if one cleanup fails.
+- Auto-load startup closes missed-change windows and preserves notification
+  ordering; steady-state inline changes apply synchronously without redundant
+  saves, while no-content notifications during a save coalesce into a trailing
+  load.
+- Database transaction failures roll back; remote libSQL uses one transaction
+  session while local file clients retain their connection, and tabular
+  Persisters replace every table-name placeholder, enforce collision-safe Row Id
+  uniqueness, and reject configurations that cannot preserve merge metadata.
+- PostgreSQL auto-load shares notification resources until the final owner stops
+  and releases reserved clients after setup failure.
+- SQLite auto-load establishes its baseline before use, defers update-hook work
+  until the triggering write completes, drains pending work on stop, and allows
+  asynchronous change-listener cleanup.
+- IndexedDB waits for transaction completion, reports aborts and blocked opens,
+  uses read-only loads, and serializes and drains changed-content polling.
+- Durable Object KV persistence batches limit-safe writes transactionally and
+  ignores unrelated or malformed keys; Durable Object SQL preserves empty Ids
+  and safely quotes generated table names.
+- React Native MMKV preserves deletion tombstones and contains malformed content
+  and listener failures; Automerge and Yjs validate TinyBase document roots
+  before loading or applying changes, while Automerge still allows unrelated
+  root metadata.
+- Browser storage, IndexedDB, PowerSync, SQLite, PostgreSQL, Automerge, and Yjs
+  notifications route parsing and listener failures through ignored-error
+  handling.
+- File persistence atomically replaces data while preserving modes and symbolic
+  links, and its auto-load follows replacements without duplicate self-loads;
+  OPFS always closes successful writes and aborts failed ones.
+
+### UI And Lifecycle
+
+- Solid primitives no longer register Store listeners during server rendering.
+- React and Solid asynchronous resource hooks destroy stale or post-unmount
+  results, hide resources during replacement, await destruction, contain
+  failures, and serialize Solid replacements behind previous cleanup.
+- Solid and Svelte DOM and Inspector packages are explicitly client-only, so
+  server builds fail cleanly during resolution.
+- Solid DOM table wrappers keep table, query, and slice metadata reactive, while
+  Solid Inspector actions and custom Cell renderers react to editability and Cell
+  Id changes.
+- Solid useUndoInformation and useRedoInformation now return Accessors for
+  availability, checkpoint Id, and label values.
+- Object and array editors mark JSON with the wrong container type invalid, and
+  React, Solid, and Svelte paginators normalize boundary offsets and clamp
+  previous navigation to zero.
+- React and Solid paginators defer offset corrections until after rendering, and
+  Provider registrations in all three UI modules preserve the correct resource
+  when duplicate Id owners are removed.
+
+### Packaging And Performance
+
+- TinyBase errors now use compact numeric codes documented in the Error Codes
+  guide.
+- The build now classifies Svelte modules correctly and verifies generated
+  JavaScript exports against declared public values.
+- Accidental React, Solid, DOM, and IndexedDB helper exports have been removed,
+  while createDurableObjectSqlStoragePersister is exported from the omni module
+  as declared.
+- The getTransactionMergeableChanges declaration now distinguishes its default
+  unhashed result from explicitly requested hashed changes.
+- Internal iteration paths now avoid unnecessary allocations, while invalid
+  Store JSON setters complete synchronously without creating Promises or
+  microtasks.
+- Metric extrema and Cartesian chart summaries now handle large datasets without
+  variadic argument limits or quadratic category de-duplication.
 
 ---
 
