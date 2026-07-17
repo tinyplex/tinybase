@@ -42,6 +42,7 @@ import {
   collSize,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
+import {tryCatchSync, tryFinally} from '../common/error.ts';
 import {
   IdMap,
   IdMap2,
@@ -99,6 +100,11 @@ type Build = (builders: {
   param: Param;
 }) => void;
 
+type QueryArgs = [Build, Id, 0 | 1];
+type QueryDefinition = [Id, Build, 0 | 1, ParamValues];
+type StoreListenerIds = Map<Store, IdSet>;
+type StagedDefinition = [StoreListenerIds, StoreListenerIds, Store?];
+
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
 type JoinClause = [
   realTableId: Id,
@@ -137,6 +143,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const resultStore = createStore();
   const preStores: IdMap<Store> = mapNew();
   const resultStores: IdMap<Store> = mapNew();
+  const committingQueryIds: IdSet = setNew();
   const routedResultListeners: Map<Id, RoutedResultListener> = mapNew();
   const routedResultListenerIds: IdSet2 = mapNew();
   const resultListenerStats: {[stat in ResultListenerStat]: number} = {
@@ -149,8 +156,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     cellIds: 0,
     cell: 0,
   };
-  const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
-  const sourceStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
+  const preStoreListenerIds: IdMap<StoreListenerIds> = mapNew();
+  const sourceStoreListenerIds: IdMap<StoreListenerIds> = mapNew();
 
   const {
     _: [, addListener, callListeners],
@@ -169,7 +176,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     delDefinition,
     addQueryIdsListenerImpl,
     destroyImpl,
-  ] = getDefinableFunctions<[Build, Id, 0 | 1], undefined>(
+  ] = getDefinableFunctions<QueryArgs, undefined>(
     store,
     () => [] as any,
     getUndefined,
@@ -177,44 +184,36 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     callListeners,
   );
 
+  const getArgs = (
+    queryId: Id,
+    definition?: QueryDefinition,
+  ): QueryArgs | undefined =>
+    isUndefined(definition)
+      ? getQueryArgs(queryId)
+      : [definition[1], EMPTY_STRING, definition[2]];
+
   const getResultStore = (queryId: Id): Store =>
     mapEnsure(resultStores, queryId, createStore);
 
-  const getPreStore = (queryId: Id): Store =>
-    mapEnsure(preStores, queryId, createStore);
-
   const addPreStoreListener = (
     preStore: Store,
-    queryId: Id,
+    storeListenerIds: StoreListenerIds,
     ...listenerIds: Ids
   ) =>
     arrayForEach(listenerIds, (listenerId) =>
-      setAdd(
-        mapEnsure(
-          mapEnsure<Id, Map<Store, IdSet>>(
-            preStoreListenerIds,
-            queryId,
-            mapNew,
-          ),
-          preStore,
-          setNew,
-        ),
-        listenerId,
-      ),
+      setAdd(mapEnsure(storeListenerIds, preStore, setNew), listenerId),
+    );
+
+  const resetStoreListeners = (
+    storeListenerIds: StoreListenerIds | undefined,
+  ): void =>
+    mapForEach(storeListenerIds, (store, listenerIds) =>
+      collForEach(listenerIds, (listenerId) => store.delListener(listenerId)),
     );
 
   const resetPreStores = (queryId: Id) => {
-    ifNotUndefined(
-      mapGet(preStoreListenerIds, queryId),
-      (queryPreStoreListenerIds) => {
-        mapForEach(queryPreStoreListenerIds, (preStore, listenerIds) =>
-          collForEach(listenerIds, (listenerId) =>
-            preStore.delListener(listenerId),
-          ),
-        );
-        mapSet(preStoreListenerIds, queryId);
-      },
-    );
+    resetStoreListeners(mapGet(preStoreListenerIds, queryId));
+    mapSet(preStoreListenerIds, queryId);
     arrayForEach(
       [mapGet(resultStores, queryId), mapGet(preStores, queryId)],
       (store) => store?.delTable(queryId),
@@ -223,15 +222,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
   const addSourceStoreListeners = (
     sourceStore: Store,
-    queryId: Id,
+    storeListenerIds: StoreListenerIds,
     andCall: 0 | 1,
     ...listenerIds: Ids
   ): Ids => {
-    const listenerIdSet = mapEnsure(
-      mapEnsure<Id, Map<Store, IdSet>>(sourceStoreListenerIds, queryId, mapNew),
-      sourceStore,
-      setNew,
-    );
+    const listenerIdSet = mapEnsure(storeListenerIds, sourceStore, setNew);
     arrayForEach(listenerIds, (listenerId) => {
       setAdd(listenerIdSet, listenerId);
       if (andCall) {
@@ -242,30 +237,22 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   };
 
   const delSourceStoreListeners = (
-    queryId: Id,
     sourceStore: Store,
+    storeListenerIds: StoreListenerIds,
     listenerId: Id,
   ): void =>
-    ifNotUndefined(
-      mapGet(mapGet(sourceStoreListenerIds, queryId), sourceStore),
-      (allListenerIds) => {
-        sourceStore.delListener(listenerId);
-        collDel(allListenerIds, listenerId);
-        if (collIsEmpty(allListenerIds)) {
-          mapSet(mapGet(sourceStoreListenerIds, queryId), sourceStore);
-        }
-      },
-    );
-
-  const resetSourceStores = (queryId: Id): void =>
-    ifNotUndefined(mapGet(sourceStoreListenerIds, queryId), (queryStoreIds) => {
-      mapForEach(queryStoreIds, (sourceStore, listenerIds) =>
-        collForEach(listenerIds, (listenerId) =>
-          sourceStore.delListener(listenerId),
-        ),
-      );
-      mapSet(sourceStoreListenerIds, queryId);
+    ifNotUndefined(mapGet(storeListenerIds, sourceStore), (allListenerIds) => {
+      sourceStore.delListener(listenerId);
+      collDel(allListenerIds, listenerId);
+      if (collIsEmpty(allListenerIds)) {
+        mapSet(storeListenerIds, sourceStore);
+      }
     });
+
+  const resetSourceStores = (queryId: Id): void => {
+    resetStoreListeners(mapGet(sourceStoreListenerIds, queryId));
+    mapSet(sourceStoreListenerIds, queryId);
+  };
 
   const isResultStoreReferenced = (resultStore: Store): boolean =>
     !(
@@ -294,18 +281,23 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   };
 
   const synchronizeTransactions = (
-    queryId: Id,
     fromStore: Store,
     toStore: Store,
-  ) =>
+    storeListenerIds: StoreListenerIds,
+  ): void => {
     addPreStoreListener(
       fromStore,
-      queryId,
-      fromStore.addStartTransactionListener(toStore.startTransaction),
+      storeListenerIds,
+      fromStore.addWillFinishTransactionListener(toStore.startTransaction),
+    );
+    addPreStoreListener(
+      fromStore,
+      storeListenerIds,
       fromStore.addDidFinishTransactionListener(() =>
         toStore.finishTransaction(),
       ),
     );
+  };
 
   const setOrDelParamValues = (queryId: Id, paramValues: ParamValues) =>
     (objIsEmpty(paramValues) ? paramStore.delRow : paramStore.setRow)(
@@ -377,33 +369,32 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           0 as const,
           (buildOrParamValues as ParamValues | undefined) ?? {},
         ];
-    ifNotUndefined(getQueryArgs(queryId), ([, listenerId]) =>
-      paramStore.delListener(listenerId),
-    );
-    setDefinition(queryId, tableId);
-    setQueryArgs(queryId, [
+    const definition: QueryDefinition = [
+      tableId,
       build,
-      paramStore.addRowListener(PARAMS_TABLE, queryId, () =>
-        setQueryDefinitionImpl(queryId),
-      ),
       sourceIsQuery,
-    ]);
-    setOrDelParamValues(queryId, paramValues);
-    setQueryDefinitionImpl(queryId);
+      paramValues,
+    ];
+    setQueryDefinitionImpl(queryId, definition);
+    cleanStores();
     return queries;
   };
 
-  const setQueryDefinitionImpl = (queryId: Id): Queries =>
+  const runQueryDefinition = (
+    queryId: Id,
+    stagedDefinition: StagedDefinition,
+    definition?: QueryDefinition,
+    commit?: () => void,
+  ): Queries =>
     getResultStore(queryId).transaction(
       () =>
-        ifNotUndefined(getQueryArgs(queryId), ([build, , sourceIsQuery]) => {
-          const tableId = getTableId(queryId);
-          const rootStore = sourceIsQuery ? getResultStore(tableId) : store;
+        ifNotUndefined(getArgs(queryId, definition), ([build, , asQuery]) => {
+          const [nextPreStoreListenerIds, nextSourceStoreListenerIds] =
+            stagedDefinition;
+          const tableId = definition?.[0] ?? getTableId(queryId);
+          const rootStore = asQuery ? getResultStore(tableId) : store;
           const resultStore = getResultStore(queryId);
-          const paramValues = getParamValues(queryId);
-
-          resetPreStores(queryId);
-          resetSourceStores(queryId);
+          const paramValues = definition?.[3] ?? getParamValues(queryId);
 
           const selectEntries: [Id, SelectClause][] = [];
           const joinEntries: [Id | undefined, JoinClause][] = [
@@ -528,9 +519,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             );
 
           build({select, join, where, group, having, param});
+          resultStore.delTable(queryId);
 
           const selects: IdMap<SelectClause> = mapNew(selectEntries);
           if (collIsEmpty(selects)) {
+            commit?.();
             return queries;
           }
           const joins: Map<Id | undefined, JoinClause> = mapNew(joinEntries);
@@ -547,14 +540,12 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
           const hasGroupsOrHavings = !collIsEmpty(groups) || !isEmpty(havings);
           const selectJoinWhereStore = hasGroupsOrHavings
-            ? getPreStore(queryId)
+            ? (stagedDefinition[2] = createStore())
             : resultStore;
 
           // GROUP & HAVING
 
           if (hasGroupsOrHavings) {
-            synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
-
             const groupedSelectedCellIds: IdMap<Set<[Id, Aggregators]>> =
               mapNew();
             mapForEach(groups, (groupedCellId, [selectedCellId, aggregators]) =>
@@ -637,7 +628,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
             addPreStoreListener(
               selectJoinWhereStore,
-              queryId,
+              nextPreStoreListenerIds,
               selectJoinWhereStore.addRowListener(
                 queryId,
                 null,
@@ -724,8 +715,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
           // SELECT & JOIN & WHERE
 
-          synchronizeTransactions(queryId, rootStore, selectJoinWhereStore);
-
           const writeSelectRow = (rootRowId: Id) => {
             const getJoinCell = (arg1: Id | true, arg2?: Id, arg3?: Id) => {
               const joinedTableId = isTrue(arg1) ? arg2 : arg1;
@@ -785,8 +774,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                   previousRemote,
                   ([, previousRemoteSourceStore, previousRemoteListenerId]) =>
                     delSourceStoreListeners(
-                      queryId,
                       previousRemoteSourceStore,
+                      nextSourceStoreListenerIds,
                       previousRemoteListenerId,
                     ),
                 );
@@ -800,7 +789,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                         remoteSourceStore,
                         ...addSourceStoreListeners(
                           remoteSourceStore,
-                          queryId,
+                          nextSourceStoreListenerIds,
                           1,
                           remoteSourceStore.addRowListener(
                             realJoinedTableId,
@@ -842,7 +831,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 ifNotUndefined(
                   mapGet(idsByRootRowId, rootRowId),
                   ([, sourceStore, listenerId]) => {
-                    delSourceStoreListeners(queryId, sourceStore, listenerId);
+                    delSourceStoreListeners(
+                      sourceStore,
+                      nextSourceStoreListenerIds,
+                      listenerId,
+                    );
                     mapSet(idsByRootRowId, rootRowId);
                   },
                 ),
@@ -856,15 +849,98 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             );
             addSourceStoreListeners(
               rootStore,
-              queryId,
+              nextSourceStoreListenerIds,
               0,
               rootStore.addRowListener(tableId, null, rootRowChanged),
             );
           });
 
+          if (hasGroupsOrHavings) {
+            synchronizeTransactions(
+              selectJoinWhereStore,
+              resultStore,
+              nextPreStoreListenerIds,
+            );
+          }
+          synchronizeTransactions(
+            rootStore,
+            selectJoinWhereStore,
+            nextPreStoreListenerIds,
+          );
+          commit?.();
+
           return queries;
         }) as Queries,
     );
+
+  const setQueryDefinitionImpl = (
+    queryId: Id,
+    definition?: QueryDefinition,
+  ): Queries => {
+    const stagedDefinition: StagedDefinition = [mapNew(), mapNew()];
+    let committed = false;
+    tryCatchSync(
+      () =>
+        runQueryDefinition(queryId, stagedDefinition, definition, () => {
+          ifNotUndefined(definition, (definition) =>
+            commitQueryDefinition(queryId, definition),
+          );
+          resetStoreListeners(mapGet(preStoreListenerIds, queryId));
+          resetStoreListeners(mapGet(sourceStoreListenerIds, queryId));
+          mapSet(
+            preStoreListenerIds,
+            queryId,
+            collIsEmpty(stagedDefinition[0]) ? undefined : stagedDefinition[0],
+          );
+          mapSet(
+            sourceStoreListenerIds,
+            queryId,
+            collIsEmpty(stagedDefinition[1]) ? undefined : stagedDefinition[1],
+          );
+          mapSet(preStores, queryId, stagedDefinition[2]);
+          committed = true;
+        }),
+      (error) => {
+        if (!committed) {
+          resetStoreListeners(stagedDefinition[0]);
+          resetStoreListeners(stagedDefinition[1]);
+        }
+        cleanStores();
+        throw error;
+      },
+    );
+    return queries;
+  };
+
+  const commitQueryDefinition = (
+    queryId: Id,
+    [tableId, build, asQuery, paramValues]: QueryDefinition,
+  ): void => {
+    ifNotUndefined(getQueryArgs(queryId), ([, listenerId]) =>
+      paramStore.delListener(listenerId),
+    );
+    setAdd(committingQueryIds, queryId);
+    tryFinally(
+      () => {
+        setDefinition(queryId, tableId);
+        setQueryArgs(queryId, [
+          build,
+          paramStore.addRowListener(
+            PARAMS_TABLE,
+            queryId,
+            () =>
+              collHas(committingQueryIds, queryId)
+                ? 0
+                : setQueryDefinitionImpl(queryId),
+            true,
+          ),
+          asQuery,
+        ]);
+        setOrDelParamValues(queryId, paramValues);
+      },
+      () => collDel(committingQueryIds, queryId),
+    );
+  };
 
   const delQueryDefinition = (queryId: Id): Queries => {
     ifNotUndefined(getQueryArgs(queryId), ([, listenerId]) =>

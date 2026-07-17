@@ -5194,6 +5194,200 @@ describe('Miscellaneous', () => {
     expect(createdStores).toHaveLength(6);
   });
 
+  test('builds a parameterized definition once', () => {
+    store.setRow('t1', 'r1', {c1: 1, c2: 2});
+    let buildCount = 0;
+    queries.setQueryDefinition(
+      'q1',
+      't1',
+      ({param, select}) => {
+        buildCount++;
+        select(param('cellId') as Id);
+      },
+      {cellId: 'c1'},
+    );
+
+    expect(buildCount).toBe(1);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+
+    queries.setParamValue('q1', 'cellId', 'c2');
+    expect(buildCount).toBe(2);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c2: 2}});
+  });
+
+  test('rolls back params if rebuilding the query throws', () => {
+    const error = new Error('param error');
+    store.setRow('t1', 'r1', {c1: 1});
+    queries.setQueryDefinition(
+      'q1',
+      't1',
+      ({param, select}) => {
+        if (param('throw')) {
+          throw error;
+        }
+        select('c1');
+      },
+      {throw: false},
+    );
+
+    expect(() => queries.setParamValue('q1', 'throw', true)).toThrow(error);
+    expect(queries.getParamValue('q1', 'throw')).toBe(false);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+
+    store.setCell('t1', 'r1', 'c1', 2);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 2}});
+  });
+
+  test('keeps the previous definition if its replacement builder throws', () => {
+    const error = new Error('build error');
+    store.setCell('t1', 'r1', 'c1', 1).setCell('t2', 'r1', 'c2', 2);
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({select}) => {
+        select('c2');
+        throw error;
+      }),
+    ).toThrow(error);
+    expect(queries.getTableId('q1')).toBe('t1');
+    expect(store.getListenerStats().row).toBe(1);
+
+    store.setCell('t1', 'r1', 'c1', 3);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 3}});
+
+    expect(() =>
+      queries.setQueryDefinition('q2', 't2', () => {
+        throw error;
+      }),
+    ).toThrow(error);
+    expect(queries.hasQuery('q2')).toBe(false);
+  });
+
+  test('keeps the previous definition if initial evaluation throws', () => {
+    const error = new Error('evaluation error');
+    const resultListener = vi.fn();
+    store
+      .setRow('t1', 'r1', {c1: 1})
+      .setRow('t2', 'r1', {c2: 2})
+      .setRow('t3', 'r1', {c3: 3});
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    queries.addResultTableListener('q1', resultListener);
+
+    const expectPreviousDefinition = () => {
+      expect(queries.getTableId('q1')).toBe('t1');
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+      expect(store.getListenerStats().row).toBe(1);
+      expect(resultListener).not.toHaveBeenCalled();
+    };
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({select}) =>
+        select(() => {
+          throw error;
+        }),
+      ),
+    ).toThrow(error);
+    expectPreviousDefinition();
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({select, where}) => {
+        select('c2');
+        where(() => {
+          throw error;
+        });
+      }),
+    ).toThrow(error);
+    expectPreviousDefinition();
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({join, select}) => {
+        join('t3', () => {
+          throw error;
+        });
+        select('c2');
+      }),
+    ).toThrow(error);
+    expectPreviousDefinition();
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({group, select}) => {
+        select('c2');
+        group('c2', () => {
+          throw error;
+        });
+      }),
+    ).toThrow(error);
+    expectPreviousDefinition();
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({having, select}) => {
+        select('c2');
+        having(() => {
+          throw error;
+        });
+      }),
+    ).toThrow(error);
+    expectPreviousDefinition();
+
+    store.setCell('t1', 'r1', 'c1', 4);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 4}});
+    expect(resultListener).toHaveBeenCalledTimes(1);
+  });
+
+  test('keeps the previous grouped definition if replacement throws', () => {
+    const error = new Error('aggregate error');
+    const resultListener = vi.fn();
+    store
+      .setTable('t1', {
+        r1: {c1: 'a', c2: 1},
+        r2: {c1: 'a', c2: 2},
+      })
+      .setRow('t2', 'r1', {c2: 2});
+    queries.setQueryDefinition('q1', 't1', ({group, select}) => {
+      select('c1');
+      select('c2');
+      group('c2', 'sum');
+    });
+    queries.addResultTableListener('q1', resultListener);
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({group, select}) => {
+        select('c2');
+        group('c2', () => {
+          throw error;
+        });
+      }),
+    ).toThrow(error);
+    expect(queries.getResultTable('q1')).toEqual({0: {c1: 'a', c2: 3}});
+    expect(resultListener).not.toHaveBeenCalled();
+
+    store.setCell('t1', 'r2', 'c2', 3);
+    expect(queries.getResultTable('q1')).toEqual({0: {c1: 'a', c2: 4}});
+    expect(resultListener).toHaveBeenCalledTimes(1);
+  });
+
+  test('keeps dependent queries usable if replacement throws', () => {
+    const error = new Error('select error');
+    store.setRow('t1', 'r1', {c1: 1}).setRow('t2', 'r1', {c2: 2});
+    queries
+      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+      .setQueryDefinition('q2', true, 'q1', ({select}) => select('c1'));
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't2', ({select}) =>
+        select(() => {
+          throw error;
+        }),
+      ),
+    ).toThrow(error);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+    expect(queries.getResultTable('q2')).toEqual({r1: {c1: 1}});
+
+    store.setCell('t1', 'r1', 'c1', 3);
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 3}});
+    expect(queries.getResultTable('q2')).toEqual({r1: {c1: 3}});
+  });
+
   test('resets results when select changes', () => {
     setCells();
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
