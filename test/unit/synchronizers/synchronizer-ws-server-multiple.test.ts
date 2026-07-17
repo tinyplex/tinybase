@@ -15,6 +15,7 @@ class MockWebSocket {
   bufferedAmount = 0;
   sentPayloads: string[] = [];
   closeCalls = 0;
+  ignoreHello = false;
   ignoredChannels = new Set<string>();
   onRemove?: () => void;
   onSend?: (payload: string) => void;
@@ -40,6 +41,7 @@ class MockWebSocket {
       if (
         message == -1 &&
         controlAndBody[0] != 2 &&
+        !(controlAndBody[0] == 0 && this.ignoreHello) &&
         !this.ignoredChannels.has(controlAndBody[1])
       ) {
         queueMicrotask(() =>
@@ -312,6 +314,33 @@ test('multiple stores resubscribe after reconnecting', async () => {
   expect(webSocket.closeCalls).toBe(1);
 });
 
+test('a stale opening handshake does not consume a reconnect', async () => {
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    0.01,
+  );
+  const countPayloads = (body: string) =>
+    webSocket.sentPayloads.filter((payload) => payload.includes(body)).length;
+  const helloCount = countPayloads('-1,[0,1]');
+  const subscribeCount = countPayloads('-1,[1,"files"]');
+
+  webSocket.disconnect();
+  webSocket.ignoreHello = true;
+  webSocket.reconnect();
+  webSocket.disconnect();
+  webSocket.ignoreHello = false;
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve));
+
+  expect(countPayloads('-1,[0,1]')).toBe(helloCount + 2);
+  expect(countPayloads('-1,[1,"files"]')).toBe(subscribeCount + 1);
+
+  await synchronizer.destroy();
+});
+
 test('multiplexed channel errors and timeouts keep their owners', async () => {
   const filesErrors: any[] = [];
   const editorErrors: any[] = [];
@@ -457,6 +486,53 @@ test('queued multiplexed responses flush in batches', async () => {
   expect(flushed.indexOf('queued1')).toBeLessThan(flushed.indexOf('queued2'));
 
   await synchronizer.destroy();
+});
+
+test('throwing queued receives release their channel', async () => {
+  vi.useFakeTimers();
+  try {
+    const webSocket = new MockWebSocket();
+    const editorSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'editor',
+    );
+    const receiveError = new Error('receive');
+    webSocket.onSend = (payload) => {
+      if (payload.includes('-1,[1,"files"]')) {
+        webSocket.receive('M\nfiles\nremote\n[null,1,""]');
+        webSocket.receive('M\nfiles\nremote\n[null,1,""]');
+      }
+    };
+
+    await expect(
+      createWsSynchronizer(
+        createMergeableStore(),
+        webSocket as any,
+        'files',
+        1,
+        undefined,
+        () => {
+          throw receiveError;
+        },
+      ),
+    ).rejects.toBe(receiveError);
+    expect(vi.getTimerCount()).toBe(0);
+    webSocket.onSend = undefined;
+    const filesSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+    );
+
+    expect(webSocket.closeCalls).toBe(0);
+    expect(webSocket.listenerCount('message')).toBe(1);
+    await filesSynchronizer.destroy();
+    await editorSynchronizer.destroy();
+    expect(webSocket.closeCalls).toBe(1);
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 test('multiplexed queues have explicit overflow behavior', async () => {
