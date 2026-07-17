@@ -273,6 +273,10 @@ WebSocket synchronization payloads are now fragmented by UTF-8 byte size and
 only at Unicode code point boundaries. Non-BMP characters therefore remain
 intact when a fragment is encoded and sent as an individual WebSocket message.
 
+Generated groups are also capped at 1,000 fragments. TinyBase raises an
+undersized fragment target when necessary so a sender cannot create a group the
+receiver must reject for exceeding the protocol limit.
+
 The fragmenter now walks string boundaries directly instead of materializing a
 regular-expression match array for every payload.
 

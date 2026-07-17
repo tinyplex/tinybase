@@ -137,7 +137,8 @@
   /**
    * The getFragmentSize method is used to specify a target maximum UTF-8 byte
    * size for each WebSocket message fragment sent by the Durable Object.
-   * Unicode code points are never split and can exceed this size.
+   * Unicode code points are never split and can exceed this size. TinyBase sends
+   * at most 1,000 fragments for one payload, increasing the target when needed.
    *
    * Return a number to split larger synchronization payloads into fragments
    * that are reassembled by the receiving WsSynchronizer. Return `undefined`

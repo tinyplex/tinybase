@@ -495,6 +495,59 @@ test('fragmented websocket payloads', async () => {
   }
 });
 
+test('fragment groups stay within the protocol limit', async () => {
+  const fragmentSize = 1;
+  const value = 'x'.repeat(1_500);
+  const sentPayloads: string[] = [];
+  const wsServer = createWsServer(new WebSocketServer({port: 8049}));
+  let synchronizer1: WsClient.WsSynchronizer<WebSocket> | undefined;
+  let synchronizer2: WsClient.WsSynchronizer<WebSocket> | undefined;
+  const s1 = createMergeableStore('s1', getNow);
+  const s2 = createMergeableStore('s2', getNow);
+  s1.setCell('t1', 'r1', 'c1', value);
+
+  const webSocket1 = new WebSocket('ws://localhost:8049');
+  const send1 = webSocket1.send.bind(webSocket1);
+  webSocket1.send = ((payload: string) => {
+    sentPayloads.push(payload);
+    return send1(payload);
+  }) as any;
+
+  try {
+    synchronizer1 = await createWsSynchronizer(
+      s1,
+      webSocket1,
+      1,
+      undefined,
+      undefined,
+      undefined,
+      fragmentSize,
+    );
+    await synchronizer1.startSync();
+
+    synchronizer2 = await createWsSynchronizer(
+      s2,
+      new WebSocket('ws://localhost:8049'),
+      1,
+      undefined,
+      undefined,
+      undefined,
+      fragmentSize,
+    );
+    await synchronizer2.startSync();
+    await pause(200);
+
+    const fragmentGroup = getFragmentGroup(sentPayloads, value) ?? [];
+    expect(fragmentGroup.length).toBeGreaterThan(1);
+    expect(fragmentGroup.length).toBeLessThanOrEqual(1_000);
+    expect(s2.getCell('t1', 'r1', 'c1')).toBe(value);
+  } finally {
+    await synchronizer1?.destroy();
+    await synchronizer2?.destroy();
+    await wsServer.destroy();
+  }
+});
+
 test('fragmented websocket payloads preserve Unicode', async () => {
   const fragmentSize = 5;
   // This four-code-unit pattern walks the emoji before, across, and after each
