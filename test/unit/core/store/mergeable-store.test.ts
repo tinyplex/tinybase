@@ -240,6 +240,26 @@ describe('getMergeableContent', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
+  test('Rollback restores mergeable stamps', () => {
+    store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    const content = store.getMergeableContent();
+    const error = new Error('transaction error');
+
+    expect(() =>
+      store.transaction(() => {
+        store.delCell('t1', 'r1', 'c1').setValue('v1', 2);
+        throw error;
+      }),
+    ).toThrow(error);
+    expect(store.getMergeableContent()).toEqual(content);
+
+    store.transaction(
+      () => store.setCell('t1', 'r1', 'c1', 2).delValue('v1'),
+      () => true,
+    );
+    expect(store.getMergeableContent()).toEqual(content);
+  });
+
   test('Immutability', () => {
     store.setContent([
       {t1: {r1: {c1: 0, c2: 1}, r2: {c1: 2}}, t2: {r1: {c1: 3}}},
@@ -616,16 +636,23 @@ describe('applyMergeableChanges/setMergeableContent', () => {
   });
 
   test('restores raw change listening after apply error', () => {
+    store.setValue('v0', 0);
+    const content = store.getMergeableContent();
     const error = new Error('listener error');
-    const listenerId = store.addValueListener('v1', () => {
-      throw error;
-    });
+    const listenerId = store.addValueListener(
+      'v1',
+      () => {
+        throw error;
+      },
+      true,
+    );
     expect(() =>
       store.applyMergeableChanges([
         stamped(0, 0, {}),
         stamped(0, 0, {v1: stamped(0, 0, 1)}),
       ] as MergeableContent),
     ).toThrow(error);
+    expect(store.getMergeableContent()).toEqual(content);
     store.delListener(listenerId).setValue('v2', 2);
     expect(store.getMergeableContent()[1][0].v2[0]).toEqual(2);
   });

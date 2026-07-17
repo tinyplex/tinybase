@@ -150,6 +150,10 @@ Rollback also restores TablesSchema and ValuesSchema definitions before
 restoring content, so schema changes cannot survive a failed transaction or
 prevent previously valid data from being recovered.
 
+MergeableStore rollback now restores CRDT stamps and hashes alongside visible
+content, preventing failed local or remote changes from leaving hidden
+tombstones that could reject later synchronization.
+
 ## Bounded MergeableStore Clocks
 
 MergeableStore now validates HLCs before applying mergeable content or changes.

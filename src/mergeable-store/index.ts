@@ -23,11 +23,16 @@ import type {
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
 import {
+  arrayClear,
+  arrayPop,
+  arrayPush,
+} from '../common/array.ts';
+import {
   decodeIfJson,
   isCellOrValueOrUndefined,
   isReservedString,
 } from '../common/cell.ts';
-import {collClear, collForEach} from '../common/coll.ts';
+import {collClear, collForEach, collHas} from '../common/coll.ts';
 import {ERROR_HLC, errorThrow, tryFinally} from '../common/error.ts';
 import {
   addOrRemoveHash,
@@ -40,6 +45,7 @@ import {
   mapForEach,
   mapGet,
   mapNew,
+  mapSet,
   mapToObj,
 } from '../common/map.ts';
 import {
@@ -53,7 +59,7 @@ import {
   objSet,
   objValidate,
 } from '../common/obj.ts';
-import {ifNotUndefined, isArray, noop, size, slice} from '../common/other.ts';
+import {ifNotUndefined, isArray, size, slice} from '../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {
   RowStampMap,
@@ -208,8 +214,11 @@ export const createMergeableStore = ((
 ): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
+  let oldContentStampMap = contentStampMap;
   let defaultingContent: 0 | 1 = 0;
   let mutated: 0 | 1 = 0;
+  let oldMutated: 0 | 1 = mutated;
+  const rollbackStampActions: (() => void)[] = [];
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
   const [getNextHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
@@ -222,6 +231,26 @@ export const createMergeableStore = ((
     listeningToRawStoreChanges = 0;
     tryFinally(actions, () => (listeningToRawStoreChanges = wasListening));
     return mergeableStore as MergeableStore;
+  };
+
+  const saveStamp = <Thing>(stamp: Stamp<Thing, true>): void => {
+    const [thing, hlc, hash] = stamp;
+    arrayPush(rollbackStampActions, () => {
+      stamp[0] = thing;
+      stamp[1] = hlc;
+      stamp[2] = hash;
+    });
+  };
+
+  const ensureStampMap = <Thing>(
+    stampMaps: Map<Id, Thing>,
+    id: Id,
+    getDefaultValue: () => Thing,
+  ): Thing => {
+    if (!collHas(stampMaps, id)) {
+      arrayPush(rollbackStampActions, () => mapSet(stampMaps, id));
+    }
+    return mapEnsure(stampMaps, id, getDefaultValue);
   };
 
   const mergeContentOrChanges = (
@@ -247,7 +276,7 @@ export const createMergeableStore = ((
         [rowsObj, incomingTableHlc = EMPTY_STRING, incomingTableHash = 0],
         tableId,
       ) => {
-        const tableStampMap = mapEnsure<Id, TableStampMap>(
+        const tableStampMap = ensureStampMap<TableStampMap>(
           tableStampMaps,
           tableId,
           stampNewMap,
@@ -258,7 +287,7 @@ export const createMergeableStore = ((
         objForEach(rowsObj, (row, rowId) => {
           const [rowHlc, oldRowHash, rowHash] = mergeCellsOrValues(
             row,
-            mapEnsure<Id, RowStampMap>(rowStampMaps, rowId, stampNewMap),
+            ensureStampMap<RowStampMap>(rowStampMaps, rowId, stampNewMap),
             objEnsure<IdObj<CellOrUndefined>>(
               objEnsure<IdObj<IdObj<CellOrUndefined>>>(
                 tablesChanges,
@@ -283,6 +312,7 @@ export const createMergeableStore = ((
         tableHash ^= isContent
           ? 0
           : replaceHlcHash(oldTableHlc, incomingTableHlc);
+        saveStamp(tableStampMap);
         stampUpdate(tableStampMap, incomingTableHlc, tableHash);
 
         tablesHash ^= isContent
@@ -298,6 +328,7 @@ export const createMergeableStore = ((
     tablesHash ^= isContent
       ? 0
       : replaceHlcHash(oldTablesHlc, incomingTablesHlc);
+    saveStamp(tablesStampMap);
     stampUpdate(tablesStampMap, incomingTablesHlc, tablesHash);
 
     const [valuesHlc] = mergeCellsOrValues(
@@ -332,7 +363,7 @@ export const createMergeableStore = ((
     objForEach(
       thingsObj,
       ([thing, thingHlc = EMPTY_STRING, incomingThingHash = 0], thingId) => {
-        const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
+        const thingStampMap = ensureStampMap<Stamp<Thing, true>>(
           thingStampMaps,
           thingId,
           () => [undefined as any, EMPTY_STRING, 0],
@@ -340,6 +371,7 @@ export const createMergeableStore = ((
         const [, oldThingHlc, oldThingHash] = thingStampMap;
 
         if (!oldThingHlc || thingHlc > oldThingHlc) {
+          saveStamp(thingStampMap);
           stampUpdate(
             thingStampMap,
             thingHlc,
@@ -361,16 +393,34 @@ export const createMergeableStore = ((
     thingsHash ^= isContent
       ? 0
       : replaceHlcHash(oldThingsHlc, incomingThingsHlc);
+    saveStamp(thingsStampMap);
     stampUpdate(thingsStampMap, incomingThingsHlc, thingsHash);
 
     return [thingsHlc, oldThingsHash, thingsStampMap[2]];
   };
 
-  const preStartTransaction = noop;
+  const preStartTransaction = () => {
+    oldContentStampMap = contentStampMap;
+    oldMutated = mutated;
+  };
 
-  const preFinishTransaction = noop;
+  const restoreStampMap = () => {
+    while (size(rollbackStampActions)) {
+      arrayPop(rollbackStampActions)?.();
+    }
+    contentStampMap = oldContentStampMap;
+    mutated = oldMutated;
+  };
 
-  const postFinishTransaction = () => {
+  const preFinishTransaction = (rolledBack: boolean) =>
+    rolledBack ? restoreStampMap() : 0;
+
+  const postFinishTransaction = (rolledBack: boolean) => {
+    if (rolledBack) {
+      restoreStampMap();
+    } else {
+      arrayClear(rollbackStampActions);
+    }
     collClear(touchedCells);
     collClear(touchedValues);
   };
@@ -756,8 +806,10 @@ export const createMergeableStore = ((
       encoded ? 1 : 0,
     )
       ? disableListeningToRawStoreChanges(() =>
-          (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
-            mergeContentOrChanges(mergeableChanges),
+          store.transaction(() =>
+            (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
+              mergeContentOrChanges(mergeableChanges),
+            ),
           ),
         )
       : (mergeableStore as MergeableStore);
