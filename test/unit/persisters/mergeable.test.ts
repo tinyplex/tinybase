@@ -9,7 +9,7 @@ import {createMergeableStore, createStore} from 'tinybase';
 import type {Persister, PersisterListener} from 'tinybase/persisters';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
-import {getTimeFunctions} from '../common/mergeable.ts';
+import {getTimeFunctions, time} from '../common/mergeable.ts';
 import {noop} from '../common/other.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
@@ -153,7 +153,7 @@ describe.each([
       [
         {
           t1: [
-            {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
+            {r1: [{c1: [1, time(0, 0), 4065945599]}, '', 1279994494]},
             '',
             1293085726,
           ],
@@ -161,7 +161,7 @@ describe.each([
         '',
         4033596827,
       ],
-      [{v1: [1, '_', 4065945599]}, '', 2304392760],
+      [{v1: [1, time(0, 0), 4065945599]}, '', 2304392760],
     ]);
     await persister.load();
     pause(2);
@@ -200,7 +200,7 @@ describe.each([
         [
           {
             t1: [
-              {r1: [{c1: [1, '1', 4065945599]}, '', 1279994494]},
+              {r1: [{c1: [1, time(1, 0), 4065945599]}, '', 1279994494]},
               '',
               1293085726,
             ],
@@ -210,6 +210,7 @@ describe.each([
         ],
         [{}, '', 0],
       ]);
+      await pause(0);
       expect(persister.isAutoLoading()).toEqual(false);
       await persister.startAutoLoad();
       expect(persister.isAutoLoading()).toEqual(true);
@@ -222,7 +223,7 @@ describe.each([
         [
           {
             t1: [
-              {r1: [{c1: [2, '2', 2669080357]}, '', 274319047]},
+              {r1: [{c1: [2, time(2, 0), 2669080357]}, '', 274319047]},
               '',
               4089057354,
             ],
@@ -242,7 +243,7 @@ describe.each([
         [
           {
             t1: [
-              {r1: [{c1: [3, '3', 3252714811]}, '', 1416411412]},
+              {r1: [{c1: [3, time(3, 0), 3252714811]}, '', 1416411412]},
               '',
               3704904231,
             ],
@@ -263,7 +264,7 @@ describe.each([
         [
           {
             t1: [
-              {r1: [{c1: [3, '4', 3252714811]}, '', 1416411412]},
+              {r1: [{c1: [3, time(4, 0), 3252714811]}, '', 1416411412]},
               '',
               3704904231,
             ],
@@ -329,7 +330,7 @@ describe.each([
       await pause(0);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
-      await pause(0);
+      await pause(persistable.autoLoadPause);
       expect(persister.getStats()).toEqual({loads: 2, saves: 1});
     }
   });
@@ -340,7 +341,7 @@ describe.each([
         [
           {
             t1: [
-              {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
+              {r1: [{c1: [1, time(0, 0), 4065945599]}, '', 1279994494]},
               '',
               1293085726,
             ],
@@ -364,7 +365,7 @@ describe.each([
         [
           {
             t1: [
-              {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
+              {r1: [{c1: [1, time(0, 0), 4065945599]}, '', 1279994494]},
               '',
               1293085726,
             ],
@@ -471,7 +472,7 @@ describe('Supported, MergeableStore', () => {
       [
         {
           t1: [
-            {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
+            {r1: [{c1: [1, time(0, 0), 4065945599]}, '', 1279994494]},
             '',
             1293085726,
           ],
@@ -479,7 +480,7 @@ describe('Supported, MergeableStore', () => {
         '',
         4033596827,
       ],
-      [{v1: [1, '_', 4065945599]}, '', 2304392760],
+      [{v1: [1, time(0, 0), 4065945599]}, '', 2304392760],
     ];
     let persisted = '';
     const persister = createCustomPersister(

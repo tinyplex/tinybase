@@ -10,20 +10,20 @@ exports[`Persists to/from customSynchronizer > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
-                1680131417,
+                "Nn1JUF0----7JQY8",
+                4008049267,
               ],
             },
             "",
-            2634749936,
+            3074190582,
           ],
         },
         "",
-        2598021553,
+        3688486605,
       ],
     },
     "",
-    2494750488,
+    4288900630,
   ],
   [
     {},
@@ -43,20 +43,20 @@ exports[`Persists to/from customSynchronizer > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
-                1107305117,
+                "Nn1JUF1----7JQY8",
+                830262161,
               ],
             },
             "",
-            239923340,
+            1051432883,
           ],
         },
         "",
-        806147629,
+        3431674099,
       ],
     },
     "",
-    4135100783,
+    1559212866,
   ],
   [
     {},
@@ -76,20 +76,20 @@ exports[`Persists to/from customSynchronizer > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
-                1281296065,
+                "Nn1JUF2----7JQY8",
+                854368411,
               ],
             },
             "",
-            253170412,
+            1732716910,
           ],
         },
         "",
-        942766199,
+        2951847039,
       ],
     },
     "",
-    1560530767,
+    2525626812,
   ],
   [
     {},
@@ -109,20 +109,20 @@ exports[`Persists to/from customSynchronizer > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
-                1281296065,
+                "Nn1JUF2----7JQY8",
+                854368411,
               ],
             },
             "",
-            253170412,
+            1732716910,
           ],
         },
         "",
-        942766199,
+        2951847039,
       ],
     },
     "",
-    1560530767,
+    2525626812,
   ],
   [
     {},
@@ -579,31 +579,31 @@ exports[`Persists to/from customSynchronizer > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
-                237256183,
+                "Nn1JUF-----7JQY8",
+                1003668370,
               ],
             },
             "",
-            2867482913,
+            550994372,
           ],
         },
         "",
-        744460378,
+        1072852846,
       ],
     },
     "",
-    3362283737,
+    1771939739,
   ],
   [
     {
       "v1": [
         1,
-        "_",
-        237256183,
+        "Nn1JUF-----7JQY8",
+        1003668370,
       ],
     },
     "",
-    2754659917,
+    4180671758,
   ],
 ]
 `;
@@ -682,7 +682,7 @@ exports[`Persists to/from durableObjectStorage > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -701,7 +701,7 @@ exports[`Persists to/from durableObjectStorage > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -762,7 +762,7 @@ exports[`Persists to/from file > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -795,7 +795,7 @@ exports[`Persists to/from file > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -828,7 +828,7 @@ exports[`Persists to/from file > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -861,7 +861,7 @@ exports[`Persists to/from file > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -1421,7 +1421,7 @@ exports[`Persists to/from file > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -1440,7 +1440,7 @@ exports[`Persists to/from file > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -1538,7 +1538,7 @@ exports[`Persists to/from localStorage > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -1571,7 +1571,7 @@ exports[`Persists to/from localStorage > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -1604,7 +1604,7 @@ exports[`Persists to/from localStorage > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -1637,7 +1637,7 @@ exports[`Persists to/from localStorage > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -2131,7 +2131,7 @@ exports[`Persists to/from localStorage > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -2150,7 +2150,7 @@ exports[`Persists to/from localStorage > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -2248,20 +2248,20 @@ exports[`Persists to/from localSynchronizer > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
-                1680131417,
+                "Nn1JUF0----7JQY8",
+                4008049267,
               ],
             },
             "",
-            2634749936,
+            3074190582,
           ],
         },
         "",
-        2598021553,
+        3688486605,
       ],
     },
     "",
-    2494750488,
+    4288900630,
   ],
   [
     {},
@@ -2281,20 +2281,20 @@ exports[`Persists to/from localSynchronizer > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
-                1107305117,
+                "Nn1JUF1----7JQY8",
+                830262161,
               ],
             },
             "",
-            239923340,
+            1051432883,
           ],
         },
         "",
-        806147629,
+        3431674099,
       ],
     },
     "",
-    4135100783,
+    1559212866,
   ],
   [
     {},
@@ -2314,20 +2314,20 @@ exports[`Persists to/from localSynchronizer > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
-                1281296065,
+                "Nn1JUF2----7JQY8",
+                854368411,
               ],
             },
             "",
-            253170412,
+            1732716910,
           ],
         },
         "",
-        942766199,
+        2951847039,
       ],
     },
     "",
-    1560530767,
+    2525626812,
   ],
   [
     {},
@@ -2347,20 +2347,20 @@ exports[`Persists to/from localSynchronizer > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
-                1281296065,
+                "Nn1JUF2----7JQY8",
+                854368411,
               ],
             },
             "",
-            253170412,
+            1732716910,
           ],
         },
         "",
-        942766199,
+        2951847039,
       ],
     },
     "",
-    1560530767,
+    2525626812,
   ],
   [
     {},
@@ -2817,31 +2817,31 @@ exports[`Persists to/from localSynchronizer > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
-                237256183,
+                "Nn1JUF-----7JQY8",
+                1003668370,
               ],
             },
             "",
-            2867482913,
+            550994372,
           ],
         },
         "",
-        744460378,
+        1072852846,
       ],
     },
     "",
-    3362283737,
+    1771939739,
   ],
   [
     {
       "v1": [
         1,
-        "_",
-        237256183,
+        "Nn1JUF-----7JQY8",
+        1003668370,
       ],
     },
     "",
-    2754659917,
+    4180671758,
   ],
 ]
 `;
@@ -2910,7 +2910,7 @@ exports[`Persists to/from mockMergeableChangesListener > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -2943,20 +2943,20 @@ exports[`Persists to/from mockMergeableChangesListener > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
-                1107305117,
+                "Nn1JUF1----7JQY8",
+                830262161,
               ],
             },
             "",
-            2170608844,
+            2978462707,
           ],
         },
         "",
-        3629606658,
+        2645741624,
       ],
     },
     "",
-    212435999,
+    3362573349,
   ],
   [
     {},
@@ -2976,20 +2976,20 @@ exports[`Persists to/from mockMergeableChangesListener > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
-                1281296065,
+                "Nn1JUF2----7JQY8",
+                854368411,
               ],
             },
             "",
-            2151366316,
+            3899327790,
           ],
         },
         "",
-        1761360728,
+        2523636125,
       ],
     },
     "",
-    2724753575,
+    3561966969,
   ],
   [
     {},
@@ -3009,20 +3009,20 @@ exports[`Persists to/from mockMergeableChangesListener > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
-                1281296065,
+                "Nn1JUF2----7JQY8",
+                854368411,
               ],
             },
             "",
-            2151366316,
+            3899327790,
           ],
         },
         "",
-        1761360728,
+        2523636125,
       ],
     },
     "",
-    2724753575,
+    3561966969,
   ],
   [
     {},
@@ -3615,7 +3615,7 @@ exports[`Persists to/from mockMergeableChangesListener > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -3634,7 +3634,7 @@ exports[`Persists to/from mockMergeableChangesListener > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -3732,7 +3732,7 @@ exports[`Persists to/from mockMergeableContentListener > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -3765,7 +3765,7 @@ exports[`Persists to/from mockMergeableContentListener > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -3798,7 +3798,7 @@ exports[`Persists to/from mockMergeableContentListener > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -3831,7 +3831,7 @@ exports[`Persists to/from mockMergeableContentListener > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -4437,7 +4437,7 @@ exports[`Persists to/from mockMergeableContentListener > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -4456,7 +4456,7 @@ exports[`Persists to/from mockMergeableContentListener > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -4554,7 +4554,7 @@ exports[`Persists to/from mockMergeableNoContentListener > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -4587,7 +4587,7 @@ exports[`Persists to/from mockMergeableNoContentListener > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -4620,7 +4620,7 @@ exports[`Persists to/from mockMergeableNoContentListener > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -4653,7 +4653,7 @@ exports[`Persists to/from mockMergeableNoContentListener > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -5259,7 +5259,7 @@ exports[`Persists to/from mockMergeableNoContentListener > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -5278,7 +5278,7 @@ exports[`Persists to/from mockMergeableNoContentListener > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -5606,7 +5606,7 @@ exports[`Persists to/from opfs > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -5625,7 +5625,7 @@ exports[`Persists to/from opfs > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -5723,7 +5723,7 @@ exports[`Persists to/from pglite > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -5756,7 +5756,7 @@ exports[`Persists to/from pglite > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -5789,7 +5789,7 @@ exports[`Persists to/from pglite > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -5822,7 +5822,7 @@ exports[`Persists to/from pglite > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -6316,7 +6316,7 @@ exports[`Persists to/from pglite > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -6335,7 +6335,7 @@ exports[`Persists to/from pglite > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -6433,7 +6433,7 @@ exports[`Persists to/from postgres > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -6466,7 +6466,7 @@ exports[`Persists to/from postgres > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -6499,7 +6499,7 @@ exports[`Persists to/from postgres > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -6532,7 +6532,7 @@ exports[`Persists to/from postgres > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -7026,7 +7026,7 @@ exports[`Persists to/from postgres > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -7045,7 +7045,7 @@ exports[`Persists to/from postgres > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -7143,7 +7143,7 @@ exports[`Persists to/from sessionStorage > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -7176,7 +7176,7 @@ exports[`Persists to/from sessionStorage > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -7209,7 +7209,7 @@ exports[`Persists to/from sessionStorage > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -7242,7 +7242,7 @@ exports[`Persists to/from sessionStorage > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -7736,7 +7736,7 @@ exports[`Persists to/from sessionStorage > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -7755,7 +7755,7 @@ exports[`Persists to/from sessionStorage > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -7853,7 +7853,7 @@ exports[`Persists to/from sqlite3 > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -7886,7 +7886,7 @@ exports[`Persists to/from sqlite3 > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -7919,7 +7919,7 @@ exports[`Persists to/from sqlite3 > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -7952,7 +7952,7 @@ exports[`Persists to/from sqlite3 > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -8446,7 +8446,7 @@ exports[`Persists to/from sqlite3 > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -8465,7 +8465,7 @@ exports[`Persists to/from sqlite3 > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -8563,7 +8563,7 @@ exports[`Persists to/from sqliteWasm > autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "1",
+                "Nn1JUF0----7JQY8",
                 4065945599,
               ],
             },
@@ -8596,7 +8596,7 @@ exports[`Persists to/from sqliteWasm > autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "2",
+                "Nn1JUF1----7JQY8",
                 2669080357,
               ],
             },
@@ -8629,7 +8629,7 @@ exports[`Persists to/from sqliteWasm > autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -8662,7 +8662,7 @@ exports[`Persists to/from sqliteWasm > autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "3",
+                "Nn1JUF2----7JQY8",
                 3252714811,
               ],
             },
@@ -9156,7 +9156,7 @@ exports[`Persists to/from sqliteWasm > loads 1`] = `
             {
               "c1": [
                 1,
-                "_",
+                "Nn1JUF-----7JQY8",
                 4065945599,
               ],
             },
@@ -9175,7 +9175,7 @@ exports[`Persists to/from sqliteWasm > loads 1`] = `
     {
       "v1": [
         1,
-        "_",
+        "Nn1JUF-----7JQY8",
         4065945599,
       ],
     },
@@ -9270,6 +9270,6 @@ exports[`Supported, MergeableStore > Changes in setPersisted 1`] = `
 ]
 `;
 
-exports[`Supported, MergeableStore > Content in setPersisted 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"_",4065945599]},"",1279994494]},"",1293085726]},"",4033596827],[{"v1":[1,"_",4065945599]},"",2304392760]]"`;
+exports[`Supported, MergeableStore > Content in setPersisted 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",4065945599]},"",1279994494]},"",1293085726]},"",4033596827],[{"v1":[1,"Nn1JUF-----7JQY8",4065945599]},"",2304392760]]"`;
 
 exports[`Supported, MergeableStore > loading from legacy 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",1003668370]},"",550994372]},"",1072852846]},"",1771939739],[{"v1":[1,"Nn1JUF----07JQY8",1130939691]},"",3877632732]]"`;
