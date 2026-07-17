@@ -152,7 +152,10 @@ export const createCustomPersister = <
   let loads = 0;
   let saves = 0;
   let autoLoadHandle: ListenerHandle | undefined;
+  let autoLoadPromise: Promise<void> | undefined;
+  let autoLoadGeneration = 0;
   let autoSaveListenerId: Id | undefined;
+  let autoSaveGeneration = 0;
   let destroyed = 0;
   let activeAction: Promise<void> | undefined;
   const scheduleOwner = {};
@@ -251,6 +254,18 @@ export const createCustomPersister = <
 
   // --
 
+  const trackAutoLoadPromise = (
+    newAutoLoadPromise: Promise<void>,
+  ): Promise<void> =>
+    tryFinallyAsync(
+      () => (autoLoadPromise = newAutoLoadPromise),
+      () => {
+        if (autoLoadPromise == newAutoLoadPromise) {
+          autoLoadPromise = undefined;
+        }
+      },
+    );
+
   const load = async (
     initialContent?: Content | (() => Content),
   ): Promise<Persister> => {
@@ -287,11 +302,12 @@ export const createCustomPersister = <
   const startAutoLoad = async (
     initialContent?: Content | (() => Content),
   ): Promise<Persister<Persist>> => {
-    await stopAutoLoad();
-    await tryCatch(
-      async () =>
-        (autoLoadHandle = await addPersisterListener(
-          async (content, changes) => {
+    const generation = ++autoLoadGeneration;
+    await stopAutoLoad(true);
+    if (generation == autoLoadGeneration && !destroyed) {
+      const listenerPromise = tryCatch(async () => {
+        const handle = await addPersisterListener(async (content, changes) => {
+          if (generation == autoLoadGeneration && !destroyed) {
             if (changes || content) {
               /*! istanbul ignore else */
               if (status != StatusValues.Saving) {
@@ -306,22 +322,43 @@ export const createCustomPersister = <
             } else {
               await load();
             }
-          },
-        )),
-      onIgnoredError,
-    );
-    await load(initialContent);
+          }
+        });
+        if (generation == autoLoadGeneration && !destroyed) {
+          autoLoadHandle = handle;
+        } else if (!isUndefined(handle)) {
+          await delPersisterListener(handle);
+        }
+      }, onIgnoredError);
+      await trackAutoLoadPromise(listenerPromise);
+      if (generation == autoLoadGeneration && !destroyed) {
+        await load(initialContent);
+      }
+    }
     return persister;
   };
 
-  const stopAutoLoad = async (): Promise<Persister<Persist>> => {
-    if (autoLoadHandle) {
-      await tryCatch(
-        () => delPersisterListener(autoLoadHandle!),
-        onIgnoredError,
-      );
-      autoLoadHandle = undefined;
+  const stopAutoLoad = async (
+    keepGeneration = false,
+  ): Promise<Persister<Persist>> => {
+    if (!keepGeneration) {
+      autoLoadGeneration++;
     }
+    const listenerPromise = autoLoadPromise;
+    const handle = autoLoadHandle;
+    autoLoadHandle = undefined;
+    await trackAutoLoadPromise(
+      tryFinallyAsync(
+        async () => {
+          await listenerPromise;
+        },
+        async () => {
+          if (!isUndefined(handle)) {
+            await tryCatch(() => delPersisterListener(handle), onIgnoredError);
+          }
+        },
+      ),
+    );
     return persister;
   };
 
@@ -349,21 +386,34 @@ export const createCustomPersister = <
   };
 
   const startAutoSave = async (): Promise<Persister<Persist>> => {
-    stopAutoSave();
-    await save();
-    autoSaveListenerId = store.addDidFinishTransactionListener(() => {
-      const changes = getChanges() as any;
-      if (hasChanges(changes)) {
-        save(changes);
+    const generation = ++autoSaveGeneration;
+    await stopAutoSave(true);
+    if (generation == autoSaveGeneration && !destroyed) {
+      await save();
+      if (generation == autoSaveGeneration && !destroyed) {
+        autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+          if (generation == autoSaveGeneration && !destroyed) {
+            const changes = getChanges() as any;
+            if (hasChanges(changes)) {
+              save(changes);
+            }
+          }
+        });
       }
-    });
+    }
     return persister;
   };
 
-  const stopAutoSave = async (): Promise<Persister<Persist>> => {
-    if (autoSaveListenerId) {
-      store.delListener(autoSaveListenerId);
-      autoSaveListenerId = undefined;
+  const stopAutoSave = async (
+    keepGeneration = false,
+  ): Promise<Persister<Persist>> => {
+    if (!keepGeneration) {
+      autoSaveGeneration++;
+    }
+    const listenerId = autoSaveListenerId;
+    autoSaveListenerId = undefined;
+    if (!isUndefined(listenerId)) {
+      store.delListener(listenerId);
     }
     return persister;
   };
@@ -388,8 +438,12 @@ export const createCustomPersister = <
     const [call1, call2] = stopSaveFirst
       ? [stopAutoSave, stopAutoLoad]
       : [stopAutoLoad, stopAutoSave];
-    await call1();
-    await call2();
+    await tryFinallyAsync(
+      () => call1(),
+      async () => {
+        await call2();
+      },
+    );
     return persister;
   };
 

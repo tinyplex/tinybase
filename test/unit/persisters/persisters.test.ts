@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import {join} from 'path';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
-import type {Persister} from 'tinybase/persisters';
+import type {Persister, PersisterListener} from 'tinybase/persisters';
 import {createCustomPersister, Status} from 'tinybase/persisters';
 import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import tmp from 'tmp';
@@ -832,4 +832,224 @@ test('stops auto-persistence before extra destruction', async () => {
   expect(delPersisterListener).toHaveBeenCalledWith(1);
   expect(extraDestroy).toHaveBeenCalledOnce();
   expect(store.getListenerStats().transaction).toBe(0);
+});
+
+test('supports falsey auto-load handles', async () => {
+  let listener: PersisterListener = noop;
+  const delPersisterListener = vi.fn();
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    asyncNoop,
+    asyncNoop,
+    (newListener) => {
+      listener = newListener;
+      return 0;
+    },
+    delPersisterListener,
+  );
+
+  await persister.startAutoLoad();
+  expect(persister.isAutoLoading()).toBe(true);
+  await persister.stopAutoLoad();
+
+  expect(persister.isAutoLoading()).toBe(false);
+  expect(delPersisterListener).toHaveBeenCalledWith(0);
+  await listener([{table: {row: {cell: 1}}}, {}]);
+  expect(store.getTables()).toEqual({});
+  expect(persister.getStats()).toEqual({loads: 1, saves: 0});
+  await persister.destroy();
+});
+
+test('cancels pending auto-load registration on destroy', async () => {
+  let markListenerStarted: () => void = noop;
+  let releaseListener: () => void = noop;
+  const listenerStarted = new Promise<void>(
+    (resolve) => (markListenerStarted = resolve),
+  );
+  const listenerGate = new Promise<void>(
+    (resolve) => (releaseListener = resolve),
+  );
+  const delPersisterListener = vi.fn();
+  const persister = createCustomPersister(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    async () => {
+      markListenerStarted();
+      await listenerGate;
+      return 1;
+    },
+    delPersisterListener,
+  );
+  const starting = persister.startAutoLoad();
+  await listenerStarted;
+  let destroyResolved = false;
+  const destroying = persister.destroy().then(() => (destroyResolved = true));
+
+  await pause(0);
+  expect(destroyResolved).toBe(false);
+  releaseListener();
+  await starting;
+  await destroying;
+
+  expect(persister.isAutoLoading()).toBe(false);
+  expect(delPersisterListener).toHaveBeenCalledWith(1);
+  expect(persister.getStats()).toEqual({loads: 0, saves: 0});
+});
+
+test('serializes pending auto-load registrations', async () => {
+  let addCount = 0;
+  let releaseFirstListener: () => void = noop;
+  const firstListenerGate = new Promise<void>(
+    (resolve) => (releaseFirstListener = resolve),
+  );
+  const delPersisterListener = vi.fn();
+  const persister = createCustomPersister(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    async () => {
+      const handle = ++addCount;
+      if (handle == 1) {
+        await firstListenerGate;
+      }
+      return handle;
+    },
+    delPersisterListener,
+  );
+  const firstStart = persister.startAutoLoad();
+  await pause(0);
+  const secondStart = persister.startAutoLoad();
+
+  await pause(0);
+  expect(addCount).toBe(1);
+  releaseFirstListener();
+  await firstStart;
+  await secondStart;
+
+  expect(addCount).toBe(2);
+  expect(delPersisterListener).toHaveBeenCalledWith(1);
+  expect(persister.isAutoLoading()).toBe(true);
+  await persister.destroy();
+  expect(delPersisterListener).toHaveBeenLastCalledWith(2);
+});
+
+test('awaits in-flight auto-load cleanup on destroy', async () => {
+  let markCleanupStarted: () => void = noop;
+  let releaseCleanup: () => void = noop;
+  const cleanupStarted = new Promise<void>(
+    (resolve) => (markCleanupStarted = resolve),
+  );
+  const cleanupGate = new Promise<void>(
+    (resolve) => (releaseCleanup = resolve),
+  );
+  const persister = createCustomPersister(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    () => 1,
+    async () => {
+      markCleanupStarted();
+      await cleanupGate;
+    },
+  );
+  await persister.startAutoLoad();
+  const stopping = persister.stopAutoLoad();
+  await cleanupStarted;
+  let destroyResolved = false;
+  const destroying = persister.destroy().then(() => (destroyResolved = true));
+
+  await pause(0);
+  expect(destroyResolved).toBe(false);
+  releaseCleanup();
+  await stopping;
+  await destroying;
+
+  expect(persister.isAutoLoading()).toBe(false);
+});
+
+test('does not finish starting auto-save after destruction', async () => {
+  let markSaveStarted: () => void = noop;
+  let releaseSave: () => void = noop;
+  const saveStarted = new Promise<void>(
+    (resolve) => (markSaveStarted = resolve),
+  );
+  const saveGate = new Promise<void>((resolve) => (releaseSave = resolve));
+  const setPersisted = vi.fn(async () => {
+    markSaveStarted();
+    await saveGate;
+  });
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    asyncNoop,
+    setPersisted,
+    noop,
+    noop,
+  );
+  const starting = persister.startAutoSave();
+  await saveStarted;
+  const destroying = persister.destroy();
+
+  releaseSave();
+  await starting;
+  await destroying;
+  store.setValue('value', 1);
+  await pause(0);
+
+  expect(persister.isAutoSaving()).toBe(false);
+  expect(store.getListenerStats().transaction).toBe(0);
+  expect(setPersisted).toHaveBeenCalledOnce();
+});
+
+test('only completes the latest concurrent auto-save start', async () => {
+  const setPersisted = vi.fn(asyncNoop);
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    asyncNoop,
+    setPersisted,
+    noop,
+    noop,
+  );
+  const firstStart = persister.startAutoSave();
+  const secondStart = persister.startAutoSave();
+
+  await firstStart;
+  await secondStart;
+
+  expect(persister.isAutoSaving()).toBe(true);
+  expect(store.getListenerStats().transaction).toBe(1);
+  expect(setPersisted).toHaveBeenCalledOnce();
+  await persister.destroy();
+});
+
+test('stops both auto-persistence halves when cleanup throws', async () => {
+  const cleanupError = new Error('cleanup');
+  const setPersisted = vi.fn(asyncNoop);
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    asyncNoop,
+    setPersisted,
+    () => 1,
+    () => {
+      throw cleanupError;
+    },
+    (error) => {
+      throw error;
+    },
+  );
+  await persister.startAutoPersisting();
+
+  await expect(persister.stopAutoPersisting()).rejects.toBe(cleanupError);
+  store.setValue('value', 1);
+  await pause(0);
+
+  expect(persister.isAutoLoading()).toBe(false);
+  expect(persister.isAutoSaving()).toBe(false);
+  expect(store.getListenerStats().transaction).toBe(0);
+  expect(setPersisted).toHaveBeenCalledOnce();
+  await persister.destroy();
 });
