@@ -6,6 +6,10 @@ parts of a Store in a web browser, where Solid's DOM runtime is available.
 These are specifically designed to render HTML table content in a browser. Here
 are a few representative examples:
 
+The ui-solid-dom module is client-only: its package export is available under
+the `browser` condition, and these components do not support server-side
+rendering.
+
 The ValuesInHtmlTable component is the simplest way to render Store values:
 
 ![ValuesInHtmlTable example](/shots/valuesinhtmltable-solid-demo.png 'ValuesInHtmlTable example')

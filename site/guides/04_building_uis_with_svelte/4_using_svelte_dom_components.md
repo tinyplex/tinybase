@@ -7,16 +7,18 @@ available.
 These are specifically designed to render HTML table content in a browser. Here
 are a few representative examples:
 
+The ui-svelte-dom module is client-only: its package export is available under
+the `browser` condition, and these components do not support server-side
+rendering.
+
 The ValuesInHtmlTable component is the simplest way to render Store values:
 
-![ValuesInHtmlTable example](/shots/valuesinhtmltable-svelte-demo.png
-"ValuesInHtmlTable example")
+![ValuesInHtmlTable example](/shots/valuesinhtmltable-svelte-demo.png 'ValuesInHtmlTable example')
 
 The RelationshipInHtmlTable component renders related local and remote rows side
 by side:
 
-![RelationshipInHtmlTable example](/shots/relationshipinhtmltable-svelte-demo.png
-"RelationshipInHtmlTable example")
+![RelationshipInHtmlTable example](/shots/relationshipinhtmltable-svelte-demo.png 'RelationshipInHtmlTable example')
 
 Styling and class names are intentionally basic, since you are expected to style
 them with CSS to fit your app's overall visual language.
@@ -45,8 +47,7 @@ There are also editable components for individual Cells and Values:
 The EditableValueView component shows the inline editing controls used by the
 editable components:
 
-![EditableValueView example](/shots/editablevalueview-svelte-demo.png
-"EditableValueView example")
+![EditableValueView example](/shots/editablevalueview-svelte-demo.png 'EditableValueView example')
 
 Like ui-svelte itself, the module uses Svelte components rather than React
 components, so customization is done by passing component constructors, not
