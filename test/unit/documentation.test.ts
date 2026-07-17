@@ -640,7 +640,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
       if (
         content == '' ||
         info.includes('ignore') ||
-        (!isBun && info.includes(' bun'))
+        (isBun ? !info.includes(' bun') : info.includes(' bun'))
       ) {
         return;
       }

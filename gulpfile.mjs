@@ -130,26 +130,18 @@ const allModules = (cb) => allOf(ALL_MODULES, cb);
 const allDefinitions = (cb) => allOf(ALL_DEFINITIONS, cb);
 
 const clearDir = async (dir = DIST_DIR) => {
-  try {
-    await removeDir(dir);
-  } catch {}
+  await removeDir(dir);
   await makeDir(dir);
 };
 
-const makeDir = async (dir) => {
-  try {
-    await promises.mkdir(dir);
-  } catch {}
-};
+const makeDir = (dir) => promises.mkdir(dir, {recursive: true});
 
 const ensureDir = async (fileOrDirectory) => {
   await promises.mkdir(dirname(fileOrDirectory), {recursive: true});
   return fileOrDirectory;
 };
 
-const removeDir = async (dir) => {
-  await promises.rm(dir, {recursive: true});
-};
+const removeDir = (dir) => promises.rm(dir, {force: true, recursive: true});
 
 const forEachDeepFile = (dir, callback, extension = '') =>
   forEachDirAndFile(
@@ -471,9 +463,8 @@ const lintCheckDocs = async (dir) => {
   });
 };
 
-const spellCheck = (dir, deep = false) => {
+const spellCheck = (dir, deep = false) =>
   execute(`npx cspell ${dir}/*${deep ? '*' : ''}`);
-};
 
 const getTsOptions = async (dir) => {
   const {default: tsc} = await import('typescript');
@@ -677,7 +668,12 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
     name: getGlobalName(module),
   };
 
-  await (await rollup(inputConfig)).write(outputConfig);
+  const bundle = await rollup(inputConfig);
+  try {
+    await bundle.write(outputConfig);
+  } finally {
+    await bundle.close();
+  }
 
   // kill me now
   const outputFile = join(moduleDir, index);
@@ -848,7 +844,7 @@ export const testBun = () =>
   execute(
     'bun test ' +
       'test/unit/persisters/database ' +
-      'test/unit/core/documentation.test.ts',
+      'test/unit/documentation.test.ts',
   );
 
 export const testUnitFast = async () => {
