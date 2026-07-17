@@ -2,6 +2,7 @@ import {beforeEach, describe, expect, test} from 'vitest';
 
 import {
   addOrRemoveHash,
+  defaultSorter,
   getCellHash,
   getCellInRowHash,
   getHash,
@@ -26,6 +27,13 @@ beforeEach(() => {
 test('getUniqueId', () => {
   expect(getUniqueId()).toHaveLength(16);
   expect(getUniqueId(5)).toHaveLength(5);
+});
+
+test('defaultSorter', () => {
+  expect(defaultSorter('a', 'b')).toEqual(-1);
+  expect(defaultSorter('b', 'a')).toEqual(1);
+  expect(defaultSorter('a', 'a')).toEqual(0);
+  expect(defaultSorter(undefined, 0)).toEqual(0);
 });
 
 test('getHlcFunctions', () => {
