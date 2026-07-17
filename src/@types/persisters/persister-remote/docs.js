@@ -59,8 +59,9 @@
  *
  * As well as providing a reference to the Store to persist, you must provide
  * `loadUrl` and `saveUrl` parameters. These identify the endpoints of the
- * server that support the `GET` method (to fetch the Store JSON to load) and
- * the `POST` method (to send the Store JSON to save) respectively.
+ * server that support the `GET` and `HEAD` methods (to fetch the Store JSON and
+ * detect changes) and the `POST` method (to send the Store JSON to save)
+ * respectively.
  *
  * For when you choose to enable automatic loading for the Persister (with the
  * startAutoLoad method), it will poll the loadUrl for changes, using the `ETag`
@@ -69,7 +70,12 @@
  *
  * If you are implementing the server portion of this functionality yourself,
  * remember to ensure that the `ETag` header changes every time the server's
- * Store content does - otherwise changes will not be detected by the client.
+ * Store content does - otherwise changes will not be detected by the client. A
+ * cross-origin server must also expose this header with the
+ * `Access-Control-Expose-Headers` response header.
+ * Conditional `GET` responses with a `304` status reuse the most recently
+ * downloaded Store JSON. Other unsuccessful `GET`, `HEAD`, and `POST` responses
+ * are handled through the `onIgnoredError` callback.
  * @param store The Store to persist.
  * @param loadUrl The endpoint that supports a `GET` method to load JSON.
  * @param saveUrl The endpoint that supports a `POST` method to save JSON.
