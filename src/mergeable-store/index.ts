@@ -554,7 +554,7 @@ export const createMergeableStore = ((
       contentStampMap[0][0],
       (tableId, [tableStampMap, tableHlc, hash]) =>
         objHas(otherTableHashes, tableId)
-          ? hash != otherTableHashes[tableId]
+          ? hash != objGet(otherTableHashes, tableId)
             ? objSet(differingTableHashes, tableId, hash)
             : 0
           : objSet(
@@ -595,7 +595,7 @@ export const createMergeableStore = ((
         mapGet(contentStampMap[0][0], tableId)?.[0],
         (rowId, [rowStampMap, rowHlc, hash]) =>
           objHas(otherRowHashes, rowId)
-            ? hash !== otherRowHashes[rowId]
+            ? hash !== objGet(otherRowHashes, rowId)
               ? objSet(
                   objEnsure(differingRowHashes, tableId, objNew),
                   rowId,
@@ -818,32 +818,33 @@ export const createMergeableStore = ((
     valueChanged,
   );
 
-  objForEach(
-    store as IdObj<any>,
-    (method, name) =>
-      (mergeableStore[name] =
-        // fluent methods
-        strStartsWith(name, SET) ||
+  objForEach(store as IdObj<any>, (method, name) =>
+    objSet(
+      mergeableStore,
+      name,
+      // fluent methods
+      strStartsWith(name, SET) ||
         strStartsWith(name, DEL) ||
         strStartsWith(name, 'apply') ||
         strEndsWith(name, TRANSACTION) ||
         name == 'call' + LISTENER ||
         name == 'use'
+        ? (...args: any[]) => {
+            method(...args);
+            return mergeableStore;
+          }
+        : strStartsWith(name, ADD) && strEndsWith(name, LISTENER)
           ? (...args: any[]) => {
-              method(...args);
-              return mergeableStore;
+              const listenerArg = LISTENER_ARGS[slice(name, 3, -8)] ?? 0;
+              const listener = args[listenerArg];
+              args[listenerArg] = (_store: Store, ...args: any[]) =>
+                listener(mergeableStore, ...args);
+              return method(...args);
             }
-          : strStartsWith(name, ADD) && strEndsWith(name, LISTENER)
-            ? (...args: any[]) => {
-                const listenerArg = LISTENER_ARGS[slice(name, 3, -8)] ?? 0;
-                const listener = args[listenerArg];
-                args[listenerArg] = (_store: Store, ...args: any[]) =>
-                  listener(mergeableStore, ...args);
-                return method(...args);
-              }
-            : name == 'isMergeable'
-              ? () => true
-              : method),
+          : name == 'isMergeable'
+            ? () => true
+            : method,
+    ),
   );
   return objFreeze(mergeableStore) as MergeableStore;
 }) as typeof createMergeableStoreDecl;

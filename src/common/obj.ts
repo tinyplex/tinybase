@@ -1,5 +1,5 @@
 import type {Id} from '../@types/common/index.d.ts';
-import {arrayEvery, arrayForEach, arrayMap} from './array.ts';
+import {arrayForEach, arrayMap} from './array.ts';
 import {ifNotNullish, ifNotUndefined, isNullish, size} from './other.ts';
 
 export type IdObj<Value> = {[id: string]: Value};
@@ -30,10 +30,6 @@ export const objFreeze = object.freeze;
 export const objMerge = (...objs: IdObj<unknown>[]) =>
   object.assign(object.create(null), ...objs);
 
-export const objNew = <Value>(
-  entries: [id: string, value: Value][] = [],
-): IdObj<Value> => objMerge(object.fromEntries(entries));
-
 export const objHas = (obj: IdObj<unknown>, id: Id): boolean =>
   object.hasOwn(obj, id);
 
@@ -62,6 +58,14 @@ export const objSet = <Value>(
   return value;
 };
 
+export const objNew = <Value>(
+  entries: [id: string, value: Value][] = [],
+): IdObj<Value> => {
+  const obj = object.create(null);
+  arrayForEach(entries, ([id, value]) => objSet(obj, id, value));
+  return obj;
+};
+
 export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
   delete obj[id];
   return obj;
@@ -74,6 +78,18 @@ export const objForEach = <Value>(
   obj: IdObj<Value>,
   cb: (value: Value, id: string) => void,
 ): void => arrayForEach(objIds(obj), (id) => cb(obj[id], id));
+
+export const objEvery = <Value>(
+  obj: IdObj<Value>,
+  cb: (value: Value, id: string) => boolean,
+): boolean => {
+  for (const id in obj) {
+    if (objHas(obj, id) && !cb(obj[id], id)) {
+      return false;
+    }
+  }
+  return true;
+};
 
 export const objToArray = <FromValue, ToValue>(
   obj: IdObj<FromValue>,
@@ -113,22 +129,18 @@ export const objIsEqual = (
   obj2: IdObj<unknown>,
   isEqual: (value1: unknown, value2: unknown) => boolean = (value1, value2) =>
     value1 === value2,
-): boolean => {
-  const entries1 = objEntries(obj1);
-  return (
-    size(entries1) === objSize(obj2) &&
-    arrayEvery(entries1, ([index, value1]) =>
-      objHas(obj2, index)
-        ? isObject(value1)
-          ? /*! istanbul ignore next */
-            isObject(obj2[index])
-            ? objIsEqual(obj2[index] as any, value1 as any, isEqual)
-            : false
-          : isEqual(value1, obj2[index])
-        : false,
-    )
+): boolean =>
+  objSize(obj1) === objSize(obj2) &&
+  objEvery(obj1, (value1, index) =>
+    objHas(obj2, index)
+      ? isObject(value1)
+        ? /*! istanbul ignore next */
+          isObject(obj2[index])
+          ? objIsEqual(obj2[index] as any, value1 as any, isEqual)
+          : false
+        : isEqual(value1, obj2[index])
+      : false,
   );
-};
 
 export const objEnsure = <Value>(
   obj: IdObj<Value>,

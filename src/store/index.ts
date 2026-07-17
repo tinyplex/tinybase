@@ -37,7 +37,6 @@ import type {
   createStore as createStoreDecl,
 } from '../@types/store/index.d.ts';
 import {
-  arrayEvery,
   arrayForEach,
   arrayHas,
   arrayIsEqual,
@@ -56,6 +55,7 @@ import {
 import {
   collClear,
   collDel,
+  collEvery,
   collForEach,
   collHas,
   collIsEmpty,
@@ -63,7 +63,6 @@ import {
   collSize2,
   collSize3,
   collSize4,
-  collValues,
 } from '../common/coll.ts';
 import {tryCatchSync, tryFinally, tryReturn} from '../common/error.ts';
 import {defaultSorter} from '../common/index.ts';
@@ -485,9 +484,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ) &&
       (skipDefaults
         ? true
-        : arrayEvery(
-            collValues(mapGet(tablesSchemaRowCache, tableId)?.[2]),
-            (cellId) => objHas(rowWithDefaults, cellId),
+        : collEvery(mapGet(tablesSchemaRowCache, tableId)?.[2], (cellId) =>
+            objHas(rowWithDefaults, cellId),
           ))
     );
   };
@@ -554,7 +552,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ) &&
       (skipDefaults
         ? true
-        : arrayEvery(collValues(valuesRequiredNonDefaulted), (valueId) =>
+        : collEvery(valuesRequiredNonDefaulted, (valueId) =>
             objHas(valuesWithDefaults, valueId),
           ))
     );
@@ -2094,11 +2092,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
       } catch (error) {
         if (transactions > 0) {
           rollbackRequested = 1;
-          try {
-            finishTransaction();
-          } catch {
-            // Preserve the original error from the transaction actions.
-          }
+          // Preserve the original error from the transaction actions.
+          tryCatchSync(finishTransaction);
         }
         throw error;
       }
@@ -2115,11 +2110,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
         callListeners(startTransactionListeners);
       } catch (error) {
         rollbackRequested = 1;
-        try {
-          finishTransaction();
-        } catch {
-          // Preserve the original error from the transaction listener.
-        }
+        // Preserve the original error from the transaction listener.
+        tryCatchSync(finishTransaction);
         throw error;
       }
     }

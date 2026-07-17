@@ -1,6 +1,13 @@
 import type {Id} from '../@types/common/index.d.ts';
-import {arrayEvery, arrayMap} from './array.ts';
-import {collDel, collForEach, collHas, collIsEmpty, collSize} from './coll.ts';
+import {arrayPush} from './array.ts';
+import {
+  collDel,
+  collEvery,
+  collForEach,
+  collHas,
+  collIsEmpty,
+  collSize,
+} from './coll.ts';
 import {IdObj, objForEach, objHas, objIsEmpty, objNew, objSet} from './obj.ts';
 import {ifNotUndefined, isInstanceOf, isUndefined, size} from './other.ts';
 
@@ -36,8 +43,11 @@ export const mapForEach = <Key, Value>(
 export const mapMap = <Key, Value, Return>(
   coll: Map<Key, Value> | undefined,
   cb: (value: Value, key: Key) => Return,
-): Return[] =>
-  arrayMap([...(coll?.entries() ?? [])], ([key, value]) => cb(value, key));
+): Return[] => {
+  const mapped: Return[] = [];
+  mapForEach(coll, (key, value) => arrayPush(mapped, cb(value, key)));
+  return mapped;
+};
 
 export const mapSet = <Key, Value>(
   map: Map<Key, Value> | undefined,
@@ -51,8 +61,7 @@ export const mapEquals = <Key, Value>(
   map2: Map<Key, Value>,
 ): boolean =>
   collSize(map1) === collSize(map2) &&
-  arrayEvery(mapKeys(map1), (key) => {
-    const value1 = mapGet(map1, key);
+  collEvery(map1, (value1, key) => {
     const value2 = mapGet(map2, key);
     return isMap(value1) && isMap(value2)
       ? mapEquals(value1, value2)
@@ -65,12 +74,13 @@ export const mapEnsure = <Key, Value>(
   getDefaultValue: () => Value,
   hadExistingValue?: (value: Value) => void,
 ): Value => {
-  if (!collHas(map, key)) {
-    mapSet(map, key, getDefaultValue());
+  let value = mapGet(map, key) as Value;
+  if (collHas(map, key)) {
+    hadExistingValue?.(value);
   } else {
-    hadExistingValue?.(mapGet(map, key) as Value);
+    mapSet(map, key, (value = getDefaultValue()));
   }
-  return mapGet(map, key) as Value;
+  return value;
 };
 
 export const mapMatch = <MapValue, ObjValue>(
