@@ -177,6 +177,11 @@ also applies to string defaults in schemas.
 containing `U+FFFC` remain supported. Both are also supported in strings nested
 inside objects and arrays.
 
+Persisted internal JSON encodings are now parsed and checked before being
+accepted. Malformed encodings, encoded primitives, and object/array encodings
+that do not match a schema are ignored instead of corrupting later reads or
+bypassing schema types.
+
 ## JSON-Compatible Object And Array Contents
 
 Object and array Cells and Values are now documented as supporting contents that
