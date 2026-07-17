@@ -17,7 +17,7 @@ import type {
   DpcFragmented,
   DurableObjectSqlStoragePersister,
 } from '../../@types/persisters/persister-durable-object-sql-storage/index.d.ts';
-import {arrayForEach, arrayPush} from '../../common/array.ts';
+import {arrayForEach, arrayHas, arrayPush} from '../../common/array.ts';
 import {collHas} from '../../common/coll.ts';
 import {
   jsonParseWithUndefined,
@@ -35,7 +35,7 @@ import {
 import {isNull, isNullish, noop, number, string} from '../../common/other.ts';
 import {setAdd, setNew} from '../../common/set.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
-import {EMPTY_STRING, T} from '../../common/strings.ts';
+import {EMPTY_STRING, strReplace, T} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
@@ -56,10 +56,7 @@ export const createDurableObjectSqlStoragePersister = (
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister => {
-  if (
-    typeof configOrStoreTableName === 'object' &&
-    configOrStoreTableName.mode === 'fragmented'
-  ) {
+  if ((configOrStoreTableName as DpcFragmented)?.mode == 'fragmented') {
     return createDurableObjectFragmentedSqlStoragePersister(
       store,
       sqlStorage,
@@ -71,9 +68,9 @@ export const createDurableObjectSqlStoragePersister = (
     store,
     configOrStoreTableName as DpcJson,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> => {
-      if (!['BEGIN', 'END'].includes(sql)) {
+      if (!arrayHas(['BEGIN', 'END'], sql)) {
         //in sql replace $1, $2, $3, etc. with a question mark
-        sql = sql.replace(/\$\d+/g, '?');
+        sql = strReplace(sql, /\$\d+/g, '?');
         return getSqlRows(sqlStorage, sql, ...params);
       }
       return [];
@@ -98,7 +95,7 @@ const createDurableObjectFragmentedSqlStoragePersister = ((
   storagePrefix: string = EMPTY_STRING,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister => {
-  const tablePrefix = storagePrefix.replace(/[^a-zA-Z0-9_]/g, '_');
+  const tablePrefix = strReplace(storagePrefix, /[^a-zA-Z0-9_]/g, '_');
   const tablesTable = `${tablePrefix}tinybase_tables`;
   const valuesTable = `${tablePrefix}tinybase_values`;
   const insertTableSql = `INSERT INTO ${tablesTable} (type, table_id, row_id, cell_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?, ?, ?, ?)`;

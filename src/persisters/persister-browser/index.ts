@@ -50,7 +50,7 @@ const createStoragePersister = (
       if (event.storageArea === storage && event.key === storageName) {
         tryCatch(
           () => listener(jsonParseWithUndefined(event.newValue as string)),
-          listener,
+          onIgnoredError,
         );
       }
     });

@@ -15,7 +15,7 @@ import type {
   ValueOrUndefined,
 } from '../../@types/store/index.d.ts';
 import {
-  arrayEvery,
+  arrayFind,
   arrayMap,
   arrayPush,
   arrayUnshift,
@@ -36,7 +36,13 @@ import {
   promiseAll,
   slice,
 } from '../../common/other.ts';
-import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
+import {
+  EMPTY_STRING,
+  T,
+  V,
+  strEndsWith,
+  strStartsWith,
+} from '../../common/strings.ts';
 import {
   PUT,
   SET_CHANGES,
@@ -245,11 +251,11 @@ const saveStore = async (
 
   if (!isEmpty(keyPrefixesToDel)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
-      arrayEvery(
-        keyPrefixesToDel,
-        (keyPrefixToDelete) =>
-          !strStartsWith(key, keyPrefixToDelete) ||
-          ((arrayPush(keysToDel, key) as any) && 0),
+      ifNotUndefined(
+        arrayFind(keyPrefixesToDel, (keyPrefixToDelete) =>
+          strStartsWith(key, keyPrefixToDelete),
+        ),
+        () => arrayPush(keysToDel, key),
       ),
     );
   }
@@ -301,7 +307,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       party: {storage},
       config: {storePath = STORE_PATH, storagePrefix},
     } = this;
-    if (new URL(request.url).pathname.endsWith(storePath)) {
+    if (strEndsWith(new URL(request.url).pathname, storePath)) {
       const hasExistingStore = await hasStoreInStorage(storage, storagePrefix);
       const text = await request.text();
       if (request.method == PUT) {

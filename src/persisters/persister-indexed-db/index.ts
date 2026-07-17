@@ -5,12 +5,13 @@ import type {
   createIndexedDbPersister as createIndexedDbPersisterDecl,
 } from '../../@types/persisters/persister-indexed-db/index.d.ts';
 import type {Content, Store, Table} from '../../@types/store/index.d.ts';
-import {arrayMap, arrayPush} from '../../common/array.ts';
+import {arrayForEach, arrayMap, arrayPush} from '../../common/array.ts';
 import {
   ERROR_INDEXED_DB_OPEN,
   ERROR_INDEXED_DB_STORE,
   errorNew,
   tryCatch,
+  tryCatchSync,
   tryFinallyAsync,
 } from '../../common/error.ts';
 import {jsonStringWithUndefined} from '../../common/json.ts';
@@ -35,7 +36,7 @@ const objectStoreMatch = async (
   const actions = objToArray(obj, (v, k) =>
     execObjectStore(objectStore, 'put', {k, v}),
   );
-  arrayMap(await execObjectStore(objectStore, 'getAllKeys'), (id: Id) =>
+  arrayForEach(await execObjectStore(objectStore, 'getAllKeys'), (id: Id) =>
     objHas(obj, id)
       ? 0
       : arrayPush(actions, execObjectStore(objectStore, 'delete', id)),
@@ -74,8 +75,8 @@ export const createIndexedDbPersister = ((
       let blocked = 0;
       request.onupgradeneeded = () =>
         create &&
-        arrayMap(OBJECT_STORE_NAMES, (objectStoreName) =>
-          tryCatch(() =>
+        arrayForEach(OBJECT_STORE_NAMES, (objectStoreName) =>
+          tryCatchSync(() =>
             request.result.createObjectStore(objectStoreName, KEY_PATH),
           ),
         );

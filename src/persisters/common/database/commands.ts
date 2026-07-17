@@ -100,7 +100,7 @@ export const getCommandFunctions = (
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
     collClear(uniqueSchemaMap);
-    arrayMap(
+    arrayForEach(
       await querySchema(executeCommand, managedTableNames),
       ({tn, cn, uq}) => {
         setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn);

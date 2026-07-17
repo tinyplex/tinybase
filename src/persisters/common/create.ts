@@ -32,7 +32,13 @@ import {
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
-import {isArray, isUndefined, promiseNew} from '../../common/other.ts';
+import {
+  isArray,
+  isEmpty,
+  isUndefined,
+  promiseNew,
+  size,
+} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {ProtectedMergeableStore} from '../../mergeable-store/index.ts';
 import {ProtectedStore} from '../../store/index.ts';
@@ -206,7 +212,7 @@ export const createCustomPersister = <
     if (
       !mapGet(scheduleReferences, scheduleId) &&
       !mapGet(scheduleRunning, scheduleId) &&
-      !mapGet(scheduleActions, scheduleId)?.length
+      isEmpty(mapGet(scheduleActions, scheduleId) ?? [])
     ) {
       mapSet(scheduleRunning, scheduleId);
       mapSet(scheduleActions, scheduleId);
@@ -394,12 +400,12 @@ export const createCustomPersister = <
 
   const schedule = async (...actions: Action[]): Promise<Persister> => {
     const completion = promiseNew<void>((resolve) =>
-      actions.length
+      !isEmpty(actions)
         ? arrayPush(
             mapGet(scheduleActions, scheduleId) as ScheduledAction[],
             ...arrayMap(actions, (action, index): ScheduledAction => [
               action,
-              index == actions.length - 1 ? resolve : undefined,
+              index == size(actions) - 1 ? resolve : undefined,
               scheduleOwner,
             ]),
           )

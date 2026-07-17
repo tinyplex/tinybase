@@ -19,8 +19,8 @@ import type {
 import type {Cell, Value} from '../../@types/store/index.d.ts';
 import {arrayEvery} from '../../common/array.ts';
 import {tryReturn} from '../../common/error.ts';
-import {jsonString} from '../../common/json.ts';
-import {IdMap, mapMap, mapNew, mapSet} from '../../common/map.ts';
+import {jsonParse, jsonString} from '../../common/json.ts';
+import {IdMap, mapForEach, mapMap, mapNew, mapSet} from '../../common/map.ts';
 import {
   objEnsure,
   objForEach,
@@ -64,7 +64,7 @@ export const createDurableObjectStoragePersister = ((
       const type = slice(key, size(storagePrefix), size(storagePrefix) + 1);
       if (type == T || type == V) {
         const ids = tryReturn(() =>
-          JSON.parse('[' + slice(key, size(storagePrefix) + 1) + ']'),
+          jsonParse('[' + slice(key, size(storagePrefix) + 1) + ']'),
         );
         if (
           isArray(ids) &&
@@ -82,8 +82,9 @@ export const createDurableObjectStoragePersister = ((
   > => {
     const tables: TablesStamp<true> = stampNewObjectWithHash();
     const values: ValuesStamp<true> = stampNewObjectWithHash();
-    (await storage.list<StoredValue>({prefix: storagePrefix})).forEach(
-      async ([zeroOrCellOrValue, time, hash], key) =>
+    mapForEach(
+      await storage.list<StoredValue>({prefix: storagePrefix}),
+      (key, [zeroOrCellOrValue, time, hash]) =>
         ifNotUndefined(deconstructKey(key), ([type, ...ids]) =>
           type == T
             ? ifNotUndefined(
