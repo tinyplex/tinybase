@@ -99,6 +99,64 @@ describe('Load from doc', () => {
   });
 });
 
+describe('Observe doc', () => {
+  test('preserves event paths for other observers', async () => {
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await persister1.save();
+    await persister1.startAutoLoad();
+
+    const paths: (string | number)[][] = [];
+    doc1
+      .getMap('tinybase')
+      .observeDeep((events) => events.forEach(({path}) => paths.push(path)));
+
+    const yTables = doc1.getMap('tinybase').get('t') as YMap<
+      YMap<YMap<number>>
+    >;
+    yTables.get('t1')?.get('r1')?.set('c1', 2);
+    await pause();
+
+    expect(paths).toEqual([['t', 't1', 'r1']]);
+    expect(store1.getCell('t1', 'r1', 'c1')).toBe(2);
+  });
+
+  test('reports malformed containers without changing the Store', async () => {
+    const ignoredErrors: Error[] = [];
+    const persister = createYjsPersister(store1, doc1, 'tinybase', (error) =>
+      ignoredErrors.push(error),
+    );
+    store1.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    await persister.startAutoLoad();
+
+    const yContent = doc1.getMap('tinybase');
+    expect(() => yContent.set('t', 1)).not.toThrow();
+    expect(() =>
+      doc1.transact(() => {
+        yContent.set('t', new YMap());
+        yContent.set('v', 1);
+      }),
+    ).not.toThrow();
+    expect(() =>
+      doc1.transact(() => {
+        yContent.set('t', new YMap([['t1', 1]]));
+        yContent.set('v', new YMap());
+      }),
+    ).not.toThrow();
+    expect(() =>
+      yContent.set('t', new YMap([['t1', new YMap([['r1', 1]])]])),
+    ).not.toThrow();
+    await pause();
+
+    expect(ignoredErrors.map(({message}) => message)).toEqual([
+      'tinybase:1',
+      'tinybase:1',
+      'tinybase:1',
+      'tinybase:1',
+    ]);
+    expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
+});
+
 describe('Two stores, one doc', () => {
   let store2: Store;
   let persister2: Persister;
