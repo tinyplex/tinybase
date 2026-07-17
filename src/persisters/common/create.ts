@@ -157,6 +157,7 @@ export const createCustomPersister = <
   let autoSaveListenerId: Id | undefined;
   let autoSaveGeneration = 0;
   let destroyed = 0;
+  let destroying: Promise<void> | undefined;
   let activeAction: Promise<void> | undefined;
   const scheduleOwner = {};
   const extraDestroy = extra.destroy;
@@ -271,29 +272,33 @@ export const createCustomPersister = <
   ): Promise<Persister> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Saving) {
-      setStatus(StatusValues.Loading);
-      loads++;
-      await schedule(async () => {
-        await tryCatch(
-          async () => {
-            const content = await getPersisted();
-            if (isArray(content)) {
-              setContentOrChanges(content);
-            } else if (isUndefined(content) && initialContent) {
-              setDefaultContent(initialContent);
-            } else if (!isUndefined(content)) {
-              errorThrow(ERROR_CONTENT, content);
-            }
-          },
-          (error) => {
-            onIgnoredError?.(error);
-            if (initialContent) {
-              setDefaultContent(initialContent);
-            }
-          },
-        );
-        setStatus(StatusValues.Idle);
-      });
+      await tryFinallyAsync(
+        async () => {
+          setStatus(StatusValues.Loading);
+          loads++;
+          await schedule(() =>
+            tryCatch(
+              async () => {
+                const content = await getPersisted();
+                if (isArray(content)) {
+                  setContentOrChanges(content);
+                } else if (isUndefined(content) && initialContent) {
+                  setDefaultContent(initialContent);
+                } else if (!isUndefined(content)) {
+                  errorThrow(ERROR_CONTENT, content);
+                }
+              },
+              (error) => {
+                onIgnoredError?.(error);
+                if (initialContent) {
+                  setDefaultContent(initialContent);
+                }
+              },
+            ),
+          );
+        },
+        () => setStatus(StatusValues.Idle),
+      );
       await saveAfterMutated();
     }
     return persister;
@@ -311,12 +316,16 @@ export const createCustomPersister = <
             if (changes || content) {
               /*! istanbul ignore else */
               if (status != StatusValues.Saving) {
-                setStatus(StatusValues.Loading);
-                loads++;
-                await schedule(async () => {
-                  setContentOrChanges(changes ?? content);
-                  setStatus(StatusValues.Idle);
-                });
+                await tryFinallyAsync(
+                  async () => {
+                    setStatus(StatusValues.Loading);
+                    loads++;
+                    await schedule(async () =>
+                      setContentOrChanges(changes ?? content),
+                    );
+                  },
+                  () => setStatus(StatusValues.Idle),
+                );
                 await saveAfterMutated();
               }
             } else {
@@ -372,15 +381,19 @@ export const createCustomPersister = <
   ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Loading) {
-      setStatus(StatusValues.Saving);
-      saves++;
-      await schedule(async () => {
-        await tryCatch(
-          () => setPersisted(getContent as any, changes),
-          onIgnoredError,
-        );
-        setStatus(StatusValues.Idle);
-      });
+      await tryFinallyAsync(
+        async () => {
+          setStatus(StatusValues.Saving);
+          saves++;
+          await schedule(() =>
+            tryCatch(
+              () => setPersisted(getContent as any, changes),
+              onIgnoredError,
+            ),
+          );
+        },
+        () => setStatus(StatusValues.Idle),
+      );
     }
     return persister;
   };
@@ -395,7 +408,7 @@ export const createCustomPersister = <
           if (generation == autoSaveGeneration && !destroyed) {
             const changes = getChanges() as any;
             if (hasChanges(changes)) {
-              save(changes);
+              void tryCatch(() => save(changes));
             }
           }
         });
@@ -510,38 +523,42 @@ export const createCustomPersister = <
   const getStore = (): Store => store;
 
   const destroy = async (): Promise<Persister<Persist>> => {
-    if (!destroyed) {
+    if (isUndefined(destroying)) {
       destroyed = 1;
-      const scheduledActions = mapGet(
-        scheduleActions,
-        scheduleId,
-      ) as ScheduledAction[];
-      const remainingActions = arrayFilter(
-        scheduledActions,
-        ([, complete, owner]) => {
-          if (owner == scheduleOwner) {
-            complete?.();
-            return false;
-          }
-          return true;
-        },
-      );
-      const actionToAwait = activeAction;
-      arrayClear(scheduledActions);
-      arrayPush(scheduledActions, ...remainingActions);
-      await tryFinallyAsync(
-        () =>
-          tryFinallyAsync(
-            () => tryFinallyAsync(stopAutoPersisting, () => actionToAwait),
-            () => extraDestroy?.(),
-          ),
-        () => {
-          const references = (mapGet(scheduleReferences, scheduleId) ?? 1) - 1;
-          mapSet(scheduleReferences, scheduleId, references || undefined);
-          pruneSchedule();
-        },
-      );
+      destroying = (async () => {
+        const scheduledActions = mapGet(
+          scheduleActions,
+          scheduleId,
+        ) as ScheduledAction[];
+        const remainingActions = arrayFilter(
+          scheduledActions,
+          ([, complete, owner]) => {
+            if (owner == scheduleOwner) {
+              complete?.();
+              return false;
+            }
+            return true;
+          },
+        );
+        const actionToAwait = activeAction;
+        arrayClear(scheduledActions);
+        arrayPush(scheduledActions, ...remainingActions);
+        await tryFinallyAsync(
+          () =>
+            tryFinallyAsync(
+              () => tryFinallyAsync(stopAutoPersisting, () => actionToAwait),
+              () => extraDestroy?.(),
+            ),
+          () => {
+            const references =
+              (mapGet(scheduleReferences, scheduleId) ?? 1) - 1;
+            mapSet(scheduleReferences, scheduleId, references || undefined);
+            pruneSchedule();
+          },
+        );
+      })();
     }
+    await destroying;
     return persister;
   };
 

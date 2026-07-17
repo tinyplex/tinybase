@@ -622,6 +622,85 @@ test('keeps scheduling after an ignored-error handler throws', async () => {
   await persister.destroy();
 });
 
+test.each(['load', 'save'] as const)(
+  'restores idle status when %s error handling throws',
+  async (method) => {
+    const operationError = new Error('operation error');
+    const handlerError = new Error('handler error');
+    const persister = createCustomPersister(
+      createStore(),
+      async () => {
+        if (method == 'load') {
+          throw operationError;
+        }
+      },
+      async () => {
+        if (method == 'save') {
+          throw operationError;
+        }
+      },
+      noop,
+      noop,
+      () => {
+        throw handlerError;
+      },
+    );
+
+    await expect(persister[method]()).rejects.toBe(handlerError);
+    expect(persister.getStatus()).toBe(Status.Idle);
+    await persister.destroy();
+  },
+);
+
+test.each([
+  ['load', Status.Loading],
+  ['save', Status.Saving],
+] as const)(
+  'restores idle status when %s status listeners throw',
+  async (method, activeStatus) => {
+    const listenerError = new Error('listener error');
+    const persister = createCustomPersister(
+      createStore(),
+      asyncNoop,
+      asyncNoop,
+      noop,
+      noop,
+    );
+    persister.addStatusListener((_persister, status) => {
+      if (status == activeStatus) {
+        throw listenerError;
+      }
+    });
+
+    await expect(persister[method]()).rejects.toBe(listenerError);
+    expect(persister.getStatus()).toBe(Status.Idle);
+    await persister.destroy();
+  },
+);
+
+test('contains automatic save status listener errors', async () => {
+  const listenerError = new Error('listener error');
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    asyncNoop,
+    asyncNoop,
+    noop,
+    noop,
+  );
+  await persister.startAutoSave();
+  persister.addStatusListener((_persister, status) => {
+    if (status == Status.Saving) {
+      throw listenerError;
+    }
+  });
+
+  store.setValue('value', 1);
+  await pause(0);
+  expect(persister.getStatus()).toBe(Status.Idle);
+  await persister.destroy();
+});
+
 test('uses the scheduling owner error handler', async () => {
   let releaseFirstAction: () => void = noop;
   const firstActionGate = new Promise<void>(
@@ -832,6 +911,36 @@ test('stops auto-persistence before extra destruction', async () => {
   expect(delPersisterListener).toHaveBeenCalledWith(1);
   expect(extraDestroy).toHaveBeenCalledOnce();
   expect(store.getListenerStats().transaction).toBe(0);
+});
+
+test('shares concurrent destruction', async () => {
+  let releaseDestroy: () => void = noop;
+  const destroyGate = new Promise<void>(
+    (resolve) => (releaseDestroy = resolve),
+  );
+  const persister = (createCustomPersister as any)(
+    createStore(),
+    asyncNoop,
+    asyncNoop,
+    noop,
+    noop,
+    undefined,
+    undefined,
+    {destroy: () => destroyGate},
+  ) as Persister;
+  let destroyed1 = false;
+  let destroyed2 = false;
+
+  const destroying1 = persister.destroy().then(() => (destroyed1 = true));
+  const destroying2 = persister.destroy().then(() => (destroyed2 = true));
+  await pause(0);
+
+  expect(destroyed1).toBe(false);
+  expect(destroyed2).toBe(false);
+  releaseDestroy();
+  await Promise.all([destroying1, destroying2]);
+  expect(destroyed1).toBe(true);
+  expect(destroyed2).toBe(true);
 });
 
 test('supports falsey auto-load handles', async () => {
