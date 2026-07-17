@@ -17,7 +17,7 @@ import 'fake-indexeddb/auto';
 import type {ReservedSql, Sql} from 'postgres';
 import postgres from 'postgres';
 import sqlite3, {Database} from 'sqlite3';
-import {type Store, getUniqueId} from 'tinybase';
+import {type Content, type Store, getUniqueId} from 'tinybase';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
@@ -29,6 +29,7 @@ import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
+import {expect} from 'vitest';
 import {
   importBunSqlite,
   isBun,
@@ -79,6 +80,22 @@ type DatabaseVariant<Database> = [
   supportsMultipleConnections?: boolean,
   skipSqlChecks?: boolean,
 ];
+
+export const getStoreContentWaiter =
+  (pauseMilliseconds: number) =>
+  async (store: Store, content: Content): Promise<void> => {
+    for (let attempts = 100; attempts; attempts--) {
+      try {
+        expect(store.getContent()).toEqual(content);
+        return;
+      } catch (error) {
+        if (attempts == 1) {
+          throw error;
+        }
+      }
+      await pause(pauseMilliseconds);
+    }
+  };
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 

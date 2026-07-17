@@ -1,11 +1,15 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
-import type {Content, MergeableStore} from 'tinybase';
+import type {MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions} from '../../common/mergeable.ts';
-import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
+import {
+  MERGEABLE_VARIANTS,
+  getDatabaseFunctions,
+  getStoreContentWaiter,
+} from '../common/databases.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 
@@ -30,29 +34,13 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
     ],
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
+    const expectStoreContent = getStoreContentWaiter(autoLoadPause);
 
     const columnType = isPostgres ? 'text' : '';
 
     let db: any;
     let store: MergeableStore;
     let persister: Persister;
-
-    const expectStoreContent = async (
-      store: MergeableStore,
-      content: Content,
-    ): Promise<void> => {
-      for (let attempts = 100; attempts; attempts--) {
-        try {
-          expect(store.getContent()).toEqual(content);
-          return;
-        } catch (error) {
-          if (attempts == 1) {
-            throw error;
-          }
-        }
-        await pause(autoLoadPause);
-      }
-    };
 
     beforeEach(async () => {
       db = await getOpenDatabase();
