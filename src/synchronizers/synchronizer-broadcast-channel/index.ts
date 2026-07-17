@@ -40,7 +40,12 @@ export const createBroadcastChannelSynchronizer = ((
           isProtocolMessageValid(requestId, message, body)
         ) {
           if (isNull(toClientId) || toClientId == clientId) {
-            receive(fromClientId, requestId, message, body);
+            receive(
+              fromClientId,
+              requestId as IdOrNull,
+              message as Message,
+              body,
+            );
           }
           return;
         }

@@ -8,6 +8,7 @@ import {
   ERROR_SYNC_MESSAGE,
   ERROR_SYNC_OVERFLOW,
   errorNew,
+  tryFinally,
   tryReturn,
 } from '../common/error.ts';
 import {isHlc} from '../common/hlc.ts';
@@ -24,7 +25,7 @@ import {
   mapNew,
   mapSet,
 } from '../common/map.ts';
-import {isObject, objEntries} from '../common/obj.ts';
+import {isObject, objEvery} from '../common/obj.ts';
 import {
   isArray,
   isEmpty,
@@ -104,12 +105,15 @@ export const createInvalidPayloadHandler = (
   return (error: Error) => {
     if (valid) {
       valid = false;
-      onIgnoredError?.(error);
-      webSocket.close(
-        strStartsWith(error.message, TINYBASE + ':' + ERROR_SYNC_OVERFLOW)
-          ? 1013
-          : 1007,
-        error.message,
+      tryFinally(
+        () => onIgnoredError?.(error),
+        () =>
+          webSocket.close(
+            strStartsWith(error.message, TINYBASE + ':' + ERROR_SYNC_OVERFLOW)
+              ? 1013
+              : 1007,
+            error.message,
+          ),
       );
     }
   };
@@ -141,7 +145,7 @@ const isHash = (hash: any): boolean =>
 
 const isHashTree = (tree: any, depth: number): boolean =>
   isObject(tree) &&
-  arrayEvery(objEntries(tree), ([, child]) =>
+  objEvery(tree, (child) =>
     depth ? isHashTree(child, depth - 1) : isHash(child),
   );
 
@@ -151,7 +155,7 @@ const isStamp = (stamp: any, depth: number): boolean =>
     (size(stamp) == 2 && isString(stamp[1]) && isHlc(stamp[1], Infinity))) &&
   (depth
     ? isObject(stamp[0]) &&
-      arrayEvery(objEntries(stamp[0]), ([, child]) => isStamp(child, depth - 1))
+      objEvery(stamp[0], (child) => isStamp(child, depth - 1))
     : isCellOrValueOrUndefined(stamp[0]));
 
 const isContentHashes = (body: any): boolean =>

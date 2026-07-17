@@ -4,6 +4,7 @@ import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
 import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
 import type {Receive} from '../../@types/synchronizers/index.d.ts';
 import {arrayForEach, arrayMap} from '../../common/array.ts';
+import {weakMapNew} from '../../common/map.ts';
 import {objValues} from '../../common/obj.ts';
 import {
   ifNotUndefined,
@@ -50,7 +51,7 @@ export class WsServerDurableObject<Env = unknown>
 {
   // @ts-expect-error See blockConcurrencyWhile
   #serverClientSend: (payload: string) => void;
-  #payloadDecoders = new WeakMap<WebSocket, (payload: string) => void>();
+  #payloadDecoders = weakMapNew<WebSocket, (payload: string) => void>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -178,10 +179,11 @@ export class WsServerDurableObject<Env = unknown>
   }
 
   getPathId(): Id {
-    return ifNotUndefined(
-      this.#getClients()[0],
-      (client) => this.ctx.getTags(client)?.[1] ?? EMPTY_STRING,
-      EMPTY_STRING,
+    return (
+      ifNotUndefined(
+        this.#getClients()[0],
+        (client) => this.ctx.getTags(client)?.[1] ?? EMPTY_STRING,
+      ) ?? EMPTY_STRING
     );
   }
 
