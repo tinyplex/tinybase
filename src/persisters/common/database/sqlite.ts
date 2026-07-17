@@ -11,7 +11,7 @@ import {collHas, collValues} from '../../../common/coll.ts';
 import {
   ERROR_STORE_TYPE,
   errorThrow,
-  tryCatch,
+  tryCatchIgnore,
   tryFinallyAsync,
 } from '../../../common/error.ts';
 import {IdObj} from '../../../common/obj.ts';
@@ -20,6 +20,7 @@ import {
   isNullish,
   isTrue,
   isUndefined,
+  promiseResolve,
   startInterval,
   stopInterval,
 } from '../../../common/other.ts';
@@ -123,10 +124,9 @@ export const createCustomSqlitePersister = <
       if (task) {
         return task;
       }
-      let newTask!: Promise<void>;
-      newTask = tryFinallyAsync(
+      const newTask = tryFinallyAsync(
         () =>
-          tryCatch(async () => {
+          tryCatchIgnore(async () => {
             if (!baselineReady) {
               await checkForChanges(false);
               baselineReady = 1;
@@ -147,7 +147,11 @@ export const createCustomSqlitePersister = <
             task = undefined;
           }
           if (active) {
-            nativeChange ? run() : startPolling();
+            if (nativeChange) {
+              void run();
+            } else {
+              startPolling();
+            }
           }
         },
       );
@@ -159,7 +163,7 @@ export const createCustomSqlitePersister = <
       if (active && collHas(managedTableNamesSet, tableName)) {
         nativeChange = 1;
         stopPolling();
-        run();
+        void promiseResolve().then(() => (active ? void run() : 0));
       }
     });
 
