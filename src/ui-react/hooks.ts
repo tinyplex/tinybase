@@ -265,7 +265,7 @@ import {
   arrayMap,
   arrayOrValueEqual,
 } from '../common/array.ts';
-import {tryFinallyAsync} from '../common/error.ts';
+import {tryCatch, tryFinallyAsync} from '../common/error.ts';
 import {jsonString} from '../common/json.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
@@ -444,7 +444,7 @@ const useCreateAsync = <
           () => thing.destroy(),
           () => destroyRef.current?.(thing),
         );
-      (async () => {
+      void tryCatch(async () => {
         if (destroyingRef.current) {
           await destroyingRef.current;
         }
@@ -454,7 +454,7 @@ const useCreateAsync = <
         const nextThing = store ? await create(store) : undefined;
         if (!current) {
           if (nextThing) {
-            await destroyThing(nextThing);
+            await tryCatch(() => destroyThing(nextThing));
           }
           return;
         }
@@ -466,11 +466,13 @@ const useCreateAsync = <
             rerender([]);
           }
         }
-      })();
+      });
       return () => {
         current = false;
         if (createdThing) {
-          destroyingRef.current = destroyThing(createdThing);
+          destroyingRef.current = tryCatch(() =>
+            destroyThing(createdThing as Thing),
+          );
         }
       };
     },

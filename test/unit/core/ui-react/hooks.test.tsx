@@ -1520,6 +1520,53 @@ describe('React-specific', () => {
       unmount();
     });
 
+    test('useCreatePersister recovers from failed replacement cleanup', async () => {
+      const persister1 = createTestPersister();
+      const persister2 = createTestPersister();
+      const error = new Error('destroy');
+      persister1.destroy.mockRejectedValue(error);
+      const create = vi.fn(() => persister2).mockReturnValueOnce(persister1);
+      let currentPersister: TestPersister | undefined;
+      const Test = ({id}: {readonly id: number}) => {
+        currentPersister = useCreatePersister(store, create, [id]);
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test id={1} />);
+      await act(pause);
+      expect(currentPersister).toBe(persister1);
+
+      rerender(<Test id={2} />);
+      await act(pause);
+      expect(create).toHaveBeenCalledTimes(2);
+      expect(currentPersister).toBe(persister2);
+
+      unmount();
+    });
+
+    test('useCreatePersister recovers from failed creation', async () => {
+      const persister = createTestPersister();
+      const create = vi
+        .fn()
+        .mockRejectedValueOnce(new Error('create'))
+        .mockResolvedValueOnce(persister);
+      let currentPersister: TestPersister | undefined;
+      const Test = ({id}: {readonly id: number}) => {
+        currentPersister = useCreatePersister(store, create, [id]);
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test id={1} />);
+      await act(pause);
+      expect(currentPersister).toBeUndefined();
+
+      rerender(<Test id={2} />);
+      await act(pause);
+      expect(currentPersister).toBe(persister);
+
+      unmount();
+    });
+
     test('useCreatePersister destroys post-unmount resolution', async () => {
       const persister = createTestPersister();
       let resolveCreate: (persister: TestPersister) => void;
