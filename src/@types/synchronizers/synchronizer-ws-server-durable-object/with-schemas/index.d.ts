@@ -63,4 +63,4 @@ export function getWsServerDurableObjectFetch<
       WsServerDurableObject<Schemas>
     >;
   },
-) => Response;
+) => Response | Promise<Response>;

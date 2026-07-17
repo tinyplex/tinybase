@@ -47,4 +47,4 @@ export function getWsServerDurableObjectFetch<Namespace extends string>(
   env: {
     [namespace in Namespace]: DurableObjectNamespace<WsServerDurableObject>;
   },
-) => Response;
+) => Response | Promise<Response>;

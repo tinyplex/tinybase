@@ -84,7 +84,8 @@ LocalSynchronizer now cancels scheduled messages when destroyed so they cannot
 be delivered after teardown.
 
 WsServerDurableObject now returns an empty path Id when queried before any
-clients have connected.
+clients have connected. Its fetch helper type also reflects both synchronous
+error responses and asynchronous Durable Object namespace responses.
 
 ## Compact Error Codes
 
