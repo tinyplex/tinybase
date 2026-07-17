@@ -157,6 +157,9 @@ export const createWsServer = (<
   const removeListenersByWebSocket = mapNew<WebSocket, (() => void)[]>();
   let destroying: Promise<void> | undefined;
 
+  const handleError = onIgnoredError ?? noop;
+  addEmitterListener(webSocketServer, ERROR, handleError);
+
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => wsServer,
   );
@@ -578,6 +581,7 @@ export const createWsServer = (<
     removeServerListeners,
     addEmitterListener(webSocketServer, CONNECTION, (client, request) => {
       setAdd(webSockets, client);
+      addEmitterListener(client, ERROR, handleError);
       if (destroying) {
         client.close();
       } else {
@@ -590,9 +594,6 @@ export const createWsServer = (<
                 onIgnoredError?.(error),
               );
             }
-            if (onIgnoredError) {
-              addWebSocketListener(client, ERROR, onIgnoredError);
-            }
           }),
         );
       }
@@ -602,13 +603,6 @@ export const createWsServer = (<
       });
     }),
   );
-
-  if (onIgnoredError) {
-    arrayPush(
-      removeServerListeners,
-      addEmitterListener(webSocketServer, ERROR, onIgnoredError),
-    );
-  }
 
   const getWebSocketServer = () => webSocketServer;
 

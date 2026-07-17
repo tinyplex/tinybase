@@ -15,11 +15,17 @@ import {
   mapSet,
 } from '../../common/map.ts';
 import {objFreeze} from '../../common/obj.ts';
-import {ifNotUndefined, isUndefined} from '../../common/other.ts';
+import {
+  addEmitterListener,
+  ifNotUndefined,
+  isUndefined,
+  noop,
+} from '../../common/other.ts';
 import {
   CLOSE,
   CONNECTION,
   EMPTY_STRING,
+  ERROR,
   MESSAGE,
   UTF8,
   strMatch,
@@ -40,6 +46,8 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
   type Client = [webSocket: WebSocket, channelId?: Id];
 
   const clientsByPath: IdMap2<Client> = mapNew();
+
+  addEmitterListener(webSocketServer, ERROR, noop);
 
   const sendToClient = ([client, channelId]: Client, payload: string) =>
     client.send(
@@ -127,15 +135,16 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
     client.on(CLOSE, destroy);
   };
 
-  webSocketServer.on(CONNECTION, (client, request) =>
+  webSocketServer.on(CONNECTION, (client, request) => {
+    addEmitterListener(client, ERROR, noop);
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], (clientId) =>
         client.protocol == WS_SYNCHRONIZER_PROTOCOL
           ? addMultipleClient(client, clientId, pathId)
           : addLegacyClient(client, clientId, pathId),
       ),
-    ),
-  );
+    );
+  });
 
   const getWebSocketServer = () => webSocketServer;
 
