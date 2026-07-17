@@ -87,8 +87,10 @@ callback for a custom Synchronizer now receives a transport-failure callback.
 BroadcastChannelSynchronizer now validates message envelopes before reading
 their fields, reporting malformed input as a synchronization message error.
 
-LocalSynchronizer now cancels scheduled messages when destroyed so they cannot
-be delivered after teardown.
+LocalSynchronizer now snapshots broadcast recipients when a message is
+scheduled, so Synchronizers created later cannot receive earlier traffic. It
+also cancels scheduled messages when destroyed so they cannot be delivered
+after teardown.
 
 WsServerDurableObject now returns an empty path Id when queried before any
 clients have connected. Its fetch helper type also reflects both synchronous
@@ -116,10 +118,11 @@ removed.
 When a query definition is deleted, Queries now releases its cached pre- and
 result Stores once no listeners or dependent queries reference them.
 
-Query definitions are now staged before being committed. If a builder,
-evaluation callback, or definition Id listener throws, the previous definition,
-parameters, result, and listeners remain usable instead of leaving a partial
-replacement behind.
+Query definitions are now staged before being committed. If a builder or
+evaluation callback throws, the previous definition, parameters, result, and
+listeners remain usable instead of leaving a partial replacement behind. New
+Index, Metric, Query, and Relationship definitions are also discarded if their
+Id listener throws.
 
 Metric extrema and Cartesian chart data summaries now process large datasets
 without variadic argument limits or quadratic category de-duplication.
@@ -266,10 +269,17 @@ their inputs change. The useUndoInformation and useRedoInformation primitives
 also now return Accessor functions for their availability, checkpoint Id, and
 label entries.
 
+Solid Inspector table actions and custom Cell renderers also remain reactive as
+editable state and Cell Ids change. Editable Cell and Value components now mark
+object or array JSON input invalid when its container type does not match the
+existing value.
+
 React and Solid sorted-table paginators now defer offset corrections until
-after rendering. Provider registrations in all three UI modules also track
-ownership when Ids are duplicated, so removing one registration preserves or
-restores the correct remaining resource.
+after rendering. All three DOM modules normalize out-of-range offsets, including
+positive offsets equal to the total, and clamp previous-page navigation at zero.
+Provider registrations in all three UI modules also track ownership when Ids
+are duplicated, so removing one registration preserves or restores the correct
+remaining resource.
 
 ## PartyKit Authorization
 
@@ -366,10 +376,12 @@ Persisters have received a broad reliability pass:
 - Repeated destroy calls now share one completion Promise and wait for active
   work. Persister statuses also return to idle even if cleanup, status
   listeners, or ignored-error handlers throw.
-- Restarting auto-load waits for the previous listener to stop, and subscribing
-  before the initial load closes the startup window for missed changes.
-  Notifications during startup remain ordered behind the initial load, while
-  steady-state changes apply synchronously and concurrent changes avoid
+- Concurrent auto-load and auto-save starts now leave only the latest
+  registration active. Stopping or destroying waits for in-flight registration
+  and cleanup work, and restarting auto-load waits for the previous listener to
+  stop. Subscribing before the initial load closes the startup window for missed
+  changes. Notifications during startup remain ordered behind the initial load,
+  while steady-state changes apply synchronously and concurrent changes avoid
   redundant follow-up saves.
 - Auto-load notifications without inline content that arrive during a save are
   coalesced into a trailing load, preventing an external write from being
@@ -383,8 +395,9 @@ Persisters have received a broad reliability pass:
   MergeableStore configurations that cannot preserve merge metadata.
 - PostgreSQL auto-load safely shares notification resources until their final
   owner stops and releases reserved clients if setup fails.
-- SQLite auto-load establishes its external-change baseline during startup and
-  defers native update-hook work until the triggering write has completed.
+- Custom SQLite listener cleanup may now be asynchronous and is awaited. SQLite
+  auto-load establishes its external-change baseline during startup and defers
+  native update-hook work until the triggering write has completed.
 - IndexedDB saves wait for transaction completion and report aborts, blocked
   opens, and other transaction failures. Loads use read-only transactions, and
   polling loads only changed content without overlapping.
