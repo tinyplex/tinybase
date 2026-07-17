@@ -5169,6 +5169,31 @@ describe('Miscellaneous', () => {
     expect(queries.getResultTable('q1')).toEqual({});
   });
 
+  test('releases deleted query stores', () => {
+    const store = createStore();
+    const createInternalStore = (store as any)._[0];
+    const createdStores: Store[] = [];
+    (store as any)._[0] = () => {
+      const createdStore = createInternalStore();
+      createdStores.push(createdStore);
+      return createdStore;
+    };
+    const queries = createQueries(store);
+    const setDefinition = () =>
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        group('c1', 'count');
+      });
+
+    setDefinition();
+    expect(createdStores).toHaveLength(4);
+    queries.delQueryDefinition('q1');
+    expect(queries.getResultTable('q1')).toEqual({});
+    expect(createdStores).toHaveLength(4);
+    setDefinition();
+    expect(createdStores).toHaveLength(6);
+  });
+
   test('resets results when select changes', () => {
     setCells();
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));

@@ -216,7 +216,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       },
     );
     arrayForEach(
-      [getResultStore(queryId), mapGet(preStores, queryId)],
+      [mapGet(resultStores, queryId), mapGet(preStores, queryId)],
       (store) => store?.delTable(queryId),
     );
   };
@@ -266,6 +266,34 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       );
       collClear(queryStoreIds);
     });
+
+  const isResultStoreReferenced = (resultStore: Store): boolean => {
+    let referenced = false;
+    mapForEach(routedResultListeners, (_listenerId, [, storeListenerIds]) =>
+      mapForEach(storeListenerIds, (_queryId, [store]) => {
+        referenced ||= store === resultStore;
+      }),
+    );
+    arrayForEach(
+      [preStoreListenerIds, sourceStoreListenerIds],
+      (storeListenerIds) =>
+        mapForEach(storeListenerIds, (_queryId, stores) => {
+          referenced ||= collHas(stores, resultStore);
+        }),
+    );
+    return referenced;
+  };
+
+  const cleanStores = (): void => {
+    mapForEach(preStores, (queryId) =>
+      hasQuery(queryId) ? 0 : mapSet(preStores, queryId),
+    );
+    mapForEach(resultStores, (queryId, resultStore) =>
+      hasQuery(queryId) || isResultStoreReferenced(resultStore)
+        ? 0
+        : mapSet(resultStores, queryId),
+    );
+  };
 
   const synchronizeTransactions = (
     queryId: Id,
@@ -848,6 +876,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     resetPreStores(queryId);
     resetSourceStores(queryId);
     delDefinition(queryId);
+    cleanStores();
     return queries;
   };
 
@@ -930,6 +959,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     } else {
       delListenerImpl(listenerId);
     }
+    cleanStores();
     return queries;
   };
 
@@ -991,7 +1021,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         slice([GET, 'has', 'forEach'], 0, prefixCount),
         (prefix) =>
           (queries[prefix + RESULT + gettable] = (...args: any[]) =>
-            (getResultStore(args[0]) as any)[prefix + gettable](...args)),
+            ((mapGet(resultStores, args[0]) ?? resultStore) as any)[
+              prefix + gettable
+            ](...args)),
       );
       queries[ADD + RESULT + gettable + LISTENER] = (...args: any[]): Id =>
         addRoutedResultListener(
