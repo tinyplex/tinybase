@@ -20,8 +20,8 @@ export const createPglitePersister = (async (
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): Promise<PglitePersister> => {
-  return createCustomPostgreSqlPersister(
+): Promise<PglitePersister> =>
+  createCustomPostgreSqlPersister(
     store,
     configOrStoreTableName,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
@@ -37,5 +37,4 @@ export const createPglitePersister = (async (
     3, // StoreOrMergeableStore,
     pglite,
     'getPglite',
-  ) as PglitePersister;
-}) as typeof createPglitePersisterDecl;
+  ) as PglitePersister) as typeof createPglitePersisterDecl;

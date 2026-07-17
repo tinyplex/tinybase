@@ -212,13 +212,7 @@ export const createTabularPersister = <
       }
     });
 
-  const destroy = async () => {
-    await persister.stopAutoPersisting();
-    extraDestroy();
-    return persister;
-  };
-
-  const persister = createCustomPersister(
+  return createCustomPersister(
     store,
     getPersisted,
     setPersisted,
@@ -226,10 +220,8 @@ export const createTabularPersister = <
     delPersisterListener,
     onIgnoredError,
     persist,
-    {[getThing]: () => thing, destroy},
+    {[getThing]: () => thing, destroy: extraDestroy},
     0,
     thing,
   );
-
-  return persister;
 };

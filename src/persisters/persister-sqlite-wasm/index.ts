@@ -8,6 +8,7 @@ import type {
   createSqliteWasmPersister as createSqliteWasmPersisterDecl,
 } from '../../@types/persisters/persister-sqlite-wasm/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {arrayMap} from '../../common/array.ts';
 import {IdObj} from '../../common/obj.ts';
 import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
@@ -24,9 +25,14 @@ export const createSqliteWasmPersister = ((
     store,
     configOrStoreTableName,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
-      db
-        .exec(sql, {bind: params, rowMode: 'object', returnValue: 'resultRows'})
-        .map((row: IdObj<any>) => ({...row})),
+      arrayMap(
+        db.exec(sql, {
+          bind: params,
+          rowMode: 'object',
+          returnValue: 'resultRows',
+        }),
+        (row: IdObj<any>) => ({...row}),
+      ),
     (listener: DatabaseChangeListener): void =>
       sqlite3.capi.sqlite3_update_hook(
         db,

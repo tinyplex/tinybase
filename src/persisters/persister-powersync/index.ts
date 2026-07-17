@@ -9,7 +9,8 @@ import type {
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {arrayJoin, arrayMap} from '../../common/array.ts';
+import {arrayForEach, arrayJoin, arrayMap} from '../../common/array.ts';
+import {tryCatch} from '../../common/error.ts';
 import {IdObj, objToArray} from '../../common/obj.ts';
 import {isEmpty, noop, size} from '../../common/other.ts';
 import {COMMA} from '../../common/strings.ts';
@@ -45,13 +46,13 @@ export const createPowerSyncPersister = ((
         rawTableNames: true,
         signal: abortController.signal,
       });
-      (async () => {
+      tryCatch(async () => {
         for await (const update of onChange) {
           if (tableListener) {
-            arrayMap(update.changedTables, tableListener);
+            arrayForEach(update.changedTables, tableListener);
           }
         }
-      })();
+      }, onIgnoredError);
       tableListener = listener;
       return abortController;
     },

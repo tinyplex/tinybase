@@ -1,5 +1,8 @@
 import {createStore} from 'tinybase';
-import {createOpfsPersister} from 'tinybase/persisters/persister-browser';
+import {
+  createLocalPersister,
+  createOpfsPersister,
+} from 'tinybase/persisters/persister-browser';
 import {expect, test, vi} from 'vitest';
 
 test('closes successful OPFS writes', async () => {
@@ -36,4 +39,28 @@ test('aborts failed OPFS writes', async () => {
   expect(writable.abort).toHaveBeenCalledOnce();
   expect(writable.close).not.toHaveBeenCalled();
   expect(ignoredError).toHaveBeenCalledWith(error);
+});
+
+test('reports malformed storage events', async () => {
+  const storageName = 'malformed-storage-event';
+  const ignoredError = vi.fn();
+  const store = createStore().setValue('species', 'dog');
+  const persister = createLocalPersister(store, storageName, ignoredError);
+
+  await persister.startAutoLoad();
+  ignoredError.mockClear();
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: storageName,
+      newValue: '{',
+      storageArea: localStorage,
+    }),
+  );
+  await Promise.resolve();
+
+  expect(ignoredError).toHaveBeenCalledOnce();
+  expect(ignoredError.mock.calls[0][0]).toBeInstanceOf(SyntaxError);
+  expect(store.getValues()).toEqual({species: 'dog'});
+
+  await persister.destroy();
 });

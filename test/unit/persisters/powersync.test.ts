@@ -3,7 +3,7 @@ import {rm} from 'node:fs/promises';
 import {createStore} from 'tinybase';
 import * as PowerSync from 'tinybase/persisters/persister-powersync';
 import tmp from 'tmp';
-import {afterEach, expect, test} from 'vitest';
+import {afterEach, expect, test, vi} from 'vitest';
 
 tmp.setGracefulCleanup();
 
@@ -134,4 +134,27 @@ test('PowerSync persister records existing rows as patches', async () => {
   } finally {
     await persister.destroy();
   }
+});
+
+test('PowerSync persister reports change iterator errors', async () => {
+  const error = new Error('change iterator failed');
+  const ignoredError = vi.fn();
+  const persister = PowerSync.createPowerSyncPersister(
+    createStore(),
+    {
+      execute: async () => ({rows: {_array: []}}),
+      onChange: () => ({
+        async *[Symbol.asyncIterator]() {
+          throw error;
+        },
+      }),
+    } as any,
+    undefined,
+    undefined,
+    ignoredError,
+  );
+
+  await persister.startAutoLoad();
+  await vi.waitFor(() => expect(ignoredError).toHaveBeenCalledWith(error));
+  await persister.destroy();
 });
