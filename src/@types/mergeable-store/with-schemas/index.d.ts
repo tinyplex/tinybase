@@ -222,9 +222,9 @@ export interface MergeableStore<
   ): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(
-    withHashes?: boolean,
-  ): MergeableChanges<Schemas, true>;
+  getTransactionMergeableChanges<Hashed extends boolean = false>(
+    withHashes?: Hashed,
+  ): MergeableChanges<Schemas, Hashed>;
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(

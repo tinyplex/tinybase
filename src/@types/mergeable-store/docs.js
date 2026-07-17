@@ -769,7 +769,8 @@
    * it.
    * @param withHashes Whether to include hashes in the output, defaulting to
    * false.
-   * @returns A MergeableChanges object representing the changes, with hashes.
+   * @returns A MergeableChanges object representing the changes, with hashes
+   * if requested.
    * @example
    * This example makes changes to the MergeableStore. At the end of the
    * transaction, detail about what changed is enumerated.
