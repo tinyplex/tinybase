@@ -4,8 +4,9 @@ import type {
   createRemotePersister as createRemotePersisterDecl,
 } from '../../@types/persisters/persister-remote/index.d.ts';
 import type {Content, Store} from '../../@types/store/index.d.ts';
+import {tryCatch, tryFinallyAsync, tryReturn} from '../../common/error.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
-import {startInterval, stopInterval} from '../../common/other.ts';
+import {isUndefined, startInterval, stopInterval} from '../../common/other.ts';
 import {EMPTY_STRING} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
@@ -13,6 +14,16 @@ const getETag = (response: Response) =>
   response.headers.get('ETag') ?? EMPTY_STRING;
 const getIfNoneMatchHeaders = (lastEtag: string): HeadersInit | undefined =>
   lastEtag == EMPTY_STRING ? undefined : {'If-None-Match': lastEtag};
+const checkResponse = (response: Response, allowNotModified?: 1): void => {
+  if (!response.ok && (!allowNotModified || response.status != 304)) {
+    throw response;
+  }
+};
+
+type ListenerHandle = [
+  interval: number | NodeJS.Timeout,
+  stop: () => Promise<void>,
+];
 
 export const createRemotePersister = ((
   store: Store,
@@ -22,39 +33,86 @@ export const createRemotePersister = ((
   onIgnoredError?: (error: any) => void,
 ): RemotePersister => {
   let lastEtag: string = EMPTY_STRING;
+  let lastContent: string | undefined;
 
   const getPersisted = async (): Promise<Content> => {
     const response = await fetch(loadUrl, {
       headers: getIfNoneMatchHeaders(lastEtag),
     });
-    const content = jsonParse(await response.text());
-    lastEtag = getETag(response);
+    const notModified = response.status == 304 && !isUndefined(lastContent);
+    checkResponse(response, notModified ? 1 : undefined);
+    const contentText = notModified
+      ? (lastContent as string)
+      : await response.text();
+    const content = jsonParse(contentText);
+    if (!notModified) {
+      lastContent = contentText;
+      lastEtag = getETag(response);
+    }
     return content;
   };
 
-  const setPersisted = async (getContent: () => Content): Promise<any> =>
-    await fetch(saveUrl, {
+  const setPersisted = async (getContent: () => Content): Promise<void> => {
+    const response = await fetch(saveUrl, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: jsonStringWithMap(getContent()),
     });
+    await tryFinallyAsync(
+      async () => checkResponse(response),
+      () => response.body?.cancel(),
+    );
+  };
 
   const addPersisterListener = (
     listener: PersisterListener,
-  ): number | NodeJS.Timeout =>
-    startInterval(async () => {
-      const response = await fetch(loadUrl, {
-        method: 'HEAD',
-        headers: getIfNoneMatchHeaders(lastEtag),
-      });
-      const currentEtag = getETag(response);
-      if (currentEtag != lastEtag) {
-        listener();
+  ): ListenerHandle => {
+    let active: Promise<void> | undefined;
+    let stopped = false;
+    const poll = (): void => {
+      if (!stopped && isUndefined(active)) {
+        active = tryFinallyAsync(
+          () =>
+            tryCatch(
+              async () => {
+                const response = await fetch(loadUrl, {
+                  method: 'HEAD',
+                  headers: getIfNoneMatchHeaders(lastEtag),
+                });
+                checkResponse(response, 1);
+                if (
+                  !stopped &&
+                  response.status != 304 &&
+                  getETag(response) != lastEtag
+                ) {
+                  await listener();
+                }
+              },
+              (error) => tryReturn(() => onIgnoredError?.(error)),
+            ),
+          () => {
+            active = undefined;
+          },
+        );
       }
-    }, autoLoadIntervalSeconds);
+    };
+    return [
+      startInterval(poll, autoLoadIntervalSeconds),
+      async () => {
+        stopped = true;
+        await active;
+      },
+    ];
+  };
 
-  const delPersisterListener = (interval: number | NodeJS.Timeout): void =>
+  const delPersisterListener = async ([
+    interval,
+    stop,
+  ]: ListenerHandle): Promise<void> => {
+    const stopped = stop();
     stopInterval(interval);
+    await stopped;
+  };
 
   return createCustomPersister(
     store,
