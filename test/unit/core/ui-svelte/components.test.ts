@@ -169,3 +169,20 @@ test('duplicate provider registrations retain ownership', async () => {
 
   unmount();
 });
+
+test('provider ignores unknown registration cleanup', () => {
+  const store = createStore();
+  const {container, unmount} = componentHarness.render(
+    ContextDuplicateProvidedStores,
+    {
+      show1: false,
+      show2: false,
+      store1: store,
+      store2: store,
+      cleanupUnknown: true,
+    },
+  );
+  expect(container.textContent.trim()).toBe('');
+
+  unmount();
+});
