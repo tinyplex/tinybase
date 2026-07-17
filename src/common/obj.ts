@@ -73,7 +73,7 @@ export const objToMap = <Value>(obj: IdObj<Value>): Map<Id, Value> =>
 export const objForEach = <Value>(
   obj: IdObj<Value>,
   cb: (value: Value, id: string) => void,
-): void => arrayForEach(objEntries(obj), ([id, value]) => cb(value, id));
+): void => arrayForEach(objIds(obj), (id) => cb(obj[id], id));
 
 export const objToArray = <FromValue, ToValue>(
   obj: IdObj<FromValue>,
@@ -83,8 +83,11 @@ export const objToArray = <FromValue, ToValue>(
 export const objMap = <FromValue, ToValue>(
   obj: IdObj<FromValue>,
   cb: (value: FromValue, id: string) => ToValue,
-): IdObj<ToValue> =>
-  objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
+): IdObj<ToValue> => {
+  const mapped = objNew<ToValue>();
+  objForEach(obj, (value, id) => objSet(mapped, id, cb(value, id)));
+  return mapped;
+};
 
 export const objMap2 = <FromValue, ToValue>(
   obj: IdObj2<FromValue>,

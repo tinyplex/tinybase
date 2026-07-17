@@ -19,8 +19,8 @@ import {mapForEach} from '../../common/map.ts';
 import {
   IdObj,
   objEnsure,
+  objForEach,
   objHas,
-  objMap,
   objNew,
   objSet,
 } from '../../common/obj.ts';
@@ -141,7 +141,7 @@ const applyChangesToYDoc = (
   let changesFailed = 1;
   ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
     changesFailed = 0;
-    objMap(cellChanges, (table, tableId) =>
+    objForEach(cellChanges, (table, tableId) =>
       changesFailed
         ? 0
         : isUndefined(table)
@@ -149,7 +149,7 @@ const applyChangesToYDoc = (
           : ifNotUndefined(
               yTables.get(tableId),
               (yTable) =>
-                objMap(table, (row, rowId) =>
+                objForEach(table, (row, rowId) =>
                   changesFailed
                     ? 0
                     : isUndefined(row)
@@ -157,7 +157,7 @@ const applyChangesToYDoc = (
                       : ifNotUndefined(
                           yTable.get(rowId),
                           (yRow) =>
-                            objMap(row, (cell, cellId) =>
+                            objForEach(row, (cell, cellId) =>
                               isUndefined(cell)
                                 ? yRow.delete(cellId)
                                 : yRow.set(cellId, cell),
@@ -168,7 +168,7 @@ const applyChangesToYDoc = (
               changesDidFail,
             ),
     );
-    objMap(valueChanges, (value, valueId) =>
+    objForEach(valueChanges, (value, valueId) =>
       changesFailed
         ? 0
         : isUndefined(value)
@@ -207,7 +207,7 @@ const yMapMatch = (
     : (yMapOrParent.get(idInParent) ??
       yMapOrParent.set(idInParent, new YMap()));
   let changed: 1 | undefined;
-  objMap(obj, (value, id) => {
+  objForEach(obj, (value, id) => {
     if (set(yMap, id, value)) {
       changed = 1;
     }

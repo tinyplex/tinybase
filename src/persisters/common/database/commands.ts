@@ -11,6 +11,7 @@ import type {
 } from '../../../@types/store/index.d.ts';
 import {
   arrayFilter,
+  arrayForEach,
   arrayJoin,
   arrayMap,
   arrayPush,
@@ -22,6 +23,7 @@ import {jsonString} from '../../../common/json.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
   objDel,
+  objForEach,
   objIds,
   objIsEmpty,
   objMap,
@@ -180,8 +182,8 @@ export const getCommandFunctions = (
     const includeContentSubId = (contentSubId: Id): boolean =>
       isUndefined(contentSubIdSet) || collHas(contentSubIdSet, contentSubId);
     const settingColumnNameSet = setNew<string>();
-    objMap(content ?? {}, (contentRow) =>
-      arrayMap(
+    objForEach(content ?? {}, (contentRow) =>
+      arrayForEach(
         arrayFilter(objIds(contentRow ?? {}), includeContentSubId),
         (cellOrValueId) => setAdd(settingColumnNameSet, cellOrValueId),
       ),
@@ -348,7 +350,7 @@ export const getCommandFunctions = (
         );
         const rows = objNew<any[]>();
         const deleteRowIds: string[] = [];
-        objMap(content ?? {}, (row, rowId) => {
+        objForEach(content ?? {}, (row, rowId) => {
           objSet(
             rows,
             rowId,

@@ -53,10 +53,10 @@ import {
   visitTree,
 } from '../common/map.ts';
 import {
+  objForEach,
   objFreeze,
   objGet,
   objIsEmpty,
-  objMap,
   objNew,
   objSet,
 } from '../common/obj.ts';
@@ -979,7 +979,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const getResultListenerStat = (gettable: string): ResultListenerStat =>
     (gettable[0].toLowerCase() + slice(gettable, 1)) as ResultListenerStat;
 
-  objMap(
+  objForEach(
     {
       [TABLE]: [2, 1],
       [TABLE + CELL_IDS]: [1, 1],

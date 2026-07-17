@@ -10,10 +10,10 @@ import {
   IdObj,
   isObject,
   objDel,
+  objForEach,
   objGet,
   objHas,
   objIsEmpty,
-  objMap,
   objNew,
   objSet,
 } from '../../common/obj.ts';
@@ -63,7 +63,7 @@ const docObjToObj = (
   mapper: (value: any) => any = (value) => value,
 ): IdObj<any> => {
   const obj = objNew<any>();
-  objMap(docObj, (value, encodedId) =>
+  objForEach(docObj, (value, encodedId) =>
     objSet(obj, decodeId(encodedId), mapper(value)),
   );
   return obj;
@@ -104,7 +104,7 @@ const applyChangesToDoc = (
   let changesFailed = 1;
   ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
     changesFailed = 0;
-    objMap(cellChanges, (table, tableId) =>
+    objForEach(cellChanges, (table, tableId) =>
       changesFailed
         ? 0
         : isUndefined(table)
@@ -112,7 +112,7 @@ const applyChangesToDoc = (
           : ifNotUndefined(
               docGet(docTables, tableId),
               (docTable) =>
-                objMap(table, (row, rowId) =>
+                objForEach(table, (row, rowId) =>
                   changesFailed
                     ? 0
                     : isUndefined(row)
@@ -120,7 +120,7 @@ const applyChangesToDoc = (
                       : ifNotUndefined(
                           docGet(docTable, rowId),
                           (docRow: any) =>
-                            objMap(row, (cell, cellId) =>
+                            objForEach(row, (cell, cellId) =>
                               isUndefined(cell)
                                 ? docDel(docRow, cellId)
                                 : docSet(docRow, cellId, cell),
@@ -131,7 +131,7 @@ const applyChangesToDoc = (
               changesDidFail,
             ),
     );
-    objMap(valueChanges, (value, valueId) =>
+    objForEach(valueChanges, (value, valueId) =>
       changesFailed
         ? 0
         : isUndefined(value)
@@ -169,12 +169,12 @@ const docObjMatch = (
     ? docObjOrParent
     : docEnsure(docObjOrParent, idInParent, () => ({}));
   let changed: 1 | undefined;
-  objMap(obj, (value, id) => {
+  objForEach(obj, (value, id) => {
     if (set(docObj, id, value)) {
       changed = 1;
     }
   });
-  objMap(docObj, (_: any, encodedId: Id) => {
+  objForEach(docObj, (_: any, encodedId: Id) => {
     const id = decodeId(encodedId);
     if (!objHas(obj, id)) {
       objDel(docObj, encodedId);
