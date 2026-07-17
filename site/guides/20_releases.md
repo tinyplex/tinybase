@@ -188,10 +188,6 @@ directly as keys, while arrays returned from custom functions continue to
 represent multiple Slice Ids. Equivalent rich sort keys also avoid unnecessary
 resorting.
 
-The defaultSorter function now returns zero when two sort keys are equal, in
-accordance with the JavaScript comparator contract. This includes the existing
-equivalence between an undefined sort key and zero.
-
 ## Reusable Schemas
 
 Stores now clone TablesSchema and ValuesSchema objects before validating and
