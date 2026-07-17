@@ -20,22 +20,26 @@ export const createPostgresPersister = (async (
   onIgnoredError?: (error: any) => void,
 ): Promise<PostgresPersister> => {
   const commandSql = await sql.reserve?.();
-
-  return createCustomPostgreSqlPersister(
-    store,
-    configOrStoreTableName,
-    commandSql?.unsafe,
-    async (
-      channel: string,
-      listener: DatabaseChangeListener,
-    ): Promise<ListenMeta> => sql.listen(channel, listener),
-    (notifyListener: ListenMeta) =>
-      tryCatch(notifyListener.unlisten, onIgnoredError),
-    onSqlCommand,
-    onIgnoredError,
-    () => commandSql?.release?.(),
-    3, // StoreOrMergeableStore,
-    sql,
-    'getSql',
-  ) as PostgresPersister;
+  try {
+    return createCustomPostgreSqlPersister(
+      store,
+      configOrStoreTableName,
+      commandSql?.unsafe,
+      async (
+        channel: string,
+        listener: DatabaseChangeListener,
+      ): Promise<ListenMeta> => sql.listen(channel, listener),
+      (notifyListener: ListenMeta) =>
+        tryCatch(notifyListener.unlisten, onIgnoredError),
+      onSqlCommand,
+      onIgnoredError,
+      () => commandSql?.release?.(),
+      3, // StoreOrMergeableStore,
+      sql,
+      'getSql',
+    ) as PostgresPersister;
+  } catch (error) {
+    await commandSql?.release?.();
+    throw error;
+  }
 }) as typeof createPostgresPersisterDecl;

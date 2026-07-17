@@ -7,17 +7,22 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
-import {arrayJoin, arrayMap} from '../../../common/array.ts';
-import {collHas, collValues} from '../../../common/coll.ts';
-import {ERROR_STORE_TYPE, errorThrow} from '../../../common/error.ts';
+import {arrayJoin, arrayMap, arrayPush} from '../../../common/array.ts';
+import {collHas, collIsEmpty, collValues} from '../../../common/coll.ts';
+import {
+  ERROR_STORE_TYPE,
+  errorThrow,
+  tryCatch,
+  tryFinallyAsync,
+} from '../../../common/error.ts';
 import {getHash} from '../../../common/hash.ts';
 import {
   jsonParse,
   jsonString,
   jsonStringWithUndefined,
 } from '../../../common/json.ts';
-import {mapGet} from '../../../common/map.ts';
-import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
+import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
+import {ifNotUndefined, isEmpty, promiseAll} from '../../../common/other.ts';
 import {
   EMPTY_STRING,
   TINYBASE,
@@ -48,6 +53,16 @@ const TABLE_CREATED = 'c';
 const DATA_CHANGED = 'd';
 const EVENT_REGEX = /^([cd]:)(.+)/;
 
+type ListenerResources = [
+  references: number,
+  ready: Promise<void> | undefined,
+  functionNames: string[],
+  dataChangedFunctionName?: string,
+  teardown?: Promise<void>,
+];
+
+const listenerResourcesByThing = mapNew<any, Map<string, ListenerResources>>();
+
 export const createCustomPostgreSqlPersister = <
   ListenerHandle,
   Persist extends Persists = Persists.StoreOnly,
@@ -67,7 +82,7 @@ export const createCustomPostgreSqlPersister = <
   thing: any,
   getThing = 'getDb',
 ): Persister<Persist> => {
-  type Handles = [listenerHandle: ListenerHandle, functionNames: string[]];
+  type Handles = [listenerHandle: ListenerHandle, resources: ListenerResources];
 
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
 
@@ -80,6 +95,7 @@ export const createCustomPostgreSqlPersister = <
   const configHash =
     EMPTY_STRING + getHash(jsonStringWithUndefined(defaultedConfig));
   const channel = TINYBASE + '_' + configHash;
+  const resourceOwner = thing ?? rawExecuteCommand;
 
   const createFunction = async (
     name: string,
@@ -153,71 +169,145 @@ export const createCustomPostgreSqlPersister = <
       ),
     );
 
+  const dropFunctions = async (functionNames: string[]): Promise<void> => {
+    if (!isEmpty(functionNames)) {
+      await executeCommand(
+        `DROP FUNCTION IF EXISTS${arrayJoin(functionNames, ',')}CASCADE`,
+      );
+    }
+  };
+
+  const forgetListenerResources = (
+    resourcesByHash: Map<string, ListenerResources>,
+    resources: ListenerResources,
+  ): void => {
+    if (mapGet(resourcesByHash, configHash) === resources) {
+      mapSet(resourcesByHash, configHash);
+      if (
+        collIsEmpty(resourcesByHash) &&
+        mapGet(listenerResourcesByThing, resourceOwner) === resourcesByHash
+      ) {
+        mapSet(listenerResourcesByThing, resourceOwner);
+      }
+    }
+  };
+
+  const acquireListenerResources = async (): Promise<ListenerResources> => {
+    const resourcesByHash = mapEnsure(
+      listenerResourcesByThing,
+      resourceOwner,
+      () => mapNew<string, ListenerResources>(),
+    );
+    const existingResources = mapGet(resourcesByHash, configHash);
+    if (existingResources) {
+      await existingResources[1];
+      if (existingResources[0]) {
+        existingResources[0]++;
+        return existingResources;
+      }
+      await tryCatch(() => existingResources[4]!);
+      return await acquireListenerResources();
+    }
+
+    const functionNames: string[] = [];
+    const resources: ListenerResources = [1, undefined, functionNames];
+    mapSet(resourcesByHash, configHash, resources);
+    resources[1] = (async () => {
+      const tableCreatedFunctionName = await createFunction(
+        TABLE_CREATED,
+        // eslint-disable-next-line max-len
+        `FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()${WHERE} command_tag='${CREATE_TABLE}' LOOP ${notify(`'c:'||SPLIT_PART(row.object_identity,'.',2)`)}END LOOP;`,
+        'event_',
+        'DECLARE row record;',
+      );
+      arrayPush(functionNames, tableCreatedFunctionName);
+
+      await createTrigger(
+        'EVENT ',
+        escapeIds(TINYBASE, TABLE_CREATED, configHash),
+        `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
+        tableCreatedFunctionName,
+      );
+
+      const dataChangedFunctionName = await createFunction(
+        DATA_CHANGED,
+        notify(`'d:'||TG_TABLE_NAME`) + `RETURN NULL;`,
+      );
+      arrayPush(functionNames, dataChangedFunctionName);
+      resources[3] = dataChangedFunctionName;
+
+      await promiseAll(
+        arrayMap(collValues(managedTableNamesSet), async (tableName) => {
+          await executeCommand(
+            CREATE_TABLE +
+              ` IF NOT EXISTS${escapeId(tableName)}("_id"text PRIMARY KEY)`,
+          );
+          return await addDataChangedTriggers(
+            tableName,
+            dataChangedFunctionName,
+          );
+        }),
+      );
+    })();
+
+    try {
+      await resources[1];
+    } catch (error) {
+      resources[0] = 0;
+      resources[4] = tryFinallyAsync(
+        () => dropFunctions(functionNames),
+        () => forgetListenerResources(resourcesByHash, resources),
+      );
+      await tryCatch(() => resources[4]!);
+      throw error;
+    }
+    return resources;
+  };
+
+  const releaseListenerResources = async (
+    resources: ListenerResources,
+  ): Promise<void> => {
+    if (--resources[0] == 0) {
+      const resourcesByHash = mapGet(listenerResourcesByThing, resourceOwner)!;
+      resources[4] = tryFinallyAsync(
+        () => dropFunctions(resources[2]),
+        () => forgetListenerResources(resourcesByHash, resources),
+      );
+      await resources[4];
+    }
+  };
+
   const addPersisterListener = async (
     listener: PersisterListener<Persist>,
   ): Promise<Handles> => {
-    const tableCreatedFunctionName = await createFunction(
-      TABLE_CREATED,
-      // eslint-disable-next-line max-len
-      `FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()${WHERE} command_tag='${CREATE_TABLE}' LOOP ${notify(`'c:'||SPLIT_PART(row.object_identity,'.',2)`)}END LOOP;`,
-      'event_',
-      'DECLARE row record;',
-    );
-
-    await createTrigger(
-      'EVENT ',
-      escapeIds(TINYBASE, TABLE_CREATED, configHash),
-      `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
-      tableCreatedFunctionName,
-    );
-
-    const dataChangedFunctionName = await createFunction(
-      DATA_CHANGED,
-      notify(`'d:'||TG_TABLE_NAME`) + `RETURN NULL;`,
-    );
-
-    await promiseAll(
-      arrayMap(collValues(managedTableNamesSet), async (tableName) => {
-        await executeCommand(
-          CREATE_TABLE +
-            ` IF NOT EXISTS${escapeId(tableName)}("_id"text PRIMARY KEY)`,
-        );
-        return await addDataChangedTriggers(tableName, dataChangedFunctionName);
-      }),
-    );
-
-    const listenerHandle = await addChangeListener(
-      channel,
-      (prefixAndTableName) =>
-        ifNotUndefined(
-          strMatch(prefixAndTableName, EVENT_REGEX),
-          async ([, eventType, tableName]) => {
-            if (collHas(managedTableNamesSet, tableName)) {
-              if (eventType == 'c:') {
-                await addDataChangedTriggers(
-                  tableName,
-                  dataChangedFunctionName,
-                );
+    const resources = await acquireListenerResources();
+    try {
+      const listenerHandle = await addChangeListener(
+        channel,
+        (prefixAndTableName) =>
+          ifNotUndefined(
+            strMatch(prefixAndTableName, EVENT_REGEX),
+            async ([, eventType, tableName]) => {
+              if (collHas(managedTableNamesSet, tableName)) {
+                if (eventType == 'c:') {
+                  await addDataChangedTriggers(tableName, resources[3]!);
+                }
+                listener();
               }
-              listener();
-            }
-          },
-        ),
-    );
-
-    return [
-      listenerHandle,
-      [tableCreatedFunctionName, dataChangedFunctionName],
-    ];
+            },
+          ),
+      );
+      return [listenerHandle, resources];
+    } catch (error) {
+      await tryCatch(() => releaseListenerResources(resources), onIgnoredError);
+      throw error;
+    }
   };
 
-  const delPersisterListener = async ([
-    listenerHandle,
-    functionNames,
-  ]: Handles) => {
-    delChangeListener(listenerHandle);
-    await executeCommand(
-      `DROP FUNCTION IF EXISTS${arrayJoin(functionNames, ',')}CASCADE`,
+  const delPersisterListener = async ([listenerHandle, resources]: Handles) => {
+    await tryFinallyAsync(
+      () => delChangeListener(listenerHandle),
+      () => releaseListenerResources(resources),
     );
   };
 
