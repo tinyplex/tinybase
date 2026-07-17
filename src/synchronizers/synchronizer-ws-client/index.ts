@@ -32,6 +32,7 @@ import {
   ERROR_SYNC_OVERFLOW,
   errorNew,
   errorThrow,
+  tryFinally,
   tryReturn,
 } from '../../common/error.ts';
 import {
@@ -177,7 +178,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   let disconnected = false;
   let disconnect = () => {};
   let flushTimeout: ReturnType<typeof startTimeout> | undefined;
-  let opening: Promise<void> | undefined;
+  let opening: [connection: Connection, promise: Promise<void>] | undefined;
   let overflowing = false;
   let queuedCount = 0;
   let queuedSize = 0;
@@ -525,7 +526,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   };
 
   const onOpen = () => {
-    if (destroyed || opening) {
+    if (destroyed || opening?.[0] === connection) {
       return;
     }
     disconnected = false;
@@ -560,9 +561,9 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         }
       }
     })();
-    opening = openingPromise;
+    opening = [openingConnection, openingPromise];
     openingPromise.finally(() => {
-      if (opening === openingPromise) {
+      if (opening?.[1] === openingPromise) {
         opening = undefined;
       }
     });
@@ -689,14 +690,23 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     if (channel) {
       channel[ChannelValue.Receive] = receive;
       channel[ChannelValue.Fail] = fail;
-      queuedCount -= size(channel[ChannelValue.Incoming]);
-      queuedSize -= channel[ChannelValue.IncomingSize];
-      arrayForEach(channel[ChannelValue.Incoming], ([payload, timeout]) => {
-        stopTimeout(timeout);
-        receive(payload);
-      });
-      arrayClear(channel[ChannelValue.Incoming]);
-      channel[ChannelValue.IncomingSize] = 0;
+      const incoming = channel[ChannelValue.Incoming];
+      let incomingIndex = 0;
+      tryFinally(
+        () => {
+          while (incomingIndex < size(incoming)) {
+            const [payload, timeout] = incoming[incomingIndex];
+            stopTimeout(timeout);
+            const payloadSize = getWebSocketPayloadSize(payload);
+            channel[ChannelValue.IncomingSize] -= payloadSize;
+            queuedCount--;
+            queuedSize -= payloadSize;
+            incomingIndex++;
+            receive(payload);
+          }
+        },
+        () => arrayClear(incoming, incomingIndex),
+      );
     }
   };
 
@@ -816,37 +826,42 @@ const createMultipleWsSynchronizer = async <
     throw error;
   }
 
-  return createCustomSynchronizer(
-    store,
-    (toClientId, requestId, message, body) =>
-      state.send(
-        channelId,
-        createPayloads(toClientId, requestId, message, body, fragmentSize),
-        toClientId == null &&
-          (message == CONTENT_HASHES || message == CONTENT_DIFF)
-          ? () =>
-              createPayloads(
-                null,
-                requestId,
-                CONTENT_HASHES,
-                store.getMergeableContentHashes(),
-                fragmentSize,
-              )
-          : undefined,
-      ),
-    (receive: Receive, fail) =>
-      state.registerReceive(
-        channelId,
-        createPayloadReceiver(receive, requestTimeoutSeconds, state.invalid),
-        fail,
-      ),
-    () => state.delChannel(channelId),
-    requestTimeoutSeconds,
-    onSend,
-    onReceive,
-    onIgnoredError,
-    {getWebSocket: () => webSocket},
-  ) as WsSynchronizer<WebSocketType>;
+  try {
+    return createCustomSynchronizer(
+      store,
+      (toClientId, requestId, message, body) =>
+        state.send(
+          channelId,
+          createPayloads(toClientId, requestId, message, body, fragmentSize),
+          toClientId == null &&
+            (message == CONTENT_HASHES || message == CONTENT_DIFF)
+            ? () =>
+                createPayloads(
+                  null,
+                  requestId,
+                  CONTENT_HASHES,
+                  store.getMergeableContentHashes(),
+                  fragmentSize,
+                )
+            : undefined,
+        ),
+      (receive: Receive, fail) =>
+        state.registerReceive(
+          channelId,
+          createPayloadReceiver(receive, requestTimeoutSeconds, state.invalid),
+          fail,
+        ),
+      () => state.delChannel(channelId),
+      requestTimeoutSeconds,
+      onSend,
+      onReceive,
+      onIgnoredError,
+      {getWebSocket: () => webSocket},
+    ) as WsSynchronizer<WebSocketType>;
+  } catch (error) {
+    state.delChannel(channelId);
+    throw error;
+  }
 };
 
 const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
