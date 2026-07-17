@@ -8,6 +8,7 @@ export * from '../persisters/index.ts';
 export * from '../persisters/persister-automerge/index.ts';
 export * from '../persisters/persister-browser/index.ts';
 export * from '../persisters/persister-cr-sqlite-wasm/index.ts';
+export * from '../persisters/persister-durable-object-sql-storage/index.ts';
 export * from '../persisters/persister-durable-object-storage/index.ts';
 export * from '../persisters/persister-electric-sql/index.ts';
 export * from '../persisters/persister-expo-sqlite/index.ts';

@@ -47,7 +47,7 @@ const useDottedCellIds = (
   return dottedCellIds;
 };
 
-export const RelationshipInHtmlRow = (props: {
+const RelationshipInHtmlRow = (props: {
   readonly localRowId: Id;
   readonly params: RelationshipInHtmlRowParams;
 }) => {

@@ -66,6 +66,14 @@ Durable Object per WebSocket.
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
 The codes and their meanings are listed in the Error Codes guide.
 
+## Consistent Module Exports
+
+Generated JavaScript exports are now checked against their public value
+declarations during every build. Undeclared React, Solid, DOM, and IndexedDB
+implementation helpers are no longer exposed, and the
+createDurableObjectSqlStoragePersister function is now available from the omni
+module as declared.
+
 ## Safe Arbitrary Identifiers
 
 Arbitrary string Ids, including names inherited from `Object.prototype` such as

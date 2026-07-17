@@ -9,7 +9,7 @@ export * from './IndexView.tsx';
 export * from './LinkedRowsView.tsx';
 export * from './LocalRowsView.tsx';
 export * from './MetricView.tsx';
-export * from './Provider.tsx';
+export {Provider} from './Provider.tsx';
 export * from './RemoteRowView.tsx';
 export * from './ResultCellView.tsx';
 export * from './ResultRowView.tsx';
