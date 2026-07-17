@@ -94,7 +94,7 @@ export const Provider: typeof ProviderDecl = ({
               extraThingsById,
               thingOffset,
               isUndefined(thing)
-                ? objDel(extraThingsById[thingOffset] as any, id)
+                ? objDel({...extraThingsById[thingOffset]} as any, id)
                 : {
                     ...extraThingsById[thingOffset],
                     [id]: thing,

@@ -2,7 +2,7 @@
   import type {Cell, Value} from '../../@types/index.d.ts';
   import type {CellOrValueType} from '../../common/cell.ts';
   import {getCellOrValueType, getTypeCase} from '../../common/cell.ts';
-  import {tryReturn} from '../../common/error.ts';
+  import {tryCatchSync, tryReturn} from '../../common/error.ts';
   import {jsonParse, jsonString} from '../../common/json.ts';
   import {isObject} from '../../common/obj.ts';
   import {boolean, isArray, number, string} from '../../common/other.ts';
@@ -81,16 +81,17 @@
     setTypedClassName: (className: string) => void,
   ) => {
     setTypedThing(value);
-    try {
-      const object = jsonParse(value);
-      if (isThing(object)) {
-        currentThingKey = getThingKey(object);
-        onThingChange(object);
-        setTypedClassName(EMPTY_STRING);
-      }
-    } catch {
-      setTypedClassName(INVALID);
-    }
+    tryCatchSync(
+      () => {
+        const object = jsonParse(value);
+        if (isThing(object)) {
+          currentThingKey = getThingKey(object);
+          onThingChange(object);
+          setTypedClassName(EMPTY_STRING);
+        }
+      },
+      () => setTypedClassName(INVALID),
+    );
   };
 
   const handleTypeChange = () => {

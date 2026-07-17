@@ -78,9 +78,11 @@ export const Provider = (
       }
       const thingsById = isUndefined(thing)
         ? objDel(
-            extraThingsById[thingOffset] as IdObj<
-              ThingsByOffset[typeof thingOffset]
-            >,
+            {
+              ...(extraThingsById[thingOffset] as IdObj<
+                ThingsByOffset[typeof thingOffset]
+              >),
+            },
             id,
           )
         : ({

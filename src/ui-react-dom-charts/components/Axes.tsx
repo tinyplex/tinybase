@@ -44,33 +44,31 @@ export const Axes = ({
   readonly fontSize: number;
   readonly timestampUnit: TimestampUnit;
   readonly xScale: XScale;
-}) => {
-  return (
-    <g className="axes" fill={CURRENT_COLOR} fillOpacity={0.75}>
-      <YAxis
-        {...sharedProps}
-        className={yAxis?.className}
-        tickFormatter={yAxis?.tickFormatter}
-        yTicks={yTicks}
-        yMin={yMin}
-        yMax={yMax}
-        yTitle={yTitle}
-        axisWidth={yAxisWidth}
-      />
-      <XAxis
-        {...sharedProps}
-        className={xAxis?.className}
-        points={points}
-        tickFormatter={xAxis?.tickFormatter}
-        xTicks={xTicks}
-        xMin={xMin}
-        xMax={xMax}
-        xTitle={xTitle}
-        axisHeight={xAxisHeight}
-        fontSize={fontSize}
-        timestampUnit={timestampUnit}
-        xScale={xScale}
-      />
-    </g>
-  );
-};
+}) => (
+  <g className="axes" fill={CURRENT_COLOR} fillOpacity={0.75}>
+    <YAxis
+      {...sharedProps}
+      className={yAxis?.className}
+      tickFormatter={yAxis?.tickFormatter}
+      yTicks={yTicks}
+      yMin={yMin}
+      yMax={yMax}
+      yTitle={yTitle}
+      axisWidth={yAxisWidth}
+    />
+    <XAxis
+      {...sharedProps}
+      className={xAxis?.className}
+      points={points}
+      tickFormatter={xAxis?.tickFormatter}
+      xTicks={xTicks}
+      xMin={xMin}
+      xMax={xMax}
+      xTitle={xTitle}
+      axisHeight={xAxisHeight}
+      fontSize={fontSize}
+      timestampUnit={timestampUnit}
+      xScale={xScale}
+    />
+  </g>
+);
