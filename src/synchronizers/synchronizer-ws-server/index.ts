@@ -28,7 +28,12 @@ import {
   collSize,
   collValues,
 } from '../../common/coll.ts';
-import {ERROR_SYNC_OVERFLOW, errorNew, tryCatch} from '../../common/error.ts';
+import {
+  ERROR_SYNC_OVERFLOW,
+  errorNew,
+  tryCatch,
+  tryFinally,
+} from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {
   IdMap,
@@ -253,8 +258,10 @@ export const createWsServer = (<
   const overflowClient = (client: WebSocket, details: string) => {
     if (client.readyState == client.OPEN) {
       const error = errorNew(ERROR_SYNC_OVERFLOW, details);
-      onIgnoredError?.(error);
-      client.close(1013, error.message);
+      tryFinally(
+        () => onIgnoredError?.(error),
+        () => client.close(1013, error.message),
+      );
     }
   };
 
