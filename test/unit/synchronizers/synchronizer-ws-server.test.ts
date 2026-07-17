@@ -747,6 +747,67 @@ describe('Multiple connections', () => {
 });
 
 describe('Lifecycle', () => {
+  test('listener failures do not interrupt path lifecycles', async () => {
+    const port = 8068;
+    const pathErrors = [
+      [new Error('path add first'), new Error('path add second')],
+      [new Error('path del first'), new Error('path del second')],
+    ];
+    const clientErrors = [
+      [new Error('client add first'), new Error('client add second')],
+      [new Error('client del first'), new Error('client del second')],
+    ];
+    const errors: Error[] = [];
+    const pathChanges: number[] = [];
+    const clientChanges: number[] = [];
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      undefined,
+      (error) => {
+        errors.push(error);
+        throw new Error('reporter');
+      },
+    );
+    wsServer.addPathIdsListener((_server, _pathId, addedOrRemoved) => {
+      throw pathErrors[addedOrRemoved == 1 ? 0 : 1][0];
+    });
+    wsServer.addPathIdsListener((_server, _pathId, addedOrRemoved) => {
+      pathChanges.push(addedOrRemoved);
+      throw pathErrors[addedOrRemoved == 1 ? 0 : 1][1];
+    });
+    wsServer.addClientIdsListener(
+      null,
+      (_server, _pathId, _clientId, addedOrRemoved) => {
+        throw clientErrors[addedOrRemoved == 1 ? 0 : 1][0];
+      },
+    );
+    wsServer.addClientIdsListener(
+      null,
+      (_server, _pathId, _clientId, addedOrRemoved) => {
+        clientChanges.push(addedOrRemoved);
+        throw clientErrors[addedOrRemoved == 1 ? 0 : 1][1];
+      },
+    );
+
+    const webSocket = await openWebSocket('path', port);
+    await pause();
+    expect(wsServer.getStats()).toEqual({clients: 1, paths: 1});
+
+    await closeWebSocket(webSocket);
+    await pause();
+    expect(wsServer.getStats()).toEqual({clients: 0, paths: 0});
+    expect(pathChanges).toEqual([1, -1]);
+    expect(clientChanges).toEqual([1, -1]);
+    expect(errors).toEqual([
+      pathErrors[0][0],
+      clientErrors[0][0],
+      clientErrors[1][0],
+      pathErrors[1][0],
+    ]);
+
+    await wsServer.destroy();
+  });
+
   test('failed setup can be retried', async () => {
     const port = 8059;
     const setupError = new Error('setup');
