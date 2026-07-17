@@ -159,7 +159,8 @@ tombstones that could reject later synchronization.
 MergeableStore now validates HLCs before applying mergeable content or changes.
 Incoming HLCs must use the canonical 16-character encoding and be no more than
 five minutes ahead of the local clock. Invalid payloads are ignored before they
-can alter either content or local clock state.
+can alter either content or local clock state. Validation is now atomic and
+does not remove invalid entries from caller-owned payloads.
 
 The 24-bit logical counter now carries into the wall-clock portion when it
 overflows. Explicit local mutations also verify that their generated stamp was

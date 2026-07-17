@@ -22,11 +22,7 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
-import {
-  arrayClear,
-  arrayPop,
-  arrayPush,
-} from '../common/array.ts';
+import {arrayClear, arrayPop, arrayPush} from '../common/array.ts';
 import {
   decodeIfJson,
   isCellOrValueOrUndefined,
@@ -50,14 +46,15 @@ import {
 } from '../common/map.ts';
 import {
   IdObj,
+  isObject,
   objEnsure,
+  objEvery,
   objForEach,
   objFreeze,
   objGet,
   objHas,
   objNew,
   objSet,
-  objValidate,
 } from '../common/obj.ts';
 import {ifNotUndefined, isArray, size, slice} from '../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
@@ -142,13 +139,18 @@ const validateStamp = (
   hasHashes: 0 | 1,
 ): boolean =>
   isArray(stamp) &&
-  validateThing(stamp[0]) &&
   (size(stamp) == 3
     ? stampValidate(stamp as any, validateThing) &&
       isHlc(stamp[1], maxLogicalTime)
     : !hasHashes &&
+      validateThing(stamp[0]) &&
       (size(stamp) == 1 ||
         (size(stamp) == 2 && isHlc(stamp[1], maxLogicalTime))));
+
+const validateObj = (
+  obj: any,
+  validateChild: (child: any, id: Id) => boolean,
+): boolean => isObject(obj) && objEvery(obj, validateChild);
 
 const validateMergeable = (
   mergeable: MergeableChanges | MergeableContent,
@@ -174,36 +176,20 @@ const validateMergeable = (
     !isReservedString(cellOrValue, encoded);
   return (
     validate(mergeable[0], (tableStamps) =>
-      objValidate(
-        tableStamps,
-        (tableStamp) =>
-          validate(tableStamp, (rowStamps) =>
-            objValidate(
-              rowStamps,
-              (rowStamp) =>
-                validate(rowStamp, (cellStamps) =>
-                  objValidate(
-                    cellStamps,
-                    (cellStamp) => validate(cellStamp, validateCellOrValue),
-                    undefined,
-                    1,
-                  ),
-                ),
-              undefined,
-              1,
+      validateObj(tableStamps, (tableStamp) =>
+        validate(tableStamp, (rowStamps) =>
+          validateObj(rowStamps, (rowStamp) =>
+            validate(rowStamp, (cellStamps) =>
+              validateObj(cellStamps, (cellStamp) =>
+                validate(cellStamp, validateCellOrValue),
+              ),
             ),
           ),
-        undefined,
-        1,
+        ),
       ),
     ) &&
     validate(mergeable[1], (values) =>
-      objValidate(
-        values,
-        (value) => validate(value, validateCellOrValue),
-        undefined,
-        1,
-      ),
+      validateObj(values, (value) => validate(value, validateCellOrValue)),
     )
   );
 };
