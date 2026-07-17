@@ -10,7 +10,6 @@ import {
 } from 'solid-js';
 import type {Id} from '../@types/common/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
-import type {CustomCell} from '../@types/ui-solid-dom/index.d.ts';
 import type {InspectorProps} from '../@types/ui-solid-inspector/index.d.ts';
 import type {
   CellProps,
@@ -617,9 +616,7 @@ const ValuesView = (
             <ValuesInHtmlTable
               store={props.store}
               editable={editable()}
-              extraCellsAfter={
-                (() => (editable() ? valueActions : [])) as unknown as []
-              }
+              extraCellsAfter={editable() ? valueActions : []}
             />
           )}
           {editable() ? <ValuesActions store={props.store} /> : EMPTY_STRING}
@@ -664,22 +661,18 @@ const TableView = (props: TableProps & {readonly storeId?: Id} & StoreProp) => {
             sortOnClick={true}
             onChange={handleChange}
             editable={editable()}
-            extraCellsAfter={
-              (() => (editable() ? rowActions : [])) as unknown as []
-            }
-            customCells={
-              (() => {
-                const CellComponent = editable()
-                  ? EditableCellViewWithActions
-                  : CellView;
-                return objNew(
-                  arrayMap(cellIds(), (cellId) => [
-                    cellId,
-                    {label: cellId, component: CellComponent},
-                  ]),
-                );
-              }) as unknown as {[cellId: Id]: CustomCell}
-            }
+            extraCellsAfter={editable() ? rowActions : []}
+            customCells={objNew(
+              arrayMap(cellIds(), (cellId) => [
+                cellId,
+                {
+                  label: cellId,
+                  component: editable()
+                    ? EditableCellViewWithActions
+                    : CellView,
+                },
+              ]),
+            )}
           />
           {editable() ? (
             <div class="actions">
