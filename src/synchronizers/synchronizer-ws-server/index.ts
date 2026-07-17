@@ -33,6 +33,7 @@ import {
   errorNew,
   tryCatch,
   tryFinally,
+  tryReturn,
 } from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {
@@ -162,7 +163,9 @@ export const createWsServer = (<
   const removeListenersByWebSocket = mapNew<WebSocket, (() => void)[]>();
   let destroying: Promise<void> | undefined;
 
-  const handleError = onIgnoredError ?? noop;
+  const handleError = (error: any): void => {
+    tryReturn(() => onIgnoredError?.(error));
+  };
   addEmitterListener(webSocketServer, ERROR, handleError);
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
@@ -215,7 +218,7 @@ export const createWsServer = (<
       requestTimeoutSeconds,
       undefined,
       undefined,
-      onIgnoredError,
+      handleError,
     );
     serverClient[ServerClient.Then] = isArray(persisterMaybeThen)
       ? persisterMaybeThen[1]
@@ -259,7 +262,7 @@ export const createWsServer = (<
     if (client.readyState == client.OPEN) {
       const error = errorNew(ERROR_SYNC_OVERFLOW, details);
       tryFinally(
-        () => onIgnoredError?.(error),
+        () => handleError(error),
         () => client.close(1013, error.message),
       );
     }
@@ -511,7 +514,7 @@ export const createWsServer = (<
         if (failed) {
           await tryCatch(
             () => delClientFromPath(pathId, path, clientId),
-            onIgnoredError,
+            handleError,
           );
           throw errorToThrow;
         }
@@ -529,15 +532,13 @@ export const createWsServer = (<
       (toClientId, remainders) =>
         handleDecodedMessage(path, clientId, toClientId, remainders),
       requestTimeoutSeconds,
-      createInvalidPayloadHandler(client, onIgnoredError),
+      createInvalidPayloadHandler(client, handleError),
     );
     addWebSocketListener(client, MESSAGE, (data) =>
       decode(data.toString(UTF8)),
     );
     addWebSocketListener(client, CLOSE, () =>
-      delClientFromPath(pathId, path, clientId).catch((error) =>
-        onIgnoredError?.(error),
-      ),
+      delClientFromPath(pathId, path, clientId).catch(handleError),
     );
     await ready;
   };
@@ -547,7 +548,7 @@ export const createWsServer = (<
     clientId: Id,
     basePathId: Id,
   ) => {
-    const invalid = createInvalidPayloadHandler(client, onIgnoredError);
+    const invalid = createInvalidPayloadHandler(client, handleError);
     const [handlePayload, destroy] = createMultipleServerClient<PathClient>(
       basePathId,
       (pathId, channelId) => {
@@ -572,16 +573,14 @@ export const createWsServer = (<
       },
       requestTimeoutSeconds,
       invalid,
-      onIgnoredError,
+      handleError,
     );
 
     addWebSocketListener(client, MESSAGE, (data) =>
       handlePayload(data.toString(UTF8)),
     );
 
-    addWebSocketListener(client, CLOSE, () =>
-      destroy().catch((error) => onIgnoredError?.(error)),
-    );
+    addWebSocketListener(client, CLOSE, () => destroy().catch(handleError));
   };
 
   arrayPush(
@@ -597,9 +596,7 @@ export const createWsServer = (<
             if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
               addMultipleClient(client, clientId, pathId);
             } else {
-              addLegacyClient(client, clientId, pathId).catch((error) =>
-                onIgnoredError?.(error),
-              );
+              addLegacyClient(client, clientId, pathId).catch(handleError);
             }
           }),
         );

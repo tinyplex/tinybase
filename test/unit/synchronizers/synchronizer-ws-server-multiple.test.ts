@@ -1,4 +1,5 @@
 import {createMergeableStore} from 'tinybase';
+import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {expect, test} from 'vitest';
@@ -593,6 +594,103 @@ test('multiple stores synchronize over one WebSocket', async () => {
   await editorSynchronizer2.destroy();
   await pause();
   expect(wsServer.getStats()).toEqual({clients: 0, paths: 0});
+  await wsServer.destroy();
+});
+
+test('failed unsubscribe cleanup allows resubscription', async () => {
+  const cleanupError = new Error('cleanup');
+  const handlerError = new Error('handler');
+  const errors: Error[] = [];
+  let filesAttempts = 0;
+  let filesStore = createMergeableStore();
+  let markSecondReady = () => {};
+  let releaseCleanup = () => {};
+  const secondReady = new Promise<void>(
+    (resolve) => (markSecondReady = resolve),
+  );
+  const cleanupGate = new Promise<void>(
+    (resolve) => (releaseCleanup = resolve),
+  );
+  const wsServer = createWsServer(
+    new WebSocketServer({port: 8067}),
+    ((pathId: string) => {
+      if (pathId == 'project/files') {
+        const failDestroy = ++filesAttempts == 1;
+        const store = (filesStore = createMergeableStore());
+        const persister = (createCustomPersister as any)(
+          store,
+          async () => undefined,
+          async () => {},
+          () => 0,
+          () => {},
+          undefined,
+          Persists.MergeableStoreOnly,
+          {
+            destroy: async () => {
+              if (failDestroy) {
+                await cleanupGate;
+                throw cleanupError;
+              }
+            },
+          },
+        );
+        return [persister, failDestroy ? () => {} : markSecondReady];
+      }
+    }) as any,
+    (error) => {
+      errors.push(error);
+      throw handlerError;
+    },
+    0.05,
+  );
+  const webSocket = new WebSocket('ws://localhost:8067/project', 'tinybase');
+  const filesSynchronizer1 = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket,
+    'files',
+  );
+  expect(filesAttempts).toBe(1);
+  const editorSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket,
+    'editor',
+  );
+  await filesSynchronizer1.startSync();
+
+  await filesSynchronizer1.destroy();
+  const clientStore = createMergeableStore();
+  const filesSynchronizer2Promise = createWsSynchronizer(
+    clientStore,
+    webSocket,
+    'files',
+  );
+  await pause();
+  const attemptsBeforeCleanup = filesAttempts;
+  releaseCleanup();
+  expect(attemptsBeforeCleanup).toBe(2);
+  const filesSynchronizer2 = await filesSynchronizer2Promise;
+  await pause();
+
+  expect(errors).toContain(cleanupError);
+  expect(wsServer.getPathIds().toSorted()).toEqual([
+    'project/editor',
+    'project/files',
+  ]);
+
+  const secondStart = filesSynchronizer2.startSync();
+  await secondReady;
+  await secondStart;
+  clientStore.setValue('selection', 'fido');
+  await pause();
+
+  expect(wsServer.getPathIds().toSorted()).toEqual([
+    'project/editor',
+    'project/files',
+  ]);
+  expect(filesStore.getValue('selection')).toBe('fido');
+
+  await filesSynchronizer2.destroy();
+  await editorSynchronizer.destroy();
   await wsServer.destroy();
 });
 
