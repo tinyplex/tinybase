@@ -63,8 +63,8 @@ const NOWRAP = 'nowrap';
 const oklch = (lPercent: number, remainder = '% 0.01 ' + cssVar('hue')) =>
   `oklch(${lPercent}${remainder})`;
 const cssVar = (name: string) => `var(--${name})`;
-const rem = (...rems: number[]) => `${rems.join('rem ')}rem`;
-const px = (...pxs: number[]) => `${pxs.join('px ')}px`;
+const rem = (...rems: number[]) => `${arrayJoin(rems, 'rem ')}rem`;
+const px = (...pxs: number[]) => `${arrayJoin(pxs, 'px ')}px`;
 const vw = (vw: number = 100) => `${vw}vw`;
 const vh = (vh: number = 100) => `${vh}vh`;
 

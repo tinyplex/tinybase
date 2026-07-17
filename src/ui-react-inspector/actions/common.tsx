@@ -7,6 +7,7 @@ import type {
   ValueProps,
   ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
+import {arrayMap} from '../../common/array.ts';
 import {addEventListener, isUndefined} from '../../common/other.ts';
 import {useCallback, useEffect, useState} from '../../common/react.ts';
 import {KEYDOWN} from '../../common/strings.ts';
@@ -66,7 +67,7 @@ export const ConfirmableActions = <
       </>
     );
   } else {
-    return actions.map(([icon, title], index) => (
+    return arrayMap(actions, ([icon, title], index) => (
       <img
         key={index}
         title={title}

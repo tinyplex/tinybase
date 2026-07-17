@@ -7,7 +7,7 @@ import {
   getCellOrValueType,
   getTypeCase,
 } from '../../common/cell.ts';
-import {tryReturn} from '../../common/error.ts';
+import {tryCatchSync, tryReturn} from '../../common/error.ts';
 import {jsonParse, jsonString} from '../../common/json.ts';
 import {isObject, objToArray} from '../../common/obj.ts';
 import {
@@ -194,16 +194,17 @@ export const EditableThing = ({
       setTypedClassName: (className: string) => void,
     ) => {
       setTypedThing(value);
-      try {
-        const object = jsonParse(value);
-        if (isThing(object)) {
-          setCurrentThing(object);
-          onThingChange(object);
-          setTypedClassName('');
-        }
-      } catch {
-        setTypedClassName('invalid');
-      }
+      tryCatchSync(
+        () => {
+          const object = jsonParse(value);
+          if (isThing(object)) {
+            setCurrentThing(object);
+            onThingChange(object);
+            setTypedClassName('');
+          }
+        },
+        () => setTypedClassName('invalid'),
+      );
     },
     [onThingChange],
   );

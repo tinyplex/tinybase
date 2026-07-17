@@ -523,9 +523,7 @@ const getAxisTicks = (
       ),
       (tick): tick is number => isFiniteNumber(tick),
     ),
-    (tick1, tick2) => {
-      return tick1 - tick2;
-    },
+    (tick1, tick2) => tick1 - tick2,
   );
 
 const getParsedChildren = (children: ReactNode): ParsedChildren => {

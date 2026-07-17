@@ -3,7 +3,7 @@
   import type {ExtraRowCell} from '../@types/ui-svelte-dom/index.d.ts';
   import {objEntries} from '../common/obj.ts';
   import {isFalse, isUndefined} from '../common/other.ts';
-  import {EXTRA} from '../common/strings.ts';
+  import {EXTRA, strSplit} from '../common/strings.ts';
   import {getRemoteRowId} from '../ui-svelte/functions.svelte.ts';
   import type {Cells} from './common/index.ts';
   import {extraKey, getProps} from './common/index.ts';
@@ -62,7 +62,7 @@
     {@const compoundCellId = entry[0]}
     {@const cell = entry[1]}
     {@const CellComponent = cell.component}
-    {@const [tableId, cellId] = compoundCellId.split('.', 2)}
+    {@const [tableId, cellId] = strSplit(compoundCellId, '.', 2)}
     {@const rowId =
       tableId === localTableId
         ? localRowId

@@ -253,12 +253,15 @@ const useListenable = (
 ): Accessor<any> => {
   const [result, setResult] = createSignal<any>(DEFAULTS[returnType]);
   const getListenerArguments = () => arrayMap(listenerArgGetters, getThing);
-  const getResult = () =>
-    getThing(thing)?.[
+  const getResult = (resolvedThing: any, listenerArguments: any[]) =>
+    resolvedThing?.[
       (returnType == ReturnType.Boolean ? _HAS : GET) + listenable
-    ]?.(...getListenerArguments()) ?? DEFAULTS[returnType];
-  const updateResult = () => {
-    const nextResult = getResult();
+    ]?.(...listenerArguments) ?? DEFAULTS[returnType];
+  const updateResult = (
+    resolvedThing = getThing(thing),
+    listenerArguments = getListenerArguments(),
+  ) => {
+    const nextResult = getResult(resolvedThing, listenerArguments);
     const prevResult = untrack(result);
     setResult(() =>
       !(IS_EQUALS[returnType] ?? isEqual)(nextResult, prevResult)
@@ -266,17 +269,18 @@ const useListenable = (
         : prevResult,
     );
   };
+  const listener = () => updateResult();
   createRenderEffect(() => {
     const resolvedThing = getThing(thing);
     const listenerArguments = getListenerArguments();
-    updateResult();
+    updateResult(resolvedThing, listenerArguments);
     if (!isServer) {
       onCleanup(
         addAndDelListener(
           resolvedThing,
           (returnType == ReturnType.Boolean ? HAS : EMPTY_STRING) + listenable,
           ...listenerArguments,
-          updateResult,
+          listener,
         ),
       );
     }

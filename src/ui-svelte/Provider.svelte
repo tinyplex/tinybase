@@ -2,6 +2,7 @@
   import {getContext, setContext, untrack} from 'svelte';
   import type {Id} from '../@types/common/index.d.ts';
   import type {ProviderProps} from '../@types/ui-svelte/index.d.ts';
+  import {arrayNew} from '../common/array.ts';
   import {type ContextValue, TINYBASE_CONTEXT_KEY} from './context.ts';
 
   const {
@@ -27,7 +28,7 @@
   const parentCtx: ContextValue =
     (getContext(TINYBASE_CONTEXT_KEY) as ContextValue) ?? [];
 
-  let extras: {[id: Id]: any}[] = $state(Array.from({length: 8}, () => ({})));
+  let extras: {[id: Id]: any}[] = $state(arrayNew(8, () => ({})));
 
   const addThing = (offset: number, id: Id, thing: any): void => {
     extras[offset] = {...untrack(() => extras[offset]), [id]: thing};
