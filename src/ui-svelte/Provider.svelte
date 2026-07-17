@@ -5,7 +5,7 @@
   import {arrayFilter, arrayNew, arrayPush} from '../common/array.ts';
   import {type IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
   import {objDel, objGet} from '../common/obj.ts';
-  import {isUndefined, size} from '../common/other.ts';
+  import {isEmpty, isUndefined, size} from '../common/other.ts';
   import {type ContextValue, TINYBASE_CONTEXT_KEY} from './context.ts';
 
   const {
@@ -33,9 +33,8 @@
 
   let extras: {[id: Id]: any}[] = $state(arrayNew(8, () => ({})));
   type ThingRegistration = [owner: object, thing: any];
-  const registrationsByOffset: IdMap<ThingRegistration[]>[] = arrayNew(
-    8,
-    () => mapNew<Id, ThingRegistration[]>(),
+  const registrationsByOffset: IdMap<ThingRegistration[]>[] = arrayNew(8, () =>
+    mapNew<Id, ThingRegistration[]>(),
   );
 
   const setThing = (offset: number, id: Id, thing?: any): void => {
@@ -72,7 +71,7 @@
     mapSet(
       registrationsById,
       id,
-      isUndefined(registrations[0]) ? undefined : registrations,
+      isEmpty(registrations) ? undefined : registrations,
     );
     setThing(offset, id, registrations[size(registrations) - 1]?.[1]);
   };

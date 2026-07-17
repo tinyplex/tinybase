@@ -195,8 +195,8 @@ export const getListenerFunctions = (
   const callListenersImpl = (
     continueAfterError: boolean,
     idSetNode: IdSetNode,
-    ids?: Ids,
-    extraArgs: any[] = [],
+    ids: Ids | undefined,
+    extraArgs: any[],
   ): void => {
     let errorToThrow: any;
     let failed = false;

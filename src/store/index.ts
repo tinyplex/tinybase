@@ -108,6 +108,7 @@ import {
   objValidate,
 } from '../common/obj.ts';
 import {
+  getArg,
   ifNotUndefined,
   isArray,
   isFunction,
@@ -452,7 +453,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const cloneRow = (row: Row): Row =>
-    isObject(row) ? objMap(row, (cell) => cell) : row;
+    isObject(row) ? objMap(row, getArg) : row;
 
   const cloneTable = (table: Table): Table =>
     isObject(table) ? objMap(table, cloneRow) : table;
@@ -461,7 +462,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     isObject(tables) ? objMap(tables, cloneTable) : tables;
 
   const cloneValues = (values: Values): Values =>
-    isObject(values) ? objMap(values, (value) => value) : values;
+    isObject(values) ? objMap(values, getArg) : values;
 
   const isValidEncodedJson = (
     cellOrValue: any,
