@@ -71,8 +71,8 @@
   /**
    * The prefix used before all the keys in the server's durable storage. Use
    * this in case you are worried about the Store data colliding with other data
-   * stored in the room. Use a collision-safe delimiter at the end of a non-empty
-   * prefix, such as `tinybase_`. Defaults to an empty string.
+   * stored in the room. Use a collision-safe delimiter at the end of a
+   * non-empty prefix, such as `tinybase_`. Defaults to an empty string.
    * @category Configuration
    * @since v4.3.0
    */

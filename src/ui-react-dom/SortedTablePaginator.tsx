@@ -92,7 +92,7 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
     if (invalidOffset) {
       onChange(0);
     }
-  }, [onChange, offset, total]);
+  }, [invalidOffset, onChange, offset, total]);
   if (invalidOffset) {
     offset = 0;
   }
