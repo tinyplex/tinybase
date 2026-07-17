@@ -9,7 +9,7 @@ import * as WsClient from 'tinybase/synchronizers/synchronizer-ws-client';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import tmp from 'tmp';
-import {afterEach, beforeEach, describe, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 
@@ -1093,10 +1093,23 @@ describe('Lifecycle', () => {
 
 describe('Persistence', () => {
   let tmpDir: string;
+  let synchronizerCleanups: (() => Promise<unknown>)[];
+  let wsServerCleanups: (() => Promise<unknown>)[];
 
   beforeEach(() => {
     tmp.setGracefulCleanup();
     tmpDir = tmp.dirSync().name;
+    synchronizerCleanups = [];
+    wsServerCleanups = [];
+  });
+
+  afterEach(async () => {
+    for (const cleanup of synchronizerCleanups) {
+      await cleanup();
+    }
+    for (const cleanup of wsServerCleanups) {
+      await cleanup();
+    }
   });
 
   const createPersister = (serverStore: MergeableStore, pathId: Id) =>
@@ -1105,24 +1118,38 @@ describe('Persistence', () => {
       join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
     );
 
+  const expectPersisted = (pathId: Id, expected: unknown) =>
+    vi.waitFor(() =>
+      expect(
+        JSON.parse(
+          readFileSync(
+            join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
+            'utf-8',
+          ),
+        ),
+      ).toEqual(expected),
+    );
+
   test('single client', async () => {
     const serverStore = createMergeableStore('ss', getNow);
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),
       (pathId) => createPersister(serverStore, pathId),
     );
+    wsServerCleanups.push(() => wsServer.destroy());
 
     const clientStore = createMergeableStore('s1', getNow);
     const synchronizer = await createWsSynchronizer(
       clientStore,
       new WebSocket('ws://localhost:8049/p1'),
     );
+    synchronizerCleanups.push(() => synchronizer.destroy());
     await synchronizer.startSync();
     clientStore.setCell('t1', 'r1', 'c1', 1);
 
     await pause();
     expect(serverStore.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    expect(JSON.parse(readFileSync(join(tmpDir, 'p1.json'), 'utf-8'))).toEqual([
+    await expectPersisted('p1', [
       [
         {
           t1: [
@@ -1144,7 +1171,7 @@ describe('Persistence', () => {
     expect(clientStore.getTables()).toEqual({
       t1: {r1: {c1: 1}, r2: {c2: 2}},
     });
-    expect(JSON.parse(readFileSync(join(tmpDir, 'p1.json'), 'utf-8'))).toEqual([
+    await expectPersisted('p1', [
       [
         {
           t1: [
@@ -1184,6 +1211,7 @@ describe('Persistence', () => {
       undefined,
       20,
     );
+    wsServerCleanups.push(() => wsServer.destroy());
 
     const clientStore = createMergeableStore('s1', getNow);
     const synchronizer = await createWsSynchronizer(
@@ -1195,6 +1223,7 @@ describe('Persistence', () => {
       undefined,
       20,
     );
+    synchronizerCleanups.push(() => synchronizer.destroy());
 
     try {
       await synchronizer.startSync();
@@ -1237,12 +1266,14 @@ describe('Persistence', () => {
     const wsServer = createWsServer(webSocketServer, (pathId) =>
       createPersister(createMergeableStore('ss', getNow), pathId),
     );
+    wsServerCleanups.push(() => wsServer.destroy());
     const clientStore = createMergeableStore('s1', getNow);
     clientStore.setMergeableContent(clientContent);
     const synchronizer = await createWsSynchronizer(
       clientStore,
       new WebSocket('ws://localhost:8049/p1'),
     );
+    synchronizerCleanups.push(() => synchronizer.destroy());
 
     try {
       await synchronizer.startSync();
@@ -1275,6 +1306,7 @@ describe('Persistence', () => {
       undefined,
       12,
     );
+    synchronizerCleanups.push(() => sourceSynchronizer.destroy());
     const serverStore = createMergeableStore('ss', getNow);
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),
@@ -1282,6 +1314,7 @@ describe('Persistence', () => {
       undefined,
       0.01,
     );
+    wsServerCleanups.push(() => wsServer.destroy());
     const webSocket = new WebSocket('ws://localhost:8049/p1');
     await new Promise<void>((resolve) => webSocket.on('open', () => resolve()));
     await pause();
@@ -1355,12 +1388,14 @@ describe('Persistence', () => {
           return createPersister(serverStore, pathId);
         },
       );
+      wsServerCleanups.push(() => wsServer.destroy());
 
       const clientStore = createMergeableStore('s1', getNow);
       const synchronizer = await createWsSynchronizer(
         clientStore,
         new WebSocket('ws://localhost:8049/p1'),
       );
+      synchronizerCleanups.push(() => synchronizer.destroy());
       await synchronizer.startSync();
 
       await pause();
@@ -1381,12 +1416,14 @@ describe('Persistence', () => {
           ];
         },
       );
+      wsServerCleanups.push(() => wsServer.destroy());
 
       const clientStore = createMergeableStore('s1', getNow);
       const synchronizer = await createWsSynchronizer(
         clientStore,
         new WebSocket('ws://localhost:8049/p1'),
       );
+      synchronizerCleanups.push(() => synchronizer.destroy());
       await synchronizer.startSync();
 
       await pause();
@@ -1394,9 +1431,7 @@ describe('Persistence', () => {
         {t1: {r1: {c1: 1}}},
         {p: 'p1'},
       ]);
-      expect(
-        JSON.parse(readFileSync(join(tmpDir, 'p1.json'), 'utf-8')),
-      ).toEqual([
+      await expectPersisted('p1', [
         [
           {
             t1: [
@@ -1422,12 +1457,14 @@ describe('Persistence', () => {
       new WebSocketServer({port: 8049}),
       (pathId) => createPersister(serverStore, pathId),
     );
+    wsServerCleanups.push(() => wsServer.destroy());
 
     const clientStore1 = createMergeableStore('s1', getNow);
     const synchronizer1 = await createWsSynchronizer(
       clientStore1,
       new WebSocket('ws://localhost:8049/p1'),
     );
+    synchronizerCleanups.push(() => synchronizer1.destroy());
     await synchronizer1.startSync();
     clientStore1.setCell('t1', 'r1', 'c1', 1);
 
@@ -1436,6 +1473,7 @@ describe('Persistence', () => {
       clientStore2,
       new WebSocket('ws://localhost:8049/p1'),
     );
+    synchronizerCleanups.push(() => synchronizer2.destroy());
     await synchronizer2.startSync();
     clientStore1.setCell('t1', 'r2', 'c2', 2);
 
@@ -1466,12 +1504,14 @@ describe('Persistence', () => {
       (pathId) =>
         createPersister(pathId == 'p1' ? serverStore1 : serverStore2, pathId),
     );
+    wsServerCleanups.push(() => wsServer.destroy());
 
     const clientStore1 = createMergeableStore('s1', getNow);
     const synchronizer1 = await createWsSynchronizer(
       clientStore1,
       new WebSocket('ws://localhost:8049/p1'),
     );
+    synchronizerCleanups.push(() => synchronizer1.destroy());
     await synchronizer1.startSync();
     clientStore1.setCell('t1', 'r1', 'c1', 1);
 
@@ -1480,6 +1520,7 @@ describe('Persistence', () => {
       clientStore2,
       new WebSocket('ws://localhost:8049/p1'),
     );
+    synchronizerCleanups.push(() => synchronizer2.destroy());
     await synchronizer2.startSync();
     clientStore1.setCell('t2', 'r2', 'c2', 2);
 
@@ -1488,6 +1529,7 @@ describe('Persistence', () => {
       clientStore3,
       new WebSocket('ws://localhost:8049/p2'),
     );
+    synchronizerCleanups.push(() => synchronizer3.destroy());
     await synchronizer3.startSync();
     clientStore3.setCell('t3', 'r3', 'c3', 3);
 
@@ -1496,6 +1538,7 @@ describe('Persistence', () => {
       clientStore4,
       new WebSocket('ws://localhost:8049/p2'),
     );
+    synchronizerCleanups.push(() => synchronizer4.destroy());
     await synchronizer4.startSync();
     clientStore4.setCell('t4', 'r4', 'c4', 4);
     await pause();
@@ -1550,12 +1593,14 @@ describe('Persistence', () => {
         return createPersister(serverStore, pathId || 'root');
       },
     );
+    wsServerCleanups.push(() => wsServer.destroy());
 
     const clientStore1 = createMergeableStore('store1', getNow);
     const synchronizer1 = await createWsSynchronizer(
       clientStore1,
       new WebSocket('ws://localhost:8049'),
     );
+    synchronizerCleanups.push(() => synchronizer1.destroy());
     await synchronizer1.startSync();
     clientStore1.setCell('t1', 'r1', 'c1', 1);
 
@@ -1564,6 +1609,7 @@ describe('Persistence', () => {
       clientStore2,
       new WebSocket('ws://localhost:8049'),
     );
+    synchronizerCleanups.push(() => synchronizer2.destroy());
     await synchronizer2.startSync();
     clientStore2.setCell('t1', 'r2', 'c2', 2);
 
@@ -1572,6 +1618,7 @@ describe('Persistence', () => {
       clientStore3,
       new WebSocket('ws://localhost:8049/store3'),
     );
+    synchronizerCleanups.push(() => synchronizer3.destroy());
     await synchronizer3.startSync();
     clientStore3.setCell('t1', 'r3', 'c3', 3);
 
@@ -1601,6 +1648,7 @@ describe('Persistence', () => {
       new WebSocketServer({port: 8049}),
       (pathId) => createPersister(createMergeableStore('ss', getNow), pathId),
     );
+    wsServerCleanups.push(() => wsServer.destroy());
 
     const clientStore1 = createMergeableStore('s1', getNow);
     clientStore1.setCell('t1', 'r1', 'c1', 1);
@@ -1609,6 +1657,7 @@ describe('Persistence', () => {
       new WebSocket('ws://localhost:8049/p'),
       1,
     );
+    synchronizerCleanups.push(() => synchronizer1.destroy());
     await synchronizer1.startSync();
     await pause();
     await synchronizer1.destroy();
@@ -1619,6 +1668,7 @@ describe('Persistence', () => {
       new WebSocket('ws://localhost:8049/p'),
       1,
     );
+    synchronizerCleanups.push(() => synchronizer2.destroy());
     await synchronizer2.startSync();
     await pause();
     await synchronizer2.destroy();
