@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import {join} from 'path';
-import type {Store} from 'tinybase';
+import type {Content, Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister, PersisterListener} from 'tinybase/persisters';
 import {createCustomPersister, Status} from 'tinybase/persisters';
@@ -846,6 +846,142 @@ test('observes changes during the initial auto-load', async () => {
 
   expect(store.getCell('pets', 'fido', 'species')).toBe('cat');
   expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+});
+
+test('defers no-content auto-load until after saving', async () => {
+  let listener: PersisterListener = noop;
+  let persisted: Content = [{}, {}];
+  let markSaveStarted: () => void = noop;
+  let releaseSave: () => void = noop;
+  const saveStarted = new Promise<void>(
+    (resolve) => (markSaveStarted = resolve),
+  );
+  const saveGate = new Promise<void>((resolve) => (releaseSave = resolve));
+  const getPersisted = vi.fn(async () => persisted);
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    getPersisted,
+    async (getContent) => {
+      persisted = getContent();
+      await listener();
+      markSaveStarted();
+      await saveGate;
+    },
+    (newListener) => {
+      listener = newListener;
+      return 1;
+    },
+    noop,
+  );
+  await persister.startAutoLoad();
+  store.setValue('value', 'local');
+
+  const saving = persister.save();
+  await saveStarted;
+  persisted = [{}, {value: 'external'}];
+  await listener();
+  releaseSave();
+  await saving;
+
+  expect(store.getContent()).toEqual([{}, {value: 'external'}]);
+  expect(getPersisted).toHaveBeenCalledTimes(2);
+  expect(persister.getStats()).toEqual({loads: 2, saves: 1});
+  await persister.destroy();
+});
+
+test('cancels deferred auto-load notifications when stopped', async () => {
+  let listener: PersisterListener = noop;
+  let persisted: Content = [{}, {}];
+  let markSaveStarted: () => void = noop;
+  let releaseSave: () => void = noop;
+  const saveStarted = new Promise<void>(
+    (resolve) => (markSaveStarted = resolve),
+  );
+  const saveGate = new Promise<void>((resolve) => (releaseSave = resolve));
+  const getPersisted = vi.fn(async () => persisted);
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    getPersisted,
+    async (getContent) => {
+      persisted = getContent();
+      markSaveStarted();
+      await saveGate;
+    },
+    (newListener) => {
+      listener = newListener;
+      return 1;
+    },
+    noop,
+  );
+  await persister.startAutoLoad();
+  store.setValue('value', 'local');
+
+  const saving = persister.save();
+  await saveStarted;
+  persisted = [{}, {value: 'external'}];
+  await listener();
+  await persister.stopAutoLoad();
+  releaseSave();
+  await saving;
+
+  expect(store.getContent()).toEqual([{}, {value: 'local'}]);
+  expect(getPersisted).toHaveBeenCalledOnce();
+  expect(persister.getStats()).toEqual({loads: 1, saves: 1});
+  await persister.destroy();
+});
+
+test('retains a deferred auto-load through a reentrant save', async () => {
+  let listener: PersisterListener = noop;
+  let persisted: Content = [{}, {}];
+  let markSecondSaveStarted: () => void = noop;
+  let releaseSecondSave: () => void = noop;
+  const secondSaveStarted = new Promise<void>(
+    (resolve) => (markSecondSaveStarted = resolve),
+  );
+  const secondSaveGate = new Promise<void>(
+    (resolve) => (releaseSecondSave = resolve),
+  );
+  const store = createStore();
+  let saveCount = 0;
+  const persister = createCustomPersister(
+    store,
+    async () => persisted,
+    async () => {
+      if (++saveCount == 1) {
+        persisted = [{}, {value: 'external'}];
+        await listener();
+      } else {
+        markSecondSaveStarted();
+        await secondSaveGate;
+      }
+    },
+    (newListener) => {
+      listener = newListener;
+      return 1;
+    },
+    noop,
+  );
+  await persister.startAutoLoad();
+  store.setValue('value', 'local');
+  let secondSaving: Promise<Persister> | undefined;
+  let startSecondSave = true;
+  persister.addStatusListener((_persister, status) => {
+    if (status == Status.Idle && startSecondSave) {
+      startSecondSave = false;
+      secondSaving = persister.save();
+    }
+  });
+
+  await persister.save();
+  await secondSaveStarted;
+  releaseSecondSave();
+  await secondSaving;
+
+  expect(store.getContent()).toEqual([{}, {value: 'external'}]);
+  expect(persister.getStats()).toEqual({loads: 2, saves: 2});
+  await persister.destroy();
 });
 
 test('releases shared scheduler state on destroy', async () => {

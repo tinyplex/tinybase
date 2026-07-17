@@ -157,6 +157,7 @@ export const createCustomPersister = <
   let autoLoadGeneration = 0;
   let pendingAutoLoads = 0;
   let pendingScheduledAutoLoads = 0;
+  let autoLoadAfterSaveGeneration = 0;
   let autoSaveListenerId: Id | undefined;
   let autoSaveGeneration = 0;
   let destroyed = 0;
@@ -307,6 +308,18 @@ export const createCustomPersister = <
     return persister;
   };
 
+  const runAutoLoadAfterSave = async (): Promise<void> => {
+    const generation = autoLoadAfterSaveGeneration;
+    autoLoadAfterSaveGeneration = 0;
+    if (generation && generation == autoLoadGeneration && !destroyed) {
+      if (status == StatusValues.Saving) {
+        autoLoadAfterSaveGeneration = generation;
+      } else {
+        await load();
+      }
+    }
+  };
+
   const startAutoLoad = async (
     initialContent?: Content | (() => Content),
   ): Promise<Persister<Persist>> => {
@@ -349,6 +362,8 @@ export const createCustomPersister = <
               if (!pendingAutoLoads) {
                 await saveAfterMutated();
               }
+            } else if (status == StatusValues.Saving) {
+              autoLoadAfterSaveGeneration = generation;
             } else {
               await load();
             }
@@ -376,6 +391,7 @@ export const createCustomPersister = <
   const stopAutoLoad = async (
     keepGeneration = false,
   ): Promise<Persister<Persist>> => {
+    autoLoadAfterSaveGeneration = 0;
     if (!keepGeneration) {
       autoLoadGeneration++;
     }
@@ -408,17 +424,21 @@ export const createCustomPersister = <
     /*! istanbul ignore else */
     if (status != StatusValues.Loading) {
       await tryFinallyAsync(
-        async () => {
-          setStatus(StatusValues.Saving);
-          saves++;
-          await schedule(() =>
-            tryCatch(
-              () => setPersisted(getContent as any, changes),
-              onIgnoredError,
-            ),
-          );
-        },
-        () => setStatus(StatusValues.Idle),
+        () =>
+          tryFinallyAsync(
+            async () => {
+              setStatus(StatusValues.Saving);
+              saves++;
+              await schedule(() =>
+                tryCatch(
+                  () => setPersisted(getContent as any, changes),
+                  onIgnoredError,
+                ),
+              );
+            },
+            () => setStatus(StatusValues.Idle),
+          ),
+        runAutoLoadAfterSave,
       );
     }
     return persister;

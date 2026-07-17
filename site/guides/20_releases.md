@@ -371,6 +371,9 @@ Persisters have received a broad reliability pass:
   Notifications during startup remain ordered behind the initial load, while
   steady-state changes apply synchronously and concurrent changes avoid
   redundant follow-up saves.
+- Auto-load notifications without inline content that arrive during a save are
+  coalesced into a trailing load, preventing an external write from being
+  missed in the save-completion window.
 - Destroyed Persisters now release shared scheduler state.
 - Database transaction failures now roll back instead of partially committing.
 - Remote libSQL transactions use one transaction session, while local file
