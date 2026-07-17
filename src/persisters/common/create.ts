@@ -331,9 +331,7 @@ export const createCustomPersister = <
                   setStatus(StatusValues.Loading);
                   loads++;
                   await (shouldSchedule
-                    ? schedule(() =>
-                        setContentOrChanges(changes ?? content),
-                      )
+                    ? schedule(() => setContentOrChanges(changes ?? content))
                     : tryFinally(
                         () => setContentOrChanges(changes ?? content),
                         () => setStatus(StatusValues.Idle),
