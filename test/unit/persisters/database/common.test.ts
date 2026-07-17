@@ -317,6 +317,55 @@ test('reports SQLite auto-load polling errors', async () => {
   await persister.destroy();
 });
 
+test('contains SQLite ignored-error handler failures', async () => {
+  vi.useFakeTimers();
+  let fail = false;
+  let resolveErrorReported!: () => void;
+  const errorReported = new Promise<void>(
+    (resolve) => (resolveErrorReported = resolve),
+  );
+  const ignoredError = vi.fn(() => {
+    resolveErrorReported();
+    throw new Error('ignored-error handler failed');
+  });
+  const persister = createCustomSqlitePersister(
+    createStore(),
+    {mode: 'json', autoLoadIntervalSeconds: 0.01},
+    async (sql) => {
+      if (sql.includes('data_version')) {
+        if (fail) {
+          throw new Error('poll failed');
+        }
+        return [{d: 1, s: 1, c: 0}];
+      }
+      return sql.includes('pragma_table')
+        ? [
+            {tn: 'tinybase', cn: '_id'},
+            {tn: 'tinybase', cn: 'store'},
+          ]
+        : sql.startsWith('SELECT*')
+          ? [{_id: '_', store: '[{},{}]'}]
+          : [];
+    },
+    () => undefined,
+    () => {},
+    undefined,
+    ignoredError,
+    () => {},
+    Persists.StoreOnly,
+    {},
+  );
+  await persister.startAutoLoad();
+
+  fail = true;
+  vi.advanceTimersByTime(10);
+  await errorReported;
+  expect(ignoredError).toHaveBeenCalledOnce();
+
+  fail = false;
+  await persister.destroy();
+});
+
 test('adds collision-safe unique row ID indexes', async () => {
   const db = new sqlite3.Database(':memory:');
   await new Promise<void>((resolve, reject) =>
