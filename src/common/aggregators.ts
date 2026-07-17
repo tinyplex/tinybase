@@ -1,4 +1,4 @@
-import {arraySum} from './array.ts';
+import {arrayMax, arrayMin, arraySum} from './array.ts';
 import {Coll, collForEach, collIsEmpty, collSize, collValues} from './coll.ts';
 import {IdMap, mapNew} from './map.ts';
 import {isUndefined, mathMax, mathMin} from './other.ts';
@@ -40,7 +40,7 @@ export const numericAggregators: IdMap<Aggregators<number, number>> = mapNew([
   [
     MAX,
     [
-      (numbers: number[]): number => mathMax(...numbers),
+      arrayMax,
       (metric: number, add: number): number => mathMax(add, metric),
       (metric: number, remove: number): number | undefined =>
         remove == metric ? undefined : metric,
@@ -51,7 +51,7 @@ export const numericAggregators: IdMap<Aggregators<number, number>> = mapNew([
   [
     MIN,
     [
-      (numbers: number[]): number => mathMin(...numbers),
+      arrayMin,
       (metric: number, add: number): number => mathMin(add, metric),
       (metric: number, remove: number): number | undefined =>
         remove == metric ? undefined : metric,

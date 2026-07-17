@@ -1,4 +1,4 @@
-import {isArray, size} from './other.ts';
+import {infinity, isArray, mathMax, mathMin, size} from './other.ts';
 import {EMPTY_STRING} from './strings.ts';
 
 export const arrayNew = <Value>(
@@ -58,6 +58,20 @@ export const arrayMap = <Value, Return>(
 
 export const arraySum = (array: number[]): number =>
   arrayReduce<number, number>(array, (i, j) => i + j, 0);
+
+export const arrayMax = (array: number[]): number =>
+  arrayReduce<number, number>(
+    array,
+    (maximum, value) => mathMax(maximum, value),
+    -infinity,
+  );
+
+export const arrayMin = (array: number[]): number =>
+  arrayReduce<number, number>(
+    array,
+    (minimum, value) => mathMin(minimum, value),
+    infinity,
+  );
 
 export const arrayReduce = <Value, Result>(
   array: Value[],

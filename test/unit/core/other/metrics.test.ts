@@ -89,6 +89,25 @@ describe('Sets', () => {
     expect(metrics.getMetric('m1')).toBeUndefined();
   });
 
+  test('min and max support large tables', () => {
+    const rowCount = 125000;
+    store.setTable(
+      't1',
+      Object.fromEntries(
+        Array.from({length: rowCount}, (_, index) => [
+          'r' + index,
+          {c1: index},
+        ]),
+      ),
+    );
+    metrics
+      .setMetricDefinition('min', 't1', 'min', 'c1')
+      .setMetricDefinition('max', 't1', 'max', 'c1');
+
+    expect(metrics.getMetric('min')).toBe(0);
+    expect(metrics.getMetric('max')).toBe(rowCount - 1);
+  });
+
   test('definition before data', () => {
     metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
     setCells();
