@@ -37,6 +37,7 @@ import {
   ifNotUndefined,
   isNull,
   isUndefined,
+  noop,
   promiseNew,
   startTimeout,
   stopTimeout,
@@ -79,6 +80,7 @@ export const createCustomSynchronizer = (
   onIgnoredError?: (error: any) => void,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
+  preDestroy: () => void = noop,
 ): Synchronizer => {
   let syncing: 0 | 1 = 0;
   let persisterListener:
@@ -286,8 +288,9 @@ export const createCustomSynchronizer = (
 
   const destroy = async () => {
     destroyed = true;
-    await persister.stopSync();
     rejectPendingRequests(errorNew(ERROR_SYNC_RESPONSE, 'destroyed'));
+    preDestroy();
+    await persister.stopSync();
     extraDestroy();
     return persister;
   };

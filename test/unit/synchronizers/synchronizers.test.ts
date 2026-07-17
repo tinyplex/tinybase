@@ -220,6 +220,23 @@ test('BroadcastChannel Synchronizer validates messages', async () => {
   await synchronizer.destroy();
 });
 
+test('Local Synchronizer cancels scheduled messages on destroy', async () => {
+  const receive = vi.fn();
+  const sender = createLocalSynchronizer(createMergeableStore());
+  const receiver = createLocalSynchronizer(
+    createMergeableStore(),
+    undefined,
+    receive,
+  );
+
+  await sender.save();
+  await sender.destroy();
+  await pause();
+
+  expect(receive).not.toHaveBeenCalled();
+  await receiver.destroy();
+});
+
 describe.each([
   ['LocalSynchronizer', mockLocalSynchronizer],
   ['WsSynchronizer', mockWsSynchronizer],
