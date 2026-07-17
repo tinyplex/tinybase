@@ -65,6 +65,9 @@ WsServer and WsServerSimple now share the same negotiation, channel lifecycle,
 payload decoding, and cleanup implementation. Their path storage and
 backpressure policies remain specific to each server.
 
+Both servers also keep a safe error listener installed for their lifetime so a
+late Node.js `error` event cannot become an unhandled process-level error.
+
 Multiplexed channel Ids are not an authorization boundary. A client accepted on
 a base path can subscribe to any valid descendant channel, so applications with
 untrusted clients should authenticate and isolate WebSockets by authorized
@@ -107,6 +110,13 @@ non-allocating iteration helper.
 Store JSON setters now handle invalid input synchronously without creating
 Promises or microtasks. Unused query-redefinition bookkeeping has also been
 removed.
+
+When a query definition is deleted, Queries now releases its cached pre- and
+result Stores once no listeners or dependent queries reference them.
+
+The getTransactionMergeableChanges method declaration now matches its runtime
+behavior, returning unhashed changes by default and hashed changes when
+requested.
 
 ## Consistent Module Exports
 
@@ -193,6 +203,9 @@ across multiple Stores or supplied as a frozen object.
 
 The getTablesSchemaJson, getValuesSchemaJson, and getSchemaJson methods also
 return object and array defaults in their original form.
+
+If a replacement TablesSchema or ValuesSchema is invalid, the Store now keeps
+the previous valid schema active consistently.
 
 ## Public Middleware Values
 
