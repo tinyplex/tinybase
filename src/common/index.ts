@@ -12,4 +12,8 @@ export * from './hash.ts';
 export const defaultSorter: typeof defaultSorterDecl = (
   sortKey1: SortKey,
   sortKey2: SortKey,
-): number => ((sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1);
+): number => {
+  const key1 = sortKey1 ?? 0;
+  const key2 = sortKey2 ?? 0;
+  return key1 < key2 ? -1 : key1 > key2 ? 1 : 0;
+};
