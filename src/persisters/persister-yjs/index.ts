@@ -15,11 +15,12 @@ import type {
   Value,
 } from '../../@types/store/index.d.ts';
 import {arrayForEach} from '../../common/array.ts';
-import {ERROR_CONTENT, errorThrow, tryCatch} from '../../common/error.ts';
+import {ERROR_CONTENT, errorThrow, tryCatchIgnore} from '../../common/error.ts';
 import {mapForEach} from '../../common/map.ts';
 import {
   IdObj,
   objEnsure,
+  objEvery,
   objForEach,
   objHas,
   objNew,
@@ -144,48 +145,48 @@ const applyChangesToYDoc = (
     yContent.set(V, new YMap());
   }
   const [yTables, yValues] = getYContent(yContent);
-  const changesDidFail = () => {
-    changesFailed = 1;
-  };
-  let changesFailed = 1;
-  ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
-    changesFailed = 0;
-    objForEach(cellChanges, (table, tableId) =>
-      changesFailed
-        ? 0
-        : isUndefined(table)
-          ? yTables.delete(tableId)
-          : ifNotUndefined(
-              yTables.get(tableId),
-              (yTable) =>
-                objForEach(table, (row, rowId) =>
-                  changesFailed
-                    ? 0
-                    : isUndefined(row)
-                      ? yTable.delete(rowId)
-                      : ifNotUndefined(
-                          yTable.get(rowId),
-                          (yRow) =>
-                            objForEach(row, (cell, cellId) =>
-                              isUndefined(cell)
-                                ? yRow.delete(cellId)
-                                : yRow.set(cellId, cell),
-                            ),
-                          changesDidFail,
-                        ),
-                ),
-              changesDidFail,
-            ),
-    );
-    objForEach(valueChanges, (value, valueId) =>
-      changesFailed
-        ? 0
-        : isUndefined(value)
-          ? yValues.delete(valueId)
-          : yValues.set(valueId, value),
-    );
-  });
-  if (changesFailed) {
+  const changesApplied = ifNotUndefined(
+    changes,
+    ([cellChanges, valueChanges]) =>
+      objEvery(cellChanges, (table, tableId) => {
+        if (isUndefined(table)) {
+          yTables.delete(tableId);
+          return true;
+        }
+        return ifNotUndefined(
+          yTables.get(tableId),
+          (yTable) =>
+            objEvery(table, (row, rowId) => {
+              if (isUndefined(row)) {
+                yTable.delete(rowId);
+                return true;
+              }
+              return ifNotUndefined(
+                yTable.get(rowId),
+                (yRow) => {
+                  objForEach(row, (cell, cellId) =>
+                    isUndefined(cell)
+                      ? yRow.delete(cellId)
+                      : yRow.set(cellId, cell),
+                  );
+                  return true;
+                },
+                () => false,
+              ) as boolean;
+            }),
+          () => false,
+        ) as boolean;
+      }) &&
+      objEvery(valueChanges, (value, valueId) => {
+        if (isUndefined(value)) {
+          yValues.delete(valueId);
+        } else {
+          yValues.set(valueId, value);
+        }
+        return true;
+      }),
+  );
+  if (!changesApplied) {
     const [tables, values] = getContent();
     yMapMatch(yTables, undefined, tables, (_, tableId, table) =>
       yMapMatch(yTables, tableId, table, (yTable, rowId, row) =>
@@ -252,7 +253,7 @@ export const createYjsPersister = ((
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = (events) => {
-      tryCatch(
+      void tryCatchIgnore(
         () => listener(undefined, getChangesFromYDoc(yContent, events)),
         onIgnoredError,
       );

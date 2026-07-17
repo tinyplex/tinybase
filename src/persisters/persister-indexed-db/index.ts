@@ -11,6 +11,7 @@ import {
   ERROR_INDEXED_DB_STORE,
   errorNew,
   tryCatch,
+  tryCatchIgnore,
   tryCatchSync,
   tryFinallyAsync,
 } from '../../common/error.ts';
@@ -150,10 +151,9 @@ export const createIndexedDbPersister = ((
       let pollPromise: Promise<void> | undefined;
       const interval = startInterval(() => {
         if (active && !pollPromise) {
-          let newPollPromise!: Promise<void>;
-          newPollPromise = tryFinallyAsync(
+          const newPollPromise = tryFinallyAsync(
             () =>
-              tryCatch(async () => {
+              tryCatchIgnore(async () => {
                 const content = await getPersisted();
                 if (active) {
                   const nextContent = jsonStringWithUndefined(content);

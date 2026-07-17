@@ -160,3 +160,32 @@ test('PowerSync persister reports change iterator errors', async () => {
   await vi.waitFor(() => expect(ignoredError).toHaveBeenCalledWith(error));
   await persister.destroy();
 });
+
+test('PowerSync contains ignored-error handler failures', async () => {
+  const error = new Error('change iterator failed');
+  const ignoredError = vi.fn(async (reportedError) => {
+    if (reportedError == error) {
+      throw new Error('ignored-error handler failed');
+    }
+  });
+  const persister = PowerSync.createPowerSyncPersister(
+    createStore(),
+    {
+      execute: async () => ({rows: {_array: []}}),
+      onChange: () => ({
+        [Symbol.asyncIterator]: () => ({
+          next: async () => {
+            throw error;
+          },
+        }),
+      }),
+    } as any,
+    undefined,
+    undefined,
+    ignoredError,
+  );
+
+  await persister.startAutoLoad();
+  await vi.waitFor(() => expect(ignoredError).toHaveBeenCalledWith(error));
+  await persister.destroy();
+});

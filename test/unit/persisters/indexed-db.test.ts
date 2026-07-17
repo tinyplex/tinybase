@@ -216,3 +216,38 @@ test.each(['stopAutoLoad', 'destroy'] as const)(
     expect(vi.getTimerCount()).toBe(0);
   },
 );
+
+test('contains IndexedDB ignored-error handler failures', async () => {
+  vi.useFakeTimers();
+  const {finish, getOperation} = createControlledIndexedDbMock();
+  let resolveErrorReported!: () => void;
+  const errorReported = new Promise<void>(
+    (resolve) => (resolveErrorReported = resolve),
+  );
+  const ignoredError = vi.fn(() => {
+    resolveErrorReported();
+    throw new Error('ignored-error handler failed');
+  });
+  const persister = createIndexedDbPersister(
+    createStore(),
+    'pets',
+    0.01,
+    ignoredError,
+  );
+  const content: [{[id: string]: any}, {[id: string]: any}] = [
+    {},
+    {species: 'dog'},
+  ];
+  const starting = persister.startAutoLoad();
+  await finish(await getOperation(0), content);
+  await finish(await getOperation(1), content);
+  await starting;
+
+  vi.advanceTimersByTime(10);
+  const failedPoll = await getOperation(2);
+  failedPoll.request.onerror();
+  await errorReported;
+  expect(ignoredError).toHaveBeenCalledOnce();
+
+  await persister.destroy();
+});

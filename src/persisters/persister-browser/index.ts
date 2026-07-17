@@ -14,7 +14,7 @@ import type {
   SessionPersister,
 } from '../../@types/persisters/persister-browser/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {tryCatch, tryFinallyAsync} from '../../common/error.ts';
+import {tryCatch, tryCatchIgnore, tryFinallyAsync} from '../../common/error.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -48,7 +48,7 @@ const createStoragePersister = (
   ): (() => void) =>
     addEventListener(WINDOW, STORAGE, (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        tryCatch(
+        void tryCatchIgnore(
           () => listener(jsonParseWithUndefined(event.newValue as string)),
           onIgnoredError,
         );

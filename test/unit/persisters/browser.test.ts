@@ -64,3 +64,33 @@ test('reports malformed storage events', async () => {
 
   await persister.destroy();
 });
+
+test('contains storage ignored-error handler failures', async () => {
+  const storageName = 'throwing-storage-error-handler';
+  let fail = false;
+  const ignoredError = vi.fn(() => {
+    if (fail) {
+      throw new Error('ignored-error handler failed');
+    }
+  });
+  const persister = createLocalPersister(
+    createStore(),
+    storageName,
+    ignoredError,
+  );
+
+  await persister.startAutoLoad();
+  ignoredError.mockClear();
+  fail = true;
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: storageName,
+      newValue: '{',
+      storageArea: localStorage,
+    }),
+  );
+  await Promise.resolve();
+
+  expect(ignoredError).toHaveBeenCalledOnce();
+  await persister.destroy();
+});

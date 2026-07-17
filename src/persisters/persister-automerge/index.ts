@@ -6,11 +6,12 @@ import type {
   createAutomergePersister as createAutomergePersisterDecl,
 } from '../../@types/persisters/persister-automerge/index.d.ts';
 import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
-import {ERROR_CONTENT, errorThrow, tryCatch} from '../../common/error.ts';
+import {ERROR_CONTENT, errorThrow, tryCatchIgnore} from '../../common/error.ts';
 import {
   IdObj,
   isObject,
   objDel,
+  objEvery,
   objForEach,
   objGet,
   objHas,
@@ -112,48 +113,48 @@ const applyChangesToDoc = (
 ) => {
   ensureDocContent(doc, docObjName);
   const [docTables, docValues] = getDocObjects(doc, docObjName);
-  const changesDidFail = () => {
-    changesFailed = 1;
-  };
-  let changesFailed = 1;
-  ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
-    changesFailed = 0;
-    objForEach(cellChanges, (table, tableId) =>
-      changesFailed
-        ? 0
-        : isUndefined(table)
-          ? docDel(docTables, tableId)
-          : ifNotUndefined(
-              docGet(docTables, tableId),
-              (docTable) =>
-                objForEach(table, (row, rowId) =>
-                  changesFailed
-                    ? 0
-                    : isUndefined(row)
-                      ? docDel(docTable, rowId)
-                      : ifNotUndefined(
-                          docGet(docTable, rowId),
-                          (docRow: any) =>
-                            objForEach(row, (cell, cellId) =>
-                              isUndefined(cell)
-                                ? docDel(docRow, cellId)
-                                : docSet(docRow, cellId, cell),
-                            ),
-                          changesDidFail as any,
-                        ),
-                ),
-              changesDidFail,
-            ),
-    );
-    objForEach(valueChanges, (value, valueId) =>
-      changesFailed
-        ? 0
-        : isUndefined(value)
-          ? docDel(docValues, valueId)
-          : docSet(docValues, valueId, value),
-    );
-  });
-  if (changesFailed) {
+  const changesApplied = ifNotUndefined(
+    changes,
+    ([cellChanges, valueChanges]) =>
+      objEvery(cellChanges, (table, tableId) => {
+        if (isUndefined(table)) {
+          docDel(docTables, tableId);
+          return true;
+        }
+        return ifNotUndefined(
+          docGet(docTables, tableId),
+          (docTable) =>
+            objEvery(table, (row, rowId) => {
+              if (isUndefined(row)) {
+                docDel(docTable, rowId);
+                return true;
+              }
+              return ifNotUndefined(
+                docGet(docTable, rowId),
+                (docRow: any) => {
+                  objForEach(row, (cell, cellId) =>
+                    isUndefined(cell)
+                      ? docDel(docRow, cellId)
+                      : docSet(docRow, cellId, cell),
+                  );
+                  return true;
+                },
+                () => false,
+              ) as boolean;
+            }),
+          () => false,
+        ) as boolean;
+      }) &&
+      objEvery(valueChanges, (value, valueId) => {
+        if (isUndefined(value)) {
+          docDel(docValues, valueId);
+        } else {
+          docSet(docValues, valueId, value);
+        }
+        return true;
+      }),
+  );
+  if (!changesApplied) {
     const [tables, values] = getContent();
     docObjMatch(docTables, undefined, tables, (_, tableId, table) =>
       docObjMatch(docTables, tableId, table, (docTable, rowId, row) =>
@@ -221,14 +222,17 @@ export const createAutomergePersister = ((
     );
 
   const addPersisterListener = (listener: PersisterListener): (() => void) =>
-    addEmitterListener(docHandle, CHANGE, ({doc}: {doc: any}) =>
-      tryCatch(
-        () =>
-          ifNotUndefined(getValidDocContent(doc, docObjName), listener, () =>
-            errorThrow(ERROR_CONTENT),
-          ),
-        onIgnoredError,
-      ),
+    addEmitterListener(
+      docHandle,
+      CHANGE,
+      ({doc}: {doc: any}) =>
+        void tryCatchIgnore(
+          () =>
+            ifNotUndefined(getValidDocContent(doc, docObjName), listener, () =>
+              errorThrow(ERROR_CONTENT),
+            ),
+          onIgnoredError,
+        ),
     );
 
   const delPersisterListener = (removeListener: () => void): void =>
