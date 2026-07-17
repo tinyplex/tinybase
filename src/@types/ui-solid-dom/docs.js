@@ -5,6 +5,9 @@
  * The components in this module use the Solid DOM module and so are not
  * appropriate for environments like Solid Native (although those in the
  * lower-level ui-solid module are).
+ *
+ * This is a client-only module. Its package export is only available under the
+ * `browser` condition, and it does not provide server-side rendering.
  * @see UI Components (Solid) demos
  * @packageDocumentation
  * @module ui-solid-dom

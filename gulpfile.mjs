@@ -96,6 +96,8 @@ const moduleIsSvelte = (module) =>
   module == 'ui-svelte' ||
   module == 'ui-svelte-dom' ||
   module == 'ui-svelte-inspector';
+const moduleIsClientOnly = (module) =>
+  module == 'ui-solid-dom' || module == 'ui-svelte-dom';
 const getUiModule = (module) =>
   moduleIsSvelte(module)
     ? 'ui-svelte'
@@ -222,12 +224,11 @@ const copyPackageFiles = async (forProd = false) => {
           typesPath + 'ts',
         ];
 
-        json.exports['.' + codePathWithSchemas] = {
-          default: {
-            types: typesPath + 'ts',
-            default: '.' + codePathWithoutSchemas + '/index.js',
-          },
-        };
+        const types = typesPath + 'ts';
+        const code = '.' + codePathWithoutSchemas + '/index.js';
+        json.exports['.' + codePathWithSchemas] = moduleIsClientOnly(module)
+          ? {types, browser: code}
+          : {default: {types, default: code}};
       });
     });
   });

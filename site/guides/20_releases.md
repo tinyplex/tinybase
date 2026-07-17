@@ -160,6 +160,10 @@ React hooks that create Persisters and Synchronizers asynchronously now destroy
 stale or post-unmount results without replacing or destroying the current
 resource.
 
+The ui-solid-dom and ui-svelte-dom modules are now exported explicitly as
+client-only browser modules, so server builds fail during package resolution
+instead of loading unusable client artifacts.
+
 Solid DOM table wrappers now keep table, query, and slice metadata reactive as
 their inputs change. The useUndoInformation and useRedoInformation primitives
 also now return Accessor functions for their availability, checkpoint Id, and
