@@ -65,7 +65,7 @@ import {
   collSize4,
   collValues,
 } from '../common/coll.ts';
-import {tryCatch, tryFinally, tryReturn} from '../common/error.ts';
+import {tryCatchSync, tryFinally, tryReturn} from '../common/error.ts';
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
@@ -1925,14 +1925,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const setTablesJson = (tablesJson: Json): Store => {
-    tryCatch(() =>
+    tryCatchSync(() =>
       whileAcceptingEncodedData(() => setOrDelTables(jsonParse(tablesJson))),
     );
     return store;
   };
 
   const setValuesJson = (valuesJson: Json): Store => {
-    tryCatch(() =>
+    tryCatchSync(() =>
       whileAcceptingEncodedData(() => setOrDelValues(jsonParse(valuesJson))),
     );
     return store;
@@ -1940,7 +1940,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setJson = (tablesAndValuesJson: Json): Store =>
     fluentTransaction(() =>
-      tryCatch(
+      tryCatchSync(
         () =>
           whileAcceptingEncodedData(() => {
             const [tables, values] = jsonParse(tablesAndValuesJson);
