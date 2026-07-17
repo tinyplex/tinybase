@@ -34,13 +34,12 @@ import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
 import {arrayEvery, arrayForEach, arrayPush} from '../common/array.ts';
 import {encodeIfJson, getCellOrValueType} from '../common/cell.ts';
 import {
-  collClear,
   collDel,
+  collEvery,
   collForEach,
   collHas,
   collIsEmpty,
   collSize,
-  collValues,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {
@@ -213,7 +212,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             preStore.delListener(listenerId),
           ),
         );
-        collClear(queryPreStoreListenerIds);
+        mapSet(preStoreListenerIds, queryId);
       },
     );
     arrayForEach(
@@ -265,22 +264,19 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           sourceStore.delListener(listenerId),
         ),
       );
-      collClear(queryStoreIds);
+      mapSet(sourceStoreListenerIds, queryId);
     });
 
   const isResultStoreReferenced = (resultStore: Store): boolean =>
     !(
-      arrayEvery(collValues(routedResultListeners), ([, storeListenerIds]) =>
-        arrayEvery(
-          collValues(storeListenerIds),
-          ([store]) => store !== resultStore,
-        ),
+      collEvery(routedResultListeners, ([, storeListenerIds]) =>
+        collEvery(storeListenerIds, ([store]) => store !== resultStore),
       ) &&
       arrayEvery(
         [preStoreListenerIds, sourceStoreListenerIds],
         (storeListenerIds) =>
-          arrayEvery(
-            collValues(storeListenerIds),
+          collEvery(
+            storeListenerIds,
             (stores) => !collHas(stores, resultStore),
           ),
       )
@@ -1019,26 +1015,29 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       [CELL]: [3, 3],
     } as const,
     ([prefixCount, argumentCount], gettable) => {
-      arrayForEach(
-        slice([GET, 'has', 'forEach'], 0, prefixCount),
-        (prefix) =>
-          (queries[prefix + RESULT + gettable] = (...args: any[]) =>
-            ((mapGet(resultStores, args[0]) ?? resultStore) as any)[
-              prefix + gettable
-            ](...args)),
+      arrayForEach(slice([GET, 'has', 'forEach'], 0, prefixCount), (prefix) =>
+        objSet(queries, prefix + RESULT + gettable, (...args: any[]) =>
+          ((mapGet(resultStores, args[0]) ?? resultStore) as any)[
+            prefix + gettable
+          ](...args),
+        ),
       );
-      queries[ADD + RESULT + gettable + LISTENER] = (...args: any[]): Id =>
-        addRoutedResultListener(
-          getResultListenerStat(gettable),
-          args[0],
-          (store) =>
-            (store as any)[ADD + gettable + LISTENER](
-              ...getListenerArgs(args, argumentCount),
-              (_store: Store, ...listenerArgs: any[]) =>
-                args[argumentCount](queries, ...listenerArgs),
-              true,
-            ),
-        );
+      objSet(
+        queries,
+        ADD + RESULT + gettable + LISTENER,
+        (...args: any[]): Id =>
+          addRoutedResultListener(
+            getResultListenerStat(gettable),
+            args[0],
+            (store) =>
+              (store as any)[ADD + gettable + LISTENER](
+                ...getListenerArgs(args, argumentCount),
+                (_store: Store, ...listenerArgs: any[]) =>
+                  args[argumentCount](queries, ...listenerArgs),
+                true,
+              ),
+          ),
+      );
     },
   );
 

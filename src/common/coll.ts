@@ -1,16 +1,16 @@
-import {arrayReduce} from './array.ts';
 import {isUndefined} from './other.ts';
 
 export type Coll<Value> = Map<unknown, Value> | Set<Value>;
 
 const collSizeN =
   <Child>(collSizer: (map: Coll<Child>) => number) =>
-  (coll: Coll<Coll<Child>>): number =>
-    arrayReduce<Coll<Child>, number>(
-      collValues(coll),
-      (total, coll2) => total + collSizer(coll2),
-      0,
-    );
+  (coll: Coll<Coll<Child>>): number => {
+    let total = 0;
+    for (const child of coll.values()) {
+      total += collSizer(child);
+    }
+    return total;
+  };
 
 export const collSize = (coll: Coll<unknown> | undefined): number =>
   coll?.size ?? 0;
@@ -29,6 +29,18 @@ export const collIsEmpty = (coll: Coll<unknown> | undefined): boolean =>
 export const collValues = <Value>(coll: Coll<Value> | undefined): Value[] => [
   ...(coll?.values() ?? []),
 ];
+
+export const collEvery = <Value>(
+  coll: Coll<Value> | undefined,
+  cb: (value: Value, key: any) => boolean,
+): boolean => {
+  for (const [key, value] of coll?.entries() ?? []) {
+    if (!cb(value, key)) {
+      return false;
+    }
+  }
+  return true;
+};
 
 export const collClear = (coll: Coll<unknown>): void => coll.clear();
 

@@ -46,15 +46,13 @@ export const tryReturn = <Return>(
 
 export const tryCatch = async <Return>(
   action: () => Return | Promise<Return>,
-  then1?: (error: any) => void,
-  then2?: (error: any) => void,
+  onError?: (error: any) => void,
 ): Promise<Return | void> => {
   try {
     return await action();
   } catch (error) {
     /*! istanbul ignore next */
-    then1?.(error);
-    then2?.(error);
+    onError?.(error);
   }
 };
 

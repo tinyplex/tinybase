@@ -7,7 +7,7 @@ import type {Queries} from '../@types/queries/index.d.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
 import {arrayForEach, arrayIsEqual} from './array.ts';
-import {collClear, collDel, collForEach, collHas, collValues} from './coll.ts';
+import {collClear, collDel, collForEach, collHas} from './coll.ts';
 import {jsonString} from './json.ts';
 import {AddListener, CallListeners} from './listeners.ts';
 import {
@@ -97,7 +97,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
 
   const delStoreListeners = (id: Id): void =>
     ifNotUndefined(mapGet(storeListenerIds, id), (allListenerIds) => {
-      arrayForEach(collValues(allListenerIds), (listenerId: Id) => {
+      collForEach(allListenerIds, (listenerId: Id) => {
         store.delListener(listenerId);
         collDel(allListenerIds, listenerId);
       });
