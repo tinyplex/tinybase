@@ -182,6 +182,12 @@ The channel Id is explicit and is not taken from the MergeableStore Id. Channel
 Ids can contain multiple path segments, but cannot be empty, contain empty,
 `.` or `..` segments, or include query, fragment, or newline characters.
 
+WsServer and WsServerSimple do not authenticate or authorize channel Ids. Once
+a client WebSocket is accepted on a base path, it can subscribe to any valid
+channel beneath it. For untrusted clients, authenticate the upgrade request and
+either grant access to every descendant path or use a separate authenticated
+WebSocket for each authorized path.
+
 Each WsSynchronizer is started and stopped normally. Destroying one only
 unsubscribes its channel. The shared WebSocket is closed when the last
 WsSynchronizer using it is destroyed:

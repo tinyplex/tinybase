@@ -65,6 +65,11 @@ WsServer and WsServerSimple now share the same negotiation, channel lifecycle,
 payload decoding, and cleanup implementation. Their path storage and
 backpressure policies remain specific to each server.
 
+Multiplexed channel Ids are not an authorization boundary. A client accepted on
+a base path can subscribe to any valid descendant channel, so applications with
+untrusted clients should authenticate and isolate WebSockets by authorized
+path.
+
 ## Compact Error Codes
 
 Errors created by TinyBase now use compact numeric codes to reduce bundle size.
