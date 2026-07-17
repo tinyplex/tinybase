@@ -14,7 +14,8 @@ import type {
   Tables,
   Value,
 } from '../../@types/store/index.d.ts';
-import {arrayForEach, arrayShift} from '../../common/array.ts';
+import {arrayForEach} from '../../common/array.ts';
+import {ERROR_CONTENT, errorThrow, tryCatch} from '../../common/error.ts';
 import {mapForEach} from '../../common/map.ts';
 import {
   IdObj,
@@ -37,14 +38,22 @@ type Observer = (events: YEvent<any>[]) => void;
 
 const DELETE = 'delete';
 
-const getYContent = (yContent: YMap<any>) => [yContent.get(T), yContent.get(V)];
+const getYMap = <Value>(yMap: unknown): YMap<Value> =>
+  yMap instanceof YMap ? yMap : errorThrow(ERROR_CONTENT);
+
+const getYContent = (
+  yContent: YMap<any>,
+): [YMap<YMap<YMap<Cell>>>, YMap<Value>] => [
+  getYMap(yContent.get(T)),
+  getYMap(yContent.get(V)),
+];
 
 const yMapToObj = <From, To = From>(
   yMap: YMap<From>,
   mapper?: (value: From) => To,
 ): IdObj<To> => {
   const obj = objNew<To>();
-  yMap.forEach((value, id) =>
+  getYMap<From>(yMap).forEach((value, id) =>
     objSet(obj, id, mapper ? mapper(value) : (value as any as To)),
   );
   return obj;
@@ -69,17 +78,17 @@ const getChangesFromYDoc = (
   const tables = objNew<Table>();
   const values = objNew<Value>();
   arrayForEach(events, ({path, changes: {keys}}) =>
-    arrayShift(path) == T
+    path[0] == T
       ? ifNotUndefined(
-          arrayShift(path) as string,
+          path[1] as string,
           (yTableId) => {
             const table = objEnsure(tables, yTableId, objNew) as any;
-            const yTable = yTables.get(yTableId) as YMap<YMap<Cell>>;
+            const yTable = getYMap<YMap<Cell>>(yTables.get(yTableId));
             ifNotUndefined(
-              arrayShift(path) as string,
+              path[2] as string,
               (yRowId) => {
                 const row = objEnsure(table, yRowId, objNew) as any;
-                const yRow = yTable.get(yRowId) as YMap<Cell>;
+                const yRow = getYMap<Cell>(yTable.get(yRowId));
                 mapForEach(keys, (cellId, {action}) =>
                   objSet(
                     row,
@@ -242,8 +251,12 @@ export const createYjsPersister = ((
     yDoc.transact(() => applyChangesToYDoc(yContent, getContent, changes));
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
-    const observer: Observer = (events) =>
-      listener(undefined, getChangesFromYDoc(yContent, events));
+    const observer: Observer = (events) => {
+      tryCatch(
+        () => listener(undefined, getChangesFromYDoc(yContent, events)),
+        onIgnoredError,
+      );
+    };
     yContent.observeDeep(observer);
     return observer;
   };
