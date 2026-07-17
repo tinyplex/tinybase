@@ -5263,6 +5263,23 @@ describe('Miscellaneous', () => {
     expect(queries.hasQuery('q2')).toBe(false);
   });
 
+  test('rolls back a new definition if its Id listener throws', () => {
+    const error = new Error('listener error');
+    const listenerId = queries.addQueryIdsListener(() => {
+      throw error;
+    });
+
+    expect(() =>
+      queries.setQueryDefinition('q1', 't1', ({select}) => select('c1')),
+    ).toThrow(error);
+    expect(queries.hasQuery('q1')).toBe(false);
+    expect(queries.getQueryIds()).toEqual([]);
+
+    queries.delListener(listenerId);
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    expect(queries.hasQuery('q1')).toBe(true);
+  });
+
   test('keeps the previous definition if initial evaluation throws', () => {
     const error = new Error('evaluation error');
     const resultListener = vi.fn();
