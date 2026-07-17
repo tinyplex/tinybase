@@ -3,7 +3,7 @@ import type {Message, Receive} from '../@types/synchronizers/index.d.ts';
 import {arrayEvery, arrayJoin, arrayMap, arrayPush} from '../common/array.ts';
 import {isCellOrValueOrUndefined} from '../common/cell.ts';
 import {getUniqueId} from '../common/codec.ts';
-import {collClear, collDel, collSize} from '../common/coll.ts';
+import {collClear, collDel, collHas, collSize} from '../common/coll.ts';
 import {
   ERROR_SYNC_MESSAGE,
   ERROR_SYNC_OVERFLOW,
@@ -15,7 +15,15 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json.ts';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {
+  IdMap,
+  mapEnsure,
+  mapForEach,
+  mapGet,
+  mapMap,
+  mapNew,
+  mapSet,
+} from '../common/map.ts';
 import {isObject, objEntries} from '../common/obj.ts';
 import {
   isArray,
@@ -27,6 +35,7 @@ import {
   isString,
   isUndefined,
   mathFloor,
+  promiseAll,
   size,
   slice,
   startTimeout,
@@ -480,6 +489,108 @@ export const isMultipleChannelIdValid = (channelId: Id): boolean =>
     strSplit(channelId, '/'),
     (part) => !isEmpty(part) && part != '.' && part != '..',
   );
+
+export const createMultipleServerClient = <Channel>(
+  basePathId: Id,
+  addChannel: (
+    pathId: Id,
+    channelId: Id,
+  ) => [channel: Channel, ready?: Promise<void>],
+  delChannel: (channel: Channel) => void | Promise<void>,
+  receive: (channel: Channel, toClientId: Id, remainders: string[]) => void,
+  send: (payload: string) => void,
+  fragmentTimeoutSeconds: number,
+  invalid: (error: Error) => void,
+  onIgnoredError?: (error: any) => void,
+) => {
+  const channels: IdMap<Channel> = mapNew();
+  const decoders: IdMap<(payload: string) => void> = mapNew();
+  let negotiated = false;
+
+  const sendControl = (
+    requestId: IdOrNull,
+    control: MultipleControl,
+    body: any,
+  ) => send(createMultipleControlPayload(requestId, control, body));
+
+  const delChannelAndDecoder = (channelId: Id) => {
+    collDel(channels, channelId);
+    collDel(decoders, channelId);
+  };
+
+  const handleControl = (
+    requestId: IdOrNull,
+    control: MultipleControl,
+    body: any,
+  ): void | Promise<void> => {
+    if (control == MultipleControl.Hello) {
+      negotiated = true;
+      sendControl(requestId, control, body);
+    } else if (negotiated && control == MultipleControl.Subscribe) {
+      if (!collHas(channels, body)) {
+        const pathId = basePathId + (basePathId ? '/' : EMPTY_STRING) + body;
+        const [channel, ready] = addChannel(pathId, body);
+        mapSet(channels, body, channel);
+        if (ready) {
+          return ready.then(
+            () => sendControl(requestId, control, body),
+            (error) => {
+              delChannelAndDecoder(body);
+              throw error;
+            },
+          );
+        }
+      }
+      sendControl(requestId, control, body);
+    } else if (negotiated && control == MultipleControl.Unsubscribe) {
+      const finish = () => delChannelAndDecoder(body);
+      if (collHas(channels, body)) {
+        const deleted = delChannel(mapGet(channels, body) as Channel);
+        return deleted ? deleted.then(finish) : finish();
+      }
+      finish();
+    }
+  };
+
+  const handlePayload = (payload: string) => {
+    const control = ifMultipleControlPayloadValid(
+      payload,
+      (requestId, control, body) => {
+        const result = handleControl(requestId, control, body);
+        result?.catch((error) => onIgnoredError?.(error));
+      },
+    );
+    const channel = ifMultiplePayloadValid(
+      payload,
+      (channelId, channelPayload) => {
+        const channel = negotiated ? mapGet(channels, channelId) : undefined;
+        if (isUndefined(channel)) {
+          invalid(errorNew(ERROR_SYNC_MESSAGE));
+        } else {
+          mapEnsure(decoders, channelId, () =>
+            createPayloadDecoder(
+              (toClientId, remainders) =>
+                receive(channel, toClientId, remainders),
+              fragmentTimeoutSeconds,
+              invalid,
+            ),
+          )(channelPayload);
+        }
+      },
+    );
+    if (!control && !channel) {
+      invalid(errorNew(ERROR_SYNC_MESSAGE));
+    }
+  };
+
+  const destroy = async () => {
+    await promiseAll(mapMap(channels, async (channel) => delChannel(channel)));
+    collClear(channels);
+    collClear(decoders);
+  };
+
+  return [handlePayload, destroy] as const;
+};
 
 export const createPayloads = (
   toClientId: IdOrNull,

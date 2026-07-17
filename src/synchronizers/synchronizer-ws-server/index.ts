@@ -28,12 +28,7 @@ import {
   collSize,
   collValues,
 } from '../../common/coll.ts';
-import {
-  ERROR_SYNC_MESSAGE,
-  ERROR_SYNC_OVERFLOW,
-  errorNew,
-  tryCatch,
-} from '../../common/error.ts';
+import {ERROR_SYNC_OVERFLOW, errorNew, tryCatch} from '../../common/error.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {
   IdMap,
@@ -50,7 +45,6 @@ import {
   addEmitterListener,
   ifNotUndefined,
   isArray,
-  isString,
   isUndefined,
   noop,
   promiseAll,
@@ -72,23 +66,18 @@ import {
 import {
   MAX_WEBSOCKET_BUFFER_SIZE,
   MAX_WEBSOCKET_QUEUE_SIZE,
-  MULTIPLE_VERSION,
-  MultipleControl,
   SERVER_CLIENT_ID,
   WS_SYNCHRONIZER_PROTOCOL,
   createInvalidPayloadHandler,
-  createMultipleControlPayload,
   createMultiplePayload,
+  createMultipleServerClient,
   createPayloadDecoder,
   createPayloadReceiver,
   createPayloads,
   createRawPayload,
   getPayloadCoalesceKey,
   getWebSocketPayloadSize,
-  ifMultipleControlPayloadValid,
-  ifMultiplePayloadValid,
   ifPayloadValid,
-  isMultipleChannelIdValid,
   isWebSocketBackpressured,
   isWebSocketPayloadTooLarge,
 } from '../common.ts';
@@ -548,117 +537,40 @@ export const createWsServer = (<
     clientId: Id,
     basePathId: Id,
   ) => {
-    const pathsByChannel: IdMap<PathClient> = mapNew();
-    const decodersByChannel: IdMap<(payload: string) => void> = mapNew();
     const invalid = createInvalidPayloadHandler(client, onIgnoredError);
-    let negotiated = false;
-
-    const sendControl = (
-      requestId: IdOrNull,
-      control: MultipleControl,
-      body: any,
-    ) => {
-      const payload = createMultipleControlPayload(requestId, control, body);
-      if (
-        isWebSocketPayloadTooLarge(payload) ||
-        isWebSocketBackpressured(client, payload)
-      ) {
-        overflowClient(client, 'socket');
-      } else if (client.readyState == client.OPEN) {
-        client.send(payload);
-      }
-    };
-
-    const handleControl = async (
-      requestId: IdOrNull,
-      control: MultipleControl,
-      body: any,
-    ) => {
-      if (
-        control == MultipleControl.Hello &&
-        body == MULTIPLE_VERSION &&
-        requestId
-      ) {
-        negotiated = true;
-        sendControl(requestId, control, body);
-      } else if (
-        negotiated &&
-        control == MultipleControl.Subscribe &&
-        isString(body) &&
-        isMultipleChannelIdValid(body) &&
-        requestId
-      ) {
-        const pathId = basePathId + (basePathId ? '/' : EMPTY_STRING) + body;
-        if (!collHas(pathsByChannel, body)) {
-          const [path, ready] = addClientToPath(pathId, clientId, [
-            client,
-            body,
-          ]);
-          mapSet(pathsByChannel, body, [pathId, path]);
-          await tryCatch(
-            () => ready,
-            (error) => {
-              collDel(pathsByChannel, body);
-              collDel(decodersByChannel, body);
-              throw error;
-            },
-          );
+    const [handlePayload, destroy] = createMultipleServerClient<PathClient>(
+      basePathId,
+      (pathId, channelId) => {
+        const [path, ready] = addClientToPath(pathId, clientId, [
+          client,
+          channelId,
+        ]);
+        return [[pathId, path], ready];
+      },
+      ([pathId, path]) => delClientFromPath(pathId, path, clientId),
+      ([, path], toClientId, remainders) =>
+        handleDecodedMessage(path, clientId, toClientId, remainders),
+      (payload) => {
+        if (
+          isWebSocketPayloadTooLarge(payload) ||
+          isWebSocketBackpressured(client, payload)
+        ) {
+          overflowClient(client, 'socket');
+        } else if (client.readyState == client.OPEN) {
+          client.send(payload);
         }
-        sendControl(requestId, control, body);
-      } else if (
-        negotiated &&
-        control == MultipleControl.Unsubscribe &&
-        isString(body)
-      ) {
-        await ifNotUndefined(mapGet(pathsByChannel, body), ([pathId, path]) =>
-          delClientFromPath(pathId, path, clientId),
-        );
-        collDel(pathsByChannel, body);
-        collDel(decodersByChannel, body);
-      }
-    };
+      },
+      requestTimeoutSeconds,
+      invalid,
+      onIgnoredError,
+    );
 
-    addWebSocketListener(client, MESSAGE, (data) => {
-      const payload = data.toString(UTF8);
-      let controlPromise: Promise<void> | undefined;
-      const control = ifMultipleControlPayloadValid(
-        payload,
-        (requestId, controlType, body) =>
-          (controlPromise = handleControl(requestId, controlType, body)),
-      );
-      controlPromise?.catch((error) => onIgnoredError?.(error));
-      const channel = ifMultiplePayloadValid(
-        payload,
-        (channelId, channelPayload) => {
-          const pathClient = negotiated
-            ? mapGet(pathsByChannel, channelId)
-            : undefined;
-          if (isUndefined(pathClient)) {
-            invalid(errorNew(ERROR_SYNC_MESSAGE));
-          } else {
-            const [, path] = pathClient;
-            mapEnsure(decodersByChannel, channelId, () =>
-              createPayloadDecoder(
-                (toClientId, remainders) =>
-                  handleDecodedMessage(path, clientId, toClientId, remainders),
-                requestTimeoutSeconds,
-                invalid,
-              ),
-            )(channelPayload);
-          }
-        },
-      );
-      if (!control && !channel) {
-        invalid(errorNew(ERROR_SYNC_MESSAGE));
-      }
-    });
+    addWebSocketListener(client, MESSAGE, (data) =>
+      handlePayload(data.toString(UTF8)),
+    );
 
     addWebSocketListener(client, CLOSE, () =>
-      promiseAll(
-        mapMap(pathsByChannel, ([pathId, path]) =>
-          delClientFromPath(pathId, path, clientId),
-        ),
-      ).catch((error) => onIgnoredError?.(error)),
+      destroy().catch((error) => onIgnoredError?.(error)),
     );
   };
 
