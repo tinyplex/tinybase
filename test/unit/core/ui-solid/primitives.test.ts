@@ -1671,6 +1671,50 @@ describe('Solid-specific', () => {
     dispose();
   });
 
+  test('skips replacements disposed during pending cleanup', async () => {
+    const persister = createTestPersister();
+    const synchronizer = createTestSynchronizer();
+    let releasePersisterDestroy = () => {};
+    let releaseSynchronizerDestroy = () => {};
+    persister.destroy.mockReturnValue(
+      new Promise<void>((resolve) => (releasePersisterDestroy = resolve)),
+    );
+    synchronizer.destroy.mockReturnValue(
+      new Promise<void>((resolve) => (releaseSynchronizerDestroy = resolve)),
+    );
+    const createPersister = vi.fn(async () => persister);
+    const createSynchronizer = vi.fn(async () => synchronizer);
+    let setStore: Setter<Store>;
+    let setMergeableStore: Setter<MergeableStore>;
+
+    const dispose = renderPrimitive(() => {
+      const [store, setResolvedStore] = createSignal(createStore());
+      const [mergeableStore, setResolvedMergeableStore] = createSignal(
+        createMergeableStore(),
+      );
+      setStore = setResolvedStore;
+      setMergeableStore = setResolvedMergeableStore;
+      useCreatePersister(store, createPersister);
+      useCreateSynchronizer(mergeableStore, createSynchronizer);
+    });
+
+    await pause();
+    setStore!(createStore());
+    setMergeableStore!(createMergeableStore());
+    await pause();
+    expect(createPersister).toHaveBeenCalledTimes(1);
+    expect(createSynchronizer).toHaveBeenCalledTimes(1);
+    expect(persister.destroy).toHaveBeenCalledTimes(1);
+    expect(synchronizer.destroy).toHaveBeenCalledTimes(1);
+
+    dispose();
+    releasePersisterDestroy();
+    releaseSynchronizerDestroy();
+    await pause();
+    expect(createPersister).toHaveBeenCalledTimes(1);
+    expect(createSynchronizer).toHaveBeenCalledTimes(1);
+  });
+
   test('recreates persister after failed creation', async () => {
     const store1 = createStore();
     const store2 = createStore();

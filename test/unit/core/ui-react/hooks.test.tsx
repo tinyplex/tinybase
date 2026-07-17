@@ -1520,6 +1520,31 @@ describe('React-specific', () => {
       unmount();
     });
 
+    test('useCreatePersister skips replacement after unmount', async () => {
+      const persister = createTestPersister();
+      let releaseDestroy = () => {};
+      persister.destroy.mockReturnValue(
+        new Promise<void>((resolve) => (releaseDestroy = resolve)),
+      );
+      const create = vi.fn(() => persister);
+      const Test = ({id}: {readonly id: number}) => {
+        useCreatePersister(store, create, [id]);
+        return null;
+      };
+
+      const {rerender, unmount} = render(<Test id={1} />);
+      await act(pause);
+      rerender(<Test id={2} />);
+      await act(pause);
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(persister.destroy).toHaveBeenCalledTimes(1);
+
+      unmount();
+      releaseDestroy();
+      await act(pause);
+      expect(create).toHaveBeenCalledTimes(1);
+    });
+
     // eslint-disable-next-line max-len
     test('useCreatePersister recovers from failed replacement cleanup', async () => {
       const persister1 = createTestPersister();
@@ -1600,6 +1625,27 @@ describe('React-specific', () => {
       resolveDestroy!();
       await act(pause);
       expect(destroy).toHaveBeenCalledWith(persister);
+    });
+
+    test('useCreatePersister ignores pending initialization', async () => {
+      const persister = createTestPersister();
+      let releaseThen = () => {};
+      const then = vi.fn(
+        () => new Promise<void>((resolve) => (releaseThen = resolve)),
+      );
+      const Test = () => {
+        useCreatePersister(store, () => persister, [], then);
+        return null;
+      };
+
+      const {unmount} = render(<Test />);
+      await act(pause);
+      expect(then).toHaveBeenCalledWith(persister);
+
+      unmount();
+      releaseThen();
+      await act(pause);
+      expect(persister.destroy).toHaveBeenCalledTimes(1);
     });
 
     test('useCreateSynchronizer, no destroy', async () => {
