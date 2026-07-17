@@ -31,11 +31,15 @@ export const startInterval = (
   }
   return setInterval(callback, sec * THOUSAND);
 };
-export const stopInterval = clearInterval;
+export const stopInterval = (
+  interval: number | NodeJS.Timeout | undefined,
+): void => clearInterval(interval as number | undefined);
 
 export const startTimeout = (callback: () => void, sec: number = 0) =>
   setTimeout(callback, sec * THOUSAND);
-export const stopTimeout = clearTimeout;
+export const stopTimeout = (
+  timeout: number | NodeJS.Timeout | undefined,
+): void => clearTimeout(timeout as number | undefined);
 
 export const addEventListener = (
   target: any,
