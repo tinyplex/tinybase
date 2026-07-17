@@ -55,6 +55,11 @@
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `filePath` parameter which identifies the file to persist it to.
+ *
+ * Saves atomically replace the file while preserving its permission mode. A
+ * symbolic link is retained and its target is replaced. Since the target is a
+ * new file, ownership, hard-link identity, access-control lists, and extended
+ * attributes are not preserved.
  * @param store The Store or MergeableStore to persist.
  * @param filePath The location of the local file to persist the Store to.
  * @param onIgnoredError An optional handler for the errors that the Persister

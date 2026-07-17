@@ -1,5 +1,16 @@
 import {existsSync, unwatchFile, watchFile, writeFileSync} from 'fs';
-import {readFile, rename, unlink, writeFile} from 'fs/promises';
+import {
+  chmod,
+  lstat,
+  readFile,
+  readlink,
+  realpath,
+  rename,
+  stat,
+  unlink,
+  writeFile,
+} from 'fs/promises';
+import {dirname, resolve} from 'path';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
@@ -17,6 +28,7 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
+import {ifNotUndefined} from '../../common/other.ts';
 import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
@@ -34,7 +46,13 @@ export const createFilePersister = ((
   const setPersisted = async (
     getContent: () => PersistedContent<PersistsType.StoreOrMergeableStore>,
   ): Promise<void> => {
-    const tempFilePath = filePath + '.' + getUniqueId() + '.tmp';
+    const fileStats = await tryCatch(() => lstat(filePath));
+    const targetFilePath = fileStats?.isSymbolicLink()
+      ? ((await tryCatch(() => realpath(filePath))) ??
+        resolve(dirname(filePath), await readlink(filePath)))
+      : filePath;
+    const targetMode = (await tryCatch(() => stat(targetFilePath)))?.mode;
+    const tempFilePath = targetFilePath + '.' + getUniqueId() + '.tmp';
     const content = jsonStringWithUndefined(getContent());
     const lastContentWas = lastContent;
     lastContent = content;
@@ -42,7 +60,10 @@ export const createFilePersister = ((
       async () => {
         try {
           await writeFile(tempFilePath, content, UTF8);
-          await rename(tempFilePath, filePath);
+          await ifNotUndefined(targetMode, (targetMode) =>
+            chmod(tempFilePath, targetMode & 0o7777),
+          );
+          await rename(tempFilePath, targetFilePath);
         } catch (error) {
           lastContent = lastContentWas;
           throw error;
