@@ -167,6 +167,39 @@ test('Custom Synchronizer pending requests are bounded', async () => {
   await synchronizer.destroy();
 });
 
+test.each(['send', 'onSend'])(
+  'Custom Synchronizer cleans up failed %s',
+  async (failingSend) => {
+    const error = new Error('send error');
+    const errors: Error[] = [];
+    const send = () => {
+      if (failingSend == 'send') {
+        throw error;
+      }
+    };
+    const onSend = () => {
+      if (failingSend == 'onSend') {
+        throw error;
+      }
+    };
+    const synchronizer = createCustomSynchronizer(
+      createMergeableStore(),
+      send,
+      () => {},
+      () => {},
+      0.01,
+      onSend,
+      undefined,
+      (error) => errors.push(error),
+    );
+
+    await synchronizer.startSync();
+    await pause(20);
+    expect(errors).toEqual([error, error]);
+    await synchronizer.destroy();
+  },
+);
+
 test('Custom Synchronizer rejects and cleans up transport state', async () => {
   const errors: Error[] = [];
   const destroyTransport = vi.fn();
