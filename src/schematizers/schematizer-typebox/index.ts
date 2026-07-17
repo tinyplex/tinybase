@@ -27,7 +27,7 @@ const unwrapSchema = (
 ): [any, any, boolean, boolean] => {
   if (schema?.[ANY_OF]) {
     const types = schema[ANY_OF];
-    const hasNull = types.some((t: any) => t?.type === NULL);
+    const hasNull = !arrayEvery(types, (t: any) => t?.type !== NULL);
     const nonNullTypes = arrayFilter(types, (t: any) => t?.type !== NULL);
     const firstNonNullType = nonNullTypes[0];
 

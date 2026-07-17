@@ -1,5 +1,6 @@
 import type {createYupSchematizer as createYupSchematizerDecl} from '../../@types/schematizers/schematizer-yup/index.d.ts';
 import {arrayEvery} from '../../common/array.ts';
+import {collValues} from '../../common/coll.ts';
 import {isEmpty, isString} from '../../common/other.ts';
 import {
   DEFAULT,
@@ -18,9 +19,7 @@ const unwrapSchema = (
   allowNull?: boolean,
   required = schema?.spec?.[OPTIONAL] === false,
 ): [any, any, boolean, boolean] => {
-  const oneOf = schema?._whitelist
-    ? Array.from(schema._whitelist as Set<any>)
-    : [];
+  const oneOf = collValues(schema?._whitelist as Set<any> | undefined);
 
   return [
     {
