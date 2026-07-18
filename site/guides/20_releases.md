@@ -71,6 +71,17 @@ untrusted clients by base path, and do not treat client Ids derived from
 
 ## Reliability And Hardening
 
+### Breaking-ish Changes
+
+- Errors use compact numeric codes.
+- Failed transactions now rollback.
+- Certain previously accepted/reserved or unserializable values are rejected.
+- Client-only Solid and Svelte exports now correctly fail server resolution.
+- Solid's UndoOrRedoInformation changed from values to accessors.
+- Over-eager runtime exports disappeared from the Svelte package.
+
+The full explanations for these and many other changes are below:
+
 ### Core Data And APIs
 
 - Arbitrary Ids such as `__proto__`, `constructor`, and `toString` are now safe
