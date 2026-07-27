@@ -34,7 +34,7 @@ export default tsLint.config(
     settings: {
       react: {version: 'detect'},
       'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
-      'import/core-modules': ['expo-sqlite', 'svelte'],
+      'import/core-modules': ['@powersync/node', 'expo-sqlite', 'svelte'],
     },
 
     languageOptions: {globals: {...globals.node, ...globals.browser}},
@@ -77,6 +77,7 @@ export default tsLint.config(
           ignore: [
             '^\\./generated/client$',
             '^custom-remote-handlers$',
+            '^@powersync/common$',
             '^electric-sql/(client/model|notifiers|wa-sqlite)$',
             '^cloudflare:workers$',
             '^svelte/reactivity$',

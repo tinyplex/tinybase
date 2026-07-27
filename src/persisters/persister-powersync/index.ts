@@ -43,7 +43,6 @@ export const createPowerSyncPersister = ((
     (listener: DatabaseChangeListener): AbortController => {
       const abortController = new AbortController();
       const onChange = powerSync.onChange({
-        rawTableNames: true,
         signal: abortController.signal,
       });
       void tryCatchIgnore(async () => {
