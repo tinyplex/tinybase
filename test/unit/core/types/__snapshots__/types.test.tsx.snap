@@ -1202,6 +1202,8 @@ exports[`Types in queries.ts > 111:33 1`] = `"Property 't2' does not exist on ty
 
 exports[`Types in queries.ts > 115:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
+exports[`Types in queries.ts > 125:2 1`] = `"No overload matches this call."`;
+
 exports[`Types in relationships.ts > 23:68 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">, localRowId: string) => string)'."`;
 
 exports[`Types in relationships.ts > 24:62 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;

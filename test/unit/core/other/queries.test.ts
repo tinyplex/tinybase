@@ -120,6 +120,68 @@ describe('Queries tables', () => {
       });
     });
 
+    test('all root table cells, heterogeneous and reactive', () => {
+      store.setTable('t1', {
+        r1: {a: 1, shared: 'one'},
+        r2: {b: 2, shared: 'two'},
+        r3: {a: 3, c: true},
+      });
+      queries.setQueryDefinition('q1', 't1', ({selectAll}) => selectAll());
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {a: 1, shared: 'one'},
+        r2: {b: 2, shared: 'two'},
+        r3: {a: 3, c: true},
+      });
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'a',
+        'shared',
+        'b',
+        'c',
+      ]);
+      const tableCellIdsListener = vi.fn();
+      queries.addResultTableCellIdsListener('q1', tableCellIdsListener);
+
+      store
+        .setCell('t1', 'r1', 'new', 'cell')
+        .delCell('t1', 'r2', 'b')
+        .delCell('t1', 'r2', 'shared');
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {a: 1, new: 'cell', shared: 'one'},
+        r3: {a: 3, c: true},
+      });
+      expect(tableCellIdsListener).toHaveBeenCalledTimes(2);
+
+      store.setCell('t1', 'r2', 'other', false);
+      expect(queries.getResultRow('q1', 'r2')).toEqual({other: false});
+      expect(tableCellIdsListener).toHaveBeenCalledTimes(3);
+    });
+
+    test('all root table cell collisions follow declaration order', () => {
+      store.setTable('t1', {
+        r1: {a2: 'r1-a2', a1: 'r1-a1', b: 1},
+        r2: {b: 2, a1: 'r2-a1', a2: 'r2-a2'},
+      });
+      queries
+        .setQueryDefinition('q1', 't1', ({select, selectAll}) => {
+          selectAll();
+          select(() => undefined).as('a1');
+        })
+        .setQueryDefinition('q2', 't1', ({select, selectAll}) => {
+          select(() => 'override').as('a1');
+          selectAll();
+        });
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {a2: 'r1-a2', b: 1},
+        r2: {a2: 'r2-a2', b: 2},
+      });
+      expect(queries.getResultTable('q2')).toEqual({
+        r1: {a1: 'r1-a1', a2: 'r1-a2', b: 1},
+        r2: {a1: 'r2-a1', a2: 'r2-a2', b: 2},
+      });
+    });
+
     test('one root table column by id, aliased once', () => {
       setCells();
       queries.setQueryDefinition('q1', 't1', ({select}) => {
@@ -226,6 +288,250 @@ describe('Queries tables', () => {
   });
 
   describe('Joins', () => {
+    test('all root and joined table cells, heterogeneous and reactive', () => {
+      store
+        .setTable('pets', {
+          fido: {species: 'dog', ownerId: '1'},
+          felix: {species: 'cat', ownerId: '2'},
+        })
+        .setTable('owners', {
+          '1': {name: 'Alice'},
+          '2': {email: 'bob@example.com'},
+        });
+      queries.setQueryDefinition('q0', 'pets', ({selectAll, join}) => {
+        selectAll('owners');
+        join('owners', 'ownerId');
+      });
+      expect(queries.getResultTable('q0')).toEqual({
+        fido: {name: 'Alice'},
+        felix: {email: 'bob@example.com'},
+      });
+
+      queries.setQueryDefinition('q1', 'pets', ({selectAll, join}) => {
+        selectAll();
+        selectAll('owners', 'owner.');
+        join('owners', 'ownerId');
+      });
+
+      expect(queries.getResultTable('q1')).toEqual({
+        fido: {
+          ownerId: '1',
+          species: 'dog',
+          'owner.name': 'Alice',
+        },
+        felix: {
+          ownerId: '2',
+          species: 'cat',
+          'owner.email': 'bob@example.com',
+        },
+      });
+
+      store.setCell('owners', '2', 'phone', '555-0102');
+      expect(queries.getResultRow('q1', 'felix')).toEqual({
+        ownerId: '2',
+        species: 'cat',
+        'owner.email': 'bob@example.com',
+        'owner.phone': '555-0102',
+      });
+
+      store.setCell('pets', 'fido', 'ownerId', '2');
+      expect(queries.getResultRow('q1', 'fido')).toEqual({
+        ownerId: '2',
+        species: 'dog',
+        'owner.email': 'bob@example.com',
+        'owner.phone': '555-0102',
+      });
+
+      queries.setQueryDefinition('q2', 'pets', ({selectAll, join}) => {
+        selectAll('owners', () => 'mapped');
+        join('owners', 'ownerId');
+      });
+      expect(queries.getResultRow('q2', 'felix')).toEqual({
+        mapped: '555-0102',
+      });
+    });
+
+    test('all joined cells follow foreign row shapes and their union', () => {
+      store
+        .setTable('pets', {
+          fido: {species: 'dog', ownerId: '1'},
+          felix: {species: 'cat', ownerId: '2'},
+        })
+        .setTable('owners', {
+          '1': {name: 'Alice'},
+          '2': {email: 'bob@example.com'},
+        });
+      queries.setQueryDefinition('q1', 'pets', ({selectAll, join}) => {
+        selectAll();
+        selectAll('owners', 'owner.');
+        join('owners', 'ownerId');
+      });
+      const cellIdsListener = vi.fn();
+      queries.addResultTableCellIdsListener('q1', cellIdsListener);
+
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+        'owner.name',
+        'owner.email',
+      ]);
+
+      store.setCell('pets', 'fido', 'ownerId', '2');
+      expect(queries.getResultRow('q1', 'fido')).toEqual({
+        ownerId: '2',
+        species: 'dog',
+        'owner.email': 'bob@example.com',
+      });
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+        'owner.email',
+      ]);
+      expect(cellIdsListener).toHaveBeenCalledTimes(1);
+
+      store.setCell('pets', 'fido', 'ownerId', '3');
+      expect(queries.getResultRow('q1', 'fido')).toEqual({
+        ownerId: '3',
+        species: 'dog',
+      });
+      expect(cellIdsListener).toHaveBeenCalledTimes(1);
+
+      store.setRow('owners', '3', {phone: '555-0103'});
+      expect(queries.getResultRow('q1', 'fido')).toEqual({
+        ownerId: '3',
+        species: 'dog',
+        'owner.phone': '555-0103',
+      });
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+        'owner.email',
+        'owner.phone',
+      ]);
+      expect(cellIdsListener).toHaveBeenCalledTimes(2);
+
+      store.delRow('owners', '2');
+      expect(queries.getResultRow('q1', 'felix')).toEqual({
+        ownerId: '2',
+        species: 'cat',
+      });
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+        'owner.phone',
+      ]);
+      expect(cellIdsListener).toHaveBeenCalledTimes(3);
+
+      store.setRow('owners', '3', {address: '3 Main St'});
+      expect(queries.getResultRow('q1', 'fido')).toEqual({
+        ownerId: '3',
+        species: 'dog',
+        'owner.address': '3 Main St',
+      });
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+        'owner.address',
+      ]);
+      expect(cellIdsListener).toHaveBeenCalledTimes(4);
+
+      store
+        .setRow('pets', 'spot', {age: 4, species: 'dog', ownerId: '3'})
+        .delRow('pets', 'fido');
+      expect(queries.getResultRow('q1', 'spot')).toEqual({
+        age: 4,
+        ownerId: '3',
+        species: 'dog',
+        'owner.address': '3 Main St',
+      });
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+        'owner.address',
+        'age',
+      ]);
+      expect(cellIdsListener).toHaveBeenCalledTimes(5);
+
+      store.delRow('pets', 'spot');
+      expect(queries.getResultTableCellIds('q1')).toEqual([
+        'ownerId',
+        'species',
+      ]);
+      expect(cellIdsListener).toHaveBeenCalledTimes(6);
+    });
+
+    test('all cells cascade through chained joins', () => {
+      store
+        .setRow('roots', 'r1', {middleId: 'm1'})
+        .setTable('middles', {
+          m1: {leafId: 'l1'},
+          m2: {leafId: 'l2'},
+        })
+        .setTable('leaves', {
+          l1: {a: 1},
+          l2: {b: 2},
+        });
+      queries.setQueryDefinition('q1', 'roots', ({selectAll, join}) => {
+        selectAll('leaf', 'leaf.');
+        join('middles', 'middleId').as('middle');
+        join('leaves', 'middle', 'leafId').as('leaf');
+      });
+      const cellIdsListener = vi.fn();
+      queries.addResultTableCellIdsListener('q1', cellIdsListener);
+
+      expect(queries.getResultTable('q1')).toEqual({r1: {'leaf.a': 1}});
+      store.setCell('roots', 'r1', 'middleId', 'm2');
+      expect(queries.getResultTable('q1')).toEqual({r1: {'leaf.b': 2}});
+      expect(cellIdsListener).toHaveBeenCalledTimes(1);
+
+      store.setCell('middles', 'm2', 'leafId', 'l3');
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(cellIdsListener).toHaveBeenCalledTimes(2);
+
+      store.setRow('leaves', 'l3', {c: 3, d: 4});
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {'leaf.c': 3, 'leaf.d': 4},
+      });
+      expect(cellIdsListener).toHaveBeenCalledTimes(3);
+
+      store.setCell('middles', 'm2', 'leafId', 'l1');
+      expect(queries.getResultTable('q1')).toEqual({r1: {'leaf.a': 1}});
+      expect(cellIdsListener).toHaveBeenCalledTimes(4);
+
+      store.delRow('leaves', 'l1');
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(cellIdsListener).toHaveBeenCalledTimes(5);
+    });
+
+    test('all cells from an aliased self-join', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({selectAll, join}) => {
+        selectAll('joined', 'joined.');
+        join('t1', (getCell) => `r${(getCell('c2') as string)?.length}`).as(
+          'joined',
+        );
+      });
+
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        'joined.c1': 'three',
+        'joined.c2': 'odd',
+        'joined.c3': 3,
+      });
+      expect(queries.getResultRow('q1', 'r2')).toEqual({
+        'joined.c1': 'four',
+        'joined.c2': 'even',
+        'joined.c3': 4,
+      });
+
+      store.setCell('t1', 'r3', 'extra', true);
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        'joined.c1': 'three',
+        'joined.c2': 'odd',
+        'joined.c3': 3,
+        'joined.extra': true,
+      });
+    });
+
     test('table by id, select by id', () => {
       setCells('t1', '', '', 'r');
       setCells('t2', '', '.j');
@@ -563,6 +869,168 @@ describe('Queries tables', () => {
   });
 
   describe('Groups', () => {
+    test('all columns rebuild groups when the column set changes', () => {
+      store.setTable('t1', {
+        r1: {kind: 'same', amount: 1},
+        r2: {kind: 'same', amount: 2},
+      });
+      queries.setQueryDefinition('q1', 't1', ({selectAll, group}) => {
+        selectAll();
+        group('amount', 'sum');
+      });
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {kind: 'same', amount: 3},
+      });
+
+      store.setCell('t1', 'r1', 'note', 'only r1');
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {kind: 'same', note: 'only r1', amount: 1},
+        1: {kind: 'same', amount: 2},
+      });
+
+      store.delCell('t1', 'r1', 'note');
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {kind: 'same', amount: 3},
+      });
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+      queries.delQueryDefinition('q1');
+      expect(store.getListenerStats().tableCellIds).toEqual(0);
+    });
+
+    test('all joined columns rebuild from an initially empty table', () => {
+      store.setTable('pets', {
+        fido: {ownerId: '1'},
+      });
+      queries.setQueryDefinition('q1', 'pets', ({selectAll, join, group}) => {
+        selectAll('owners', 'owner.');
+        join('owners', 'ownerId');
+        group('owner.score', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+      store.setRow('owners', '1', {score: 2, label: 'one'});
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.label': 'one', 'owner.score': 2},
+      });
+
+      store.delTable('owners');
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+    });
+
+    test('all joined columns regroup across foreign rows and shapes', () => {
+      store
+        .setTable('pets', {
+          fido: {ownerId: '1'},
+          felix: {ownerId: '1'},
+        })
+        .setTable('owners', {
+          '1': {kind: 'same', amount: 1},
+          '2': {kind: 'same', note: 'two', amount: 2},
+        });
+      let buildCount = 0;
+      queries.setQueryDefinition('q1', 'pets', ({selectAll, join, group}) => {
+        buildCount++;
+        selectAll('owners', 'owner.');
+        join('owners', 'ownerId');
+        group('owner.amount', 'sum');
+      });
+
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.kind': 'same', 'owner.amount': 2},
+      });
+      expect(buildCount).toEqual(1);
+
+      store.setCell('pets', 'felix', 'ownerId', '2');
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.kind': 'same', 'owner.amount': 1},
+        1: {'owner.kind': 'same', 'owner.note': 'two', 'owner.amount': 2},
+      });
+      expect(buildCount).toEqual(1);
+
+      store.setRow('owners', '2', {kind: 'same', tag: 'two', amount: 3});
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.kind': 'same', 'owner.amount': 1},
+        1: {'owner.kind': 'same', 'owner.tag': 'two', 'owner.amount': 3},
+      });
+      expect(buildCount).toEqual(2);
+
+      store.setRow('owners', '3', {other: true});
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.kind': 'same', 'owner.amount': 1},
+        1: {'owner.kind': 'same', 'owner.tag': 'two', 'owner.amount': 3},
+      });
+      expect(buildCount).toEqual(3);
+
+      store.delRow('owners', '3').delRow('owners', '2');
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.kind': 'same', 'owner.amount': 1},
+      });
+      expect(buildCount).toEqual(5);
+
+      store.setRow('owners', '2', {kind: 'same', flag: true, amount: 4});
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'owner.kind': 'same', 'owner.amount': 1},
+        1: {'owner.flag': true, 'owner.kind': 'same', 'owner.amount': 4},
+      });
+      expect(buildCount).toEqual(6);
+    });
+
+    test('all column listeners survive replacement edge cases', () => {
+      const error = new Error('aggregate error');
+      store
+        .setRow('t1', 'r1', {kind: 'one', amount: 1})
+        .setRow('t2', 'r1', {kind: 'two', amount: 2});
+      let firstBuildCount = 0;
+      let secondBuildCount = 0;
+
+      queries.setQueryDefinition('q1', 't1', ({selectAll, group}) => {
+        firstBuildCount++;
+        selectAll();
+        selectAll();
+        group('amount', 'sum');
+      });
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+      queries.setQueryDefinition('q1', 't2', ({selectAll, group}) => {
+        secondBuildCount++;
+        selectAll();
+        group('amount', 'sum');
+      });
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+      store.setCell('t1', 'r1', 'ignored', true);
+      expect(firstBuildCount).toEqual(1);
+      expect(secondBuildCount).toEqual(1);
+
+      store.setCell('t2', 'r1', 'extra', true);
+      expect(secondBuildCount).toEqual(2);
+
+      expect(() =>
+        queries.setQueryDefinition('q1', 't1', ({selectAll, group}) => {
+          selectAll();
+          group('amount', () => {
+            throw error;
+          });
+        }),
+      ).toThrow(error);
+      expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+      store.setCell('t1', 'r1', 'stillIgnored', true);
+      expect(secondBuildCount).toEqual(2);
+      store.setCell('t2', 'r1', 'another', true);
+      expect(secondBuildCount).toEqual(3);
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {another: true, extra: true, kind: 'two', amount: 2},
+      });
+
+      queries.setQueryDefinition('q1', 't2', ({select}) => select('amount'));
+      expect(store.getListenerStats().tableCellIds).toEqual(0);
+    });
+
     test('root table column by name', () => {
       setCells();
       queries.setQueryDefinition('q1', 't1', ({select, group}) => {
@@ -935,6 +1403,18 @@ describe('Queries queries', () => {
   });
 
   describe('Selects', () => {
+    test('all by id', () => {
+      queries.setQueryDefinition('q1', true, 'Q1', ({selectAll}) =>
+        selectAll(),
+      );
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'one', c2: 'odd', c3: 'r1'},
+        r2: {c1: 'two', c2: 'even', c3: 'r2'},
+        r3: {c1: 'three', c2: 'odd', c3: 'r3'},
+        r4: {c1: 'four', c2: 'even', c3: 'r4'},
+      });
+    });
+
     test('by id', () => {
       queries.setQueryDefinition('q1', true, 'Q1', ({select}) => select('c1'));
       expect(queries.getResultTable('q1')).toEqual({
@@ -972,6 +1452,63 @@ describe('Queries queries', () => {
   });
 
   describe('Joins', () => {
+    test('all by id', () => {
+      queries.setQueryDefinition('q0', true, 'Q1', ({selectAll, join}) => {
+        selectAll(true, 'Q2');
+        join(true, 'Q2', 'c3');
+      });
+      expect(queries.getResultRow('q0', 'r1')).toEqual({
+        c1: 'one.j',
+        c2: 'odd.j',
+        c3: 1,
+        r: 'r1',
+      });
+
+      queries.setQueryDefinition('q1', true, 'Q1', ({selectAll, join}) => {
+        selectAll();
+        selectAll(true, 'Q2', 'Q2.');
+        join(true, 'Q2', 'c3');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {
+          c1: 'one',
+          c2: 'odd',
+          c3: 'r1',
+          'Q2.c1': 'one.j',
+          'Q2.c2': 'odd.j',
+          'Q2.c3': 1,
+          'Q2.r': 'r1',
+        },
+        r2: {
+          c1: 'two',
+          c2: 'even',
+          c3: 'r2',
+          'Q2.c1': 'two.j',
+          'Q2.c2': 'even.j',
+          'Q2.c3': 2,
+          'Q2.r': 'r2',
+        },
+        r3: {
+          c1: 'three',
+          c2: 'odd',
+          c3: 'r3',
+          'Q2.c1': 'three.j',
+          'Q2.c2': 'odd.j',
+          'Q2.c3': 3,
+          'Q2.r': 'r3',
+        },
+        r4: {
+          c1: 'four',
+          c2: 'even',
+          c3: 'r4',
+          'Q2.c1': 'four.j',
+          'Q2.c2': 'even.j',
+          'Q2.c3': 4,
+          'Q2.r': 'r4',
+        },
+      });
+    });
+
     test('by id', () => {
       queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
@@ -1350,6 +1887,51 @@ describe('Queries queries', () => {
         r3: {'Q1.c1': 'three'},
         r4: {'Q1.c1': 'four'},
       });
+    });
+
+    test('grouped wildcard retains a deleted joined query result store', () => {
+      queries.setQueryDefinition('q1', 't1', ({selectAll, join, group}) => {
+        selectAll(true, 'Q2');
+        join(true, 'Q2', 'target');
+        group('c3', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({});
+
+      queries
+        .delQueryDefinition('Q2')
+        .setQueryDefinition('Q2', 't2', ({selectAll}) => selectAll());
+      store.setCell('t1', 'r1', 'target', 'r1');
+
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: 'one.j', c2: 'odd.j', c3: 1},
+      });
+    });
+
+    test('wildcard join survives deletion before its foreign Id exists', () => {
+      store.setRow('roots', 'r1', {x: 1}).setRow('foreign', 'f1', {a: 1});
+      const setSourceDefinition = () =>
+        queries.setQueryDefinition('source', 'foreign', ({selectAll}) =>
+          selectAll(),
+        );
+
+      setSourceDefinition();
+      queries.setQueryDefinition('dependent', 'roots', ({selectAll, join}) => {
+        selectAll(true, 'source');
+        join(true, 'source', 'foreignId');
+      });
+      queries.delQueryDefinition('source');
+      setSourceDefinition();
+
+      store.setCell('roots', 'r1', 'foreignId', 'f1');
+      expect(queries.getResultTable('dependent')).toEqual({r1: {a: 1}});
+
+      store.setRow('foreign', 'f1', {b: 2});
+      expect(queries.getResultTable('dependent')).toEqual({r1: {b: 2}});
+
+      store
+        .setRow('foreign', 'f2', {c: 3})
+        .setCell('roots', 'r1', 'foreignId', 'f2');
+      expect(queries.getResultTable('dependent')).toEqual({r1: {c: 3}});
     });
 
     test('query to joined query, root deleted later', () => {

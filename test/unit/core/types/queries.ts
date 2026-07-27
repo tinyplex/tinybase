@@ -114,3 +114,18 @@ queriesWithSchema.addResultCellListener('q1', 'rr1', 'c1', (queries) => {
 
 queriesWithSchema.delListener('q1').getStore().getTables().t1;
 queriesWithSchema.delListener('q1').getStore().getTables().t2; // !
+
+queriesWithSchema.setQueryDefinition('q2', 't1', ({selectAll}) => {
+  selectAll();
+  selectAll('t0');
+  selectAll('t0', 'joined.');
+  selectAll('t0', (cellId) => {
+    cellId satisfies 'c0';
+    return `joined.${cellId}`;
+  });
+  selectAll('t0', (_cellId) => 1); // !
+  selectAll('jt1');
+  selectAll('jt1', (cellId) => `joined.${cellId}`);
+  selectAll(true, 'q2');
+  selectAll(true, 'q2', 'query.');
+});
