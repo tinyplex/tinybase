@@ -10,14 +10,15 @@ highlighted features.
 ## Select All
 
 Queries can now select every Cell present in a root or joined Row with the
-`selectAll` keyword ([#40](https://github.com/tinyplex/tinybase/issues/40)).
-Heterogeneous Rows are supported directly: each result Row contains only its
-source Row's Cells, while the result Table's Cell Ids are their reactive union.
+selectAll function (as requested in issue
+[#40](https://github.com/tinyplex/tinybase/issues/40)). Heterogeneous Rows are
+supported directly: each result Row contains only its source Row's Cells, while
+the result Table's Cell Ids are their reactive union.
 
 Joined selections retain their Cell Ids by default, or can take a Cell Id prefix
 or mapping callback. Selection clauses are applied in declaration order, and
-source Cell Ids within a `selectAll` call are processed lexically, so collision
-behavior is deterministic.
+source Cell Ids within a selectAll function call are processed lexically, so
+collision behavior is deterministic.
 
 ```js
 import {createQueries, createStore} from 'tinybase';
