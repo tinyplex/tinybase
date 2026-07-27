@@ -36,10 +36,12 @@ the result of a query can never have more Rows than that underlying Table did.)
 
 The third parameter, `build`, is where the magic happens: you provide a function
 to define the query. that will be called with with an object that contains the
-six named 'keyword' functions for the query:
+seven named 'keyword' functions for the query:
 
 - `select`: a function that lets you specify a Cell or calculated value for
   including into the query's result.
+- `selectAll`: a function that lets you include every Cell present in a source
+  Row.
 - `join` describes a function that lets you specify a Cell or calculated value
   to join the main query Table to others, by Row Id.
 - `where` describes a function that lets you specify conditions to filter
@@ -51,15 +53,16 @@ six named 'keyword' functions for the query:
 - `param` describes a function that lets you access parameterized values that
   can be dynamically changed without redefining the query.
 
-All six can be destructured from the callback's single parameter:
+All seven can be destructured from the callback's single parameter:
 
 ```js
 queries.setQueryDefinition(
   'query',
   'pets',
-  ({select, join, where, group, having, param}) => {
+  ({select, selectAll, join, where, group, having, param}) => {
     select(/* ... */);
     select(/* ... */);
+    selectAll(/* ... */);
     join(/* ... */);
     where(/* ... */);
     group(/* ... */);
@@ -71,9 +74,9 @@ queries.setQueryDefinition(
 
 Any of these keyword functions can be called multiple times (even imperatively,
 such as in a loop). The only requirement for a valid query is that at least one
-`select` function call is made.
+`select` or `selectAll` function call is made.
 
-Here's a quick summary of each of the six keyword functions. Some of them are
+Here's a quick summary of each of the seven keyword functions. Some of them are
 overloaded and have different effects based on the number of arguments, but they
 are all fully typed with TypeScript and well documented with examples.
 
@@ -140,6 +143,53 @@ queries.forEachResultRow('query', (rowId) => {
 // -> {felix: {species: 'cat', name: 'Bob'}}
 // -> {cujo: {species: 'dog', name: 'Carol'}}
 ```
+
+## Select All
+
+The SelectAll type describes the `selectAll` function that lets you include
+every Cell present in a source Row:
+
+```js
+store.setTable('pets', {
+  fido: {species: 'dog', color: 'brown'},
+  felix: {species: 'cat', indoor: true},
+});
+
+queries.setQueryDefinition('query', 'pets', ({selectAll}) => selectAll());
+
+console.log(queries.getResultRow('query', 'fido'));
+// -> {color: 'brown', species: 'dog'}
+console.log(queries.getResultRow('query', 'felix'));
+// -> {indoor: true, species: 'cat'}
+```
+
+The selected columns do not need to be known when the query is defined. Each
+result Row contains only the Cells present in its corresponding source Row, so
+Rows can have mutually exclusive Cell Ids. The result Table's Cell Ids are the
+union of those result Rows, and additions and removals remain reactive.
+
+Pass a joined Table Id to select all of its Cells with their original Ids. An
+optional second parameter can provide a prefix or Cell-Id-mapping callback:
+
+```js
+queries.setQueryDefinition('allPetOwners', 'pets', ({selectAll, join}) => {
+  selectAll();
+  selectAll('owners', 'owner.');
+  join('owners', 'ownerId');
+});
+```
+
+Selection clauses are applied in declaration order, and later selections win
+when result Cell Ids collide. Within one `selectAll` call, source Cell Ids are
+processed in lexical order, which also makes a many-to-one mapping callback
+deterministic.
+
+Joined query results work the same way, with `true` and the query Id as the first
+two parameters and an optional prefix or mapping callback as the third.
+
+For grouped queries, `selectAll` uses the table-wide union of source Cell Ids
+and rebuilds the query when that union changes. As with individual selections,
+every selected Cell that is not aggregated becomes a grouping dimension.
 
 ## Join
 

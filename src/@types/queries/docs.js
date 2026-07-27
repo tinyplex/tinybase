@@ -895,6 +895,133 @@
   /// Select.4
 }
 /**
+ * The CellIdMapper type describes a function used by a SelectAll clause to map
+ * a source Cell Id to a Cell Id in the query result.
+ * @param cellId The Id of a Cell in the source Row.
+ * @returns The Id to use for that Cell in the result Row.
+ * @category Callback
+ * @since v9.4.0
+ */
+/// CellIdMapper
+/**
+ * The SelectAll type describes a function that lets you select every Cell
+ * present in a source Row.
+ *
+ * The SelectAll function is provided to the third `query` parameter of the
+ * setQueryDefinition method. Different source Rows can contain different Cell
+ * Ids, and each result Row will contain only the Cells present in its
+ * corresponding source Row. The result Table's Cell Ids are therefore the union
+ * of the Cells in its result Rows.
+ *
+ * Source Cell Ids are processed in lexical order, and selection clauses are
+ * processed in the order they are declared. If multiple selected Cells map to
+ * the same result Cell Id, the later one wins.
+ *
+ * When used in a grouped query, the current table-wide union of source Cell Ids
+ * is expanded into individual selections. The query is rebuilt if this union
+ * changes, and any selected Cell that is not grouped becomes a grouping
+ * dimension as usual.
+ * @category Definition
+ * @since v9.4.0
+ */
+/// SelectAll
+{
+  /**
+   * Calling this function with no parameters will select every Cell present in
+   * each Row of the query's root Table, retaining the source Cell Ids.
+   * @example
+   * This example selects all the Cells from heterogeneous root Rows:
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', indoor: true},
+   * });
+   * const queries = createQueries(store);
+   *
+   * queries.setQueryDefinition('query', 'pets', ({selectAll}) => selectAll());
+   *
+   * console.log(queries.getResultRow('query', 'fido'));
+   * // -> {color: 'brown', species: 'dog'}
+   * console.log(queries.getResultRow('query', 'felix'));
+   * // -> {indoor: true, species: 'cat'}
+   * ```
+   * @category Definition
+   * @since v9.4.0
+   */
+  /// SelectAll.1
+  /**
+   * Calling this function with a joined Table Id will select every Cell present
+   * in the joined Row.
+   *
+   * An optional second parameter can map each Cell Id with a prefix or
+   * callback.
+   * @param joinedTableId The Id of the joined Table. If the Table was joined
+   * 'as' a different Id, that should instead be used.
+   * @param cellIdPrefixOrMapper An optional prefix to prepend to every Cell Id,
+   * or a CellIdMapper callback that returns each result Cell Id.
+   * @example
+   * This example selects all the Cells from a joined Table, retaining their
+   * Cell Ids:
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore()
+   *   .setTable('pets', {fido: {ownerId: '1'}})
+   *   .setTable('owners', {'1': {name: 'Alice', city: 'London'}});
+   * const queries = createQueries(store);
+   *
+   * queries.setQueryDefinition('query', 'pets', ({selectAll, join}) => {
+   *   selectAll('owners');
+   *   join('owners', 'ownerId');
+   * });
+   *
+   * console.log(queries.getResultRow('query', 'fido'));
+   * // -> {city: 'London', name: 'Alice'}
+   * ```
+   * @category Definition
+   * @since v9.4.0
+   */
+  /// SelectAll.2
+  /**
+   * Calling this function with `true` and a joined query Id will select every
+   * Cell present in the joined result Row.
+   *
+   * An optional third parameter can map each Cell Id with a prefix or callback.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param joinedQueryId The Id of the joined query result. If the query result
+   * was joined 'as' a different Id, that should instead be used.
+   * @param cellIdPrefixOrMapper An optional prefix to prepend to every Cell Id,
+   * or a CellIdMapper callback that returns each result Cell Id.
+   * @example
+   * This example selects all the Cells from a joined query result, prefixing
+   * each Cell Id:
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore()
+   *   .setTable('pets', {fido: {ownerId: '1'}})
+   *   .setTable('owners', {'1': {name: 'Alice', city: 'London'}});
+   * const queries = createQueries(store)
+   *   .setQueryDefinition('owners', 'owners', ({selectAll}) => selectAll())
+   *   .setQueryDefinition('query', 'pets', ({selectAll, join}) => {
+   *     selectAll(true, 'owners', 'owner.');
+   *     join(true, 'owners', 'ownerId');
+   *   });
+   *
+   * console.log(queries.getResultRow('query', 'fido'));
+   * // -> {'owner.city': 'London', 'owner.name': 'Alice'}
+   * ```
+   * @category Definition
+   * @since v9.4.0
+   */
+  /// SelectAll.3
+}
+/**
  * The SelectedAs type describes an object returned from calling a Select
  * function so that the selected Cell Id can be optionally aliased.
  *
@@ -1141,8 +1268,8 @@
   /// Join.1
   /**
    * Calling this function with three parameters (where the first is `true`)
-   * will indicate that the join to a Row in an adjacent query result is made
-   * by finding its Id in a Cell of the query's root Table.
+   * will indicate that the join to a Row in an adjacent query result is made by
+   * finding its Id in a Cell of the query's root Table.
    * @param asQuery A flag indicating that the next Id is a query Id.
    * @param joinedQueryId The Id of the query result to join to.
    * @param on The Id of the Cell in the root Table that contains the joined
@@ -1200,8 +1327,8 @@
    */
   /// Join.5
   /**
-   * Calling this function with four parameters (where the first is `true`)
-   * will indicate that the join to a Row in a distant query result is made by
+   * Calling this function with four parameters (where the first is `true`) will
+   * indicate that the join to a Row in a distant query result is made by
    * finding its Id in a Cell of an intermediately joined Table.
    * @param asQuery A flag indicating that the next Id is a query Id.
    * @param joinedQueryId The Id of the distant query result to join to.
@@ -1236,9 +1363,9 @@
   /// Join.7
   /**
    * Calling this function with four parameters (where the first is `true` and
-   * the fourth is a function) will indicate that the join to a Row in a
-   * distant query result is made by calculating its Id from the Cells and the
-   * Row Id of an intermediately joined Table.
+   * the fourth is a function) will indicate that the join to a Row in a distant
+   * query result is made by calculating its Id from the Cells and the Row Id of
+   * an intermediately joined Table.
    * @param asQuery A flag indicating that the next Id is a query Id.
    * @param joinedQueryId The Id of the query result to join to.
    * @param fromIntermediateJoinedTableId The Id of an intermediate Table (which

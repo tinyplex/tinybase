@@ -5,6 +5,48 @@ highlighted features.
 
 ---
 
+# v9.4
+
+## Select All
+
+Queries can now select every Cell present in a root or joined Row with the
+`selectAll` keyword ([#40](https://github.com/tinyplex/tinybase/issues/40)).
+Heterogeneous Rows are supported directly: each result Row contains only its
+source Row's Cells, while the result Table's Cell Ids are their reactive union.
+
+Joined selections retain their Cell Ids by default, or can take a Cell Id prefix
+or mapping callback. Selection clauses are applied in declaration order, and
+source Cell Ids within a `selectAll` call are processed lexically, so collision
+behavior is deterministic.
+
+```js
+import {
+  createQueries as createSelectAllQueries,
+  createStore as createSelectAllStore,
+} from 'tinybase';
+
+const selectAllStore = createSelectAllStore().setTable('pets', {
+  fido: {species: 'dog', color: 'brown'},
+  felix: {species: 'cat', indoor: true},
+});
+const selectAllQueries = createSelectAllQueries(selectAllStore);
+
+selectAllQueries.setQueryDefinition('allPets', 'pets', ({selectAll}) =>
+  selectAll(),
+);
+
+console.log(selectAllQueries.getResultRow('allPets', 'fido'));
+// -> {color: 'brown', species: 'dog'}
+console.log(selectAllQueries.getResultRow('allPets', 'felix'));
+// -> {indoor: true, species: 'cat'}
+```
+
+Ungrouped queries iterate only the Cells present in each matched Row. Grouped
+queries use the table-wide Cell Id union and rebuild when that union changes;
+selected Cells that are not aggregated remain grouping dimensions.
+
+---
+
 # v9.3
 
 TinyBase v9.3 lets multiple independently synchronized MergeableStores share one
@@ -650,8 +692,7 @@ The ui-solid-dom module provides browser-ready Solid components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Solid components and Accessors throughout.
 
-![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png
-'SortedTableInHtmlTable (Solid)')
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
 
 Alongside the table components, the new ui-solid-inspector module brings the
 TinyBase development inspector to Solid apps too, making it easy to inspect and
@@ -706,8 +747,7 @@ This release also adds a complete set of Solid UI component demos, plus a
 Countries demo and an Inspector demo, so you can see the new modules working
 across Stores, Indexes, Relationships, Queries, and editable views.
 
-![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png
-'EditableValueView (Solid)')
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -834,8 +874,7 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
-'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -882,8 +921,7 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
-'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -1590,8 +1628,7 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue,
-#[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 

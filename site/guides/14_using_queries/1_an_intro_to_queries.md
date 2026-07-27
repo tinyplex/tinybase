@@ -44,8 +44,8 @@ console.log(queries.getResultTable('dogColors'));
 The key to understanding how the Queries API works is in the
 `setQueryDefinition` line above. You provide a function which will be called
 with a selection of 'keyword' functions that you can use to define the query.
-These include `select`, `join`, `where`, `group`, and `having` and are described
-in the TinyQL guide.
+These include `select`, `selectAll`, `join`, `where`, `group`, and `having` and
+are described in the TinyQL guide.
 
 Note that, for getting data out, the Queries object has methods analogous to
 those in the Store object, prefixed with the word 'Result':
