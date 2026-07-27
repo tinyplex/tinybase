@@ -4,6 +4,7 @@ import type {
   AggregateAdd,
   AggregateRemove,
   AggregateReplace,
+  CellIdMapper,
   GetTableCell,
   Group,
   Having,
@@ -18,6 +19,7 @@ import type {
   QueryIdsListener,
   ResultTableCallback,
   Select,
+  SelectAll,
   Where,
   createQueries as createQueriesDecl,
 } from '../@types/queries/index.d.ts';
@@ -31,7 +33,12 @@ import type {
   Store,
 } from '../@types/store/index.d.ts';
 import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
-import {arrayEvery, arrayForEach, arrayPush} from '../common/array.ts';
+import {
+  arrayEvery,
+  arrayForEach,
+  arrayPush,
+  arraySort,
+} from '../common/array.ts';
 import {encodeIfJson, getCellOrValueType} from '../common/cell.ts';
 import {
   collDel,
@@ -54,6 +61,7 @@ import {
   visitTree,
 } from '../common/map.ts';
 import {
+  objDel,
   objForEach,
   objFreeze,
   objGet,
@@ -93,6 +101,7 @@ const PARAM_LISTENER_PREFIX = 'p';
 
 type Build = (builders: {
   select: Select;
+  selectAll: SelectAll;
   join: Join;
   where: Where;
   group: Group;
@@ -103,9 +112,20 @@ type Build = (builders: {
 type QueryArgs = [Build, Id, 0 | 1];
 type QueryDefinition = [Id, Build, 0 | 1, ParamValues];
 type StoreListenerIds = Map<Store, IdSet>;
-type StagedDefinition = [StoreListenerIds, StoreListenerIds, Store?];
+type SelectAllSources = Map<Store, IdSet>;
+type SelectAllListenerIds = Map<Store, IdMap<Id>>;
+type StagedDefinition = [
+  StoreListenerIds,
+  StoreListenerIds,
+  Store | undefined,
+  SelectAllSources,
+  IdSet,
+];
 
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
+type SelectionEntry =
+  | [selectAll: 0, selectedCellId: Id, selectClause: SelectClause]
+  | [selectAll: 1, joinedTableId: Id | undefined, cellIdMapper: CellIdMapper];
 type JoinClause = [
   realTableId: Id,
   fromJoinAlias: Id | undefined,
@@ -158,6 +178,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   };
   const preStoreListenerIds: IdMap<StoreListenerIds> = mapNew();
   const sourceStoreListenerIds: IdMap<StoreListenerIds> = mapNew();
+  const selectAllListenerIds: IdMap<SelectAllListenerIds> = mapNew();
+  const referencedQueryIds: IdMap<IdSet> = mapNew();
 
   const {
     _: [, addListener, callListeners],
@@ -254,10 +276,53 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     mapSet(sourceStoreListenerIds, queryId);
   };
 
-  const isResultStoreReferenced = (resultStore: Store): boolean =>
+  const syncSelectAllListeners = (
+    queryId: Id,
+    nextSources: SelectAllSources = mapNew(),
+  ): void => {
+    const listenerIds: SelectAllListenerIds = mapEnsure(
+      selectAllListenerIds,
+      queryId,
+      mapNew<Store, IdMap<Id>>,
+    );
+    mapForEach(listenerIds, (sourceStore, listenerIdsByTableId) => {
+      mapForEach(listenerIdsByTableId, (sourceTableId, listenerId) =>
+        collHas(mapGet(nextSources, sourceStore), sourceTableId)
+          ? 0
+          : (sourceStore.delListener(listenerId),
+            mapSet(listenerIdsByTableId, sourceTableId)),
+      );
+      if (collIsEmpty(listenerIdsByTableId)) {
+        mapSet(listenerIds, sourceStore);
+      }
+    });
+    mapForEach(nextSources, (sourceStore, tableIds) => {
+      const listenerIdsByTableId: IdMap<Id> = mapEnsure(
+        listenerIds,
+        sourceStore,
+        mapNew<Id, Id>,
+      );
+      collForEach(tableIds, (sourceTableId) =>
+        mapEnsure(listenerIdsByTableId, sourceTableId, () =>
+          sourceStore.addTableCellIdsListener(sourceTableId, () =>
+            setQueryDefinitionImpl(queryId),
+          ),
+        ),
+      );
+    });
+    if (collIsEmpty(listenerIds)) {
+      mapSet(selectAllListenerIds, queryId);
+    }
+  };
+
+  const isResultStoreReferenced = (queryId: Id, resultStore: Store): boolean =>
     !(
       collEvery(routedResultListeners, ([, storeListenerIds]) =>
         collEvery(storeListenerIds, ([store]) => store !== resultStore),
+      ) &&
+      collEvery(
+        referencedQueryIds,
+        (queryIds) => !collHas(queryIds, queryId),
       ) &&
       arrayEvery(
         [preStoreListenerIds, sourceStoreListenerIds],
@@ -274,7 +339,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       hasQuery(queryId) ? 0 : mapSet(preStores, queryId),
     );
     mapForEach(resultStores, (queryId, resultStore) =>
-      hasQuery(queryId) || isResultStoreReferenced(resultStore)
+      hasQuery(queryId) || isResultStoreReferenced(queryId, resultStore)
         ? 0
         : mapSet(resultStores, queryId),
     );
@@ -395,8 +460,14 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           const rootStore = asQuery ? getResultStore(tableId) : store;
           const resultStore = getResultStore(queryId);
           const paramValues = definition?.[3] ?? getParamValues(queryId);
+          const nextReferencedQueryIds = stagedDefinition[4];
+          if (asQuery) {
+            setAdd(nextReferencedQueryIds, tableId);
+          }
 
-          const selectEntries: [Id, SelectClause][] = [];
+          const selectionEntries: SelectionEntry[] = [];
+          let hasSelectAll = false;
+          let selectCount = 0;
           const joinEntries: [Id | undefined, JoinClause][] = [
             [
               undefined,
@@ -419,21 +490,44 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           ) => {
             const joinedTableId = isTrue(arg1) ? arg2 : arg1;
             const joinedCellId = isTrue(arg1) ? arg3 : arg2;
-            const selectEntry: [Id, SelectClause] = isFunction(arg1)
-              ? [size(selectEntries) + EMPTY_STRING, arg1]
+            const selectEntry: SelectionEntry = isFunction(arg1)
+              ? [0, selectCount + EMPTY_STRING, arg1]
               : isUndefined(joinedCellId)
-                ? [arg1 as Id, (getTableCell) => getTableCell(arg1 as Id)]
+                ? [
+                    0,
+                    arg1 as Id,
+                    (getTableCell: GetTableCell) => getTableCell(arg1 as Id),
+                  ]
                 : [
+                    0,
                     joinedCellId,
-                    (getTableCell) =>
+                    (getTableCell: GetTableCell) =>
                       isTrue(arg1)
                         ? getTableCell(true, joinedTableId as Id, joinedCellId)
                         : getTableCell(joinedTableId as Id, joinedCellId),
                   ];
-            arrayPush(selectEntries, selectEntry);
+            selectCount++;
+            arrayPush(selectionEntries, selectEntry);
             return {
-              as: (selectedCellId: Id) => (selectEntry[0] = selectedCellId),
+              as: (selectedCellId: Id) => (selectEntry[1] = selectedCellId),
             };
+          };
+
+          const selectAll = (
+            arg1?: true | Id,
+            arg2?: Id | CellIdMapper,
+            arg3?: Id | CellIdMapper,
+          ) => {
+            hasSelectAll = true;
+            const joinedTableId = isTrue(arg1) ? (arg2 as Id) : arg1;
+            const prefixOrMapper = isTrue(arg1) ? arg3 : arg2;
+            arrayPush(selectionEntries, [
+              1,
+              joinedTableId,
+              isFunction(prefixOrMapper)
+                ? prefixOrMapper
+                : (cellId: Id) => (prefixOrMapper ?? EMPTY_STRING) + cellId,
+            ]);
           };
 
           const join = (
@@ -450,6 +544,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
               : isUndefined(arg3) || isFunction(arg2)
                 ? [undefined, arg2]
                 : [arg2, arg3];
+            const sourceIsQuery = isTrue(arg1);
+            const sourceStore = sourceIsQuery
+              ? getResultStore(joinedTableId)
+              : store;
+            if (sourceIsQuery) {
+              setAdd(nextReferencedQueryIds, joinedTableId);
+            }
             const joinEntry: [Id, JoinClause] = [
               joinedTableId,
               [
@@ -458,7 +559,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 isFunction(onArg) ? onArg : (getCell) => getCell(onArg as Id),
                 [],
                 mapNew(),
-                isTrue(arg1) ? getResultStore(joinedTableId) : store,
+                sourceStore,
               ] as JoinClause,
             ];
             arrayPush(joinEntries, joinEntry);
@@ -518,11 +619,10 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                     getSelectedOrGroupedCell(arg1) === arg2,
             );
 
-          build({select, join, where, group, having, param});
+          build({select, selectAll, join, where, group, having, param});
           resultStore.delTable(queryId);
 
-          const selects: IdMap<SelectClause> = mapNew(selectEntries);
-          if (collIsEmpty(selects)) {
+          if (isEmpty(selectionEntries)) {
             commit?.();
             return queries;
           }
@@ -539,6 +639,62 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           const groups: IdMap<GroupClause> = mapNew(groupEntries);
 
           const hasGroupsOrHavings = !collIsEmpty(groups) || !isEmpty(havings);
+          const selectEntries: [Id, SelectClause][] = [];
+          const selectAllSources = stagedDefinition[3];
+          const getSelectAllJoin = (
+            joinedTableId: Id | undefined,
+          ): JoinClause | undefined =>
+            mapGet(
+              joins,
+              isUndefined(joinedTableId) || joinedTableId === tableId
+                ? undefined
+                : joinedTableId,
+            );
+
+          arrayForEach(
+            selectionEntries,
+            ([selectAll, selectedOrJoinedTableId, clauseOrMapper]) => {
+              if (selectAll) {
+                if (hasGroupsOrHavings) {
+                  ifNotUndefined(
+                    getSelectAllJoin(selectedOrJoinedTableId),
+                    ([realTableId, , , , , sourceStore]) => {
+                      setAdd(
+                        mapEnsure(selectAllSources, sourceStore, setNew),
+                        realTableId,
+                      );
+                      arrayForEach(
+                        arraySort(sourceStore.getTableCellIds(realTableId)),
+                        (cellId) =>
+                          arrayPush(selectEntries, [
+                            (clauseOrMapper as CellIdMapper)(cellId),
+                            (getTableCell) =>
+                              isUndefined(selectedOrJoinedTableId) ||
+                              selectedOrJoinedTableId === tableId
+                                ? getTableCell(cellId)
+                                : getTableCell(
+                                    selectedOrJoinedTableId as Id,
+                                    cellId,
+                                  ),
+                          ]),
+                      );
+                    },
+                  );
+                }
+              } else {
+                arrayPush(selectEntries, [
+                  selectedOrJoinedTableId as Id,
+                  clauseOrMapper as SelectClause,
+                ]);
+              }
+            },
+          );
+
+          const selects: IdMap<SelectClause> = mapNew(selectEntries);
+          if (hasGroupsOrHavings && collIsEmpty(selects)) {
+            commit?.();
+            return queries;
+          }
           const selectJoinWhereStore = hasGroupsOrHavings
             ? (stagedDefinition[2] = createStore())
             : resultStore;
@@ -734,18 +890,84 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                     joinedCellId,
                   );
             };
-            selectJoinWhereStore.transaction(() =>
-              arrayEvery(wheres, (where) => where(getJoinCell))
-                ? mapForEach(selects, (asCellId, tableCellGetter) =>
-                    (selectJoinWhereStore as ProtectedStore)._[5](
-                      queryId,
-                      rootRowId,
-                      asCellId,
-                      tableCellGetter(getJoinCell, rootRowId),
-                    ),
-                  )
-                : selectJoinWhereStore.delRow(queryId, rootRowId),
-            );
+            selectJoinWhereStore.transaction(() => {
+              if (!arrayEvery(wheres, (where) => where(getJoinCell))) {
+                selectJoinWhereStore.delRow(queryId, rootRowId);
+              } else if (hasGroupsOrHavings) {
+                mapForEach(selects, (asCellId, tableCellGetter) =>
+                  (selectJoinWhereStore as ProtectedStore)._[5](
+                    queryId,
+                    rootRowId,
+                    asCellId,
+                    tableCellGetter(getJoinCell, rootRowId),
+                  ),
+                );
+              } else if (hasSelectAll) {
+                const resultRow = objNew<Cell>();
+                arrayForEach(
+                  selectionEntries,
+                  ([selectAll, selectedOrJoinedTableId, clauseOrMapper]) => {
+                    if (selectAll) {
+                      ifNotUndefined(
+                        getSelectAllJoin(selectedOrJoinedTableId),
+                        ([realTableId, , , , remoteIdPairs, sourceStore]) => {
+                          const sourceRowId =
+                            isUndefined(selectedOrJoinedTableId) ||
+                            selectedOrJoinedTableId === tableId
+                              ? rootRowId
+                              : mapGet(remoteIdPairs, rootRowId)?.[0];
+                          ifNotUndefined(sourceRowId, (sourceRowId) =>
+                            arrayForEach(
+                              arraySort(
+                                sourceStore.getCellIds(
+                                  realTableId,
+                                  sourceRowId,
+                                ),
+                              ),
+                              (cellId) =>
+                                objSet(
+                                  resultRow,
+                                  (clauseOrMapper as CellIdMapper)(cellId),
+                                  sourceStore.getCell(
+                                    realTableId,
+                                    sourceRowId,
+                                    cellId,
+                                  ) as Cell,
+                                ),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      const selectedCell = (clauseOrMapper as SelectClause)(
+                        getJoinCell,
+                        rootRowId,
+                      );
+                      const selectedCellId = selectedOrJoinedTableId as Id;
+                      if (isUndefined(selectedCell)) {
+                        objDel(resultRow, selectedCellId);
+                      } else {
+                        objSet(resultRow, selectedCellId, selectedCell);
+                      }
+                    }
+                  },
+                );
+                if (objIsEmpty(resultRow)) {
+                  selectJoinWhereStore.delRow(queryId, rootRowId);
+                } else {
+                  selectJoinWhereStore.setRow(queryId, rootRowId, resultRow);
+                }
+              } else {
+                mapForEach(selects, (asCellId, tableCellGetter) =>
+                  (selectJoinWhereStore as ProtectedStore)._[5](
+                    queryId,
+                    rootRowId,
+                    asCellId,
+                    tableCellGetter(getJoinCell, rootRowId),
+                  ),
+                );
+              }
+            });
           };
 
           const listenToTable = (
@@ -877,7 +1099,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     queryId: Id,
     definition?: QueryDefinition,
   ): Queries => {
-    const stagedDefinition: StagedDefinition = [mapNew(), mapNew()];
+    const stagedDefinition: StagedDefinition = [
+      mapNew(),
+      mapNew(),
+      undefined,
+      mapNew(),
+      setNew(),
+    ];
     let committed = false;
     tryCatchSync(
       () =>
@@ -898,6 +1126,12 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             collIsEmpty(stagedDefinition[1]) ? undefined : stagedDefinition[1],
           );
           mapSet(preStores, queryId, stagedDefinition[2]);
+          syncSelectAllListeners(queryId, stagedDefinition[3]);
+          mapSet(
+            referencedQueryIds,
+            queryId,
+            collIsEmpty(stagedDefinition[4]) ? undefined : stagedDefinition[4],
+          );
           committed = true;
         }),
       (error) => {
@@ -949,6 +1183,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     paramStore.delRow(PARAMS_TABLE, queryId);
     resetPreStores(queryId);
     resetSourceStores(queryId);
+    syncSelectAllListeners(queryId);
+    mapSet(referencedQueryIds, queryId);
     delDefinition(queryId);
     cleanStores();
     return queries;
