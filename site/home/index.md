@@ -13,7 +13,7 @@
 
 <a href='/guides/releases/#v9-4'><em>NEW!</em> v9.4 release</a>
 
-<span id="one-with">"The one with Select All!"</span>
+<span id="one-with">"The one with `selectAll`!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
