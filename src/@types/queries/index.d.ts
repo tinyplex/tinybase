@@ -219,6 +219,23 @@ export type Select = {
   ): SelectedAs;
 };
 
+/// CellIdMapper
+export type CellIdMapper = (cellId: Id) => Id;
+
+/// SelectAll
+export type SelectAll = {
+  /// SelectAll.1
+  (): void;
+  /// SelectAll.2
+  (joinedTableId: Id, cellIdPrefixOrMapper?: Id | CellIdMapper): void;
+  /// SelectAll.3
+  (
+    asQuery: true,
+    joinedQueryId: Id,
+    cellIdPrefixOrMapper?: Id | CellIdMapper,
+  ): void;
+};
+
 /// SelectedAs
 export type SelectedAs = {
   /// SelectedAs.as
@@ -322,6 +339,7 @@ export interface Queries {
     tableId: Id,
     query: (keywords: {
       select: Select;
+      selectAll: SelectAll;
       join: Join;
       where: Where;
       group: Group;
@@ -336,6 +354,7 @@ export interface Queries {
     rootQueryId: Id,
     query: (keywords: {
       select: Select;
+      selectAll: SelectAll;
       join: Join;
       where: Where;
       group: Group;

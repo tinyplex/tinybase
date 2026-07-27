@@ -259,6 +259,27 @@ export type Select<
   ): SelectedAs;
 };
 
+/// CellIdMapper
+export type CellIdMapper<CellId extends Id = Id> = (cellId: CellId) => Id;
+
+/// SelectAll
+export type SelectAll<Schema extends OptionalTablesSchema> = {
+  /// SelectAll.1
+  (): void;
+  /// SelectAll.2
+  <JoinedTableId extends TableIdFromSchema<Schema> | Id>(
+    joinedTableId: JoinedTableId,
+    cellIdPrefixOrMapper?:
+      Id | CellIdMapper<JoinedCellIdOrId<Schema, JoinedTableId>>,
+  ): void;
+  /// SelectAll.3
+  (
+    asQuery: true,
+    joinedQueryId: Id,
+    cellIdPrefixOrMapper?: Id | CellIdMapper,
+  ): void;
+};
+
 /// SelectedAs
 export type SelectedAs = {
   /// SelectedAs.as
@@ -429,6 +450,7 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
     tableId: RootTableId,
     query: (keywords: {
       select: Select<Schemas[0], RootTableId>;
+      selectAll: SelectAll<Schemas[0]>;
       join: Join<Schemas[0], RootTableId>;
       where: Where<Schemas[0], RootTableId>;
       group: Group;
@@ -443,6 +465,7 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
     rootQueryId: Id,
     query: (keywords: {
       select: Select<any, any>;
+      selectAll: SelectAll<any>;
       join: Join<any, any>;
       where: Where<any, any>;
       group: Group;
