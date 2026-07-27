@@ -20,16 +20,13 @@ source Cell Ids within a `selectAll` call are processed lexically, so collision
 behavior is deterministic.
 
 ```js
-import {
-  createQueries as createSelectAllQueries,
-  createStore as createSelectAllStore,
-} from 'tinybase';
+import {createQueries, createStore} from 'tinybase';
 
-const selectAllStore = createSelectAllStore().setTable('pets', {
+const selectAllStore = createStore().setTable('pets', {
   fido: {species: 'dog', color: 'brown'},
   felix: {species: 'cat', indoor: true},
 });
-const selectAllQueries = createSelectAllQueries(selectAllStore);
+const selectAllQueries = createQueries(selectAllStore);
 
 selectAllQueries.setQueryDefinition('allPets', 'pets', ({selectAll}) =>
   selectAll(),
@@ -351,8 +348,6 @@ the existing rule that a `default` also implies 'requiredness' (and will be
 filled automatically if omitted).
 
 ```js
-import {createStore} from 'tinybase';
-
 const requiredSchemaStore = createStore().setTablesSchema({
   pets: {
     species: {type: 'string', required: true},
@@ -824,8 +819,6 @@ example, first finding all dogs, and then querying that result to find just the
 brown ones:
 
 ```js
-import {createQueries} from 'tinybase';
-
 const queryStore = createStore().setTable('pets', {
   fido: {species: 'dog', color: 'brown'},
   felix: {species: 'cat', color: 'black'},
