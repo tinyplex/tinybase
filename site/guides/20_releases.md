@@ -47,12 +47,6 @@ dimensions.
 
 ## Reliability And Hardening
 
-- Query-sourced `selectAll` cycles remain supported when Cell Ids are unchanged.
-  Cycles containing a prefix or mapping callback are rejected with error 16
-  before they can amplify Cell Ids across updates.
-- Grouped wildcard collisions now follow row-local lexical order even when Rows
-  have different Cells. A temporary mapper failure also retains the previous
-  result and automatically retries on later source changes.
 - Multiplexed WebSockets accept at most 100 active channels, with channel Ids
   limited to 1,024 UTF-8 bytes. Client creation rejects local overflow without
   closing the shared socket; servers also bound pending channel setup and
