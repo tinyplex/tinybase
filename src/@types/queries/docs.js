@@ -921,6 +921,10 @@
  * is expanded into individual selections. The query is rebuilt if this union
  * changes, and any selected Cell that is not grouped becomes a grouping
  * dimension as usual.
+ *
+ * A cycle between query results is allowed when every SelectAll clause retains
+ * its source Cell Ids. A prefix or CellIdMapper callback in such a cycle is
+ * rejected because it could expand Cell Ids indefinitely.
  * @category Definition
  * @since v9.4.0
  */

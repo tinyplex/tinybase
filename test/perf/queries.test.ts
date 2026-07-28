@@ -49,6 +49,31 @@ repeatRows(
 );
 
 repeatRows(
+  'Grow store, same table as query, select all cells',
+  (n) => store.setRow('t1', 'r' + n, {c1: n, c2: n + 1}),
+  90,
+  () =>
+    createQueries(store).setQueryDefinition('q1', 't1', ({selectAll}) =>
+      selectAll(),
+    ),
+);
+
+repeatRows(
+  'Grow store, select all cells with sum group',
+  (n) => store.setRow('t1', 'r' + n, {c1: n % 2, c2: n}),
+  90,
+  () =>
+    createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({selectAll, group}) => {
+        selectAll();
+        group('c2', 'sum');
+      },
+    ),
+);
+
+repeatRows(
   'Grow store, with where',
   (n) => store.setRow('t1', 'r' + n, {c1: n}),
   90,

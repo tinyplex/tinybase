@@ -17,6 +17,7 @@ export const ERROR_INDEXED_DB_OPEN = 12;
 export const ERROR_HLC = 13;
 export const ERROR_SYNC_MESSAGE = 14;
 export const ERROR_SYNC_OVERFLOW = 15;
+export const ERROR_QUERY_SELECT_ALL_CYCLE = 16;
 
 export const errorNew = (code: number, details?: any): Error =>
   new Error(

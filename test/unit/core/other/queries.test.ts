@@ -979,6 +979,101 @@ describe('Queries tables', () => {
       expect(buildCount).toEqual(6);
     });
 
+    test('all mapped columns collide in row-local order when grouped', () => {
+      store
+        .setTable('roots', {
+          r1: {foreignId: 'f1'},
+          r2: {foreignId: 'f2'},
+        })
+        .setTable('foreign', {
+          f1: {a: 1, z: 10},
+          f2: {a: 2},
+        });
+      queries
+        .setQueryDefinition('plain', 'roots', ({selectAll, join}) => {
+          selectAll('foreign', () => 'x');
+          join('foreign', 'foreignId');
+        })
+        .setQueryDefinition('grouped', 'roots', ({selectAll, join, group}) => {
+          selectAll('foreign', () => 'x');
+          join('foreign', 'foreignId');
+          group('x', 'sum');
+        });
+
+      expect(queries.getResultTable('plain')).toEqual({
+        r1: {x: 10},
+        r2: {x: 2},
+      });
+      expect(queries.getResultTable('grouped')).toEqual({0: {x: 12}});
+
+      store.setCell('foreign', 'f2', 'z', 20);
+      expect(queries.getResultTable('plain')).toEqual({
+        r1: {x: 10},
+        r2: {x: 20},
+      });
+      expect(queries.getResultTable('grouped')).toEqual({0: {x: 30}});
+
+      store.delCell('foreign', 'f1', 'z');
+      expect(queries.getResultTable('plain')).toEqual({
+        r1: {x: 1},
+        r2: {x: 20},
+      });
+      expect(queries.getResultTable('grouped')).toEqual({0: {x: 21}});
+
+      store.delCell('foreign', 'f2', 'z');
+      expect(queries.getResultTable('plain')).toEqual({
+        r1: {x: 1},
+        r2: {x: 2},
+      });
+      expect(queries.getResultTable('grouped')).toEqual({0: {x: 3}});
+    });
+
+    test('all mapped columns recover after a mapper throws', () => {
+      const error = new Error('mapper error');
+      let throws = true;
+      store
+        .setRow('roots', 'r1', {foreignId: 'f1'})
+        .setRow('foreign', 'f1', {amount: 1});
+      queries.setQueryDefinition('q1', 'roots', ({selectAll, join, group}) => {
+        selectAll('foreign', (cellId) => {
+          if (throws && cellId === 'kind') {
+            throw error;
+          }
+          return cellId;
+        });
+        join('foreign', 'foreignId');
+        group('amount', 'sum');
+      });
+
+      expect(store.getListenerStats().table).toEqual(0);
+      expect(() => store.setCell('foreign', 'f1', 'kind', 'one')).toThrow(
+        error,
+      );
+      expect(store.getListenerStats().table).toEqual(1);
+      expect(queries.getResultTable('q1')).toEqual({0: {amount: 1}});
+
+      expect(() => store.setCell('foreign', 'f1', 'kind', 'two')).toThrow(
+        error,
+      );
+      expect(store.getListenerStats().table).toEqual(1);
+
+      throws = false;
+      store.setCell('foreign', 'f1', 'kind', 'three');
+      expect(store.getListenerStats().table).toEqual(0);
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {kind: 'three', amount: 1},
+      });
+
+      throws = true;
+      expect(() => store.setCell('foreign', 'f1', 'other', true)).toThrow(
+        error,
+      );
+      expect(store.getListenerStats().table).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(store.getListenerStats().table).toEqual(0);
+      store.setCell('foreign', 'f1', 'kind', 'four');
+    });
+
     test('all column listeners survive replacement edge cases', () => {
       const error = new Error('aggregate error');
       store
@@ -1509,6 +1604,56 @@ describe('Queries queries', () => {
       });
     });
 
+    test('all by id when query or alias matches root table id', () => {
+      store
+        .setTable('same', {
+          r1: {foreignId: 'f1', root: 'one'},
+          r2: {foreignId: 'f2', root: 'two'},
+        })
+        .setTable('foreign', {
+          f1: {joined: 'one'},
+          f2: {joined: 'two'},
+        });
+      queries
+        .setQueryDefinition('same', 'foreign', ({selectAll}) => selectAll())
+        .setQueryDefinition('source', 'foreign', ({selectAll}) => selectAll())
+        .setQueryDefinition('q0', 'same', ({selectAll, join}) => {
+          selectAll();
+          selectAll(true, 'same', 'query.');
+          join(true, 'same', 'foreignId');
+        })
+        .setQueryDefinition('q1', 'same', ({selectAll, join}) => {
+          selectAll();
+          selectAll(true, 'same', 'alias.');
+          join(true, 'source', 'foreignId').as('same');
+        })
+        .setQueryDefinition('q2', 'same', ({selectAll, join, having}) => {
+          selectAll(true, 'same', 'query.');
+          join(true, 'same', 'foreignId');
+          having('query.joined', 'one');
+        })
+        .setQueryDefinition('q3', 'same', ({selectAll, join}) => {
+          selectAll('same', 'table.');
+          join('foreign', 'foreignId').as('same');
+        });
+
+      expect(queries.getResultTable('q0')).toEqual({
+        r1: {foreignId: 'f1', root: 'one', 'query.joined': 'one'},
+        r2: {foreignId: 'f2', root: 'two', 'query.joined': 'two'},
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {foreignId: 'f1', root: 'one', 'alias.joined': 'one'},
+        r2: {foreignId: 'f2', root: 'two', 'alias.joined': 'two'},
+      });
+      expect(queries.getResultTable('q2')).toEqual({
+        0: {'query.joined': 'one'},
+      });
+      expect(queries.getResultTable('q3')).toEqual({
+        r1: {'table.joined': 'one'},
+        r2: {'table.joined': 'two'},
+      });
+    });
+
     test('by id', () => {
       queries.setQueryDefinition('q1', true, 'Q1', ({select, join}) => {
         select('c1').as('Q1.c1');
@@ -1708,6 +1853,156 @@ describe('Queries queries', () => {
       expect(queries.getResultRowCount('q1')).toBeGreaterThan(0);
       expect(queries.getResultCell('Q1', 'r2', 'c1')).toEqual('two');
       expect(queries.getResultCell('q1', 'r2', 'c1')).toEqual('two');
+    });
+
+    test('all columns in cycles stay stable without prefixes', () => {
+      store.setRow('roots', 'r1', {foreignId: 'r1', value: 1});
+      queries
+        .setQueryDefinition('q1', 'roots', ({selectAll, join}) => {
+          selectAll(true, 'q2');
+          selectAll();
+          join(true, 'q2', 'foreignId');
+        })
+        .setQueryDefinition('q2', 'roots', ({selectAll, join}) => {
+          selectAll(true, 'q1');
+          selectAll();
+          join(true, 'q1', 'foreignId');
+        })
+        .setQueryDefinition('q3', 'roots', ({selectAll, join}) => {
+          selectAll(true, 'q1', 'q1.');
+          join(true, 'q1', 'foreignId');
+        });
+
+      expect(queries.getResultCellIds('q1', 'r1')).toEqual([
+        'foreignId',
+        'value',
+      ]);
+      expect(queries.getResultCellIds('q2', 'r1')).toEqual([
+        'foreignId',
+        'value',
+      ]);
+      expect(queries.getResultRow('q3', 'r1')).toEqual({
+        'q1.foreignId': 'r1',
+        'q1.value': 1,
+      });
+
+      store.setCell('roots', 'r1', 'value', 2);
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        foreignId: 'r1',
+        value: 2,
+      });
+      expect(queries.getResultRow('q2', 'r1')).toEqual({
+        foreignId: 'r1',
+        value: 2,
+      });
+      expect(queries.getResultRow('q3', 'r1')).toEqual({
+        'q1.foreignId': 'r1',
+        'q1.value': 2,
+      });
+    });
+
+    test('all prefixed columns reject aliased forward-reference cycles', () => {
+      store.setRow('roots', 'r1', {foreignId: 'r1', value: 1});
+      queries.setQueryDefinition('q1', 'roots', ({selectAll, join}) => {
+        selectAll();
+        selectAll(true, 'q2Alias', 'q2.');
+        join(true, 'q2', 'foreignId').as('q2Alias');
+      });
+
+      expect(() =>
+        queries.setQueryDefinition('q2', 'roots', ({selectAll, join}) => {
+          selectAll();
+          selectAll(true, 'q1');
+          join(true, 'q1', 'foreignId');
+        }),
+      ).toThrow('tinybase:16');
+
+      expect(queries.hasQuery('q2')).toBe(false);
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        foreignId: 'r1',
+        value: 1,
+      });
+    });
+
+    test('all mapped columns reject callback mapper cycles', () => {
+      store.setRow('roots', 'r1', {foreignId: 'r1', value: 1});
+      queries.setQueryDefinition('q1', 'roots', ({selectAll, join}) => {
+        selectAll(true, 'q2', (cellId) => 'q2.' + cellId);
+        join(true, 'q2', 'foreignId');
+      });
+
+      expect(() =>
+        queries.setQueryDefinition('q2', 'roots', ({selectAll, join}) => {
+          selectAll(true, 'q1');
+          join(true, 'q1', 'foreignId');
+        }),
+      ).toThrow('tinybase:16');
+    });
+
+    test('all cycle rejection preserves the previous definition', () => {
+      const resultListener = vi.fn();
+      store.setRow('roots', 'r1', {foreignId: 'r1', value: 1});
+      queries
+        .setQueryDefinition('q2', 'roots', ({selectAll}) => selectAll())
+        .setQueryDefinition('q1', 'roots', ({selectAll, join}) => {
+          selectAll();
+          selectAll(true, 'q2', 'q2.');
+          join(true, 'q2', 'foreignId');
+        });
+      queries.addResultTableListener('q2', resultListener);
+      const storeListenerStats = store.getListenerStats();
+      const queriesListenerStats = queries.getListenerStats();
+
+      expect(() =>
+        queries.setQueryDefinition('q2', 'roots', ({selectAll, join}) => {
+          selectAll();
+          selectAll(true, 'q1');
+          join(true, 'q1', 'foreignId');
+        }),
+      ).toThrow('tinybase:16');
+
+      expect(queries.getTableId('q2')).toEqual('roots');
+      expect(queries.getResultRow('q2', 'r1')).toEqual({
+        foreignId: 'r1',
+        value: 1,
+      });
+      expect(store.getListenerStats()).toEqual(storeListenerStats);
+      expect(queries.getListenerStats()).toEqual(queriesListenerStats);
+      expect(resultListener).not.toHaveBeenCalled();
+
+      store.setCell('roots', 'r1', 'value', 2);
+      expect(queries.getResultRow('q2', 'r1')).toEqual({
+        foreignId: 'r1',
+        value: 2,
+      });
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        foreignId: 'r1',
+        value: 2,
+        'q2.foreignId': 'r1',
+        'q2.value': 2,
+      });
+      expect(resultListener).toHaveBeenCalledOnce();
+    });
+
+    test('all prefixed columns remain allowed without cycles', () => {
+      store
+        .setRow('roots', 'r1', {foreignId: 'f1'})
+        .setRow('foreign', 'f1', {name: 'one'});
+      queries
+        .setQueryDefinition('source', 'foreign', ({selectAll}) => selectAll())
+        .setQueryDefinition('q1', 'roots', ({selectAll, join}) => {
+          selectAll(true, 'source', 'source.');
+          join(true, 'source', 'foreignId');
+        });
+
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        'source.name': 'one',
+      });
+      store.setCell('foreign', 'f1', 'other', 2);
+      expect(queries.getResultRow('q1', 'r1')).toEqual({
+        'source.name': 'one',
+        'source.other': 2,
+      });
     });
 
     test('redefinition', () => {
