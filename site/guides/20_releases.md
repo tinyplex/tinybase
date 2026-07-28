@@ -40,8 +40,37 @@ console.log(selectAllQueries.getResultRow('allPets', 'felix'));
 ```
 
 Ungrouped queries iterate only the Cells present in each matched Row. Grouped
-queries use the table-wide Cell Id union and rebuild when that union changes;
-selected Cells that are not aggregated remain grouping dimensions.
+queries discover columns from the table-wide Cell Id union, but materialize
+each Row in the same deterministic order before aggregation. They rebuild when
+that union changes; selected Cells that are not aggregated remain grouping
+dimensions.
+
+## Reliability And Hardening
+
+- Query-sourced `selectAll` cycles remain supported when Cell Ids are unchanged.
+  Cycles containing a prefix or mapping callback are rejected with error 16
+  before they can amplify Cell Ids across updates.
+- Grouped wildcard collisions now follow row-local lexical order even when Rows
+  have different Cells. A temporary mapper failure also retains the previous
+  result and automatically retries on later source changes.
+- Multiplexed WebSockets accept at most 100 active channels, with channel Ids
+  limited to 1,024 UTF-8 bytes. Client creation rejects local overflow without
+  closing the shared socket; servers also bound pending channel setup and
+  teardown. Fragment and startup-buffer limits are shared across the physical
+  socket, abandoned fragments and in-flight subscriptions are cleaned up, and
+  teardown waits for every channel even if one fails.
+- `startAutoPersisting` rolls back both partially started halves if the second
+  half fails, without replacing the original error or stopping a newer
+  concurrent start.
+- Fragmented Durable Object SQL storage now encodes unsafe and uppercase
+  prefixes collision-free. Previous ambiguous table names are not adopted
+  automatically and must be migrated explicitly.
+- PostgreSQL tabular persistence keeps distinct INSERT, DELETE, and UPDATE
+  notification triggers even when table names exceed PostgreSQL's identifier
+  limit.
+- Release validation now uses clean installs, runs the full unit and executable
+  documentation suite with PostgreSQL in CI, and tests the final assembled
+  distribution before publishing it.
 
 ---
 
