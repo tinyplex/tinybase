@@ -180,7 +180,18 @@ one-WebSocket-per-store form can join the first path by connecting directly to
 
 The channel Id is explicit and is not taken from the MergeableStore Id. Channel
 Ids can contain multiple path segments, but cannot be empty, contain empty,
-`.` or `..` segments, or include query, fragment, or newline characters.
+`.` or `..` segments, or include query, fragment, or newline characters. A
+channel Id can contain at most 1,024 UTF-8 bytes.
+
+Each multiplexed WebSocket can have at most 100 subscribed channels. Repeatedly
+subscribing to the same channel does not consume another slot, and
+unsubscribing releases its active slot. Client creation rejects a 101st channel
+without closing the existing shared WebSocket, while servers independently
+enforce the limit and also bound resources whose setup or teardown is pending.
+
+Fragment reassembly limits and WsServer traffic buffered while paths start are
+shared across the physical WebSocket, rather than being multiplied by its
+number of channels.
 
 WsServer and WsServerSimple do not authenticate or authorize channel Ids. Once
 a client WebSocket is accepted on a base path, it can subscribe to any valid

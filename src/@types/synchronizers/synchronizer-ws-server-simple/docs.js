@@ -96,9 +96,12 @@
  * Since v9.3, it also supports multiple channel-based WsSynchronizer instances
  * sharing one WebSocket. Once a client WebSocket is accepted on a base path,
  * it can subscribe to any valid channel beneath that path: WsServerSimple does
- * not authenticate or authorize channel Ids. For untrusted clients, use a
- * separate authenticated WebSocket for each authorized path unless access to
- * all descendants is acceptable.
+ * not authenticate or authorize channel Ids. A channel Id can contain at most
+ * 1,024 UTF-8 bytes, and each multiplexed WebSocket can have at most 100
+ * subscribed channels. Pending channel cleanup is also bounded, and fragment
+ * reassembly limits are shared across the physical WebSocket. For untrusted
+ * clients, use a separate authenticated WebSocket for each authorized path
+ * unless access to all descendants is acceptable.
  * @param webSocketServer A WebSocketServer object from your server environment.
  * @returns A reference to the new WsServerSimple object.
  * @example

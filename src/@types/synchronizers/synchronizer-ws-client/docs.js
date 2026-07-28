@@ -162,7 +162,9 @@
    * Construct the WebSocket with the `tinybase` subprotocol and provide a
    * channel Id as the third argument. The channel Id is appended to the
    * WebSocket URL path to form the server path; it is not taken from the
-   * MergeableStore Id.
+   * MergeableStore Id. It can contain at most 1,024 UTF-8 bytes, and one shared
+   * WebSocket can have at most 100 channels. Creating a 101st channel is
+   * rejected without closing the existing shared WebSocket.
    *
    * Destroying the WsSynchronizer unsubscribes its channel. The shared
    * WebSocket is closed only when the last WsSynchronizer using it is
@@ -173,8 +175,10 @@
    * later. It is not supported by WsServerDurableObject.
    * @param store The MergeableStore to synchronize.
    * @param webSocket The shared WebSocket to send synchronization messages
-   * over, constructed with the `tinybase` subprotocol.
-   * @param channelId The channel Id to append to the WebSocket URL path.
+   * over, constructed with the `tinybase` subprotocol and shared by at most 100
+   * channels.
+   * @param channelId The channel Id to append to the WebSocket URL path, with
+   * at most 1,024 UTF-8 bytes.
    * @param requestTimeoutSeconds An optional time in seconds that the
    * Synchronizer will wait for responses to request messages, defaulting to 1.
    * @param onSend An optional handler for the messages that this Synchronizer

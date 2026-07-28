@@ -503,7 +503,11 @@
  * Since v9.3, multiple WsSynchronizer instances can share one WebSocket by
  * using channel Ids. Each channel Id is appended to the WebSocket URL path and
  * treated as an ordinary server path. This means a multiplexed channel can
- * interoperate with legacy clients connected directly to that full path.
+ * interoperate with legacy clients connected directly to that full path. A
+ * channel Id can contain at most 1,024 UTF-8 bytes, and each multiplexed
+ * WebSocket can have at most 100 subscribed channels. Pending setup and
+ * teardown resources are also bounded. Fragment reassembly and traffic
+ * buffered while paths start share limits across the physical WebSocket.
  *
  * The WsServer does not authenticate or authorize URL paths or channel Ids.
  * Once a client WebSocket is accepted on a base path, it can subscribe to any
@@ -592,7 +596,7 @@
  * client connects, it picks up the data the previous two were using.
  *
  * ```js
- * import {rmSync} from 'fs';
+ * import {mkdirSync, rmSync} from 'fs';
  * import {createMergeableStore} from 'tinybase';
  * import {createFilePersister} from 'tinybase/persisters/persister-file';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
@@ -600,6 +604,7 @@
  * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // Server
+ * mkdirSync('./tmp', {recursive: true});
  * const server = createWsServer(
  *   new WebSocketServer({port: 8047}),
  *   (pathId) =>
@@ -663,7 +668,7 @@
  * data once synchronization has started.
  *
  * ```js
- * import {rmSync} from 'fs';
+ * import {mkdirSync, rmSync} from 'fs';
  * import {createMergeableStore} from 'tinybase';
  * import {createFilePersister} from 'tinybase/persisters/persister-file';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
@@ -671,6 +676,7 @@
  * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // Server
+ * mkdirSync('./tmp', {recursive: true});
  * const server = createWsServer(
  *   new WebSocketServer({port: 8047}),
  *   (pathId) => [
