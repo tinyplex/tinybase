@@ -771,9 +771,20 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
   await removeDir(TMP_DIR);
 };
 
-const npmInstall = () => execute('npm install --legacy-peer-deps');
+const npmInstall = () => execute('npm ci --legacy-peer-deps');
 
-const npmPublish = () => execute('npm publish');
+const preparePackageForProd = () => copyPackageFiles(true);
+
+const npmPublish = async () => {
+  const {version} = JSON.parse(
+    await promises.readFile(join(DIST_DIR, 'package.json'), UTF8),
+  );
+  const tag = version.match(/^[^-+]+-([0-9A-Za-z-]+)(?:[.+]|$)/)?.[1];
+  await execute(
+    `npm publish ./${DIST_DIR}` + (tag ? ` --tag ${tag}` : ''),
+    true,
+  );
+};
 
 const {parallel, series} = gulp;
 
@@ -903,8 +914,9 @@ export const prePublishPackage = series(
   testUnit,
   testPerf,
   compileForProd,
-  testProd,
   compileDocs,
+  preparePackageForProd,
+  testProd,
   testE2e,
 );
 
