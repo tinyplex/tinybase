@@ -1270,6 +1270,187 @@ test('only completes the latest concurrent auto-save start', async () => {
   await persister.destroy();
 });
 
+test.each([false, true])(
+  'stops the first auto-persistence half when the second fails, save first %s',
+  async (startSaveFirst) => {
+    const startupError = new Error('startup');
+    const cleanupError = new Error('cleanup');
+    const store = createStore();
+    const delPersisterListener = vi.fn(async () => {
+      throw cleanupError;
+    });
+    const ignoredError = vi.fn((error) => {
+      throw error;
+    });
+    const persister = createCustomPersister(
+      store,
+      asyncNoop,
+      async () => {
+        if (!startSaveFirst) {
+          throw startupError;
+        }
+      },
+      async () => {
+        if (startSaveFirst) {
+          throw startupError;
+        }
+        return 1;
+      },
+      delPersisterListener,
+      ignoredError,
+    );
+
+    await expect(
+      persister.startAutoPersisting(undefined, startSaveFirst),
+    ).rejects.toBe(startupError);
+
+    expect(persister.isAutoLoading()).toBe(false);
+    expect(persister.isAutoSaving()).toBe(false);
+    expect(store.getListenerStats().transaction).toBe(0);
+    expect(delPersisterListener).toHaveBeenCalledTimes(startSaveFirst ? 0 : 1);
+    expect(
+      ignoredError.mock.calls.filter(([error]) => error === cleanupError),
+    ).toHaveLength(startSaveFirst ? 0 : 1);
+    await persister.destroy();
+  },
+);
+
+test('stops a partially started second auto-persistence half', async () => {
+  const startupError = new Error('startup');
+  const delPersisterListener = vi.fn(asyncNoop);
+  const store = createStore();
+  const persister = createCustomPersister(
+    store,
+    async () => {
+      throw startupError;
+    },
+    asyncNoop,
+    async () => 1,
+    delPersisterListener,
+    (error) => {
+      throw error;
+    },
+  );
+
+  await expect(persister.startAutoPersisting(undefined, true)).rejects.toBe(
+    startupError,
+  );
+
+  expect(persister.isAutoLoading()).toBe(false);
+  expect(persister.isAutoSaving()).toBe(false);
+  expect(store.getListenerStats().transaction).toBe(0);
+  expect(delPersisterListener).toHaveBeenCalledOnce();
+  await persister.destroy();
+});
+
+test.each([false, true])(
+  'does not stop a newer auto-persistence half, save first %s',
+  async (startSaveFirst) => {
+    const startupError = new Error('startup');
+    let markSecondStarted: () => void = noop;
+    let releaseSecond: () => void = noop;
+    let addCount = 0;
+    let saveCount = 0;
+    const secondStarted = new Promise<void>(
+      (resolve) => (markSecondStarted = resolve),
+    );
+    const secondGate = new Promise<void>(
+      (resolve) => (releaseSecond = resolve),
+    );
+    const store = createStore();
+    const persister = createCustomPersister(
+      store,
+      asyncNoop,
+      async () => {
+        if (!startSaveFirst && ++saveCount == 1) {
+          markSecondStarted();
+          await secondGate;
+          throw startupError;
+        }
+      },
+      async () => {
+        const handle = ++addCount;
+        if (startSaveFirst && handle == 1) {
+          markSecondStarted();
+          await secondGate;
+          throw startupError;
+        }
+        return handle;
+      },
+      noop,
+      (error) => {
+        throw error;
+      },
+    );
+    const starting = persister.startAutoPersisting(undefined, startSaveFirst);
+    await secondStarted;
+
+    await (startSaveFirst
+      ? persister.startAutoSave()
+      : persister.startAutoLoad());
+    releaseSecond();
+    await expect(starting).rejects.toBe(startupError);
+
+    expect(persister.isAutoLoading()).toBe(!startSaveFirst);
+    expect(persister.isAutoSaving()).toBe(startSaveFirst);
+    expect(store.getListenerStats().transaction).toBe(startSaveFirst ? 1 : 0);
+    await persister.destroy();
+  },
+);
+
+test.each([false, true])(
+  'does not stop a newer second auto-persistence half, save first %s',
+  async (startSaveFirst) => {
+    const startupError = new Error('startup');
+    let markSecondStarted: () => void = noop;
+    let releaseSecond: () => void = noop;
+    let loadCount = 0;
+    let saveCount = 0;
+    let listenerHandle = 0;
+    const secondStarted = new Promise<void>(
+      (resolve) => (markSecondStarted = resolve),
+    );
+    const secondGate = new Promise<void>(
+      (resolve) => (releaseSecond = resolve),
+    );
+    const persister = createCustomPersister(
+      createStore(),
+      async () => {
+        if (startSaveFirst && ++loadCount == 1) {
+          markSecondStarted();
+          await secondGate;
+          throw startupError;
+        }
+      },
+      async () => {
+        if (!startSaveFirst && ++saveCount == 1) {
+          markSecondStarted();
+          await secondGate;
+          throw startupError;
+        }
+      },
+      async () => ++listenerHandle,
+      asyncNoop,
+      (error) => {
+        throw error;
+      },
+    );
+    const starting = persister.startAutoPersisting(undefined, startSaveFirst);
+    await secondStarted;
+
+    const newerSecondStart = startSaveFirst
+      ? persister.startAutoLoad()
+      : persister.startAutoSave();
+    releaseSecond();
+    await expect(starting).rejects.toBe(startupError);
+    await newerSecondStart;
+
+    expect(persister.isAutoLoading()).toBe(startSaveFirst);
+    expect(persister.isAutoSaving()).toBe(!startSaveFirst);
+    await persister.destroy();
+  },
+);
+
 test('stops both auto-persistence halves when cleanup throws', async () => {
   const cleanupError = new Error('cleanup');
   const setPersisted = vi.fn(asyncNoop);

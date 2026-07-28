@@ -1305,6 +1305,10 @@
    * This simply runs the startAutoLoad and startAutoSave methods in sequence,
    * and returns a Promise that resolves when both have completed.
    *
+   * If the second method fails after either half has partially started, both
+   * halves are stopped again before this method rejects. The original startup
+   * error is preserved if that cleanup also fails.
+   *
    * This method can take `initialContent` to pass to the startAutoLoad method.
    * See its documentation for more details.
    *
