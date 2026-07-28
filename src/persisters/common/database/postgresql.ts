@@ -23,7 +23,13 @@ import {
   jsonStringWithUndefined,
 } from '../../../common/json.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
-import {ifNotUndefined, isEmpty, promiseAll} from '../../../common/other.ts';
+import {
+  ifNotUndefined,
+  isEmpty,
+  promiseAll,
+  size,
+  test,
+} from '../../../common/other.ts';
 import {
   EMPTY_STRING,
   TINYBASE,
@@ -53,6 +59,8 @@ import {createTabularPersister} from './tabular.ts';
 const TABLE_CREATED = 'c';
 const DATA_CHANGED = 'd';
 const EVENT_REGEX = /^([cd]:)(.+)/;
+const SIMPLE_TABLE_NAME = /^[A-Za-z0-9_]+$/;
+const POSTGRES_IDENTIFIER_SIZE = 63;
 
 type ListenerResources = [
   references: number,
@@ -157,17 +165,30 @@ export const createCustomPostgreSqlPersister = <
     dataChangedFunction: string,
   ) =>
     promiseAll(
-      arrayMap([INSERT, DELETE, UPDATE], (action, newOrOldOrBoth) =>
-        createTrigger(
+      arrayMap([INSERT, DELETE, UPDATE], (action, newOrOldOrBoth) => {
+        const legacyTriggerId = arrayJoin(
+          [TINYBASE, DATA_CHANGED, configHash, tableName, action],
+          '_',
+        );
+        return createTrigger(
           OR_REPLACE,
-          escapeIds(TINYBASE, DATA_CHANGED, configHash, tableName, action),
+          test(SIMPLE_TABLE_NAME, tableName) &&
+            size(legacyTriggerId) <= POSTGRES_IDENTIFIER_SIZE
+            ? escapeId(legacyTriggerId)
+            : escapeIds(
+                TINYBASE,
+                DATA_CHANGED,
+                configHash,
+                action,
+                EMPTY_STRING + getHash(tableName),
+              ),
           `AFTER ${action} ON${escapeId(tableName)}FOR EACH ROW WHEN(${when(
             tableName,
             newOrOldOrBoth as 0 | 1 | 2,
           )})`,
           dataChangedFunction,
-        ),
-      ),
+        );
+      }),
     );
 
   const dropFunctions = async (functionNames: string[]): Promise<void> => {
