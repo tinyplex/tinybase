@@ -15,6 +15,8 @@ class MockWebSocket {
   bufferedAmount = 0;
   sentPayloads: string[] = [];
   closeCalls = 0;
+  closeCode?: number;
+  closeReason?: string;
   ignoreHello = false;
   ignoredChannels = new Set<string>();
   onRemove?: () => void;
@@ -75,8 +77,10 @@ class MockWebSocket {
     return this.#listeners[event]?.length ?? 0;
   }
 
-  close(): void {
+  close(code?: number, reason?: string): void {
     this.closeCalls++;
+    this.closeCode = code;
+    this.closeReason = reason;
     this.readyState = 3;
   }
 }
@@ -107,6 +111,10 @@ test('multiple stores share one WebSocket', async () => {
     (...args) => editorReceives.push(args),
   );
 
+  expect(
+    webSocket.sentPayloads.filter((payload) => payload.includes('-1,[0,1]')),
+  ).toHaveLength(1);
+
   await filesSynchronizer.startSync();
   await editorSynchronizer.startSync();
 
@@ -132,6 +140,7 @@ test('multiple stores share one WebSocket', async () => {
 test('malformed multiplexed traffic is reported and disconnected', async () => {
   for (const payload of ['S\n{', 'M\nfiles\nremote\n{']) {
     const errors: Error[] = [];
+    const receives: any[] = [];
     const webSocket = new MockWebSocket();
     const synchronizer = await createWsSynchronizer(
       createMergeableStore(),
@@ -139,11 +148,14 @@ test('malformed multiplexed traffic is reported and disconnected', async () => {
       'files',
       1,
       undefined,
-      undefined,
+      (...args) => receives.push(args),
       (error) => errors.push(error),
     );
 
     expect(() => webSocket.receive(payload)).not.toThrow();
+    webSocket.receive('M\nfiles\nremote\n[null,1,""]');
+
+    expect(receives).toEqual([]);
     expect(errors.map(({message}) => message)).toEqual(['tinybase:14']);
     expect(webSocket.closeCalls).toBe(1);
 
@@ -170,6 +182,251 @@ test('oversized multiplexed traffic is reported and disconnected', async () => {
   expect(webSocket.closeCalls).toBe(1);
 
   await synchronizer.destroy();
+});
+
+test('terminal multiplexed sockets reject new channels', async () => {
+  for (const payload of [
+    'S\n{',
+    'S\n["request",-1,[0,1]]' + ' '.repeat(16_777_216),
+  ]) {
+    const webSocket = new MockWebSocket();
+    const synchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+    );
+    webSocket.receive(payload);
+    const sentPayloads = [...webSocket.sentPayloads];
+
+    await expect(
+      createWsSynchronizer(createMergeableStore(), webSocket as any, 'editor'),
+    ).rejects.toThrow('tinybase:5');
+
+    expect(webSocket.sentPayloads).toEqual(sentPayloads);
+    expect(webSocket.closeCalls).toBe(1);
+
+    await synchronizer.destroy();
+    expect(webSocket.listenerCount('message')).toBe(0);
+  }
+});
+
+test('terminal multiplexed sockets do not queue outgoing traffic', async () => {
+  vi.useFakeTimers();
+  try {
+    const webSocket = new MockWebSocket();
+    const store = createMergeableStore();
+    const synchronizer = await createWsSynchronizer(
+      store,
+      webSocket as any,
+      'files',
+      0.01,
+    );
+    webSocket.receive('S\n{');
+    const sentPayloads = [...webSocket.sentPayloads];
+    const syncing = synchronizer.startSync();
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(vi.getTimerCount()).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(11);
+    await syncing;
+    store.setValue('selection', 'fido');
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(vi.getTimerCount()).toBe(0);
+    expect(webSocket.sentPayloads).toEqual(sentPayloads);
+
+    await synchronizer.destroy();
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test('multiplexed fragment counts are shared across channels', async () => {
+  const errors1: Error[] = [];
+  const errors2: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer1 = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors1.push(error),
+  );
+  const synchronizer2 = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+    1,
+    undefined,
+    undefined,
+    (error) => errors2.push(error),
+  );
+  const receiveFragment = (channelId: string, messageId: string) =>
+    webSocket.receive(`M\n${channelId}\nremote\n${messageId}\n0\n2\n[`);
+
+  for (let fragment = 0; fragment < 50; fragment++) {
+    receiveFragment('files', ('f' + fragment).padEnd(16, '_'));
+    receiveFragment('editor', ('e' + fragment).padEnd(16, '_'));
+  }
+  expect(webSocket.closeCalls).toBe(0);
+
+  receiveFragment('files', 'overflow________');
+
+  expect(errors1.map(({message}) => message)).toEqual([
+    'tinybase:15:fragments',
+  ]);
+  expect(errors2.map(({message}) => message)).toEqual([
+    'tinybase:15:fragments',
+  ]);
+  expect(webSocket.closeCalls).toBe(1);
+
+  await synchronizer1.destroy();
+  await synchronizer2.destroy();
+});
+
+test('multiplexed fragment sizes include retained envelopes', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer1 = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+  const synchronizer2 = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+  );
+  const clientId = 'x'.repeat(8_388_600);
+
+  webSocket.receive(`M\nfiles\n${clientId}\nmessage1________\n0\n2\n[`);
+
+  expect(webSocket.closeCalls).toBe(0);
+
+  webSocket.receive(`M\neditor\n${clientId}\nmessage2________\n0\n2\n[`);
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:15:fragments']);
+  expect(webSocket.closeCode).toBe(1013);
+  expect(webSocket.closeReason).toBe('tinybase:15:fragments');
+
+  await synchronizer1.destroy();
+  await synchronizer2.destroy();
+});
+
+test('large fragments are accepted and release their quota', async () => {
+  const receives: any[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    (...args) => receives.push(args),
+  );
+  const cellId = 'x'.repeat(9_000_000);
+  const body = JSON.stringify([null, 4, {[cellId]: 0}]);
+  const splitAt = Math.ceil(body.length / 2);
+
+  for (const messageId of ['large_message___', 'second_message__']) {
+    webSocket.receive(
+      `M\nfiles\nremote\n${messageId}\n0\n2\n${body.slice(0, splitAt)}`,
+    );
+    expect(webSocket.closeCalls).toBe(0);
+    webSocket.receive(
+      `M\nfiles\nremote\n${messageId}\n1\n2\n${body.slice(splitAt)}`,
+    );
+    expect(webSocket.closeCalls).toBe(0);
+  }
+
+  expect(
+    receives.map(([clientId, requestId, message, body]) => [
+      clientId,
+      requestId,
+      message,
+      Object.keys(body)[0].length,
+    ]),
+  ).toEqual([
+    ['remote', null, 4, 9_000_000],
+    ['remote', null, 4, 9_000_000],
+  ]);
+
+  await synchronizer.destroy();
+});
+
+test('destroying a channel clears its fragment decoder', async () => {
+  vi.useFakeTimers();
+  try {
+    const webSocket = new MockWebSocket();
+    const filesSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+    );
+    const editorSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'editor',
+    );
+
+    webSocket.receive('M\nfiles\nremote\nmessage1________\n0\n2\n[null,');
+
+    expect(vi.getTimerCount()).toBe(1);
+
+    await filesSynchronizer.destroy();
+
+    expect(vi.getTimerCount()).toBe(0);
+    expect(webSocket.closeCalls).toBe(0);
+
+    await editorSynchronizer.destroy();
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+test('fragments cannot cross multiplexed reconnects', async () => {
+  const receives: any[] = [];
+  const webSocket = new MockWebSocket();
+  const filesSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    0.01,
+    undefined,
+    (...args) => receives.push(args),
+  );
+  const editorSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+    0.01,
+  );
+  const fragment = (index: number, body: string) =>
+    webSocket.receive(
+      `M\nfiles\nremote\nmessage1________\n${index}\n2\n${body}`,
+    );
+
+  fragment(0, '[null,');
+  webSocket.disconnect();
+  webSocket.reconnect();
+  await new Promise((resolve) => setTimeout(resolve));
+  fragment(1, '1,""]');
+
+  expect(receives).toEqual([]);
+
+  fragment(0, '[null,');
+
+  expect(receives).toEqual([['remote', null, 1, '']]);
+
+  await filesSynchronizer.destroy();
+  await editorSynchronizer.destroy();
 });
 
 test('oversized multiplexed clients do not affect other clients', async () => {
@@ -259,6 +516,7 @@ test('multiple channel Ids are validated and unique', async () => {
     'files?pets',
     'files#pets',
     'files\npets',
+    'é'.repeat(512) + 'a',
   ]) {
     await expect(
       createWsSynchronizer(createMergeableStore(), webSocket as any, channelId),
@@ -267,6 +525,168 @@ test('multiple channel Ids are validated and unique', async () => {
 
   await synchronizer.destroy();
   expect(webSocket.closeCalls).toBe(1);
+});
+
+test('multiple channel count is rejected locally', async () => {
+  const webSocket = new MockWebSocket();
+  const synchronizers = await Promise.all(
+    Array.from({length: 100}, (_, channel) =>
+      createWsSynchronizer(
+        createMergeableStore(),
+        webSocket as any,
+        'channel' + channel,
+      ),
+    ),
+  );
+
+  await expect(
+    createWsSynchronizer(createMergeableStore(), webSocket as any, 'overflow'),
+  ).rejects.toThrow('tinybase:15:channels');
+  expect(webSocket.closeCalls).toBe(0);
+
+  await Promise.all(
+    synchronizers.map((synchronizer) => synchronizer.destroy()),
+  );
+  expect(webSocket.closeCalls).toBe(1);
+});
+
+test('multiplexed control responses match their request body', async () => {
+  const webSocket = new MockWebSocket();
+  const filesSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+  );
+  webSocket.ignoredChannels.add('editor');
+  let settled = false;
+  const editorPromise = createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+  ).then((synchronizer) => {
+    settled = true;
+    return synchronizer;
+  });
+  await Promise.resolve();
+  const [, remainder] = splitPayload(
+    webSocket.sentPayloads.find((payload) =>
+      payload.includes('-1,[1,"editor"]'),
+    )!,
+  );
+  const [requestId, message, [control]] = JSON.parse(remainder);
+
+  webSocket.receive(
+    'S\n' + JSON.stringify([requestId, message, [control, 'wrong-channel']]),
+  );
+  await Promise.resolve();
+
+  expect(settled).toBe(false);
+
+  webSocket.receive(
+    'S\n' + JSON.stringify([requestId, message, [control, 'editor']]),
+  );
+  const editorSynchronizer = await editorPromise;
+
+  await editorSynchronizer.destroy();
+  await filesSynchronizer.destroy();
+});
+
+test('oversized multiplexed response channels are rejected', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const filesSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+  webSocket.ignoredChannels.add('editor');
+  const editorPromise = createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'editor',
+  );
+  const rejected = expect(editorPromise).rejects.toThrow(
+    'tinybase:15:channels',
+  );
+  await Promise.resolve();
+  const [, remainder] = splitPayload(
+    webSocket.sentPayloads.find((payload) =>
+      payload.includes('-1,[1,"editor"]'),
+    )!,
+  );
+  const [requestId, message, [control]] = JSON.parse(remainder);
+
+  webSocket.receive(
+    'S\n' + JSON.stringify([requestId, message, [control, 'é'.repeat(513)]]),
+  );
+
+  await rejected;
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:15:channels']);
+  expect(webSocket.closeCode).toBe(1013);
+  expect(webSocket.closeReason).toBe('tinybase:15:channels');
+
+  await filesSynchronizer.destroy();
+});
+
+test('oversized multiplexed data channels are rejected', async () => {
+  const errors: Error[] = [];
+  const webSocket = new MockWebSocket();
+  const synchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket as any,
+    'files',
+    1,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+
+  webSocket.receive(`M\n${'é'.repeat(513)}\nremote\n[null,1,""]`);
+
+  expect(errors.map(({message}) => message)).toEqual(['tinybase:15:channels']);
+  expect(webSocket.closeCode).toBe(1013);
+  expect(webSocket.closeReason).toBe('tinybase:15:channels');
+
+  await synchronizer.destroy();
+});
+
+test('timed out multiplexed subscriptions are unsubscribed', async () => {
+  vi.useFakeTimers();
+  try {
+    const webSocket = new MockWebSocket();
+    const filesSynchronizer = await createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'files',
+    );
+    webSocket.ignoredChannels.add('editor');
+    const editorPromise = createWsSynchronizer(
+      createMergeableStore(),
+      webSocket as any,
+      'editor',
+      0.01,
+    );
+    const rejected = expect(editorPromise).rejects.toThrow('tinybase:4:1');
+
+    await vi.advanceTimersByTimeAsync(11);
+    await rejected;
+
+    expect(
+      webSocket.sentPayloads.some((payload) =>
+        payload.includes('-1,[2,"editor"]'),
+      ),
+    ).toBe(true);
+    expect(webSocket.closeCalls).toBe(0);
+    expect(vi.getTimerCount()).toBe(0);
+
+    await filesSynchronizer.destroy();
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 test('multiple stores resubscribe after reconnecting', async () => {
@@ -387,6 +807,7 @@ test('multiplexed channel errors and timeouts keep their owners', async () => {
     ).length;
   const subscriptionsBeforeRetry = editorSubscriptions();
   webSocket.ignoredChannels.delete('editor');
+  webSocket.disconnect();
   webSocket.reconnect();
   await new Promise((resolve) => setTimeout(resolve, 20));
   expect(editorSubscriptions()).toBe(subscriptionsBeforeRetry + 1);
@@ -1045,6 +1466,80 @@ test('failed unsubscribe cleanup allows resubscription', async () => {
 
   await filesSynchronizer2.destroy();
   await editorSynchronizer.destroy();
+  await wsServer.destroy();
+});
+
+test('socket teardown waits for every multiplexed channel', async () => {
+  const firstError = new Error('first');
+  let releaseSecond = () => {};
+  const secondGate = new Promise<void>((resolve) => (releaseSecond = resolve));
+  const errors: Error[] = [];
+  let firstStarted = false;
+  let secondStarted = false;
+  let secondFinished = false;
+  const wsServer = createWsServer(
+    new WebSocketServer({port: 8076}),
+    ((pathId: string) => {
+      const channelId = pathId.split('/').at(-1);
+      return (createCustomPersister as any)(
+        createMergeableStore(),
+        async () => undefined,
+        async () => {},
+        () => 0,
+        () => {},
+        undefined,
+        Persists.MergeableStoreOnly,
+        {
+          destroy: async () => {
+            if (channelId == 'first') {
+              firstStarted = true;
+              throw firstError;
+            }
+            secondStarted = true;
+            await secondGate;
+            secondFinished = true;
+          },
+        },
+      );
+    }) as any,
+    (error) => errors.push(error),
+    0.01,
+  );
+  const webSocket = new WebSocket('ws://localhost:8076/project', 'tinybase');
+  const firstSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket,
+    'first',
+  );
+  const secondSynchronizer = await createWsSynchronizer(
+    createMergeableStore(),
+    webSocket,
+    'second',
+  );
+  await pause();
+  const closed = new Promise<void>((resolve) =>
+    webSocket.once('close', () => resolve()),
+  );
+
+  webSocket.close();
+  await closed;
+  await vi.waitFor(() => {
+    expect(firstStarted).toBe(true);
+    expect(secondStarted).toBe(true);
+  });
+  await pause(10);
+
+  expect(secondFinished).toBe(false);
+  expect(errors).not.toContain(firstError);
+
+  releaseSecond();
+  await vi.waitFor(() => {
+    expect(secondFinished).toBe(true);
+    expect(errors).toContain(firstError);
+  });
+
+  await firstSynchronizer.destroy();
+  await secondSynchronizer.destroy();
   await wsServer.destroy();
 });
 

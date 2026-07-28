@@ -2,7 +2,7 @@ import {EventEmitter} from 'events';
 import {createMergeableStore} from 'tinybase';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
-import {beforeEach, expect, test} from 'vitest';
+import {beforeEach, expect, test, vi} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 
@@ -214,6 +214,223 @@ test('Outbound traffic is bounded for every client mode', async () => {
   expect(multipleClient.closeReason).toBe('tinybase:15:socket');
 
   await server.destroy();
+});
+
+test('Multiplexed channel resources are bounded', async () => {
+  const webSocketServer = new EventEmitter() as any;
+  webSocketServer.close = (callback: () => void) => callback();
+  const server = createWsServerSimple(webSocketServer);
+  const connect = (client: MockWebSocket, clientId: string) => {
+    client.protocol = 'tinybase';
+    webSocketServer.emit('connection', client, {
+      headers: {'sec-websocket-key': clientId},
+      url: '/base',
+    });
+  };
+  const sendControl = (
+    client: MockWebSocket,
+    requestId: string | null,
+    control: number,
+    body: any,
+  ) =>
+    client.emit(
+      'message',
+      'S\n' + JSON.stringify([requestId, -1, [control, body]]),
+    );
+  const hello = (client: MockWebSocket) => sendControl(client, 'hello', 0, 1);
+  const sendFragment = (
+    client: MockWebSocket,
+    channelId: string,
+    messageId: string,
+    fragment: string,
+  ) =>
+    client.emit(
+      'message',
+      `M\n${channelId}\nremote\n${messageId}\n0\n2\n${fragment}`,
+    );
+
+  const capacityClient = new MockWebSocket();
+  connect(capacityClient, 'capacity');
+  hello(capacityClient);
+  sendControl(capacityClient, 'duplicate1', 1, 'channel0');
+  sendControl(capacityClient, 'duplicate2', 1, 'channel0');
+  for (let channel = 1; channel < 100; channel++) {
+    sendControl(capacityClient, 'request' + channel, 1, 'channel' + channel);
+  }
+  sendControl(capacityClient, null, 2, 'channel0');
+  sendControl(capacityClient, 'replacement', 1, 'channel100');
+
+  expect(capacityClient.closeCalls).toBe(0);
+
+  sendControl(capacityClient, 'overflow', 1, 'channel101');
+
+  expect(capacityClient.closeCode).toBe(1013);
+  expect(capacityClient.closeReason).toBe('tinybase:15:channels');
+
+  const sizeClient = new MockWebSocket();
+  connect(sizeClient, 'size');
+  hello(sizeClient);
+  sendControl(sizeClient, 'maximum', 1, 'é'.repeat(512));
+
+  expect(sizeClient.closeCalls).toBe(0);
+
+  sendControl(sizeClient, 'oversized', 1, 'é'.repeat(512) + 'a');
+
+  expect(sizeClient.closeCode).toBe(1013);
+  expect(sizeClient.closeReason).toBe('tinybase:15:channels');
+
+  const unsubscribeClient = new MockWebSocket();
+  connect(unsubscribeClient, 'unsubscribe');
+  hello(unsubscribeClient);
+  sendControl(unsubscribeClient, null, 2, 'é'.repeat(512) + 'a');
+
+  expect(unsubscribeClient.closeCode).toBe(1013);
+  expect(unsubscribeClient.closeReason).toBe('tinybase:15:channels');
+
+  const oversizedInvalidClient = new MockWebSocket();
+  connect(oversizedInvalidClient, 'oversizedInvalid');
+  hello(oversizedInvalidClient);
+  sendControl(oversizedInvalidClient, 'oversizedInvalid', 1, 'a/'.repeat(513));
+
+  expect(oversizedInvalidClient.closeCode).toBe(1013);
+  expect(oversizedInvalidClient.closeReason).toBe('tinybase:15:channels');
+
+  const oversizedDataClient = new MockWebSocket();
+  connect(oversizedDataClient, 'oversizedData');
+  hello(oversizedDataClient);
+  oversizedDataClient.emit(
+    'message',
+    `M\n${'é'.repeat(513)}\nremote\n[null,1,""]`,
+  );
+
+  expect(oversizedDataClient.closeCode).toBe(1013);
+  expect(oversizedDataClient.closeReason).toBe('tinybase:15:channels');
+
+  const invalidClient = new MockWebSocket();
+  const invalidPeer = new MockWebSocket();
+  connect(invalidClient, 'invalid');
+  connect(invalidPeer, 'invalidPeer');
+  hello(invalidClient);
+  hello(invalidPeer);
+  sendControl(invalidClient, 'invalidSubscribe', 1, 'files');
+  sendControl(invalidPeer, 'peerSubscribe', 1, 'files');
+  const peerPayloads = invalidPeer.sentPayloads.length;
+  sendControl(invalidClient, 'invalid', 1, 'pets?cats');
+  invalidClient.emit('message', 'M\nfiles\n\n[null,1,""]');
+
+  expect(invalidClient.closeCode).toBe(1007);
+  expect(invalidClient.closeReason).toBe('tinybase:14');
+  expect(invalidPeer.sentPayloads).toHaveLength(peerPayloads);
+
+  const fragmentCountClient = new MockWebSocket();
+  connect(fragmentCountClient, 'fragmentCount');
+  hello(fragmentCountClient);
+  for (let channel = 0; channel < 100; channel++) {
+    const channelId = 'channel' + channel;
+    sendControl(fragmentCountClient, 'subscribe' + channel, 1, channelId);
+    sendFragment(
+      fragmentCountClient,
+      channelId,
+      ('message' + channel).padEnd(16, '_'),
+      '[',
+    );
+  }
+
+  expect(fragmentCountClient.closeCalls).toBe(0);
+
+  sendFragment(fragmentCountClient, 'channel0', 'overflow________', '[');
+
+  expect(fragmentCountClient.closeCode).toBe(1013);
+  expect(fragmentCountClient.closeReason).toBe('tinybase:15:fragments');
+
+  const fragmentSizeClient = new MockWebSocket();
+  connect(fragmentSizeClient, 'fragmentSize');
+  hello(fragmentSizeClient);
+  sendControl(fragmentSizeClient, 'subscribe1', 1, 'channel1');
+  sendControl(fragmentSizeClient, 'subscribe2', 1, 'channel2');
+  sendFragment(
+    fragmentSizeClient,
+    'channel1',
+    'message1________',
+    'x'.repeat(8_388_580),
+  );
+
+  expect(fragmentSizeClient.closeCalls).toBe(0);
+
+  sendFragment(
+    fragmentSizeClient,
+    'channel2',
+    'message2________',
+    'x'.repeat(8_388_580),
+  );
+
+  expect(fragmentSizeClient.closeCode).toBe(1013);
+  expect(fragmentSizeClient.closeReason).toBe('tinybase:15:fragments');
+
+  await pause();
+  await server.destroy();
+});
+
+test('Multiplexed fragment quotas recover', async () => {
+  vi.useFakeTimers();
+  try {
+    const webSocketServer = new EventEmitter() as any;
+    webSocketServer.close = (callback: () => void) => callback();
+    const server = createWsServerSimple(webSocketServer);
+    const client = new MockWebSocket();
+    client.protocol = 'tinybase';
+    webSocketServer.emit('connection', client, {
+      headers: {'sec-websocket-key': 'client'},
+      url: '/base',
+    });
+    const sendControl = (
+      requestId: string | null,
+      control: number,
+      body: any,
+    ) =>
+      client.emit(
+        'message',
+        'S\n' + JSON.stringify([requestId, -1, [control, body]]),
+      );
+    const sendFragment = (messageId: string, index = 0, fragment = '[') =>
+      client.emit(
+        'message',
+        `M\nfiles\nremote\n${messageId}\n${index}\n2\n${fragment}`,
+      );
+    const sendPending = (prefix: string) => {
+      for (let index = 0; index < 100; index++) {
+        sendFragment(prefix + index.toString().padStart(9, '0'));
+      }
+    };
+
+    sendControl('hello', 0, 1);
+    sendControl('subscribe', 1, 'files');
+    sendFragment('complete________', 0, '[null,');
+    sendFragment('complete________', 1, '1,""]');
+    sendPending('pending');
+
+    expect(client.closeCalls).toBe(0);
+    expect(vi.getTimerCount()).toBe(100);
+
+    sendControl(null, 2, 'files');
+
+    expect(vi.getTimerCount()).toBe(0);
+
+    sendControl('resubscribe', 1, 'files');
+    sendPending('pending');
+    await vi.advanceTimersByTimeAsync(1_001);
+    sendPending('second_');
+
+    expect(client.closeCalls).toBe(0);
+
+    sendControl(null, 2, 'files');
+
+    expect(vi.getTimerCount()).toBe(0);
+
+    await server.destroy();
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 test('Multiple stores', async () => {

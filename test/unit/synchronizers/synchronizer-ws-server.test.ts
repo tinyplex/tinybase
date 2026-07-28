@@ -91,11 +91,25 @@ const getPromiseResolvers = <Value = void>() => {
   return [promise, resolve!, reject!] as const;
 };
 
-const openWebSocket = async (pathId: Id, port: number): Promise<WebSocket> => {
-  const webSocket = new WebSocket('ws://localhost:' + port + '/' + pathId);
+const openWebSocket = async (
+  pathId: Id,
+  port: number,
+  protocol?: string,
+): Promise<WebSocket> => {
+  const webSocket = new WebSocket(
+    'ws://localhost:' + port + '/' + pathId,
+    protocol,
+  );
   await once(webSocket, 'open');
   return webSocket;
 };
+
+const sendMultipleControl = (
+  webSocket: WebSocket,
+  requestId: string | null,
+  control: number,
+  body: any,
+) => webSocket.send('S\n' + JSON.stringify([requestId, -1, [control, body]]));
 
 const closeWebSocket = async (webSocket: WebSocket) => {
   if (webSocket.readyState != WebSocket.CLOSED) {
@@ -279,6 +293,201 @@ test('oversized websocket traffic is disconnected before relay', async () => {
   expect(server.getStats()).toEqual({clients: 1, paths: 1});
 
   await closeWebSocket(otherClient);
+  await server.destroy();
+});
+
+test('multiplexed channel resources are bounded', async () => {
+  const port = 8069;
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port}),
+    undefined,
+    (error) => errors.push(error),
+  );
+  const webSocket = await openWebSocket('base', port, 'tinybase');
+
+  sendMultipleControl(webSocket, 'hello', 0, 1);
+  sendMultipleControl(webSocket, 'duplicate1', 1, 'channel0');
+  sendMultipleControl(webSocket, 'duplicate2', 1, 'channel0');
+  for (let channel = 1; channel < 100; channel++) {
+    sendMultipleControl(webSocket, 'request' + channel, 1, 'channel' + channel);
+  }
+  sendMultipleControl(webSocket, null, 2, 'channel0');
+  sendMultipleControl(webSocket, 'replacement', 1, 'channel100');
+  await pause();
+
+  expect(webSocket.readyState).toBe(WebSocket.OPEN);
+  expect(server.getStats()).toEqual({clients: 100, paths: 100});
+
+  const closed = once(webSocket, 'close');
+  sendMultipleControl(webSocket, 'overflow', 1, 'channel101');
+  const [code, reason] = await closed;
+
+  expect(code).toBe(1013);
+  expect(reason.toString()).toBe('tinybase:15:channels');
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:channels');
+
+  await server.destroy();
+});
+
+test('multiplexed teardown stays within the resource cap', async () => {
+  const port = 8071;
+  const errors: Error[] = [];
+  const [setup, resolveSetup] = getPromiseResolvers<any>();
+  const server = createWsServer(
+    new WebSocketServer({port}),
+    () => setup,
+    (error) => errors.push(error),
+  );
+  const webSocket = await openWebSocket('base', port, 'tinybase');
+  const closed = once(webSocket, 'close');
+
+  sendMultipleControl(webSocket, 'hello', 0, 1);
+  for (let channel = 0; channel < 200; channel++) {
+    const channelId = 'channel' + channel;
+    sendMultipleControl(webSocket, 'subscribe' + channel, 1, channelId);
+    sendMultipleControl(webSocket, null, 2, channelId);
+  }
+  sendMultipleControl(webSocket, 'overflow', 1, 'overflow');
+  const [code, reason] = await closed;
+
+  expect(code).toBe(1013);
+  expect(reason.toString()).toBe('tinybase:15:channels');
+  expect(server.getStats()).toEqual({clients: 0, paths: 200});
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:channels');
+
+  resolveSetup(undefined);
+  await server.destroy();
+});
+
+test('multiplexed resources recover after pending teardown', async () => {
+  const port = 8074;
+  const [setup, resolveSetup] = getPromiseResolvers<any>();
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port}),
+    () => setup,
+    (error) => errors.push(error),
+  );
+  const webSocket = await openWebSocket('base', port, 'tinybase');
+
+  sendMultipleControl(webSocket, 'hello', 0, 1);
+  for (let channel = 0; channel < 200; channel++) {
+    const channelId = 'channel' + channel;
+    sendMultipleControl(webSocket, 'subscribe' + channel, 1, channelId);
+    sendMultipleControl(webSocket, null, 2, channelId);
+  }
+
+  expect(webSocket.readyState).toBe(WebSocket.OPEN);
+
+  resolveSetup(undefined);
+  await pause();
+  sendMultipleControl(webSocket, 'recovered', 1, 'recovered');
+  await pause();
+
+  expect(errors).toEqual([]);
+  expect(webSocket.readyState).toBe(WebSocket.OPEN);
+  expect(server.getStats()).toEqual({clients: 1, paths: 1});
+
+  await server.destroy();
+});
+
+test('multiplexed setup buffers recover after drain and removal', async () => {
+  const port = 8075;
+  const setups = new Map<string, ReturnType<typeof getPromiseResolvers<any>>>();
+  const errors: Error[] = [];
+  const server = createWsServer(
+    new WebSocketServer({port}),
+    (pathId) => {
+      const setup = getPromiseResolvers<any>();
+      setups.set(pathId, setup);
+      return setup[0];
+    },
+    (error) => errors.push(error),
+  );
+  const webSocket = await openWebSocket('base', port, 'tinybase');
+  const body = JSON.stringify([null, 4, {['x'.repeat(8_388_608)]: 0}]);
+
+  sendMultipleControl(webSocket, 'hello', 0, 1);
+  sendMultipleControl(webSocket, 'subscribe1', 1, 'channel1');
+  webSocket.send('M\nchannel1\n\n' + body);
+  await pause();
+  setups.get('base/channel1')?.[1](undefined);
+  await pause();
+
+  sendMultipleControl(webSocket, 'subscribe2', 1, 'channel2');
+  webSocket.send('M\nchannel2\n\n' + body);
+  await pause();
+
+  expect(webSocket.readyState).toBe(WebSocket.OPEN);
+
+  sendMultipleControl(webSocket, null, 2, 'channel2');
+  sendMultipleControl(webSocket, 'subscribe3', 1, 'channel3');
+  webSocket.send('M\nchannel3\n\n' + body);
+  await pause();
+
+  expect(errors).toEqual([]);
+  expect(webSocket.readyState).toBe(WebSocket.OPEN);
+
+  setups.get('base/channel2')?.[1](undefined);
+  setups.get('base/channel3')?.[1](undefined);
+  await server.destroy();
+});
+
+test('multiplexed setup buffers share the physical socket limit', async () => {
+  const port = 8072;
+  const errors: Error[] = [];
+  const [setup, resolveSetup] = getPromiseResolvers<any>();
+  const server = createWsServer(
+    new WebSocketServer({port}),
+    () => setup,
+    (error) => errors.push(error),
+  );
+  const webSocket = await openWebSocket('base', port, 'tinybase');
+  const closed = once(webSocket, 'close');
+  const body = JSON.stringify([null, 4, {['x'.repeat(8_388_608)]: 0}]);
+
+  sendMultipleControl(webSocket, 'hello', 0, 1);
+  sendMultipleControl(webSocket, 'subscribe1', 1, 'channel1');
+  sendMultipleControl(webSocket, 'subscribe2', 1, 'channel2');
+  webSocket.send('M\nchannel1\n\n' + body);
+  webSocket.send('M\nchannel2\n\n' + body);
+  const [code, reason] = await closed;
+
+  expect(code).toBe(1013);
+  expect(reason.toString()).toBe('tinybase:15:server');
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:server');
+
+  resolveSetup(undefined);
+  await server.destroy();
+});
+
+test('multiplexed setup queue shares the physical socket limit', async () => {
+  const port = 8073;
+  const errors: Error[] = [];
+  const [setup, resolveSetup] = getPromiseResolvers<any>();
+  const server = createWsServer(
+    new WebSocketServer({port}),
+    () => setup,
+    (error) => errors.push(error),
+  );
+  const webSocket = await openWebSocket('base', port, 'tinybase');
+  const closed = once(webSocket, 'close');
+
+  sendMultipleControl(webSocket, 'hello', 0, 1);
+  sendMultipleControl(webSocket, 'subscribe1', 1, 'channel1');
+  sendMultipleControl(webSocket, 'subscribe2', 1, 'channel2');
+  for (let message = 0; message < 1_000; message++) {
+    webSocket.send(`M\nchannel1\n\n["${message}",1,""]`);
+  }
+  webSocket.send('M\nchannel2\n\n["1000",1,""]');
+  const [code, reason] = await closed;
+
+  expect(code).toBe(1013);
+  expect(reason.toString()).toBe('tinybase:15:server');
+  expect(errors.map(({message}) => message)).toContain('tinybase:15:server');
+
+  resolveSetup(undefined);
   await server.destroy();
 });
 
@@ -747,6 +956,69 @@ describe('Multiple connections', () => {
 });
 
 describe('Lifecycle', () => {
+  test('failed setup releases only its multiplexed generation', async () => {
+    const port = 8070;
+    const plainError = new Error('plain setup');
+    const staleError = new Error('stale setup');
+    const [plainSetup, , rejectPlainSetup] = getPromiseResolvers<any>();
+    const [staleSetup, , rejectStaleSetup] = getPromiseResolvers<any>();
+    const attempts = {plain: 0, stale: 0};
+    const errors: Error[] = [];
+    const wsServer = createWsServer(
+      new WebSocketServer({port}),
+      ((pathId: string) => {
+        const channelId = pathId.split('/').at(-1) as 'plain' | 'stale';
+        attempts[channelId]++;
+        return attempts[channelId] == 1
+          ? channelId == 'plain'
+            ? plainSetup
+            : staleSetup
+          : undefined;
+      }) as any,
+      (error) => errors.push(error),
+      0.01,
+    );
+    const webSocket = await openWebSocket('base', port, 'tinybase');
+
+    sendMultipleControl(webSocket, 'hello', 0, 1);
+    sendMultipleControl(webSocket, 'plain1', 1, 'plain');
+    sendMultipleControl(webSocket, 'plain2', 1, 'plain');
+    await pause();
+
+    expect(attempts.plain).toBe(1);
+
+    rejectPlainSetup(plainError);
+    await pause();
+    sendMultipleControl(webSocket, 'plain3', 1, 'plain');
+    await pause();
+
+    expect(attempts.plain).toBe(2);
+
+    sendMultipleControl(webSocket, 'stale1', 1, 'stale');
+    sendMultipleControl(webSocket, 'stale2', 1, 'stale');
+    await pause();
+
+    expect(attempts.stale).toBe(1);
+
+    sendMultipleControl(webSocket, null, 2, 'stale');
+    sendMultipleControl(webSocket, 'stale3', 1, 'stale');
+    await pause();
+
+    expect(attempts.stale).toBe(2);
+
+    rejectStaleSetup(staleError);
+    await pause();
+    sendMultipleControl(webSocket, 'stale4', 1, 'stale');
+    await pause();
+
+    expect(attempts.stale).toBe(2);
+    expect(wsServer.getStats()).toEqual({clients: 2, paths: 2});
+    expect(errors).toEqual([plainError, staleError]);
+
+    await closeWebSocket(webSocket);
+    await wsServer.destroy();
+  });
+
   test('listener failures do not interrupt path lifecycles', async () => {
     const port = 8068;
     const pathErrors = [
