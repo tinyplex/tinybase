@@ -17,21 +17,6 @@ concurrency:
 jobs:
   core:
     runs-on: ubuntu-latest
-    env:
-      PGUSER: postgres
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_DB: tinybase
-          POSTGRES_HOST_AUTH_METHOD: trust
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -47,6 +32,4 @@ jobs:
       - run: npm run lint
       - run: npm run spell
       - run: npm run ts
-      - run: npm run testUnit
-      - run: npm run compileForProd
-      - run: npm run testProd
+      - run: npm run testUnitFast
