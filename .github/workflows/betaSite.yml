@@ -7,24 +7,26 @@ on:
     paths:
       - 'docs/**'
   workflow_dispatch:
-      
+
+permissions:
+  contents: read
+
 jobs:
   betaSite:
     runs-on: ubuntu-latest
     steps:
-        
-    - name: Copy
-      id: copy
-      uses: andstor/copycat-action@v3
-      with:
-        personal_token: ${{ secrets.TINYPLEXBOT_PERSONAL_ACCESS_TOKEN }}
-        src_branch: beta
-        src_path: docs
-        exclude: "**/CNAME"
-        dst_owner: tinyplex
-        dst_repo_name: tinybase-site-beta
-        dst_branch: main
-        dst_path: /
-        commit_message: "[action] Mirrored from tinybase beta branch."
-        username: tinyplexbot
-        email: tinyplexbot@tripleodeon.com
+      - name: Copy
+        id: copy
+        uses: andstor/copycat-action@c2b0316e9ab883478a4a7d40a4fcb03d17f281aa # v3
+        with:
+          personal_token: ${{ secrets.TINYPLEXBOT_PERSONAL_ACCESS_TOKEN }}
+          src_branch: beta
+          src_path: docs
+          exclude: '**/CNAME'
+          dst_owner: tinyplex
+          dst_repo_name: tinybase-site-beta
+          dst_branch: main
+          dst_path: /
+          commit_message: '[action] Mirrored from tinybase beta branch.'
+          username: tinyplexbot
+          email: tinyplexbot@tripleodeon.com
