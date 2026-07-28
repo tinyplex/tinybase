@@ -61,7 +61,9 @@ const build = ((): Build => {
   const packageData = {
     package: `https://www.npmjs.com/package/${name}/v/${version}`,
     version,
-    repository: repository.replace(/^github:/, 'https://github.com/'),
+    repository: repository.url
+      .replace(/^git\+/, '')
+      .replace(/\.git$/, ''),
     license,
     devDependencies,
   };
