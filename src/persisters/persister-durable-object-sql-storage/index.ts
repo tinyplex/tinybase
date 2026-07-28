@@ -17,7 +17,13 @@ import type {
   DpcFragmented,
   DurableObjectSqlStoragePersister,
 } from '../../@types/persisters/persister-durable-object-sql-storage/index.d.ts';
-import {arrayForEach, arrayHas, arrayPush} from '../../common/array.ts';
+import {
+  arrayForEach,
+  arrayHas,
+  arrayJoin,
+  arrayMap,
+  arrayPush,
+} from '../../common/array.ts';
 import {collHas} from '../../common/coll.ts';
 import {
   jsonParseWithUndefined,
@@ -37,12 +43,13 @@ import {
   isNullish,
   noop,
   number,
+  slice,
   string,
   test,
 } from '../../common/other.ts';
 import {setAdd, setNew} from '../../common/set.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
-import {EMPTY_STRING, strReplace, T} from '../../common/strings.ts';
+import {EMPTY_STRING, strReplace, strSplit, T} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 import {escapeId} from '../common/database/common.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
@@ -100,15 +107,28 @@ const stampNewObjectWithHash = <Thing>() =>
 const escapeGeneratedId = (id: string) =>
   test(/^[a-zA-Z_][a-zA-Z0-9_]*$/, id) ? id : escapeId(id);
 
+const encodeStoragePrefix = (storagePrefix: string) =>
+  arrayJoin(
+    arrayMap(
+      strSplit(storagePrefix),
+      (character) =>
+        '$' + slice((0x10000 + character.charCodeAt(0)).toString(16), 1),
+    ),
+  );
+
 const createDurableObjectFragmentedSqlStoragePersister = ((
   store: MergeableStore,
   sqlStorage: SqlStorage,
   storagePrefix: string = EMPTY_STRING,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister => {
-  const tablePrefix = strReplace(storagePrefix, /[^a-zA-Z0-9_]/g, '_');
-  const tablesTable = escapeGeneratedId(`${tablePrefix}tinybase_tables`);
-  const valuesTable = escapeGeneratedId(`${tablePrefix}tinybase_values`);
+  const tablePrefix = test(/^[a-z0-9_]*$/, storagePrefix)
+    ? storagePrefix
+    : `$tinybase$${encodeStoragePrefix(storagePrefix)}$`;
+  const tablesTableId = `${tablePrefix}tinybase_tables`;
+  const valuesTableId = `${tablePrefix}tinybase_values`;
+  const tablesTable = escapeGeneratedId(tablesTableId);
+  const valuesTable = escapeGeneratedId(valuesTableId);
   const insertTableSql = `INSERT INTO ${tablesTable} (type, table_id, row_id, cell_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?, ?, ?, ?)`;
   const insertValueSql = `INSERT INTO ${valuesTable} (value_id, value_data, timestamp, hash) VALUES (?, ?, ?, ?)`;
   const getRowKey = (tableId: string, rowId: string) =>

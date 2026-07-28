@@ -217,6 +217,16 @@ createPersister() {
 // ...
 ```
 
+Empty prefixes and those containing only lower-case ASCII letters, digits, and
+underscores are used as-is. Other prefixes are encoded so distinct prefixes
+cannot resolve to the same tables, including under SQLite's case-insensitive
+identifier rules.
+
+Tables created for prefixes that are now encoded, including uppercase
+prefixes and those previously changed by lossy sanitization, are not copied
+automatically because their names may legitimately belong to another prefix.
+Migrate those tables explicitly before using the new prefix.
+
 And for debugging and logging, you can add SQL command logging and error
 handling. This is useful for development:
 

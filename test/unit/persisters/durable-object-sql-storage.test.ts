@@ -201,9 +201,123 @@ test('fragmented mode escapes unsafe storage prefixes', async () => {
   ]);
   expect(db.prepare('SELECT * FROM protected').all()).toEqual([{id: 1}]);
   expect(
-    sqlCommands.some((sql) => sql.includes('CREATE TABLE IF NOT EXISTS "123_')),
+    sqlCommands.some((sql) =>
+      sql.includes('CREATE TABLE IF NOT EXISTS "$tinybase$'),
+    ),
   ).toBe(true);
 
   await persister1.destroy();
   await persister2.destroy();
+});
+
+test('fragmented mode keeps colliding unsafe prefixes separate', async () => {
+  const sqlStorage = createSqlStorage();
+  const store1 = createMergeableStore('s1', getNow).setValue(
+    'source',
+    'unsafe',
+  );
+  const store2 = createMergeableStore('s2', getNow).setValue('source', 'safe');
+  const persister1 = createDurableObjectSqlStoragePersister(
+    store1,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app-one'},
+  );
+  const persister2 = createDurableObjectSqlStoragePersister(
+    store2,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app\u2665one'},
+  );
+  await persister1.save();
+  await persister2.save();
+
+  const store3 = createMergeableStore('s3', getNow);
+  const store4 = createMergeableStore('s4', getNow);
+  const persister3 = createDurableObjectSqlStoragePersister(
+    store3,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app-one'},
+  );
+  const persister4 = createDurableObjectSqlStoragePersister(
+    store4,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app\u2665one'},
+  );
+  await persister3.load();
+  await persister4.load();
+
+  expect(store3.getValues()).toEqual({source: 'unsafe'});
+  expect(store4.getValues()).toEqual({source: 'safe'});
+  await persister1.destroy();
+  await persister2.destroy();
+  await persister3.destroy();
+  await persister4.destroy();
+});
+
+test('fragmented mode does not adopt colliding prefix tables', async () => {
+  const sqlStorage = createSqlStorage();
+  const safeStore = createMergeableStore('s1', getNow).setValue(
+    'source',
+    'safe',
+  );
+  const safePersister = createDurableObjectSqlStoragePersister(
+    safeStore,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app_one'},
+  );
+  await safePersister.save();
+
+  const unsafeStore = createMergeableStore('s2', getNow);
+  const unsafePersister = createDurableObjectSqlStoragePersister(
+    unsafeStore,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app-one'},
+  );
+  await unsafePersister.load();
+  expect(unsafeStore.getValues()).toEqual({});
+  unsafeStore.setValue('source', 'unsafe');
+  await unsafePersister.save();
+
+  const uppercaseStore = createMergeableStore('s3', getNow).setValue(
+    'source',
+    'uppercase',
+  );
+  const uppercasePersister = createDurableObjectSqlStoragePersister(
+    uppercaseStore,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'App_one'},
+  );
+  await uppercasePersister.save();
+
+  const safeStore2 = createMergeableStore('s4', getNow);
+  const unsafeStore2 = createMergeableStore('s5', getNow);
+  const uppercaseStore2 = createMergeableStore('s6', getNow);
+  const safePersister2 = createDurableObjectSqlStoragePersister(
+    safeStore2,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app_one'},
+  );
+  const unsafePersister2 = createDurableObjectSqlStoragePersister(
+    unsafeStore2,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'app-one'},
+  );
+  const uppercasePersister2 = createDurableObjectSqlStoragePersister(
+    uppercaseStore2,
+    sqlStorage,
+    {mode: 'fragmented', storagePrefix: 'App_one'},
+  );
+  await safePersister2.load();
+  await unsafePersister2.load();
+  await uppercasePersister2.load();
+
+  expect(safeStore2.getValues()).toEqual({source: 'safe'});
+  expect(unsafeStore2.getValues()).toEqual({source: 'unsafe'});
+  expect(uppercaseStore2.getValues()).toEqual({source: 'uppercase'});
+
+  await safePersister.destroy();
+  await unsafePersister.destroy();
+  await uppercasePersister.destroy();
+  await safePersister2.destroy();
+  await unsafePersister2.destroy();
+  await uppercasePersister2.destroy();
 });

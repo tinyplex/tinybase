@@ -78,8 +78,15 @@
    * This is useful when you have multiple stores or applications sharing the
    * same Durable Object SQL storage and want to avoid table name conflicts.
    *
-   * The prefix will be sanitized to only include alphanumeric characters and
-   * underscores. For example, a prefix of 'my-app!' becomes 'my_app_'.
+   * Empty prefixes and those containing only lower-case ASCII letters, digits,
+   * and underscores are used as-is. Other prefixes are encoded so that distinct
+   * prefixes cannot resolve to the same tables, including under SQLite's
+   * case-insensitive identifier rules.
+   *
+   * Tables created for prefixes that are now encoded, including uppercase
+   * prefixes and those previously changed by lossy sanitization, are not copied
+   * automatically because their names may legitimately belong to another
+   * prefix. Migrate those tables explicitly before using the new prefix.
    * @example
    * This example shows a configuration using the storagePrefix setting. With a
    * `storagePrefix` of 'user_data_', it creates `user_data_tinybase_tables` and
