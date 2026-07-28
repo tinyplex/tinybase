@@ -204,6 +204,7 @@ var tryCatch = async (action, onError) => {
     onError?.(error);
   }
 };
+var tryCatchIgnore = (action, onIgnoredError) => tryCatch(action, (error) => void tryCatch(() => onIgnoredError?.(error)));
 var tryCatchSync = (action, onError) => {
   try {
     return action();
@@ -268,6 +269,8 @@ var FRAGMENT_PAYLOAD = /^[^\n]*\n[-0-9A-Z_a-z]{16}\n\d+\n\d+\n/;
 var INVALID_CHANNEL_ID_CHARACTERS = /[\n\r?#]/;
 var MAX_FRAGMENT_BUFFERS = 100;
 var MAX_FRAGMENT_COUNT = 1e3;
+var MAX_MULTIPLE_CHANNELS = 100;
+var MAX_MULTIPLE_CHANNEL_ID_SIZE = 1024;
 var MAX_PENDING_REQUESTS = 100;
 var MAX_WEBSOCKET_BUFFER_SIZE = 16777216;
 var MAX_WEBSOCKET_QUEUE_SIZE = 1e3;
@@ -337,21 +340,29 @@ var ifPayloadValid = (payload, then) => {
   }
   return false;
 };
-var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid) => {
+var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid, sharedBuffer) => {
   const buffer = mapNew();
+  const payloadBuffer = sharedBuffer ?? [0, 0];
   let bufferedSize = 0;
   let valid = true;
   const delPending = (bufferKey, pending) => {
     stopTimeout(pending[4]);
     bufferedSize -= pending[5];
+    payloadBuffer[0]--;
+    payloadBuffer[1] -= pending[5];
     collDel(buffer, bufferKey);
+  };
+  const clear = () => {
+    mapForEach(buffer, (_bufferKey, pending) => stopTimeout(pending[4]));
+    payloadBuffer[0] -= collSize(buffer);
+    payloadBuffer[1] -= bufferedSize;
+    collClear(buffer);
+    bufferedSize = 0;
   };
   const invalid = (error = errorNew(ERROR_SYNC_MESSAGE)) => {
     if (valid) {
       valid = false;
-      mapForEach(buffer, (_bufferKey, pending) => stopTimeout(pending[4]));
-      collClear(buffer);
-      bufferedSize = 0;
+      clear();
       onInvalid?.(error);
     }
   };
@@ -363,7 +374,7 @@ var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid) => {
       invalid();
     }
   };
-  return (payload) => {
+  const decode2 = (payload) => {
     if (!valid) {
       return;
     }
@@ -394,42 +405,47 @@ var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid) => {
           const bufferKey = clientId + MESSAGE_SEPARATOR + messageId;
           let pending = mapGet(buffer, bufferKey);
           if (!pending) {
-            if (collSize(buffer) >= MAX_FRAGMENT_BUFFERS) {
+            if (payloadBuffer[0] >= MAX_FRAGMENT_BUFFERS) {
               invalid(errorNew(ERROR_SYNC_OVERFLOW, "fragments"));
               return;
             }
-            pending = [
-              [],
-              [],
-              total,
-              total,
-              startTimeout(() => {
-                const timedOut = mapGet(buffer, bufferKey);
-                if (timedOut) {
-                  delPending(bufferKey, timedOut);
-                }
-              }, fragmentTimeoutSeconds),
-              0
-            ];
-            mapSet(buffer, bufferKey, pending);
           }
-          const [fragments, remainders] = pending;
-          if (total == pending[3] && isUndefined(fragments[index])) {
-            const fragmentLength = getWebSocketPayloadSize(fragment);
-            if (bufferedSize + fragmentLength > MAX_WEBSOCKET_BUFFER_SIZE) {
+          if ((isUndefined(pending) || total == pending[3]) && isUndefined(pending?.[0][index])) {
+            const retainedSize = getWebSocketPayloadSize(remainder) + (pending ? 0 : getWebSocketPayloadSize(bufferKey));
+            if (payloadBuffer[1] + retainedSize > MAX_WEBSOCKET_BUFFER_SIZE) {
               invalid(errorNew(ERROR_SYNC_OVERFLOW, "fragments"));
               return;
             }
+            if (!pending) {
+              pending = [
+                [],
+                [],
+                total,
+                total,
+                startTimeout(() => {
+                  const timedOut = mapGet(buffer, bufferKey);
+                  if (timedOut) {
+                    delPending(bufferKey, timedOut);
+                  }
+                }, fragmentTimeoutSeconds),
+                0
+              ];
+              mapSet(buffer, bufferKey, pending);
+              payloadBuffer[0]++;
+            }
+            const [fragments, remainders] = pending;
             fragments[index] = fragment;
             remainders[index] = remainder;
             pending[2]--;
-            pending[5] += fragmentLength;
-            bufferedSize += fragmentLength;
+            pending[5] += retainedSize;
+            bufferedSize += retainedSize;
+            payloadBuffer[1] += retainedSize;
           } else {
             invalid();
             return;
           }
           if (pending[2] == 0) {
+            const [fragments, remainders] = pending;
             delPending(bufferKey, pending);
             receiveRemainder(clientId, remainders, arrayJoin(fragments));
           }
@@ -441,12 +457,14 @@ var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid) => {
       invalid();
     }
   };
+  return [decode2, clear];
 };
 var isWebSocketBackpressured = (webSocket, payloadSize) => (webSocket.bufferedAmount ?? 0) + payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
-var createPayloadReceiver = (receive, fragmentTimeoutSeconds = 1, onInvalid) => createPayloadDecoder(
+var createPayloadReceiver = (receive, fragmentTimeoutSeconds = 1, onInvalid, sharedBuffer) => createPayloadDecoder(
   (fromClientId, _remainders, requestId, message, body) => receive(fromClientId, requestId, message, body),
   fragmentTimeoutSeconds,
-  onInvalid
+  onInvalid,
+  sharedBuffer
 );
 var createRawPayload = (clientId, remainder) => clientId + MESSAGE_SEPARATOR + remainder;
 var getFragments = (remainder, maxFragmentSize) => {
@@ -472,12 +490,15 @@ var getFragments = (remainder, maxFragmentSize) => {
   return fragments;
 };
 var createMultiplePayload = (channelId, payload) => createRawPayload(MULTIPLE_CLIENT_ID, createRawPayload(channelId, payload));
-var ifMultiplePayloadValid = (payload, then) => {
+var ifMultiplePayloadValid = (payload, then, onOversized) => {
   let valid = false;
   ifPayloadValid(payload, (multipleClientId, remainder) => {
     if (multipleClientId == MULTIPLE_CLIENT_ID) {
       ifPayloadValid(remainder, (channelId, channelPayload) => {
-        if (isMultipleChannelIdValid(channelId)) {
+        if (isMultipleChannelIdTooLarge(channelId)) {
+          valid = true;
+          onOversized?.();
+        } else if (isMultipleChannelIdStructureValid(channelId)) {
           valid = true;
           then(channelId, channelPayload);
         }
@@ -490,6 +511,11 @@ var createMultipleControlPayload = (requestId, control, body) => createRawPayloa
   SERVER_CLIENT_ID,
   jsonStringWithUndefined([requestId, MULTIPLE_MESSAGE, [control, body]])
 );
+var isMultipleChannelIdTooLarge = (channelId) => getWebSocketPayloadSize(channelId) > MAX_MULTIPLE_CHANNEL_ID_SIZE;
+var isMultipleChannelIdStructureValid = (channelId) => !isEmpty(channelId) && !INVALID_CHANNEL_ID_CHARACTERS.test(channelId) && arrayEvery(
+  strSplit(channelId, "/"),
+  (part) => !isEmpty(part) && part != "." && part != ".."
+);
 var ifMultipleControlPayloadValid = (payload, then) => {
   let valid = false;
   ifPayloadValid(payload, (serverClientId, remainder) => {
@@ -497,7 +523,7 @@ var ifMultipleControlPayloadValid = (payload, then) => {
       const [requestId, message, controlAndBody] = decodeProtocolMessage(remainder, true) ?? [];
       const control = controlAndBody?.[0];
       const body = controlAndBody?.[1];
-      if (message == MULTIPLE_MESSAGE && isArray(controlAndBody) && size(controlAndBody) == 2 && (control == 0 ? isString(requestId) && body == MULTIPLE_VERSION : control == 1 ? isString(requestId) && isString(body) && isMultipleChannelIdValid(body) : control == 2 && isNull(requestId) && isString(body) && isMultipleChannelIdValid(body))) {
+      if (message == MULTIPLE_MESSAGE && isArray(controlAndBody) && size(controlAndBody) == 2 && (control == 0 ? isString(requestId) && body == MULTIPLE_VERSION : control == 1 ? isString(requestId) && isString(body) && (isMultipleChannelIdTooLarge(body) || isMultipleChannelIdStructureValid(body)) : control == 2 && isNull(requestId) && isString(body) && (isMultipleChannelIdTooLarge(body) || isMultipleChannelIdStructureValid(body)))) {
         valid = true;
         then(requestId, control, body);
       }
@@ -505,10 +531,7 @@ var ifMultipleControlPayloadValid = (payload, then) => {
   });
   return valid;
 };
-var isMultipleChannelIdValid = (channelId) => !isEmpty(channelId) && !INVALID_CHANNEL_ID_CHARACTERS.test(channelId) && arrayEvery(
-  strSplit(channelId, "/"),
-  (part) => !isEmpty(part) && part != "." && part != ".."
-);
+var isMultipleChannelIdValid = (channelId) => !isMultipleChannelIdTooLarge(channelId) && isMultipleChannelIdStructureValid(channelId);
 var createPayloads = (toClientId, requestId, message, body, fragmentSize) => {
   const clientId = toClientId ?? EMPTY_STRING;
   const remainder = jsonStringWithUndefined([requestId, message, body]);
@@ -940,9 +963,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   const isAutoSaving = () => !isUndefined(autoSaveListenerId);
   const startAutoPersisting = async (initialContent, startSaveFirst = false) => {
-    const [call1, call2] = startSaveFirst ? [startAutoSave, startAutoLoad] : [startAutoLoad, startAutoSave];
-    await call1(initialContent);
-    await call2(initialContent);
+    const [call1, call2, stop1, stop2] = startSaveFirst ? [startAutoSave, startAutoLoad, stopAutoSave, stopAutoLoad] : [startAutoLoad, startAutoSave, stopAutoLoad, stopAutoSave];
+    const start1 = call1(initialContent);
+    const generation1 = startSaveFirst ? autoSaveGeneration : autoLoadGeneration;
+    await start1;
+    const start2 = call2(initialContent);
+    const generation2 = startSaveFirst ? autoLoadGeneration : autoSaveGeneration;
+    try {
+      await start2;
+    } catch (error) {
+      if (generation2 == (startSaveFirst ? autoLoadGeneration : autoSaveGeneration)) {
+        await tryCatchIgnore(stop2);
+      }
+      if (generation1 == (startSaveFirst ? autoSaveGeneration : autoLoadGeneration)) {
+        await tryCatchIgnore(stop1);
+      }
+      throw error;
+    }
     return persister;
   };
   const stopAutoPersisting = async (stopSaveFirst = false) => {
@@ -1287,6 +1324,7 @@ var createConnection = () => {
 var createMultipleState = (webSocket) => {
   const channels = mapNew();
   const pendingControls = mapNew();
+  const payloadBuffer = [0, 0];
   const removeListeners = [];
   let connection = createConnection();
   let connected = false;
@@ -1299,6 +1337,7 @@ var createMultipleState = (webSocket) => {
   let overflowing = false;
   let queuedCount = 0;
   let queuedSize = 0;
+  let receiving = true;
   const notifyChannelIgnoredError = (channel, error) => tryReturn(() => channel[
     6
     /* OnIgnoredError */
@@ -1312,9 +1351,8 @@ var createMultipleState = (webSocket) => {
     disconnect();
     tryReturn(() => webSocket.close());
   };
-  const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
   const addWebSocketListener = (event, handler) => arrayPush(removeListeners, addEventListener(webSocket, event, handler));
-  const rejectPendingControls = (error) => mapForEach(pendingControls, (requestId, [, , reject, timeout]) => {
+  const rejectPendingControls = (error) => mapForEach(pendingControls, (requestId, [, , , reject, timeout]) => {
     stopTimeout(timeout);
     collDel(pendingControls, requestId);
     reject(error);
@@ -1386,11 +1424,54 @@ var createMultipleState = (webSocket) => {
       ] = void 0;
     }
   };
+  const clearReceive = (channel) => channel[
+    0
+    /* Receive */
+  ]?.[1]();
+  const clearReceives = () => mapForEach(channels, (_channelId, channel) => clearReceive(channel));
+  const handleInvalid = createInvalidPayloadHandler(
+    webSocket,
+    notifyIgnoredError
+  );
+  const invalid = (error) => {
+    if (receiving) {
+      receiving = false;
+      disconnected = true;
+      connected = false;
+      clearReceives();
+      connection[2](error);
+      rejectPendingControls(error);
+      failChannels(error);
+      mapForEach(channels, (_channelId, channel) => {
+        clearIncoming(channel);
+        clearOutgoing(channel, true);
+        channel[
+          3
+          /* Subscribed */
+        ] = false;
+        channel[
+          4
+          /* Subscribing */
+        ] = void 0;
+        channel[
+          12
+          /* SubscribeConnection */
+        ] = void 0;
+      });
+      if (flushTimeout) {
+        stopTimeout(flushTimeout);
+        flushTimeout = void 0;
+      }
+      handleInvalid(error);
+    }
+  };
   const overflow = (details) => {
     const error = errorNew(ERROR_SYNC_OVERFLOW, details);
     if (!overflowing && !destroyed) {
       overflowing = true;
+      receiving = false;
       connected = false;
+      clearReceives();
       notifyIgnoredError(error);
       rejectPendingControls(error);
       failChannels(error);
@@ -1404,6 +1485,10 @@ var createMultipleState = (webSocket) => {
         channel[
           4
           /* Subscribing */
+        ] = void 0;
+        channel[
+          12
+          /* SubscribeConnection */
         ] = void 0;
       });
       if (flushTimeout) {
@@ -1429,7 +1514,7 @@ var createMultipleState = (webSocket) => {
     });
     return timeoutSeconds;
   };
-  const sendControl = (control, body, timeoutSeconds) => {
+  const sendControl = (control, body, timeoutSeconds, onSent) => {
     const requestId = getUniqueId();
     return promiseNew((resolve, reject) => {
       if (collSize(pendingControls) >= MAX_PENDING_REQUESTS) {
@@ -1446,9 +1531,16 @@ var createMultipleState = (webSocket) => {
         collDel(pendingControls, requestId);
         reject(errorNew(ERROR_MULTIPLEX_RESPONSE, control));
       }, timeoutSeconds);
-      mapSet(pendingControls, requestId, [control, resolve, reject, timeout]);
+      mapSet(pendingControls, requestId, [
+        control,
+        body,
+        resolve,
+        reject,
+        timeout
+      ]);
       try {
         webSocket.send(payload);
+        onSent?.();
       } catch (error) {
         stopTimeout(timeout);
         collDel(pendingControls, requestId);
@@ -1705,15 +1797,27 @@ var createMultipleState = (webSocket) => {
         4
         /* Subscribing */
       ];
-      if (!subscribing) {
-        subscribing = (async () => {
-          await connection[0];
+      const subscribingConnection = connection;
+      if (subscribing?.[0] !== subscribingConnection) {
+        const subscribingPromise = (async () => {
+          await subscribingConnection[0];
+          if (mapGet(channels, channelId) !== channel || connection !== subscribingConnection || !connected) {
+            return;
+          }
           await sendControl(
             MultipleControl.Subscribe,
             channelId,
-            timeoutSeconds
+            timeoutSeconds,
+            () => {
+              if (mapGet(channels, channelId) === channel && connection === subscribingConnection && connected) {
+                channel[
+                  12
+                  /* SubscribeConnection */
+                ] = subscribingConnection;
+              }
+            }
           );
-          if (mapGet(channels, channelId) === channel && connected) {
+          if (mapGet(channels, channelId) === channel && connection === subscribingConnection && connected) {
             channel[
               3
               /* Subscribed */
@@ -1721,13 +1825,14 @@ var createMultipleState = (webSocket) => {
             flushOutgoing(channelId, channel);
           }
         })();
+        subscribing = [subscribingConnection, subscribingPromise];
         channel[
           4
           /* Subscribing */
         ] = subscribing;
       }
       try {
-        await subscribing;
+        await subscribing[1];
       } finally {
         if (channel[
           4
@@ -1742,7 +1847,7 @@ var createMultipleState = (webSocket) => {
     }
   };
   const onOpen = () => {
-    if (destroyed || opening?.[0] === connection) {
+    if (destroyed || !receiving || connected || opening?.[0] === connection) {
       return;
     }
     disconnected = false;
@@ -1755,7 +1860,7 @@ var createMultipleState = (webSocket) => {
           MULTIPLE_VERSION,
           getConnectionTimeoutSeconds()
         );
-        if (connection === openingConnection) {
+        if (connection === openingConnection && receiving && !destroyed) {
           connected = true;
           openingConnection[1]();
           mapForEach(
@@ -1805,6 +1910,7 @@ var createMultipleState = (webSocket) => {
       }
       connection = createConnection();
       mapForEach(channels, (_channelId, channel) => {
+        clearReceive(channel);
         channel[
           3
           /* Subscribed */
@@ -1813,11 +1919,18 @@ var createMultipleState = (webSocket) => {
           4
           /* Subscribing */
         ] = void 0;
+        channel[
+          12
+          /* SubscribeConnection */
+        ] = void 0;
       });
     }
   };
   const onClose = disconnect;
   addWebSocketListener(MESSAGE, ({ data }) => {
+    if (!receiving) {
+      return;
+    }
     const payload = data.toString(UTF8);
     if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
       invalid(errorNew(ERROR_SYNC_OVERFLOW, "socket"));
@@ -1825,12 +1938,16 @@ var createMultipleState = (webSocket) => {
     }
     const control = ifMultipleControlPayloadValid(
       payload,
-      (requestId, control2, _body) => {
+      (requestId, control2, body) => {
+        if ((control2 == MultipleControl.Subscribe || control2 == MultipleControl.Unsubscribe) && isString(body) && !isMultipleChannelIdValid(body)) {
+          overflow("channels");
+          return;
+        }
         const pendingControl = requestId ? mapGet(pendingControls, requestId) : void 0;
-        if (pendingControl?.[0] == control2) {
-          stopTimeout(pendingControl[3]);
+        if (pendingControl?.[0] == control2 && pendingControl[1] === body) {
+          stopTimeout(pendingControl[4]);
           collDel(pendingControls, requestId);
-          pendingControl[1]();
+          pendingControl[2]();
         }
       }
     );
@@ -1846,14 +1963,15 @@ var createMultipleState = (webSocket) => {
             channel2[
               0
               /* Receive */
-            ](channelPayload);
+            ][0](channelPayload);
           } else {
             queueIncoming(channel2, channelPayload);
           }
         } else {
           invalid(errorNew(ERROR_SYNC_MESSAGE));
         }
-      }
+      },
+      () => overflow("channels")
     );
     if (!control && !channel) {
       invalid(errorNew(ERROR_SYNC_MESSAGE));
@@ -1866,11 +1984,17 @@ var createMultipleState = (webSocket) => {
     failChannels(errorNew(ERROR_MULTIPLEX_SOCKET));
   });
   const addChannel = async (channelId, timeoutSeconds, onIgnoredError) => {
+    if (!receiving || destroyed) {
+      errorThrow(ERROR_MULTIPLEX_SOCKET);
+    }
     if (!isMultipleChannelIdValid(channelId)) {
       errorThrow(ERROR_MULTIPLEX_CHANNEL, channelId);
     }
     if (collHas(channels, channelId)) {
       errorThrow(ERROR_MULTIPLEX_CHANNEL_DUPLICATE, channelId);
+    }
+    if (collSize(channels) >= MAX_MULTIPLE_CHANNELS) {
+      errorThrow(ERROR_SYNC_OVERFLOW, "channels");
     }
     const channel = [
       void 0,
@@ -1884,6 +2008,7 @@ var createMultipleState = (webSocket) => {
       0,
       0,
       0,
+      void 0,
       void 0
     ];
     mapSet(channels, channelId, channel);
@@ -1930,7 +2055,7 @@ var createMultipleState = (webSocket) => {
             queuedCount--;
             queuedSize -= payloadSize;
             incomingIndex++;
-            receive(payload);
+            receive[0](payload);
           }
         },
         () => arrayClear(incoming, incomingIndex)
@@ -1938,6 +2063,9 @@ var createMultipleState = (webSocket) => {
     }
   };
   const send = (channelId, payloads, coalesce) => {
+    if (!receiving) {
+      return;
+    }
     const channel = mapGet(channels, channelId);
     if (channel) {
       if (connected && webSocket.readyState == webSocket.OPEN && channel[
@@ -1964,6 +2092,9 @@ var createMultipleState = (webSocket) => {
   const destroyIfEmpty = () => {
     if (collIsEmpty(channels) && !destroyed) {
       destroyed = true;
+      const closeWebSocket = receiving && !overflowing;
+      receiving = false;
+      clearReceives();
       const error = errorNew(ERROR_MULTIPLEX_DESTROYED);
       rejectPendingControls(error);
       if (flushTimeout) {
@@ -1976,7 +2107,7 @@ var createMultipleState = (webSocket) => {
       );
       arrayClear(removeListeners);
       multipleStates.delete(webSocket);
-      if (!overflowing) {
+      if (closeWebSocket) {
         tryReturn(() => webSocket.close());
       }
     }
@@ -1985,12 +2116,13 @@ var createMultipleState = (webSocket) => {
     const channel = mapGet(channels, channelId);
     if (channel) {
       try {
+        clearReceive(channel);
         clearIncoming(channel);
         clearOutgoing(channel, true);
         if (connected && channel[
-          3
-          /* Subscribed */
-        ]) {
+          12
+          /* SubscribeConnection */
+        ] === connection) {
           const payload = createMultipleControlPayload(
             null,
             MultipleControl.Unsubscribe,
@@ -2016,6 +2148,7 @@ var createMultipleState = (webSocket) => {
     delChannel,
     destroyIfEmpty,
     invalid,
+    payloadBuffer,
     registerReceive,
     send
   };
@@ -2054,7 +2187,12 @@ var createMultipleWsSynchronizer = async (store, webSocket, channelId, requestTi
       ),
       (receive, fail) => state.registerReceive(
         channelId,
-        createPayloadReceiver(receive, requestTimeoutSeconds, state.invalid),
+        createPayloadReceiver(
+          receive,
+          requestTimeoutSeconds,
+          state.invalid,
+          state.payloadBuffer
+        ),
         fail
       ),
       () => state.delChannel(channelId),
@@ -2088,13 +2226,14 @@ var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds 
   };
   const registerReceive = (receive, fail) => {
     const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
-    const receivePayload = createPayloadReceiver(
+    const [receivePayload, clearReceivePayload] = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
       invalid
     );
     let removeListeners = [];
     removeTransportListeners = () => {
+      clearReceivePayload();
       arrayForEach(
         removeListeners,
         (removeListener) => tryReturn(removeListener)

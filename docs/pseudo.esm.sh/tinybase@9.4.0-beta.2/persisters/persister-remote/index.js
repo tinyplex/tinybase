@@ -1,19 +1,17 @@
-// dist/persisters/persister-browser/index.js
+// dist/persisters/persister-remote/index.js
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
-var STORAGE = "storage";
-var UNDEFINED = "\uFFFC";
 var promise = Promise;
 var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(value) ? (
   /* istanbul ignore next */
   otherwise?.()
 ) : then(value);
-var GLOBAL = globalThis;
-var WINDOW = GLOBAL.window;
-var addEventListener = (target, event, listener) => {
-  target.addEventListener(event, listener);
-  return () => target.removeEventListener(event, listener);
+var THOUSAND = 1e3;
+var startInterval = (callback, sec, immediate) => {
+  return setInterval(callback, sec * THOUSAND);
 };
+var stopInterval = (interval) => clearInterval(interval);
+var isInstanceOf = (thing, cls) => thing instanceof cls;
 var isNullish = (thing) => thing == null;
 var isUndefined = (thing) => thing === void 0;
 var isNull = (thing) => thing === null;
@@ -34,6 +32,13 @@ var errorNew = (code, details) => new Error(
 );
 var errorThrow = (code, details) => {
   throw errorNew(code, details);
+};
+var tryReturn = (tryF, catchReturn) => {
+  try {
+    return tryF();
+  } catch {
+    return catchReturn;
+  }
 };
 var tryCatch = async (action, onError) => {
   try {
@@ -94,22 +99,14 @@ var objNew = (entries = []) => {
   arrayForEach(entries, ([id, value]) => objSet(obj, id, value));
   return obj;
 };
-var objForEach = (obj, cb) => arrayForEach(objIds(obj), (id) => cb(obj[id], id));
-var objMap = (obj, cb) => {
-  const mapped = objNew();
-  objForEach(obj, (value, id) => objSet(mapped, id, cb(value, id)));
-  return mapped;
-};
 var objSize = (obj) => size(objIds(obj));
 var objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
-var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined(value) ? UNDEFINED : value);
-var jsonParseWithUndefined = (str) => (
-  // JSON.parse reviver removes properties with undefined values
-  replaceUndefinedString(jsonParse(str))
+var jsonStringWithMap = (obj) => jsonString(
+  obj,
+  (_key, value) => isInstanceOf(value, Map) ? objNew([...value]) : value
 );
-var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray(obj) ? arrayMap(obj, replaceUndefinedString) : isObject(obj) ? objMap(obj, replaceUndefinedString) : obj;
 var collSize = (coll) => coll?.size ?? 0;
 var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
 var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
@@ -550,9 +547,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   const isAutoSaving = () => !isUndefined(autoSaveListenerId);
   const startAutoPersisting = async (initialContent, startSaveFirst = false) => {
-    const [call1, call2] = startSaveFirst ? [startAutoSave, startAutoLoad] : [startAutoLoad, startAutoSave];
-    await call1(initialContent);
-    await call2(initialContent);
+    const [call1, call2, stop1, stop2] = startSaveFirst ? [startAutoSave, startAutoLoad, stopAutoSave, stopAutoLoad] : [startAutoLoad, startAutoSave, stopAutoLoad, stopAutoSave];
+    const start1 = call1(initialContent);
+    const generation1 = startSaveFirst ? autoSaveGeneration : autoLoadGeneration;
+    await start1;
+    const start2 = call2(initialContent);
+    const generation2 = startSaveFirst ? autoLoadGeneration : autoSaveGeneration;
+    try {
+      await start2;
+    } catch (error) {
+      if (generation2 == (startSaveFirst ? autoLoadGeneration : autoSaveGeneration)) {
+        await tryCatchIgnore(stop2);
+      }
+      if (generation1 == (startSaveFirst ? autoSaveGeneration : autoLoadGeneration)) {
+        await tryCatchIgnore(stop1);
+      }
+      throw error;
+    }
     return persister;
   };
   const stopAutoPersisting = async (stopSaveFirst = false) => {
@@ -676,57 +687,84 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   return objFreeze(persister);
 };
-var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
-  const getPersisted = async () => jsonParseWithUndefined(storage.getItem(storageName));
-  const setPersisted = async (getContent) => storage.setItem(storageName, jsonStringWithUndefined(getContent()));
-  const addPersisterListener = (listener) => addEventListener(WINDOW, STORAGE, (event) => {
-    if (event.storageArea === storage && event.key === storageName) {
-      void tryCatchIgnore(
-        () => listener(jsonParseWithUndefined(event.newValue)),
-        onIgnoredError
-      );
-    }
-  });
-  const delPersisterListener = (removeListener) => removeListener();
-  return createCustomPersister(
-    store,
-    getPersisted,
-    setPersisted,
-    addPersisterListener,
-    delPersisterListener,
-    onIgnoredError,
-    3,
-    // StoreOrMergeableStore,
-    { getStorageName: () => storageName }
-  );
+var getETag = (response) => response.headers.get("ETag") ?? EMPTY_STRING;
+var getIfNoneMatchHeaders = (lastEtag) => lastEtag == EMPTY_STRING ? void 0 : { "If-None-Match": lastEtag };
+var checkResponse = (response, allowNotModified) => {
+  if (!response.ok && (!allowNotModified || response.status != 304)) {
+    throw response;
+  }
 };
-var createLocalPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, localStorage, onIgnoredError);
-var createSessionPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
-var createOpfsPersister = (store, handle, onIgnoredError) => {
-  const getPersisted = async () => jsonParseWithUndefined(await (await handle.getFile()).text());
+var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 5, onIgnoredError) => {
+  let lastEtag = EMPTY_STRING;
+  let lastContent;
+  const getPersisted = async () => {
+    const response = await fetch(loadUrl, {
+      headers: getIfNoneMatchHeaders(lastEtag)
+    });
+    const notModified = response.status == 304 && !isUndefined(lastContent);
+    checkResponse(response, notModified ? 1 : void 0);
+    const contentText = notModified ? lastContent : await response.text();
+    const content = jsonParse(contentText);
+    if (!notModified) {
+      lastContent = contentText;
+      lastEtag = getETag(response);
+    }
+    return content;
+  };
   const setPersisted = async (getContent) => {
-    const writable = await handle.createWritable();
-    let written = 0;
+    const response = await fetch(saveUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: jsonStringWithMap(getContent())
+    });
     await tryFinallyAsync(
-      async () => {
-        await writable.write(jsonStringWithUndefined(getContent()));
-        written = 1;
-      },
-      async () => {
-        if (written) {
-          await writable.close();
-        } else {
-          await tryCatch(() => writable.abort());
-        }
-      }
+      async () => checkResponse(response),
+      () => response.body?.cancel()
     );
   };
-  const addPersisterListener = async (listener) => {
-    const observer = new FileSystemObserver(() => listener());
-    await observer.observe(handle);
-    return observer;
+  const addPersisterListener = (listener) => {
+    let active;
+    let controller;
+    let stopped = false;
+    const poll = () => {
+      if (!stopped && isUndefined(active)) {
+        controller = new AbortController();
+        active = tryFinallyAsync(
+          () => tryCatch(
+            async () => {
+              const response = await fetch(loadUrl, {
+                method: "HEAD",
+                headers: getIfNoneMatchHeaders(lastEtag),
+                signal: controller?.signal
+              });
+              checkResponse(response, 1);
+              if (!stopped && response.status != 304 && getETag(response) != lastEtag) {
+                await listener();
+              }
+            },
+            (error) => stopped ? 0 : tryReturn(() => onIgnoredError?.(error))
+          ),
+          () => {
+            active = void 0;
+            controller = void 0;
+          }
+        );
+      }
+    };
+    return [
+      startInterval(poll, autoLoadIntervalSeconds),
+      async () => {
+        stopped = true;
+        controller?.abort();
+        await active;
+      }
+    ];
   };
-  const delPersisterListener = (observer) => observer?.disconnect();
+  const delPersisterListener = async ([interval, stop]) => {
+    const stopped = stop();
+    stopInterval(interval);
+    await stopped;
+  };
   return createCustomPersister(
     store,
     getPersisted,
@@ -734,13 +772,11 @@ var createOpfsPersister = (store, handle, onIgnoredError) => {
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    3,
-    // StoreOrMergeableStore,
-    { getHandle: () => handle }
+    1,
+    // StoreOnly,
+    { getUrls: () => [loadUrl, saveUrl] }
   );
 };
 export {
-  createLocalPersister,
-  createOpfsPersister,
-  createSessionPersister
+  createRemotePersister
 };

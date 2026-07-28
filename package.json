@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "9.4.0-beta.1",
+  "version": "9.4.0-beta.2",
   "author": "jamesgpearce",
   "repository": {
     "type": "git",
@@ -171,6 +171,7 @@
     "compileAndTestPerf": "gulp compileAndTestPerf",
     "testE2e": "gulp testE2e",
     "testProd": "gulp testProd",
+    "preparePackageForProd": "gulp preparePackageForProd",
     "compileAndTestProd": "gulp compileAndTestProd",
     "compileDocsPagesOnly": "gulp compileDocsPagesOnly",
     "compileDocsAssetsOnly": "gulp compileDocsAssetsOnly",

@@ -773,8 +773,6 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
 
 const npmInstall = () => execute('npm ci --legacy-peer-deps');
 
-const preparePackageForProd = () => copyPackageFiles(true);
-
 const npmPublish = async () => {
   const {version} = JSON.parse(
     await promises.readFile(join(DIST_DIR, 'package.json'), UTF8),
@@ -886,6 +884,8 @@ export const compileForProdAndDocs = series(compileForProd, compileDocs);
 export const testE2e = () => execute('npx playwright test', true);
 
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
+
+export const preparePackageForProd = () => copyPackageFiles(true);
 
 export const testProd = async () => {
   await execute('attw --pack dist --format table-flipped --profile esm-only');

@@ -1276,9 +1276,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   const isAutoSaving = () => !isUndefined2(autoSaveListenerId);
   const startAutoPersisting = async (initialContent, startSaveFirst = false) => {
-    const [call1, call2] = startSaveFirst ? [startAutoSave, startAutoLoad] : [startAutoLoad, startAutoSave];
-    await call1(initialContent);
-    await call2(initialContent);
+    const [call1, call2, stop1, stop2] = startSaveFirst ? [startAutoSave, startAutoLoad, stopAutoSave, stopAutoLoad] : [startAutoLoad, startAutoSave, stopAutoLoad, stopAutoSave];
+    const start1 = call1(initialContent);
+    const generation1 = startSaveFirst ? autoSaveGeneration : autoLoadGeneration;
+    await start1;
+    const start2 = call2(initialContent);
+    const generation2 = startSaveFirst ? autoLoadGeneration : autoSaveGeneration;
+    try {
+      await start2;
+    } catch (error) {
+      if (generation2 == (startSaveFirst ? autoLoadGeneration : autoSaveGeneration)) {
+        await tryCatchIgnore(stop2);
+      }
+      if (generation1 == (startSaveFirst ? autoSaveGeneration : autoLoadGeneration)) {
+        await tryCatchIgnore(stop1);
+      }
+      throw error;
+    }
     return persister;
   };
   const stopAutoPersisting = async (stopSaveFirst = false) => {
