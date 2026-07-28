@@ -295,6 +295,7 @@
   "overrides": {
     "@rolldown/plugin-babel": {
       "@babel/plugin-transform-runtime": "7.29.7"
-    }
+    },
+    "better-sqlite3": "$better-sqlite3"
   }
 }
