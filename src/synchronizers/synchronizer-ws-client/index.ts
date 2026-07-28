@@ -62,6 +62,9 @@ import {
   UTF8,
 } from '../../common/strings.ts';
 import {
+  type PayloadBuffer,
+  type PayloadDecoder,
+  MAX_MULTIPLE_CHANNELS,
   MAX_PENDING_REQUESTS,
   MAX_WEBSOCKET_BUFFER_SIZE,
   MAX_WEBSOCKET_QUEUE_SIZE,
@@ -105,14 +108,15 @@ const enum ChannelValue {
   OutgoingSize,
   OutgoingCount,
   Fail,
+  SubscribeConnection,
 }
 
 type Channel = [
-  receive: ((payload: string) => void) | undefined,
+  receive: PayloadDecoder | undefined,
   incoming: Incoming[],
   outgoing: Outgoing[],
   subscribed: boolean,
-  subscribing: Promise<void> | undefined,
+  subscribing: [connection: Connection, subscribing: Promise<void>] | undefined,
   timeoutSeconds: number,
   onIgnoredError: ((error: any) => void) | undefined,
   dirty: (() => string[]) | undefined,
@@ -120,10 +124,12 @@ type Channel = [
   outgoingSize: number,
   outgoingCount: number,
   fail: ((error: Error) => void) | undefined,
+  subscribeConnection: Connection | undefined,
 ];
 
 type PendingControl = [
   control: MultipleControl,
+  body: any,
   resolve: () => void,
   reject: (error: Error) => void,
   timeout: ReturnType<typeof startTimeout>,
@@ -144,9 +150,10 @@ type MultipleState = {
   delChannel: (channelId: Id) => void;
   destroyIfEmpty: () => void;
   invalid: (error: Error) => void;
+  payloadBuffer: PayloadBuffer;
   registerReceive: (
     channelId: Id,
-    receive: (payload: string) => void,
+    receive: PayloadDecoder,
     fail: (error: Error) => void,
   ) => void;
   send: (channelId: Id, payloads: string[], coalesce?: () => string[]) => void;
@@ -171,6 +178,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 ) => {
   const channels: IdMap<Channel> = mapNew();
   const pendingControls: IdMap<PendingControl> = mapNew();
+  const payloadBuffer: PayloadBuffer = [0, 0];
   const removeListeners: (() => void)[] = [];
   let connection = createConnection();
   let connected = false;
@@ -182,6 +190,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   let overflowing = false;
   let queuedCount = 0;
   let queuedSize = 0;
+  let receiving = true;
 
   const notifyChannelIgnoredError = (channel: Channel, error: any) =>
     tryReturn(() => channel[ChannelValue.OnIgnoredError]?.(error));
@@ -197,15 +206,13 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     tryReturn(() => webSocket.close());
   };
 
-  const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
-
   const addWebSocketListener = (
     event: keyof WebSocketEventMap,
     handler: (...args: any[]) => void,
   ) => arrayPush(removeListeners, addEventListener(webSocket, event, handler));
 
   const rejectPendingControls = (error: Error) =>
-    mapForEach(pendingControls, (requestId, [, , reject, timeout]) => {
+    mapForEach(pendingControls, (requestId, [, , , reject, timeout]) => {
       stopTimeout(timeout);
       collDel(pendingControls, requestId);
       reject(error);
@@ -240,11 +247,47 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     }
   };
 
+  const clearReceive = (channel: Channel) =>
+    channel[ChannelValue.Receive]?.[1]();
+
+  const clearReceives = () =>
+    mapForEach(channels, (_channelId, channel) => clearReceive(channel));
+
+  const handleInvalid = createInvalidPayloadHandler(
+    webSocket,
+    notifyIgnoredError,
+  );
+  const invalid = (error: Error) => {
+    if (receiving) {
+      receiving = false;
+      disconnected = true;
+      connected = false;
+      clearReceives();
+      connection[2](error);
+      rejectPendingControls(error);
+      failChannels(error);
+      mapForEach(channels, (_channelId, channel) => {
+        clearIncoming(channel);
+        clearOutgoing(channel, true);
+        channel[ChannelValue.Subscribed] = false;
+        channel[ChannelValue.Subscribing] = undefined;
+        channel[ChannelValue.SubscribeConnection] = undefined;
+      });
+      if (flushTimeout) {
+        stopTimeout(flushTimeout);
+        flushTimeout = undefined;
+      }
+      handleInvalid(error);
+    }
+  };
+
   const overflow = (details: string): Error => {
     const error = errorNew(ERROR_SYNC_OVERFLOW, details);
     if (!overflowing && !destroyed) {
       overflowing = true;
+      receiving = false;
       connected = false;
+      clearReceives();
       notifyIgnoredError(error);
       rejectPendingControls(error);
       failChannels(error);
@@ -253,6 +296,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         clearOutgoing(channel, true);
         channel[ChannelValue.Subscribed] = false;
         channel[ChannelValue.Subscribing] = undefined;
+        channel[ChannelValue.SubscribeConnection] = undefined;
       });
       if (flushTimeout) {
         stopTimeout(flushTimeout);
@@ -280,6 +324,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     control: MultipleControl,
     body: any,
     timeoutSeconds: number,
+    onSent?: () => void,
   ): Promise<void> => {
     const requestId = getUniqueId();
     return promiseNew((resolve, reject) => {
@@ -300,9 +345,16 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         collDel(pendingControls, requestId);
         reject(errorNew(ERROR_MULTIPLEX_RESPONSE, control));
       }, timeoutSeconds);
-      mapSet(pendingControls, requestId, [control, resolve, reject, timeout]);
+      mapSet(pendingControls, requestId, [
+        control,
+        body,
+        resolve,
+        reject,
+        timeout,
+      ]);
       try {
         webSocket.send(payload);
+        onSent?.();
       } catch (error) {
         stopTimeout(timeout);
         collDel(pendingControls, requestId);
@@ -503,23 +555,46 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   ) => {
     if (!channel[ChannelValue.Subscribed]) {
       let subscribing = channel[ChannelValue.Subscribing];
-      if (!subscribing) {
-        subscribing = (async () => {
-          await connection[0];
+      const subscribingConnection = connection;
+      if (subscribing?.[0] !== subscribingConnection) {
+        const subscribingPromise = (async () => {
+          await subscribingConnection[0];
+          if (
+            mapGet(channels, channelId) !== channel ||
+            connection !== subscribingConnection ||
+            !connected
+          ) {
+            return;
+          }
           await sendControl(
             MultipleControl.Subscribe,
             channelId,
             timeoutSeconds,
+            () => {
+              if (
+                mapGet(channels, channelId) === channel &&
+                connection === subscribingConnection &&
+                connected
+              ) {
+                channel[ChannelValue.SubscribeConnection] =
+                  subscribingConnection;
+              }
+            },
           );
-          if (mapGet(channels, channelId) === channel && connected) {
+          if (
+            mapGet(channels, channelId) === channel &&
+            connection === subscribingConnection &&
+            connected
+          ) {
             channel[ChannelValue.Subscribed] = true;
             flushOutgoing(channelId, channel);
           }
         })();
+        subscribing = [subscribingConnection, subscribingPromise];
         channel[ChannelValue.Subscribing] = subscribing;
       }
       try {
-        await subscribing;
+        await subscribing[1];
       } finally {
         if (channel[ChannelValue.Subscribing] === subscribing) {
           channel[ChannelValue.Subscribing] = undefined;
@@ -529,7 +604,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   };
 
   const onOpen = () => {
-    if (destroyed || opening?.[0] === connection) {
+    if (destroyed || !receiving || connected || opening?.[0] === connection) {
       return;
     }
     disconnected = false;
@@ -542,7 +617,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
           MULTIPLE_VERSION,
           getConnectionTimeoutSeconds(),
         );
-        if (connection === openingConnection) {
+        if (connection === openingConnection && receiving && !destroyed) {
           connected = true;
           openingConnection[1]();
           mapForEach(channels, (channelId, channel) =>
@@ -591,14 +666,19 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       }
       connection = createConnection();
       mapForEach(channels, (_channelId, channel) => {
+        clearReceive(channel);
         channel[ChannelValue.Subscribed] = false;
         channel[ChannelValue.Subscribing] = undefined;
+        channel[ChannelValue.SubscribeConnection] = undefined;
       });
     }
   };
   const onClose = disconnect;
 
   addWebSocketListener(MESSAGE, ({data}) => {
+    if (!receiving) {
+      return;
+    }
     const payload = data.toString(UTF8);
     if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
       invalid(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
@@ -606,14 +686,23 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     }
     const control = ifMultipleControlPayloadValid(
       payload,
-      (requestId, control, _body) => {
+      (requestId, control, body) => {
+        if (
+          (control == MultipleControl.Subscribe ||
+            control == MultipleControl.Unsubscribe) &&
+          isString(body) &&
+          !isMultipleChannelIdValid(body)
+        ) {
+          overflow('channels');
+          return;
+        }
         const pendingControl = requestId
           ? mapGet(pendingControls, requestId)
           : undefined;
-        if (pendingControl?.[0] == control) {
-          stopTimeout(pendingControl[3]);
+        if (pendingControl?.[0] == control && pendingControl[1] === body) {
+          stopTimeout(pendingControl[4]);
           collDel(pendingControls, requestId);
-          pendingControl[1]();
+          pendingControl[2]();
         }
       },
     );
@@ -623,7 +712,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         const channel = mapGet(channels, channelId);
         if (channel) {
           if (channel[ChannelValue.Receive]) {
-            channel[ChannelValue.Receive](channelPayload);
+            channel[ChannelValue.Receive][0](channelPayload);
           } else {
             queueIncoming(channel, channelPayload);
           }
@@ -631,6 +720,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
           invalid(errorNew(ERROR_SYNC_MESSAGE));
         }
       },
+      () => overflow('channels'),
     );
     if (!control && !channel) {
       invalid(errorNew(ERROR_SYNC_MESSAGE));
@@ -648,11 +738,17 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     timeoutSeconds: number,
     onIgnoredError?: (error: any) => void,
   ) => {
+    if (!receiving || destroyed) {
+      errorThrow(ERROR_MULTIPLEX_SOCKET);
+    }
     if (!isMultipleChannelIdValid(channelId)) {
       errorThrow(ERROR_MULTIPLEX_CHANNEL, channelId);
     }
     if (collHas(channels, channelId)) {
       errorThrow(ERROR_MULTIPLEX_CHANNEL_DUPLICATE, channelId);
+    }
+    if (collSize(channels) >= MAX_MULTIPLE_CHANNELS) {
+      errorThrow(ERROR_SYNC_OVERFLOW, 'channels');
     }
     const channel: Channel = [
       undefined,
@@ -666,6 +762,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       0,
       0,
       0,
+      undefined,
       undefined,
     ];
     mapSet(channels, channelId, channel);
@@ -686,7 +783,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
 
   const registerReceive = (
     channelId: Id,
-    receive: (payload: string) => void,
+    receive: PayloadDecoder,
     fail: (error: Error) => void,
   ) => {
     const channel = mapGet(channels, channelId);
@@ -705,7 +802,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
             queuedCount--;
             queuedSize -= payloadSize;
             incomingIndex++;
-            receive(payload);
+            receive[0](payload);
           }
         },
         () => arrayClear(incoming, incomingIndex),
@@ -718,6 +815,9 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     payloads: string[],
     coalesce?: () => string[],
   ) => {
+    if (!receiving) {
+      return;
+    }
     const channel = mapGet(channels, channelId);
     if (channel) {
       if (
@@ -739,6 +839,9 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
   const destroyIfEmpty = () => {
     if (collIsEmpty(channels) && !destroyed) {
       destroyed = true;
+      const closeWebSocket = receiving && !overflowing;
+      receiving = false;
+      clearReceives();
       const error = errorNew(ERROR_MULTIPLEX_DESTROYED);
       rejectPendingControls(error);
       if (flushTimeout) {
@@ -750,7 +853,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       );
       arrayClear(removeListeners);
       multipleStates.delete(webSocket);
-      if (!overflowing) {
+      if (closeWebSocket) {
         tryReturn(() => webSocket.close());
       }
     }
@@ -760,9 +863,13 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     const channel = mapGet(channels, channelId);
     if (channel) {
       try {
+        clearReceive(channel);
         clearIncoming(channel);
         clearOutgoing(channel, true);
-        if (connected && channel[ChannelValue.Subscribed]) {
+        if (
+          connected &&
+          channel[ChannelValue.SubscribeConnection] === connection
+        ) {
           const payload = createMultipleControlPayload(
             null,
             MultipleControl.Unsubscribe,
@@ -792,6 +899,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     delChannel,
     destroyIfEmpty,
     invalid,
+    payloadBuffer,
     registerReceive,
     send,
   };
@@ -852,7 +960,12 @@ const createMultipleWsSynchronizer = async <
       (receive: Receive, fail) =>
         state.registerReceive(
           channelId,
-          createPayloadReceiver(receive, requestTimeoutSeconds, state.invalid),
+          createPayloadReceiver(
+            receive,
+            requestTimeoutSeconds,
+            state.invalid,
+            state.payloadBuffer,
+          ),
           fail,
         ),
       () => state.delChannel(channelId),
@@ -895,13 +1008,14 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   };
   const registerReceive = (receive: Receive, fail: (error: Error) => void) => {
     const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
-    const receivePayload = createPayloadReceiver(
+    const [receivePayload, clearReceivePayload] = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
       invalid,
     );
     let removeListeners: (() => void)[] = [];
     removeTransportListeners = () => {
+      clearReceivePayload();
       arrayForEach(removeListeners, (removeListener) =>
         tryReturn(removeListener),
       );

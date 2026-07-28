@@ -15,6 +15,7 @@ import {
 } from '../../common/other.ts';
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import {
+  type PayloadDecoder,
   createInvalidPayloadHandler,
   createPayload,
   createPayloadDecoder,
@@ -51,7 +52,7 @@ export class WsServerDurableObject<Env = unknown>
 {
   // @ts-expect-error See blockConcurrencyWhile
   #serverClientSend: (payload: string) => void;
-  #payloadDecoders = weakMapNew<WebSocket, (payload: string) => void>();
+  #payloadDecoders = weakMapNew<WebSocket, PayloadDecoder>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -78,7 +79,7 @@ export class WsServerDurableObject<Env = unknown>
                 (this.#serverClientSend = createPayloadReceiver(
                   receive,
                   requestTimeoutSeconds,
-                )),
+                )[0]),
               noop,
               requestTimeoutSeconds,
             );
@@ -129,11 +130,12 @@ export class WsServerDurableObject<Env = unknown>
         );
         this.#payloadDecoders.set(client, decode);
       }
-      decode(message.toString());
+      decode[0](message.toString());
     });
   }
 
   webSocketClose(client: WebSocket) {
+    this.#payloadDecoders.get(client)?.[1]();
     this.#payloadDecoders.delete(client);
     const [clientId, pathId] = this.ctx.getTags(client);
     this.onClientId(pathId, clientId, -1);

@@ -169,7 +169,7 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
 
   const addLegacyClient = (client: WebSocket, clientId: Id, pathId: Id) => {
     addClientToPath(pathId, clientId, [client]);
-    const decode = createPayloadDecoder(
+    const [decode, clearDecoder] = createPayloadDecoder(
       (toClientId, remainders) =>
         handleDecodedMessage(pathId, clientId, toClientId, remainders),
       1,
@@ -178,8 +178,10 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
     addWebSocketListener(client, MESSAGE, (data) =>
       decode(data.toString(UTF8)),
     );
-    mapGet(webSocketStates, client)![1] = () =>
+    mapGet(webSocketStates, client)![1] = () => {
+      clearDecoder();
       delClientFromPath(pathId, clientId);
+    };
   };
 
   const addMultipleClient = (

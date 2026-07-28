@@ -138,7 +138,13 @@ export const createWsServer = (<
   fragmentSize?: number,
 ) => {
   type Client = [webSocket: WebSocket, channelId?: Id];
-  type Buffered = [clientId: Id, payload: string, coalesceKey?: string];
+  type Buffered = [
+    clientId: Id,
+    payload: string,
+    coalesceKey: string | undefined,
+    webSocket: WebSocket,
+  ];
+  type WebSocketBuffer = [count: number, size: number];
   type ServerClient = [
     state: State,
     persister: PathPersister,
@@ -162,6 +168,7 @@ export const createWsServer = (<
   const clientIdListeners: IdSet2 = mapNew();
   const paths: IdMap<Path> = mapNew();
   const webSockets = setNew<WebSocket>();
+  const buffersByWebSocket = mapNew<WebSocket, WebSocketBuffer>();
   const removeServerListeners: (() => void)[] = [];
   const removeListenersByWebSocket = mapNew<WebSocket, (() => void)[]>();
   let destroying: Promise<void> | undefined;
@@ -222,7 +229,7 @@ export const createWsServer = (<
         serverClient[ServerClient.Send] = createPayloadReceiver(
           receive,
           requestTimeoutSeconds,
-        );
+        )[0];
       },
       noop,
       requestTimeoutSeconds,
@@ -293,11 +300,30 @@ export const createWsServer = (<
     }
   };
 
+  const updateWebSocketBuffer = (
+    webSocket: WebSocket,
+    count: number,
+    size: number,
+  ) => {
+    const webSocketBuffer = mapEnsure(buffersByWebSocket, webSocket, () => [
+      0, 0,
+    ]);
+    webSocketBuffer[0] += count;
+    webSocketBuffer[1] += size;
+    if (!webSocketBuffer[0]) {
+      mapSet(buffersByWebSocket, webSocket);
+    }
+  };
+
+  const delBufferedFromWebSocket = ([, payload, , webSocket]: Buffered) =>
+    updateWebSocketBuffer(webSocket, -1, -getWebSocketPayloadSize(payload));
+
   const clearServerBuffer = (serverClient: ServerClient) => {
     if (serverClient[ServerClient.BufferTimeout]) {
       stopTimeout(serverClient[ServerClient.BufferTimeout]);
       serverClient[ServerClient.BufferTimeout] = undefined;
     }
+    arrayForEach(serverClient[ServerClient.Buffer], delBufferedFromWebSocket);
     serverClient[ServerClient.Buffer] = [];
     serverClient[ServerClient.BufferSize] = 0;
   };
@@ -305,7 +331,13 @@ export const createWsServer = (<
   const delBufferedClient = (serverClient: ServerClient, clientId: Id) => {
     serverClient[ServerClient.Buffer] = arrayFilter(
       serverClient[ServerClient.Buffer],
-      ([bufferedClientId]) => bufferedClientId != clientId,
+      (buffered) => {
+        if (buffered[0] == clientId) {
+          delBufferedFromWebSocket(buffered);
+          return false;
+        }
+        return true;
+      },
     );
     serverClient[ServerClient.BufferSize] = arrayReduce(
       serverClient[ServerClient.Buffer],
@@ -320,10 +352,8 @@ export const createWsServer = (<
   const expireServerBuffer = (path: Path) => {
     const serverClient = path[Path.ServerClient];
     const clients = setNew<WebSocket>();
-    arrayForEach(serverClient[ServerClient.Buffer], ([clientId]) =>
-      ifNotUndefined(mapGet(path[Path.Clients], clientId), ([client]) =>
-        setAdd(clients, client),
-      ),
+    arrayForEach(serverClient[ServerClient.Buffer], ([, , , client]) =>
+      setAdd(clients, client),
     );
     clearServerBuffer(serverClient);
     arrayForEach(collValues(clients), (client) =>
@@ -334,6 +364,10 @@ export const createWsServer = (<
   const bufferMessage = (path: Path, clientId: Id, payload: string) => {
     const serverClient = path[Path.ServerClient];
     const buffer = serverClient[ServerClient.Buffer];
+    const webSocket = mapGet(path[Path.Clients], clientId)?.[0];
+    if (isUndefined(webSocket)) {
+      return;
+    }
     const coalesceKey = getPayloadCoalesceKey(clientId, payload);
     const coalesceIndex = coalesceKey
       ? arrayFindIndex(
@@ -341,14 +375,22 @@ export const createWsServer = (<
           ([, , bufferedKey]) => bufferedKey == coalesceKey,
         )
       : -1;
-    const replacedSize =
-      coalesceIndex > -1
-        ? getWebSocketPayloadSize(buffer[coalesceIndex][1])
-        : 0;
+    const replaced = coalesceIndex > -1 ? buffer[coalesceIndex] : undefined;
+    const replacedSize = isUndefined(replaced)
+      ? 0
+      : getWebSocketPayloadSize(replaced[1]);
     const payloadSize = getWebSocketPayloadSize(payload);
+    const webSocketBuffer = mapGet(buffersByWebSocket, webSocket);
+    const sameWebSocket = replaced?.[3] === webSocket;
     if (
       (coalesceIndex < 0 && size(buffer) >= MAX_WEBSOCKET_QUEUE_SIZE) ||
       serverClient[ServerClient.BufferSize] + payloadSize - replacedSize >
+        MAX_WEBSOCKET_BUFFER_SIZE ||
+      (!sameWebSocket &&
+        (webSocketBuffer?.[0] ?? 0) >= MAX_WEBSOCKET_QUEUE_SIZE) ||
+      (webSocketBuffer?.[1] ?? 0) +
+        payloadSize -
+        (sameWebSocket ? replacedSize : 0) >
         MAX_WEBSOCKET_BUFFER_SIZE
     ) {
       delBufferedClient(serverClient, clientId);
@@ -357,12 +399,14 @@ export const createWsServer = (<
       );
       return;
     }
-    const buffered: Buffered = [clientId, payload, coalesceKey];
+    const buffered: Buffered = [clientId, payload, coalesceKey, webSocket];
     if (coalesceIndex > -1) {
+      delBufferedFromWebSocket(buffer[coalesceIndex]);
       buffer[coalesceIndex] = buffered;
     } else {
       arrayPush(buffer, buffered);
     }
+    updateWebSocketBuffer(webSocket, 1, payloadSize);
     serverClient[ServerClient.BufferSize] += payloadSize - replacedSize;
     serverClient[ServerClient.BufferTimeout] ??= startTimeout(
       () => expireServerBuffer(path),
@@ -537,7 +581,7 @@ export const createWsServer = (<
     pathId: Id,
   ) => {
     const [path, ready] = addClientToPath(pathId, clientId, [client]);
-    const decode = createPayloadDecoder(
+    const [decode, clearDecoder] = createPayloadDecoder(
       (toClientId, remainders) =>
         handleDecodedMessage(path, clientId, toClientId, remainders),
       requestTimeoutSeconds,
@@ -546,9 +590,10 @@ export const createWsServer = (<
     addWebSocketListener(client, MESSAGE, (data) =>
       decode(data.toString(UTF8)),
     );
-    addWebSocketListener(client, CLOSE, () =>
-      delClientFromPath(pathId, path, clientId).catch(handleError),
-    );
+    addWebSocketListener(client, CLOSE, () => {
+      clearDecoder();
+      delClientFromPath(pathId, path, clientId).catch(handleError);
+    });
     await ready;
   };
 
@@ -715,6 +760,7 @@ export const createWsServer = (<
           arrayForEach(removers, (remove) => tryReturn(remove)),
         );
         collClear(removeListenersByWebSocket);
+        collClear(buffersByWebSocket);
         collClear(paths);
         collClear(webSockets);
         const failure = serverFailure[0]
