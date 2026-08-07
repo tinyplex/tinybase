@@ -1,5 +1,3 @@
-import {once} from 'node:events';
-import type {AddressInfo} from 'node:net';
 import type {Content, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
@@ -10,8 +8,12 @@ import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-clien
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
-import {WebSocket, WebSocketServer} from 'ws';
+import {WebSocket} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
+import {
+  createTestWebSocketServer,
+  getTestWebSocketUrl,
+} from '../common/websocket.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 
@@ -50,13 +52,9 @@ type WsEnvironment = {port: number; wsServer: WsServer};
 
 const mockWsSynchronizer: Synchronizable<WsEnvironment> = {
   createEnvironment: async () => {
-    const webSocketServer = new WebSocketServer({
-      host: '127.0.0.1',
-      port: 0,
-    });
-    await once(webSocketServer, 'listening');
+    const [webSocketServer, port] = await createTestWebSocketServer();
     return {
-      port: (webSocketServer.address() as AddressInfo).port,
+      port,
       wsServer: createWsServer(webSocketServer),
     };
   },
@@ -64,7 +62,7 @@ const mockWsSynchronizer: Synchronizable<WsEnvironment> = {
     await wsServer.destroy();
   },
   getSynchronizer: async (store: MergeableStore, {port}) => {
-    const webSocket = new WebSocket(`ws://127.0.0.1:${port}`);
+    const webSocket = new WebSocket(getTestWebSocketUrl(port));
     return await createWsSynchronizer(store, webSocket, 0.04);
   },
   pauseMilliseconds: 50,

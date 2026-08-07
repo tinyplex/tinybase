@@ -3,8 +3,12 @@ import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {expect, test, vi} from 'vitest';
-import {WebSocket, WebSocketServer} from 'ws';
+import {WebSocket} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
+import {
+  createTestWebSocketServer,
+  getTestWebSocketUrl,
+} from '../common/websocket.ts';
 
 const [, getNow, pause] = getTimeFunctions();
 
@@ -431,13 +435,12 @@ test('fragments cannot cross multiplexed reconnects', async () => {
 
 test('oversized multiplexed clients do not affect other clients', async () => {
   const errors: Error[] = [];
-  const server = createWsServer(
-    new WebSocketServer({port: 8058}),
-    undefined,
-    (error) => errors.push(error),
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const server = createWsServer(webSocketServer, undefined, (error) =>
+    errors.push(error),
   );
-  const attacker = new WebSocket('ws://localhost:8058', 'tinybase');
-  const otherClient = new WebSocket('ws://localhost:8058', 'tinybase');
+  const attacker = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
+  const otherClient = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
   await Promise.all(
     [attacker, otherClient].map(
       (webSocket) =>
@@ -462,13 +465,12 @@ test('oversized multiplexed clients do not affect other clients', async () => {
 
 test('malformed multiplexed clients do not affect other clients', async () => {
   const errors: Error[] = [];
-  const server = createWsServer(
-    new WebSocketServer({port: 8058}),
-    undefined,
-    (error) => errors.push(error),
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const server = createWsServer(webSocketServer, undefined, (error) =>
+    errors.push(error),
   );
-  const attacker = new WebSocket('ws://localhost:8058', 'tinybase');
-  const otherClient = new WebSocket('ws://localhost:8058', 'tinybase');
+  const attacker = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
+  const otherClient = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
   const attackerSynchronizer = await createWsSynchronizer(
     createMergeableStore(),
     attacker,
@@ -1297,15 +1299,14 @@ test('legacy and multiple modes cannot share one WebSocket', async () => {
 
 test('multiple stores synchronize over one WebSocket', async () => {
   const createdPaths: string[] = [];
-  const wsServer = createWsServer(
-    new WebSocketServer({port: 8055}),
-    (pathId) => {
-      createdPaths.push(pathId);
-      return undefined;
-    },
-  );
-  const webSocket1 = new WebSocket('ws://localhost:8055/project', 'tinybase');
-  const webSocket2 = new WebSocket('ws://localhost:8055/project', 'tinybase');
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const wsServer = createWsServer(webSocketServer, (pathId) => {
+    createdPaths.push(pathId);
+    return undefined;
+  });
+  const url = getTestWebSocketUrl(port, '/project');
+  const webSocket1 = new WebSocket(url, 'tinybase');
+  const webSocket2 = new WebSocket(url, 'tinybase');
   const filesStore1 = createMergeableStore('files1', getNow);
   const filesStore2 = createMergeableStore('files2', getNow);
   const editorStore1 = createMergeableStore('editor1', getNow);
@@ -1386,8 +1387,9 @@ test('failed unsubscribe cleanup allows resubscription', async () => {
   const cleanupGate = new Promise<void>(
     (resolve) => (releaseCleanup = resolve),
   );
+  const [webSocketServer, port] = await createTestWebSocketServer();
   const wsServer = createWsServer(
-    new WebSocketServer({port: 8067}),
+    webSocketServer,
     ((pathId: string) => {
       if (pathId == 'project/files') {
         const failDestroy = ++filesAttempts == 1;
@@ -1418,7 +1420,10 @@ test('failed unsubscribe cleanup allows resubscription', async () => {
     },
     0.05,
   );
-  const webSocket = new WebSocket('ws://localhost:8067/project', 'tinybase');
+  const webSocket = new WebSocket(
+    getTestWebSocketUrl(port, '/project'),
+    'tinybase',
+  );
   const filesSynchronizer1 = await createWsSynchronizer(
     createMergeableStore(),
     webSocket,
@@ -1477,8 +1482,9 @@ test('socket teardown waits for every multiplexed channel', async () => {
   let firstStarted = false;
   let secondStarted = false;
   let secondFinished = false;
+  const [webSocketServer, port] = await createTestWebSocketServer();
   const wsServer = createWsServer(
-    new WebSocketServer({port: 8076}),
+    webSocketServer,
     ((pathId: string) => {
       const channelId = pathId.split('/').at(-1);
       return (createCustomPersister as any)(
@@ -1505,7 +1511,10 @@ test('socket teardown waits for every multiplexed channel', async () => {
     (error) => errors.push(error),
     0.01,
   );
-  const webSocket = new WebSocket('ws://localhost:8076/project', 'tinybase');
+  const webSocket = new WebSocket(
+    getTestWebSocketUrl(port, '/project'),
+    'tinybase',
+  );
   const firstSynchronizer = await createWsSynchronizer(
     createMergeableStore(),
     webSocket,
@@ -1544,17 +1553,18 @@ test('socket teardown waits for every multiplexed channel', async () => {
 });
 
 test('multiplexed and legacy clients share a logical path', async () => {
-  const wsServer = createWsServer(new WebSocketServer({port: 8056}));
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const wsServer = createWsServer(webSocketServer);
   const multiplexStore = createMergeableStore('multiple', getNow);
   const legacyStore = createMergeableStore('legacy', getNow);
   const multiplexSynchronizer = await createWsSynchronizer(
     multiplexStore,
-    new WebSocket('ws://localhost:8056/project', 'tinybase'),
+    new WebSocket(getTestWebSocketUrl(port, '/project'), 'tinybase'),
     'files',
   );
   const legacySynchronizer = await createWsSynchronizer(
     legacyStore,
-    new WebSocket('ws://localhost:8056/project/files'),
+    new WebSocket(getTestWebSocketUrl(port, '/project/files')),
   );
 
   await Promise.all([
@@ -1580,9 +1590,9 @@ test('multiplexed and legacy clients share a logical path', async () => {
 });
 
 test('multiplexing fails cleanly against a legacy server', async () => {
-  const legacyServer = new WebSocketServer({port: 8057});
+  const [legacyServer, port] = await createTestWebSocketServer();
   legacyServer.on('connection', (client) => client.on('message', () => {}));
-  const webSocket = new WebSocket('ws://localhost:8057', 'tinybase');
+  const webSocket = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
 
   await expect(
     createWsSynchronizer(createMergeableStore(), webSocket, 'files', 0.01),

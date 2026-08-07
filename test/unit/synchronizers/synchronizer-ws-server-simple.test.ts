@@ -5,6 +5,10 @@ import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-serve
 import {beforeEach, expect, test, vi} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
+import {
+  createTestWebSocketServer,
+  getTestWebSocketUrl,
+} from '../common/websocket.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 
@@ -37,14 +41,13 @@ beforeEach(() => {
 });
 
 test('Basics', async () => {
-  const wsServerSimple = createWsServerSimple(
-    new WebSocketServer({port: 8054}),
-  );
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const wsServerSimple = createWsServerSimple(webSocketServer);
 
   const s1 = createMergeableStore('s1', getNow);
   const synchronizer1 = await createWsSynchronizer(
     s1,
-    new WebSocket('ws://localhost:8054'),
+    new WebSocket(getTestWebSocketUrl(port)),
   );
   await synchronizer1.startSync();
   s1.setCell('t1', 'r1', 'c1', 4);
@@ -52,7 +55,7 @@ test('Basics', async () => {
   const s2 = createMergeableStore('s2', getNow);
   const synchronizer2 = await createWsSynchronizer(
     s2,
-    new WebSocket('ws://localhost:8054'),
+    new WebSocket(getTestWebSocketUrl(port)),
   );
   await synchronizer2.startSync();
   s2.setCell('t1', 'r2', 'price', 5);
@@ -72,7 +75,7 @@ test('Basics', async () => {
 });
 
 test('Accessors', async () => {
-  const wssServer = new WebSocketServer({port: 8054});
+  const [wssServer] = await createTestWebSocketServer();
   const wsServerSimple = createWsServerSimple(wssServer);
   expect(wsServerSimple.getWebSocketServer()).toEqual(wssServer);
   expect(wssServer.listenerCount('error')).toBeGreaterThan(0);
@@ -81,7 +84,7 @@ test('Accessors', async () => {
 });
 
 test('Destroy closes clients and removes only owned listeners', async () => {
-  const webSocketServer = new WebSocketServer({port: 8054});
+  const [webSocketServer, port] = await createTestWebSocketServer();
   const onError = () => 0;
   let closeListeners: ReturnType<WebSocket['listeners']> = [];
   let serverClient: WebSocket | undefined;
@@ -91,7 +94,7 @@ test('Destroy closes clients and removes only owned listeners', async () => {
     closeListeners = client.listeners('close');
   });
   const server = createWsServerSimple(webSocketServer);
-  const client = new WebSocket('ws://localhost:8054');
+  const client = new WebSocket(getTestWebSocketUrl(port));
   await new Promise<void>((resolve) => client.on('open', () => resolve()));
   const clientClosed = new Promise<void>((resolve) =>
     client.on('close', () => resolve()),
@@ -127,9 +130,10 @@ test('Destroy clears listeners if server closure rejects', async () => {
 });
 
 test('Malformed traffic is disconnected before relay', async () => {
-  const server = createWsServerSimple(new WebSocketServer({port: 8054}));
-  const attacker = new WebSocket('ws://localhost:8054');
-  const otherClient = new WebSocket('ws://localhost:8054');
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const server = createWsServerSimple(webSocketServer);
+  const attacker = new WebSocket(getTestWebSocketUrl(port));
+  const otherClient = new WebSocket(getTestWebSocketUrl(port));
   const received: any[] = [];
   otherClient.on('message', (message) => received.push(message));
   await Promise.all(
@@ -434,11 +438,10 @@ test('Multiplexed fragment quotas recover', async () => {
 });
 
 test('Multiple stores', async () => {
-  const wsServerSimple = createWsServerSimple(
-    new WebSocketServer({port: 8054}),
-  );
-  const webSocket1 = new WebSocket('ws://localhost:8054', 'tinybase');
-  const webSocket2 = new WebSocket('ws://localhost:8054', 'tinybase');
+  const [webSocketServer, port] = await createTestWebSocketServer();
+  const wsServerSimple = createWsServerSimple(webSocketServer);
+  const webSocket1 = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
+  const webSocket2 = new WebSocket(getTestWebSocketUrl(port), 'tinybase');
   const filesStore1 = createMergeableStore('files1', getNow);
   const filesStore2 = createMergeableStore('files2', getNow);
   const editorStore1 = createMergeableStore('editor1', getNow);

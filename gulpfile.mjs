@@ -718,7 +718,10 @@ const test = async (dirs, coverage) => {
   );
   await vitest.close();
 
-  if (vitest.state.getCountOfFailedTests() > 0) {
+  if (
+    vitest.state.getCountOfFailedTests() > 0 ||
+    vitest.state.getUnhandledErrors().length > 0
+  ) {
     await removeDir(TMP_DIR);
 
     throw 'Test failed';
