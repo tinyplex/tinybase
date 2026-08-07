@@ -25,7 +25,12 @@ import {
   mockOpfs,
   mockSessionStorage,
 } from './common/mocks.ts';
-import {asyncNoop, GetLocationMethod, Persistable} from './common/other.ts';
+import {
+  asyncNoop,
+  GetLocationMethod,
+  getPersistedContentWaiter,
+  Persistable,
+} from './common/other.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 
@@ -46,6 +51,7 @@ describe.each([
   ['customSynchronizer', mockCustomSynchronizer],
   ...getMockDatabases(MERGEABLE_VARIANTS),
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
+  const expectPersistedContent = getPersistedContentWaiter(persistable);
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: MergeableStore;
@@ -297,8 +303,9 @@ describe.each([
       expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       const was = store.getMergeableContent();
       expect(was).toMatchSnapshot();
-      expect(await persistable.get(location)).toMatchSnapshot();
+      expect(await expectPersistedContent(location, was)).toMatchSnapshot();
       await persister.stopAutoSave();
+      await persister.save();
       store.setMergeableContent([
         [{}, '', 0],
         [{}, '', 0],

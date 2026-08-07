@@ -27,7 +27,12 @@ import {
   mockSessionStorage,
   mockYjs,
 } from './common/mocks.ts';
-import {asyncNoop, GetLocationMethod, Persistable} from './common/other.ts';
+import {
+  asyncNoop,
+  GetLocationMethod,
+  getPersistedContentWaiter,
+  Persistable,
+} from './common/other.ts';
 
 tmp.setGracefulCleanup();
 
@@ -48,6 +53,7 @@ describe.each([
   ['automerge', mockAutomerge],
   ...getMockDatabases(ALL_VARIANTS),
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
+  const expectPersistedContent = getPersistedContentWaiter(persistable);
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: Store;
@@ -323,11 +329,9 @@ describe.each([
       store.delValue('v2');
       await pause();
       expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
+      await expectPersistedContent(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
       await persister.stopAutoSave();
+      await persister.save();
       store.delTables().delValues();
       await pause();
       expect(store.getContent()).toEqual([{}, {}]);
