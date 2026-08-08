@@ -53,6 +53,42 @@ describe('Custom Schematizer', () => {
     });
   });
 
+  test('converts union type table schemas', () => {
+    expect(
+      schematizer.toTablesSchema({
+        pets: {
+          properties: {
+            answer: {type: ['string', 'number'], default: 42},
+            payload: {type: ['object', 'array']},
+            score: {
+              type: ['number', 'boolean'],
+              allowNull: true,
+              required: false,
+            },
+          },
+        },
+      }),
+    ).toEqual({
+      pets: {
+        answer: {type: ['string', 'number'], default: 42},
+        payload: {type: ['object', 'array'], required: true},
+        score: {type: ['number', 'boolean'], allowNull: true},
+      },
+    });
+  });
+
+  test('converts union type value schemas', () => {
+    expect(
+      schematizer.toValuesSchema({
+        answer: {type: ['string', 'number'], required: false},
+        payload: {type: ['object', 'array']},
+      }),
+    ).toEqual({
+      answer: {type: ['string', 'number']},
+      payload: {type: ['object', 'array'], required: true},
+    });
+  });
+
   test('filters invalid enum schemas', () => {
     expect(
       schematizer.toValuesSchema({
@@ -63,6 +99,10 @@ describe('Custom Schematizer', () => {
         infinite: {enum: [Infinity]},
         reserved: {enum: ['\uFFFC']},
         both: {type: 'string', enum: ['draft']},
+        unionEmpty: {type: []},
+        unionSingle: {type: ['string']},
+        unionNull: {type: ['string', 'null']},
+        unionInvalid: {type: ['string', 'date']},
       }),
     ).toEqual({});
   });

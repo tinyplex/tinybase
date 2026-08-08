@@ -8,6 +8,7 @@ import type {
 import {arrayEvery} from '../common/array.ts';
 import {
   getCellOrValueType,
+  isCellOrValueSchemaTypes,
   isJsonType,
   isReservedString,
 } from '../common/cell.ts';
@@ -21,14 +22,9 @@ import {
 import {ifNotUndefined, isArray, isNull, isUndefined} from '../common/other.ts';
 import {
   ALLOW_NULL,
-  ARRAY,
-  BOOLEAN,
   DEFAULT,
   ENUM,
-  NUMBER,
-  OBJECT,
   REQUIRED,
-  STRING,
   TYPE,
 } from '../common/strings.ts';
 
@@ -61,12 +57,7 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
 
     if (
       !isEnum &&
-      (!isUndefined(enumValues) ||
-        (type !== STRING &&
-          type !== NUMBER &&
-          type !== BOOLEAN &&
-          type !== OBJECT &&
-          type !== ARRAY))
+      (!isUndefined(enumValues) || !isCellOrValueSchemaTypes(type))
     ) {
       return undefined;
     }
