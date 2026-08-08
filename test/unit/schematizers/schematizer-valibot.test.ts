@@ -68,6 +68,36 @@ describe('Valibot Schematizer', () => {
       });
     });
 
+    test('converts Valibot type unions', () => {
+      expect(
+        schematizer.toTablesSchema({
+          choices: v.object({
+            answer: v.fallback(
+              v.union([v.string(), v.number()]),
+              'unknown',
+            ),
+            payload: v.union([
+              v.array(v.string()),
+              v.record(v.string(), v.string()),
+            ]),
+            score: v.union([v.number(), v.boolean(), v.null_()]),
+            mode: v.union([v.literal('auto'), v.number()]),
+          }),
+        }),
+      ).toEqual({
+        choices: {
+          answer: {type: ['string', 'number'], default: 'unknown'},
+          payload: {type: ['array', 'object'], required: true},
+          score: {
+            type: ['number', 'boolean'],
+            allowNull: true,
+            required: true,
+          },
+          mode: {type: ['string', 'number'], required: true},
+        },
+      });
+    });
+
     test('converts Valibot schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -197,6 +227,16 @@ describe('Valibot Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
+    test('converts Valibot type union values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          answer: v.union([v.string(), v.number()]),
+        }),
+      ).toEqual({
+        answer: {type: ['string', 'number'], required: true},
+      });
+    });
+
     test('converts basic Valibot schemas', () => {
       expect(
         schematizer.toValuesSchema({

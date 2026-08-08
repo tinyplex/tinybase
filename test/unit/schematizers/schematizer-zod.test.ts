@@ -57,6 +57,7 @@ describe('Zod Schematizer', () => {
             direction: z.literal('up'),
             rating: z.enum(['up', 'down']),
             choice: z.literal(['up', 1, true]),
+            unionChoice: z.union([z.enum(['up', 'down']), z.literal(1)]),
             status: z.enum(['draft', 'live']).default('draft'),
           }),
         }),
@@ -65,7 +66,35 @@ describe('Zod Schematizer', () => {
           direction: {enum: ['up'], required: true},
           rating: {enum: ['up', 'down'], required: true},
           choice: {enum: ['up', 1, true], required: true},
+          unionChoice: {enum: ['up', 'down', 1], required: true},
           status: {enum: ['draft', 'live'], default: 'draft'},
+        },
+      });
+    });
+
+    test('converts Zod type unions', () => {
+      expect(
+        schematizer.toTablesSchema({
+          choices: z.object({
+            answer: z.union([z.string(), z.number()]).default('unknown'),
+            payload: z.union([
+              z.array(z.string()),
+              z.record(z.string(), z.string()),
+            ]),
+            score: z.union([z.number(), z.boolean(), z.null()]),
+            mode: z.union([z.literal('auto'), z.number()]),
+          }),
+        }),
+      ).toEqual({
+        choices: {
+          answer: {type: ['string', 'number'], default: 'unknown'},
+          payload: {type: ['array', 'object'], required: true},
+          score: {
+            type: ['number', 'boolean'],
+            allowNull: true,
+            required: true,
+          },
+          mode: {type: ['string', 'number'], required: true},
         },
       });
     });
@@ -130,6 +159,7 @@ describe('Zod Schematizer', () => {
           t1: z.object({
             c1: z.string(),
             c2: z.date(),
+            c3: z.union([z.string(), z.date()]),
           }),
         }),
       ).toEqual({
@@ -208,6 +238,16 @@ describe('Zod Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
+    test('converts Zod type union values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          answer: z.union([z.string(), z.number()]),
+        }),
+      ).toEqual({
+        answer: {type: ['string', 'number'], required: true},
+      });
+    });
+
     test('converts basic Zod schemas', () => {
       expect(
         schematizer.toValuesSchema({

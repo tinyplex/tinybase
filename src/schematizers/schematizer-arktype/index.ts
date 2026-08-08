@@ -6,6 +6,7 @@ import {
   arrayForEach,
   arrayMap,
 } from '../../common/array.ts';
+import {getCellOrValueType} from '../../common/cell.ts';
 import {objIsEmpty, objNew} from '../../common/obj.ts';
 import {
   isArray,
@@ -29,7 +30,15 @@ import {
   UNIT,
   _VALUE,
 } from '../../common/strings.ts';
+import {getTypeOrTypeUnion} from '../common.ts';
 import {createCustomSchematizer} from '../index.ts';
+
+const getSimpleType = (schema: any) =>
+  !isUndefined(schema?.[UNIT])
+    ? getCellOrValueType(schema[UNIT])
+    : !isUndefined(schema?.[SEQUENCE])
+      ? ARRAY
+      : schema?.[DOMAIN] || schema;
 
 const unwrapSchema = (
   schema: any,
@@ -55,7 +64,8 @@ const unwrapSchema = (
 
     const enumItems = arrayFilter(
       schemaData,
-      (item: any) => !isNull(item?.[UNIT] ?? item) && item !== '=',
+      (item: any) =>
+        !isNull(item?.[UNIT]) && !isNull(item) && item !== '=',
     );
     if (
       size(enumItems) > 0 &&
@@ -69,15 +79,14 @@ const unwrapSchema = (
       ];
     }
 
-    if (hasNull) {
-      const nonNullItem = arrayFind(
-        schemaData,
-        (item: any) => !isNull(item?.[UNIT]) && !isNull(item) && item !== '=',
-      );
-      if (nonNullItem) {
-        return unwrapSchema(nonNullItem, defaultValue, true, required);
-      }
-    }
+    return [
+      {
+        [TYPE]: getTypeOrTypeUnion(arrayMap(enumItems, getSimpleType)),
+      },
+      defaultValue,
+      hasNull || allowNull || false,
+      required,
+    ];
   }
 
   if (!isArray(schemaData) && !isUndefined(schemaData?.[SEQUENCE])) {

@@ -72,6 +72,35 @@ describe('TypeBox Schematizer', () => {
       });
     });
 
+    test('converts TypeBox type unions', () => {
+      expect(
+        schematizer.toTablesSchema({
+          choices: Type.Object({
+            answer: Type.Union([Type.String(), Type.Number()], {
+              default: 'unknown',
+            }),
+            payload: Type.Union([
+              Type.Array(Type.String()),
+              Type.Record(Type.String(), Type.String()),
+            ]),
+            score: Type.Union([Type.Number(), Type.Boolean(), Type.Null()]),
+            mode: Type.Union([Type.Literal('auto'), Type.Number()]),
+          }),
+        }),
+      ).toEqual({
+        choices: {
+          answer: {type: ['string', 'number'], default: 'unknown'},
+          payload: {type: ['array', 'object'], required: true},
+          score: {
+            type: ['number', 'boolean'],
+            allowNull: true,
+            required: true,
+          },
+          mode: {type: ['string', 'number'], required: true},
+        },
+      });
+    });
+
     test('converts TypeBox schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -192,6 +221,16 @@ describe('TypeBox Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
+    test('converts TypeBox type union values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          answer: Type.Union([Type.String(), Type.Number()]),
+        }),
+      ).toEqual({
+        answer: {type: ['string', 'number'], required: true},
+      });
+    });
+
     test('converts basic TypeBox schemas', () => {
       expect(
         schematizer.toValuesSchema({

@@ -66,6 +66,28 @@ describe('ArkType Schematizer', () => {
       });
     });
 
+    test('converts ArkType type unions', () => {
+      expect(
+        schematizer.toTablesSchema({
+          choices: type({
+            answer: type('string | number').default('unknown'),
+            score: 'boolean | number | null',
+            mode: '\'auto\' | number',
+          }),
+        }),
+      ).toEqual({
+        choices: {
+          answer: {type: ['number', 'string'], default: 'unknown'},
+          score: {
+            type: ['number', 'boolean'],
+            allowNull: true,
+            required: true,
+          },
+          mode: {type: ['number', 'string'], required: true},
+        },
+      });
+    });
+
     test('converts ArkType schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -177,6 +199,16 @@ describe('ArkType Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
+    test('converts ArkType type union values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          answer: type('string | number'),
+        }),
+      ).toEqual({
+        answer: {type: ['number', 'string'], required: true},
+      });
+    });
+
     test('converts basic ArkType schemas', () => {
       expect(
         schematizer.toValuesSchema({

@@ -27,9 +27,12 @@ import {
   UNION,
   getTypeOf,
 } from '../../common/strings.ts';
+import {getTypeOrTypeUnion} from '../common.ts';
 import {createCustomSchematizer} from '../index.ts';
 
 type TypeNode = any;
+
+const UNDEFINED_KEYWORD = 'UndefinedKeyword';
 
 const unwrapSchema = (
   schema: TypeNode,
@@ -45,9 +48,14 @@ const unwrapSchema = (
     const types = typeAst.types;
     const nonNullTypes = arrayFilter(
       types,
-      (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
+      (t: TypeNode) =>
+        !(t._tag === LITERAL && isNull(t.literal)) &&
+        t._tag !== UNDEFINED_KEYWORD,
     );
-    const hasNull = nonNullTypes.length !== types.length;
+    const hasNull = !!arrayFind(
+      types,
+      (t: TypeNode) => t._tag === LITERAL && isNull(t.literal),
+    );
     if (
       arrayEvery(
         nonNullTypes,
@@ -62,18 +70,12 @@ const unwrapSchema = (
         required,
       ];
     }
-    const nonNullType = arrayFind(
-      types,
-      (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
-    );
     return [
-      {[TYPE]: getSimpleType(nonNullType)},
+      {
+        [TYPE]: getTypeOrTypeUnion(arrayMap(nonNullTypes, getSimpleType)),
+      },
       defaultValue,
-      allowNull ||
-        !!arrayFind(
-          types,
-          (t: TypeNode) => t._tag === LITERAL && isNull(t.literal),
-        ),
+      allowNull || hasNull,
       required,
     ];
   }

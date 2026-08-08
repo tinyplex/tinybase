@@ -8,6 +8,7 @@ import {
 } from '../../common/array.ts';
 import {isUndefined} from '../../common/other.ts';
 import {ANY_OF, DEFAULT, ENUM, NULL, REQUIRED} from '../../common/strings.ts';
+import {getTypeOrTypeUnion} from '../common.ts';
 import {createCustomSchematizer} from '../index.ts';
 
 const TYPEBOX_OPTIONAL = 'Symbol(TypeBox.Optional)';
@@ -45,20 +46,16 @@ const unwrapSchema = (
       ];
     }
 
-    if (
-      firstNonNullType &&
-      arrayEvery(
-        nonNullTypes,
-        (type: any) => type?.type === firstNonNullType.type,
-      )
-    ) {
-      return unwrapSchema(
-        firstNonNullType,
-        defaultValue ?? schema?.[DEFAULT],
-        hasNull || (allowNull ?? false),
-        required,
-      );
-    }
+    return [
+      {
+        type: getTypeOrTypeUnion(
+          arrayMap(nonNullTypes, (type: any) => type?.type),
+        ),
+      },
+      defaultValue ?? schema?.[DEFAULT],
+      hasNull || (allowNull ?? false),
+      required,
+    ];
   }
 
   if (!isUndefined(schema?.[CONST])) {

@@ -64,6 +64,30 @@ describe('Effect Schematizer', () => {
       });
     });
 
+    test('converts Effect type unions', () => {
+      expect(
+        schematizer.toTablesSchema({
+          choices: S.Struct({
+            answer: S.Union(S.String, S.Number),
+            payload: S.Union(S.Array(S.String), S.Struct({key: S.String})),
+            score: S.Union(S.Number, S.Boolean, S.Null),
+            mode: S.Union(S.Literal('auto'), S.Number),
+          }),
+        }),
+      ).toEqual({
+        choices: {
+          answer: {type: ['string', 'number'], required: true},
+          payload: {type: ['array', 'object'], required: true},
+          score: {
+            type: ['number', 'boolean'],
+            allowNull: true,
+            required: true,
+          },
+          mode: {type: ['string', 'number'], required: true},
+        },
+      });
+    });
+
     test('converts Effect schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
@@ -150,6 +174,16 @@ describe('Effect Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
+    test('converts Effect type union values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          answer: S.Union(S.String, S.Number),
+        }),
+      ).toEqual({
+        answer: {type: ['string', 'number'], required: true},
+      });
+    });
+
     test('converts Effect object and array values', () => {
       expect(
         schematizer.toValuesSchema({
