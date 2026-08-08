@@ -41,19 +41,23 @@
  * The CellSchema type describes what values are allowed for each Cell in a
  * Table.
  *
- * A CellSchema specifies the type of the Cell (`string`, `boolean`, `number`,
- * `null` since v7.0, or `object` or `array` since v8.0), and what the default
- * value can be when an explicit value is not specified.
+ * A CellSchema specifies either the type of the Cell (`string`, `boolean`,
+ * `number`, `object`, or `array`), or a non-empty `enum` of exact primitive
+ * values that are allowed. The `type` and `enum` properties are mutually
+ * exclusive, and enum members can be strings, finite numbers, or booleans,
+ * including a mixture of those types.
  *
  * For `object` and `array` types, TinyBase automatically serializes values to
  * and from JSON when storing and retrieving them. Their contents should
  * recursively be strings, finite numbers, booleans, `null`, plain objects, or
  * arrays to ensure they are preserved.
  *
- * If a default value is provided (and its type is correct), you can be certain
- * that that Cell will always be present in a Row. You can also set `required`
- * to `true` to indicate to schema-based typing that the Cell should be present
- * even if it does not have a default.
+ * Set `allowNull` to `true` to also allow `null`, whether the schema uses
+ * `type` or `enum`. A default value is used only when it has the correct type,
+ * is an enum member when applicable, or is `null` when allowed. A valid default
+ * means that the Cell will always be present in a Row. You can also set
+ * `required` to `true` to indicate to schema-based typing that the Cell should
+ * be present even if it does not have a default.
  *
  * If neither a default value nor `required: true` is provided, the Cell may be
  * missing from the Row, but when present you can be guaranteed it is of the
@@ -94,6 +98,19 @@
  *   default: {},
  * };
  * ```
+ * @example
+ * When applied to a Store, this CellSchema allows one of three exact primitive
+ * values, or `null`.
+ *
+ * ```js
+ * import type {CellSchema} from 'tinybase';
+ *
+ * export const ratingCell: CellSchema = {
+ *   enum: ['good', 5, true],
+ *   allowNull: true,
+ *   default: 'good',
+ * };
+ * ```
  * @category Schema
  * @since v1.0.0
  */
@@ -123,19 +140,23 @@
  * The ValueSchema type describes what values are allowed for keyed Values in a
  * Store.
  *
- * A ValueSchema specifies the type of the Value (`string`, `boolean`, `number`,
- * `null` since v7.0, or `object` or `array` since v8.0), and what the default
- * value can be when an explicit value is not specified.
+ * A ValueSchema specifies either the type of the Value (`string`, `boolean`,
+ * `number`, `object`, or `array`), or a non-empty `enum` of exact primitive
+ * values that are allowed. The `type` and `enum` properties are mutually
+ * exclusive, and enum members can be strings, finite numbers, or booleans,
+ * including a mixture of those types.
  *
  * For `object` and `array` types, TinyBase automatically serializes values to
  * and from JSON when storing and retrieving them. Their contents should
  * recursively be strings, finite numbers, booleans, `null`, plain objects, or
  * arrays to ensure they are preserved.
  *
- * If a default value is provided (and its type is correct), you can be certain
- * that the Value will always be present in a Store. You can also set `required`
- * to `true` to indicate to schema-based typing that the Value should be present
- * even if it does not have a default.
+ * Set `allowNull` to `true` to also allow `null`, whether the schema uses
+ * `type` or `enum`. A default value is used only when it has the correct type,
+ * is an enum member when applicable, or is `null` when allowed. A valid default
+ * means that the Value will always be present in a Store. You can also set
+ * `required` to `true` to indicate to schema-based typing that the Value should
+ * be present even if it does not have a default.
  *
  * If neither a default value nor `required: true` is provided, the Value may
  * not be present in the Store, but when present you can be guaranteed it is of
@@ -174,6 +195,19 @@
  * export const cartItems: ValueSchema = {
  *   type: 'array',
  *   default: [],
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this ValueSchema allows one of three exact primitive
+ * values, or `null`.
+ *
+ * ```js
+ * import type {ValueSchema} from 'tinybase';
+ *
+ * export const ratingValue: ValueSchema = {
+ *   enum: ['good', 5, true],
+ *   allowNull: true,
+ *   default: 'good',
  * };
  * ```
  * @category Schema

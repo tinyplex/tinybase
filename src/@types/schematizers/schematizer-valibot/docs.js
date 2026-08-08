@@ -20,8 +20,9 @@
  * TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string picklists, fallback values, nullable flags, and required flags from
- * Valibot schemas. Complex validation rules like min/max, regex patterns,
+ * primitive picklists and literals, fallback values, nullable flags, and
+ * required flags from Valibot schemas. Complex validation rules like min/max,
+ * regex patterns,
  * refinements, and transforms are ignored.
  * @param schemas - A mapping of table IDs to Valibot object schemas.
  * @returns A TinyBase TablesSchema.
@@ -57,8 +58,8 @@
  * The toValuesSchema method converts a mapping of Valibot schemas into a
  * TinyBase ValuesSchema.
  *
- * This method extracts basic type information, string picklists, fallback
- * values, and required flags from Valibot schemas.
+ * This method extracts basic type information, primitive picklists and
+ * literals, fallback values, and required flags from Valibot schemas.
  * @param schemas - A mapping of value IDs to Valibot schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

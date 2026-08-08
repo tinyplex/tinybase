@@ -20,8 +20,9 @@
  * TinyBase TablesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, nullable flags, and required flags from TypeBox
- * schemas. Complex validation rules like min/max, patterns, formats, and
+ * primitive enums and literals, default values, nullable flags, and required
+ * flags from TypeBox schemas. Complex validation rules like min/max, patterns,
+ * formats, and
  * custom validators are ignored.
  * @param schemas - A mapping of table IDs to TypeBox object schemas.
  * @returns A TinyBase TablesSchema.
@@ -58,8 +59,8 @@
  * TinyBase ValuesSchema.
  *
  * This method extracts basic type information (string, number, boolean),
- * string enums, default values, nullable flags, and required flags from TypeBox
- * schemas.
+ * primitive enums and literals, default values, nullable flags, and required
+ * flags from TypeBox schemas.
  * @param schemas - A mapping of value IDs to TypeBox schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

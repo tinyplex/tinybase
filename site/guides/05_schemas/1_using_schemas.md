@@ -56,6 +56,29 @@ When `allowNull` is `true`, the Cell or Value can be set to either its defined
 type or `null`. Without `allowNull`, attempting to set a `null` value will be
 rejected by the schema.
 
+## Restricting Values With Enums
+
+Use `enum` instead of `type` when only specific primitive values are valid. An
+enum must be non-empty and can contain strings, finite numbers, booleans, or a
+mixture of them:
+
+```js
+const store3 = createStore().setValuesSchema({
+  status: {enum: ['available', 'adopted'], default: 'available'},
+  rating: {enum: ['good', 5, true], allowNull: true},
+});
+store3.setValues({status: 'adopted', rating: true});
+store3.setValue('status', 'missing');
+console.log(store3.getValues());
+// -> {status: 'available', rating: true}
+```
+
+Each CellSchema or ValueSchema must have exactly one of `type` or `enum`. The
+`allowNull`, `default`, and `required` properties work in either mode. `null`
+does not go in the enum itself: use `allowNull: true` instead. An enum default
+is used only if it is one of the enum members, or is `null` when null is
+allowed.
+
 ## Adding A TablesSchema
 
 Tabular schemas are similar. Set a TablesSchema prior to loading data into your

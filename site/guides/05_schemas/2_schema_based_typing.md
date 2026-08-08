@@ -49,6 +49,21 @@ when missing. A field with `required: true` is also typed as present, and is
 required in full writes such as setRow method, addRow method, and setValues
 method, without adding `undefined` as a supported data type.
 
+Enum schemas infer the exact union of their members. When a schema is held in a
+variable, use `as const` so TypeScript preserves those literal members:
+
+```ts ignore
+const enumValuesSchema = {
+  status: {enum: ['available', 'adopted'], default: 'available'},
+  rating: {enum: ['good', 5, true], allowNull: true},
+} as const;
+
+const enumStore = createStore().setValuesSchema(enumValuesSchema);
+enumStore.setValue('status', 'adopted'); // OK
+enumStore.setValue('status', 'missing'); // TypeScript error
+enumStore.setValue('rating', null); //       OK
+```
+
 ## Getting the Typed Store
 
 Only the setSchema method, setTablesSchema method, and setValuesSchema method
