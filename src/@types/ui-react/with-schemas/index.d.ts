@@ -886,7 +886,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => Metrics<Schemas> | undefined;
 
-  // useProvideMetrics
+  /// useProvideMetrics
   useProvideMetrics: (metricsId: Id, metrics: Metrics<Schemas>) => void;
 
   /// useMetricIds
@@ -924,7 +924,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Indexes<Schemas> | undefined;
 
-  // useProvideIndexes
+  /// useProvideIndexes
   useProvideIndexes: (indexesId: Id, indexes: Indexes<Schemas>) => void;
 
   /// useIndexIds
@@ -991,7 +991,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Relationships<Schemas> | undefined;
 
-  // useProvideRelationships
+  /// useProvideRelationships
   useProvideRelationships: (
     relationshipsId: Id,
     relationships: Relationships<Schemas>,
@@ -1068,7 +1068,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Queries<Schemas> | undefined;
 
-  // useProvideQueries
+  /// useProvideQueries
   useProvideQueries: (queriesId: Id, queries: Queries<Schemas>) => void;
 
   /// useQueryIds
@@ -1290,7 +1290,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => Checkpoints<Schemas> | undefined;
 
-  // useProvideCheckpoints
+  /// useProvideCheckpoints
   useProvideCheckpoints: (
     checkpointsId: Id,
     checkpoints: Checkpoints<Schemas>,
@@ -1393,7 +1393,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
   ) => Persister<Schemas, Persists.StoreOrMergeableStore> | undefined;
 
-  // useProvidePersister
+  /// useProvidePersister
   useProvidePersister: (
     persisterId: Id,
     persister: AnyPersister<Schemas> | undefined,
@@ -1435,7 +1435,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => Synchronizer<Schemas> | undefined;
 
-  // useProvideSynchronizer
+  /// useProvideSynchronizer
   useProvideSynchronizer: (
     synchronizerId: Id,
     synchronizer: Synchronizer<Schemas> | undefined,

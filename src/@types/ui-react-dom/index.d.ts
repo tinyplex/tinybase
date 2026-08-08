@@ -94,9 +94,9 @@ export type SortedTableInHtmlTableProps = {
   readonly editable?: boolean;
   /// SortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// TableInHtmlTableProps.extraCellsBefore
+  /// SortedTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// TableInHtmlTableProps.extraCellsAfter
+  /// SortedTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
@@ -140,9 +140,9 @@ export type SliceInHtmlTableProps = {
   readonly editable?: boolean;
   /// SliceInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// TableInHtmlTableProps.extraCellsBefore
+  /// SliceInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// TableInHtmlTableProps.extraCellsAfter
+  /// SliceInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -156,9 +156,9 @@ export type RelationshipInHtmlTableProps = {
   readonly editable?: boolean;
   /// RelationshipInHtmlTable.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// TableInHtmlTableProps.extraCellsBefore
+  /// RelationshipInHtmlTable.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// TableInHtmlTableProps.extraCellsAfter
+  /// RelationshipInHtmlTable.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -170,9 +170,9 @@ export type ResultTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ResultTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
-  /// TableInHtmlTableProps.extraCellsBefore
+  /// ResultTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// TableInHtmlTableProps.extraCellsAfter
+  /// ResultTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -192,9 +192,9 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ResultSortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
-  /// TableInHtmlTableProps.extraCellsBefore
+  /// ResultSortedTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// TableInHtmlTableProps.extraCellsAfter
+  /// ResultSortedTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;

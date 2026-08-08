@@ -1,3 +1,4 @@
+/// ui-svelte
 import type {Component, Snippet} from 'svelte';
 import type {
   AllCellIdFromSchema,

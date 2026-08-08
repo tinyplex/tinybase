@@ -94,9 +94,9 @@ export type SortedTableInHtmlTableProps = {
   readonly editable?: boolean;
   /// ui-solid-dom.SortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-solid-dom.SortedTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-solid-dom.SortedTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
   /// ui-solid-dom.SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
@@ -140,9 +140,9 @@ export type SliceInHtmlTableProps = {
   readonly editable?: boolean;
   /// ui-solid-dom.SliceInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-solid-dom.SliceInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-solid-dom.SliceInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -156,9 +156,9 @@ export type RelationshipInHtmlTableProps = {
   readonly editable?: boolean;
   /// ui-solid-dom.RelationshipInHtmlTable.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-solid-dom.RelationshipInHtmlTable.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-solid-dom.RelationshipInHtmlTable.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -170,9 +170,9 @@ export type ResultTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ui-solid-dom.ResultTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-solid-dom.ResultTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-solid-dom.ResultTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -192,9 +192,9 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ui-solid-dom.ResultSortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-solid-dom.ResultSortedTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-solid-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-solid-dom.ResultSortedTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
   /// ui-solid-dom.ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;

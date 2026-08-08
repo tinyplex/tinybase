@@ -92,9 +92,9 @@ export type SortedTableInHtmlTableProps = {
   readonly editable?: boolean;
   /// ui-svelte-dom.SortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-svelte-dom.SortedTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-svelte-dom.SortedTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
   /// ui-svelte-dom.SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
@@ -138,9 +138,9 @@ export type SliceInHtmlTableProps = {
   readonly editable?: boolean;
   /// ui-svelte-dom.SliceInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-svelte-dom.SliceInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-svelte-dom.SliceInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -154,9 +154,9 @@ export type RelationshipInHtmlTableProps = {
   readonly editable?: boolean;
   /// ui-svelte-dom.RelationshipInHtmlTable.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-svelte-dom.RelationshipInHtmlTable.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-svelte-dom.RelationshipInHtmlTable.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -168,9 +168,9 @@ export type ResultTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ui-svelte-dom.ResultTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-svelte-dom.ResultTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-svelte-dom.ResultTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
 };
 
@@ -190,9 +190,9 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsBefore
+  /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.extraCellsBefore
   readonly extraCellsBefore?: ExtraRowCell[];
-  /// ui-svelte-dom.TableInHtmlTableProps.extraCellsAfter
+  /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.extraCellsAfter
   readonly extraCellsAfter?: ExtraRowCell[];
   /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;

@@ -853,7 +853,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     metricsOrMetricsId?: MaybeAccessor<MetricsOrMetricsId<Schemas> | undefined>,
   ) => Accessor<Metrics<Schemas> | undefined>;
 
-  // useProvideMetrics
+  /// ui-solid.useProvideMetrics
   useProvideMetrics: (metricsId: Id, metrics: Metrics<Schemas>) => void;
 
   /// ui-solid.useMetricIds
@@ -893,7 +893,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     indexesOrIndexesId?: MaybeAccessor<IndexesOrIndexesId<Schemas> | undefined>,
   ) => Accessor<Indexes<Schemas> | undefined>;
 
-  // useProvideIndexes
+  /// ui-solid.useProvideIndexes
   useProvideIndexes: (indexesId: Id, indexes: Indexes<Schemas>) => void;
 
   /// ui-solid.useIndexIds
@@ -963,7 +963,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => Accessor<Relationships<Schemas> | undefined>;
 
-  // useProvideRelationships
+  /// ui-solid.useProvideRelationships
   useProvideRelationships: (
     relationshipsId: Id,
     relationships: Relationships<Schemas>,
@@ -1052,7 +1052,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: MaybeAccessor<QueriesOrQueriesId<Schemas> | undefined>,
   ) => Accessor<Queries<Schemas> | undefined>;
 
-  // useProvideQueries
+  /// ui-solid.useProvideQueries
   useProvideQueries: (queriesId: Id, queries: Queries<Schemas>) => void;
 
   /// ui-solid.useQueryIds
@@ -1265,7 +1265,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => Accessor<Checkpoints<Schemas> | undefined>;
 
-  // useProvideCheckpoints
+  /// ui-solid.useProvideCheckpoints
   useProvideCheckpoints: (
     checkpointsId: Id,
     checkpoints: Checkpoints<Schemas>,
@@ -1381,7 +1381,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => Accessor<Persister<Schemas, Persists.StoreOrMergeableStore> | undefined>;
 
-  // useProvidePersister
+  /// ui-solid.useProvidePersister
   useProvidePersister: (
     persisterId: Id,
     persister: AnyPersister<Schemas> | undefined,
@@ -1428,7 +1428,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => Accessor<Synchronizer<Schemas> | undefined>;
 
-  // useProvideSynchronizer
+  /// ui-solid.useProvideSynchronizer
   useProvideSynchronizer: (
     synchronizerId: Id,
     synchronizer: Synchronizer<Schemas> | undefined,
