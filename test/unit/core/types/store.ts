@@ -1831,6 +1831,46 @@ const storeWithRequiredSchemas = store.setSchema(
   createStore().setValuesSchema({value: {enum: []}}); // !
   createStore().setValuesSchema({value: {enum: [null]}}); // !
   createStore().setValuesSchema({
+    value: {enum: [null], allowNull: true}, // !
+  });
+  createStore().setValuesSchema({
     value: {type: 'string', enum: ['draft']}, // !
   });
+})();
+
+// Nullable type schema types
+(() => {
+  const nullableSchemas = {
+    name: {type: 'string', allowNull: true},
+    profile: {type: 'object', default: null, allowNull: true},
+    tags: {type: 'array', default: null, allowNull: true},
+  } as const satisfies {
+    [schemaId: string]: import('tinybase').CellSchema &
+      import('tinybase').ValueSchema &
+      import('tinybase/with-schemas').CellSchema &
+      import('tinybase/with-schemas').ValueSchema;
+  };
+  const nullableStore = store.setSchema(
+    {pets: nullableSchemas},
+    nullableSchemas,
+  );
+
+  nullableStore.getCell('pets', 'pet1', 'name') satisfies
+    string | null | undefined;
+  nullableStore.getCell('pets', 'pet1', 'profile') satisfies AnyObject | null;
+  nullableStore.getCell('pets', 'pet1', 'tags') satisfies AnyArray | null;
+  nullableStore.setCell('pets', 'pet1', 'name', null);
+  nullableStore.setCell('pets', 'pet1', 'profile', null);
+  nullableStore.setCell('pets', 'pet1', 'tags', null);
+  nullableStore.setCell('pets', 'pet1', 'profile', false); // !
+  nullableStore.setCell('pets', 'pet1', 'tags', {}); // !
+
+  nullableStore.getValue('name') satisfies string | null | undefined;
+  nullableStore.getValue('profile') satisfies AnyObject | null;
+  nullableStore.getValue('tags') satisfies AnyArray | null;
+  nullableStore.setValue('name', null);
+  nullableStore.setValue('profile', null);
+  nullableStore.setValue('tags', null);
+  nullableStore.setValue('profile', false); // !
+  nullableStore.setValue('tags', {}); // !
 })();

@@ -2314,7 +2314,17 @@ exports[`Types in store.ts > 1830:41 1`] = `"Type '[]' is not assignable to type
 
 exports[`Types in store.ts > 1831:48 1`] = `"Type 'null' is not assignable to type 'string | number | boolean'."`;
 
-exports[`Types in store.ts > 1833:28 1`] = `"Type 'string[]' is not assignable to type 'readonly [string | number | boolean, ...(string | number | boolean)[]]'."`;
+exports[`Types in store.ts > 1833:19 1`] = `"Type 'null' is not assignable to type 'string | number | boolean'."`;
+
+exports[`Types in store.ts > 1836:28 1`] = `"Type 'string[]' is not assignable to type 'readonly [string | number | boolean, ...(string | number | boolean)[]]'."`;
+
+exports[`Types in store.ts > 1864:51 1`] = `"Argument of type 'false' is not assignable to parameter of type 'Cell<{ pets: { readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }; }, ... 4 more ..., null> | MapCell<....'."`;
+
+exports[`Types in store.ts > 1865:48 1`] = `"Argument of type '{}' is not assignable to parameter of type 'Cell<{ pets: { readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }; }, ... 4 more ..., null> | MapCell<....'."`;
+
+exports[`Types in store.ts > 1873:36 1`] = `"Argument of type 'false' is not assignable to parameter of type 'Value<{ readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }, "profile", "object", never, null> | MapValu...'."`;
+
+exports[`Types in store.ts > 1874:33 1`] = `"Argument of type '{}' is not assignable to parameter of type 'Value<{ readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }, "tags", "array", never, null> | MapValue<...>'."`;
 
 exports[`Types in ui-react.tsx > 137:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 

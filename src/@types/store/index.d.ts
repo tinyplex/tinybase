@@ -38,14 +38,14 @@ export type CellSchema =
     }
   | {
       type: 'object';
-      default?: AnyObject;
+      default?: AnyObject | null;
       allowNull?: boolean;
       required?: boolean;
       enum?: never;
     }
   | {
       type: 'array';
-      default?: AnyArray;
+      default?: AnyArray | null;
       allowNull?: boolean;
       required?: boolean;
       enum?: never;
@@ -89,14 +89,14 @@ export type ValueSchema =
     }
   | {
       type: 'object';
-      default?: AnyObject;
+      default?: AnyObject | null;
       allowNull?: boolean;
       required?: boolean;
       enum?: never;
     }
   | {
       type: 'array';
-      default?: AnyArray;
+      default?: AnyArray | null;
       allowNull?: boolean;
       required?: boolean;
       enum?: never;

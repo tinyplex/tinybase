@@ -28,11 +28,41 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
 /// CellSchema
 export type CellSchema =
-  | {type: 'string'; default?: string; required?: boolean; enum?: never}
-  | {type: 'number'; default?: number; required?: boolean; enum?: never}
-  | {type: 'boolean'; default?: boolean; required?: boolean; enum?: never}
-  | {type: 'object'; default?: AnyObject; required?: boolean; enum?: never}
-  | {type: 'array'; default?: AnyArray; required?: boolean; enum?: never}
+  | {
+      type: 'string';
+      default?: string | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'number';
+      default?: number | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'boolean';
+      default?: boolean | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'object';
+      default?: AnyObject | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'array';
+      default?: AnyArray | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
   | {
       enum: readonly [
         string | number | boolean,
@@ -49,11 +79,41 @@ export type ValuesSchema = {[valueId: Id]: ValueSchema};
 
 /// ValueSchema
 export type ValueSchema =
-  | {type: 'string'; default?: string; required?: boolean; enum?: never}
-  | {type: 'number'; default?: number; required?: boolean; enum?: never}
-  | {type: 'boolean'; default?: boolean; required?: boolean; enum?: never}
-  | {type: 'object'; default?: AnyObject; required?: boolean; enum?: never}
-  | {type: 'array'; default?: AnyArray; required?: boolean; enum?: never}
+  | {
+      type: 'string';
+      default?: string | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'number';
+      default?: number | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'boolean';
+      default?: boolean | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'object';
+      default?: AnyObject | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: 'array';
+      default?: AnyArray | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
   | {
       enum: readonly [
         string | number | boolean,

@@ -258,6 +258,7 @@ describe.each([
       for (const status of [
         {enum: []},
         {enum: [null]},
+        {enum: [null], allowNull: true},
         {enum: [{}]},
         {enum: [Infinity]},
         {type: 'string', enum: ['draft']},
@@ -475,6 +476,7 @@ describe.each([
       for (const status of [
         {enum: []},
         {enum: [null]},
+        {enum: [null], allowNull: true},
         {enum: [[]]},
         {enum: [NaN]},
         {type: 'string', enum: ['draft']},
@@ -3073,11 +3075,19 @@ describe.each([
         t1: {
           c1: {type: 'object', default: {a: 1}},
           c2: {type: 'array', default: [2, 3]},
+          c3: {type: 'object', default: null, allowNull: true},
+          c4: {type: 'array', default: null, allowNull: true},
         },
       };
       const valuesSchema = {
         v1: {type: 'object' as const, default: {a: 1}},
         v2: {type: 'array' as const, default: [2, 3]},
+        v3: {
+          type: 'object' as const,
+          default: null,
+          allowNull: true,
+        },
+        v4: {type: 'array' as const, default: null, allowNull: true},
       };
       const expectedTablesSchema = structuredClone(tablesSchema);
       const expectedValuesSchema = structuredClone(valuesSchema);
