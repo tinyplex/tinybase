@@ -32,11 +32,10 @@ As you can see, when a Values object is used that doesn't quite match those
 constraints, the data is corrected. The `website` Value is ignored, and the
 missing `open` Value gets defaulted to `false`.
 
-TinyBase supports four primitive types in schemas: `string`, `number`,
-`boolean`, and `null`. It also supports `object` and `array` types for richer
-structured data, which are stored internally as JSON-encoded strings. You can
-also allow `null` values for a specific Cell or Value by adding the `allowNull`
-property:
+TinyBase supports the `string`, `number`, and `boolean` primitive types in
+schemas. It also supports `object` and `array` types for richer structured data,
+which are stored internally as JSON-encoded strings. You can allow `null`
+values for any Cell or Value by adding the `allowNull` property:
 
 ```js
 const store2 = createStore().setValuesSchema({
@@ -56,6 +55,26 @@ When `allowNull` is `true`, the Cell or Value can be set to either its defined
 type or `null`. Without `allowNull`, attempting to set a `null` value will be
 rejected by the schema.
 
+## Allowing A Union Of Types
+
+Use an array of two or more type names when a Cell or Value can have more than
+one broad type:
+
+```js
+const unionStore = createStore().setValuesSchema({
+  reference: {type: ['string', 'number'], default: 'unknown'},
+  response: {type: ['boolean', 'object'], allowNull: true},
+});
+unionStore.setValues({reference: 42, response: {accepted: true}});
+console.log(unionStore.getValues());
+// -> {reference: 42, response: {accepted: true}}
+```
+
+A type union can contain `string`, `number`, `boolean`, `object`, and `array`.
+Do not include `null` in the array: use `allowNull: true` instead. A default is
+used only when it matches one of the union's types, or is `null` when null is
+allowed.
+
 ## Restricting Values With Enums
 
 Use `enum` instead of `type` when only specific primitive values are valid. An
@@ -73,11 +92,12 @@ console.log(store3.getValues());
 // -> {status: 'available', rating: true}
 ```
 
-Each CellSchema or ValueSchema must have exactly one of `type` or `enum`. The
-`allowNull`, `default`, and `required` properties work in either mode. `null`
-does not go in the enum itself: use `allowNull: true` instead. An enum default
-is used only if it is one of the enum members, or is `null` when null is
-allowed.
+Each CellSchema or ValueSchema must have exactly one of `type` or `enum`. A
+`type` union allows every value of its listed types, whereas an `enum` allows
+only its listed values. The `allowNull`, `default`, and `required` properties
+work in either mode. `null` does not go in a type union or enum: use
+`allowNull: true` instead. An enum default is used only if it is one of the enum
+members, or is `null` when null is allowed.
 
 ## Adding A TablesSchema
 

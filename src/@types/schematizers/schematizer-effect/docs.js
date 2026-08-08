@@ -19,12 +19,11 @@
  * The toTablesSchema method converts a mapping of Effect Schema struct schemas
  * into a TinyBase TablesSchema.
  *
- * This method extracts basic type information (string, number, boolean),
- * primitive literal unions, nullable flags, optional flags, and required flags
- * from Effect schemas. Default values are not supported as they exist in
- * Effect's runtime transformations, not in the schema AST. Complex validation
- * rules,
- * transformations, and refinements are ignored.
+ * This method extracts basic type information (string, number, boolean), basic
+ * type unions, primitive literal unions, nullable flags, optional flags, and
+ * required flags from Effect schemas. Default values are not supported as they
+ * exist in Effect's runtime transformations, not in the schema AST. Complex
+ * validation rules, transformations, and refinements are ignored.
  * @param schemas - A mapping of table IDs to Effect Schema struct schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -59,10 +58,10 @@
  * The toValuesSchema method converts a mapping of Effect Schema schemas into a
  * TinyBase ValuesSchema.
  *
- * This method extracts basic type information (string, number, boolean),
- * primitive literal unions, nullable flags, optional flags, and required flags
- * from Effect schemas. Default values are not supported as they exist in
- * Effect's runtime transformations, not in the schema AST.
+ * This method extracts basic type information (string, number, boolean), basic
+ * type unions, primitive literal unions, nullable flags, optional flags, and
+ * required flags from Effect schemas. Default values are not supported as they
+ * exist in Effect's runtime transformations, not in the schema AST.
  * @param schemas - A mapping of value IDs to Effect Schema schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

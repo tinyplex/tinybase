@@ -18,10 +18,10 @@
  * The toTablesSchema method converts a mapping of Zod object schemas into a
  * TinyBase TablesSchema.
  *
- * This method extracts basic type information (string, number, boolean),
- * primitive enums and literals, default values, nullable flags, and required
- * flags from Zod schemas. Complex validation rules like min/max, regex
- * patterns, refinements, and transforms are ignored.
+ * This method extracts basic type information (string, number, boolean), basic
+ * type unions, primitive enums and literals, default values, nullable flags,
+ * and required flags from Zod schemas. Complex validation rules like min/max,
+ * regex patterns, refinements, and transforms are ignored.
  * @param schemas - A mapping of table IDs to Zod object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -56,8 +56,8 @@
  * The toValuesSchema method converts a mapping of Zod schemas into a TinyBase
  * ValuesSchema.
  *
- * This method extracts basic type information, primitive enums and literals,
- * default values, and required flags from Zod schemas.
+ * This method extracts basic type information and unions, primitive enums and
+ * literals, default values, and required flags from Zod schemas.
  * @param schemas - A mapping of value IDs to Zod schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

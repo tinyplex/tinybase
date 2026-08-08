@@ -19,11 +19,10 @@
  * The toTablesSchema method converts a mapping of TypeBox object schemas into a
  * TinyBase TablesSchema.
  *
- * This method extracts basic type information (string, number, boolean),
- * primitive enums and literals, default values, nullable flags, and required
- * flags from TypeBox schemas. Complex validation rules like min/max, patterns,
- * formats, and
- * custom validators are ignored.
+ * This method extracts basic type information (string, number, boolean), basic
+ * type unions, primitive enums and literals, default values, nullable flags,
+ * and required flags from TypeBox schemas. Complex validation rules like
+ * min/max, patterns, formats, and custom validators are ignored.
  * @param schemas - A mapping of table IDs to TypeBox object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -58,9 +57,9 @@
  * The toValuesSchema method converts a mapping of TypeBox schemas into a
  * TinyBase ValuesSchema.
  *
- * This method extracts basic type information (string, number, boolean),
- * primitive enums and literals, default values, nullable flags, and required
- * flags from TypeBox schemas.
+ * This method extracts basic type information (string, number, boolean), basic
+ * type unions, primitive enums and literals, default values, nullable flags,
+ * and required flags from TypeBox schemas.
  * @param schemas - A mapping of value IDs to TypeBox schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

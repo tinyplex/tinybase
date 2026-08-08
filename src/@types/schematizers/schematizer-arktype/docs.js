@@ -19,10 +19,10 @@
  * The toTablesSchema method converts a mapping of ArkType object schemas into a
  * TinyBase TablesSchema.
  *
- * This method extracts basic type information (string, number, boolean),
- * primitive literal unions, default values, nullable flags, and required flags
- * from ArkType schemas. Complex validation rules like min/max, regex patterns,
- * refinements, and transforms are ignored.
+ * This method extracts basic type information (string, number, boolean), basic
+ * type unions, primitive literal unions, default values, nullable flags, and
+ * required flags from ArkType schemas. Complex validation rules like min/max,
+ * regex patterns, refinements, and transforms are ignored.
  * @param schemas - A mapping of table IDs to ArkType object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
@@ -57,8 +57,8 @@
  * The toValuesSchema method converts a mapping of ArkType schemas into a
  * TinyBase ValuesSchema.
  *
- * This method extracts basic type information, primitive literal unions,
- * default values, and required flags from ArkType schemas.
+ * This method extracts basic type information and unions, primitive literal
+ * unions, default values, and required flags from ArkType schemas.
  * @param schemas - A mapping of value IDs to ArkType schemas.
  * @returns A TinyBase ValuesSchema.
  * @example

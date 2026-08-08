@@ -41,6 +41,7 @@ const schematizer = createZodSchematizer();
 const store = createStore().setTablesSchema(
   schematizer.toTablesSchema({
     pets: z.object({
+      petId: z.union([z.string(), z.number()]),
       species: z.enum(['dog', 'cat']),
       age: z.number(),
       sold: z.boolean().default(false),
@@ -48,17 +49,18 @@ const store = createStore().setTablesSchema(
   }),
 );
 
-store.setRow('pets', 'fido', {species: 'dog', age: 3});
+store.setRow('pets', 'fido', {petId: 1, species: 'dog', age: 3});
 store.setCell('pets', 'fido', 'species', 'bird');
 console.log(store.getRow('pets', 'fido'));
-// -> {species: 'dog', age: 3, sold: false}
+// -> {petId: 1, species: 'dog', age: 3, sold: false}
 ```
 
 The schematizer performs a best-effort conversion, extracting basic type
-information (string, number, boolean), primitive enums and literals, defaults,
-and nullable and required settings from your Zod schemas. For example, a
-`z.enum(['dog', 'cat'])` field is converted to a native TinyBase enum schema, so
-the Store rejects other species such as `bird`.
+information (string, number, boolean), basic type unions, primitive enums and
+literals, defaults, and nullable and required settings from your Zod schemas.
+For example, `petId` is converted to `type: ['string', 'number']`, while the
+`z.enum(['dog', 'cat'])` field becomes a native TinyBase enum schema so the
+Store rejects other species such as `bird`.
 
 ## Converting Values Schemas
 

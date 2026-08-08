@@ -2,9 +2,9 @@
  * The schematizers module provides utilities for converting schemas from
  * popular validation libraries into TinyBase's schema format.
  *
- * Schematizers perform "best-effort" conversion, extracting basic type,
- * primitive enum and literal, and default information while discarding complex
- * validation rules that TinyBase doesn't support.
+ * Schematizers perform "best-effort" conversion, extracting basic type and
+ * type union, primitive enum and literal, and default information while
+ * discarding complex validation rules that TinyBase doesn't support.
  * @packageDocumentation
  * @module schematizers
  * @since v7.1.0
@@ -52,8 +52,8 @@
  * type, default value, nullable flag, and optional required flag. It should
  * recursively unwrap optional/nullable wrappers and return a tuple of
  * [schema, defaultValue, allowNull, required]. The unwrapped schema should have
- * either a supported `type` property or a non-empty `enum` property containing
- * primitive values.
+ * either a supported `type` property, a `type` array containing two or more
+ * supported types, or a non-empty `enum` property containing primitive values.
  * @param getProperties - A function that extracts the properties/entries/shape
  * from an object schema. Returns undefined if the schema is not an object.
  * @param getPropertyRequired - An optional function that extracts whether an

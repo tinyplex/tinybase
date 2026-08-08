@@ -49,6 +49,23 @@ it when missing. A field with `required: true` is also typed as present, and is
 required in full writes such as setRow method, addRow method, and setValues
 method, without adding `undefined` as a supported data type.
 
+Type unions infer the union of all the broad types in their `type` array. When
+a schema is held in a variable, use `as const` so TypeScript preserves the
+array as a tuple:
+
+```ts ignore
+const unionValuesSchema = {
+  reference: {type: ['string', 'number']},
+  response: {type: ['boolean', 'object'], allowNull: true},
+} as const;
+
+const unionStore = createStore().setValuesSchema(unionValuesSchema);
+unionStore.setValue('reference', 42); //      OK
+unionStore.setValue('reference', 'pet-1'); // OK
+unionStore.setValue('reference', true); //    TypeScript error
+unionStore.setValue('response', null); //      OK
+```
+
 Enum schemas infer the exact union of their members. When a schema is held in a
 variable, use `as const` so TypeScript preserves those literal members:
 
