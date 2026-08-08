@@ -27,6 +27,20 @@ type SchemaType = 'string' | 'number' | 'boolean' | 'object' | 'array';
 
 type SchemaTypeUnion = readonly [SchemaType, SchemaType, ...SchemaType[]];
 
+type CellOrValueFromSchemaType<Type> = Type extends readonly (infer Type)[]
+  ? CellOrValueFromSchemaType<Type>
+  : Type extends 'string'
+    ? string
+    : Type extends 'number'
+      ? number
+      : Type extends 'boolean'
+        ? boolean
+        : Type extends 'object'
+          ? AnyObject
+          : Type extends 'array'
+            ? AnyArray
+            : string | number | boolean | AnyObject | AnyArray;
+
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
@@ -237,17 +251,7 @@ export type Cell<
   CellNull = Schema[TableId][CellId] extends {allowNull: true} ? null : never,
 > =
   | ([CellEnum] extends [never]
-      ? CellType extends 'string'
-        ? string
-        : CellType extends 'number'
-          ? number
-          : CellType extends 'boolean'
-            ? boolean
-            : CellType extends 'object'
-              ? AnyObject
-              : CellType extends 'array'
-                ? AnyArray
-                : string | number | boolean | AnyObject | AnyArray
+      ? CellOrValueFromSchemaType<CellType>
       : CellEnum)
   | CellNull;
 
@@ -298,17 +302,7 @@ export type Value<
   ValueNull = Schema[ValueId] extends {allowNull: true} ? null : never,
 > =
   | ([ValueEnum] extends [never]
-      ? ValueType extends 'string'
-        ? string
-        : ValueType extends 'number'
-          ? number
-          : ValueType extends 'boolean'
-            ? boolean
-            : ValueType extends 'object'
-              ? AnyObject
-              : ValueType extends 'array'
-                ? AnyArray
-                : string | number | boolean | AnyObject | AnyArray
+      ? CellOrValueFromSchemaType<ValueType>
       : ValueEnum)
   | ValueNull;
 

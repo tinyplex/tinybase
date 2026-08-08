@@ -1838,6 +1838,82 @@ const storeWithRequiredSchemas = store.setSchema(
   });
 })();
 
+// Union schema types
+(() => {
+  const unionSchemas = {
+    answer: {type: ['string', 'number']},
+    payload: {type: ['object', 'array'], default: []},
+    score: {type: ['number', 'boolean'], required: true},
+    response: {type: ['string', 'boolean'], allowNull: true},
+    status: {enum: ['draft', 'live']},
+  } as const satisfies {
+    [schemaId: string]: import('tinybase').CellSchema &
+      import('tinybase').ValueSchema &
+      import('tinybase/with-schemas').CellSchema &
+      import('tinybase/with-schemas').ValueSchema;
+  };
+  const unionStore = store.setSchema({pets: unionSchemas}, unionSchemas);
+
+  unionStore.getCell('pets', 'pet1', 'answer') satisfies
+    string | number | undefined;
+  unionStore.getCell('pets', 'pet1', 'payload') satisfies
+    AnyObject | AnyArray;
+  unionStore.getCell('pets', 'pet1', 'score') satisfies number | boolean;
+  unionStore.getCell('pets', 'pet1', 'response') satisfies
+    string | boolean | null | undefined;
+  unionStore.getCell('pets', 'pet1', 'status') satisfies
+    'draft' | 'live' | undefined;
+  unionStore.setRow('pets', 'pet1', {score: true});
+  unionStore.setRow('pets', 'pet1', {score: 'high'}); // !
+  unionStore.setCell('pets', 'pet1', 'answer', 'unknown');
+  unionStore.setCell('pets', 'pet1', 'answer', 42);
+  unionStore.setCell('pets', 'pet1', 'answer', false); // !
+  unionStore.setCell('pets', 'pet1', 'payload', {});
+  unionStore.setCell('pets', 'pet1', 'payload', []);
+  unionStore.setCell('pets', 'pet1', 'payload', 'data'); // !
+  unionStore.setCell('pets', 'pet1', 'response', null);
+  unionStore.setCell('pets', 'pet1', 'response', 1); // !
+  unionStore.addCellListener(
+    'pets',
+    null,
+    'answer',
+    (_store, _tableId, _rowId, _cellId, newCell) => {
+      newCell satisfies string | number;
+      newCell satisfies boolean; // !
+    },
+  );
+
+  unionStore.getValue('answer') satisfies string | number | undefined;
+  unionStore.getValue('payload') satisfies AnyObject | AnyArray;
+  unionStore.getValue('score') satisfies number | boolean;
+  unionStore.getValue('response') satisfies
+    string | boolean | null | undefined;
+  unionStore.getValue('status') satisfies 'draft' | 'live' | undefined;
+  unionStore.setValues({score: 1});
+  unionStore.setValues({score: 'high'}); // !
+  unionStore.setValue('answer', 'unknown');
+  unionStore.setValue('answer', 42);
+  unionStore.setValue('answer', false); // !
+  unionStore.setValue('payload', {});
+  unionStore.setValue('payload', []);
+  unionStore.setValue('payload', 'data'); // !
+  unionStore.setValue('response', null);
+  unionStore.setValue('response', 1); // !
+  unionStore.addValueListener('answer', (_store, _valueId, newValue) => {
+    newValue satisfies string | number;
+    newValue satisfies boolean; // !
+  });
+
+  createStore().setValuesSchema({value: {type: []}}); // !
+  createStore().setValuesSchema({value: {type: ['string']}}); // !
+  createStore().setValuesSchema({
+    value: {type: ['string', 'null']}, // !
+  });
+  createStore().setValuesSchema({
+    value: {type: ['string', 'boolean'], enum: ['draft']}, // !
+  });
+})();
+
 // Nullable type schema types
 (() => {
   const nullableSchemas = {
