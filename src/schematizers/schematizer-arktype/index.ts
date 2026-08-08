@@ -1,11 +1,16 @@
 import type {createArkTypeSchematizer as createArkTypeSchematizerDecl} from '../../@types/schematizers/schematizer-arktype/index.d.ts';
-import {arrayEvery, arrayFind, arrayForEach} from '../../common/array.ts';
+import {
+  arrayEvery,
+  arrayFilter,
+  arrayFind,
+  arrayForEach,
+  arrayMap,
+} from '../../common/array.ts';
 import {objIsEmpty, objNew} from '../../common/obj.ts';
 import {
   isArray,
   isFalse,
   isNull,
-  isString,
   isTrue,
   isUndefined,
   size,
@@ -15,11 +20,11 @@ import {
   BOOLEAN,
   DEFAULT,
   DOMAIN,
+  ENUM,
   KEY,
   OPTIONAL,
   REQUIRED,
   SEQUENCE,
-  STRING,
   TYPE,
   UNIT,
   _VALUE,
@@ -48,8 +53,20 @@ const unwrapSchema = (
       return [{[TYPE]: BOOLEAN}, defaultValue, allowNull ?? false, required];
     }
 
-    if (arrayEvery(schemaData, (item: any) => isString(item?.[UNIT] ?? item))) {
-      return [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required];
+    const enumItems = arrayFilter(
+      schemaData,
+      (item: any) => !isNull(item?.[UNIT] ?? item) && item !== '=',
+    );
+    if (
+      size(enumItems) > 0 &&
+      arrayEvery(enumItems, (item: any) => !isUndefined(item?.[UNIT]))
+    ) {
+      return [
+        {[ENUM]: arrayMap(enumItems, (item: any) => item[UNIT])},
+        defaultValue,
+        hasNull || allowNull || false,
+        required,
+      ];
     }
 
     if (hasNull) {
@@ -67,8 +84,13 @@ const unwrapSchema = (
     return [{[TYPE]: ARRAY}, defaultValue, allowNull ?? false, required];
   }
 
-  if (!isArray(schemaData) && isString(schemaData?.[UNIT])) {
-    return [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required];
+  if (!isArray(schemaData) && !isUndefined(schemaData?.[UNIT])) {
+    return [
+      {[ENUM]: [schemaData[UNIT]]},
+      defaultValue,
+      allowNull ?? false,
+      required,
+    ];
   }
 
   return [

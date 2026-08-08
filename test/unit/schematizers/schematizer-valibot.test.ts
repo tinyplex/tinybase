@@ -50,20 +50,20 @@ describe('Valibot Schematizer', () => {
       });
     });
 
-    test('converts Valibot string picklists', () => {
+    test('converts Valibot enums', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: v.object({
             direction: v.literal('up'),
-            rating: v.picklist(['up', 'down']),
+            rating: v.picklist(['up', 1, true]),
             status: v.fallback(v.picklist(['draft', 'live']), 'draft'),
           }),
         }),
       ).toEqual({
         ratings: {
-          direction: {type: 'string', required: true},
-          rating: {type: 'string', required: true},
-          status: {type: 'string', default: 'draft'},
+          direction: {enum: ['up'], required: true},
+          rating: {enum: ['up', 1, true], required: true},
+          status: {enum: ['draft', 'live'], default: 'draft'},
         },
       });
     });
@@ -211,15 +211,15 @@ describe('Valibot Schematizer', () => {
       });
     });
 
-    test('converts Valibot string picklist values', () => {
+    test('converts Valibot enum values', () => {
       expect(
         schematizer.toValuesSchema({
           direction: v.literal('up'),
-          rating: v.picklist(['up', 'down']),
+          rating: v.picklist(['up', 1, true]),
         }),
       ).toEqual({
-        direction: {type: 'string', required: true},
-        rating: {type: 'string', required: true},
+        direction: {enum: ['up'], required: true},
+        rating: {enum: ['up', 1, true], required: true},
       });
     });
 

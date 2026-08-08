@@ -50,20 +50,22 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod string enums', () => {
+    test('converts Zod enums', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: z.object({
             direction: z.literal('up'),
             rating: z.enum(['up', 'down']),
+            choice: z.literal(['up', 1, true]),
             status: z.enum(['draft', 'live']).default('draft'),
           }),
         }),
       ).toEqual({
         ratings: {
-          direction: {type: 'string', required: true},
-          rating: {type: 'string', required: true},
-          status: {type: 'string', default: 'draft'},
+          direction: {enum: ['up'], required: true},
+          rating: {enum: ['up', 'down'], required: true},
+          choice: {enum: ['up', 1, true], required: true},
+          status: {enum: ['draft', 'live'], default: 'draft'},
         },
       });
     });
@@ -186,7 +188,7 @@ describe('Zod Schematizer', () => {
         JSON.stringify({
           ratings: {
             id: {type: 'string', required: true},
-            rating: {type: 'string', required: true},
+            rating: {enum: ['up', 'down'], required: true},
             score: {type: 'number', required: true},
             notes: {type: 'string', default: ''},
           },
@@ -200,6 +202,8 @@ describe('Zod Schematizer', () => {
         score: 1,
         notes: '',
       });
+      store.setCell('ratings', 'r1', 'rating', 'sideways');
+      expect(store.getCell('ratings', 'r1', 'rating')).toEqual('up');
     });
   });
 
@@ -218,15 +222,17 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod string enum values', () => {
+    test('converts Zod enum values', () => {
       expect(
         schematizer.toValuesSchema({
           direction: z.literal('up'),
           rating: z.enum(['up', 'down']),
+          choice: z.literal(['up', 1, true]),
         }),
       ).toEqual({
-        direction: {type: 'string', required: true},
-        rating: {type: 'string', required: true},
+        direction: {enum: ['up'], required: true},
+        rating: {enum: ['up', 'down'], required: true},
+        choice: {enum: ['up', 1, true], required: true},
       });
     });
 

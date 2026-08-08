@@ -50,16 +50,18 @@ describe('ArkType Schematizer', () => {
       });
     });
 
-    test('converts ArkType string literals', () => {
+    test('converts ArkType enums', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: type({
-            rating: type.enumerated('up', 'down'),
+            direction: type.unit('up'),
+            rating: type.enumerated('up', 1, true),
           }),
         }),
       ).toEqual({
         ratings: {
-          rating: {type: 'string', required: true},
+          direction: {enum: ['up'], required: true},
+          rating: {enum: ['up', 1, true], required: true},
         },
       });
     });
@@ -189,13 +191,15 @@ describe('ArkType Schematizer', () => {
       });
     });
 
-    test('converts ArkType string literal values', () => {
+    test('converts ArkType enum values', () => {
       expect(
         schematizer.toValuesSchema({
-          rating: type.enumerated('up', 'down'),
+          direction: type.unit('up'),
+          rating: type.enumerated('up', 1, true),
         }),
       ).toEqual({
-        rating: {type: 'string', required: true},
+        direction: {enum: ['up'], required: true},
+        rating: {enum: ['up', 1, true], required: true},
       });
     });
 

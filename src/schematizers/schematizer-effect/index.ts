@@ -1,5 +1,11 @@
 import type {createEffectSchematizer as createEffectSchematizerDecl} from '../../@types/schematizers/schematizer-effect/index.d.ts';
-import {arrayFind, arrayForEach} from '../../common/array.ts';
+import {
+  arrayEvery,
+  arrayFilter,
+  arrayFind,
+  arrayForEach,
+  arrayMap,
+} from '../../common/array.ts';
 import {objNew, objSet} from '../../common/obj.ts';
 import {isNull} from '../../common/other.ts';
 import {
@@ -7,6 +13,7 @@ import {
   BOOLEAN,
   BOOLEAN_KEYWORD,
   EMPTY_STRING,
+  ENUM,
   LITERAL,
   NUMBER,
   NUMBER_KEYWORD,
@@ -36,6 +43,25 @@ const unwrapSchema = (
   const type = typeAst._tag;
   if (type === UNION) {
     const types = typeAst.types;
+    const nonNullTypes = arrayFilter(
+      types,
+      (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
+    );
+    const hasNull = nonNullTypes.length !== types.length;
+    if (
+      arrayEvery(
+        nonNullTypes,
+        (t: TypeNode) =>
+          t._tag === LITERAL && getSimpleType(t) !== EMPTY_STRING,
+      )
+    ) {
+      return [
+        {[ENUM]: arrayMap(nonNullTypes, (t: TypeNode) => t.literal)},
+        defaultValue,
+        allowNull || hasNull,
+        required,
+      ];
+    }
     const nonNullType = arrayFind(
       types,
       (t: TypeNode) => !(t._tag === LITERAL && isNull(t.literal)),
@@ -48,6 +74,15 @@ const unwrapSchema = (
           types,
           (t: TypeNode) => t._tag === LITERAL && isNull(t.literal),
         ),
+      required,
+    ];
+  }
+
+  if (type === LITERAL && getSimpleType(typeAst) !== EMPTY_STRING) {
+    return [
+      {[ENUM]: [typeAst.literal]},
+      defaultValue,
+      allowNull || false,
       required,
     ];
   }

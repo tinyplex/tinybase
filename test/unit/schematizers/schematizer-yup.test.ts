@@ -50,16 +50,16 @@ describe('Yup Schematizer', () => {
       });
     });
 
-    test('converts Yup string enums', () => {
+    test('converts Yup enums', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: yup.object({
-            rating: yup.mixed().oneOf(['up', 'down']),
+            rating: yup.mixed().oneOf(['up', 1, true]),
           }),
         }),
       ).toEqual({
         ratings: {
-          rating: {type: 'string'},
+          rating: {enum: ['up', 1, true]},
         },
       });
     });
@@ -180,13 +180,13 @@ describe('Yup Schematizer', () => {
       });
     });
 
-    test('converts Yup string enum values', () => {
+    test('converts Yup enum values', () => {
       expect(
         schematizer.toValuesSchema({
-          rating: yup.mixed().oneOf(['up', 'down']),
+          rating: yup.mixed().oneOf(['up', 1, true]),
         }),
       ).toEqual({
-        rating: {type: 'string'},
+        rating: {enum: ['up', 1, true]},
       });
     });
 

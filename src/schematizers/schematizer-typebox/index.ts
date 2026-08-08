@@ -4,12 +4,14 @@ import {
   arrayFilter,
   arrayFind,
   arrayHas,
+  arrayMap,
 } from '../../common/array.ts';
 import {isUndefined} from '../../common/other.ts';
-import {ANY_OF, DEFAULT, NULL, REQUIRED} from '../../common/strings.ts';
+import {ANY_OF, DEFAULT, ENUM, NULL, REQUIRED} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
 
 const TYPEBOX_OPTIONAL = 'Symbol(TypeBox.Optional)';
+const CONST = 'const';
 
 const isTypeBoxOptional = (schema: any) =>
   !isUndefined(
@@ -33,6 +35,18 @@ const unwrapSchema = (
 
     if (
       firstNonNullType &&
+      arrayEvery(nonNullTypes, (type: any) => !isUndefined(type?.[CONST]))
+    ) {
+      return [
+        {[ENUM]: arrayMap(nonNullTypes, (type: any) => type[CONST])},
+        defaultValue ?? schema?.[DEFAULT],
+        hasNull || allowNull,
+        required,
+      ];
+    }
+
+    if (
+      firstNonNullType &&
       arrayEvery(
         nonNullTypes,
         (type: any) => type?.type === firstNonNullType.type,
@@ -45,6 +59,15 @@ const unwrapSchema = (
         required,
       );
     }
+  }
+
+  if (!isUndefined(schema?.[CONST])) {
+    return [
+      {[ENUM]: [schema[CONST]]},
+      defaultValue ?? schema?.[DEFAULT],
+      allowNull ?? false,
+      required,
+    ];
   }
 
   return [

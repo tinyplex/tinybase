@@ -50,16 +50,24 @@ describe('TypeBox Schematizer', () => {
       });
     });
 
-    test('converts TypeBox string enums', () => {
+    test('converts TypeBox enums', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: Type.Object({
+            direction: Type.Literal('up'),
             rating: Type.Enum({Up: 'up', Down: 'down'}),
+            choice: Type.Union([
+              Type.Literal('up'),
+              Type.Literal(1),
+              Type.Literal(true),
+            ]),
           }),
         }),
       ).toEqual({
         ratings: {
-          rating: {type: 'string', required: true},
+          direction: {enum: ['up'], required: true},
+          rating: {enum: ['up', 'down'], required: true},
+          choice: {enum: ['up', 1, true], required: true},
         },
       });
     });
@@ -198,13 +206,21 @@ describe('TypeBox Schematizer', () => {
       });
     });
 
-    test('converts TypeBox string enum values', () => {
+    test('converts TypeBox enum values', () => {
       expect(
         schematizer.toValuesSchema({
+          direction: Type.Literal('up'),
           rating: Type.Enum({Up: 'up', Down: 'down'}),
+          choice: Type.Union([
+            Type.Literal('up'),
+            Type.Literal(1),
+            Type.Literal(true),
+          ]),
         }),
       ).toEqual({
-        rating: {type: 'string', required: true},
+        direction: {enum: ['up'], required: true},
+        rating: {enum: ['up', 'down'], required: true},
+        choice: {enum: ['up', 1, true], required: true},
       });
     });
 

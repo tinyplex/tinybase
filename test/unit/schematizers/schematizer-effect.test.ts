@@ -48,16 +48,18 @@ describe('Effect Schematizer', () => {
       });
     });
 
-    test('converts Effect string literals', () => {
+    test('converts Effect enums', () => {
       expect(
         schematizer.toTablesSchema({
           ratings: S.Struct({
-            rating: S.Literal('up', 'down'),
+            direction: S.Literal('up'),
+            rating: S.Literal('up', 1, true),
           }),
         }),
       ).toEqual({
         ratings: {
-          rating: {type: 'string', required: true},
+          direction: {enum: ['up'], required: true},
+          rating: {enum: ['up', 1, true], required: true},
         },
       });
     });
@@ -174,13 +176,15 @@ describe('Effect Schematizer', () => {
       });
     });
 
-    test('converts Effect string literal values', () => {
+    test('converts Effect enum values', () => {
       expect(
         schematizer.toValuesSchema({
-          rating: S.Literal('up', 'down'),
+          direction: S.Literal('up'),
+          rating: S.Literal('up', 1, true),
         }),
       ).toEqual({
-        rating: {type: 'string', required: true},
+        direction: {enum: ['up'], required: true},
+        rating: {enum: ['up', 1, true], required: true},
       });
     });
 

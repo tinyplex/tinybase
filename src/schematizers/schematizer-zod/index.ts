@@ -1,18 +1,15 @@
 import type {createZodSchematizer as createZodSchematizerDecl} from '../../@types/schematizers/schematizer-zod/index.d.ts';
-import {arrayEvery} from '../../common/array.ts';
-import {isString} from '../../common/other.ts';
+import {objValues} from '../../common/obj.ts';
 import {
   DEFAULT,
+  ENUM,
   NULLABLE,
   OBJECT,
   OPTIONAL,
   RECORD,
-  STRING,
-  TYPE,
 } from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
 
-const ENUM = 'enum';
 const LITERAL = 'literal';
 
 const getDef = (schema: any) => schema?.def ?? schema?._zod?.def;
@@ -35,9 +32,19 @@ const unwrapSchema = (
         : type === RECORD
           ? [{type: OBJECT}, defaultValue, allowNull ?? false, required]
           : type === ENUM
-            ? [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required]
-            : type === LITERAL && arrayEvery(def.values, isString)
-              ? [{[TYPE]: STRING}, defaultValue, allowNull ?? false, required]
+            ? [
+                {[ENUM]: objValues(def.entries)},
+                defaultValue,
+                allowNull ?? false,
+                required,
+              ]
+            : type === LITERAL
+              ? [
+                  {[ENUM]: def.values},
+                  defaultValue,
+                  allowNull ?? false,
+                  required,
+                ]
               : [schema, defaultValue, allowNull ?? false, required];
 };
 

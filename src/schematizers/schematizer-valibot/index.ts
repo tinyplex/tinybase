@@ -1,15 +1,12 @@
 import type {createValibotSchematizer as createValibotSchematizerDecl} from '../../@types/schematizers/schematizer-valibot/index.d.ts';
-import {arrayEvery} from '../../common/array.ts';
-import {isString} from '../../common/other.ts';
 import {
   DEFAULT,
+  ENUM,
   FALLBACK,
   NULLABLE,
   OBJECT,
   OPTIONAL,
   RECORD,
-  STRING,
-  TYPE,
   WRAPPED,
 } from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
@@ -41,16 +38,16 @@ const unwrapSchema = (
             allowNull ?? false,
             required,
           ]
-        : type === PICKLIST && arrayEvery(schema.options, isString)
+        : type === PICKLIST
           ? [
-              {[TYPE]: STRING},
+              {[ENUM]: schema.options},
               defaultValue ?? schema?.[FALLBACK],
               allowNull ?? false,
               required,
             ]
-          : type === LITERAL && isString(schema.literal)
+          : type === LITERAL
             ? [
-                {[TYPE]: STRING},
+                {[ENUM]: [schema.literal]},
                 defaultValue ?? schema?.[FALLBACK],
                 allowNull ?? false,
                 required,
