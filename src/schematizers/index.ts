@@ -5,6 +5,12 @@ import type {
   ValueSchema,
   ValuesSchema,
 } from '../@types/store/index.d.ts';
+import {arrayEvery} from '../common/array.ts';
+import {
+  getCellOrValueType,
+  isJsonType,
+  isReservedString,
+} from '../common/cell.ts';
 import {
   objForEach,
   objFreeze,
@@ -12,12 +18,13 @@ import {
   objNew,
   objSet,
 } from '../common/obj.ts';
-import {ifNotUndefined, isUndefined} from '../common/other.ts';
+import {ifNotUndefined, isArray, isNull, isUndefined} from '../common/other.ts';
 import {
   ALLOW_NULL,
   ARRAY,
   BOOLEAN,
   DEFAULT,
+  ENUM,
   NUMBER,
   OBJECT,
   REQUIRED,
@@ -37,18 +44,36 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
     const [unwrapped, defaultValue, allowNull, unwrappedRequired = required] =
       unwrapSchema(schema, undefined, undefined, required);
     const type = unwrapped?.type;
+    const enumValues = unwrapped?.[ENUM];
+    const isEnum =
+      isUndefined(type) &&
+      isArray(enumValues) &&
+      !isUndefined(enumValues[0]) &&
+      arrayEvery(enumValues, (enumValue) => {
+        const enumType = getCellOrValueType(enumValue);
+        return (
+          !isNull(enumValue) &&
+          !isUndefined(enumType) &&
+          !isJsonType(enumType) &&
+          !isReservedString(enumValue)
+        );
+      });
 
     if (
-      type !== STRING &&
-      type !== NUMBER &&
-      type !== BOOLEAN &&
-      type !== OBJECT &&
-      type !== ARRAY
+      !isEnum &&
+      (!isUndefined(enumValues) ||
+        (type !== STRING &&
+          type !== NUMBER &&
+          type !== BOOLEAN &&
+          type !== OBJECT &&
+          type !== ARRAY))
     ) {
       return undefined;
     }
 
-    const cellOrValueSchema: CellSchema = {[TYPE]: type} as CellSchema;
+    const cellOrValueSchema: CellSchema = (
+      isEnum ? {[ENUM]: enumValues} : {[TYPE]: type}
+    ) as CellSchema;
     ifNotUndefined(defaultValue, (defaultValue) => {
       (cellOrValueSchema as any)[DEFAULT] = defaultValue;
     });
