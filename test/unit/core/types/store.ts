@@ -1767,3 +1767,70 @@ const storeWithRequiredSchemas = store.setSchema(
     sorter: extraArgSorter,
   });
 })();
+
+// Enum schema types
+(() => {
+  const enumTablesSchema = {
+    pets: {
+      status: {enum: ['draft', 'live']},
+      featured: {enum: [true], default: true},
+      rating: {enum: [1, 2], required: true},
+      name: {enum: ['fido'], allowNull: true},
+    },
+  } as const;
+  const enumValuesSchema = {
+    status: {enum: ['draft', 'live']},
+    featured: {enum: [true], default: true},
+    rating: {enum: [1, 2], required: true},
+    name: {enum: ['fido'], allowNull: true},
+  } as const;
+  const storeWithEnumSchemas = store.setSchema(
+    enumTablesSchema,
+    enumValuesSchema,
+  );
+
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'status') satisfies
+    'draft' | 'live' | undefined;
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'status') satisfies 'archived'; // !
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'featured') satisfies true;
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'featured') satisfies undefined; // !
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'rating') satisfies 1 | 2;
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'rating') satisfies 3; // !
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'name') satisfies
+    'fido' | null | undefined;
+  storeWithEnumSchemas.getCell('pets', 'pet1', 'name') satisfies 'felix'; // !
+
+  storeWithEnumSchemas.setRow('pets', 'pet1', {rating: 1});
+  storeWithEnumSchemas.setRow('pets', 'pet1', {rating: 3}); // !
+  storeWithEnumSchemas.setCell('pets', 'pet1', 'status', 'draft');
+  storeWithEnumSchemas.setCell('pets', 'pet1', 'status', 'archived'); // !
+  storeWithEnumSchemas.setCell('pets', 'pet1', 'featured', true);
+  storeWithEnumSchemas.setCell('pets', 'pet1', 'featured', false); // !
+  storeWithEnumSchemas.setCell('pets', 'pet1', 'name', null);
+  storeWithEnumSchemas.setCell('pets', 'pet1', 'name', 'felix'); // !
+
+  storeWithEnumSchemas.getValue('status') satisfies
+    'draft' | 'live' | undefined;
+  storeWithEnumSchemas.getValue('status') satisfies 'archived'; // !
+  storeWithEnumSchemas.getValue('featured') satisfies true;
+  storeWithEnumSchemas.getValue('featured') satisfies undefined; // !
+  storeWithEnumSchemas.getValue('rating') satisfies 1 | 2;
+  storeWithEnumSchemas.getValue('rating') satisfies 3; // !
+  storeWithEnumSchemas.getValue('name') satisfies 'fido' | null | undefined;
+  storeWithEnumSchemas.getValue('name') satisfies 'felix'; // !
+
+  storeWithEnumSchemas.setValues({rating: 2});
+  storeWithEnumSchemas.setValues({rating: 3}); // !
+  storeWithEnumSchemas.setValue('status', 'live');
+  storeWithEnumSchemas.setValue('status', 'archived'); // !
+  storeWithEnumSchemas.setValue('featured', true);
+  storeWithEnumSchemas.setValue('featured', false); // !
+  storeWithEnumSchemas.setValue('name', null);
+  storeWithEnumSchemas.setValue('name', 'felix'); // !
+
+  createStore().setValuesSchema({value: {enum: []}}); // !
+  createStore().setValuesSchema({value: {enum: [null]}}); // !
+  createStore().setValuesSchema({
+    value: {type: 'string', enum: ['draft']}, // !
+  });
+})();

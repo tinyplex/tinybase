@@ -151,17 +151,27 @@ export type Cell<
   TableId extends TableIdFromSchema<Schema>,
   CellId extends CellIdFromSchema<Schema, TableId>,
   CellType = Schema[TableId][CellId]['type'],
-> = CellType extends 'string'
-  ? string
-  : CellType extends 'number'
-    ? number
-    : CellType extends 'boolean'
-      ? boolean
-      : CellType extends 'object'
-        ? AnyObject
-        : CellType extends 'array'
-          ? AnyArray
-          : string | number | boolean | AnyObject | AnyArray;
+  CellEnum = Schema[TableId][CellId] extends {
+    enum: readonly (infer Enum)[];
+  }
+    ? Enum
+    : never,
+  CellNull = Schema[TableId][CellId] extends {allowNull: true} ? null : never,
+> =
+  | ([CellEnum] extends [never]
+      ? CellType extends 'string'
+        ? string
+        : CellType extends 'number'
+          ? number
+          : CellType extends 'boolean'
+            ? boolean
+            : CellType extends 'object'
+              ? AnyObject
+              : CellType extends 'array'
+                ? AnyArray
+                : string | number | boolean | AnyObject | AnyArray
+      : CellEnum)
+  | CellNull;
 
 /// CellOrUndefined
 export type CellOrUndefined<
@@ -204,17 +214,25 @@ export type Value<
   Schema extends OptionalValuesSchema,
   ValueId extends ValueIdFromSchema<Schema>,
   ValueType = Schema[ValueId]['type'],
-> = ValueType extends 'string'
-  ? string
-  : ValueType extends 'number'
-    ? number
-    : ValueType extends 'boolean'
-      ? boolean
-      : ValueType extends 'object'
-        ? AnyObject
-        : ValueType extends 'array'
-          ? AnyArray
-          : string | number | boolean | AnyObject | AnyArray;
+  ValueEnum = Schema[ValueId] extends {enum: readonly (infer Enum)[]}
+    ? Enum
+    : never,
+  ValueNull = Schema[ValueId] extends {allowNull: true} ? null : never,
+> =
+  | ([ValueEnum] extends [never]
+      ? ValueType extends 'string'
+        ? string
+        : ValueType extends 'number'
+          ? number
+          : ValueType extends 'boolean'
+            ? boolean
+            : ValueType extends 'object'
+              ? AnyObject
+              : ValueType extends 'array'
+                ? AnyArray
+                : string | number | boolean | AnyObject | AnyArray
+      : ValueEnum)
+  | ValueNull;
 
 /// ValueOrUndefined
 export type ValueOrUndefined<

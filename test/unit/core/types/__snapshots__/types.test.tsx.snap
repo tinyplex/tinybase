@@ -192,7 +192,7 @@ exports[`Types in mergeable-store.ts > 153:39 1`] = `"Argument of type '"c2"' is
 
 exports[`Types in mergeable-store.ts > 154:45 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
-exports[`Types in mergeable-store.ts > 155:45 1`] = `"Argument of type '() => "a"' is not assignable to parameter of type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
+exports[`Types in mergeable-store.ts > 155:45 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
 exports[`Types in mergeable-store.ts > 156:27 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
@@ -210,7 +210,7 @@ exports[`Types in mergeable-store.ts > 168:37 1`] = `"Object literal may only sp
 
 exports[`Types in mergeable-store.ts > 172:34 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
-exports[`Types in mergeable-store.ts > 173:34 1`] = `"Argument of type '() => "a"' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
+exports[`Types in mergeable-store.ts > 173:34 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
 exports[`Types in mergeable-store.ts > 174:28 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
@@ -1388,7 +1388,7 @@ exports[`Types in store.ts > 253:39 1`] = `"Argument of type '"c2"' is not assig
 
 exports[`Types in store.ts > 254:45 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
-exports[`Types in store.ts > 255:45 1`] = `"Argument of type '() => "a"' is not assignable to parameter of type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
+exports[`Types in store.ts > 255:45 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
 exports[`Types in store.ts > 256:27 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
@@ -1406,7 +1406,7 @@ exports[`Types in store.ts > 268:37 1`] = `"Object literal may only specify know
 
 exports[`Types in store.ts > 272:34 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
-exports[`Types in store.ts > 273:34 1`] = `"Argument of type '() => "a"' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
+exports[`Types in store.ts > 273:34 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
 exports[`Types in store.ts > 274:28 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
@@ -1456,15 +1456,15 @@ exports[`Types in store.ts > 329:49 1`] = `"Argument of type 'number' is not ass
 
 exports[`Types in store.ts > 330:49 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'AnyObject | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "co">'."`;
 
-exports[`Types in store.ts > 331:49 1`] = `"Argument of type '() => "dog"' is not assignable to parameter of type 'AnyObject | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "co">'."`;
+exports[`Types in store.ts > 331:49 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'AnyObject | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "co">'."`;
 
-exports[`Types in store.ts > 336:49 1`] = `"Argument of type 'string' is not assignable to parameter of type 'AnyArray | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "ca">'."`;
+exports[`Types in store.ts > 336:49 1`] = `"Argument of type 'string' is not assignable to parameter of type 'Cell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, ... 4 more ..., never> | MapCell<...>'."`;
 
-exports[`Types in store.ts > 337:49 1`] = `"Argument of type 'number' is not assignable to parameter of type 'AnyArray | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "ca">'."`;
+exports[`Types in store.ts > 337:49 1`] = `"Argument of type 'number' is not assignable to parameter of type 'Cell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, ... 4 more ..., never> | MapCell<...>'."`;
 
-exports[`Types in store.ts > 338:49 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'AnyArray | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "ca">'."`;
+exports[`Types in store.ts > 338:49 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'Cell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, ... 4 more ..., never> | MapCell<...>'."`;
 
-exports[`Types in store.ts > 339:49 1`] = `"Argument of type '() => "dog"' is not assignable to parameter of type 'AnyArray | MapCell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, "t1", "ca">'."`;
+exports[`Types in store.ts > 339:49 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'Cell<{ readonly t1: { readonly co: { readonly type: "object"; }; readonly cod: { readonly type: "object"; readonly default: {}; }; readonly ca: { readonly type: "array"; }; readonly cad: { readonly type: "array"; readonly default: readonly []; }; }; }, ... 4 more ..., never> | MapCell<...>'."`;
 
 exports[`Types in store.ts > 344:38 1`] = `"Argument of type 'string' is not assignable to parameter of type 'AnyObject | MapValue<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "vo">'."`;
 
@@ -1474,13 +1474,13 @@ exports[`Types in store.ts > 346:38 1`] = `"Argument of type 'boolean' is not as
 
 exports[`Types in store.ts > 347:38 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'AnyObject | MapValue<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "vo">'."`;
 
-exports[`Types in store.ts > 352:38 1`] = `"Argument of type 'string' is not assignable to parameter of type 'AnyArray | MapValue<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va">'."`;
+exports[`Types in store.ts > 352:38 1`] = `"Argument of type 'string' is not assignable to parameter of type 'Value<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va", "array", never, never> | MapValue<...>'."`;
 
-exports[`Types in store.ts > 353:38 1`] = `"Argument of type 'number' is not assignable to parameter of type 'AnyArray | MapValue<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va">'."`;
+exports[`Types in store.ts > 353:38 1`] = `"Argument of type 'number' is not assignable to parameter of type 'Value<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va", "array", never, never> | MapValue<...>'."`;
 
-exports[`Types in store.ts > 354:38 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'AnyArray | MapValue<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va">'."`;
+exports[`Types in store.ts > 354:38 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'Value<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va", "array", never, never> | MapValue<...>'."`;
 
-exports[`Types in store.ts > 355:38 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'AnyArray | MapValue<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va">'."`;
+exports[`Types in store.ts > 355:38 1`] = `"Argument of type '() => string' is not assignable to parameter of type 'Value<{ readonly vo: { readonly type: "object"; }; readonly vod: { readonly type: "object"; readonly default: {}; }; readonly va: { readonly type: "array"; }; readonly vad: { readonly type: "array"; readonly default: readonly []; }; }, "va", "array", never, never> | MapValue<...>'."`;
 
 exports[`Types in store.ts > 362:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
@@ -2278,6 +2278,44 @@ exports[`Types in store.ts > 1761:4 1`] = `"Argument of type '() => string' is n
 
 exports[`Types in store.ts > 1764:19 1`] = `"No overload matches this call."`;
 
+exports[`Types in store.ts > 1793:57 1`] = `"Type 'DefaultedCellFromSchema<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "status">' does not satisfy the expected type '"archived"'."`;
+
+exports[`Types in store.ts > 1795:59 1`] = `"Type 'true' does not satisfy the expected type 'undefined'."`;
+
+exports[`Types in store.ts > 1797:57 1`] = `"Type 'DefaultedCellFromSchema<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "rating">' does not satisfy the expected type '3'."`;
+
+exports[`Types in store.ts > 1800:55 1`] = `"Type 'DefaultedCellFromSchema<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "name">' does not satisfy the expected type '"felix"'."`;
+
+exports[`Types in store.ts > 1803:47 1`] = `"Type '3' is not assignable to type '2 | 1'."`;
+
+exports[`Types in store.ts > 1805:57 1`] = `"Argument of type '"archived"' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, ... 4 more ..., never> | MapCell<...>'."`;
+
+exports[`Types in store.ts > 1807:59 1`] = `"Argument of type 'false' is not assignable to parameter of type 'true | MapCell<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "featured">'."`;
+
+exports[`Types in store.ts > 1809:55 1`] = `"Argument of type '"felix"' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, ... 4 more ..., null> | MapCell<...>'."`;
+
+exports[`Types in store.ts > 1813:42 1`] = `"Type 'DefaultedValueFromSchema<{ readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }, "status">' does not satisfy the expected type '"archived"'."`;
+
+exports[`Types in store.ts > 1815:44 1`] = `"Type 'true' does not satisfy the expected type 'undefined'."`;
+
+exports[`Types in store.ts > 1817:42 1`] = `"Type 'DefaultedValueFromSchema<{ readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }, "rating">' does not satisfy the expected type '3'."`;
+
+exports[`Types in store.ts > 1819:40 1`] = `"Type 'DefaultedValueFromSchema<{ readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }, "name">' does not satisfy the expected type '"felix"'."`;
+
+exports[`Types in store.ts > 1822:34 1`] = `"Type '3' is not assignable to type '2 | 1'."`;
+
+exports[`Types in store.ts > 1824:42 1`] = `"Argument of type '"archived"' is not assignable to parameter of type 'Value<{ readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }, "status", unknown, "draft" | "live", never> | MapValue<...>'."`;
+
+exports[`Types in store.ts > 1826:44 1`] = `"Argument of type 'false' is not assignable to parameter of type 'true | MapValue<{ readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }, "featured">'."`;
+
+exports[`Types in store.ts > 1828:40 1`] = `"Argument of type '"felix"' is not assignable to parameter of type 'Value<{ readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }, "name", unknown, "fido", null> | MapValue<...>'."`;
+
+exports[`Types in store.ts > 1830:41 1`] = `"Type '[]' is not assignable to type 'readonly [string | number | boolean, ...(string | number | boolean)[]]'."`;
+
+exports[`Types in store.ts > 1831:48 1`] = `"Type 'null' is not assignable to type 'string | number | boolean'."`;
+
+exports[`Types in store.ts > 1833:28 1`] = `"Type 'string[]' is not assignable to type 'readonly [string | number | boolean, ...(string | number | boolean)[]]'."`;
+
 exports[`Types in ui-react.tsx > 137:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-react.tsx > 138:23 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
@@ -2370,7 +2408,7 @@ exports[`Types in ui-react.tsx > 270:24 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-react.tsx > 277:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in ui-react.tsx > 285:38 1`] = `"Type '{ c2: 1; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types in ui-react.tsx > 285:38 1`] = `"Type '{ c2: number; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-react.tsx > 286:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | GetId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], unknown, "t0" | "t1">'."`;
 
@@ -2380,7 +2418,7 @@ exports[`Types in ui-react.tsx > 297:24 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-react.tsx > 304:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in ui-react.tsx > 311:32 1`] = `"Type '{ c2: 1; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types in ui-react.tsx > 311:32 1`] = `"Type '{ c2: number; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-react.tsx > 312:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | GetId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], unknown, "t0" | "t1">'."`;
 
@@ -2390,7 +2428,7 @@ exports[`Types in ui-react.tsx > 323:24 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-react.tsx > 330:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in ui-react.tsx > 338:45 1`] = `"Type '{ c2: 1; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types in ui-react.tsx > 338:45 1`] = `"Type '{ c2: number; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-react.tsx > 339:27 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | GetId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], unknown, "t0" | "t1">'."`;
 
@@ -3254,7 +3292,7 @@ exports[`Types in ui-solid.tsx > 297:24 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-solid.tsx > 303:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in ui-solid.tsx > 311:38 1`] = `"Type '{ c2: 1; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types in ui-solid.tsx > 311:38 1`] = `"Type '{ c2: number; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-solid.tsx > 312:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeAccessor<"t0" | "t1"> | GetId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], unknown, "t0" | "t1">'."`;
 
@@ -3264,7 +3302,7 @@ exports[`Types in ui-solid.tsx > 323:24 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-solid.tsx > 329:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in ui-solid.tsx > 336:32 1`] = `"Type '{ c2: 1; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types in ui-solid.tsx > 336:32 1`] = `"Type '{ c2: number; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-solid.tsx > 337:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeAccessor<"t0" | "t1"> | GetId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], unknown, "t0" | "t1">'."`;
 
@@ -3274,7 +3312,7 @@ exports[`Types in ui-solid.tsx > 348:24 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-solid.tsx > 354:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in ui-solid.tsx > 362:45 1`] = `"Type '{ c2: 1; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types in ui-solid.tsx > 362:45 1`] = `"Type '{ c2: number; }' has no properties in common with type 'PartialRow<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-solid.tsx > 363:27 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeAccessor<"t0" | "t1"> | GetId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], unknown, "t0" | "t1">'."`;
 
