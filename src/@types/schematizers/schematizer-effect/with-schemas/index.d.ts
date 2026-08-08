@@ -1,2 +1,3 @@
 /// schematizer-effect
-export type {EffectSchematizer, createEffectSchematizer} from '../index.d.ts';
+export {createEffectSchematizer} from '../index.d.ts';
+export type {EffectSchematizer} from '../index.d.ts';

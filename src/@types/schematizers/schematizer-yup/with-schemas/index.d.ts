@@ -1,2 +1,3 @@
 /// schematizer-yup
-export type {YupSchematizer, createYupSchematizer} from '../index.d.ts';
+export {createYupSchematizer} from '../index.d.ts';
+export type {YupSchematizer} from '../index.d.ts';
