@@ -40,7 +40,7 @@ const unwrapSchema = (
       return [
         {[ENUM]: arrayMap(nonNullTypes, (type: any) => type[CONST])},
         defaultValue ?? schema?.[DEFAULT],
-        hasNull || allowNull,
+        hasNull || (allowNull ?? false),
         required,
       ];
     }
@@ -55,7 +55,7 @@ const unwrapSchema = (
       return unwrapSchema(
         firstNonNullType,
         defaultValue ?? schema?.[DEFAULT],
-        hasNull || allowNull,
+        hasNull || (allowNull ?? false),
         required,
       );
     }

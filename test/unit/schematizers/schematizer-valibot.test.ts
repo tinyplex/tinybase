@@ -55,7 +55,7 @@ describe('Valibot Schematizer', () => {
         schematizer.toTablesSchema({
           ratings: v.object({
             direction: v.literal('up'),
-            rating: v.picklist(['up', 1, true]),
+            rating: v.union([v.literal('up'), v.literal(1), v.literal(true)]),
             status: v.fallback(v.picklist(['draft', 'live']), 'draft'),
           }),
         }),
@@ -215,7 +215,7 @@ describe('Valibot Schematizer', () => {
       expect(
         schematizer.toValuesSchema({
           direction: v.literal('up'),
-          rating: v.picklist(['up', 1, true]),
+          rating: v.union([v.literal('up'), v.literal(1), v.literal(true)]),
         }),
       ).toEqual({
         direction: {enum: ['up'], required: true},

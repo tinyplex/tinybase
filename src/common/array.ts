@@ -8,8 +8,8 @@ export const arrayNew = <Value>(
 
 export const arrayHas = <Value>(
   array: readonly Value[],
-  value: Value,
-): boolean => array.includes(value);
+  value: unknown,
+): value is Value => array.includes(value as Value);
 
 export const arrayIndexOf = <Value>(array: Value[], value: Value): number =>
   array.indexOf(value);

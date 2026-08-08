@@ -423,7 +423,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     const enumValues = schema[ENUM];
     if (
       isUndefined(enumValues)
-        ? !isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type)
+        ? isUndefined(type) ||
+          (!isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type))
         : !isUndefined(type) ||
           !isArray(enumValues) ||
           isUndefined(enumValues[0]) ||

@@ -1,4 +1,5 @@
 import type {createValibotSchematizer as createValibotSchematizerDecl} from '../../@types/schematizers/schematizer-valibot/index.d.ts';
+import {arrayEvery, arrayMap} from '../../common/array.ts';
 import {
   DEFAULT,
   ENUM,
@@ -13,6 +14,7 @@ import {createCustomSchematizer} from '../index.ts';
 
 const LITERAL = 'literal';
 const PICKLIST = 'picklist';
+const VALIBOT_UNION = 'union';
 
 const unwrapSchema = (
   schema: any,
@@ -45,19 +47,35 @@ const unwrapSchema = (
               allowNull ?? false,
               required,
             ]
-          : type === LITERAL
+          : type === VALIBOT_UNION &&
+              arrayEvery(
+                schema.options,
+                (option: any) => option.type === LITERAL,
+              )
             ? [
-                {[ENUM]: [schema.literal]},
+                {
+                  [ENUM]: arrayMap(
+                    schema.options,
+                    (option: any) => option.literal,
+                  ),
+                },
                 defaultValue ?? schema?.[FALLBACK],
                 allowNull ?? false,
                 required,
               ]
-            : [
-                schema,
-                defaultValue ?? schema?.[FALLBACK],
-                allowNull ?? false,
-                required,
-              ];
+            : type === LITERAL
+              ? [
+                  {[ENUM]: [schema.literal]},
+                  defaultValue ?? schema?.[FALLBACK],
+                  allowNull ?? false,
+                  required,
+                ]
+              : [
+                  schema,
+                  defaultValue ?? schema?.[FALLBACK],
+                  allowNull ?? false,
+                  required,
+                ];
 };
 
 const getProperties = (schema: any) => schema?.entries;
