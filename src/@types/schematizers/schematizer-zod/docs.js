@@ -20,8 +20,8 @@
  *
  * This method extracts basic type information (string, number, boolean),
  * primitive enums and literals, default values, nullable flags, and required
- * flags from Zod schemas. Complex validation rules like min/max, regex patterns,
- * refinements, and transforms are ignored.
+ * flags from Zod schemas. Complex validation rules like min/max, regex
+ * patterns, refinements, and transforms are ignored.
  * @param schemas - A mapping of table IDs to Zod object schemas.
  * @returns A TinyBase TablesSchema.
  * @example
