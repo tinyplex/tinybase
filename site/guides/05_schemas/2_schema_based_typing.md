@@ -44,8 +44,8 @@ store.addValueListener(null, (store, valueId, newValue, oldValue) => {
 });
 ```
 
-A schema field with a `default` is typed as present because TinyBase will fill it
-when missing. A field with `required: true` is also typed as present, and is
+A schema field with a `default` is typed as present because TinyBase will fill
+it when missing. A field with `required: true` is also typed as present, and is
 required in full writes such as setRow method, addRow method, and setValues
 method, without adding `undefined` as a supported data type.
 
@@ -61,7 +61,7 @@ const enumValuesSchema = {
 const enumStore = createStore().setValuesSchema(enumValuesSchema);
 enumStore.setValue('status', 'adopted'); // OK
 enumStore.setValue('status', 'missing'); // TypeScript error
-enumStore.setValue('rating', null); //       OK
+enumStore.setValue('rating', null); //      OK
 ```
 
 ## Getting the Typed Store
@@ -261,7 +261,8 @@ There are good examples of this in the [TinyHub](https://tinyhub.org/) project
 (see the store components [this
 folder](https://github.com/tinyplex/tinyhub/tree/main/client/src/stores)).
 
-If you want to use this pattern your app's top-level will look something like this:
+If you want to use this pattern your app's top-level will look something like
+this:
 
 ```tsx ignore
 export const App = () => {
