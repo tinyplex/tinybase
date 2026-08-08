@@ -33,7 +33,7 @@ export const enum Message {
 /// Send
 export type Send = (
   toClientId: IdOrNull,
-  requestId: Id,
+  requestId: IdOrNull,
   message: Message,
   body: any,
 ) => void;
@@ -41,14 +41,16 @@ export type Send = (
 /// Receive
 export type Receive = (
   fromClientId: Id,
-  requestId: Id,
+  requestId: IdOrNull,
   message: Message,
   body: any,
 ) => void;
 
 /// SynchronizerStats
 export type SynchronizerStats = {
+  /// SynchronizerStats.sends
   sends: number;
+  /// SynchronizerStats.receives
   receives: number;
 };
 
