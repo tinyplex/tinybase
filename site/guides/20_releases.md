@@ -7,6 +7,36 @@ highlighted features.
 
 # v9.5
 
+## Native Schema Type Unions
+
+CellSchema and ValueSchema can now accept an array in the `type` property when
+a Cell or Value can have more than one broad type:
+
+```js
+import {createStore as createUnionStore} from 'tinybase';
+
+const unionStore = createUnionStore().setValuesSchema({
+  reference: {type: ['string', 'number'], default: 'unknown'},
+  response: {type: ['boolean', 'object'], allowNull: true},
+});
+
+unionStore.setValues({reference: 42, response: {accepted: true}});
+unionStore.setValue('reference', false);
+console.log(unionStore.getValues());
+// -> {reference: 'unknown', response: {accepted: true}}
+```
+
+A type union must contain at least two of `string`, `number`, `boolean`,
+`object`, and `array`. `null` continues to be represented by `allowNull: true`,
+and defaults are used only when they match one of the listed types. Each schema
+entry still uses exactly one of `type` or `enum`: a type union allows every
+value of its listed types, while an enum allows only its listed values.
+
+The schema-aware Store APIs infer the corresponding TypeScript unions. The
+ArkType, Effect Schema, TypeBox, Valibot, and Zod schematizers also preserve
+supported broad type unions, while continuing to preserve literal-only unions
+as exact enums.
+
 ## Native Enum Schemas
 
 CellSchema and ValueSchema can now use an `enum` property instead of `type` to
