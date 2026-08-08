@@ -100,6 +100,10 @@ export type TableInHtmlTableProps<
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
                 string | CustomCell<Schemas, TableId, CellId>;
             };
+        /// TableInHtmlTableProps.extraCellsBefore
+        readonly extraCellsBefore?: ExtraRowCell<Schemas, TableId>[];
+        /// TableInHtmlTableProps.extraCellsAfter
+        readonly extraCellsAfter?: ExtraRowCell<Schemas, TableId>[];
       }
     : never
   : never;
@@ -134,6 +138,10 @@ export type SortedTableInHtmlTableProps<
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
                 string | CustomCell<Schemas, TableId, CellId>;
             };
+        /// SortedTableInHtmlTableProps.extraCellsBefore
+        readonly extraCellsBefore?: ExtraRowCell<Schemas, TableId>[];
+        /// SortedTableInHtmlTableProps.extraCellsAfter
+        readonly extraCellsAfter?: ExtraRowCell<Schemas, TableId>[];
         /// SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
         /// SortedTableInHtmlTableProps.paginator
@@ -160,6 +168,10 @@ export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
   /// ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /// ValuesInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraValueCell<Schemas>[];
+  /// ValuesInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraValueCell<Schemas>[];
 };
 
 /// SliceInHtmlTableProps
@@ -175,6 +187,10 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// SliceInHtmlTableProps.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+  /// SliceInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// SliceInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// RelationshipInHtmlTableProps
@@ -188,6 +204,10 @@ export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// RelationshipInHtmlTable.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+  /// RelationshipInHtmlTable.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// RelationshipInHtmlTable.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ResultTableInHtmlTableProps
@@ -199,6 +219,10 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ResultTableInHtmlTableProps.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
+  /// ResultTableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ResultTableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ResultSortedTableInHtmlTableProps
@@ -219,6 +243,10 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     /// ResultSortedTableInHtmlTableProps.customCells
     readonly customCells?:
       Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    /// ResultSortedTableInHtmlTableProps.extraCellsBefore
+    readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+    /// ResultSortedTableInHtmlTableProps.extraCellsAfter
+    readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
     /// ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
     /// ResultSortedTableInHtmlTableProps.paginator

@@ -96,6 +96,10 @@ export type TableInHtmlTableProps<
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
                 string | CustomCell<Schemas, TableId, CellId>;
             };
+        /// ui-svelte-dom.TableInHtmlTableProps.extraCellsBefore
+        readonly extraCellsBefore?: ExtraRowCell<Schemas, TableId>[];
+        /// ui-svelte-dom.TableInHtmlTableProps.extraCellsAfter
+        readonly extraCellsAfter?: ExtraRowCell<Schemas, TableId>[];
       }
     : never
   : never;
@@ -130,6 +134,10 @@ export type SortedTableInHtmlTableProps<
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
                 string | CustomCell<Schemas, TableId, CellId>;
             };
+        /// ui-svelte-dom.SortedTableInHtmlTableProps.extraCellsBefore
+        readonly extraCellsBefore?: ExtraRowCell<Schemas, TableId>[];
+        /// ui-svelte-dom.SortedTableInHtmlTableProps.extraCellsAfter
+        readonly extraCellsAfter?: ExtraRowCell<Schemas, TableId>[];
         /// ui-svelte-dom.SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
         /// ui-svelte-dom.SortedTableInHtmlTableProps.paginator
@@ -156,6 +164,10 @@ export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly valueComponent?: Component<ValueProps<Schemas>>;
   /// ui-svelte-dom.ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => {[prop: string]: any};
+  /// ui-svelte-dom.ValuesInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraValueCell<Schemas>[];
+  /// ui-svelte-dom.ValuesInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraValueCell<Schemas>[];
 };
 
 /// ui-svelte-dom.SliceInHtmlTableProps
@@ -171,6 +183,10 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ui-svelte-dom.SliceInHtmlTableProps.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+  /// ui-svelte-dom.SliceInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ui-svelte-dom.SliceInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ui-svelte-dom.RelationshipInHtmlTableProps
@@ -184,6 +200,10 @@ export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ui-svelte-dom.RelationshipInHtmlTable.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+  /// ui-svelte-dom.RelationshipInHtmlTable.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ui-svelte-dom.RelationshipInHtmlTable.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ui-svelte-dom.ResultTableInHtmlTableProps
@@ -195,6 +215,10 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ui-svelte-dom.ResultTableInHtmlTableProps.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
+  /// ui-svelte-dom.ResultTableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ui-svelte-dom.ResultTableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ui-svelte-dom.ResultSortedTableInHtmlTableProps
@@ -215,6 +239,10 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.customCells
     readonly customCells?:
       Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.extraCellsBefore
+    readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+    /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.extraCellsAfter
+    readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
     /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
     /// ui-svelte-dom.ResultSortedTableInHtmlTableProps.paginator

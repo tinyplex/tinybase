@@ -173,3 +173,49 @@ const _App = () => (
     <EditableValueView valueId="v2" /> {/* ! */}
   </>
 );
+
+type Schemas = [typeof _tablesSchema, typeof _valuesSchema];
+const extraT1Cells = [] as UiSolidDom.ExtraRowCell<Schemas, 't1'>[];
+const extraRowCells = [] as UiSolidDom.ExtraRowCell<
+  import('tinybase/with-schemas').NoSchemas,
+  Id
+>[];
+const extraValueCells = [] as UiSolidDom.ExtraValueCell<Schemas>[];
+
+const _extraCellProps = {
+  table: {
+    tableId: 't1',
+    extraCellsBefore: extraT1Cells,
+    extraCellsAfter: extraT1Cells,
+  } satisfies UiSolidDom.TableInHtmlTableProps<Schemas, 't1'>,
+  sortedTable: {
+    tableId: 't1',
+    extraCellsBefore: extraT1Cells,
+    extraCellsAfter: extraT1Cells,
+  } satisfies UiSolidDom.SortedTableInHtmlTableProps<Schemas, 't1'>,
+  values: {
+    extraCellsBefore: extraValueCells,
+    extraCellsAfter: extraValueCells,
+  } satisfies UiSolidDom.ValuesInHtmlTableProps<Schemas>,
+  slice: {
+    indexId: 'i1',
+    sliceId: 's1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSolidDom.SliceInHtmlTableProps<Schemas>,
+  relationship: {
+    relationshipId: 'r1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSolidDom.RelationshipInHtmlTableProps<Schemas>,
+  resultTable: {
+    queryId: 'q1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSolidDom.ResultTableInHtmlTableProps<Schemas>,
+  resultSortedTable: {
+    queryId: 'q1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSolidDom.ResultSortedTableInHtmlTableProps<Schemas>,
+};

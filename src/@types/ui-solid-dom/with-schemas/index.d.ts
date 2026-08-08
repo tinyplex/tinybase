@@ -98,6 +98,10 @@ export type TableInHtmlTableProps<
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
                 string | CustomCell<Schemas, TableId, CellId>;
             };
+        /// ui-solid-dom.TableInHtmlTableProps.extraCellsBefore
+        readonly extraCellsBefore?: ExtraRowCell<Schemas, TableId>[];
+        /// ui-solid-dom.TableInHtmlTableProps.extraCellsAfter
+        readonly extraCellsAfter?: ExtraRowCell<Schemas, TableId>[];
       }
     : never
   : never;
@@ -132,6 +136,10 @@ export type SortedTableInHtmlTableProps<
               [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
                 string | CustomCell<Schemas, TableId, CellId>;
             };
+        /// ui-solid-dom.SortedTableInHtmlTableProps.extraCellsBefore
+        readonly extraCellsBefore?: ExtraRowCell<Schemas, TableId>[];
+        /// ui-solid-dom.SortedTableInHtmlTableProps.extraCellsAfter
+        readonly extraCellsAfter?: ExtraRowCell<Schemas, TableId>[];
         /// ui-solid-dom.SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
         /// ui-solid-dom.SortedTableInHtmlTableProps.paginator
@@ -158,6 +166,10 @@ export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly valueComponent?: Component<ValueProps<Schemas>>;
   /// ui-solid-dom.ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /// ui-solid-dom.ValuesInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraValueCell<Schemas>[];
+  /// ui-solid-dom.ValuesInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraValueCell<Schemas>[];
 };
 
 /// ui-solid-dom.SliceInHtmlTableProps
@@ -173,6 +185,10 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ui-solid-dom.SliceInHtmlTableProps.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+  /// ui-solid-dom.SliceInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ui-solid-dom.SliceInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ui-solid-dom.RelationshipInHtmlTableProps
@@ -186,6 +202,10 @@ export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ui-solid-dom.RelationshipInHtmlTable.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+  /// ui-solid-dom.RelationshipInHtmlTable.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ui-solid-dom.RelationshipInHtmlTable.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ui-solid-dom.ResultTableInHtmlTableProps
@@ -197,6 +217,10 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ui-solid-dom.ResultTableInHtmlTableProps.customCells
   readonly customCells?:
     Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
+  /// ui-solid-dom.ResultTableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+  /// ui-solid-dom.ResultTableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
 };
 
 /// ui-solid-dom.ResultSortedTableInHtmlTableProps
@@ -217,6 +241,10 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     /// ui-solid-dom.ResultSortedTableInHtmlTableProps.customCells
     readonly customCells?:
       Ids | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    /// ui-solid-dom.ResultSortedTableInHtmlTableProps.extraCellsBefore
+    readonly extraCellsBefore?: ExtraRowCell<NoSchemas, Id>[];
+    /// ui-solid-dom.ResultSortedTableInHtmlTableProps.extraCellsAfter
+    readonly extraCellsAfter?: ExtraRowCell<NoSchemas, Id>[];
     /// ui-solid-dom.ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
     /// ui-solid-dom.ResultSortedTableInHtmlTableProps.paginator

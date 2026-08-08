@@ -77,3 +77,49 @@ const _App = {
     customCells: {c1: {component: PoorCellView}}, // !
   } satisfies ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']>,
 };
+
+type Schemas = [typeof _tablesSchema, typeof _valuesSchema];
+const extraT1Cells = [] as UiSvelteDom.ExtraRowCell<Schemas, 't1'>[];
+const extraRowCells = [] as UiSvelteDom.ExtraRowCell<
+  import('tinybase/with-schemas').NoSchemas,
+  Id
+>[];
+const extraValueCells = [] as UiSvelteDom.ExtraValueCell<Schemas>[];
+
+const _extraCellProps = {
+  table: {
+    tableId: 't1',
+    extraCellsBefore: extraT1Cells,
+    extraCellsAfter: extraT1Cells,
+  } satisfies UiSvelteDom.TableInHtmlTableProps<Schemas, 't1'>,
+  sortedTable: {
+    tableId: 't1',
+    extraCellsBefore: extraT1Cells,
+    extraCellsAfter: extraT1Cells,
+  } satisfies UiSvelteDom.SortedTableInHtmlTableProps<Schemas, 't1'>,
+  values: {
+    extraCellsBefore: extraValueCells,
+    extraCellsAfter: extraValueCells,
+  } satisfies UiSvelteDom.ValuesInHtmlTableProps<Schemas>,
+  slice: {
+    indexId: 'i1',
+    sliceId: 's1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSvelteDom.SliceInHtmlTableProps<Schemas>,
+  relationship: {
+    relationshipId: 'r1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSvelteDom.RelationshipInHtmlTableProps<Schemas>,
+  resultTable: {
+    queryId: 'q1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSvelteDom.ResultTableInHtmlTableProps<Schemas>,
+  resultSortedTable: {
+    queryId: 'q1',
+    extraCellsBefore: extraRowCells,
+    extraCellsAfter: extraRowCells,
+  } satisfies UiSvelteDom.ResultSortedTableInHtmlTableProps<Schemas>,
+};
