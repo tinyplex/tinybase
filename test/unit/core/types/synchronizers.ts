@@ -13,6 +13,6 @@ const sendWithSchemas: import('tinybase/synchronizers/with-schemas').Send =
   () => {};
 sendWithSchemas(null, null, Message.Response, null);
 
-const receiveWithSchemas: import('tinybase/synchronizers/with-schemas').Receive =
-  () => {};
+type ReceiveWithSchemas = import('tinybase/synchronizers/with-schemas').Receive;
+const receiveWithSchemas: ReceiveWithSchemas = () => {};
 receiveWithSchemas('', null, Message.Response, null);

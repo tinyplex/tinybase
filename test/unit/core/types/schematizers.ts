@@ -1,16 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+import * as Schematizers from 'tinybase/schematizers';
+import * as ArkType from 'tinybase/schematizers/schematizer-arktype';
 import {createArkTypeSchematizer} from 'tinybase/schematizers/schematizer-arktype/with-schemas';
+import * as Effect from 'tinybase/schematizers/schematizer-effect';
 import {createEffectSchematizer} from 'tinybase/schematizers/schematizer-effect/with-schemas';
+import * as TypeBox from 'tinybase/schematizers/schematizer-typebox';
 import {createTypeBoxSchematizer} from 'tinybase/schematizers/schematizer-typebox/with-schemas';
+import * as Valibot from 'tinybase/schematizers/schematizer-valibot';
 import {createValibotSchematizer} from 'tinybase/schematizers/schematizer-valibot/with-schemas';
+import * as Yup from 'tinybase/schematizers/schematizer-yup';
 import {createYupSchematizer} from 'tinybase/schematizers/schematizer-yup/with-schemas';
+import * as Zod from 'tinybase/schematizers/schematizer-zod';
 import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod/with-schemas';
 import {createCustomSchematizer} from 'tinybase/schematizers/with-schemas';
 
-createCustomSchematizer satisfies typeof import('tinybase/schematizers').createCustomSchematizer;
-createArkTypeSchematizer satisfies typeof import('tinybase/schematizers/schematizer-arktype').createArkTypeSchematizer;
-createEffectSchematizer satisfies typeof import('tinybase/schematizers/schematizer-effect').createEffectSchematizer;
-createTypeBoxSchematizer satisfies typeof import('tinybase/schematizers/schematizer-typebox').createTypeBoxSchematizer;
-createValibotSchematizer satisfies typeof import('tinybase/schematizers/schematizer-valibot').createValibotSchematizer;
-createYupSchematizer satisfies typeof import('tinybase/schematizers/schematizer-yup').createYupSchematizer;
-createZodSchematizer satisfies typeof import('tinybase/schematizers/schematizer-zod').createZodSchematizer;
+createCustomSchematizer satisfies typeof Schematizers.createCustomSchematizer;
+createArkTypeSchematizer satisfies typeof ArkType.createArkTypeSchematizer;
+createEffectSchematizer satisfies typeof Effect.createEffectSchematizer;
+createTypeBoxSchematizer satisfies typeof TypeBox.createTypeBoxSchematizer;
+createValibotSchematizer satisfies typeof Valibot.createValibotSchematizer;
+createYupSchematizer satisfies typeof Yup.createYupSchematizer;
+createZodSchematizer satisfies typeof Zod.createZodSchematizer;
