@@ -1255,6 +1255,34 @@ describe('Queries tables', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
 
+    test('root table column by custom with all Cell types', () => {
+      let cellsSeen: Cell[] = [];
+      store.setTable('t1', {
+        r1: {kind: 'same', value: {pet: 'cat'}},
+        r2: {kind: 'same', value: ['dog']},
+        r3: {kind: 'same', value: null},
+      });
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('kind');
+        select('value');
+        group('value', (cells) => {
+          cellsSeen = cells;
+          return cells;
+        }).as('array');
+        group('value', (cells) => ({cells})).as('object');
+        group('value', () => null).as('null');
+      });
+      expect(cellsSeen).toEqual([{pet: 'cat'}, ['dog'], null]);
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {
+          kind: 'same',
+          array: [{pet: 'cat'}, ['dog'], null],
+          object: {cells: [{pet: 'cat'}, ['dog'], null]},
+          null: null,
+        },
+      });
+    });
+
     test('one root table column twice', () => {
       setCells();
       queries.setQueryDefinition('q1', 't1', ({select, group}) => {

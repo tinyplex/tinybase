@@ -22,33 +22,33 @@ export type ResultTable = {[rowId: Id]: ResultRow};
 export type ResultRow = {[cellId: Id]: ResultCell};
 
 /// ResultCell
-export type ResultCell = string | number | boolean | null;
+export type ResultCell = Cell;
 
 /// ResultCellOrUndefined
 export type ResultCellOrUndefined = ResultCell | undefined;
 
 /// Aggregate
-export type Aggregate = (cells: Cell[], length: number) => ResultCell;
+export type Aggregate = (cells: ResultCell[], length: number) => ResultCell;
 
 /// AggregateAdd
 export type AggregateAdd = (
-  current: Cell,
-  add: Cell,
+  current: ResultCell,
+  add: ResultCell,
   length: number,
 ) => ResultCellOrUndefined;
 
 /// AggregateRemove
 export type AggregateRemove = (
-  current: Cell,
-  remove: Cell,
+  current: ResultCell,
+  remove: ResultCell,
   length: number,
 ) => ResultCellOrUndefined;
 
 /// AggregateReplace
 export type AggregateReplace = (
-  current: Cell,
-  add: Cell,
-  remove: Cell,
+  current: ResultCell,
+  add: ResultCell,
+  remove: ResultCell,
   length: number,
 ) => ResultCellOrUndefined;
 
@@ -325,7 +325,7 @@ export type GroupedAs = {
 /// Having
 export type Having = {
   /// Having.1
-  (selectedOrGroupedCellId: Id, equals: Cell): void;
+  (selectedOrGroupedCellId: Id, equals: ResultCell): void;
   /// Having.2
   (condition: (getSelectedOrGroupedCell: GetCell) => boolean): void;
 };

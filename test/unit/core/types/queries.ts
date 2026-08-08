@@ -27,7 +27,7 @@ queriesWithSchema.setQueryDefinition('q1', 't1', ({select, join, where}) => {
     getTableCell('t0', 'c2'); // !
     return 'c';
   });
-  select((_getCell) => null); // !
+  select((_getCell) => null);
 
   join('t1', 'c1');
   join('t1', 'c2'); // !
@@ -129,3 +129,15 @@ queriesWithSchema.setQueryDefinition('q2', 't1', ({selectAll}) => {
   selectAll(true, 'q2');
   selectAll(true, 'q2', 'query.');
 });
+
+const resultCells: import('tinybase/queries').ResultCell[] = [null, {}, []];
+resultCells satisfies import('tinybase/queries/with-schemas').ResultCell[];
+
+const aggregate: import('tinybase/queries').Aggregate = (cells) => ({cells});
+aggregate satisfies import('tinybase/queries/with-schemas').Aggregate;
+const aggregateWithSchemas: import('tinybase/queries/with-schemas').Aggregate =
+  aggregate;
+aggregateWithSchemas satisfies import('tinybase/queries').Aggregate;
+
+queriesWithSchema.getListenerStats().paramValues;
+queriesWithSchema.getListenerStats().paramValue;

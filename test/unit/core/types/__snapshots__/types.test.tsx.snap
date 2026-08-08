@@ -1150,8 +1150,6 @@ exports[`Types in queries.ts > 25:4 1`] = `"Conversion of type 'number | undefin
 
 exports[`Types in queries.ts > 26:23 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c0"'."`;
 
-exports[`Types in queries.ts > 29:2 1`] = `"No overload matches this call."`;
-
 exports[`Types in queries.ts > 32:13 1`] = `"No overload matches this call."`;
 
 exports[`Types in queries.ts > 33:7 1`] = `"No overload matches this call."`;

@@ -8,7 +8,7 @@ import type {
   TableIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
 import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
-import type {GetIdChanges} from '../../store/index.d.ts';
+import type {Cell as BaseCell, GetIdChanges} from '../../store/index.d.ts';
 import type {
   Cell,
   CellOrUndefined,
@@ -33,7 +33,7 @@ export type ResultTable = {[rowId: Id]: ResultRow};
 export type ResultRow = {[cellId: Id]: ResultCell};
 
 /// ResultCell
-export type ResultCell = string | number | boolean;
+export type ResultCell = BaseCell;
 
 /// ResultCellOrUndefined
 export type ResultCellOrUndefined = ResultCell | undefined;
@@ -199,6 +199,10 @@ export type QueriesListenerStats = {
   cellIds: number;
   /// QueriesListenerStats.cell
   cell: number;
+  /// QueriesListenerStats.paramValues
+  paramValues: number;
+  /// QueriesListenerStats.paramValue
+  paramValue: number;
 };
 
 /// GetTableCell

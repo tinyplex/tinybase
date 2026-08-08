@@ -100,7 +100,7 @@
  * A ResultCell is typically accessed with the getResultCell method or
  * addResultCellListener method. It is similar to the Cell type in the store
  * module, but without schema-specific typing, and is a JavaScript string,
- * number, or boolean.
+ * number, boolean, null, object, or array.
  * @example
  * ```js
  * import type {ResultCell} from 'tinybase';
