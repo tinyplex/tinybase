@@ -20,28 +20,43 @@ export type CellSchema =
       default?: string | null;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'number';
       default?: number | null;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'boolean';
       default?: boolean | null;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'object';
       default?: AnyObject;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'array';
       default?: AnyArray;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      enum: readonly [
+        string | number | boolean,
+        ...(string | number | boolean)[],
+      ];
+      type?: never;
+      default?: string | number | boolean | null;
       allowNull?: boolean;
       required?: boolean;
     };
@@ -56,28 +71,43 @@ export type ValueSchema =
       default?: string | null;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'number';
       default?: number | null;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'boolean';
       default?: boolean | null;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'object';
       default?: AnyObject;
       allowNull?: boolean;
       required?: boolean;
+      enum?: never;
     }
   | {
       type: 'array';
       default?: AnyArray;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      enum: readonly [
+        string | number | boolean,
+        ...(string | number | boolean)[],
+      ];
+      type?: never;
+      default?: string | number | boolean | null;
       allowNull?: boolean;
       required?: boolean;
     };

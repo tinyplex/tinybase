@@ -203,6 +203,74 @@ describe.each([
       expectNoChanges(listener);
     });
 
+    test('Set tablesSchema with enum Cells', () => {
+      store.setTablesSchema({
+        pets: {
+          status: {enum: ['draft', 'live'], default: 'draft'},
+          rating: {enum: [1, 2, true], required: true},
+          name: {enum: ['fido'], allowNull: true},
+        },
+      });
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+        pets: {
+          status: {enum: ['draft', 'live'], default: 'draft'},
+          rating: {enum: [1, 2, true], required: true},
+          name: {enum: ['fido'], allowNull: true},
+        },
+      });
+
+      store.setRow('pets', 'pet1', {rating: 1, name: null});
+      store.setCell('pets', 'pet1', 'status', 'live');
+      store.setCell('pets', 'pet1', 'rating', true);
+      store.setCell('pets', 'pet1', 'name', 'fido');
+      expect(store.getRow('pets', 'pet1')).toEqual({
+        status: 'live',
+        rating: true,
+        name: 'fido',
+      });
+
+      store.setCell('pets', 'pet1', 'status', 'archived');
+      store.setCell('pets', 'pet1', 'rating', false);
+      store.setCell('pets', 'pet1', 'name', null);
+      store.setCell('pets', 'pet1', 'name', 'felix');
+      expect(store.getRow('pets', 'pet1')).toEqual({
+        status: 'draft',
+        rating: true,
+        name: null,
+      });
+      expectChanges(
+        listener,
+        'invalids',
+        {pets: {pet1: {status: ['archived']}}},
+        {pets: {pet1: {rating: [false]}}},
+        {pets: {pet1: {name: ['felix']}}},
+      );
+    });
+
+    test('Validate enum Cell schemas', () => {
+      store.setTablesSchema({
+        pets: {status: {enum: ['draft', 'live'], default: 'other'}},
+      });
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+        pets: {status: {enum: ['draft', 'live']}},
+      });
+
+      for (const status of [
+        {enum: []},
+        {enum: [null]},
+        {enum: [{}]},
+        {enum: [Infinity]},
+        {type: 'string', enum: ['draft']},
+        {enum: ['draft'], default: null},
+        {},
+      ]) {
+        store.setTablesSchema({pets: {status}} as any);
+        expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+          pets: {status: {enum: ['draft', 'live']}},
+        });
+      }
+    });
+
     test('Set tablesSchema after creation', () => {
       store.setCell('t1', 'r1', 'c1', '1');
       expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
@@ -348,6 +416,76 @@ describe.each([
       expect(store.getValues()).toEqual({v1: 1, v2: ''});
       expectChangesNoJson(listener, 'invalids', {v1: [undefined]});
       expectNoChanges(listener);
+    });
+
+    test('Set valuesSchema with enum Values', () => {
+      store.setValuesSchema({
+        status: {enum: ['draft', 'live'], default: 'draft'},
+        rating: {enum: [1, 2, true], required: true},
+        name: {enum: ['fido'], allowNull: true},
+      });
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {rating: [undefined]},
+        {name: [undefined]},
+      );
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+        status: {enum: ['draft', 'live'], default: 'draft'},
+        rating: {enum: [1, 2, true], required: true},
+        name: {enum: ['fido'], allowNull: true},
+      });
+
+      store.setValues({rating: 1, name: null});
+      store.setValue('status', 'live');
+      store.setValue('rating', true);
+      store.setValue('name', 'fido');
+      expect(store.getValues()).toEqual({
+        status: 'live',
+        rating: true,
+        name: 'fido',
+      });
+
+      store.setValue('status', 'archived');
+      store.setValue('rating', false);
+      store.setValue('name', null);
+      store.setValue('name', 'felix');
+      expect(store.getValues()).toEqual({
+        status: 'draft',
+        rating: true,
+        name: null,
+      });
+      expectChanges(
+        listener,
+        'invalids',
+        {status: ['archived']},
+        {rating: [false]},
+        {name: ['felix']},
+      );
+    });
+
+    test('Validate enum Value schemas', () => {
+      store.setValuesSchema({
+        status: {enum: ['draft', 'live'], default: 'other'},
+      });
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+        status: {enum: ['draft', 'live']},
+      });
+
+      for (const status of [
+        {enum: []},
+        {enum: [null]},
+        {enum: [[]]},
+        {enum: [NaN]},
+        {type: 'string', enum: ['draft']},
+        {enum: ['draft'], default: null},
+        {},
+      ]) {
+        store.setValuesSchema({status} as any);
+        expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+          status: {enum: ['draft', 'live']},
+        });
+      }
     });
 
     test('Set valuesSchema after creation', () => {

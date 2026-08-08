@@ -28,22 +28,42 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
 /// CellSchema
 export type CellSchema =
-  | {type: 'string'; default?: string; required?: boolean}
-  | {type: 'number'; default?: number; required?: boolean}
-  | {type: 'boolean'; default?: boolean; required?: boolean}
-  | {type: 'object'; default?: AnyObject; required?: boolean}
-  | {type: 'array'; default?: AnyArray; required?: boolean};
+  | {type: 'string'; default?: string; required?: boolean; enum?: never}
+  | {type: 'number'; default?: number; required?: boolean; enum?: never}
+  | {type: 'boolean'; default?: boolean; required?: boolean; enum?: never}
+  | {type: 'object'; default?: AnyObject; required?: boolean; enum?: never}
+  | {type: 'array'; default?: AnyArray; required?: boolean; enum?: never}
+  | {
+      enum: readonly [
+        string | number | boolean,
+        ...(string | number | boolean)[],
+      ];
+      type?: never;
+      default?: string | number | boolean | null;
+      allowNull?: boolean;
+      required?: boolean;
+    };
 
 /// ValuesSchema
 export type ValuesSchema = {[valueId: Id]: ValueSchema};
 
 /// ValueSchema
 export type ValueSchema =
-  | {type: 'string'; default?: string; required?: boolean}
-  | {type: 'number'; default?: number; required?: boolean}
-  | {type: 'boolean'; default?: boolean; required?: boolean}
-  | {type: 'object'; default?: AnyObject; required?: boolean}
-  | {type: 'array'; default?: AnyArray; required?: boolean};
+  | {type: 'string'; default?: string; required?: boolean; enum?: never}
+  | {type: 'number'; default?: number; required?: boolean; enum?: never}
+  | {type: 'boolean'; default?: boolean; required?: boolean; enum?: never}
+  | {type: 'object'; default?: AnyObject; required?: boolean; enum?: never}
+  | {type: 'array'; default?: AnyArray; required?: boolean; enum?: never}
+  | {
+      enum: readonly [
+        string | number | boolean,
+        ...(string | number | boolean)[],
+      ];
+      type?: never;
+      default?: string | number | boolean | null;
+      allowNull?: boolean;
+      required?: boolean;
+    };
 
 /// NoTablesSchema
 export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};

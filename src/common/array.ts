@@ -6,8 +6,10 @@ export const arrayNew = <Value>(
   cb: (index: number) => Value,
 ): Value[] => arrayMap(new Array(size).fill(0), (_, index) => cb(index));
 
-export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
-  array.includes(value);
+export const arrayHas = <Value>(
+  array: readonly Value[],
+  value: Value,
+): boolean => array.includes(value);
 
 export const arrayIndexOf = <Value>(array: Value[], value: Value): number =>
   array.indexOf(value);

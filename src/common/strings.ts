@@ -16,6 +16,7 @@ export const ARRAY = 'array';
 
 export const TRUE = 'true';
 export const TYPE = 'type';
+export const ENUM = 'enum';
 export const DEFAULT = 'default';
 export const ALLOW_NULL = 'allowNull';
 export const NULL = 'null';
