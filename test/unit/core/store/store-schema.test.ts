@@ -272,6 +272,90 @@ describe.each([
       }
     });
 
+    test('Set tablesSchema with union type Cells', () => {
+      const tablesSchema = {
+        pets: {
+          answer: {type: ['string', 'number'], default: 'unknown'},
+          payload: {type: ['object', 'array'], required: true},
+          score: {type: ['number', 'boolean'], allowNull: true},
+          status: {enum: ['draft', 'live']},
+        },
+      } as const;
+      store.setTablesSchema(tablesSchema);
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual(tablesSchema);
+
+      store.setRow('pets', 'pet1', {
+        payload: {likes: ['walks']},
+        score: null,
+        status: 'draft',
+      });
+      expect(store.getRow('pets', 'pet1')).toEqual({
+        answer: 'unknown',
+        payload: {likes: ['walks']},
+        score: null,
+        status: 'draft',
+      });
+
+      store.setCell('pets', 'pet1', 'answer', 42);
+      store.setCell('pets', 'pet1', 'payload', ['walks']);
+      store.setCell('pets', 'pet1', 'score', true);
+      expect(store.getRow('pets', 'pet1')).toEqual({
+        answer: 42,
+        payload: ['walks'],
+        score: true,
+        status: 'draft',
+      });
+
+      store.setCell('pets', 'pet1', 'answer', false);
+      store.setCell('pets', 'pet1', 'payload', null);
+      store.setCell('pets', 'pet1', 'score', 'high');
+      store.setCell('pets', 'pet1', 'status', 'other');
+      expect(store.getRow('pets', 'pet1')).toEqual({
+        answer: 'unknown',
+        payload: ['walks'],
+        score: true,
+        status: 'draft',
+      });
+      expectChanges(
+        listener,
+        'invalids',
+        {pets: {pet1: {answer: [false]}}},
+        {pets: {pet1: {payload: [null]}}},
+        {pets: {pet1: {score: ['high']}}},
+        {pets: {pet1: {status: ['other']}}},
+      );
+
+      const otherStore = createStore().setTablesSchema(tablesSchema);
+      otherStore.setTablesJson(store.getTablesJson());
+      expect(otherStore.getTables()).toEqual(store.getTables());
+    });
+
+    test('Validate union type Cell schemas', () => {
+      store.setTablesSchema({
+        pets: {
+          answer: {type: ['string', 'boolean'], default: 1},
+        },
+      } as any);
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+        pets: {answer: {type: ['string', 'boolean']}},
+      });
+
+      for (const answer of [
+        {type: []},
+        {type: ['string']},
+        {type: ['string', 'null']},
+        {type: ['string', 'date']},
+        {type: ['string', 'boolean'], enum: ['draft']},
+        {type: ['string', 'boolean'], default: null},
+        {},
+      ]) {
+        store.setTablesSchema({pets: {answer}} as any);
+        expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+          pets: {answer: {type: ['string', 'boolean']}},
+        });
+      }
+    });
+
     test('Set tablesSchema after creation', () => {
       store.setCell('t1', 'r1', 'c1', '1');
       expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
@@ -486,6 +570,93 @@ describe.each([
         store.setValuesSchema({status} as any);
         expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
           status: {enum: ['draft', 'live']},
+        });
+      }
+    });
+
+    test('Set valuesSchema with union types', () => {
+      const valuesSchema = {
+        answer: {type: ['string', 'number'], default: 'unknown'},
+        payload: {type: ['object', 'array'], required: true},
+        score: {type: ['number', 'boolean'], allowNull: true},
+        status: {enum: ['draft', 'live']},
+      } as const;
+      store.setValuesSchema(valuesSchema);
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {payload: [undefined]},
+        {score: [undefined]},
+        {status: [undefined]},
+      );
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual(valuesSchema);
+
+      store.setValues({
+        payload: {likes: ['walks']},
+        score: null,
+        status: 'draft',
+      });
+      expect(store.getValues()).toEqual({
+        answer: 'unknown',
+        payload: {likes: ['walks']},
+        score: null,
+        status: 'draft',
+      });
+
+      store.setValue('answer', 42);
+      store.setValue('payload', ['walks']);
+      store.setValue('score', true);
+      expect(store.getValues()).toEqual({
+        answer: 42,
+        payload: ['walks'],
+        score: true,
+        status: 'draft',
+      });
+
+      store.setValue('answer', false);
+      store.setValue('payload', null);
+      store.setValue('score', 'high');
+      store.setValue('status', 'other');
+      expect(store.getValues()).toEqual({
+        answer: 'unknown',
+        payload: ['walks'],
+        score: true,
+        status: 'draft',
+      });
+      expectChanges(
+        listener,
+        'invalids',
+        {answer: [false]},
+        {payload: [null]},
+        {score: ['high']},
+        {status: ['other']},
+      );
+
+      const otherStore = createStore().setValuesSchema(valuesSchema);
+      otherStore.setValuesJson(store.getValuesJson());
+      expect(otherStore.getValues()).toEqual(store.getValues());
+    });
+
+    test('Validate union type Value schemas', () => {
+      store.setValuesSchema({
+        answer: {type: ['string', 'boolean'], default: 1},
+      } as any);
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+        answer: {type: ['string', 'boolean']},
+      });
+
+      for (const answer of [
+        {type: []},
+        {type: ['string']},
+        {type: ['string', 'null']},
+        {type: ['string', 'date']},
+        {type: ['string', 'boolean'], enum: ['draft']},
+        {type: ['string', 'boolean'], default: null},
+        {},
+      ]) {
+        store.setValuesSchema({answer} as any);
+        expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+          answer: {type: ['string', 'boolean']},
         });
       }
     });

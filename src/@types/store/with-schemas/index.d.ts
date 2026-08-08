@@ -23,6 +23,10 @@ import type {
   Sorter,
 } from '../../common/with-schemas/index.d.ts';
 
+type SchemaType = 'string' | 'number' | 'boolean' | 'object' | 'array';
+
+type SchemaTypeUnion = readonly [SchemaType, SchemaType, ...SchemaType[]];
+
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
@@ -59,6 +63,13 @@ export type CellSchema =
   | {
       type: 'array';
       default?: AnyArray | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: SchemaTypeUnion;
+      default?: string | number | boolean | AnyObject | AnyArray | null;
       allowNull?: boolean;
       required?: boolean;
       enum?: never;
@@ -110,6 +121,13 @@ export type ValueSchema =
   | {
       type: 'array';
       default?: AnyArray | null;
+      allowNull?: boolean;
+      required?: boolean;
+      enum?: never;
+    }
+  | {
+      type: SchemaTypeUnion;
+      default?: string | number | boolean | AnyObject | AnyArray | null;
       allowNull?: boolean;
       required?: boolean;
       enum?: never;

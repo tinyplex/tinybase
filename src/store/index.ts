@@ -46,10 +46,12 @@ import {
   arraySort,
 } from '../common/array.ts';
 import {
-  type CellOrValueType,
+  type CellOrValueSchemaTypes,
+  cellOrValueSchemaTypeIncludes,
   decodeIfJson,
   encodeIfJson,
   getCellOrValueType,
+  isCellOrValueSchemaTypes,
   isEncodedJson,
   isJsonType,
   isReservedString,
@@ -114,7 +116,6 @@ import {
   isArray,
   isFunction,
   isNull,
-  isTypeStringOrBoolean,
   isUndefined,
   slice,
   structuredClone,
@@ -139,7 +140,6 @@ import {
   ENUM,
   HAS,
   LISTENER,
-  NUMBER,
   REQUIRED,
   ROW,
   ROW_COUNT,
@@ -423,8 +423,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     const enumValues = schema[ENUM];
     if (
       isUndefined(enumValues)
-        ? isUndefined(type) ||
-          (!isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type))
+        ? !isCellOrValueSchemaTypes(type)
         : !isUndefined(type) ||
           !isArray(enumValues) ||
           isUndefined(enumValues[0]) ||
@@ -447,7 +446,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isNull(defaultValue)) {
       if (
         (isUndefined(enumValues)
-          ? getCellOrValueType(defaultValue) != type
+          ? !cellOrValueSchemaTypeIncludes(
+              type as CellOrValueSchemaTypes,
+              getCellOrValueType(defaultValue),
+            )
           : !arrayHas(enumValues, defaultValue as any)) ||
         isReservedString(defaultValue)
       ) {
@@ -487,14 +489,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const isValidEncodedJson = (
     cellOrValue: any,
-    type?: CellOrValueType,
+    types?: CellOrValueSchemaTypes,
   ): boolean =>
     acceptingEncodedData == 1 &&
     isEncodedJson(cellOrValue) &&
     tryReturn(() => {
       const encodedType = getCellOrValueType(decodeIfJson(cellOrValue));
       return (
-        isJsonType(encodedType) && (isUndefined(type) || type == encodedType)
+        isJsonType(encodedType) &&
+        (isUndefined(types) ||
+          cellOrValueSchemaTypeIncludes(types, encodedType))
       );
     }, false) == true;
 
@@ -573,7 +577,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
                         cellSchema[DEFAULT],
                       )
                   : isUndefined(cellSchema[ENUM])
-                    ? getCellOrValueType(cell) === cellSchema[TYPE]
+                    ? cellOrValueSchemaTypeIncludes(
+                        cellSchema[TYPE] as CellOrValueSchemaTypes,
+                        getCellOrValueType(cell),
+                      )
                       ? encodeValid(cell, () =>
                           cellInvalid(
                             tableId,
@@ -650,7 +657,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
                     ? value
                     : valueInvalid(valueId, value, valueSchema[DEFAULT])
                   : isUndefined(valueSchema[ENUM])
-                    ? getCellOrValueType(value) === valueSchema[TYPE]
+                    ? cellOrValueSchemaTypeIncludes(
+                        valueSchema[TYPE] as CellOrValueSchemaTypes,
+                        getCellOrValueType(value),
+                      )
                       ? encodeValid(value, () =>
                           valueInvalid(valueId, value, valueSchema[DEFAULT]),
                         )

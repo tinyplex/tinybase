@@ -7,6 +7,7 @@ import type {
   Value,
   ValueOrUndefined,
 } from '../@types/index.d.ts';
+import {arrayEvery, arrayHas} from './array.ts';
 import {jsonParse, jsonString} from './json.ts';
 import {isObject} from './obj.ts';
 import {
@@ -35,6 +36,16 @@ export type PrimitiveCellOrValue = string | number | boolean | null;
 export type CellOrValueType =
   'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
 
+export type CellOrValueSchemaType = Exclude<CellOrValueType, 'null'>;
+
+export type CellOrValueSchemaTypes =
+  | CellOrValueSchemaType
+  | readonly [
+      CellOrValueSchemaType,
+      CellOrValueSchemaType,
+      ...CellOrValueSchemaType[],
+    ];
+
 export const getCellOrValueType = (
   cellOrValue: any,
 ): CellOrValueType | undefined => {
@@ -59,6 +70,23 @@ export const isCellOrValueOrUndefined = (cellOrValue: any): boolean =>
 
 export const isJsonType = (type: any): boolean =>
   type == OBJECT || type == ARRAY;
+
+export const isCellOrValueSchemaType = (
+  type: any,
+): type is CellOrValueSchemaType =>
+  isTypeStringOrBoolean(type) || type == NUMBER || isJsonType(type);
+
+export const isCellOrValueSchemaTypes = (
+  types: any,
+): types is CellOrValueSchemaTypes =>
+  isArray(types)
+    ? !isUndefined(types[1]) && arrayEvery(types, isCellOrValueSchemaType)
+    : isCellOrValueSchemaType(types);
+
+export const cellOrValueSchemaTypeIncludes = (
+  types: CellOrValueSchemaTypes,
+  type: CellOrValueType | undefined,
+): boolean => (isArray(types) ? arrayHas(types, type) : types == type);
 
 export const encodeIfJson = <CV extends Cell | Value>(value: CV): CV =>
   isObject(value) || isArray(value)
