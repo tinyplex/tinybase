@@ -11,9 +11,9 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v9-4'><em>NEW!</em> v9.4 release</a>
+<a href='/guides/releases/#v9-5'><em>NEW!</em> v9.5 release</a>
 
-<span id="one-with">"The one with `selectAll`!"</span>
+<span id="one-with">"The one with enums!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

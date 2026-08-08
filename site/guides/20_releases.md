@@ -5,6 +5,38 @@ highlighted features.
 
 ---
 
+# v9.5
+
+## Native Enum Schemas
+
+CellSchema and ValueSchema can now use an `enum` property instead of `type` to
+allow only specific primitive values (as requested in issue
+[#38](https://github.com/tinyplex/tinybase/issues/38)). Enums must be non-empty,
+can mix strings, finite numbers, and booleans, and continue to use `allowNull`
+when `null` is also valid.
+
+```js
+import {createStore as createEnumStore} from 'tinybase';
+
+const enumStore = createEnumStore().setValuesSchema({
+  status: {enum: ['available', 'adopted'], default: 'available'},
+  rating: {enum: ['good', 5, true], allowNull: true},
+});
+
+enumStore.setValues({status: 'adopted', rating: true});
+enumStore.setValue('status', 'missing');
+console.log(enumStore.getValues());
+// -> {status: 'available', rating: true}
+```
+
+Each schema entry must use exactly one of `type` or `enum`. Defaults are used
+only when they are enum members, or are `null` when null is allowed. The
+schema-aware Store APIs infer exact unions from enum members, and the Zod,
+Valibot, ArkType, Effect Schema, TypeBox, and Yup schematizers now preserve
+supported primitive enum and literal constraints in the schemas they produce.
+
+---
+
 # v9.4
 
 ## `selectAll`
