@@ -1788,12 +1788,12 @@ const storeWithRequiredSchemas = store.setSchema(
     enumTablesSchema,
     enumValuesSchema,
   );
-
+  const enumStore = storeWithEnumSchemas;
   storeWithEnumSchemas.getCell('pets', 'pet1', 'status') satisfies
     'draft' | 'live' | undefined;
-  storeWithEnumSchemas.getCell('pets', 'pet1', 'status') satisfies 'archived'; // !
+  enumStore.getCell('pets', 'pet1', 'status') satisfies 'archived'; // !
   storeWithEnumSchemas.getCell('pets', 'pet1', 'featured') satisfies true;
-  storeWithEnumSchemas.getCell('pets', 'pet1', 'featured') satisfies undefined; // !
+  enumStore.getCell('pets', 'pet1', 'featured') satisfies undefined; // !
   storeWithEnumSchemas.getCell('pets', 'pet1', 'rating') satisfies 1 | 2;
   storeWithEnumSchemas.getCell('pets', 'pet1', 'rating') satisfies 3; // !
   storeWithEnumSchemas.getCell('pets', 'pet1', 'name') satisfies

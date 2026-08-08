@@ -2278,9 +2278,9 @@ exports[`Types in store.ts > 1761:4 1`] = `"Argument of type '() => string' is n
 
 exports[`Types in store.ts > 1764:19 1`] = `"No overload matches this call."`;
 
-exports[`Types in store.ts > 1793:57 1`] = `"Type 'DefaultedCellFromSchema<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "status">' does not satisfy the expected type '"archived"'."`;
+exports[`Types in store.ts > 1793:46 1`] = `"Type 'DefaultedCellFromSchema<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "status">' does not satisfy the expected type '"archived"'."`;
 
-exports[`Types in store.ts > 1795:59 1`] = `"Type 'true' does not satisfy the expected type 'undefined'."`;
+exports[`Types in store.ts > 1795:48 1`] = `"Type 'true' does not satisfy the expected type 'undefined'."`;
 
 exports[`Types in store.ts > 1797:57 1`] = `"Type 'DefaultedCellFromSchema<{ readonly pets: { readonly status: { readonly enum: readonly ["draft", "live"]; }; readonly featured: { readonly enum: readonly [true]; readonly default: true; }; readonly rating: { readonly enum: readonly [1, 2]; readonly required: true; }; readonly name: { ...; }; }; }, "pets", "rating">' does not satisfy the expected type '3'."`;
 
