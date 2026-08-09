@@ -38,7 +38,8 @@ supported primitive enum and literal constraints in the schemas they produce.
 ## Native Schema Type Unions
 
 CellSchema and ValueSchema can now accept a non-empty array in the `type`
-property to list one or more allowed broad types:
+property to list one or more allowed broad types (as requested in issue
+[#223](https://github.com/tinyplex/tinybase/issues/223)):
 
 ```js
 const unionStore = createStore().setValuesSchema({
