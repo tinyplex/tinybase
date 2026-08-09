@@ -11,6 +11,8 @@ import type {
   StoreAlias,
   TableIdFromSchema,
   Truncate,
+  ValidTablesSchema,
+  ValidValuesSchema,
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
 import type {
@@ -1258,25 +1260,25 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   setJson(tablesAndValuesJson: Json): this;
 
   /// Store.setTablesSchema
-  setTablesSchema<TS extends TablesSchema>(
-    tablesSchema: TS,
-  ): Store<[typeof tablesSchema, Schemas[1]]>;
+  setTablesSchema<const TS extends TablesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+  ): Store<[TS, Schemas[1]]>;
 
   /// Store.setValuesSchema
-  setValuesSchema<VS extends ValuesSchema>(
-    valuesSchema: VS,
-  ): Store<[Schemas[0], typeof valuesSchema]>;
+  setValuesSchema<const VS extends ValuesSchema>(
+    valuesSchema: VS & ValidValuesSchema<VS>,
+  ): Store<[Schemas[0], VS]>;
 
   /// Store.setSchema
-  setSchema<TS extends TablesSchema, VS extends ValuesSchema>(
-    tablesSchema: TS,
-    valuesSchema?: VS,
+  setSchema<const TS extends TablesSchema, const VS extends ValuesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+    valuesSchema?: VS & ValidValuesSchema<VS>,
   ): Store<
     [
-      typeof tablesSchema,
+      TS,
       Exclude<ValuesSchema, typeof valuesSchema> extends never
         ? NoValuesSchema
-        : NonNullable<typeof valuesSchema>,
+        : VS,
     ]
   >;
 

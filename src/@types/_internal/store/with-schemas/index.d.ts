@@ -5,7 +5,9 @@ import type {
   OptionalTablesSchema,
   OptionalValuesSchema,
   Store,
+  TablesSchema,
   Value,
+  ValuesSchema,
 } from '../../../store/with-schemas/index.d.ts';
 
 export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
@@ -94,10 +96,10 @@ export type CellIsDefaultedFromSchema<
   CellId extends CellIdFromSchema<Schema, TableId>,
   Then,
   Else,
-> = Schema[TableId][CellId] extends {
-  default: infer _;
-}
-  ? Then
+> = Schema[TableId][CellId] extends {default: infer Default}
+  ? [Default] extends [Cell<Schema, TableId, CellId>]
+    ? Then
+    : Else
   : Else;
 
 export type CellIsRequiredFromSchema<
@@ -190,11 +192,44 @@ export type ValueIsDefaultedFromSchema<
   ValueId extends ValueIdFromSchema<Schema>,
   Then,
   Else,
-> = Schema[ValueId] extends {
-  default: infer _;
-}
-  ? Then
+> = Schema[ValueId] extends {default: infer Default}
+  ? [Default] extends [Value<Schema, ValueId>]
+    ? Then
+    : Else
   : Else;
+
+type ValidCellDefault<
+  Schema extends TablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+> = Schema[TableId][CellId] extends {default: infer Default}
+  ? [Default] extends [Cell<Schema, TableId, CellId>]
+    ? unknown
+    : never
+  : unknown;
+
+export type ValidTablesSchema<Schema extends TablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]: {
+    [CellId in CellIdFromSchema<Schema, TableId>]: ValidCellDefault<
+      Schema,
+      TableId,
+      CellId
+    >;
+  };
+};
+
+type ValidValueDefault<
+  Schema extends ValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema>,
+> = Schema[ValueId] extends {default: infer Default}
+  ? [Default] extends [Value<Schema, ValueId>]
+    ? unknown
+    : never
+  : unknown;
+
+export type ValidValuesSchema<Schema extends ValuesSchema> = {
+  [ValueId in ValueIdFromSchema<Schema>]: ValidValueDefault<Schema, ValueId>;
+};
 
 export type ValueIsRequiredFromSchema<
   Schema extends OptionalValuesSchema,

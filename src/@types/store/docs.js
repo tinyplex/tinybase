@@ -57,10 +57,11 @@
  * Set `allowNull` to `true` to also allow `null`, whether the schema uses
  * `type` or `enum`. A default value is used only when it has the correct type,
  * matches any member of a type union, is an enum member when applicable, or is
- * `null` when allowed. A valid default means that the Cell will always be
- * present in a Row. You can also set `required` to `true` to indicate to
- * schema-based typing that the Cell should be present even if it does not have
- * a default.
+ * `null` when allowed. Literal schemas passed to Store schema setters are
+ * checked against these default rules by TypeScript. A valid default means
+ * that the Cell will always be present in a Row. You can also set `required`
+ * to `true` to indicate to schema-based typing that the Cell should be present
+ * even if it does not have a default.
  *
  * If neither a default value nor `required: true` is provided, the Cell may be
  * missing from the Row, but when present you can be guaranteed it is of the
@@ -170,10 +171,11 @@
  * Set `allowNull` to `true` to also allow `null`, whether the schema uses
  * `type` or `enum`. A default value is used only when it has the correct type,
  * matches any member of a type union, is an enum member when applicable, or is
- * `null` when allowed. A valid default means that the Value will always be
- * present in a Store. You can also set `required` to `true` to indicate to
- * schema-based typing that the Value should be present even if it does not have
- * a default.
+ * `null` when allowed. Literal schemas passed to Store schema setters are
+ * checked against these default rules by TypeScript. A valid default means
+ * that the Value will always be present in a Store. You can also set `required`
+ * to `true` to indicate to schema-based typing that the Value should be present
+ * even if it does not have a default.
  *
  * If neither a default value nor `required: true` is provided, the Value may
  * not be present in the Store, but when present you can be guaranteed it is of

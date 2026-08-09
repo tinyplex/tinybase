@@ -2,6 +2,8 @@
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
+  ValidTablesSchema,
+  ValidValuesSchema,
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
 import type {GetNow, Hash, Hlc, Id} from '../../common/with-schemas/index.d.ts';
@@ -239,25 +241,25 @@ export interface MergeableStore<
   isMergeable(): boolean;
 
   /// Store.setTablesSchema
-  setTablesSchema<TS extends TablesSchema>(
-    tablesSchema: TS,
-  ): MergeableStore<[typeof tablesSchema, Schemas[1]]>;
+  setTablesSchema<const TS extends TablesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+  ): MergeableStore<[TS, Schemas[1]]>;
 
   /// Store.setValuesSchema
-  setValuesSchema<VS extends ValuesSchema>(
-    valuesSchema: VS,
-  ): MergeableStore<[Schemas[0], typeof valuesSchema]>;
+  setValuesSchema<const VS extends ValuesSchema>(
+    valuesSchema: VS & ValidValuesSchema<VS>,
+  ): MergeableStore<[Schemas[0], VS]>;
 
   /// Store.setSchema
-  setSchema<TS extends TablesSchema, VS extends ValuesSchema>(
-    tablesSchema: TS,
-    valuesSchema?: VS,
+  setSchema<const TS extends TablesSchema, const VS extends ValuesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+    valuesSchema?: VS & ValidValuesSchema<VS>,
   ): MergeableStore<
     [
-      typeof tablesSchema,
+      TS,
       Exclude<ValuesSchema, typeof valuesSchema> extends never
         ? NoValuesSchema
-        : NonNullable<typeof valuesSchema>,
+        : VS,
     ]
   >;
 

@@ -964,7 +964,7 @@ exports[`Types in mergeable-store.ts > 1452:18 1`] = `"Property 'v2' does not ex
 
 exports[`Types in mergeable-store.ts > 1462:37 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in mergeable-store.ts > 1469:37 1`] = `"Property 't1' does not exist on type 'Tables<{ t2: { c2: { type: "number"; }; }; }, false>'."`;
+exports[`Types in mergeable-store.ts > 1469:37 1`] = `"Property 't1' does not exist on type 'Tables<{ readonly t2: { readonly c2: { readonly type: "number"; }; }; }, false>'."`;
 
 exports[`Types in mergeable-store.ts > 1470:37 1`] = `"Property 'v2' does not exist on type '{ v1d: string; } & { v1?: number | undefined; }'."`;
 
@@ -2252,7 +2252,7 @@ exports[`Types in store.ts > 1672:18 1`] = `"Property 'v2' does not exist on typ
 
 exports[`Types in store.ts > 1682:37 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in store.ts > 1689:37 1`] = `"Property 't1' does not exist on type 'Tables<{ t2: { c2: { type: "number"; }; }; }, false>'."`;
+exports[`Types in store.ts > 1689:37 1`] = `"Property 't1' does not exist on type 'Tables<{ readonly t2: { readonly c2: { readonly type: "number"; }; }; }, false>'."`;
 
 exports[`Types in store.ts > 1690:37 1`] = `"Property 'v2' does not exist on type '{ v1d: string; } & { v1?: number | undefined; }'."`;
 
@@ -2318,17 +2318,17 @@ exports[`Types in store.ts > 1836:28 1`] = `"Type 'string[]' is not assignable t
 
 exports[`Types in store.ts > 1869:37 1`] = `"Type 'string' is not assignable to type 'number | boolean'."`;
 
-exports[`Types in store.ts > 1872:47 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'Cell<{ pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly single: { ......'."`;
+exports[`Types in store.ts > 1872:47 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly sing...'."`;
 
-exports[`Types in store.ts > 1875:48 1`] = `"Argument of type 'string' is not assignable to parameter of type 'Cell<{ pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly single: { ......'."`;
+exports[`Types in store.ts > 1875:48 1`] = `"Argument of type 'string' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly sing...'."`;
 
-exports[`Types in store.ts > 1877:49 1`] = `"Argument of type '1' is not assignable to parameter of type 'Cell<{ pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly single: { ......'."`;
+exports[`Types in store.ts > 1877:49 1`] = `"Argument of type '1' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly sing...'."`;
 
-exports[`Types in store.ts > 1879:47 1`] = `"Argument of type 'number' is not assignable to parameter of type 'string | MapCell<{ pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly s...'."`;
+exports[`Types in store.ts > 1879:47 1`] = `"Argument of type 'number' is not assignable to parameter of type 'string | MapCell<{ readonly pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; r...'."`;
 
-exports[`Types in store.ts > 1881:49 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'string | MapCell<{ pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly s...'."`;
+exports[`Types in store.ts > 1881:49 1`] = `"Argument of type 'boolean' is not assignable to parameter of type 'string | MapCell<{ readonly pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; r...'."`;
 
-exports[`Types in store.ts > 1888:14 1`] = `"Type 'Cell<{ pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly single: { ......' does not satisfy the expected type 'boolean'."`;
+exports[`Types in store.ts > 1888:14 1`] = `"Type 'Cell<{ readonly pets: { readonly answer: { readonly type: readonly ["string", "number"]; }; readonly payload: { readonly type: readonly ["object", "array"]; readonly default: []; }; readonly score: { readonly type: readonly ["number", "boolean"]; readonly required: true; }; readonly response: { ...; }; readonly sing...' does not satisfy the expected type 'boolean'."`;
 
 exports[`Types in store.ts > 1900:24 1`] = `"Type 'string' is not assignable to type 'number | boolean'."`;
 
@@ -2350,13 +2350,35 @@ exports[`Types in store.ts > 1921:29 1`] = `"Type '"null"' is not assignable to 
 
 exports[`Types in store.ts > 1924:4 1`] = `"Type '{ type: ["string", "boolean"]; enum: [string]; }' is not assignable to type 'ValueSchema'."`;
 
-exports[`Types in store.ts > 1952:51 1`] = `"Argument of type 'false' is not assignable to parameter of type 'Cell<{ pets: { readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }; }, ... 4 more ..., null> | MapCell<....'."`;
+exports[`Types in store.ts > 1952:51 1`] = `"Argument of type 'false' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }; }, ... 4 more ..., null> | ...'."`;
 
-exports[`Types in store.ts > 1953:48 1`] = `"Argument of type '{}' is not assignable to parameter of type 'Cell<{ pets: { readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }; }, ... 4 more ..., null> | MapCell<....'."`;
+exports[`Types in store.ts > 1953:48 1`] = `"Argument of type '{}' is not assignable to parameter of type 'Cell<{ readonly pets: { readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }; }, ... 4 more ..., null> | ...'."`;
 
 exports[`Types in store.ts > 1961:36 1`] = `"Argument of type 'false' is not assignable to parameter of type 'Value<{ readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }, "profile", "object", never, null> | MapValu...'."`;
 
 exports[`Types in store.ts > 1962:33 1`] = `"Argument of type '{}' is not assignable to parameter of type 'Value<{ readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }, "tags", "array", never, null> | MapValue<...>'."`;
+
+exports[`Types in store-schema-defaults.ts > 10:6 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 14:4 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 17:12 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 25:6 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 29:4 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 32:12 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 44:6 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 48:4 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 52:6 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
+
+exports[`Types in store-schema-defaults.ts > 79:42 1`] = `"Type 'DefaultedCellFromSchema<{ pets: { answer: { type: readonly ["string", "boolean"]; default: 1; }; }; }, "pets", "answer">' does not satisfy the expected type 'string | boolean'."`;
+
+exports[`Types in store-schema-defaults.ts > 81:27 1`] = `"Type 'DefaultedValueFromSchema<{ status: { enum: readonly ["draft", "live"]; default: "archived"; }; }, "status">' does not satisfy the expected type '"draft" | "live"'."`;
 
 exports[`Types in ui-react.tsx > 137:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 

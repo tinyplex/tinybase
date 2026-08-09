@@ -14,6 +14,46 @@ type SchemaType = 'string' | 'number' | 'boolean' | 'object' | 'array';
 
 type SchemaTypeArray = readonly [SchemaType, ...SchemaType[]];
 
+type CellOrValueFromSchemaType<Type> = Type extends readonly (infer Type)[]
+  ? CellOrValueFromSchemaType<Type>
+  : Type extends 'string'
+    ? string
+    : Type extends 'number'
+      ? number
+      : Type extends 'boolean'
+        ? boolean
+        : Type extends 'object'
+          ? AnyObject
+          : Type extends 'array'
+            ? AnyArray
+            : never;
+
+type CellOrValueFromSchema<Schema> = Schema extends {
+  enum: readonly (infer Enum)[];
+}
+  ? Enum
+  : Schema extends {type: infer Type}
+    ? CellOrValueFromSchemaType<Type>
+    : never;
+
+type NullFromSchema<Schema> = Schema extends {allowNull: true} ? null : never;
+
+type ValidDefault<Schema> = Schema extends {default: infer Default}
+  ? [Default] extends [CellOrValueFromSchema<Schema> | NullFromSchema<Schema>]
+    ? unknown
+    : never
+  : unknown;
+
+type ValidTablesSchema<Schema extends TablesSchema> = {
+  [TableId in keyof Schema]: {
+    [CellId in keyof Schema[TableId]]: ValidDefault<Schema[TableId][CellId]>;
+  };
+};
+
+type ValidValuesSchema<Schema extends ValuesSchema> = {
+  [ValueId in keyof Schema]: ValidDefault<Schema[ValueId]>;
+};
+
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
@@ -679,13 +719,20 @@ export interface Store {
   setJson(tablesAndValuesJson: Json): this;
 
   /// Store.setTablesSchema
-  setTablesSchema(tablesSchema: TablesSchema): this;
+  setTablesSchema<const TS extends TablesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+  ): this;
 
   /// Store.setValuesSchema
-  setValuesSchema(valuesSchema: ValuesSchema): this;
+  setValuesSchema<const VS extends ValuesSchema>(
+    valuesSchema: VS & ValidValuesSchema<VS>,
+  ): this;
 
   /// Store.setSchema
-  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): this;
+  setSchema<const TS extends TablesSchema, const VS extends ValuesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+    valuesSchema?: VS & ValidValuesSchema<VS>,
+  ): this;
 
   /// Store.delTables
   delTables(): this;
