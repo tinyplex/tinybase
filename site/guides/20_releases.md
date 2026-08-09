@@ -13,9 +13,9 @@ CellSchema and ValueSchema can now accept an array in the `type` property when
 a Cell or Value can have more than one broad type:
 
 ```js
-import {createStore as createUnionStore} from 'tinybase';
+import {createStore} from 'tinybase';
 
-const unionStore = createUnionStore().setValuesSchema({
+const unionStore = createStore().setValuesSchema({
   reference: {type: ['string', 'number'], default: 'unknown'},
   response: {type: ['boolean', 'object'], allowNull: true},
 });
@@ -46,9 +46,7 @@ can mix strings, finite numbers, and booleans, and continue to use `allowNull`
 when `null` is also valid.
 
 ```js
-import {createStore as createEnumStore} from 'tinybase';
-
-const enumStore = createEnumStore().setValuesSchema({
+const enumStore = createStore().setValuesSchema({
   status: {enum: ['available', 'adopted'], default: 'available'},
   rating: {enum: ['good', 5, true], allowNull: true},
 });
@@ -83,7 +81,7 @@ source Cell Ids within a `selectAll` function call are processed lexically, so
 collision behavior is deterministic.
 
 ```js
-import {createQueries, createStore} from 'tinybase';
+import {createQueries} from 'tinybase';
 
 const selectAllStore = createStore().setTable('pets', {
   fido: {species: 'dog', color: 'brown'},
