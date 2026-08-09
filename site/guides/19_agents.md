@@ -568,6 +568,10 @@ All code examples in a guide file are concatenated and executed as a test:
 
 When adding a new feature:
 
+- Never alias imports in release-note examples to avoid shared-scope name
+  collisions. Import each symbol unaliased once in the most recent applicable
+  example, and remove conflicting imports from later examples in the page.
+
 1. **Update `/site/guides/20_releases.md`** (NOT `/releases.md`):
    - Add new version section at the top
    - Include working code example that will be tested
