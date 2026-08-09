@@ -156,6 +156,7 @@ var FUNCTION2 = getTypeOf2(getTypeOf2);
 var OBJECT = "object";
 var ARRAY = "array";
 var TYPE = "type";
+var ENUM = "enum";
 var DEFAULT = "default";
 var ALLOW_NULL = "allowNull";
 var NULL = "null";
@@ -1455,6 +1456,9 @@ var getCellOrValueType = (cellOrValue) => {
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
 var isJsonType = (type) => type == OBJECT || type == ARRAY;
+var isCellOrValueSchemaType = (type) => isTypeStringOrBoolean(type) || type == NUMBER || isJsonType(type);
+var isCellOrValueSchemaTypes = (types) => isArray(types) ? !isUndefined2(types[0]) && arrayEvery(types, isCellOrValueSchemaType) : isCellOrValueSchemaType(types);
+var cellOrValueSchemaTypeIncludes = (types, type) => isArray(types) ? arrayHas(types, type) : types == type;
 var encodeIfJson = (value) => isObject(value) || isArray(value) ? JSON_PREFIX + jsonString(value) : value;
 var isEncodedJson = (value) => isString2(value) && value[0] == JSON_PREFIX;
 var isReservedString = (value, encoded = 0) => value === UNDEFINED || !encoded && isEncodedJson(value);
@@ -1573,12 +1577,16 @@ var createStore = () => {
   const validateCellOrValueSchema = (schema) => {
     if (!objValidate(
       schema,
-      (_child, id2) => arrayHas([TYPE, DEFAULT, ALLOW_NULL, REQUIRED], id2)
+      (_child, id2) => arrayHas([TYPE, ENUM, DEFAULT, ALLOW_NULL, REQUIRED], id2)
     )) {
       return false;
     }
     const type = schema[TYPE];
-    if (!isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type)) {
+    const enumValues = schema[ENUM];
+    if (isUndefined2(enumValues) ? !isCellOrValueSchemaTypes(type) : !isUndefined2(type) || !isArray(enumValues) || isUndefined2(enumValues[0]) || !arrayEvery(enumValues, (enumValue) => {
+      const enumType = getCellOrValueType(enumValue);
+      return !isNull(enumValue) && !isUndefined2(enumType) && !isJsonType(enumType) && !isReservedString(enumValue);
+    })) {
       return false;
     }
     const defaultValue = schema[DEFAULT];
@@ -1586,7 +1594,10 @@ var createStore = () => {
       return false;
     }
     if (!isNull(defaultValue)) {
-      if (getCellOrValueType(defaultValue) != type || isReservedString(defaultValue)) {
+      if ((isUndefined2(enumValues) ? !cellOrValueSchemaTypeIncludes(
+        type,
+        getCellOrValueType(defaultValue)
+      ) : !arrayHas(enumValues, defaultValue)) || isReservedString(defaultValue)) {
         objDel(schema, DEFAULT);
       } else {
         ifNotUndefined2(
@@ -1607,9 +1618,9 @@ var createStore = () => {
   const cloneTable = (table) => isObject(table) ? objMap(table, cloneRow) : table;
   const cloneTables = (tables) => isObject(tables) ? objMap(tables, cloneTable) : tables;
   const cloneValues = (values) => isObject(values) ? objMap(values, getArg) : values;
-  const isValidEncodedJson = (cellOrValue, type) => acceptingEncodedData == 1 && isEncodedJson(cellOrValue) && tryReturn(() => {
+  const isValidEncodedJson = (cellOrValue, types) => acceptingEncodedData == 1 && isEncodedJson(cellOrValue) && tryReturn(() => {
     const encodedType = getCellOrValueType(decodeIfJson(cellOrValue));
-    return isJsonType(encodedType) && (isUndefined2(type) || type == encodedType);
+    return isJsonType(encodedType) && (isUndefined2(types) || cellOrValueSchemaTypeIncludes(types, encodedType));
   }, false) == true;
   const validateContent = isArray;
   const validateTables = (tables) => objValidate(tables, validateTable, cellInvalid);
@@ -1639,13 +1650,16 @@ var createStore = () => {
   };
   const getValidatedCell = (tableId, rowId, cellId, cell) => hasTablesSchema ? ifNotUndefined2(
     mapGet(mapGet(tablesSchemaMap, tableId), cellId),
-    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : isReservedString(cell, acceptingEncodedData) ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : isEncodedJson(cell) ? isValidEncodedJson(cell, cellSchema[TYPE]) ? cell : cellInvalid(
+    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : isReservedString(cell, acceptingEncodedData) ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : isEncodedJson(cell) ? isUndefined2(cellSchema[ENUM]) && isValidEncodedJson(cell, cellSchema[TYPE]) ? cell : cellInvalid(
       tableId,
       rowId,
       cellId,
       cell,
       cellSchema[DEFAULT]
-    ) : getCellOrValueType(cell) === cellSchema[TYPE] ? encodeValid(
+    ) : isUndefined2(cellSchema[ENUM]) ? cellOrValueSchemaTypeIncludes(
+      cellSchema[TYPE],
+      getCellOrValueType(cell)
+    ) ? encodeValid(
       cell,
       () => cellInvalid(
         tableId,
@@ -1655,6 +1669,12 @@ var createStore = () => {
         cellSchema[DEFAULT]
       )
     ) : cellInvalid(
+      tableId,
+      rowId,
+      cellId,
+      cell,
+      cellSchema[DEFAULT]
+    ) : arrayHas(cellSchema[ENUM], cell) ? cell : cellInvalid(
       tableId,
       rowId,
       cellId,
@@ -1683,10 +1703,13 @@ var createStore = () => {
   };
   const getValidatedValue = (valueId, value) => hasValuesSchema ? ifNotUndefined2(
     mapGet(valuesSchemaMap, valueId),
-    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : isReservedString(value, acceptingEncodedData) ? valueInvalid(valueId, value, valueSchema[DEFAULT]) : isEncodedJson(value) ? isValidEncodedJson(value, valueSchema[TYPE]) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) === valueSchema[TYPE] ? encodeValid(
+    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : isReservedString(value, acceptingEncodedData) ? valueInvalid(valueId, value, valueSchema[DEFAULT]) : isEncodedJson(value) ? isUndefined2(valueSchema[ENUM]) && isValidEncodedJson(value, valueSchema[TYPE]) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : isUndefined2(valueSchema[ENUM]) ? cellOrValueSchemaTypeIncludes(
+      valueSchema[TYPE],
+      getCellOrValueType(value)
+    ) ? encodeValid(
       value,
       () => valueInvalid(valueId, value, valueSchema[DEFAULT])
-    ) : valueInvalid(valueId, value, valueSchema[DEFAULT]),
+    ) : valueInvalid(valueId, value, valueSchema[DEFAULT]) : arrayHas(valueSchema[ENUM], value) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
     () => valueInvalid(valueId, value)
   ) : isUndefined2(getCellOrValueType(value)) || isReservedString(value, acceptingEncodedData) || isEncodedJson(value) && !isValidEncodedJson(value) ? valueInvalid(valueId, value) : encodeValid(value, () => valueInvalid(valueId, value));
   const addDefaultsToRow = (row, tableId, rowId) => {
