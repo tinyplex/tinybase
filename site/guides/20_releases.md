@@ -7,14 +7,40 @@ highlighted features.
 
 # v9.5
 
+## Native Enum Schemas
+
+CellSchema and ValueSchema can now use an `enum` property instead of `type` to
+allow only specific primitive values (as requested in issue
+[#38](https://github.com/tinyplex/tinybase/issues/38)). Enums must be non-empty,
+can mix strings, finite numbers, and booleans, and continue to use `allowNull`
+when `null` is also valid.
+
+```js
+import {createStore} from 'tinybase';
+
+const enumStore = createStore().setValuesSchema({
+  status: {enum: ['available', 'adopted'], default: 'available'},
+  rating: {enum: ['good', 5, true], allowNull: true},
+});
+
+enumStore.setValues({status: 'adopted', rating: true});
+enumStore.setValue('status', 'missing');
+console.log(enumStore.getValues());
+// -> {status: 'available', rating: true}
+```
+
+Each schema entry must use exactly one of `type` or `enum`. Defaults are used
+only when they are enum members, or are `null` when null is allowed. The
+schema-aware Store APIs infer exact unions from enum members, and the Zod,
+Valibot, ArkType, Effect Schema, TypeBox, and Yup schematizers now preserve
+supported primitive enum and literal constraints in the schemas they produce.
+
 ## Native Schema Type Unions
 
 CellSchema and ValueSchema can now accept an array in the `type` property when
 a Cell or Value can have more than one broad type:
 
 ```js
-import {createStore} from 'tinybase';
-
 const unionStore = createStore().setValuesSchema({
   reference: {type: ['string', 'number'], default: 'unknown'},
   response: {type: ['boolean', 'object'], allowNull: true},
@@ -36,32 +62,6 @@ The schema-aware Store APIs infer the corresponding TypeScript unions. The
 ArkType, Effect Schema, TypeBox, Valibot, and Zod schematizers also preserve
 supported broad type unions, while continuing to preserve literal-only unions
 as exact enums.
-
-## Native Enum Schemas
-
-CellSchema and ValueSchema can now use an `enum` property instead of `type` to
-allow only specific primitive values (as requested in issue
-[#38](https://github.com/tinyplex/tinybase/issues/38)). Enums must be non-empty,
-can mix strings, finite numbers, and booleans, and continue to use `allowNull`
-when `null` is also valid.
-
-```js
-const enumStore = createStore().setValuesSchema({
-  status: {enum: ['available', 'adopted'], default: 'available'},
-  rating: {enum: ['good', 5, true], allowNull: true},
-});
-
-enumStore.setValues({status: 'adopted', rating: true});
-enumStore.setValue('status', 'missing');
-console.log(enumStore.getValues());
-// -> {status: 'available', rating: true}
-```
-
-Each schema entry must use exactly one of `type` or `enum`. Defaults are used
-only when they are enum members, or are `null` when null is allowed. The
-schema-aware Store APIs infer exact unions from enum members, and the Zod,
-Valibot, ArkType, Effect Schema, TypeBox, and Yup schematizers now preserve
-supported primitive enum and literal constraints in the schemas they produce.
 
 ---
 
