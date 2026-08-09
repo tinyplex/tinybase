@@ -7,7 +7,7 @@ highlighted features.
 
 # v9.5
 
-## Native Enum Schemas
+## Schema Enums
 
 CellSchema and ValueSchema can now use an `enum` property instead of `type` to
 allow only specific primitive values (as requested in issue
@@ -35,7 +35,7 @@ schema-aware Store APIs infer exact unions from enum members, and the Zod,
 Valibot, ArkType, Effect Schema, TypeBox, and Yup schematizers now preserve
 supported primitive enum and literal constraints in the schemas they produce.
 
-## Native Schema Type Unions
+## Schema Type Unions
 
 CellSchema and ValueSchema can now accept a non-empty array in the `type`
 property to list one or more allowed broad types (as requested in issue
