@@ -2358,27 +2358,27 @@ exports[`Types in store.ts > 1961:36 1`] = `"Argument of type 'false' is not ass
 
 exports[`Types in store.ts > 1962:33 1`] = `"Argument of type '{}' is not assignable to parameter of type 'Value<{ readonly name: { readonly type: "string"; readonly allowNull: true; }; readonly profile: { readonly type: "object"; readonly default: null; readonly allowNull: true; }; readonly tags: { readonly type: "array"; readonly default: null; readonly allowNull: true; }; }, "tags", "array", never, null> | MapValue<...>'."`;
 
-exports[`Types in store-schema-defaults.ts > 10:6 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 9:6 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
 
-exports[`Types in store-schema-defaults.ts > 14:4 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 13:4 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
 
-exports[`Types in store-schema-defaults.ts > 17:12 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 16:12 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
 
-exports[`Types in store-schema-defaults.ts > 25:6 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 24:6 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
 
-exports[`Types in store-schema-defaults.ts > 29:4 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 28:4 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
 
-exports[`Types in store-schema-defaults.ts > 32:12 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 31:12 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
 
-exports[`Types in store-schema-defaults.ts > 44:6 1`] = `"Type '{ type: string[]; default: number; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 43:6 1`] = `"No overload matches this call."`;
 
-exports[`Types in store-schema-defaults.ts > 48:4 1`] = `"Type '{ enum: string[]; default: string; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 47:4 1`] = `"No overload matches this call."`;
 
-exports[`Types in store-schema-defaults.ts > 52:6 1`] = `"Type '{ type: string; default: null; }' is not assignable to type 'never'."`;
+exports[`Types in store-schema-defaults.ts > 51:6 1`] = `"No overload matches this call."`;
 
-exports[`Types in store-schema-defaults.ts > 79:42 1`] = `"Type 'DefaultedCellFromSchema<{ pets: { answer: { type: readonly ["string", "boolean"]; default: 1; }; }; }, "pets", "answer">' does not satisfy the expected type 'string | boolean'."`;
+exports[`Types in store-schema-defaults.ts > 78:42 1`] = `"Type 'DefaultedCellFromSchema<{ pets: { answer: { type: readonly ["string", "boolean"]; default: 1; }; }; }, "pets", "answer">' does not satisfy the expected type 'string | boolean'."`;
 
-exports[`Types in store-schema-defaults.ts > 81:27 1`] = `"Type 'DefaultedValueFromSchema<{ status: { enum: readonly ["draft", "live"]; default: "archived"; }; }, "status">' does not satisfy the expected type '"draft" | "live"'."`;
+exports[`Types in store-schema-defaults.ts > 80:27 1`] = `"Type 'DefaultedValueFromSchema<{ status: { enum: readonly ["draft", "live"]; default: "archived"; }; }, "status">' does not satisfy the expected type '"draft" | "live"'."`;
 
 exports[`Types in ui-react.tsx > 137:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 

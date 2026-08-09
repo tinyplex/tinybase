@@ -244,17 +244,34 @@ export interface MergeableStore<
   setTablesSchema<const TS extends TablesSchema>(
     tablesSchema: TS & ValidTablesSchema<TS>,
   ): MergeableStore<[TS, Schemas[1]]>;
+  setTablesSchema<const TS extends TablesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+  ): Store<[TS, Schemas[1]]>;
 
   /// Store.setValuesSchema
   setValuesSchema<const VS extends ValuesSchema>(
     valuesSchema: VS & ValidValuesSchema<VS>,
   ): MergeableStore<[Schemas[0], VS]>;
+  setValuesSchema<const VS extends ValuesSchema>(
+    valuesSchema: VS & ValidValuesSchema<VS>,
+  ): Store<[Schemas[0], VS]>;
 
   /// Store.setSchema
   setSchema<const TS extends TablesSchema, const VS extends ValuesSchema>(
     tablesSchema: TS & ValidTablesSchema<TS>,
     valuesSchema?: VS & ValidValuesSchema<VS>,
   ): MergeableStore<
+    [
+      TS,
+      Exclude<ValuesSchema, typeof valuesSchema> extends never
+        ? NoValuesSchema
+        : VS,
+    ]
+  >;
+  setSchema<const TS extends TablesSchema, const VS extends ValuesSchema>(
+    tablesSchema: TS & ValidTablesSchema<TS>,
+    valuesSchema?: VS & ValidValuesSchema<VS>,
+  ): Store<
     [
       TS,
       Exclude<ValuesSchema, typeof valuesSchema> extends never

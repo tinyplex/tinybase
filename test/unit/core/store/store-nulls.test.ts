@@ -1,4 +1,4 @@
-import type {Store} from 'tinybase';
+import type {Store, TablesSchema} from 'tinybase';
 import {createStore} from 'tinybase';
 import {beforeEach, describe, expect, test} from 'vitest';
 
@@ -161,7 +161,7 @@ describe('Null with schemas', () => {
       t1: {
         c1: {type: 'string', default: null},
       },
-    });
+    } as TablesSchema);
 
     expect(result).toEqual(store);
     expect(store.getTablesSchemaJson()).toEqual('{}');

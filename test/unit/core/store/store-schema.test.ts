@@ -8,6 +8,7 @@ import type {
   Tables,
   TablesSchema,
   Value,
+  ValuesSchema,
 } from 'tinybase/with-schemas';
 import {createMergeableStore, createStore} from 'tinybase/with-schemas';
 import {
@@ -250,7 +251,7 @@ describe.each([
     test('Validate enum Cell schemas', () => {
       store.setTablesSchema({
         pets: {status: {enum: ['draft', 'live'], default: 'other'}},
-      });
+      } as TablesSchema);
       expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
         pets: {status: {enum: ['draft', 'live']}},
       });
@@ -567,7 +568,7 @@ describe.each([
     test('Validate enum Value schemas', () => {
       store.setValuesSchema({
         status: {enum: ['draft', 'live'], default: 'other'},
-      });
+      } as ValuesSchema);
       expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
         status: {enum: ['draft', 'live']},
       });
@@ -3282,15 +3283,15 @@ describe.each([
           c4: {type: 'array', default: null, allowNull: true},
         },
       };
-      const valuesSchema = {
-        v1: {type: 'object' as const, default: {a: 1}},
-        v2: {type: 'array' as const, default: [2, 3]},
+      const valuesSchema: ValuesSchema = {
+        v1: {type: 'object', default: {a: 1}},
+        v2: {type: 'array', default: [2, 3]},
         v3: {
-          type: 'object' as const,
+          type: 'object',
           default: null,
           allowNull: true,
         },
-        v4: {type: 'array' as const, default: null, allowNull: true},
+        v4: {type: 'array', default: null, allowNull: true},
       };
       const expectedTablesSchema = structuredClone(tablesSchema);
       const expectedValuesSchema = structuredClone(valuesSchema);
