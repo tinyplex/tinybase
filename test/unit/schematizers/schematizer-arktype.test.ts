@@ -72,7 +72,7 @@ describe('ArkType Schematizer', () => {
           choices: type({
             answer: type('string | number').default('unknown'),
             score: 'boolean | number | null',
-            mode: '\'auto\' | number',
+            mode: `'auto' | number`,
           }),
         }),
       ).toEqual({

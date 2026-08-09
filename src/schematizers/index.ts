@@ -20,13 +20,7 @@ import {
   objSet,
 } from '../common/obj.ts';
 import {ifNotUndefined, isArray, isNull, isUndefined} from '../common/other.ts';
-import {
-  ALLOW_NULL,
-  DEFAULT,
-  ENUM,
-  REQUIRED,
-  TYPE,
-} from '../common/strings.ts';
+import {ALLOW_NULL, DEFAULT, ENUM, REQUIRED, TYPE} from '../common/strings.ts';
 
 export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
   unwrapSchema,

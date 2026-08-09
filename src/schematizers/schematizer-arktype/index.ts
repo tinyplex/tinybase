@@ -64,8 +64,7 @@ const unwrapSchema = (
 
     const enumItems = arrayFilter(
       schemaData,
-      (item: any) =>
-        !isNull(item?.[UNIT]) && !isNull(item) && item !== '=',
+      (item: any) => !isNull(item?.[UNIT]) && !isNull(item) && item !== '=',
     );
     if (
       size(enumItems) > 0 &&

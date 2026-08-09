@@ -1856,8 +1856,7 @@ const storeWithRequiredSchemas = store.setSchema(
 
   unionStore.getCell('pets', 'pet1', 'answer') satisfies
     string | number | undefined;
-  unionStore.getCell('pets', 'pet1', 'payload') satisfies
-    AnyObject | AnyArray;
+  unionStore.getCell('pets', 'pet1', 'payload') satisfies AnyObject | AnyArray;
   unionStore.getCell('pets', 'pet1', 'score') satisfies number | boolean;
   unionStore.getCell('pets', 'pet1', 'response') satisfies
     string | boolean | null | undefined;
@@ -1886,8 +1885,7 @@ const storeWithRequiredSchemas = store.setSchema(
   unionStore.getValue('answer') satisfies string | number | undefined;
   unionStore.getValue('payload') satisfies AnyObject | AnyArray;
   unionStore.getValue('score') satisfies number | boolean;
-  unionStore.getValue('response') satisfies
-    string | boolean | null | undefined;
+  unionStore.getValue('response') satisfies string | boolean | null | undefined;
   unionStore.getValue('status') satisfies 'draft' | 'live' | undefined;
   unionStore.setValues({score: 1});
   unionStore.setValues({score: 'high'}); // !

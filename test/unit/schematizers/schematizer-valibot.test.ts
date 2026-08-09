@@ -72,10 +72,7 @@ describe('Valibot Schematizer', () => {
       expect(
         schematizer.toTablesSchema({
           choices: v.object({
-            answer: v.fallback(
-              v.union([v.string(), v.number()]),
-              'unknown',
-            ),
+            answer: v.fallback(v.union([v.string(), v.number()]), 'unknown'),
             payload: v.union([
               v.array(v.string()),
               v.record(v.string(), v.string()),
