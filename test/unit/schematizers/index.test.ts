@@ -82,10 +82,14 @@ describe('Custom Schematizer', () => {
       schematizer.toValuesSchema({
         answer: {type: ['string', 'number'], required: false},
         payload: {type: ['object', 'array']},
+        single: {type: ['string']},
+        repeated: {type: ['boolean', 'boolean']},
       }),
     ).toEqual({
       answer: {type: ['string', 'number']},
       payload: {type: ['object', 'array'], required: true},
+      single: {type: ['string'], required: true},
+      repeated: {type: ['boolean', 'boolean'], required: true},
     });
   });
 
@@ -100,7 +104,6 @@ describe('Custom Schematizer', () => {
         reserved: {enum: ['\uFFFC']},
         both: {type: 'string', enum: ['draft']},
         unionEmpty: {type: []},
-        unionSingle: {type: ['string']},
         unionNull: {type: ['string', 'null']},
         unionInvalid: {type: ['string', 'date']},
       }),

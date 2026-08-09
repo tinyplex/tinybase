@@ -40,11 +40,7 @@ export type CellOrValueSchemaType = Exclude<CellOrValueType, 'null'>;
 
 export type CellOrValueSchemaTypes =
   | CellOrValueSchemaType
-  | readonly [
-      CellOrValueSchemaType,
-      CellOrValueSchemaType,
-      ...CellOrValueSchemaType[],
-    ];
+  | readonly [CellOrValueSchemaType, ...CellOrValueSchemaType[]];
 
 export const getCellOrValueType = (
   cellOrValue: any,
@@ -80,7 +76,7 @@ export const isCellOrValueSchemaTypes = (
   types: any,
 ): types is CellOrValueSchemaTypes =>
   isArray(types)
-    ? !isUndefined(types[1]) && arrayEvery(types, isCellOrValueSchemaType)
+    ? !isUndefined(types[0]) && arrayEvery(types, isCellOrValueSchemaType)
     : isCellOrValueSchemaType(types);
 
 export const cellOrValueSchemaTypeIncludes = (

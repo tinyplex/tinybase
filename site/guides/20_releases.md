@@ -37,8 +37,8 @@ supported primitive enum and literal constraints in the schemas they produce.
 
 ## Native Schema Type Unions
 
-CellSchema and ValueSchema can now accept an array in the `type` property when
-a Cell or Value can have more than one broad type:
+CellSchema and ValueSchema can now accept a non-empty array in the `type`
+property to list one or more allowed broad types:
 
 ```js
 const unionStore = createStore().setValuesSchema({
@@ -52,11 +52,12 @@ console.log(unionStore.getValues());
 // -> {reference: 'unknown', response: {accepted: true}}
 ```
 
-A type union must contain at least two of `string`, `number`, `boolean`,
-`object`, and `array`. `null` continues to be represented by `allowNull: true`,
-and defaults are used only when they match one of the listed types. Each schema
-entry still uses exactly one of `type` or `enum`: a type union allows every
-value of its listed types, while an enum allows only its listed values.
+A type array can contain `string`, `number`, `boolean`, `object`, and `array`.
+Multiple type names form a union, and repeated names have no additional effect.
+`null` continues to be represented by `allowNull: true`, and defaults are used
+only when they match one of the listed types. Each schema entry still uses
+exactly one of `type` or `enum`: a type array allows every value of its listed
+types, while an enum allows only its listed values.
 
 The schema-aware Store APIs infer the corresponding TypeScript unions. The
 ArkType, Effect Schema, TypeBox, Valibot, and Zod schematizers also preserve

@@ -52,7 +52,7 @@
  * type, default value, nullable flag, and optional required flag. It should
  * recursively unwrap optional/nullable wrappers and return a tuple of
  * [schema, defaultValue, allowNull, required]. The unwrapped schema should have
- * either a supported `type` property, a `type` array containing two or more
+ * either a supported `type` property, a non-empty `type` array containing
  * supported types, or a non-empty `enum` property containing primitive values.
  * @param getProperties - A function that extracts the properties/entries/shape
  * from an object schema. Returns undefined if the schema is not an object.

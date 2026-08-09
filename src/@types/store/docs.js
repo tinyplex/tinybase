@@ -42,11 +42,12 @@
  * Table.
  *
  * A CellSchema specifies either the type of the Cell (`string`, `boolean`,
- * `number`, `object`, or `array`), a union of two or more of those types, or a
- * non-empty `enum` of exact primitive values that are allowed. Use an array for
- * a type union, such as `type: ['string', 'number']`. The `type` and `enum`
- * properties are mutually exclusive, and enum members can be strings, finite
- * numbers, or booleans, including a mixture of those types.
+ * `number`, `object`, or `array`), a non-empty array of those types, or a
+ * non-empty `enum` of exact primitive values that are allowed. Multiple type
+ * names form a union, such as `type: ['string', 'number']`, and repeated names
+ * have no additional effect. The `type` and `enum` properties are mutually
+ * exclusive, and enum members can be strings, finite numbers, or booleans,
+ * including a mixture of those types.
  *
  * For `object` and `array` types, TinyBase automatically serializes values to
  * and from JSON when storing and retrieving them. Their contents should
@@ -154,11 +155,12 @@
  * Store.
  *
  * A ValueSchema specifies either the type of the Value (`string`, `boolean`,
- * `number`, `object`, or `array`), a union of two or more of those types, or a
- * non-empty `enum` of exact primitive values that are allowed. Use an array for
- * a type union, such as `type: ['string', 'number']`. The `type` and `enum`
- * properties are mutually exclusive, and enum members can be strings, finite
- * numbers, or booleans, including a mixture of those types.
+ * `number`, `object`, or `array`), a non-empty array of those types, or a
+ * non-empty `enum` of exact primitive values that are allowed. Multiple type
+ * names form a union, such as `type: ['string', 'number']`, and repeated names
+ * have no additional effect. The `type` and `enum` properties are mutually
+ * exclusive, and enum members can be strings, finite numbers, or booleans,
+ * including a mixture of those types.
  *
  * For `object` and `array` types, TinyBase automatically serializes values to
  * and from JSON when storing and retrieving them. Their contents should

@@ -278,6 +278,8 @@ describe.each([
           answer: {type: ['string', 'number'], default: 'unknown'},
           payload: {type: ['object', 'array'], required: true},
           score: {type: ['number', 'boolean'], allowNull: true},
+          single: {type: ['string']},
+          repeated: {type: ['string', 'string']},
           status: {enum: ['draft', 'live']},
         },
       } as const;
@@ -287,33 +289,45 @@ describe.each([
       store.setRow('pets', 'pet1', {
         payload: {likes: ['walks']},
         score: null,
+        single: 'initial',
+        repeated: 'initial',
         status: 'draft',
       });
       expect(store.getRow('pets', 'pet1')).toEqual({
         answer: 'unknown',
         payload: {likes: ['walks']},
         score: null,
+        single: 'initial',
+        repeated: 'initial',
         status: 'draft',
       });
 
       store.setCell('pets', 'pet1', 'answer', 42);
       store.setCell('pets', 'pet1', 'payload', ['walks']);
       store.setCell('pets', 'pet1', 'score', true);
+      store.setCell('pets', 'pet1', 'single', 'one');
+      store.setCell('pets', 'pet1', 'repeated', 'two');
       expect(store.getRow('pets', 'pet1')).toEqual({
         answer: 42,
         payload: ['walks'],
         score: true,
+        single: 'one',
+        repeated: 'two',
         status: 'draft',
       });
 
       store.setCell('pets', 'pet1', 'answer', false);
       store.setCell('pets', 'pet1', 'payload', null);
       store.setCell('pets', 'pet1', 'score', 'high');
+      store.setCell('pets', 'pet1', 'single', 1);
+      store.setCell('pets', 'pet1', 'repeated', false);
       store.setCell('pets', 'pet1', 'status', 'other');
       expect(store.getRow('pets', 'pet1')).toEqual({
         answer: 'unknown',
         payload: ['walks'],
         score: true,
+        single: 'one',
+        repeated: 'two',
         status: 'draft',
       });
       expectChanges(
@@ -322,6 +336,8 @@ describe.each([
         {pets: {pet1: {answer: [false]}}},
         {pets: {pet1: {payload: [null]}}},
         {pets: {pet1: {score: ['high']}}},
+        {pets: {pet1: {single: [1]}}},
+        {pets: {pet1: {repeated: [false]}}},
         {pets: {pet1: {status: ['other']}}},
       );
 
@@ -342,7 +358,6 @@ describe.each([
 
       for (const answer of [
         {type: []},
-        {type: ['string']},
         {type: ['string', 'null']},
         {type: ['string', 'date']},
         {type: ['string', 'boolean'], enum: ['draft']},
@@ -579,6 +594,8 @@ describe.each([
         answer: {type: ['string', 'number'], default: 'unknown'},
         payload: {type: ['object', 'array'], required: true},
         score: {type: ['number', 'boolean'], allowNull: true},
+        single: {type: ['string']},
+        repeated: {type: ['string', 'string']},
         status: {enum: ['draft', 'live']},
       } as const;
       store.setValuesSchema(valuesSchema);
@@ -587,6 +604,8 @@ describe.each([
         'invalids',
         {payload: [undefined]},
         {score: [undefined]},
+        {single: [undefined]},
+        {repeated: [undefined]},
         {status: [undefined]},
       );
       expect(JSON.parse(store.getValuesSchemaJson())).toEqual(valuesSchema);
@@ -594,33 +613,45 @@ describe.each([
       store.setValues({
         payload: {likes: ['walks']},
         score: null,
+        single: 'initial',
+        repeated: 'initial',
         status: 'draft',
       });
       expect(store.getValues()).toEqual({
         answer: 'unknown',
         payload: {likes: ['walks']},
         score: null,
+        single: 'initial',
+        repeated: 'initial',
         status: 'draft',
       });
 
       store.setValue('answer', 42);
       store.setValue('payload', ['walks']);
       store.setValue('score', true);
+      store.setValue('single', 'one');
+      store.setValue('repeated', 'two');
       expect(store.getValues()).toEqual({
         answer: 42,
         payload: ['walks'],
         score: true,
+        single: 'one',
+        repeated: 'two',
         status: 'draft',
       });
 
       store.setValue('answer', false);
       store.setValue('payload', null);
       store.setValue('score', 'high');
+      store.setValue('single', 1);
+      store.setValue('repeated', false);
       store.setValue('status', 'other');
       expect(store.getValues()).toEqual({
         answer: 'unknown',
         payload: ['walks'],
         score: true,
+        single: 'one',
+        repeated: 'two',
         status: 'draft',
       });
       expectChanges(
@@ -629,6 +660,8 @@ describe.each([
         {answer: [false]},
         {payload: [null]},
         {score: ['high']},
+        {single: [1]},
+        {repeated: [false]},
         {status: ['other']},
       );
 
@@ -647,7 +680,6 @@ describe.each([
 
       for (const answer of [
         {type: []},
-        {type: ['string']},
         {type: ['string', 'null']},
         {type: ['string', 'date']},
         {type: ['string', 'boolean'], enum: ['draft']},

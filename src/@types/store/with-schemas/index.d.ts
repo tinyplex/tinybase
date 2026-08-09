@@ -25,7 +25,7 @@ import type {
 
 type SchemaType = 'string' | 'number' | 'boolean' | 'object' | 'array';
 
-type SchemaTypeUnion = readonly [SchemaType, SchemaType, ...SchemaType[]];
+type SchemaTypeArray = readonly [SchemaType, ...SchemaType[]];
 
 type CellOrValueFromSchemaType<Type> = Type extends readonly (infer Type)[]
   ? CellOrValueFromSchemaType<Type>
@@ -82,7 +82,7 @@ export type CellSchema =
       enum?: never;
     }
   | {
-      type: SchemaTypeUnion;
+      type: SchemaTypeArray;
       default?: string | number | boolean | AnyObject | AnyArray | null;
       allowNull?: boolean;
       required?: boolean;
@@ -140,7 +140,7 @@ export type ValueSchema =
       enum?: never;
     }
   | {
-      type: SchemaTypeUnion;
+      type: SchemaTypeArray;
       default?: string | number | boolean | AnyObject | AnyArray | null;
       allowNull?: boolean;
       required?: boolean;

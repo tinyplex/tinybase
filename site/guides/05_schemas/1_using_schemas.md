@@ -57,8 +57,8 @@ rejected by the schema.
 
 ## Allowing A Union Of Types
 
-Use an array of two or more type names when a Cell or Value can have more than
-one broad type:
+Use a non-empty array of type names to list the broad types that a Cell or Value
+can have:
 
 ```js
 const unionStore = createStore().setValuesSchema({
@@ -70,9 +70,10 @@ console.log(unionStore.getValues());
 // -> {reference: 42, response: {accepted: true}}
 ```
 
-A type union can contain `string`, `number`, `boolean`, `object`, and `array`.
+A type array can contain `string`, `number`, `boolean`, `object`, and `array`.
+Multiple type names form a union, and repeated names have no additional effect.
 Do not include `null` in the array: use `allowNull: true` instead. A default is
-used only when it matches one of the union's types, or is `null` when null is
+used only when it matches one of the array's types, or is `null` when null is
 allowed.
 
 ## Restricting Values With Enums

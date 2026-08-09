@@ -1845,6 +1845,8 @@ const storeWithRequiredSchemas = store.setSchema(
     payload: {type: ['object', 'array'], default: []},
     score: {type: ['number', 'boolean'], required: true},
     response: {type: ['string', 'boolean'], allowNull: true},
+    single: {type: ['string']},
+    repeated: {type: ['string', 'string']},
     status: {enum: ['draft', 'live']},
   } as const satisfies {
     [schemaId: string]: import('tinybase').CellSchema &
@@ -1860,6 +1862,8 @@ const storeWithRequiredSchemas = store.setSchema(
   unionStore.getCell('pets', 'pet1', 'score') satisfies number | boolean;
   unionStore.getCell('pets', 'pet1', 'response') satisfies
     string | boolean | null | undefined;
+  unionStore.getCell('pets', 'pet1', 'single') satisfies string | undefined;
+  unionStore.getCell('pets', 'pet1', 'repeated') satisfies string | undefined;
   unionStore.getCell('pets', 'pet1', 'status') satisfies
     'draft' | 'live' | undefined;
   unionStore.setRow('pets', 'pet1', {score: true});
@@ -1872,6 +1876,10 @@ const storeWithRequiredSchemas = store.setSchema(
   unionStore.setCell('pets', 'pet1', 'payload', 'data'); // !
   unionStore.setCell('pets', 'pet1', 'response', null);
   unionStore.setCell('pets', 'pet1', 'response', 1); // !
+  unionStore.setCell('pets', 'pet1', 'single', 'one');
+  unionStore.setCell('pets', 'pet1', 'single', 1); // !
+  unionStore.setCell('pets', 'pet1', 'repeated', 'two');
+  unionStore.setCell('pets', 'pet1', 'repeated', false); // !
   unionStore.addCellListener(
     'pets',
     null,
@@ -1886,6 +1894,8 @@ const storeWithRequiredSchemas = store.setSchema(
   unionStore.getValue('payload') satisfies AnyObject | AnyArray;
   unionStore.getValue('score') satisfies number | boolean;
   unionStore.getValue('response') satisfies string | boolean | null | undefined;
+  unionStore.getValue('single') satisfies string | undefined;
+  unionStore.getValue('repeated') satisfies string | undefined;
   unionStore.getValue('status') satisfies 'draft' | 'live' | undefined;
   unionStore.setValues({score: 1});
   unionStore.setValues({score: 'high'}); // !
@@ -1897,13 +1907,17 @@ const storeWithRequiredSchemas = store.setSchema(
   unionStore.setValue('payload', 'data'); // !
   unionStore.setValue('response', null);
   unionStore.setValue('response', 1); // !
+  unionStore.setValue('single', 'one');
+  unionStore.setValue('single', 1); // !
+  unionStore.setValue('repeated', 'two');
+  unionStore.setValue('repeated', false); // !
   unionStore.addValueListener('answer', (_store, _valueId, newValue) => {
     newValue satisfies string | number;
     newValue satisfies boolean; // !
   });
 
   createStore().setValuesSchema({value: {type: []}}); // !
-  createStore().setValuesSchema({value: {type: ['string']}}); // !
+  createStore().setValuesSchema({value: {type: ['string']}});
   createStore().setValuesSchema({
     value: {type: ['string', 'null']}, // !
   });
