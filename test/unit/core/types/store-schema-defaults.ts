@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+// Store schema default types
 // NB: an exclamation mark after a line visually indicates an expected TS error
 import {createStore as createStoreWithoutSchemas} from 'tinybase';
 import {createMergeableStore} from 'tinybase/mergeable-store/with-schemas';
