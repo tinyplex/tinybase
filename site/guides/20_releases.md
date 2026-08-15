@@ -65,6 +65,30 @@ ArkType, Effect Schema, TypeBox, Valibot, and Zod schematizers also preserve
 supported broad type unions, while continuing to preserve literal-only unions
 as exact enums.
 
+## Schema-Aware Type Fixes
+
+This release also corrects a number of declarations on the `/with-schemas` type
+surface. These are type-level fixes only, and require no changes to your runtime
+code:
+
+- The six schematizer factory functions were previously exported from their
+  `/with-schemas` entry points as types rather than as values, so they could not
+  actually be called from those entry points. `createArkTypeSchematizer`,
+  `createEffectSchematizer`, `createTypeBoxSchematizer`,
+  `createValibotSchematizer`, `createYupSchematizer`, and
+  `createZodSchematizer` are now exported correctly, both individually and from
+  the `tinybase/schematizers/with-schemas` module.
+- The `extraCellsBefore` and `extraCellsAfter` props were missing from the
+  schema-aware declarations of the DOM table components, and are now available
+  in the React, Solid, and Svelte packages.
+- `ResultCell` was declared as `string | number | boolean | null`, and so did
+  not admit the object and array Cells introduced in v8.0. It is now simply
+  `Cell`, and the `Aggregate`, `AggregateAdd`, `AggregateRemove`,
+  `AggregateReplace`, and `Having` types have been aligned to match.
+- The `requestId` parameter of the Send and Receive types is now correctly
+  `IdOrNull` rather than `Id`, matching what synchronizer implementations are
+  actually passed.
+
 ---
 
 # v9.4
@@ -773,8 +797,7 @@ The ui-solid-dom module provides browser-ready Solid components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Solid components and Accessors throughout.
 
-![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png
-'SortedTableInHtmlTable (Solid)')
+![SortedTableInHtmlTable (Solid)](/shots/sortedtableinhtmltable-solid-demo.png 'SortedTableInHtmlTable (Solid)')
 
 Alongside the table components, the new ui-solid-inspector module brings the
 TinyBase development inspector to Solid apps too, making it easy to inspect and
@@ -829,8 +852,7 @@ This release also adds a complete set of Solid UI component demos, plus a
 Countries demo and an Inspector demo, so you can see the new modules working
 across Stores, Indexes, Relationships, Queries, and editable views.
 
-![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png
-'EditableValueView (Solid)')
+![EditableValueView (Solid)](/shots/editablevalueview-solid-demo.png 'EditableValueView (Solid)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -955,8 +977,7 @@ The ui-svelte-dom module provides browser-ready Svelte components for rendering
 and editing TinyBase data as HTML tables. They mirror the React DOM components,
 but use Svelte component composition and props throughout:
 
-![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png
-'SortedTableInHtmlTable (Svelte)')
+![SortedTableInHtmlTable (Svelte)](/shots/sortedtableinhtmltable-svelte-demo.png 'SortedTableInHtmlTable (Svelte)')
 
 ```svelte
 <script>
@@ -1003,8 +1024,7 @@ This release also adds a complete set of Svelte UI component demos, plus an
 Inspector demo, so you can see the new modules working across Stores, Indexes,
 Relationships, Queries, and editable views.
 
-![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png
-'EditableValueView (Svelte)')
+![EditableValueView (Svelte)](/shots/editablevalueview-svelte-full-demo.png 'EditableValueView (Svelte)')
 
 These demos intentionally mirror the React set where possible, making it easier
 to compare implementation patterns across frameworks.
@@ -1711,8 +1731,7 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue,
-#[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 
