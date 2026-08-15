@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "9.5.0",
+  "version": "9.5.1",
   "author": "jamesgpearce",
   "repository": {
     "type": "git",
@@ -280,7 +280,7 @@
     "svelte": "^5.56.9",
     "svelte-check": "^4.7.6",
     "tinybase": "file:./dist",
-    "tinydocs": "^0.1.71",
+    "tinydocs": "^0.1.72",
     "tmp": "^0.2.7",
     "ts-unused-exports": "^11.0.1",
     "typescript": "~6.0.3",
