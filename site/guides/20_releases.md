@@ -73,20 +73,20 @@ code:
 
 - The six schematizer factory functions were previously exported from their
   `/with-schemas` entry points as types rather than as values, so they could not
-  actually be called from those entry points. `createArkTypeSchematizer`,
-  `createEffectSchematizer`, `createTypeBoxSchematizer`,
-  `createValibotSchematizer`, `createYupSchematizer`, and
-  `createZodSchematizer` are now exported correctly, both individually and from
-  the `tinybase/schematizers/with-schemas` module.
+  actually be called from those entry points. They are now exported correctly,
+  both individually and from the `tinybase/schematizers/with-schemas` module:
+  the createArkTypeSchematizer function, createEffectSchematizer function,
+  createTypeBoxSchematizer function, createValibotSchematizer function,
+  createYupSchematizer function, and createZodSchematizer function.
 - The `extraCellsBefore` and `extraCellsAfter` props were missing from the
   schema-aware declarations of the DOM table components, and are now available
   in the React, Solid, and Svelte packages.
-- `ResultCell` was declared as `string | number | boolean | null`, and so did
-  not admit the object and array Cells introduced in v8.0. It is now simply
-  `Cell`, and the `Aggregate`, `AggregateAdd`, `AggregateRemove`,
-  `AggregateReplace`, and `Having` types have been aligned to match.
+- ResultCell was declared as `string | number | boolean | null`, and so did not
+  admit the object and array Cells introduced in v8.0. It is now simply Cell,
+  and the Aggregate, AggregateAdd, AggregateRemove, AggregateReplace, and Having
+  types have been aligned to match.
 - The `requestId` parameter of the Send and Receive types is now correctly
-  `IdOrNull` rather than `Id`, matching what synchronizer implementations are
+  IdOrNull rather than Id, matching what synchronizer implementations are
   actually passed.
 
 ---
