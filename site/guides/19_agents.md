@@ -380,6 +380,59 @@ from source code and markdown files.
    old path whose summary is just `-> /new-url`. The site generator hides these
    from navigation and renders them as meta-refresh redirect pages.
 
+### API Member Links In Prose
+
+TinyDocs scans prose outside code fences and turns recognized API member names
+into links, adding the code wrapper itself. This applies to guides, release
+notes, `docs.js`, and the home page. The rules live in the markdown linkers in
+`tinydocs/src/ui/structure/Markdown.tsx`.
+
+**Never put an API member name in backticks.** The generator emits the link with
+the name already wrapped in backticks, so adding your own turns the entire link
+into a code span, which renders as literal broken text on the page:
+
+```md
+CellSchema and ValueSchema can now use an `enum` property <- correct
+`CellSchema` and `ValueSchema` can now use an `enum` property <- broken
+```
+
+**Whether a bare name links at all depends on what follows it**, and that
+differs by kind:
+
+| Kind                              | Links when followed by                                              |
+| --------------------------------- | ------------------------------------------------------------------- |
+| TypeAlias, Interface, Enum, Class | any non-word character, so these link on their own                  |
+| Guide and demo pages              | any non-word character, as above                                    |
+| Function                          | ` function`, ` component`, ` hook`, ` primitive`, ` callback`, `()` |
+| Method                            | ` method` or `()`                                                   |
+| Module                            | ` module`                                                           |
+
+The last three also link when followed by a pipe, which is what makes bare names
+work inside markdown table cells.
+
+So capitalized types link bare anywhere, whereas lowercase-initial functions,
+hooks, and methods need their qualifier word. Prefer the qualifier form over
+`()`, and repeat it for every entry when listing several. Guide and demo names
+link without a following word, but house style is still to write "the X guide"
+or "the Y demo".
+
+**The qualifier must be exactly one whitespace character away.** The pattern
+matches a single whitespace before the qualifier, so a line wrap between a name
+and its qualifier silently breaks the link: the newline plus the next line's
+indent is more than one character. Keep each pair on one line. Prettier has no
+`proseWrap` setting here, so it defaults to preserving prose line breaks and
+will not undo this.
+
+Names already inside a markdown link, between `[` and `]`, are skipped, so
+existing explicit links are safe.
+
+Backticks remain correct for anything that is not an API member, since those are
+never linked: property and parameter names, module paths, type expressions, and
+third-party library APIs.
+
+Links only resolve once the API index has been built, so verify prose changes
+with a full `npm run compileDocs` and inspect the generated output.
+
 ### Documentation Testing
 
 TinyBase has automated tests that validate all inline code examples in
@@ -580,9 +633,9 @@ When adding a new feature:
 
 2. **Update `/site/home/index.md`**:
    - Update the "NEW!" link to point to new version: `<a
-     href='/guides/releases/#v7-1'>`
+href='/guides/releases/#v7-1'>`
    - Update the tagline: `<span id="one-with">"The one with
-     Schematizers!"</span>`
+Schematizers!"</span>`
 
 3. **Generated files update automatically** during build process
 
