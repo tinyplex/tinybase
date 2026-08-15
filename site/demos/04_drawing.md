@@ -151,16 +151,12 @@ const MIN_HEIGHT = 30;
 const TYPES = ['rectangle', 'ellipse'];
 ```
 
-We will use mutator listeners to ensure that the type and color of the shapes
-are always valid if present. These are the two functions to do that:
+A shape's type can only ever be one of the `TYPES` values, so we will let the
+schema itself enforce that with an enum, as you will see in a moment. A color,
+on the other hand, has to match a pattern rather than a fixed set of values, so
+for that we will use a mutator listener:
 
 ```js
-const constrainType = (store, tableId, rowId, cellId, type) => {
-  if (type != null && !TYPES.includes(type)) {
-    store.setCell(tableId, rowId, cellId, TYPES[0]);
-  }
-};
-
 const constrainColor = (store, tableId, rowId, cellId, color) => {
   if (color != null && !/^#[a-f\d]{6}$/.test(color)) {
     store.setCell(tableId, rowId, cellId, '#000000');
@@ -181,8 +177,9 @@ As for the application itself, we start off by initializing the store in the
 useCreateStore hook (so that it is memoized across renders), and immediately set
 its schema. Every shape has two pairs of coordinates, text, a type, colors, and
 a reference to the 'next' shape so they can be ordered in the z-index with a
-linked list. We also use the two mutator listeners to programmatically guarantee
-that types and colors are valid:
+linked list. The type uses an enum so that the Store itself rejects anything
+that is not one of the `TYPES`, and we use the mutator listener to
+programmatically guarantee that the colors are valid:
 
 ```js
 const App = () => {
@@ -194,13 +191,12 @@ const App = () => {
         x2: {type: 'number', default: 300},
         y2: {type: 'number', default: 200},
         text: {type: 'string', default: 'text'},
-        type: {type: 'string'},
+        type: {enum: TYPES},
         backColor: {type: 'string', default: '#0077aa'},
         textColor: {type: 'string', default: '#ffffff'},
         nextId: {type: 'string'},
       },
     });
-    store.addCellListener(SHAPES, null, 'type', constrainType, true);
     store.addCellListener(SHAPES, null, 'backColor', constrainColor, true);
     store.addCellListener(SHAPES, null, 'textColor', constrainColor, true);
     return store;
