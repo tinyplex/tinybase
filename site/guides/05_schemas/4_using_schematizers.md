@@ -62,6 +62,27 @@ For example, `petId` is converted to `type: ['string', 'number']`, while the
 `z.enum(['dog', 'cat'])` field becomes a native TinyBase enum schema so the
 Store rejects other species such as `bird`.
 
+## Type Union Support
+
+Every schematizer converts a set of literal or enum members into a TinyBase
+enum. Broad type unions, however, can only be converted from schema systems that
+have a union type of their own:
+
+| Library       | Enums | Type unions                      |
+| ------------- | ----- | -------------------------------- |
+| Zod           | Yes   | Yes, from `z.union`              |
+| TypeBox       | Yes   | Yes, from `Type.Union`           |
+| Valibot       | Yes   | Yes, from `v.union`              |
+| ArkType       | Yes   | Yes, from `\|` union expressions |
+| Effect Schema | Yes   | Yes, from `Schema.Union`         |
+| Yup           | Yes   | No: Yup has no union type        |
+
+Yup expresses its enums with `oneOf`, which the Yup schematizer converts to a
+TinyBase enum as usual. But because Yup has no way to express a value that may
+be one of several broad types, a Yup field always converts to a single `type`.
+If you need a type union alongside Yup schemas, declare that entry of the
+TinyBase schema directly.
+
 ## Converting Values Schemas
 
 You can also convert Zod schemas for individual values:
