@@ -25,6 +25,7 @@ import type {Id} from 'tinybase';
 import * as TinyBase from 'tinybase';
 import * as TinyBasePersisters from 'tinybase/persisters';
 import * as TinyBasePersisterAutomerge from 'tinybase/persisters/persister-automerge';
+import * as TinyBasePersisterBetterSqlite3 from 'tinybase/persisters/persister-better-sqlite3';
 import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser';
 import * as TinyBasePersisterCrSqliteWasm from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
@@ -75,6 +76,7 @@ import {
 
 const [reset, getNow] = getTimeFunctions();
 const nodeRequire = createRequire(import.meta.url);
+const betterSqlite3 = nodeRequire('better-sqlite3');
 const SolidBrowser = nodeRequire('solid-js/dist/solid.cjs') as typeof Solid;
 (nodeRequire.cache as any)[nodeRequire.resolve('solid-js')] = {
   exports: SolidBrowser,
@@ -148,6 +150,9 @@ const TinyBaseForTest = {
   'tinybase/ui-svelte-inspector': TinyBaseUiSvelteInspector,
   'tinybase/persisters': TinyBasePersisters,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
+  'better-sqlite3': betterSqlite3,
+  'tinybase/persisters/persister-better-sqlite3':
+    TinyBasePersisterBetterSqlite3,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
   'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,
   'tinybase/persisters/persister-file': TinyBasePersisterFile,

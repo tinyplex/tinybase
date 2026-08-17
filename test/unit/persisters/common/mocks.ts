@@ -237,10 +237,11 @@ const getMockedDatabase = <Location>(
   close: (location: Location) => Promise<void>,
   autoLoadPause = 2,
   autoLoadIntervalSeconds = 0.001,
-  _isPostgres = false,
+  isPostgres = false,
   _supportsMultipleConnections = false,
   _skipSqlChecks = false,
 ): Persistable<Location> => {
+  const placeholder = (number: number) => (isPostgres ? '$' + number : '?');
   const mockDatabase = {
     getLocation,
     getLocationMethod,
@@ -252,9 +253,11 @@ const getMockedDatabase = <Location>(
     get: async (location: Location): Promise<Content | void> =>
       JSON.parse(
         (
-          await cmd(location, 'SELECT store FROM tinybase WHERE _id = $1', [
-            '_',
-          ])
+          await cmd(
+            location,
+            `SELECT store FROM tinybase WHERE _id = ${placeholder(1)}`,
+            ['_'],
+          )
         )[0]['store'],
       ),
     set: async (location: Location, rawContent: any): Promise<void> =>
@@ -267,7 +270,8 @@ const getMockedDatabase = <Location>(
       );
       await cmd(
         location,
-        'INSERT INTO tinybase (_id, store) VALUES ($1, $2) ' +
+        `INSERT INTO tinybase (_id, store) VALUES (${placeholder(1)}, ` +
+          `${placeholder(2)}) ` +
           'ON CONFLICT (_id) DO UPDATE SET store=excluded.store',
         ['_', rawContent],
       );

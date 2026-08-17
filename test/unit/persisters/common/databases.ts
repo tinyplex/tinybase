@@ -10,6 +10,9 @@ import type {
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import {Mutex} from 'async-mutex';
+import BetterSqlite3, {
+  type Database as BetterSqlite3Database,
+} from 'better-sqlite3';
 import type {ElectricClient} from 'electric-sql/client/model';
 import {DbSchema} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
@@ -21,6 +24,7 @@ import postgres from 'postgres';
 import sqlite3, {Database} from 'sqlite3';
 import {type Content, type Store, getUniqueId} from 'tinybase';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
+import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better-sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
@@ -206,6 +210,46 @@ const getPowerSyncDatabase = async (
 };
 
 export const NODE_SQLITE_MERGEABLE_VARIANTS: Variants = {
+  betterSqlite3: [
+    async (
+      dbAndName?: [BetterSqlite3Database, string],
+    ): Promise<[BetterSqlite3Database, string]> => {
+      const name = dbAndName?.[1] ?? tmp.tmpNameSync();
+      return [new BetterSqlite3(name), name];
+    },
+    ['getDb', ([db]: [BetterSqlite3Database, string]) => db],
+    (
+      store: Store,
+      [db]: [BetterSqlite3Database, string],
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createBetterSqlite3Persister as any)(
+        store,
+        db,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async (
+      [db]: [BetterSqlite3Database, string],
+      sql: string,
+      args: any[] = [],
+    ): Promise<{[id: string]: any}[]> => {
+      const statement = db.prepare(sql);
+      return statement.reader
+        ? (statement.all(...args) as {[id: string]: any}[])
+        : (statement.run(...args), []);
+    },
+    async ([db]: [BetterSqlite3Database, string]) => {
+      db.close();
+    },
+    20,
+    undefined,
+    undefined,
+    true,
+  ],
   sqlite3: [
     async (dbAndName?: [Database, string]): Promise<[Database, string]> => {
       const existingName = dbAndName?.[1];
@@ -580,6 +624,8 @@ export const getDatabaseFunctions = <Database>(
   (db: Database) => Promise<DumpOut>,
   (db: Database, dump: DumpIn) => Promise<void>,
 ] => {
+  const placeholder = (number: number) => (isPostgres ? '$' + number : '?');
+
   const getDatabase = async (db: Database): Promise<DumpOut> => {
     const dump: DumpOut = {};
     (
@@ -589,14 +635,14 @@ export const getDatabaseFunctions = <Database>(
           ? 'SELECT table_name tn, column_name cn, data_type ty ' +
               'FROM information_schema.columns ' +
               `WHERE table_schema='public' ` +
-              'AND table_name NOT LIKE $1 ' +
-              'AND table_name NOT LIKE $2'
+              `AND table_name NOT LIKE ${placeholder(1)} ` +
+              `AND table_name NOT LIKE ${placeholder(2)}`
           : 'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
               'FROM pragma_table_list() t, ' +
               'pragma_table_info(t.name) c ' +
               `WHERE t.schema='main' AND t.type = 'table' ` +
-              'AND t.name NOT LIKE $1 ' +
-              'AND t.name NOT LIKE $2',
+              `AND t.name NOT LIKE ${placeholder(1)} ` +
+              `AND t.name NOT LIKE ${placeholder(2)}`,
         ['%sql%', '%electric%'],
       )
     ).forEach(({tn, cn, ty}) => {
@@ -650,7 +696,7 @@ export const getDatabaseFunctions = <Database>(
                   .join(',') +
                 ') VALUES (' +
                 Object.keys(row)
-                  .map((_, index) => '$' + (index + 1))
+                  .map((_, index) => placeholder(index + 1))
                   .join(',') +
                 ')',
               Object.values(row),

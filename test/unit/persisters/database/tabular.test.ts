@@ -973,11 +973,16 @@ describe.each(Object.entries(ALL_VARIANTS))(
             [{_id: '_', v1: 1}],
           ],
         });
-        await cmd(db, 'UPDATE t1 SET c1=$1 WHERE _id=$2', [2, 'r1']);
-        await cmd(db, 'UPDATE tinybase_values SET v1=$1 WHERE _id=$2', [
-          2,
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE t1 SET c1=${placeholders(1)} WHERE _id=${placeholders(2)}`,
+          [2, 'r1'],
+        );
+        await cmd(
+          db,
+          `UPDATE tinybase_values SET v1=${placeholders(1)} WHERE _id=${placeholders(2)}`,
+          [2, '_'],
+        );
         expect(await getDatabase(db)).toEqual({
           t1: [{_id: columnType, c1: columnType}, [{_id: 'r1', c1: 2}]],
           tinybase_values: [
@@ -1236,13 +1241,18 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.startAutoLoad();
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-        await cmd(db, 'UPDATE t1 SET c1=$1 WHERE _id=$2', [2, 'r1']);
+        await cmd(
+          db,
+          `UPDATE t1 SET c1=${placeholders(1)} WHERE _id=${placeholders(2)}`,
+          [2, 'r1'],
+        );
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
-        await cmd(db, 'UPDATE tinybase_values SET v1=$1 WHERE _id=$2', [
-          2,
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE tinybase_values SET v1=${placeholders(1)} WHERE _id=${placeholders(2)}`,
+          [2, '_'],
+        );
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       });
@@ -1281,7 +1291,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
             columnType +
             ')',
         );
-        await cmd(db, 'INSERT INTO t1 (_id, c1) VALUES ($1, $2)', ['r1', 3]);
+        await cmd(
+          db,
+          `INSERT INTO t1 (_id, c1) VALUES (${placeholders(1)}, ${placeholders(2)})`,
+          ['r1', 3],
+        );
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 1}]);
         await cmd(db, 'DROP TABLE tinybase_values');
@@ -1293,17 +1307,23 @@ describe.each(Object.entries(ALL_VARIANTS))(
             columnType +
             ')',
         );
-        await cmd(db, 'INSERT INTO tinybase_values (_id, v1) VALUES ($1, $2)', [
-          '_',
-          3,
-        ]);
+        await cmd(
+          db,
+          `INSERT INTO tinybase_values (_id, v1) VALUES (${placeholders(1)}, ${placeholders(2)})`,
+          ['_', 3],
+        );
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
-        await cmd(db, 'UPDATE t1 SET c1 = $1 WHERE _id = $2', [4, 'r1']);
-        await cmd(db, 'UPDATE tinybase_values SET v1 = $1 WHERE _id = $2', [
-          4,
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE t1 SET c1 = ${placeholders(1)} WHERE _id = ${placeholders(2)}`,
+          [4, 'r1'],
+        );
+        await cmd(
+          db,
+          `UPDATE tinybase_values SET v1 = ${placeholders(1)} WHERE _id = ${placeholders(2)}`,
+          [4, '_'],
+        );
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 4}}}, {v1: 4}]);
       });

@@ -30,6 +30,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
     const expectStoreContent = getStoreContentWaiter(autoLoadPause);
 
     const columnType = isPostgres ? 'text' : '';
+    const placeholders = (...numbers: number[]) =>
+      numbers.map((number) => (isPostgres ? '$' + number : '?')).join(',');
 
     let db: any;
     let store: Store;
@@ -216,10 +218,12 @@ describe.each(Object.entries(ALL_VARIANTS))(
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
-        await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
-          '[{"t1":{"r1":{"c1":2}}},{"v1":2}]',
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE tinybase SET store=${placeholders(1)} WHERE` +
+            ` _id=${placeholders(2)}`,
+          ['[{"t1":{"r1":{"c1":2}}},{"v1":2}]', '_'],
+        );
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             {_id: columnType, store: columnType},
@@ -499,10 +503,12 @@ describe.each(Object.entries(ALL_VARIANTS))(
 
         test('then delete', async () => {
           await persister.load();
-          await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
-            '[{},{}]',
-            '_',
-          ]);
+          await cmd(
+            db,
+            `UPDATE tinybase SET store=${placeholders(1)} WHERE` +
+              ` _id=${placeholders(2)}`,
+            ['[{},{}]', '_'],
+          );
           await persister.load();
           expect(store.getContent()).toEqual([{}, {}]);
         });
@@ -545,10 +551,12 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
         await persister.startAutoLoad();
         await expectStoreContent(store, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
-        await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
-          '[{"t1":{"r1":{"c1":2}}},{"v1":2}]',
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE tinybase SET store=${placeholders(1)} WHERE` +
+            ` _id=${placeholders(2)}`,
+          ['[{"t1":{"r1":{"c1":2}}},{"v1":2}]', '_'],
+        );
         await expectStoreContent(store, [{t1: {r1: {c1: 2}}}, {v1: 2}]);
       });
 
@@ -574,15 +582,19 @@ describe.each(Object.entries(ALL_VARIANTS))(
             columnType +
             ')',
         );
-        await cmd(db, 'INSERT INTO tinybase (_id, store) VALUES ($1, $2)', [
-          '_',
-          '[{"t1":{"r1":{"c1":3}}},{"v1":3}]',
-        ]);
+        await cmd(
+          db,
+          `INSERT INTO tinybase (_id,` +
+            ` store) VALUES (${placeholders(1)}, ${placeholders(2)})`,
+          ['_', '[{"t1":{"r1":{"c1":3}}},{"v1":3}]'],
+        );
         await expectStoreContent(store, [{t1: {r1: {c1: 3}}}, {v1: 3}]);
-        await cmd(db, 'UPDATE tinybase SET store = $1 WHERE _id = $2', [
-          '[{"t1":{"r1":{"c1":4}}},{"v1":4}]',
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE tinybase SET store = ${placeholders(1)} WHERE` +
+            ` _id = ${placeholders(2)}`,
+          ['[{"t1":{"r1":{"c1":4}}},{"v1":4}]', '_'],
+        );
         await expectStoreContent(store, [{t1: {r1: {c1: 4}}}, {v1: 4}]);
       });
     });

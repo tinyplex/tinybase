@@ -37,6 +37,8 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
     const expectStoreContent = getStoreContentWaiter(autoLoadPause);
 
     const columnType = isPostgres ? 'text' : '';
+    const placeholders = (...numbers: number[]) =>
+      numbers.map((number) => (isPostgres ? '$' + number : '?')).join(',');
 
     let db: any;
     let store: MergeableStore;
@@ -197,10 +199,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
             ],
           ],
         });
-        await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
-          '[{"t1":{"r1":{"c1":2}}},{"v1":2}]',
-          '_',
-        ]);
+        await cmd(
+          db,
+          `UPDATE tinybase SET store=${placeholders(1)} WHERE _id=${placeholders(2)}`,
+          ['[{"t1":{"r1":{"c1":2}}},{"v1":2}]', '_'],
+        );
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             {_id: columnType, store: columnType},
@@ -304,10 +307,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
 
         test('then delete', async () => {
           await persister.load();
-          await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
-            '[{},{}]',
-            '_',
-          ]);
+          await cmd(
+            db,
+            `UPDATE tinybase SET store=${placeholders(1)} WHERE _id=${placeholders(2)}`,
+            ['[{},{}]', '_'],
+          );
           await persister.load();
           expect(store.getContent()).toEqual([{}, {}]);
         });
