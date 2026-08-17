@@ -1,8 +1,83 @@
 import 'fake-indexeddb/auto';
-import {createStore} from 'tinybase';
+import {openDB} from 'idb';
+import {createMergeableStore, createStore} from 'tinybase';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
 import {afterEach, expect, test, vi} from 'vitest';
 import {pause} from '../common/other.ts';
+
+const realIndexedDb = window.indexedDB;
+
+const createLegacyDb = async (dbName: string) => {
+  const db = await openDB(dbName, 2, {
+    upgrade: (db) => {
+      db.createObjectStore('t', {keyPath: 'k'});
+      db.createObjectStore('v', {keyPath: 'k'});
+    },
+  });
+  await db.put('t', {v: {fido: {species: 'dog'}}, k: 'pets'});
+  await db.put('v', {v: true, k: 'open'});
+  db.close();
+};
+
+test('loads a database created before mergeable support', async () => {
+  const dbName = 'legacy' + Math.random();
+  await createLegacyDb(dbName);
+
+  const store = createStore();
+  await createIndexedDbPersister(store, dbName).load();
+
+  expect(store.getTables()).toEqual({pets: {fido: {species: 'dog'}}});
+  expect(store.getValues()).toEqual({open: true});
+});
+
+test('upgrades an older database without losing its content', async () => {
+  const dbName = 'legacy' + Math.random();
+  await createLegacyDb(dbName);
+
+  const store = createStore();
+  const persister = createIndexedDbPersister(store, dbName);
+  await persister.load();
+  store.setCell('pets', 'felix', 'species', 'cat');
+  await persister.save();
+
+  const db = await openDB(dbName);
+  expect(db.version).toBe(3);
+  expect([...db.objectStoreNames]).toEqual(['m', 't', 'v']);
+  expect((await db.getAll('t')).map(({k}) => k)).toEqual(['pets']);
+  db.close();
+
+  const store2 = createStore();
+  await createIndexedDbPersister(store2, dbName).load();
+  expect(store2.getTables()).toEqual({
+    pets: {fido: {species: 'dog'}, felix: {species: 'cat'}},
+  });
+});
+
+test('keeps mergeable content separate from Store content', async () => {
+  const dbName = 'both' + Math.random();
+  const store = createStore().setValue('species', 'dog');
+  await createIndexedDbPersister(store, dbName).save();
+  const mergeableStore = createMergeableStore().setValue('species', 'cat');
+  await createIndexedDbPersister(mergeableStore, dbName).save();
+
+  const store2 = createStore();
+  await createIndexedDbPersister(store2, dbName).load();
+  expect(store2.getValues()).toEqual({species: 'dog'});
+
+  const mergeableStore2 = createMergeableStore();
+  await createIndexedDbPersister(mergeableStore2, dbName).load();
+  expect(mergeableStore2.getValues()).toEqual({species: 'cat'});
+});
+
+test('loads nothing when a database has no mergeable content', async () => {
+  const dbName = 'legacy' + Math.random();
+  await createLegacyDb(dbName);
+
+  const mergeableStore = createMergeableStore().setValue('species', 'cat');
+  await createIndexedDbPersister(mergeableStore, dbName).load();
+
+  expect(mergeableStore.getValues()).toEqual({species: 'cat'});
+});
 
 const createIndexedDbMock = () => {
   const modes: IDBTransactionMode[] = [];
@@ -95,6 +170,10 @@ const createControlledIndexedDbMock = () => {
 };
 
 afterEach(() => {
+  Object.defineProperty(window, 'indexedDB', {
+    configurable: true,
+    value: realIndexedDb,
+  });
   vi.useRealTimers();
   vi.restoreAllMocks();
 });

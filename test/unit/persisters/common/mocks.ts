@@ -599,6 +599,20 @@ export const mockRemote: Persistable = {
   testAutoLoad: true,
 };
 
+const INDEXED_DB_OBJECT_STORE_NAMES = ['t', 'v', 'm'];
+
+const getKeyValue = ({k, v}: {k: string; v: any}) => [k, v];
+
+const openIndexedDb = (dbName: string) =>
+  openDB(dbName, 3, {
+    upgrade: (db) =>
+      INDEXED_DB_OBJECT_STORE_NAMES.forEach((objectStoreName) =>
+        db.objectStoreNames.contains(objectStoreName)
+          ? 0
+          : db.createObjectStore(objectStoreName, {keyPath: 'k'}),
+      ),
+  });
+
 export const mockIndexedDb: Persistable = {
   autoLoadPause: 11,
   getLocation: async (): Promise<string> => 'test' + Math.random(),
@@ -610,16 +624,14 @@ export const mockIndexedDb: Persistable = {
     createIndexedDbPersister(store, dbName, 0.01),
   get: async (dbName: string): Promise<Content | void> => {
     try {
-      const db = await openDB(dbName, 2, {
-        upgrade: (db) => {
-          db.createObjectStore('t', {keyPath: 'k'});
-          db.createObjectStore('v', {keyPath: 'k'});
-        },
-      });
-      const result = [
-        Object.fromEntries((await db.getAll('t')).map(({k, v}) => [k, v])),
-        Object.fromEntries((await db.getAll('v')).map(({k, v}) => [k, v])),
-      ];
+      const db = await openIndexedDb(dbName);
+      const entries = async (objectStoreName: string) =>
+        Object.fromEntries((await db.getAll(objectStoreName)).map(getKeyValue));
+      const mergeable = await entries('m');
+      const result =
+        't' in mergeable
+          ? [mergeable.t, mergeable.v]
+          : [await entries('t'), await entries('v')];
       db.close();
       return result as any;
     } catch {}
@@ -628,25 +640,28 @@ export const mockIndexedDb: Persistable = {
     await mockIndexedDb.write(dbName, rawContent),
   write: async (dbName: string, rawContent: any): Promise<void> => {
     if (typeof rawContent != 'string') {
-      const db = await openDB(dbName, 1, {
-        upgrade: (db) => {
-          db.createObjectStore('t', {keyPath: 'k'});
-          db.createObjectStore('v', {keyPath: 'k'});
-        },
-      });
+      const db = await openIndexedDb(dbName);
       await db.clear('t');
       await db.clear('v');
-      const [tables, values] = rawContent;
-      for (const [k, v] of Object.entries(tables)) {
-        await db.put('t', {v, k});
-      }
-      if (values) {
-        for (const [k, v] of Object.entries(values)) {
-          await db.put('v', {v, k});
+      await db.clear('m');
+      // MergeableContent halves are Stamp arrays; Content halves are objects.
+      if (Array.isArray(rawContent[0])) {
+        await db.put('m', {v: rawContent[0], k: 't'});
+        await db.put('m', {v: rawContent[1], k: 'v'});
+      } else {
+        const [tables, values] = rawContent;
+        for (const [k, v] of Object.entries(tables)) {
+          await db.put('t', {v, k});
+        }
+        if (values) {
+          for (const [k, v] of Object.entries(values)) {
+            await db.put('v', {v, k});
+          }
         }
       }
       db.close();
     } else {
+      await deleteDB(dbName);
       const db = await openDB(dbName, 1, {
         upgrade: (db) => db.createObjectStore('broken'),
       });
