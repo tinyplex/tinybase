@@ -104,6 +104,41 @@ policies up yourself, in a migration or the Supabase SQL editor, and it stays
 exactly as you left it. If you would rather have a Persister that manages its
 own schema, use the new PgPersister against a direct connection instead.
 
+## SQLite, via `better-sqlite3`
+
+The new persister-better-sqlite3 module provides the BetterSqlite3Persister,
+which binds to a local SQLite database with the popular synchronous
+[`better-sqlite3`](https://github.com/WiseLibs/better-sqlite3) module:
+
+```js
+import Database from 'better-sqlite3';
+import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better-sqlite3';
+
+const betterDb = new Database(':memory:');
+const betterStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const betterPersister = createBetterSqlite3Persister(
+  betterStore,
+  betterDb,
+  'my_tinybase',
+);
+
+await betterPersister.save();
+console.log(betterDb.prepare('SELECT * FROM my_tinybase;').all());
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+await betterPersister.destroy();
+betterDb.close();
+```
+
+This one has been possible for a while, but only in principle: `better-sqlite3`
+binds an array of values positionally and rejects the numbered placeholders that
+PostgreSQL requires, which TinyBase had been generating for SQLite too. SQL is
+now built with the placeholder style each database family actually wants, so the
+stricter drivers work without anyone having to rewrite statements. The
+DurableObjectSqlStoragePersister no longer needs the workaround it carried, and
+the PowerSyncPersister works with PowerSync's Node SDK, which it previously did
+not.
+
 ## SQLite In Capacitor
 
 The new persister-capacitor-sqlite module provides the CapacitorSqlitePersister,
