@@ -104,6 +104,35 @@ policies up yourself, in a migration or the Supabase SQL editor, and it stays
 exactly as you left it. If you would rather have a Persister that manages its
 own schema, use the new PgPersister against a direct connection instead.
 
+## SQLite In Capacitor
+
+The new persister-capacitor-sqlite module provides the CapacitorSqlitePersister,
+which binds to a SQLite database in a Capacitor app via the
+[`@capacitor-community/sqlite`](https://github.com/capacitor-community/sqlite)
+plugin (as requested in issue
+[#219](https://github.com/tinyplex/tinybase/issues/219)). Both JSON and tabular
+modes work, as does persisting a MergeableStore in JSON mode.
+
+```js ignore
+import {CapacitorSQLite, SQLiteConnection} from '@capacitor-community/sqlite';
+import {createStore} from 'tinybase';
+import {createCapacitorSqlitePersister} from 'tinybase/persisters/persister-capacitor-sqlite';
+
+const sqlite = new SQLiteConnection(CapacitorSQLite);
+const db = await sqlite.createConnection('my.db', false, 'no-encryption', 1, false);
+await db.open();
+
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createCapacitorSqlitePersister(store, db, 'my_tinybase');
+await persister.save();
+```
+
+Note that TinyBase's tests for this module run against a mocked plugin, since it
+needs a native iOS or Android runtime that a Node test suite cannot provide. The
+SQL behavior is shared with the other SQLite Persisters and well covered by
+them, but the binding to the plugin itself is not exercised on a device. Please
+report anything that behaves differently in a real app.
+
 ## MergeableStore Support For IndexedDB
 
 The IndexedDbPersister can now persist a MergeableStore, closing a gap that had
