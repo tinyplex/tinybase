@@ -34,6 +34,7 @@ const ALL_MODULES = [
   'persisters/persister-libsql',
   'persisters/persister-partykit-client',
   'persisters/persister-partykit-server',
+  'persisters/persister-pg',
   'persisters/persister-pglite',
   'persisters/persister-postgres',
   'persisters/persister-powersync',
