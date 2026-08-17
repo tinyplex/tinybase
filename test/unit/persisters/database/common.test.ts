@@ -1,9 +1,12 @@
+import {createRequire} from 'module';
 import sqlite3 from 'sqlite3';
 import {createMergeableStore, createStore} from 'tinybase';
 import {createCustomSqlitePersister, Persists} from 'tinybase/persisters';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {afterEach, expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
+
+const Database = createRequire(import.meta.url)('better-sqlite3');
 
 afterEach(() => vi.useRealTimers());
 
@@ -422,4 +425,46 @@ test('rejects tabular persistence for MergeableStore', () => {
       {},
     ),
   ).toThrow('tinybase:0');
+});
+
+test('binds with anonymous placeholders, for every SQLite driver', async () => {
+  const statements: string[] = [];
+  const logged: string[] = [];
+  // better-sqlite3 stands in for the strict drivers: it binds an array of
+  // values positionally, and rejects the numbered placeholders that PostgreSQL
+  // requires.
+  const database = new Database(':memory:');
+  const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+  const persister = createCustomSqlitePersister(
+    store,
+    'my_tinybase',
+    async (sql: string, params: any[] = []) => {
+      statements.push(sql);
+      const statement = database.prepare(sql);
+      return statement.reader
+        ? statement.all(...params)
+        : (statement.run(...params), []);
+    },
+    () => undefined,
+    () => {},
+    (sql: string) => logged.push(sql),
+    undefined,
+    () => {},
+    Persists.StoreOrMergeableStore,
+    {},
+  );
+
+  await persister.save();
+  expect(database.prepare('SELECT * FROM my_tinybase').all()).toEqual([
+    {_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'},
+  ]);
+
+  // Nothing numbered is generated for SQLite in the first place, so what the
+  // driver runs is what the onSqlCommand handler reports.
+  expect(statements.some((sql) => /\$\d/.test(sql))).toBe(false);
+  expect(statements.some((sql) => sql.includes('?'))).toBe(true);
+  expect(logged).toEqual(statements);
+
+  await persister.destroy();
+  database.close();
 });

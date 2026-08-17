@@ -53,14 +53,8 @@ const summarizeBatch = async (
 const completeNextBatch = async (powerSync: PowerSyncDatabase) =>
   (await summarizeBatch(powerSync))[1]?.();
 
-const getPowerSyncForPersister = (powerSync: PowerSyncDatabase): any => ({
-  // The Node SDK's better-sqlite3 adapter expects '?' bindings, while the Web
-  // SDK accepts TinyBase's '$1' bindings. This keeps the test focused on the
-  // real PowerSync CRUD queue behavior rather than adapter placeholder syntax.
-  execute: (sql: string, params?: any[]) =>
-    powerSync.execute(sql.replace(/\$\d+/g, '?'), params),
-  onChange: powerSync.onChange.bind(powerSync),
-});
+const getPowerSyncForPersister = (powerSync: PowerSyncDatabase): any =>
+  powerSync;
 
 afterEach(async () => {
   await Promise.all(powerSyncs.splice(0).map((powerSync) => powerSync.close()));
