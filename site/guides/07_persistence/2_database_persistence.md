@@ -35,10 +35,16 @@ rather than to the database directly. That means it runs in a browser or edge
 runtime, that row-level security policies apply to what it reads and writes,
 and that changes can arrive over Supabase Realtime rather than by polling. The
 trade-off is that only the JSON mode described below is available to it, since
-the REST API cannot execute the arbitrary SQL that tabular mapping needs. Nor
-can it create the table to store the data in, which is a schema concern that
-belongs in a migration rather than in client code holding a public key. See the
-createSupabasePersister function for the table and policies to set up first.
+the REST API cannot execute the arbitrary SQL that tabular mapping needs.
+
+It is also the exception to everything this guide says about schema management.
+The other database Persisters create their tables and columns on demand, add
+columns as new Cells appear, and remove ones that fall out of use. The
+SupabasePersister issues no DDL at all: it reads and writes a single row of a
+table you have already created, and reports an error rather than adjusting your
+schema to fit. That is deliberate, since the key it holds is one that ships in
+your client bundle. See the createSupabasePersister function for the table and
+policies to set up first.
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store

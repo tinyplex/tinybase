@@ -10,9 +10,20 @@
  * polling.
  *
  * It also means that only the JSON serialization mode is available, since the
- * REST API cannot execute the arbitrary SQL that tabular mapping needs. If you
- * can connect to the database directly, use the persister-pg module instead,
- * which supports both modes.
+ * REST API cannot execute the arbitrary SQL that tabular mapping needs.
+ *
+ * Most importantly, it means this Persister issues no DDL whatsoever, which is
+ * a real departure from how the other database Persisters behave. Those create
+ * their table when it is missing, add columns as new Cells appear, drop columns
+ * and tables that have become empty, and, in PostgreSQL, install the functions
+ * and event triggers they need to listen for changes and drop them again when
+ * they are destroyed. This one does none of that: it reads and writes a single
+ * row of a table you have already set up, and if that table is missing or
+ * shaped wrong, it reports the error rather than correcting the schema. Your
+ * database structure is yours, and stays exactly as your migrations left it.
+ *
+ * If you want a Persister that manages its own schema, or you need tabular
+ * mode, connect to the database directly with the persister-pg module instead.
  * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-supabase
@@ -80,10 +91,11 @@
  * and column names to use, or, if it is simply a string, it is used as the
  * `storeTableName` property.
  *
- * The REST API deliberately cannot create tables, so you need to set one up
- * yourself with a migration or the Supabase SQL editor. By default this
- * Persister expects a table called `tinybase` with a text primary key called
- * `_id` and a text column called `store`:
+ * Unlike the other database Persisters, this one will not create or alter any
+ * of that structure for you, so you need to set it up yourself with a migration
+ * or the Supabase SQL editor before the Persister will work at all. By default
+ * it expects a table called `tinybase` with a text primary key called `_id` and
+ * a text column called `store`:
  *
  * ```sql ignore
  * CREATE TABLE tinybase (_id text PRIMARY KEY, store text);

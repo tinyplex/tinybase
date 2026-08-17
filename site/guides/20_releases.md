@@ -94,11 +94,15 @@ what it reads and writes, and the startAutoLoad method picks up other clients'
 changes over Supabase Realtime instead of polling.
 
 The trade-off is that only the JSON serialization mode is available, since the
-REST API cannot run the arbitrary SQL that tabular mapping needs. You also set
-up the table and its policies yourself, in a migration or the Supabase SQL
-editor, rather than having the Persister create them with a key that ships in
-your client bundle. If you can reach the database directly, use the new
-PgPersister instead, which supports both modes.
+REST API cannot run the arbitrary SQL that tabular mapping needs.
+
+Note too that this Persister issues no DDL at all, unlike its siblings. Where
+the other database Persisters create tables, add columns for new Cells, drop the
+ones that fall out of use, and install and remove their own change-notification
+triggers, this one touches nothing but a single row. You set the table and its
+policies up yourself, in a migration or the Supabase SQL editor, and it stays
+exactly as you left it. If you would rather have a Persister that manages its
+own schema, use the new PgPersister against a direct connection instead.
 
 ---
 
