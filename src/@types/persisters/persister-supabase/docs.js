@@ -80,12 +80,26 @@
  * and column names to use, or, if it is simply a string, it is used as the
  * `storeTableName` property.
  *
- * Since the REST API cannot create tables, you need to create one yourself
- * before using this Persister. By default it expects a table called `tinybase`
- * with a text primary key called `_id` and a text column called `store`:
+ * The REST API deliberately cannot create tables, so you need to set one up
+ * yourself with a migration or the Supabase SQL editor. By default this
+ * Persister expects a table called `tinybase` with a text primary key called
+ * `_id` and a text column called `store`:
  *
  * ```sql ignore
  * CREATE TABLE tinybase (_id text PRIMARY KEY, store text);
+ * ```
+ *
+ * Row-level security applies to everything the Persister does, so it will read
+ * nothing and save nothing until a policy grants access to it. What that policy
+ * should be depends on who is allowed to see the Store: the following lets any
+ * signed-in user read and write it, which suits a Store that a whole team
+ * shares, but a per-user Store wants a policy that compares `auth.uid()` to a
+ * column of its own instead.
+ *
+ * ```sql ignore
+ * ALTER TABLE tinybase ENABLE ROW LEVEL SECURITY;
+ * CREATE POLICY tinybase_access ON tinybase
+ *   FOR ALL TO authenticated USING (true) WITH CHECK (true);
  * ```
  *
  * For the startAutoLoad method to pick up changes made elsewhere, the table
@@ -94,6 +108,10 @@
  * ```sql ignore
  * ALTER PUBLICATION supabase_realtime ADD TABLE tinybase;
  * ```
+ *
+ * Note that Realtime checks a client's `SELECT` policy before it will send that
+ * client a change, so a Store that loads and saves correctly but never
+ * auto-loads is usually a policy problem rather than a publication one.
  *
  * If you cannot enable Realtime, set the `autoLoadIntervalSeconds` property of
  * the DpcJson object, and the Persister will additionally poll the table at

@@ -94,10 +94,11 @@ what it reads and writes, and the startAutoLoad method picks up other clients'
 changes over Supabase Realtime instead of polling.
 
 The trade-off is that only the JSON serialization mode is available, since the
-REST API cannot run the arbitrary SQL that tabular mapping needs. You also need
-to create the table yourself, since the REST API cannot do that either. If you
-can reach the database directly, use the new PgPersister instead, which supports
-both modes.
+REST API cannot run the arbitrary SQL that tabular mapping needs. You also set
+up the table and its policies yourself, in a migration or the Supabase SQL
+editor, rather than having the Persister create them with a key that ships in
+your client bundle. If you can reach the database directly, use the new
+PgPersister instead, which supports both modes.
 
 ---
 
