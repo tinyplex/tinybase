@@ -51,17 +51,24 @@
  * The createIndexedDbPersister function creates an IndexedDbPersister object
  * that can persist a Store to the browser's IndexedDB storage.
  *
- * An IndexedDbPersister only supports regular Store objects, and cannot be used
- * to persist the metadata of a MergeableStore.
+ * An IndexedDbPersister supports regular Store objects, and, since v9.6, can
+ * also be used to persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `dbName` parameter which is unique to your application. This is the key used
  * to identify which IndexedDB to use.
  *
- * Within that database, this Persister will create two object stores: one
- * called 't', and one called 'v'. These will contain the Store's tabular and
- * key-value data respectively, using 'k' and 'v' to store the key and value of
- * each entry, as shown in the example.
+ * Within that database, this Persister will create three object stores. A
+ * regular Store uses one called 't' and one called 'v', which contain its
+ * tabular and key-value data respectively, using 'k' and 'v' to store the key
+ * and value of each entry, as shown in the example. A MergeableStore instead
+ * uses one called 'm', which holds its two halves of mergeable content under
+ * the keys 't' and 'v'.
+ *
+ * Since the two live alongside each other, a database written by a regular
+ * Store can be read by another regular Store, and the same for MergeableStore
+ * objects, but the two do not share data. Databases created before v9.6 are
+ * upgraded in place, and their existing content is preserved.
  *
  * Note that it is not possible to reactively detect changes to a browser's
  * IndexedDB. If you do choose to enable automatic loading for the Persister

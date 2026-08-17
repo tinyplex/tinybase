@@ -1,5 +1,12 @@
 import type {Id} from '../../@types/common/index.d.ts';
-import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import type {
+  MergeableContent,
+  MergeableStore,
+} from '../../@types/mergeable-store/index.d.ts';
+import type {
+  PersisterListener,
+  Persists,
+} from '../../@types/persisters/index.d.ts';
 import type {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
@@ -24,10 +31,13 @@ import {
   startInterval,
   stopInterval,
 } from '../../common/other.ts';
-import {T, V} from '../../common/strings.ts';
+import {M, T, V} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
-const OBJECT_STORE_NAMES = [T, V];
+const CONTENT_OBJECT_STORE_NAMES = [T, V];
+const MERGEABLE_OBJECT_STORE_NAMES = [M];
+const OBJECT_STORE_NAMES = [...CONTENT_OBJECT_STORE_NAMES, M];
+const VERSION = 3;
 const KEY_PATH = {keyPath: 'k'};
 
 const objectStoreMatch = async (
@@ -57,21 +67,22 @@ const execObjectStore = async (
   });
 
 export const createIndexedDbPersister = ((
-  store: Store,
+  store: Store | MergeableStore,
   dbName: string,
   autoLoadIntervalSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): IndexedDbPersister => {
   const forObjectStores = async (
+    objectStoreNames: string[],
     forObjectStore: (objectStore: IDBObjectStore, arg: any) => Promise<any>,
     params: any[] = [],
     create: 0 | 1 = 0,
     mode: IDBTransactionMode = 'readonly',
-  ): Promise<[any, any]> =>
+  ): Promise<any[]> =>
     promiseNew((resolve, reject) => {
       const request = (WINDOW ? WINDOW.indexedDB : indexedDB).open(
         dbName,
-        create ? 2 : undefined,
+        create ? VERSION : undefined,
       );
       let blocked = 0;
       request.onupgradeneeded = () =>
@@ -92,7 +103,7 @@ export const createIndexedDbPersister = ((
               async () => {
                 request.result.onversionchange = () => request.result.close();
                 const transaction = request.result.transaction(
-                  OBJECT_STORE_NAMES,
+                  objectStoreNames,
                   mode,
                 );
                 const transactionComplete = promiseNew<void>(
@@ -104,7 +115,7 @@ export const createIndexedDbPersister = ((
                 );
                 const [result] = await promiseAll([
                   promiseAll(
-                    arrayMap(OBJECT_STORE_NAMES, (objectStoreName, index) =>
+                    arrayMap(objectStoreNames, (objectStoreName, index) =>
                       forObjectStore(
                         transaction.objectStore(objectStoreName),
                         params[index],
@@ -114,7 +125,7 @@ export const createIndexedDbPersister = ((
                   transactionComplete,
                 ]);
                 request.result.close();
-                resolve(result as [any, any]);
+                resolve(result as any[]);
               },
               (error) => {
                 request.result.close();
@@ -124,26 +135,58 @@ export const createIndexedDbPersister = ((
       request.onerror = () => reject(errorNew(ERROR_INDEXED_DB_OPEN));
     });
 
-  const getPersisted = async (): Promise<Content> =>
-    await forObjectStores(async (objectStore) =>
-      objNew(
-        arrayMap(
-          await execObjectStore(objectStore, 'getAll'),
-          ({k, v}: {k: Id; v: Table}) => [k, v],
-        ),
+  const getObjectStoreEntries = async (
+    objectStore: IDBObjectStore,
+  ): Promise<IdObj<any>> =>
+    objNew(
+      arrayMap(
+        await execObjectStore(objectStore, 'getAll'),
+        ({k, v}: {k: Id; v: Table}) => [k, v],
       ),
     );
 
-  const setPersisted = (getContent: () => Content): Promise<void> =>
-    forObjectStores(
-      (objectStore, content) => objectStoreMatch(objectStore, content),
-      getContent(),
-      1,
-      'readwrite',
-    ) as any;
+  const getPersisted = async (): Promise<
+    Content | MergeableContent | undefined
+  > => {
+    if (!store.isMergeable()) {
+      return (await forObjectStores(
+        CONTENT_OBJECT_STORE_NAMES,
+        getObjectStoreEntries,
+      )) as Content;
+    }
+    const [mergeable] = await forObjectStores(
+      MERGEABLE_OBJECT_STORE_NAMES,
+      getObjectStoreEntries,
+    );
+    return objHas(mergeable, T)
+      ? ([mergeable[T], mergeable[V]] as MergeableContent)
+      : undefined;
+  };
+
+  const setPersisted = async (
+    getContent: () => Content | MergeableContent,
+  ): Promise<void> => {
+    const content = getContent();
+    await (store.isMergeable()
+      ? forObjectStores(
+          MERGEABLE_OBJECT_STORE_NAMES,
+          (objectStore, mergeable) => objectStoreMatch(objectStore, mergeable),
+          [{[T]: content[0], [V]: content[1]}],
+          1,
+          'readwrite',
+        )
+      : forObjectStores(
+          CONTENT_OBJECT_STORE_NAMES,
+          (objectStore, tablesOrValues) =>
+            objectStoreMatch(objectStore, tablesOrValues),
+          content,
+          1,
+          'readwrite',
+        ));
+  };
 
   const addPersisterListener = (
-    listener: PersisterListener,
+    listener: PersisterListener<Persists.StoreOrMergeableStore>,
   ): Promise<() => Promise<void>> =>
     getPersisted().then((content) => {
       let active = 1;
@@ -190,7 +233,7 @@ export const createIndexedDbPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    1, // StoreOnly,
+    3, // StoreOrMergeableStore,
     {getDbName: () => dbName},
   ) as IndexedDbPersister;
 }) as typeof createIndexedDbPersisterDecl;

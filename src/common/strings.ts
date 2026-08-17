@@ -100,6 +100,7 @@ export const TUPLE_TYPE = 'TupleType';
 export const TYPE_LITERAL = 'TypeLiteral';
 export const UNION = 'Union';
 
+export const M = 'm';
 export const T = 't';
 export const V = 'v';
 
