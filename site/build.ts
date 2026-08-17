@@ -375,6 +375,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/middleware/index.d.ts')
     .addApiFile('dist/@types/persisters/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-automerge/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-better-sqlite3/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-browser/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-capacitor-sqlite/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-cr-sqlite-wasm/index.d.ts')

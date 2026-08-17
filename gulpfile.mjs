@@ -23,6 +23,7 @@ const ALL_MODULES = [
   'middleware',
   'persisters',
   'persisters/persister-automerge',
+  'persisters/persister-better-sqlite3',
   'persisters/persister-browser',
   'persisters/persister-capacitor-sqlite',
   'persisters/persister-cr-sqlite-wasm',

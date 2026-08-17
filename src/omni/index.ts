@@ -6,6 +6,7 @@ export * from '../metrics/index.ts';
 export * from '../middleware/index.ts';
 export * from '../persisters/index.ts';
 export * from '../persisters/persister-automerge/index.ts';
+export * from '../persisters/persister-better-sqlite3/index.ts';
 export * from '../persisters/persister-browser/index.ts';
 export * from '../persisters/persister-capacitor-sqlite/index.ts';
 export * from '../persisters/persister-cr-sqlite-wasm/index.ts';

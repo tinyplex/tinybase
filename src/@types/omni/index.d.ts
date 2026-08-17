@@ -11,6 +11,7 @@ export * from '../metrics/index.d.ts';
 export * from '../middleware/index.d.ts';
 export * from '../persisters/index.d.ts';
 export * from '../persisters/persister-automerge/index.d.ts';
+export * from '../persisters/persister-better-sqlite3/index.d.ts';
 export * from '../persisters/persister-browser/index.d.ts';
 export * from '../persisters/persister-capacitor-sqlite/index.d.ts';
 export * from '../persisters/persister-cr-sqlite-wasm/index.d.ts';
