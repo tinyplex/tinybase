@@ -14,6 +14,8 @@ import type {ElectricClient} from 'electric-sql/client/model';
 import {DbSchema} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import 'fake-indexeddb/auto';
+import type {PoolClient} from 'pg';
+import {Pool} from 'pg';
 import type {ReservedSql, Sql} from 'postgres';
 import postgres from 'postgres';
 import sqlite3, {Database} from 'sqlite3';
@@ -22,6 +24,7 @@ import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+import {createPgPersister} from 'tinybase/persisters/persister-pg';
 import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
@@ -44,6 +47,19 @@ const statementMutex = new Mutex();
 export type Variants = {[name: string]: DatabaseVariant<any>};
 export type SqliteWasmDb = [sqlite3: any, db: any];
 export type SqlClientsAndName = [Sql, ReservedSql, string];
+export type PgClientsAndName = [Pool, PoolClient, Mutex, string];
+
+const PG_ADMIN_URL = 'postgres://localhost:5432/postgres';
+const PG_OPTIONS = '-c client_min_messages=warning';
+
+const pgAdmin = async (sql: string) => {
+  const adminPool = new Pool({
+    connectionString: PG_ADMIN_URL,
+    options: PG_OPTIONS,
+  });
+  await adminPool.query(sql);
+  await adminPool.end();
+};
 
 const electricSchema = new DbSchema({}, [], []);
 type Electric = ElectricClient<typeof electricSchema>;
@@ -409,6 +425,58 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       });
       await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)} WITH (FORCE)`;
       await adminSql.end({timeout: 0.1});
+    },
+    20,
+    undefined,
+    true,
+    true,
+  ],
+  pg: [
+    async (pgClientsAndName?: PgClientsAndName): Promise<PgClientsAndName> => {
+      const existingName = pgClientsAndName?.[3];
+      const name = existingName ?? 'tinybase_' + getUniqueId();
+      if (!existingName) {
+        await pgAdmin('CREATE DATABASE ' + escapeId(name));
+      }
+
+      const pool = new Pool({
+        connectionString: 'postgres://localhost:5432/' + name,
+        options: PG_OPTIONS,
+        max: 20,
+      });
+      // Dropping the database below terminates connections; without this, `pg`
+      // would raise those as unhandled errors.
+      pool.on('error', noop);
+      pool.on('connect', (client) => client.on('error', noop));
+      // Commands are issued as transactions, so need one stable connection.
+      const cmdClient = await pool.connect();
+      return [pool, cmdClient, new Mutex(), name];
+    },
+    ['getPg', ([pool]: PgClientsAndName) => pool],
+    (
+      store: Store,
+      [pool]: PgClientsAndName,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createPgPersister as any)(
+        store,
+        pool,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    ([, cmdClient, cmdMutex]: PgClientsAndName, sqlStr: string, args = []) =>
+      cmdMutex.runExclusive(
+        async () => (await cmdClient.query(sqlStr, args)).rows,
+      ),
+    async ([pool, cmdClient, , name]: PgClientsAndName) => {
+      cmdClient.release();
+      // Tests may leave a Persister holding a client, which would make a
+      // graceful end wait forever; the forced drop below closes them anyway.
+      await Promise.race([pool.end().catch(noop), pause(100)]);
+      await pgAdmin(`DROP DATABASE IF EXISTS ${escapeId(name)} WITH (FORCE)`);
     },
     20,
     undefined,

@@ -12,6 +12,7 @@ import * as fs from 'fs';
 import {readFileSync, readdirSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, extname, join, resolve} from 'path';
+import * as pg from 'pg';
 import postgres from 'postgres';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
@@ -30,6 +31,7 @@ import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
 import * as TinyBasePersisterPartyKitClient from 'tinybase/persisters/persister-partykit-client';
 import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-partykit-server';
+import * as TinyBasePersisterPg from 'tinybase/persisters/persister-pg';
 import * as TinyBasePersisterPglite from 'tinybase/persisters/persister-pglite';
 import * as TinyBasePersisterPostgres from 'tinybase/persisters/persister-postgres';
 import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
@@ -126,6 +128,7 @@ const TinyBaseForTest = {
   '@vlcn.io/crsqlite-wasm': initWasm,
   arktype,
   fs,
+  pg,
   postgres,
   react: React,
   'react-dom/client': ReactDOMClient,
@@ -153,6 +156,7 @@ const TinyBaseForTest = {
     TinyBasePersisterPartyKitClient,
   'tinybase/persisters/persister-partykit-server':
     TinyBasePersisterPartyKitServer,
+  'tinybase/persisters/persister-pg': TinyBasePersisterPg,
   'tinybase/persisters/persister-pglite': TinyBasePersisterPglite,
   'tinybase/persisters/persister-postgres': TinyBasePersisterPostgres,
   'tinybase/persisters/persister-remote': TinyBasePersisterRemote,
