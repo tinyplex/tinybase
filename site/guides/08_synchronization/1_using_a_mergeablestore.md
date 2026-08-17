@@ -109,6 +109,7 @@ The following Persister types _can_ be used to persist a MergeableStore:
 | SessionPersister         | Browser session storage                                                                      |
 | LocalPersister           | Browser local storage                                                                        |
 | OpfsPersister            | Browser origin private file system (OPFS)                                                    |
+| IndexedDbPersister       | Browser IndexedDB                                                                            |
 | FilePersister            | Local file (where possible)                                                                  |
 | ReactNativeMmkvPersister | MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) |
 
@@ -132,7 +133,6 @@ persist a MergeableStore:
 
 | Persister             | Storage                                                                                  |
 | --------------------- | ---------------------------------------------------------------------------------------- |
-| IndexedDbPersister    | Browser IndexedDB                                                                        |
 | RemotePersister       | Remote server                                                                            |
 | CrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                 |
 | ElectricSqlPersister  | Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)               |

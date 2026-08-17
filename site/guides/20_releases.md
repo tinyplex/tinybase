@@ -104,6 +104,29 @@ policies up yourself, in a migration or the Supabase SQL editor, and it stays
 exactly as you left it. If you would rather have a Persister that manages its
 own schema, use the new PgPersister against a direct connection instead.
 
+## MergeableStore Support For IndexedDB
+
+The IndexedDbPersister can now persist a MergeableStore, closing a gap that had
+made IndexedDB the odd one out amongst the browser Persisters (as requested in
+issue [#203](https://github.com/tinyplex/tinybase/issues/203)). The
+SessionPersister, LocalPersister and OpfsPersister could all already do this; now
+the browser's most capable storage can too.
+
+```js ignore
+import {createMergeableStore} from 'tinybase';
+import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+
+const store = createMergeableStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createIndexedDbPersister(store, 'petStore');
+
+await persister.save();
+```
+
+A regular Store continues to use the 't' and 'v' object stores exactly as
+before. A MergeableStore uses a new one called 'm', so the two formats live
+alongside each other rather than one replacing the other, and databases written
+by previous versions are upgraded in place with their content intact.
+
 ---
 
 # v9.5
