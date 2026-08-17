@@ -34,13 +34,14 @@
   "sideEffects": false,
   "peerDependencies": {
     "@automerge/automerge-repo": "^2.5.6",
+    "@capacitor-community/sqlite": "^8.1.1",
     "@cloudflare/workers-types": "^5.20260815.1",
     "@electric-sql/pglite": "^0.5.5",
     "@libsql/client": "^0.17.4",
     "@powersync/common": "^2.0.0",
     "@sinclair/typebox": "^0.34.52",
-    "@supabase/supabase-js": "^2.112.3",
     "@sqlite.org/sqlite-wasm": "^3.53.0-build1",
+    "@supabase/supabase-js": "^2.112.3",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "arktype": "^2.2.3",
     "bun": "^1.3.14",
@@ -66,6 +67,9 @@
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
+      "optional": true
+    },
+    "@capacitor-community/sqlite": {
       "optional": true
     },
     "@cloudflare/workers-types": {
@@ -206,6 +210,7 @@
     "@arethetypeswrong/cli": "^0.18.5",
     "@automerge/automerge-repo": "^2.5.6",
     "@automerge/automerge-repo-network-broadcastchannel": "^2.5.6",
+    "@capacitor-community/sqlite": "^8.1.1",
     "@cloudflare/workers-types": "^5.20260815.1",
     "@electric-sql/pglite": "^0.5.5",
     "@eslint/js": "^9.39.2",
