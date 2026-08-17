@@ -24,6 +24,7 @@ const ALL_MODULES = [
   'persisters',
   'persisters/persister-automerge',
   'persisters/persister-browser',
+  'persisters/persister-capacitor-sqlite',
   'persisters/persister-cr-sqlite-wasm',
   'persisters/persister-durable-object-storage',
   'persisters/persister-durable-object-sql-storage',
