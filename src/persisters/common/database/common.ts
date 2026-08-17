@@ -24,6 +24,7 @@ export type Upsert = (
   rowIdColumnName: string,
   changingColumnNames: string[],
   rows: {[id: string]: any[]},
+  getPlaceholder: GetPlaceholder,
   currentColumnNames?: IdSet,
 ) => Promise<void>;
 
@@ -73,9 +74,21 @@ export const escapeIds = (...ids: Ids) => escapeId(arrayJoin(ids, '_'));
 export const escapeColumnNames = (...columnNames: string[]) =>
   arrayJoin(arrayMap(columnNames, escapeId), COMMA);
 
-export const getPlaceholders = (array: any[], offset = [1]) =>
+export type GetPlaceholder = (offset: number[]) => string;
+
+// PostgreSQL needs numbered placeholders; SQLite drivers only agree on
+// anonymous ones.
+export const numberedPlaceholder: GetPlaceholder = (offset) =>
+  '$' + offset[0]++;
+export const anonymousPlaceholder: GetPlaceholder = () => '?';
+
+export const getPlaceholders = (
+  array: any[],
+  getPlaceholder: GetPlaceholder,
+  offset = [1],
+) =>
   arrayJoin(
-    arrayMap(array, () => '$' + offset[0]++),
+    arrayMap(array, () => getPlaceholder(offset)),
     COMMA,
   );
 

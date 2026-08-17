@@ -38,15 +38,16 @@ import {
   ALTER_TABLE,
   CREATE_TABLE,
   DELETE_FROM,
+  escapeColumnNames,
+  escapeId,
+  GetPlaceholder,
+  getPlaceholders,
+  getWhereCondition,
   INSERT,
   QuerySchema,
   SELECT_STAR_FROM,
   TABLE,
   UPDATE,
-  escapeColumnNames,
-  escapeId,
-  getPlaceholders,
-  getWhereCondition,
   type Upsert,
 } from './common.ts';
 
@@ -60,6 +61,7 @@ export const getCommandFunctions = (
   managedTableNames: string[],
   querySchema: QuerySchema,
   columnType: string,
+  getPlaceholder: GetPlaceholder,
   upsert: Upsert = defaultUpsert,
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
@@ -313,7 +315,7 @@ export const getCommandFunctions = (
                 DELETE_FROM +
                   escapeId(tableName) +
                   getWhereCondition(tableName, condition) +
-                  `AND(${escapeId(rowIdColumnName)}=$1)`,
+                  `AND(${escapeId(rowIdColumnName)}=${getPlaceholder([1])})`,
                 [rowId],
               );
             } else if (!isEmpty(settingColumnNames)) {
@@ -333,6 +335,7 @@ export const getCommandFunctions = (
                       encode ? encode(row[cellId]) : row[cellId],
                     ),
                   },
+                  getPlaceholder,
                   currentColumnNames,
                 );
               }
@@ -367,6 +370,7 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           rows,
+          getPlaceholder,
           currentColumnNames,
         );
         // Delete rows
@@ -375,7 +379,7 @@ export const getCommandFunctions = (
             escapeId(tableName) +
             getWhereCondition(tableName, condition) +
             // eslint-disable-next-line max-len
-            `AND${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds)})`,
+            `AND${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds, getPlaceholder)})`,
           deleteRowIds,
         );
       } else if (
@@ -424,6 +428,7 @@ const defaultUpsert: Upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   rows: {[id: string]: any[]},
+  getPlaceholder: GetPlaceholder,
 ) => {
   const offset = [1];
   await executeCommand(
@@ -437,7 +442,11 @@ const defaultUpsert: Upsert = async (
         objToArray(
           rows,
           (row: any[]) =>
-            '($' + offset[0]++ + ',' + getPlaceholders(row, offset) + ')',
+            '(' +
+            getPlaceholder(offset) +
+            ',' +
+            getPlaceholders(row, getPlaceholder, offset) +
+            ')',
         ),
         COMMA,
       ) +

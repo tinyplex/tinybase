@@ -22,6 +22,7 @@ import {createCustomPersister} from '../create.ts';
 import {DatabaseTransaction, getCommandFunctions} from './commands.ts';
 import {
   DEFAULT_ROW_ID_COLUMN_NAME,
+  GetPlaceholder,
   QuerySchema,
   SINGLE_ROW_ID,
   Upsert,
@@ -59,6 +60,7 @@ export const createTabularPersister = <
   thing: any,
   getThing: string,
   columnType: string,
+  getPlaceholder: GetPlaceholder,
   upsert?: Upsert,
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
@@ -70,6 +72,7 @@ export const createTabularPersister = <
       managedTableNames,
       querySchema,
       columnType,
+      getPlaceholder,
       upsert,
       encode,
       decode,

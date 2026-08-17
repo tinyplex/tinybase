@@ -49,7 +49,7 @@ import {
 } from '../../common/other.ts';
 import {setAdd, setNew} from '../../common/set.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
-import {EMPTY_STRING, strReplace, strSplit, T} from '../../common/strings.ts';
+import {EMPTY_STRING, strSplit, T} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 import {escapeId} from '../common/database/common.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
@@ -84,8 +84,6 @@ export const createDurableObjectSqlStoragePersister = (
     configOrStoreTableName as DpcJson,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> => {
       if (!arrayHas(['BEGIN', 'END'], sql)) {
-        //in sql replace $1, $2, $3, etc. with a question mark
-        sql = strReplace(sql, /\$\d+/g, '?');
         return getSqlRows(sqlStorage, sql, ...params);
       }
       return [];

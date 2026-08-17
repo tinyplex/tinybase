@@ -12,9 +12,10 @@ import type {Store} from '../../@types/store/index.d.ts';
 import {arrayForEach, arrayJoin, arrayMap} from '../../common/array.ts';
 import {tryCatchIgnore} from '../../common/error.ts';
 import {IdObj, objToArray} from '../../common/obj.ts';
-import {isEmpty, noop, size} from '../../common/other.ts';
+import {isEmpty, noop} from '../../common/other.ts';
 import {COMMA} from '../../common/strings.ts';
 import {
+  GetPlaceholder,
   INSERT,
   UPDATE,
   Upsert,
@@ -78,14 +79,17 @@ const powerSyncUpdateThenInsert: Upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   rows: {[id: string]: any[]},
+  getPlaceholder: GetPlaceholder,
 ) => {
+  const updateOffset = [1];
   const assignments = arrayJoin(
     arrayMap(
       changingColumnNames,
-      (columnName, index) => escapeId(columnName) + '=$' + (index + 1),
+      (columnName) => escapeId(columnName) + '=' + getPlaceholder(updateOffset),
     ),
     COMMA,
   );
+  const rowIdPlaceholder = getPlaceholder(updateOffset);
   for (const [id, row] of objToArray(rows, (row, id): [string, any[]] => [
     id,
     row,
@@ -101,8 +105,8 @@ const powerSyncUpdateThenInsert: Upsert = async (
             ' ' +
             WHERE +
             escapeId(rowIdColumnName) +
-            '=$' +
-            (size(row) + 1) +
+            '=' +
+            rowIdPlaceholder +
             ' RETURNING' +
             escapeId(rowIdColumnName),
           [...rowParams, id],
@@ -117,7 +121,7 @@ const powerSyncUpdateThenInsert: Upsert = async (
           '(' +
           escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
           ')VALUES(' +
-          getPlaceholders([id, ...row], offset) +
+          getPlaceholders([id, ...row], getPlaceholder, offset) +
           ')',
         [id, ...rowParams],
       );

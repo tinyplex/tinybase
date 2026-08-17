@@ -1854,11 +1854,18 @@
  * ideas on how to build your own Persister type, and as functional examples.
  * Examine the implementation of the createSqlite3Persister function as a good
  * starting point, for example.
+ *
+ * Your `executeCommand` function is given SQL that uses SQLite's anonymous `?`
+ * placeholders, with the parameters to bind to them in order. SQLite drivers
+ * agree on that form, whereas they vary in how they handle the numbered
+ * placeholders that PostgreSQL requires, so you should not need to rewrite
+ * statements before passing them on.
  * @param store The Store to persist.
  * @param configOrStoreTableName A DatabasePersisterConfig object, or a string
  * that will be used as the name of the Store's table in the database.
  * @param executeCommand A function that will execute a command against the
- * database.
+ * database. It receives SQL with anonymous `?` placeholders, and the parameters
+ * to bind to them in order.
  * @param addChangeListener A function that will register a listener for changes
  * to the database.
  * @param delChangeListener A function that will unregister the listener for

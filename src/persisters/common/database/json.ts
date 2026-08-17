@@ -12,7 +12,7 @@ import {
 } from '../../../common/json.ts';
 import {createCustomPersister} from '../create.ts';
 import {DatabaseTransaction, getCommandFunctions} from './commands.ts';
-import {QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
+import {GetPlaceholder, QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
 import type {DefaultedJsonConfig} from './config.ts';
 
 export const createJsonPersister = <
@@ -36,6 +36,7 @@ export const createJsonPersister = <
   thing: any,
   getThing: string,
   columnType: string,
+  getPlaceholder: GetPlaceholder,
   upsert?: Upsert,
   _encode?: (cellOrValue: any) => string | number,
   _decode?: (field: string | number) => any,
@@ -47,6 +48,7 @@ export const createJsonPersister = <
       managedTableNames,
       querySchema,
       columnType,
+      getPlaceholder,
       upsert,
       undefined,
       undefined,
