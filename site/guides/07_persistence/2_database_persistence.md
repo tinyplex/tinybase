@@ -46,6 +46,13 @@ schema to fit. That is deliberate, since the key it holds is one that ships in
 your client bundle. See the createSupabasePersister function for the table and
 policies to set up first.
 
+The LibSqlPersister covers more ground than its name suggests, since the hosted
+services built on LibSQL hand you an ordinary client. That includes Turso, and
+also [Astro DB](https://astro.build/db/): the `db` object exported from
+`astro:db` is a Drizzle wrapper whose `$client` property is exactly the client
+this Persister takes. See the createLibSqlPersister function for the cast that
+TypeScript needs to reach it.
+
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store
 with a database:
