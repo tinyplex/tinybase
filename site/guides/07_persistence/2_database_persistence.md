@@ -3,7 +3,7 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently nine SQLite-based persistence options, and two for
+There are currently nine SQLite-based persistence options, and three for
 PostgreSQL:
 
 | Persister                  | Storage                                                                                                          |
@@ -17,8 +17,17 @@ PostgreSQL:
 | ElectricSqlPersister       | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                           |
 | LibSqlPersister            | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                         |
 | PowerSyncPersister         | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                                     |
+| PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
+
+Of the three PostgreSQL options, the PgPersister is the one to reach for if you
+are using a hosted service. Because [pg](https://github.com/brianc/node-postgres)
+is the de facto standard driver for Node.js, most such services offer a
+drop-in replacement for it. [Neon](https://neon.com/), for example, has a
+serverless driver whose `Pool` and `Client` objects can be passed straight to
+the createPgPersister function, which means you can persist a Store to
+PostgreSQL from an edge runtime that cannot open a regular TCP connection.
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store

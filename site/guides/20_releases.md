@@ -5,6 +5,69 @@ highlighted features.
 
 ---
 
+# v9.6
+
+## PostgreSQL, via `pg`
+
+The new persister-pg module provides the PgPersister, which binds to PostgreSQL
+databases with the [`pg`](https://github.com/brianc/node-postgres) module - the
+de facto standard PostgreSQL driver for Node.js.
+
+It joins the existing PostgresPersister and PglitePersister, and is the one to
+reach for with the many hosted PostgreSQL services that offer a `pg`-compatible
+driver. [Neon](https://neon.com/), for example, provides a serverless driver
+whose `Pool` and `Client` objects can be handed straight to the createPgPersister
+function, so you can persist a Store to PostgreSQL from an edge runtime that
+cannot open a regular TCP connection.
+
+```js
+import {Pool} from 'pg';
+import {createStore} from 'tinybase';
+import {createPgPersister} from 'tinybase/persisters/persister-pg';
+
+// Create a TinyBase Store.
+const nodePgStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
+
+// Create a pg pool and Persister.
+const nodePgPool = new Pool({
+  connectionString: 'postgres://localhost:5432/tinybase',
+});
+const nodePgPersister = await createPgPersister(
+  nodePgStore,
+  nodePgPool,
+  'my_tinybase',
+);
+
+// Save Store to the database.
+await nodePgPersister.save();
+
+console.log((await nodePgPool.query('SELECT * FROM my_tinybase;')).rows);
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+```
+
+Both JSON and tabular modes are supported, as is reactive auto-loading, and a
+MergeableStore can be persisted in JSON mode:
+
+```js
+// If separately the database gets updated...
+await nodePgPool.query('UPDATE my_tinybase SET store = $1 WHERE _id = $2;', [
+  '[{"pets":{"felix":{"species":"cat"}}},{}]',
+  '_',
+]);
+
+// ... then changes are loaded back.
+await nodePgPersister.load();
+console.log(nodePgStore.getTables());
+// -> {pets: {felix: {species: 'cat'}}}
+
+// As always, don't forget to tidy up.
+await nodePgPersister.destroy();
+await nodePgPool.query('DROP TABLE my_tinybase;');
+await nodePgPool.end();
+```
+
+---
+
 # v9.5
 
 ## Schema Enums
@@ -16,8 +79,6 @@ can mix strings, finite numbers, and booleans, and continue to use `allowNull`
 when `null` is also valid.
 
 ```js
-import {createStore} from 'tinybase';
-
 const enumStore = createStore().setValuesSchema({
   status: {enum: ['available', 'adopted'], default: 'available'},
   rating: {enum: ['good', 5, true], allowNull: true},
