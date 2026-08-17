@@ -3,7 +3,7 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently nine SQLite-based persistence options, and three for
+There are currently nine SQLite-based persistence options, and four for
 PostgreSQL:
 
 | Persister                  | Storage                                                                                                          |
@@ -20,14 +20,23 @@ PostgreSQL:
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
+| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                            |
 
-Of the three PostgreSQL options, the PgPersister is the one to reach for if you
-are using a hosted service. Because [pg](https://github.com/brianc/node-postgres)
-is the de facto standard driver for Node.js, most such services offer a
-drop-in replacement for it. [Neon](https://neon.com/), for example, has a
-serverless driver whose `Pool` and `Client` objects can be passed straight to
-the createPgPersister function, which means you can persist a Store to
-PostgreSQL from an edge runtime that cannot open a regular TCP connection.
+Of those, the PgPersister is the one to reach for if you are using a hosted
+service. Because [pg](https://github.com/brianc/node-postgres) is the de facto
+standard driver for Node.js, most such services offer a drop-in replacement for
+it. [Neon](https://neon.com/), for example, has a serverless driver whose `Pool`
+and `Client` objects can be passed straight to the createPgPersister function,
+which means you can persist a Store to PostgreSQL from an edge runtime that
+cannot open a regular TCP connection.
+
+The SupabasePersister is the odd one out, since it talks to Supabase's REST API
+rather than to the database directly. That means it runs in a browser or edge
+runtime, that row-level security policies apply to what it reads and writes,
+and that changes can arrive over Supabase Realtime rather than by polling. The
+trade-off is that only the JSON mode described below is available to it, since
+the REST API cannot execute the arbitrary SQL that tabular mapping needs. See
+the createSupabasePersister function for the table you will need to create.
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store

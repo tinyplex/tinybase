@@ -66,6 +66,39 @@ await nodePgPool.query('DROP TABLE my_tinybase;');
 await nodePgPool.end();
 ```
 
+## Supabase
+
+Also new is the persister-supabase module, which provides the SupabasePersister
+(as requested in issue
+[#204](https://github.com/tinyplex/tinybase/issues/204)). Hand the
+createSupabasePersister function the client you get back from Supabase's
+`createClient` function, and your Store is persisted to a table in your project:
+
+```js ignore
+import {createClient} from '@supabase/supabase-js';
+import {createStore} from 'tinybase';
+import {createSupabasePersister} from 'tinybase/persisters/persister-supabase';
+
+const supabase = createClient('https://my-project.supabase.co', 'anon-key');
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createSupabasePersister(store, supabase, 'my_tinybase');
+
+await persister.save();
+await persister.startAutoLoad();
+```
+
+Unlike the other PostgreSQL Persisters, this one goes through Supabase's REST
+API rather than connecting to the database. That is what makes it interesting:
+it runs in a browser or edge runtime, your row-level security policies apply to
+what it reads and writes, and the startAutoLoad method picks up other clients'
+changes over Supabase Realtime instead of polling.
+
+The trade-off is that only the JSON serialization mode is available, since the
+REST API cannot run the arbitrary SQL that tabular mapping needs. You also need
+to create the table yourself, since the REST API cannot do that either. If you
+can reach the database directly, use the new PgPersister instead, which supports
+both modes.
+
 ---
 
 # v9.5

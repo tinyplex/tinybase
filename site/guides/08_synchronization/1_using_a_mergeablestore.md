@@ -125,6 +125,7 @@ MergeableStore, but _only_ in the 'JSON-serialization' mode:
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
+| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                            |
 
 The following database-oriented Persister types _cannot_ currently be used to
 persist a MergeableStore:

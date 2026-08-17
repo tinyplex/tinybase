@@ -55,6 +55,7 @@ is available.
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
+| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                            |
 
 See the Database Persistence guide for details on how to work with databases.
 
