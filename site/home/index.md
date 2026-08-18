@@ -122,21 +122,6 @@
   </a>
 </div>
 <div>
-  <a href='/guides/integrations/cloudflare-durable-objects'>
-    <img width="48" src="/cloudflare.svg?asImg" /> Cloudflare
-  </a>
-</div>
-<div>
-  <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/postgresql.svg?asImg" /> PostgreSQL
-  </a>
-</div>
-<div>
-  <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/pglite.svg?asImg" /> PGlite
-  </a>
-</div>
-<div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/sqlite.svg?asImg" /> SQLite
   </a>
@@ -153,7 +138,7 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/electric.svg?asImg" /> ElectricSQL
+    <img width="48" src="/capacitor.svg?asImg" /> Capacitor
   </a>
 </div>
 <div>
@@ -163,7 +148,47 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/astro.svg?asImg" /> Astro DB
+  </a>
+</div>
+<div>
+  <a href='/api/persister-cr-sqlite-wasm'>
+    <img width="48" src="/crsqlite.png" /> CR-SQLite
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/electric.svg?asImg" /> ElectricSQL
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/powersync.svg?asImg" /> PowerSync
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/postgresql.svg?asImg" /> PostgreSQL
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/pglite.svg?asImg" /> PGlite
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/neon.svg?asImg" /> Neon
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/supabase.svg?asImg" /> Supabase
+  </a>
+</div>
+<div>
+  <a href='/guides/integrations/cloudflare-durable-objects'>
+    <img width="48" src="/cloudflare.svg?asImg" /> Cloudflare
   </a>
 </div>
 <div>
@@ -174,11 +199,6 @@
 <div>
   <a href='/api/persister-yjs/functions/creation/createyjspersister'>
     <img width="48" src="/yjs.svg?asImg" /> YJS
-  </a>
-</div>
-<div>
-  <a href='/api/persister-cr-sqlite-wasm'>
-    <img width="48" src="/crsqlite.png" /> CR-SQLite
   </a>
 </div>
 <div>
