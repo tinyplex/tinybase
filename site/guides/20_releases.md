@@ -9,18 +9,19 @@ highlighted features.
 
 ## In Summary
 
-- [A new Persister for `pg`](#postgresql-via-pg), the de facto standard
-  PostgreSQL driver for Node.js - and for the hosted services, like Neon, that
-  are compatible with it.
-- [A new Persister for Supabase](#supabase), which goes through its REST API
-  rather than a database connection, and which listens to Supabase Realtime.
+- [A new Persister for `pg`](#postgresql-via-pg), the standard PostgreSQL driver
+  for Node.js - and the hosted services, like Neon, compatible with it.
+- [A new Persister for Supabase](#supabase), which uses its REST API and
+  Realtime rather than a database connection.
 - [A new Persister for `better-sqlite3`](#sqlite-via-better-sqlite3), the
   popular synchronous SQLite module for Node.js.
 - [A new Persister for Capacitor](#sqlite-in-capacitor)'s SQLite plugin, for
   local databases in native iOS and Android apps.
 - [MergeableStore support for
-  IndexedDB](#mergeablestore-support-for-indexeddb), closing a gap that had made
-  it the odd one out amongst the browser Persisters.
+  IndexedDB](#mergeablestore-support-for-indexeddb), closing a gap amongst the
+  browser Persisters.
+- [SQL built the way each database wants it](#sql-placeholders), which fixes the
+  PowerSyncPersister with PowerSync's Node SDK.
 
 And more!
 
@@ -31,63 +32,52 @@ databases with the [`pg`](https://github.com/brianc/node-postgres) module - the
 de facto standard PostgreSQL driver for Node.js.
 
 It joins the existing PostgresPersister and PglitePersister, and is the one to
-reach for with the many hosted PostgreSQL services that offer a `pg`-compatible
-driver. [Neon](https://neon.com/), for example, provides a serverless driver
-whose `Pool` and `Client` objects can be handed straight to the createPgPersister
-function, so you can persist a Store to PostgreSQL from an edge runtime that
-cannot open a regular TCP connection.
+reach for with hosted services that offer a `pg`-compatible driver.
+[Neon](https://neon.com/), for example, has a serverless driver whose `Pool` and
+`Client` objects can be passed straight to the createPgPersister function, so
+you can persist a Store from an edge runtime that cannot open a TCP connection.
 
 ```js
 import {Pool} from 'pg';
 import {createStore} from 'tinybase';
 import {createPgPersister} from 'tinybase/persisters/persister-pg';
 
-// Create a TinyBase Store.
-const nodePgStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
-
-// Create a pg pool and Persister.
 const nodePgPool = new Pool({
   connectionString: 'postgres://localhost:5432/tinybase',
 });
+const nodePgStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
 const nodePgPersister = await createPgPersister(
   nodePgStore,
   nodePgPool,
   'my_tinybase',
 );
 
-// Save Store to the database.
 await nodePgPersister.save();
-
 console.log((await nodePgPool.query('SELECT * FROM my_tinybase;')).rows);
 // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
-```
 
-Both JSON and tabular modes are supported, as is reactive auto-loading, and a
-MergeableStore can be persisted in JSON mode:
-
-```js
-// If separately the database gets updated...
 await nodePgPool.query('UPDATE my_tinybase SET store = $1 WHERE _id = $2;', [
   '[{"pets":{"felix":{"species":"cat"}}},{}]',
   '_',
 ]);
-
-// ... then changes are loaded back.
 await nodePgPersister.load();
 console.log(nodePgStore.getTables());
 // -> {pets: {felix: {species: 'cat'}}}
 
-// As always, don't forget to tidy up.
 await nodePgPersister.destroy();
 await nodePgPool.query('DROP TABLE my_tinybase;');
 await nodePgPool.end();
 ```
 
+Both JSON and tabular modes are supported, as is reactive auto-loading, and a
+MergeableStore can be persisted in JSON mode. There's more information in the
+documentation for the new persister-pg module.
+
 ## Supabase
 
 Also new is the persister-supabase module, which provides the SupabasePersister
 (as requested in issue
-[#204](https://github.com/tinyplex/tinybase/issues/204)). Hand the
+[#204](https://github.com/tinyplex/tinybase/issues/204)). Pass the
 createSupabasePersister function the client you get back from Supabase's
 `createClient` function, and your Store is persisted to a table in your project:
 
@@ -105,21 +95,18 @@ await persister.startAutoLoad();
 ```
 
 Unlike the other PostgreSQL Persisters, this one goes through Supabase's REST
-API rather than connecting to the database. That is what makes it interesting:
-it runs in a browser or edge runtime, your row-level security policies apply to
-what it reads and writes, and the startAutoLoad method picks up other clients'
-changes over Supabase Realtime instead of polling.
+API rather than connecting to the database. So it runs in a browser or edge
+runtime, your row-level security policies apply to what it reads and writes, and
+the startAutoLoad method hears about other clients' changes over Supabase
+Realtime instead of polling. In return, only the JSON serialization mode is
+available, since the REST API cannot run the arbitrary SQL that tabular mapping
+needs.
 
-The trade-off is that only the JSON serialization mode is available, since the
-REST API cannot run the arbitrary SQL that tabular mapping needs.
-
-Note too that this Persister issues no DDL at all, unlike its siblings. Where
-the other database Persisters create tables, add columns for new Cells, drop the
-ones that fall out of use, and install and remove their own change-notification
-triggers, this one touches nothing but a single row. You set the table and its
-policies up yourself, in a migration or the Supabase SQL editor, and it stays
-exactly as you left it. If you would rather have a Persister that manages its
-own schema, use the new PgPersister against a direct connection instead.
+It also issues no DDL at all, unlike its siblings. Where they create tables, add
+and drop columns as Cells come and go, and install their own change-notification
+triggers, this one touches nothing but a single row. You create the table and
+its policies yourself and they stay exactly as you left them, and the
+persister-supabase module documentation has the SQL to do it.
 
 ## SQLite, via `better-sqlite3`
 
@@ -147,14 +134,9 @@ await betterPersister.destroy();
 betterDb.close();
 ```
 
-This one has been possible for a while, but only in principle: `better-sqlite3`
-binds an array of values positionally and rejects the numbered placeholders that
-PostgreSQL requires, which TinyBase had been generating for SQLite too. SQL is
-now built with the placeholder style each database family actually wants, so the
-stricter drivers work without anyone having to rewrite statements. The
-DurableObjectSqlStoragePersister no longer needs the workaround it carried, and
-the PowerSyncPersister works with PowerSync's Node SDK, which it previously did
-not.
+Since `better-sqlite3` does not signal when the database changes underneath it,
+automatic loading polls. There's more information in the documentation for the
+new persister-better-sqlite3 module.
 
 ## SQLite In Capacitor
 
@@ -179,10 +161,10 @@ const persister = createCapacitorSqlitePersister(store, db, 'my_tinybase');
 await persister.save();
 ```
 
-Note that TinyBase's tests for this module run against a mocked plugin, since it
-needs a native iOS or Android runtime that a Node test suite cannot provide. The
-SQL behavior is shared with the other SQLite Persisters and well covered by
-them, but the binding to the plugin itself is not exercised on a device. Please
+Note that this module's tests run against a mocked plugin, since it needs a
+native iOS or Android runtime that a Node test suite cannot provide. Its SQL
+behavior is shared with the other SQLite Persisters and well covered by them,
+but the binding to the plugin itself is not exercised on a device, so please
 report anything that behaves differently in a real app.
 
 ## MergeableStore Support For IndexedDB
@@ -204,9 +186,19 @@ await persister.save();
 ```
 
 A regular Store continues to use the 't' and 'v' object stores exactly as
-before. A MergeableStore uses a new one called 'm', so the two formats live
-alongside each other rather than one replacing the other, and databases written
-by previous versions are upgraded in place with their content intact.
+before, and a MergeableStore uses a new one called 'm', so databases written by
+previous versions are upgraded in place with their content intact.
+
+## SQL Placeholders
+
+TinyBase used to generate PostgreSQL's numbered `$1` placeholders for every
+database, and then rewrite them for the SQLite Persisters that objected. SQL is
+now built with the placeholder style each database family actually wants, so the
+stricter drivers work without anyone having to patch statements after the fact.
+That is what makes the new BetterSqlite3Persister possible at all; it also means
+the DurableObjectSqlStoragePersister no longer needs the workaround it carried,
+and that the PowerSyncPersister now works with PowerSync's Node SDK, which it
+previously did not.
 
 ---
 
