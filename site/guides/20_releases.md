@@ -7,6 +7,23 @@ highlighted features.
 
 # v9.6
 
+## In Summary
+
+- [A new Persister for `pg`](#postgresql-via-pg), the de facto standard
+  PostgreSQL driver for Node.js - and for the hosted services, like Neon, that
+  are compatible with it.
+- [A new Persister for Supabase](#supabase), which goes through its REST API
+  rather than a database connection, and which listens to Supabase Realtime.
+- [A new Persister for `better-sqlite3`](#sqlite-via-better-sqlite3), the
+  popular synchronous SQLite module for Node.js.
+- [A new Persister for Capacitor](#sqlite-in-capacitor)'s SQLite plugin, for
+  local databases in native iOS and Android apps.
+- [MergeableStore support for
+  IndexedDB](#mergeablestore-support-for-indexeddb), closing a gap that had made
+  it the odd one out amongst the browser Persisters.
+
+And more!
+
 ## PostgreSQL, via `pg`
 
 The new persister-pg module provides the PgPersister, which binds to PostgreSQL
