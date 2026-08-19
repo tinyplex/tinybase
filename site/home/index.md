@@ -11,9 +11,9 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v9-5'><em>NEW!</em> v9.5 release</a>
+<a href='/guides/releases/#v9-6'><em>NEW!</em> v9.6 release</a>
 
-<span id="one-with">"The one with enums and unions!"</span>
+<span id="one-with">"The one with more persisters!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
