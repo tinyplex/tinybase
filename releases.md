@@ -1,8 +1,105 @@
-<link rel="preload" as="image" href="https://beta.tinybase.org/shots/styled-chart-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/axis-overrides-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-svelte-full-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/car-analysis-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/movie-database-demo.png"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v9-5">v9.5</h1><h2 id="schema-enums">Schema Enums</h2><p><a href="https://beta.tinybase.org/api/store/type-aliases/schema/cellschema/"><code>CellSchema</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/schema/valueschema/"><code>ValueSchema</code></a> can now use an <code>enum</code> property instead of <code>type</code> to allow only specific primitive values (as requested in issue <a href="https://github.com/tinyplex/tinybase/issues/38">#38</a>). Enums must be non-empty, can mix strings, finite numbers, and booleans, and continue to use <code>allowNull</code> when <code>null</code> is also valid.</p>
+<link rel="preload" as="image" href="https://beta.tinybase.org/shots/styled-chart-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/axis-overrides-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-solid-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-svelte-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/editablevalueview-svelte-full-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/inspector-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/sortedtableinhtmltable-react-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/car-analysis-demo.png"><link rel="preload" as="image" href="https://beta.tinybase.org/shots/movie-database-demo.png"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v9-6">v9.6</h1><h2 id="in-summary">In Summary</h2><ul><li><a href="#postgresql-via-pg">A new Persister for <code>pg</code></a>, the standard PostgreSQL driver for Node.js - and the hosted services, like Neon, compatible with it.</li><li><a href="#supabase">A new Persister for Supabase</a>, which uses its REST <a href="https://beta.tinybase.org/api/">API</a> and Realtime rather than a database connection.</li><li><a href="#sqlite-via-better-sqlite3">A new Persister for <code>better-sqlite3</code></a>, the popular synchronous SQLite module for Node.js.</li><li><a href="#sqlite-in-capacitor">A new Persister for Capacitor</a>&#x27;s SQLite plugin, for local databases in native iOS and Android apps.</li><li><a href="#mergeablestore-support-for-indexeddb">MergeableStore support for IndexedDB</a>, closing a gap amongst the browser Persisters.</li><li><a href="#sql-placeholders">SQL built the way each database wants it</a>, which fixes the <a href="https://beta.tinybase.org/api/persister-powersync/interfaces/persister/powersyncpersister/"><code>PowerSyncPersister</code></a> with PowerSync&#x27;s Node SDK.</li><li><a href="https://astro.build/db/">Astro DB</a> support, newly documented for the existing <a href="https://beta.tinybase.org/api/persister-libsql/interfaces/persister/libsqlpersister/"><code>LibSqlPersister</code></a>.</li></ul><p>And more!</p><h2 id="postgresql-via-pg">PostgreSQL, via <code>pg</code></h2><p>The new <a href="https://beta.tinybase.org/api/persister-pg/"><code>persister-pg</code></a> module provides the <a href="https://beta.tinybase.org/api/persister-pg/interfaces/persister/pgpersister/"><code>PgPersister</code></a>, which binds to PostgreSQL databases with the <a href="https://github.com/brianc/node-postgres"><code>pg</code></a> module - the de facto standard PostgreSQL driver for Node.js.</p><p>It joins the existing <a href="https://beta.tinybase.org/api/persister-postgres/interfaces/persister/postgrespersister/"><code>PostgresPersister</code></a> and <a href="https://beta.tinybase.org/api/persister-pglite/interfaces/persister/pglitepersister/"><code>PglitePersister</code></a>, and is the one to reach for with hosted services that offer a <code>pg</code>-compatible driver. <a href="https://neon.com/">Neon</a>, for example, has a serverless driver whose <code>Pool</code> and <code>Client</code> objects can be passed straight to the <a href="https://beta.tinybase.org/api/persister-pg/functions/creation/createpgpersister/"><code>createPgPersister</code></a> function, so you can persist a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> from an edge runtime that cannot open a TCP connection.</p>
 
 ```js
+import {Pool} from 'pg';
 import {createStore} from 'tinybase';
+import {createPgPersister} from 'tinybase/persisters/persister-pg';
 
+const nodePgPool = new Pool({
+  connectionString: 'postgres://localhost:5432/tinybase',
+});
+const nodePgStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const nodePgPersister = await createPgPersister(
+  nodePgStore,
+  nodePgPool,
+  'my_tinybase',
+);
+
+await nodePgPersister.save();
+console.log((await nodePgPool.query('SELECT * FROM my_tinybase;')).rows);
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+await nodePgPool.query('UPDATE my_tinybase SET store = $1 WHERE _id = $2;', [
+  '[{"pets":{"felix":{"species":"cat"}}},{}]',
+  '_',
+]);
+await nodePgPersister.load();
+console.log(nodePgStore.getTables());
+// -> {pets: {felix: {species: 'cat'}}}
+
+await nodePgPersister.destroy();
+await nodePgPool.query('DROP TABLE my_tinybase;');
+await nodePgPool.end();
+```
+
+<p>Both JSON and tabular modes are supported, as is reactive auto-loading, and a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> can be persisted in JSON mode. There&#x27;s more information in the documentation for the new <a href="https://beta.tinybase.org/api/persister-pg/"><code>persister-pg</code></a> module.</p><h2 id="supabase">Supabase</h2><p>Also new is the <a href="https://beta.tinybase.org/api/persister-supabase/"><code>persister-supabase</code></a> module, which provides the <a href="https://beta.tinybase.org/api/persister-supabase/interfaces/persister/supabasepersister/"><code>SupabasePersister</code></a> (as requested in issue <a href="https://github.com/tinyplex/tinybase/issues/204">#204</a>). Pass the <a href="https://beta.tinybase.org/api/persister-supabase/functions/creation/createsupabasepersister/"><code>createSupabasePersister</code></a> function the client you get back from Supabase&#x27;s <code>createClient</code> function, and your <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> is persisted to a table in your project:</p>
+
+```js ignore
+import {createClient} from '@supabase/supabase-js';
+import {createStore} from 'tinybase';
+import {createSupabasePersister} from 'tinybase/persisters/persister-supabase';
+
+const supabase = createClient('https://my-project.supabase.co', 'anon-key');
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createSupabasePersister(store, supabase, 'my_tinybase');
+
+await persister.save();
+await persister.startAutoLoad();
+```
+
+<p>Unlike the other PostgreSQL Persisters, this one goes through Supabase&#x27;s REST <a href="https://beta.tinybase.org/api/">API</a> rather than connecting to the database. So it runs in a browser or edge runtime, your row-level security policies apply to what it reads and writes, and the <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/methods/load/startautoload/"><code>startAutoLoad</code></a> method hears about other clients&#x27; changes over Supabase Realtime instead of polling. In return, only the JSON serialization mode is available, since the REST <a href="https://beta.tinybase.org/api/">API</a> cannot run the arbitrary SQL that tabular mapping needs.</p><p>It also issues no DDL at all, unlike its siblings. <a href="https://beta.tinybase.org/api/queries/type-aliases/definition/where/"><code>Where</code></a> they create tables, add and drop columns as Cells come and go, and install their own change-notification triggers, this one touches nothing but a single row. You create the table and its policies yourself and they stay exactly as you left them, and the <a href="https://beta.tinybase.org/api/persister-supabase/"><code>persister-supabase</code></a> module documentation has the SQL to do it.</p><h2 id="sqlite-via-better-sqlite3">SQLite, via <code>better-sqlite3</code></h2><p>The new <a href="https://beta.tinybase.org/api/persister-better-sqlite3/"><code>persister-better-sqlite3</code></a> module provides the <a href="https://beta.tinybase.org/api/persister-better-sqlite3/interfaces/persister/bettersqlite3persister/"><code>BetterSqlite3Persister</code></a>, which binds to a local SQLite database with the popular synchronous <a href="https://github.com/WiseLibs/better-sqlite3"><code>better-sqlite3</code></a> module:</p>
+
+```js
+import Database from 'better-sqlite3';
+import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better-sqlite3';
+
+const betterDb = new Database(':memory:');
+const betterStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const betterPersister = createBetterSqlite3Persister(
+  betterStore,
+  betterDb,
+  'my_tinybase',
+);
+
+await betterPersister.save();
+console.log(betterDb.prepare('SELECT * FROM my_tinybase;').all());
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+await betterPersister.destroy();
+betterDb.close();
+```
+
+<p>Since <code>better-sqlite3</code> does not signal when the database changes underneath it, automatic loading polls. There&#x27;s more information in the documentation for the new <a href="https://beta.tinybase.org/api/persister-better-sqlite3/"><code>persister-better-sqlite3</code></a> module.</p><h2 id="sqlite-in-capacitor">SQLite In Capacitor</h2><p>The new <a href="https://beta.tinybase.org/api/persister-capacitor-sqlite/"><code>persister-capacitor-sqlite</code></a> module provides the <a href="https://beta.tinybase.org/api/persister-capacitor-sqlite/interfaces/persister/capacitorsqlitepersister/"><code>CapacitorSqlitePersister</code></a>, which binds to a SQLite database in a Capacitor app via the <a href="https://github.com/capacitor-community/sqlite"><code>@capacitor-community/sqlite</code></a> plugin (as requested in issue <a href="https://github.com/tinyplex/tinybase/issues/219">#219</a>). Both JSON and tabular modes work, as does persisting a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> in JSON mode.</p>
+
+```js ignore
+import {CapacitorSQLite, SQLiteConnection} from '@capacitor-community/sqlite';
+import {createStore} from 'tinybase';
+import {createCapacitorSqlitePersister} from 'tinybase/persisters/persister-capacitor-sqlite';
+
+const sqlite = new SQLiteConnection(CapacitorSQLite);
+const db = await sqlite.createConnection('my.db', false, 'no-encryption', 1, false);
+await db.open();
+
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createCapacitorSqlitePersister(store, db, 'my_tinybase');
+await persister.save();
+```
+
+<p>Note that this module&#x27;s tests run against a mocked plugin, since it needs a native iOS or Android runtime that a Node test suite cannot provide. Its SQL behavior is shared with the other SQLite Persisters and well covered by them, but the binding to the plugin itself is not exercised on a device, so please report anything that behaves differently in a real app.</p><h2 id="mergeablestore-support-for-indexeddb"><a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> Support For IndexedDB</h2><p>The <a href="https://beta.tinybase.org/api/persister-indexed-db/interfaces/persister/indexeddbpersister/"><code>IndexedDbPersister</code></a> can now persist a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a>, closing a gap that had made IndexedDB the odd one out amongst the browser Persisters (as requested in issue <a href="https://github.com/tinyplex/tinybase/issues/203">#203</a>). The <a href="https://beta.tinybase.org/api/persister-browser/interfaces/persister/sessionpersister/"><code>SessionPersister</code></a>, <a href="https://beta.tinybase.org/api/persister-browser/interfaces/persister/localpersister/"><code>LocalPersister</code></a> and <a href="https://beta.tinybase.org/api/persister-browser/interfaces/persister/opfspersister/"><code>OpfsPersister</code></a> could all already do this; now the browser&#x27;s most capable storage can too.</p>
+
+```js ignore
+import {createMergeableStore} from 'tinybase';
+import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+
+const store = createMergeableStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createIndexedDbPersister(store, 'petStore');
+
+await persister.save();
+```
+
+<p>A regular <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> continues to use the &#x27;t&#x27; and &#x27;v&#x27; object stores exactly as before, and a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> uses a new one called &#x27;m&#x27;, so databases written by previous versions are upgraded in place with their content intact.</p><h2 id="sql-placeholders">SQL Placeholders</h2><p>TinyBase used to generate PostgreSQL&#x27;s numbered <code>$1</code> placeholders for every database, and then rewrite them for the SQLite Persisters that objected. SQL is now built with the placeholder style each database family actually wants, so the stricter drivers work without anyone having to patch statements after the fact. That is what makes the new <a href="https://beta.tinybase.org/api/persister-better-sqlite3/interfaces/persister/bettersqlite3persister/"><code>BetterSqlite3Persister</code></a> possible at all; it also means the <a href="https://beta.tinybase.org/api/persister-durable-object-sql-storage/interfaces/persister/durableobjectsqlstoragepersister/"><code>DurableObjectSqlStoragePersister</code></a> no longer needs the workaround it carried, and that the <a href="https://beta.tinybase.org/api/persister-powersync/interfaces/persister/powersyncpersister/"><code>PowerSyncPersister</code></a> now works with PowerSync&#x27;s Node SDK, which it previously did not.</p><hr><h1 id="v9-5">v9.5</h1><h2 id="schema-enums">Schema Enums</h2><p><a href="https://beta.tinybase.org/api/store/type-aliases/schema/cellschema/"><code>CellSchema</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/schema/valueschema/"><code>ValueSchema</code></a> can now use an <code>enum</code> property instead of <code>type</code> to allow only specific primitive values (as requested in issue <a href="https://github.com/tinyplex/tinybase/issues/38">#38</a>). Enums must be non-empty, can mix strings, finite numbers, and booleans, and continue to use <code>allowNull</code> when <code>null</code> is also valid.</p>
+
+```js
 const enumStore = createStore().setValuesSchema({
   status: {enum: ['available', 'adopted'], default: 'available'},
   rating: {enum: ['good', 5, true], allowNull: true},
