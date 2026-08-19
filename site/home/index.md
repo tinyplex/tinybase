@@ -147,11 +147,6 @@
   </a>
 </div>
 <div>
-  <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/astro.svg?asImg" /> Astro DB
-  </a>
-</div>
-<div>
   <a href='/api/persister-cr-sqlite-wasm'>
     <img width="48" src="/crsqlite.png" /> CR-SQLite
   </a>

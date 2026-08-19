@@ -14,7 +14,7 @@ PostgreSQL:
 | SqliteWasmPersister        | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                                   |
 | ExpoSqlitePersister        | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)           |
 | ReactNativeSqlitePersister | SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) |
-| CapacitorSqlitePersister   | SQLite in Capacitor, via [capacitor-sqlite](https://github.com/capacitor-community/sqlite)                      |
+| CapacitorSqlitePersister   | SQLite in Capacitor, via [capacitor-sqlite](https://github.com/capacitor-community/sqlite)                       |
 | CrSqliteWasmPersister      | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                                         |
 | ElectricSqlPersister       | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                           |
 | LibSqlPersister            | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                         |
@@ -22,7 +22,7 @@ PostgreSQL:
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
-| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                            |
+| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                             |
 
 Of those, the PgPersister is the one to reach for if you are using a hosted
 service. Because [pg](https://github.com/brianc/node-postgres) is the de facto
@@ -49,11 +49,10 @@ your client bundle. See the createSupabasePersister function for the table and
 policies to set up first.
 
 The LibSqlPersister covers more ground than its name suggests, since the hosted
-services built on LibSQL hand you an ordinary client. That includes Turso, and
-also [Astro DB](https://astro.build/db/): the `db` object exported from
-`astro:db` is a Drizzle wrapper whose `$client` property is exactly the client
-this Persister takes. See the createLibSqlPersister function for the cast that
-TypeScript needs to reach it.
+services built on LibSQL hand you an ordinary client. That includes Turso -
+and, for projects on Astro 6 or earlier, Astro DB. See the
+createLibSqlPersister function for the cast that TypeScript needs to reach the
+underlying client in an Astro project.
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store
