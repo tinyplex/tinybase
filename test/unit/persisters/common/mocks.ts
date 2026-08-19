@@ -944,4 +944,6 @@ export const mockDurableObjectStorage: Persistable<MockDurableObjectStorage> = {
   },
   testMissing: false,
   testAutoLoad: false,
+  // get() cannot reconstruct content from the key-per-node layout.
+  testContent: false,
 };

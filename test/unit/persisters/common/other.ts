@@ -8,7 +8,7 @@ import type {
 } from 'tinybase';
 import type {Persister, Persists} from 'tinybase/persisters';
 import {expect} from 'vitest';
-import {pause} from '../../common/other.ts';
+import {waitFor} from '../../common/other.ts';
 
 export const asyncNoop = async () => undefined;
 
@@ -37,6 +37,7 @@ export type Persistable<Location = string> = {
   getChanges?: () => Changes | MergeableChanges;
   testMissing: boolean;
   testAutoLoad: boolean;
+  testContent?: boolean;
 };
 
 export const getPersistedContentWaiter =
@@ -45,26 +46,22 @@ export const getPersistedContentWaiter =
     location: Location,
     content: Content | MergeableContent,
   ): Promise<Content | MergeableContent | void> => {
+    if (persistable.testContent === false) {
+      return await persistable.get(location);
+    }
     const serializedContent = JSON.parse(
       JSON.stringify(content, (_key, value) =>
         value === undefined ? '\uFFFC' : value,
       ),
     );
-    for (let attempts = 250; attempts; attempts--) {
-      const persisted = await persistable.get(location);
+    let persisted: Content | MergeableContent | void = undefined;
+    await waitFor(async () => {
+      persisted = await persistable.get(location);
       try {
         expect(persisted).toEqual(content);
-        return persisted;
       } catch {
-        try {
-          expect(persisted).toEqual(serializedContent);
-          return persisted;
-        } catch (error) {
-          if (attempts == 1) {
-            throw error;
-          }
-        }
+        expect(persisted).toEqual(serializedContent);
       }
-      await pause(20);
-    }
+    }, 20);
+    return persisted;
   };

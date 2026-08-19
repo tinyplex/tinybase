@@ -3,7 +3,7 @@ import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
-import {pause} from '../../common/other.ts';
+import {pause, waitFor} from '../../common/other.ts';
 import {
   ALL_VARIANTS,
   getDatabaseFunctions,
@@ -625,9 +625,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('autoSave1', async () => {
         await persister.startAutoSave();
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await pause();
-        await persister2.load();
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await waitFor(async () => {
+          await persister2.load();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
       });
 
       test('autoLoad2', async () => {
@@ -718,9 +719,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('autoSave1', async () => {
         await persister.startAutoSave();
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await pause();
-        await persister2.load();
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await waitFor(async () => {
+          await persister2.load();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
       });
 
       test('autoLoad2', async () => {

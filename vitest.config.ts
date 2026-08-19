@@ -93,6 +93,8 @@ export default defineConfig({
           include: ['test/unit/persisters/**/*.test.ts'],
           sequence: {groupOrder: 5},
           maxWorkers: 2,
+          // Opening a database (PGlite in particular) can be slow under load.
+          hookTimeout: 30000,
         },
       },
       {

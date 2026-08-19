@@ -8,7 +8,7 @@ import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import tmp from 'tmp';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {createStatusListener} from '../common/listeners.ts';
-import {noop, pause} from '../common/other.ts';
+import {noop, pause, waitFor} from '../common/other.ts';
 import {ALL_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
@@ -153,8 +153,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
 
     store.setTables({t1: {r1: {c1: 1, c2: 2}}});
-    await pause();
-    expect(await persistable.get(location)).toEqual([
+    await expectPersistedContent(location, [
       {t1: {r1: {c1: 1, c2: 2}}},
       {v1: 1},
     ]);
@@ -164,8 +163,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 2});
 
     store.setValues({v1: 1, v2: 2});
-    await pause();
-    expect(await persistable.get(location)).toEqual([
+    await expectPersistedContent(location, [
       {t1: {r1: {c1: 1, c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -175,8 +173,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
 
     store.delCell('t1', 'r1', 'c2');
-    await pause();
-    expect(await persistable.get(location)).toEqual([
+    await expectPersistedContent(location, [
       {t1: {r1: {c1: 1}}},
       {v1: 1, v2: 2},
     ]);
@@ -190,11 +187,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 4});
 
     store.delValue('v2');
-    await pause();
-    expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: 1}}},
-      {v1: 1},
-    ]);
+    await expectPersistedContent(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual([{}, {v2: undefined}, 1]);
     }
@@ -215,11 +208,7 @@ describe.each([
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
       store.setTables({t1: {r1: {c1: 3}}});
-      await pause();
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 3}}},
-        {},
-      ]);
+      await expectPersistedContent(location, [{t1: {r1: {c1: 3}}}, {}]);
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
     }
   });
@@ -297,21 +286,28 @@ describe.each([
       expect(persister.getStats()).toEqual({loads: 1, saves: 0});
 
       await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
-      await pause(persistable.autoLoadPause);
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
-      expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+      await waitFor(() =>
+        expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}}),
+      );
+      // A single change can be observed in transient states by a polling
+      // persister, so an exact load count cannot be guaranteed.
+      expect(persister.getStats().loads).toBeGreaterThanOrEqual(2);
+      expect(persister.getStats().saves).toEqual(0);
 
       await persistable.set(location, [{t1: {r1: {c1: 3}}}, {}]);
-      await pause(persistable.autoLoadPause);
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      await waitFor(() =>
+        expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}}),
+      );
+      expect(persister.getStats().loads).toBeGreaterThanOrEqual(3);
+      expect(persister.getStats().saves).toEqual(0);
       await persister.stopAutoLoad();
       expect(persister.isAutoLoading()).toEqual(false);
+      const loadsWhenStopped = persister.getStats().loads;
 
       await persistable.set(location, [{t1: {r1: {c1: 4}}}, {}]);
       await pause(persistable.autoLoadPause);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      expect(persister.getStats()).toEqual({loads: loadsWhenStopped, saves: 0});
     }
   });
 
@@ -351,8 +347,9 @@ describe.each([
       await pause(persistable.autoLoadPause);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
-      await pause(persistable.autoLoadPause);
-      expect(persister.getStats()).toEqual({loads: 1, saves: 2});
+      await waitFor(() =>
+        expect(persister.getStats()).toEqual({loads: 1, saves: 2}),
+      );
     }
   });
 
@@ -362,8 +359,9 @@ describe.each([
       await pause(persistable.autoLoadPause);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
-      await pause(persistable.autoLoadPause);
-      expect(persister.getStats()).toEqual({loads: 2, saves: 1});
+      await waitFor(() =>
+        expect(persister.getStats()).toEqual({loads: 2, saves: 1}),
+      );
     }
   });
 

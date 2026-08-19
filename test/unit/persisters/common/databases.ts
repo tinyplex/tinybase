@@ -36,13 +36,14 @@ import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
-import {expect} from 'vitest';
+import {afterAll, expect} from 'vitest';
 import {
   importBunSqlite,
   isBun,
   noop,
   pause,
   suppressWarnings,
+  waitFor,
 } from '../../common/other.ts';
 
 tmp.setGracefulCleanup();
@@ -103,19 +104,11 @@ type DatabaseVariant<Database> = [
 
 export const getStoreContentWaiter =
   (pauseMilliseconds: number) =>
-  async (store: Store, content: Content): Promise<void> => {
-    for (let attempts = 100; attempts; attempts--) {
-      try {
-        expect(store.getContent()).toEqual(content);
-        return;
-      } catch (error) {
-        if (attempts == 1) {
-          throw error;
-        }
-      }
-      await pause(pauseMilliseconds);
-    }
-  };
+  (store: Store, content: Content): Promise<void> =>
+    waitFor(
+      () => expect(store.getContent()).toEqual(content),
+      pauseMilliseconds,
+    );
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
@@ -424,6 +417,16 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
+let sharedPglite: Promise<PGlite> | undefined;
+
+afterAll(async () => {
+  if (sharedPglite) {
+    const pglite = sharedPglite;
+    sharedPglite = undefined;
+    await (await pglite).close();
+  }
+});
+
 export const NODE_POSTGRESQL_VARIANTS: Variants = {
   postgres: [
     async (
@@ -528,7 +531,18 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
     true,
   ],
   pglite: [
-    (): Promise<PGlite> => suppressWarnings(() => PGlite.create()),
+    // A PGlite instance is a whole WASM Postgres; creating one per test can
+    // breach the hook timeout under load. One is shared per test file, with a
+    // schema reset giving each test an empty database.
+    async (): Promise<PGlite> => {
+      const pglite = await (sharedPglite ??= suppressWarnings(() =>
+        PGlite.create(),
+      ));
+      await pglite.exec(
+        'DROP SCHEMA IF EXISTS public CASCADE;CREATE SCHEMA public;',
+      );
+      return pglite;
+    },
     ['getPglite', (pglite: PGlite) => pglite],
     (
       store: Store,
@@ -546,10 +560,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       ),
     async (pglite: PGlite, sqlStr: string, args: any[] = []) =>
       (await pglite.query(sqlStr, args)).rows as any,
-    async (pglite: PGlite) => {
-      await pause(10);
-      await pglite.close();
-    },
+    async () => {},
     undefined,
     undefined,
     true,
@@ -623,6 +634,7 @@ export const getDatabaseFunctions = <Database>(
 ): [
   (db: Database) => Promise<DumpOut>,
   (db: Database, dump: DumpIn) => Promise<void>,
+  (db: Database, dump: DumpOut) => Promise<void>,
 ] => {
   const placeholder = (number: number) => (isPostgres ? '$' + number : '?');
 
@@ -708,5 +720,8 @@ export const getDatabaseFunctions = <Database>(
     await cmd(db, 'END');
   };
 
-  return [getDatabase, setDatabase];
+  const expectDatabaseContent = (db: Database, dump: DumpOut): Promise<void> =>
+    waitFor(async () => expect(await getDatabase(db)).toEqual(dump), 10);
+
+  return [getDatabase, setDatabase, expectDatabaseContent];
 };

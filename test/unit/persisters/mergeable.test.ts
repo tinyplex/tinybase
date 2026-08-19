@@ -10,7 +10,7 @@ import type {Persister, PersisterListener} from 'tinybase/persisters';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions, time} from '../common/mergeable.ts';
-import {noop} from '../common/other.ts';
+import {noop, waitFor} from '../common/other.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
@@ -108,7 +108,9 @@ describe.each([
 
     store.setTables({t1: {r1: {c1: 1, c2: 2}}});
     await pause(persistable.autoLoadPause);
-    expect(await persistable.get(location)).toMatchSnapshot('setTables');
+    expect(
+      await expectPersistedContent(location, store.getMergeableContent()),
+    ).toMatchSnapshot('setTables');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('setTables changes');
     }
@@ -116,7 +118,9 @@ describe.each([
 
     store.setValues({v1: 1, v2: 2});
     await pause(persistable.autoLoadPause);
-    expect(await persistable.get(location)).toMatchSnapshot('setValues');
+    expect(
+      await expectPersistedContent(location, store.getMergeableContent()),
+    ).toMatchSnapshot('setValues');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('setValues changes');
     }
@@ -124,7 +128,9 @@ describe.each([
 
     store.delCell('t1', 'r1', 'c2');
     await pause(persistable.autoLoadPause);
-    expect(await persistable.get(location)).toMatchSnapshot('delCell');
+    expect(
+      await expectPersistedContent(location, store.getMergeableContent()),
+    ).toMatchSnapshot('delCell');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('delCell changes');
     }
@@ -132,7 +138,9 @@ describe.each([
 
     store.delValue('v2');
     await pause(persistable.autoLoadPause);
-    expect(await persistable.get(location)).toMatchSnapshot('delValue');
+    expect(
+      await expectPersistedContent(location, store.getMergeableContent()),
+    ).toMatchSnapshot('delValue');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('delValue changes');
     }
@@ -151,7 +159,9 @@ describe.each([
       store.setTables({t1: {r1: {c1: 2}}});
       store.setTables({t1: {r1: {c1: 3}}});
       await pause(50);
-      expect(await persistable.get(location)).toMatchSnapshot();
+      expect(
+        await expectPersistedContent(location, store.getMergeableContent()),
+      ).toMatchSnapshot();
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
     }
   });
@@ -243,9 +253,14 @@ describe.each([
       ]);
 
       await pause(persistable.autoLoadPause);
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+      await waitFor(() =>
+        expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}}),
+      );
       expect(store.getMergeableContent()).toMatchSnapshot();
-      expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+      // A single change can be observed in transient states by a polling
+      // persister, so an exact load count cannot be guaranteed.
+      expect(persister.getStats().loads).toBeGreaterThanOrEqual(2);
+      expect(persister.getStats().saves).toEqual(0);
 
       await persistable.set(location, [
         [
@@ -262,11 +277,15 @@ describe.each([
         [{}, '', 0],
       ]);
       await pause(persistable.autoLoadPause);
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+      await waitFor(() =>
+        expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}}),
+      );
       expect(store.getMergeableContent()).toMatchSnapshot();
-      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      expect(persister.getStats().loads).toBeGreaterThanOrEqual(3);
+      expect(persister.getStats().saves).toEqual(0);
       await persister.stopAutoLoad();
       expect(persister.isAutoLoading()).toEqual(false);
+      const loadsWhenStopped = persister.getStats().loads;
 
       await persistable.set(location, [
         [
@@ -285,7 +304,7 @@ describe.each([
       await pause(persistable.autoLoadPause);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
       expect(store.getMergeableContent()).toMatchSnapshot();
-      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      expect(persister.getStats()).toEqual({loads: loadsWhenStopped, saves: 0});
     }
   });
 
@@ -329,7 +348,9 @@ describe.each([
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
       await pause(0);
-      expect(persister.getStats()).toEqual({loads: 1, saves: 2});
+      await waitFor(() =>
+        expect(persister.getStats()).toEqual({loads: 1, saves: 2}),
+      );
     }
   });
 
@@ -340,7 +361,9 @@ describe.each([
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
       await pause(persistable.autoLoadPause);
-      expect(persister.getStats()).toEqual({loads: 2, saves: 1});
+      await waitFor(() =>
+        expect(persister.getStats()).toEqual({loads: 2, saves: 1}),
+      );
     }
   });
 

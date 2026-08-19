@@ -20,6 +20,25 @@ export const pause = async (ms = 50): Promise<void> =>
     ),
   );
 
+export const waitFor = async (
+  assertion: () => void | Promise<void>,
+  intervalMilliseconds = 5,
+  timeoutMilliseconds = 10000,
+): Promise<void> => {
+  const deadline = Date.now() + timeoutMilliseconds;
+  for (;;) {
+    try {
+      await assertion();
+      return;
+    } catch (error) {
+      if (Date.now() >= deadline) {
+        throw error;
+      }
+    }
+    await pause(intervalMilliseconds);
+  }
+};
+
 export const noop = () => undefined;
 
 export const getMetricsObject = (
