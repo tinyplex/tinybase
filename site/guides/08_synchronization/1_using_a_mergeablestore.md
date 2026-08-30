@@ -120,15 +120,16 @@ MergeableStore, but _only_ in the 'JSON-serialization' mode:
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Sqlite3Persister           | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                          |
 | BetterSqlite3Persister     | SQLite in Node, via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)                                 |
+| SqliteNodePersister        | SQLite in Node, via [node:sqlite](https://nodejs.org/api/sqlite.html)                                            |
 | SqliteBunPersister         | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                                  |
 | SqliteWasmPersister        | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                                   |
 | ExpoSqlitePersister        | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)           |
 | ReactNativeSqlitePersister | SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) |
-| CapacitorSqlitePersister   | SQLite in Capacitor, via [capacitor-sqlite](https://github.com/capacitor-community/sqlite)                      |
+| CapacitorSqlitePersister   | SQLite in Capacitor, via [capacitor-sqlite](https://github.com/capacitor-community/sqlite)                       |
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
-| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                            |
+| SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                             |
 
 The following database-oriented Persister types _cannot_ currently be used to
 persist a MergeableStore:

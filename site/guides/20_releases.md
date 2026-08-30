@@ -5,6 +5,45 @@ highlighted features.
 
 ---
 
+# v9.7
+
+## SQLite, via `node:sqlite`
+
+The new persister-sqlite-node module provides the SqliteNodePersister, which
+binds to a local SQLite database with the
+[`node:sqlite`](https://nodejs.org/api/sqlite.html) module built into Node.js:
+
+```js
+import {DatabaseSync} from 'node:sqlite';
+import {createStore} from 'tinybase';
+import {createSqliteNodePersister} from 'tinybase/persisters/persister-sqlite-node';
+
+const nodeDb = new DatabaseSync(':memory:');
+const nodeStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const nodePersister = createSqliteNodePersister(
+  nodeStore,
+  nodeDb,
+  'my_tinybase',
+);
+
+await nodePersister.save();
+console.log(nodeDb.prepare('SELECT * FROM my_tinybase;').all());
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+await nodePersister.destroy();
+nodeDb.close();
+```
+
+Alone amongst the SQLite Persisters, this one needs no third-party dependency at
+all, since the module ships with Node.js itself. Both JSON and tabular modes are
+supported, as is persisting a MergeableStore in JSON mode.
+
+Since `node:sqlite` does not signal when the database changes, automatic loading
+polls, just as it does for the BetterSqlite3Persister. And note that the module
+is still marked as experimental in Node.js, so its API may change.
+
+---
+
 # v9.6
 
 ## In Summary
@@ -38,7 +77,6 @@ you can persist a Store from an edge runtime that cannot open a TCP connection.
 
 ```js
 import {Pool} from 'pg';
-import {createStore} from 'tinybase';
 import {createPgPersister} from 'tinybase/persisters/persister-pg';
 
 const nodePgPool = new Pool({
