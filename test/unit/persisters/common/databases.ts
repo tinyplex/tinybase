@@ -17,6 +17,7 @@ import type {ElectricClient} from 'electric-sql/client/model';
 import {DbSchema} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import 'fake-indexeddb/auto';
+import {DatabaseSync} from 'node:sqlite';
 import type {PoolClient} from 'pg';
 import {Pool} from 'pg';
 import type {ReservedSql, Sql} from 'postgres';
@@ -33,6 +34,7 @@ import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
 import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun';
+import {createSqliteNodePersister} from 'tinybase/persisters/persister-sqlite-node';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
@@ -236,6 +238,42 @@ export const NODE_SQLITE_MERGEABLE_VARIANTS: Variants = {
         : (statement.run(...args), []);
     },
     async ([db]: [BetterSqlite3Database, string]) => {
+      db.close();
+    },
+    20,
+    undefined,
+    undefined,
+    true,
+  ],
+  sqliteNode: [
+    async (
+      dbAndName?: [DatabaseSync, string],
+    ): Promise<[DatabaseSync, string]> => {
+      const name = dbAndName?.[1] ?? tmp.tmpNameSync();
+      return [new DatabaseSync(name), name];
+    },
+    ['getDb', ([db]: [DatabaseSync, string]) => db],
+    (
+      store: Store,
+      [db]: [DatabaseSync, string],
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createSqliteNodePersister as any)(
+        store,
+        db,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async (
+      [db]: [DatabaseSync, string],
+      sql: string,
+      args: any[] = [],
+    ): Promise<{[id: string]: any}[]> =>
+      db.prepare(sql).all(...args) as {[id: string]: any}[],
+    async ([db]: [DatabaseSync, string]) => {
       db.close();
     },
     20,

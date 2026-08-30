@@ -37,6 +37,7 @@ import * as TinyBasePersisterPglite from 'tinybase/persisters/persister-pglite';
 import * as TinyBasePersisterPostgres from 'tinybase/persisters/persister-postgres';
 import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
 import * as TinyBasePersisterBun from 'tinybase/persisters/persister-sqlite-bun';
+import * as TinyBasePersisterSqliteNode from 'tinybase/persisters/persister-sqlite-node';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
@@ -77,6 +78,7 @@ import {
 const [reset, getNow] = getTimeFunctions();
 const nodeRequire = createRequire(import.meta.url);
 const betterSqlite3 = nodeRequire('better-sqlite3');
+const nodeSqlite = nodeRequire('node:sqlite');
 const SolidBrowser = nodeRequire('solid-js/dist/solid.cjs') as typeof Solid;
 (nodeRequire.cache as any)[nodeRequire.resolve('solid-js')] = {
   exports: SolidBrowser,
@@ -167,6 +169,8 @@ const TinyBaseForTest = {
   'tinybase/persisters/persister-remote': TinyBasePersisterRemote,
   'tinybase/persisters/persister-sqlite3': TinyBasePersisterSqlite3,
   'tinybase/persisters/persister-sqlite-bun': TinyBasePersisterBun,
+  'node:sqlite': nodeSqlite,
+  'tinybase/persisters/persister-sqlite-node': TinyBasePersisterSqliteNode,
   'tinybase/persisters/persister-sqlite-wasm': TinyBasePersisterSqliteWasm,
   'tinybase/persisters/persister-yjs': TinyBasePersisterYjs,
   'tinybase/synchronizers': TinyBaseSynchronizers,
