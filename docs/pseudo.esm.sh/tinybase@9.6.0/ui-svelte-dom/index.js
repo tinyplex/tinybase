@@ -1,8 +1,8 @@
 // dist/ui-svelte-dom/index.js
-import { getContext } from "https://esm.sh/svelte@^5.56.9";
-import * as $ from "https://esm.sh/svelte@^5.56.9/internal/client";
-import "https://esm.sh/svelte@^5.56.9/internal/disclose-version";
-import { createSubscriber } from "https://esm.sh/svelte@^5.56.9/reactivity";
+import { getContext } from "https://esm.sh/svelte@^5.57.0";
+import * as $ from "https://esm.sh/svelte@^5.57.0/internal/client";
+import "https://esm.sh/svelte@^5.57.0/internal/disclose-version";
+import { createSubscriber } from "https://esm.sh/svelte@^5.57.0/reactivity";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -451,8 +451,7 @@ function EditableThing($$anchor, $$props) {
   {
     var consequent = ($$anchor2) => {
       var button = root$5();
-      var text2 = $.child(button, true);
-      $.reset(button);
+      var text2 = $.only_child(button, true);
       $.template_effect(() => {
         $.set_attribute(button, "title", $.get(thingType));
         $.set_class(button, 1, $.clsx($.get(thingType)));
@@ -697,11 +696,9 @@ function RelationshipInHtmlRow($$anchor, $$props) {
     var consequent = ($$anchor2) => {
       var fragment = root_1$4();
       var th = $.first_child(fragment);
-      var text2 = $.child(th, true);
-      $.reset(th);
+      var text2 = $.only_child(th, true);
       var th_1 = $.sibling(th, 2);
-      var text_1 = $.child(th_1, true);
-      $.reset(th_1);
+      var text_1 = $.only_child(th_1, true);
       $.template_effect(() => {
         $.set_attribute(th, "title", $$props.localRowId);
         $.set_text(text2, $$props.localRowId);
@@ -873,8 +870,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th = root$3();
-          var text2 = $.child(th, true);
-          $.reset(th);
+          var text2 = $.only_child(th, true);
           $.template_effect(() => {
             $.set_class(th, 1, $.clsx($.get(extraHeader).className));
             $.set_text(text2, $.get(extraHeader).label);
@@ -887,11 +883,9 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         var consequent = ($$anchor3) => {
           var fragment = root_1$3();
           var th_1 = $.first_child(fragment);
-          var text_1 = $.child(th_1);
-          $.reset(th_1);
+          var text_1 = $.only_child(th_1);
           var th_2 = $.sibling(th_1, 2);
-          var text_2 = $.child(th_2);
-          $.reset(th_2);
+          var text_2 = $.only_child(th_2);
           $.template_effect(() => {
             $.set_text(text_1, `${relationship.localTableId ?? ""}.Id`);
             $.set_text(text_2, `${relationship.remoteTableId ?? ""}.Id`);
@@ -911,8 +905,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         (entry) => entry[0],
         ($$anchor3, entry) => {
           var th_3 = root$3();
-          var text_3 = $.child(th_3, true);
-          $.reset(th_3);
+          var text_3 = $.only_child(th_3, true);
           $.template_effect(() => $.set_text(text_3, $.get(entry)[1].label));
           $.append($$anchor3, th_3);
         }
@@ -925,8 +918,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th_4 = root$3();
-          var text_4 = $.child(th_4, true);
-          $.reset(th_4);
+          var text_4 = $.only_child(th_4, true);
           $.template_effect(() => {
             $.set_class(th_4, 1, $.clsx($.get(extraHeader).className));
             $.set_text(text_4, $.get(extraHeader).label);
@@ -1064,8 +1056,7 @@ function HtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th = root_1$2();
-          var text2 = $.child(th, true);
-          $.reset(th);
+          var text2 = $.only_child(th, true);
           $.template_effect(() => {
             $.set_class(th, 1, $.clsx($.get(extraHeader).className));
             $.set_text(text2, $.get(extraHeader).label);
@@ -1167,8 +1158,7 @@ function HtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th_3 = root_1$2();
-          var text_4 = $.child(th_3, true);
-          $.reset(th_3);
+          var text_4 = $.only_child(th_3, true);
           $.template_effect(() => {
             $.set_class(th_3, 1, $.clsx($.get(extraHeader).className));
             $.set_text(text_4, $.get(extraHeader).label);
@@ -1225,8 +1215,7 @@ function HtmlTable($$anchor, $$props) {
       {
         var consequent_5 = ($$anchor3) => {
           var th_4 = root_1$2();
-          var text_5 = $.child(th_4, true);
-          $.reset(th_4);
+          var text_5 = $.only_child(th_4, true);
           $.template_effect(() => {
             $.set_attribute(th_4, "title", rowId);
             $.set_text(text_5, rowId);
@@ -1817,8 +1806,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th = root();
-          var text2 = $.child(th, true);
-          $.reset(th);
+          var text2 = $.only_child(th, true);
           $.template_effect(() => {
             $.set_class(th, 1, $.clsx($.get(extraHeader).className));
             $.set_text(text2, $.get(extraHeader).label);
@@ -1837,8 +1825,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         });
       }
       var th_2 = $.sibling(node_2);
-      var text_1 = $.child(th_2, true);
-      $.reset(th_2);
+      var text_1 = $.only_child(th_2, true);
       var node_3 = $.sibling(th_2);
       $.each(
         node_3,
@@ -1847,8 +1834,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th_3 = root();
-          var text_2 = $.child(th_3, true);
-          $.reset(th_3);
+          var text_2 = $.only_child(th_3, true);
           $.template_effect(() => {
             $.set_class(th_3, 1, $.clsx($.get(extraHeader).className));
             $.set_text(text_2, $.get(extraHeader).label);
@@ -1903,8 +1889,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
       {
         var consequent_2 = ($$anchor3) => {
           var th_4 = root();
-          var text_3 = $.child(th_4, true);
-          $.reset(th_4);
+          var text_3 = $.only_child(th_4, true);
           $.template_effect(() => {
             $.set_attribute(th_4, "title", valueId);
             $.set_text(text_3, valueId);

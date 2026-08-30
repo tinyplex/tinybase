@@ -1,14 +1,14 @@
 // dist/ui-svelte-inspector/index.js
-import { getContext as getContext2, onDestroy, onMount } from "https://esm.sh/svelte@^5.56.9";
-import * as $2 from "https://esm.sh/svelte@^5.56.9/internal/client";
-import "https://esm.sh/svelte@^5.56.9/internal/disclose-version";
-import { createSubscriber as createSubscriber2 } from "https://esm.sh/svelte@^5.56.9/reactivity";
+import { getContext as getContext2, onDestroy, onMount } from "https://esm.sh/svelte@^5.57.0";
+import * as $2 from "https://esm.sh/svelte@^5.57.0/internal/client";
+import "https://esm.sh/svelte@^5.57.0/internal/disclose-version";
+import { createSubscriber as createSubscriber2 } from "https://esm.sh/svelte@^5.57.0/reactivity";
 
 // dist/ui-svelte/index.js
-import { getContext, setContext, untrack } from "https://esm.sh/svelte@^5.56.9";
-import * as $ from "https://esm.sh/svelte@^5.56.9/internal/client";
-import "https://esm.sh/svelte@^5.56.9/internal/disclose-version";
-import { createSubscriber } from "https://esm.sh/svelte@^5.56.9/reactivity";
+import { getContext, setContext, untrack } from "https://esm.sh/svelte@^5.57.0";
+import * as $ from "https://esm.sh/svelte@^5.57.0/internal/client";
+import "https://esm.sh/svelte@^5.57.0/internal/disclose-version";
+import { createSubscriber } from "https://esm.sh/svelte@^5.57.0/reactivity";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
@@ -3633,8 +3633,7 @@ function Details($$anchor, $$props) {
   var details = root_1$c();
   var summary = $2.child(details);
   var span = $2.child(summary);
-  var text3 = $2.child(span, true);
-  $2.reset(span);
+  var text3 = $2.only_child(span, true);
   var node = $2.sibling(span, 2);
   {
     var consequent = ($$anchor2) => {
@@ -3756,8 +3755,7 @@ function EditableThing($$anchor, $$props) {
   {
     var consequent = ($$anchor2) => {
       var button = root$k();
-      var text3 = $2.child(button, true);
-      $2.reset(button);
+      var text3 = $2.only_child(button, true);
       $2.template_effect(() => {
         $2.set_attribute(button, "title", $2.get(thingType));
         $2.set_class(button, 1, $2.clsx($2.get(thingType)));
@@ -4002,11 +4000,9 @@ function RelationshipInHtmlRow($$anchor, $$props) {
     var consequent = ($$anchor2) => {
       var fragment = root_1$a();
       var th = $2.first_child(fragment);
-      var text3 = $2.child(th, true);
-      $2.reset(th);
+      var text3 = $2.only_child(th, true);
       var th_1 = $2.sibling(th, 2);
-      var text_1 = $2.child(th_1, true);
-      $2.reset(th_1);
+      var text_1 = $2.only_child(th_1, true);
       $2.template_effect(() => {
         $2.set_attribute(th, "title", $$props.localRowId);
         $2.set_text(text3, $$props.localRowId);
@@ -4178,8 +4174,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th = root$i();
-          var text3 = $2.child(th, true);
-          $2.reset(th);
+          var text3 = $2.only_child(th, true);
           $2.template_effect(() => {
             $2.set_class(th, 1, $2.clsx($2.get(extraHeader).className));
             $2.set_text(text3, $2.get(extraHeader).label);
@@ -4192,11 +4187,9 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         var consequent = ($$anchor3) => {
           var fragment = root_1$9();
           var th_1 = $2.first_child(fragment);
-          var text_1 = $2.child(th_1);
-          $2.reset(th_1);
+          var text_1 = $2.only_child(th_1);
           var th_2 = $2.sibling(th_1, 2);
-          var text_2 = $2.child(th_2);
-          $2.reset(th_2);
+          var text_2 = $2.only_child(th_2);
           $2.template_effect(() => {
             $2.set_text(text_1, `${relationship.localTableId ?? ""}.Id`);
             $2.set_text(text_2, `${relationship.remoteTableId ?? ""}.Id`);
@@ -4216,8 +4209,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         (entry) => entry[0],
         ($$anchor3, entry) => {
           var th_3 = root$i();
-          var text_3 = $2.child(th_3, true);
-          $2.reset(th_3);
+          var text_3 = $2.only_child(th_3, true);
           $2.template_effect(() => $2.set_text(text_3, $2.get(entry)[1].label));
           $2.append($$anchor3, th_3);
         }
@@ -4230,8 +4222,7 @@ function RelationshipInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th_4 = root$i();
-          var text_4 = $2.child(th_4, true);
-          $2.reset(th_4);
+          var text_4 = $2.only_child(th_4, true);
           $2.template_effect(() => {
             $2.set_class(th_4, 1, $2.clsx($2.get(extraHeader).className));
             $2.set_text(text_4, $2.get(extraHeader).label);
@@ -4369,8 +4360,7 @@ function HtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th = root_1$8();
-          var text3 = $2.child(th, true);
-          $2.reset(th);
+          var text3 = $2.only_child(th, true);
           $2.template_effect(() => {
             $2.set_class(th, 1, $2.clsx($2.get(extraHeader).className));
             $2.set_text(text3, $2.get(extraHeader).label);
@@ -4472,8 +4462,7 @@ function HtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th_3 = root_1$8();
-          var text_4 = $2.child(th_3, true);
-          $2.reset(th_3);
+          var text_4 = $2.only_child(th_3, true);
           $2.template_effect(() => {
             $2.set_class(th_3, 1, $2.clsx($2.get(extraHeader).className));
             $2.set_text(text_4, $2.get(extraHeader).label);
@@ -4530,8 +4519,7 @@ function HtmlTable($$anchor, $$props) {
       {
         var consequent_5 = ($$anchor3) => {
           var th_4 = root_1$8();
-          var text_5 = $2.child(th_4, true);
-          $2.reset(th_4);
+          var text_5 = $2.only_child(th_4, true);
           $2.template_effect(() => {
             $2.set_attribute(th_4, "title", rowId);
             $2.set_text(text_5, rowId);
@@ -5014,8 +5002,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th = root$f();
-          var text3 = $2.child(th, true);
-          $2.reset(th);
+          var text3 = $2.only_child(th, true);
           $2.template_effect(() => {
             $2.set_class(th, 1, $2.clsx($2.get(extraHeader).className));
             $2.set_text(text3, $2.get(extraHeader).label);
@@ -5034,8 +5021,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         });
       }
       var th_2 = $2.sibling(node_2);
-      var text_1 = $2.child(th_2, true);
-      $2.reset(th_2);
+      var text_1 = $2.only_child(th_2, true);
       var node_3 = $2.sibling(th_2);
       $2.each(
         node_3,
@@ -5044,8 +5030,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
         (extraHeader) => extraHeader.key,
         ($$anchor3, extraHeader) => {
           var th_3 = root$f();
-          var text_2 = $2.child(th_3, true);
-          $2.reset(th_3);
+          var text_2 = $2.only_child(th_3, true);
           $2.template_effect(() => {
             $2.set_class(th_3, 1, $2.clsx($2.get(extraHeader).className));
             $2.set_text(text_2, $2.get(extraHeader).label);
@@ -5100,8 +5085,7 @@ function ValuesInHtmlTable($$anchor, $$props) {
       {
         var consequent_2 = ($$anchor3) => {
           var th_4 = root$f();
-          var text_3 = $2.child(th_4, true);
-          $2.reset(th_4);
+          var text_3 = $2.only_child(th_4, true);
           $2.template_effect(() => {
             $2.set_attribute(th_4, "title", valueId);
             $2.set_text(text_3, valueId);
@@ -5425,11 +5409,9 @@ function MetricsView($$anchor, $$props) {
                   ($$anchor5, metricId) => {
                     var tr = root$e();
                     var th = $2.child(tr);
-                    var text_1 = $2.child(th, true);
-                    $2.reset(th);
+                    var text_1 = $2.only_child(th, true);
                     var td = $2.sibling(th);
-                    var text_2 = $2.child(td, true);
-                    $2.reset(td);
+                    var text_2 = $2.only_child(td, true);
                     var td_1 = $2.sibling(td);
                     var node_2 = $2.child(td_1);
                     MetricView(node_2, {
@@ -6690,8 +6672,7 @@ function Body($$anchor, $$props) {
   {
     var consequent = ($$anchor2) => {
       var span = root$4();
-      var text3 = $2.child(span, true);
-      $2.reset(span);
+      var text3 = $2.only_child(span, true);
       $2.template_effect(() => $2.set_text(text3, NO_PROVIDED_OBJECTS_MESSAGE));
       $2.append($$anchor2, span);
     };
@@ -6837,8 +6818,7 @@ function ErrorBoundary($$anchor, $$props) {
   {
     const failed = ($$anchor2, _error = $2.noop, _reset = $2.noop) => {
       var span = root$3();
-      var text3 = $2.child(span, true);
-      $2.reset(span);
+      var text3 = $2.only_child(span, true);
       $2.template_effect(() => $2.set_text(text3, INSPECTOR_ERROR_MESSAGE));
       $2.append($$anchor2, span);
     };
@@ -6873,8 +6853,7 @@ function Header($$anchor, $$props) {
   var header = root_12();
   var img2 = $2.child(header);
   var span = $2.sibling(img2, 2);
-  var text3 = $2.child(span, true);
-  $2.reset(span);
+  var text3 = $2.only_child(span, true);
   var node = $2.sibling(span, 2);
   $2.each(
     node,

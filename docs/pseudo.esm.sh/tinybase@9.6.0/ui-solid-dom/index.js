@@ -736,26 +736,23 @@ var getQueriesCellComponentProps = (queries, queryId) => ({
 });
 var getCallbackOrUndefined = (callback, test) => test ? callback : void 0;
 var getParams = (...args) => args;
-var useCells = (defaultCellIds, customCells, defaultCellComponent) => (
-  // eslint-disable-next-line solid/reactivity
-  createMemo2(() => {
-    const customCellIds = getValue2(customCells);
-    const cellIds = getValue2(customCellIds) ?? getValue2(defaultCellIds);
-    const component = defaultCellComponent();
-    return objMap(
-      isArray2(cellIds) ? objNew(arrayMap2(cellIds, (cellId) => [cellId, cellId])) : cellIds,
-      (labelOrCustomCell, cellId) => ({
-        ...{
-          label: cellId,
-          component
-        },
-        ...isString2(labelOrCustomCell) ? {
-          label: labelOrCustomCell
-        } : labelOrCustomCell
-      })
-    );
-  })
-);
+var useCells = (defaultCellIds, customCells, defaultCellComponent) => createMemo2(() => {
+  const customCellIds = getValue2(customCells);
+  const cellIds = getValue2(customCellIds) ?? getValue2(defaultCellIds);
+  const component = defaultCellComponent();
+  return objMap(
+    isArray2(cellIds) ? objNew(arrayMap2(cellIds, (cellId) => [cellId, cellId])) : cellIds,
+    (labelOrCustomCell, cellId) => ({
+      ...{
+        label: cellId,
+        component
+      },
+      ...isString2(labelOrCustomCell) ? {
+        label: labelOrCustomCell
+      } : labelOrCustomCell
+    })
+  );
+});
 var _tmpl$$4 = /* @__PURE__ */ template(`<td>`);
 var _tmpl$2$4 = /* @__PURE__ */ template(`<th>`);
 var UP_ARROW = "\u2191";

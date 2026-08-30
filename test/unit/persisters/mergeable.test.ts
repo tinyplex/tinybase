@@ -233,7 +233,9 @@ describe.each([
       await persister.startAutoLoad();
       expect(persister.isAutoLoading()).toEqual(true);
       await pause(0);
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      await waitFor(() =>
+        expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}}),
+      );
       expect(store.getMergeableContent()).toMatchSnapshot();
       expect(persister.getStats()).toEqual({loads: 1, saves: 0});
 
