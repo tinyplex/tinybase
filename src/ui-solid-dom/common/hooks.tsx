@@ -60,7 +60,6 @@ export const useCells = (
   >,
   defaultCellComponent: () => CellComponent,
 ): (() => Cells<any>) =>
-  // eslint-disable-next-line solid/reactivity
   createMemo(() => {
     const customCellIds = getValue(customCells);
     const cellIds =
