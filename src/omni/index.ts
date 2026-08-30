@@ -27,6 +27,7 @@ export * from '../persisters/persister-react-native-mmkv/index.ts';
 export * from '../persisters/persister-react-native-sqlite/index.ts';
 export * from '../persisters/persister-remote/index.ts';
 export * from '../persisters/persister-sqlite-bun/index.ts';
+export * from '../persisters/persister-sqlite-node/index.ts';
 export * from '../persisters/persister-sqlite-wasm/index.ts';
 export * from '../persisters/persister-sqlite3/index.ts';
 export * from '../persisters/persister-supabase/index.ts';

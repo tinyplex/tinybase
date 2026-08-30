@@ -31,6 +31,7 @@ export * from '../../persisters/persister-react-native-mmkv/with-schemas/index.d
 export * from '../../persisters/persister-react-native-sqlite/with-schemas/index.d.ts';
 export * from '../../persisters/persister-remote/with-schemas/index.d.ts';
 export * from '../../persisters/persister-sqlite-bun/with-schemas/index.d.ts';
+export * from '../../persisters/persister-sqlite-node/with-schemas/index.d.ts';
 export * from '../../persisters/persister-sqlite-wasm/with-schemas/index.d.ts';
 export * from '../../persisters/persister-sqlite3/with-schemas/index.d.ts';
 export * from '../../persisters/persister-supabase/with-schemas/index.d.ts';

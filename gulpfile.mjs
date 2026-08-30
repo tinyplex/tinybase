@@ -44,6 +44,7 @@ const ALL_MODULES = [
   'persisters/persister-react-native-sqlite',
   'persisters/persister-remote',
   'persisters/persister-sqlite-bun',
+  'persisters/persister-sqlite-node',
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-supabase',
