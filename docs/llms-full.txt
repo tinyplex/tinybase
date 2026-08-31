@@ -234,6 +234,32 @@ npm run serveDocs           # Preview documentation locally
 - **Types**: Unit, performance, end-to-end, production
 - **Environment**: happy-dom (unit), puppeteer (e2e)
 
+Coverage is measured over four bundles only - `dist/index.js` and the three UI
+entry points - so Persister and Synchronizer modules do not appear in that
+figure. Their correctness comes from the database matrix in
+`test/unit/persisters/common/databases.ts` instead, which every new Persister
+should be added to.
+
+`npm run testPerf` asserts against absolute microsecond budgets with roughly
+40% headroom, and swings by more than 2x under scheduling contention. It needs
+a real foreground terminal, and it does not run in CI, so a failure there is
+not evidence of a regression until it has been reproduced that way.
+
+Never pipe a long gulp task through `tail`: the pipeline reports `tail`'s exit
+code rather than gulp's, so a failed `preCommit` or `prePublishPackage` looks
+like a success. Redirect to a file and check `$?`.
+
+### Dependencies
+
+- Lift the version for **both** the devDependency and the peerDependency
+  together whenever a package appears in both.
+- Use `ncu -u --dep=peer,dev`. Plain `ncu` omits peers, which hides peer-only
+  entries entirely.
+- `ncu` keeps the two sections in step only when their ranges are written
+  identically. Where the forms differ it updates one and silently leaves the
+  other, so use carets consistently and diff both sections after a bump rather
+  than trusting the `ncu` summary, which prints one line per package.
+
 ### Code Style
 
 - **ESLint**: Enforced with strict rules
@@ -242,6 +268,18 @@ npm run serveDocs           # Preview documentation locally
 - **Quotes**: Single quotes (template literals allowed)
 - **Semicolons**: Required
 - **Object spacing**: No spaces in braces `{key: value}`
+
+### Git Conventions
+
+- **Never add attribution trailers to commit messages.** No `Co-Authored-By:`,
+  no "Generated with" lines, no tool or model attribution of any kind. The
+  history contains no trailers, and it should stay that way.
+- Commit messages are a **single line** with no body, in the form
+  `[topic] Sentence case subject`. The topic is the area of work, usually the
+  module or dependency being changed, as in `[hygiene] Dependencies` or
+  `[sqlite-node] Test across the database matrix`.
+- A new Persister lands as a sequence of commits in this order: dependency (if
+  any), boilerplate (implementation, types and registration), tests, then docs.
 
 ## Project Structure
 
