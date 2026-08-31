@@ -2,6 +2,15 @@
  * The persister-electric-sql module of the TinyBase project lets you save and
  * load Store data to and from a local ElectricSQL database (in an appropriate
  * environment).
+ *
+ * This module is deprecated as of v9.7.0 and will be removed in v10.0.0. The
+ * `electric-sql` module that it binds to was deprecated by its authors, has not
+ * been published since 2024, and has been superseded by a rebuilt sync engine
+ * with a different architecture. If you are working with PostgreSQL, the
+ * PgPersister, PostgresPersister and PglitePersister are all actively
+ * supported.
+ * @deprecated The `electric-sql` module that this binds to is no longer
+ * maintained. This module will be removed in v10.0.0.
  * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-electric-sql
@@ -62,6 +71,9 @@
 /**
  * The createElectricSqlPersister function creates an ElectricSqlPersister
  * object that can persist a Store to a local ElectricSQL database.
+ *
+ * This function is deprecated as of v9.7.0 and will be removed in v10.0.0, as
+ * the `electric-sql` module that it binds to is no longer maintained.
  *
  * An ElectricSqlPersister only supports regular Store objects, and cannot be
  * used to persist the metadata of a MergeableStore.

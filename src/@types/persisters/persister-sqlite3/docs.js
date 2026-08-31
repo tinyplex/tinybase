@@ -2,6 +2,15 @@
  * The persister-sqlite3 module of the TinyBase project lets you save and load
  * Store data to and from a local SQLite database (in an appropriate
  * environment).
+ *
+ * This module is deprecated as of v9.7.0 and will be removed in v10.0.0. The
+ * `sqlite3` module that it binds to is no longer maintained, and SQLite is now
+ * built into Node.js itself, so you should use the persister-sqlite-node module
+ * and its SqliteNodePersister instead. The BetterSqlite3Persister is a good
+ * alternative if you need to support versions of Node.js that predate the
+ * built-in `node:sqlite` module.
+ * @deprecated Use the persister-sqlite-node module instead. This module will be
+ * removed in v10.0.0.
  * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-sqlite3
@@ -53,6 +62,9 @@
 /**
  * The createSqlite3Persister function creates a Sqlite3Persister object that
  * can persist the Store to a local SQLite database.
+ *
+ * This function is deprecated as of v9.7.0 and will be removed in v10.0.0. Use
+ * the createSqliteNodePersister function instead.
  *
  * A Sqlite3Persister supports regular Store objects, and can also be used to
  * persist the metadata of a MergeableStore when using the JSON serialization
