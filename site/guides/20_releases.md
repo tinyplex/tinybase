@@ -42,6 +42,26 @@ Since `node:sqlite` does not signal when the database changes, automatic loading
 polls, just as it does for the BetterSqlite3Persister. And note that the module
 is still marked as experimental in Node.js, so its API may change.
 
+## Deprecations Ahead Of v10.0
+
+Two Persisters are deprecated as of this release, and will be removed in v10.0.
+Both still work exactly as before, but your editor will now show them struck
+through, and it is worth planning the move.
+
+The persister-sqlite3 module is the first. The `sqlite3` module that it binds to
+is no longer maintained - its own v6 release marks the repository as such - and
+SQLite is now built into Node.js, so the SqliteNodePersister described above
+replaces it directly. If you need to support versions of Node.js that predate
+the built-in `node:sqlite` module, the BetterSqlite3Persister is the one to
+reach for instead.
+
+The persister-electric-sql module is the second. The `electric-sql` module that
+it binds to was deprecated by its authors, has not been published since 2024,
+and has been superseded by a rebuilt sync engine with a different architecture
+that does not map onto the Persister interface. If you are working with
+PostgreSQL, the PgPersister, PostgresPersister and PglitePersister are all
+actively supported.
+
 ---
 
 # v9.6

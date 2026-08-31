@@ -25,6 +25,12 @@ PostgreSQL:
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
 | SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                             |
 
+Two of those are deprecated as of v9.7 and will be removed in v10.0. The
+Sqlite3Persister is superseded by the SqliteNodePersister, since the `sqlite3`
+module is no longer maintained and SQLite is now built into Node.js. The
+ElectricSqlPersister is deprecated because the `electric-sql` module it binds to
+was deprecated by its authors and has not been published since 2024.
+
 Of those, the PgPersister is the one to reach for if you are using a hosted
 service. Because [pg](https://github.com/brianc/node-postgres) is the de facto
 standard driver for Node.js, most such services offer a drop-in replacement for
