@@ -259,6 +259,13 @@ like a success. Redirect to a file and check `$?`.
   identically. Where the forms differ it updates one and silently leaves the
   other, so use carets consistently and diff both sections after a bump rather
   than trusting the `ncu` summary, which prints one line per package.
+- Some majors are held back by third parties rather than by choice. Excluding
+  those packages with `ncu -x` blocks their patch releases as well, which
+  strands them a long way behind, so bump everything else with `-x` and then
+  bump the held-back ones separately within their current major. Re-check what
+  is actually blocking each one every time, rather than carrying an exclusion
+  list forward unexamined - and drop a name from the list as soon as its major
+  has been taken.
 
 ### Code Style
 
