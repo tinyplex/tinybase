@@ -215,7 +215,7 @@ export const build = async (
     : 'https://tinybase.org';
   writeFileSync(
     'site/js/version.ts',
-    `export const thisVersion = 'v${version}';`,
+    `export const thisVersion = 'v${version}';\n`,
     'utf-8',
   );
 
