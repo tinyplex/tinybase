@@ -21,6 +21,7 @@ export * from '../../persisters/persister-expo-sqlite/with-schemas/index.d.ts';
 export * from '../../persisters/persister-file/with-schemas/index.d.ts';
 export * from '../../persisters/persister-indexed-db/with-schemas/index.d.ts';
 export * from '../../persisters/persister-libsql/with-schemas/index.d.ts';
+export * from '../../persisters/persister-mssql/with-schemas/index.d.ts';
 export * from '../../persisters/persister-partykit-client/with-schemas/index.d.ts';
 export * from '../../persisters/persister-partykit-server/with-schemas/index.d.ts';
 export * from '../../persisters/persister-pg/with-schemas/index.d.ts';

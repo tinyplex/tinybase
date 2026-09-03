@@ -38,6 +38,7 @@ import {
   ALTER_TABLE,
   CREATE_TABLE,
   DELETE_FROM,
+  type Dialect,
   escapeColumnNames,
   escapeId,
   GetPlaceholder,
@@ -66,6 +67,7 @@ export const getCommandFunctions = (
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
   executeTransaction?: DatabaseTransaction,
+  dialect: Dialect = [],
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (
@@ -92,6 +94,11 @@ export const getCommandFunctions = (
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
+  const [
+    trueCondition = TRUE,
+    rowIdColumnType = columnType,
+    dropColumn = 'DROP',
+  ] = dialect;
   const schemaMap: Schema = mapNew();
   const uniqueSchemaMap: Schema = mapNew();
   let executeCommand = databaseExecuteCommand;
@@ -131,7 +138,7 @@ export const getCommandFunctions = (
               await executeCommand(
                 SELECT_STAR_FROM +
                   escapeId(tableName) +
-                  getWhereCondition(tableName, condition),
+                  getWhereCondition(tableName, condition, trueCondition),
               ),
               (row): [Id | undefined, Row] => {
                 const rowId = row[rowIdColumnName];
@@ -221,7 +228,8 @@ export const getCommandFunctions = (
         await executeCommand(
           CREATE_TABLE +
             escapeId(tableName) +
-            `(${escapeId(rowIdColumnName)}${columnType} PRIMARY KEY${arrayJoin(
+            `(${escapeId(rowIdColumnName)}${rowIdColumnType} PRIMARY KEY` +
+            `${arrayJoin(
               arrayMap(
                 settingColumnNames,
                 (settingColumnName) =>
@@ -286,7 +294,7 @@ export const getCommandFunctions = (
                 await executeCommand(
                   ALTER_TABLE +
                     escapeId(tableName) +
-                    'DROP' +
+                    dropColumn +
                     escapeId(unaccountedColumnName),
                 );
                 collDel(currentColumnNames, unaccountedColumnName);
@@ -303,7 +311,7 @@ export const getCommandFunctions = (
           await executeCommand(
             DELETE_FROM +
               escapeId(tableName) +
-              getWhereCondition(tableName, condition),
+              getWhereCondition(tableName, condition, trueCondition),
           );
         }
       } else {
@@ -314,7 +322,7 @@ export const getCommandFunctions = (
               await executeCommand(
                 DELETE_FROM +
                   escapeId(tableName) +
-                  getWhereCondition(tableName, condition) +
+                  getWhereCondition(tableName, condition, trueCondition) +
                   `AND(${escapeId(rowIdColumnName)}=${getPlaceholder([1])})`,
                 [rowId],
               );
@@ -377,7 +385,7 @@ export const getCommandFunctions = (
         await executeCommand(
           DELETE_FROM +
             escapeId(tableName) +
-            getWhereCondition(tableName, condition) +
+            getWhereCondition(tableName, condition, trueCondition) +
             // eslint-disable-next-line max-len
             `AND${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds, getPlaceholder)})`,
           deleteRowIds,
@@ -390,7 +398,7 @@ export const getCommandFunctions = (
         await executeCommand(
           DELETE_FROM +
             escapeId(tableName) +
-            getWhereCondition(tableName, condition),
+            getWhereCondition(tableName, condition, trueCondition),
         );
       }
     }

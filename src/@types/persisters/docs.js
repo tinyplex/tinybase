@@ -1891,6 +1891,46 @@
  */
 /// createCustomSqlitePersister
 /**
+ * The createCustomMsSqlPersister function creates a Persister object that you
+ * can configure to persist the Store to a SQL Server database.
+ *
+ * This is only used when developing custom database-oriented Persisters, and
+ * most TinyBase users will not need to be particularly aware of it.
+ *
+ * Unlike the PostgreSQL equivalent, this takes no change listener functions.
+ * SQL Server has no notification mechanism that is available on every one of
+ * its hosted flavors, so automatic loading polls a `rowversion` column that the
+ * Persister maintains instead.
+ *
+ * The createMsSqlPersister function uses this function under the covers, and so
+ * you may wish to look at that implementation for ideas on how to build your
+ * own Persister type, and as a functional example.
+ * @param store The Store to persist.
+ * @param configOrStoreTableName A DpcJson object, or a string that will be used
+ * as the name of the Store's table in the database.
+ * @param executeCommand A function that will execute a command against the
+ * database.
+ * @param onSqlCommand A function that will be called for each SQL command
+ * executed against the database.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment.
+ * @param destroy A function that will be called to perform any extra clean up
+ * on the Persister.
+ * @param persist An integer from the Persists enum to indicate which types of
+ * Store are supported by this Persister: `1` indicates only a regular Store is
+ * supported, `2` indicates only a MergeableStore is supported, and `3`
+ * indicates that both Store and MergeableStore are supported.
+ * @param thing A reference to the database or connection that can be returned
+ * with a method, by default called `getDb`.
+ * @param getThing An optional string that will be used to get the reference to
+ * the database or connection from the Persister, defaulting to `getDb`.
+ * @returns A reference to the new Persister object.
+ * @category Creation
+ * @since 9.8.0
+ */
+/// createCustomMsSqlPersister
+/**
  * The createCustomPostgreSqlPersister function creates a Persister object that
  * you can configure to persist the Store to a PostgreSQL database.
  *

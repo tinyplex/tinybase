@@ -12,7 +12,13 @@ import {
 } from '../../../common/json.ts';
 import {createCustomPersister} from '../create.ts';
 import {DatabaseTransaction, getCommandFunctions} from './commands.ts';
-import {GetPlaceholder, QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
+import {
+  type Dialect,
+  GetPlaceholder,
+  QuerySchema,
+  SINGLE_ROW_ID,
+  Upsert,
+} from './common.ts';
 import type {DefaultedJsonConfig} from './config.ts';
 
 export const createJsonPersister = <
@@ -41,6 +47,7 @@ export const createJsonPersister = <
   _encode?: (cellOrValue: any) => string | number,
   _decode?: (field: string | number) => any,
   executeTransaction?: DatabaseTransaction,
+  dialect?: Dialect,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
@@ -53,6 +60,7 @@ export const createJsonPersister = <
       undefined,
       undefined,
       executeTransaction,
+      dialect,
     );
 
   const getPersisted = (): Promise<PersistedContent<Persist>> =>
