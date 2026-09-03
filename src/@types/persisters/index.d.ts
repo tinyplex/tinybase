@@ -265,6 +265,21 @@ export function createCustomSqlitePersister<
   getThing?: string,
 ): Persister<Persist>;
 
+/// createCustomMsSqlPersister
+export function createCustomMsSqlPersister<
+  Persist extends Persists = Persists.StoreOnly,
+>(
+  store: PersistedStore<Persist>,
+  configOrStoreTableName: DatabasePersisterConfig | string | undefined,
+  executeCommand: DatabaseExecuteCommand,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
+  onIgnoredError: ((error: any) => void) | undefined,
+  destroy: () => void,
+  persist: Persist,
+  thing: any,
+  getThing?: string,
+): Persister<Persist>;
+
 /// createCustomPostgreSqlPersister
 export function createCustomPostgreSqlPersister<
   ListenerHandle,

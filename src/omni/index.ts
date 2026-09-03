@@ -17,6 +17,7 @@ export * from '../persisters/persister-expo-sqlite/index.ts';
 export * from '../persisters/persister-file/index.ts';
 export * from '../persisters/persister-indexed-db/index.ts';
 export * from '../persisters/persister-libsql/index.ts';
+export * from '../persisters/persister-mssql/index.ts';
 export * from '../persisters/persister-partykit-client/index.ts';
 export * from '../persisters/persister-partykit-server/index.ts';
 export * from '../persisters/persister-pg/index.ts';
