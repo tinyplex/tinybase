@@ -17,6 +17,7 @@ import type {ElectricClient} from 'electric-sql/client/model';
 import {DbSchema} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import 'fake-indexeddb/auto';
+import {ConnectionPool} from 'mssql';
 import {DatabaseSync} from 'node:sqlite';
 import type {PoolClient} from 'pg';
 import {Pool} from 'pg';
@@ -29,6 +30,7 @@ import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
 import {createPgPersister} from 'tinybase/persisters/persister-pg';
 import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
@@ -55,6 +57,7 @@ export type Variants = {[name: string]: DatabaseVariant<any>};
 export type SqliteWasmDb = [sqlite3: any, db: any];
 export type SqlClientsAndName = [Sql, ReservedSql, string];
 export type PgClientsAndName = [Pool, PoolClient, Mutex, string];
+export type MsSqlPoolsAndName = [ConnectionPool, ConnectionPool, Mutex, string];
 
 const PG_ADMIN_URL = 'postgres://localhost:5432/postgres';
 const PG_OPTIONS = '-c client_min_messages=warning';
@@ -66,6 +69,27 @@ const pgAdmin = async (sql: string) => {
   });
   await adminPool.query(sql);
   await adminPool.end();
+};
+
+// SQL Server needs credentials, so unlike the trust-authenticated PostgreSQL
+// above, these come from the environment rather than being hard-coded. Point
+// them at a scratch instance holding nothing but test data.
+const getMsSqlConfig = (database: string) => ({
+  server: process.env.TINYBASE_MSSQL_SERVER ?? 'localhost',
+  port: Number(process.env.TINYBASE_MSSQL_PORT ?? 1433),
+  user: process.env.TINYBASE_MSSQL_USER ?? 'sa',
+  password: process.env.TINYBASE_MSSQL_PASSWORD ?? '',
+  database,
+  pool: {max: 20},
+  options: {encrypt: false, trustServerCertificate: true},
+});
+
+const msSqlAdmin = async (sql: string) => {
+  const adminPool = await new ConnectionPool(
+    getMsSqlConfig('master'),
+  ).connect();
+  await adminPool.request().query(sql);
+  await adminPool.close();
 };
 
 const electricSchema = new DbSchema({}, [], []);
@@ -99,10 +123,36 @@ type DatabaseVariant<Database> = [
   close: (db: Database) => Promise<void>,
   autoLoadPause?: number,
   autoLoadIntervalSeconds?: number,
-  isPostgres?: boolean,
+  dialect?: DatabaseDialect,
   supportsMultipleConnections?: boolean,
   skipSqlChecks?: boolean,
 ];
+
+// Undefined means SQLite, which is the shape most of the matrix has.
+export type DatabaseDialect = 'postgresql' | 'mssql';
+
+// What INFORMATION_SCHEMA and friends report a column as.
+export const getColumnType = (dialect?: DatabaseDialect) =>
+  dialect == 'postgresql' ? 'text' : dialect == 'mssql' ? 'nvarchar' : '';
+
+// What to write in a CREATE TABLE. SQL Server needs an explicit length,
+// since a bare nvarchar means nvarchar(1), and its widest indexable one
+// is used so that the same type works for the row Id primary key too.
+export const getDdlColumnType = (dialect?: DatabaseDialect) =>
+  dialect == 'mssql' ? 'nvarchar(450)' : getColumnType(dialect);
+
+export const getPlaceholder =
+  (dialect?: DatabaseDialect) =>
+  (number: number): string =>
+    dialect == 'postgresql'
+      ? '$' + number
+      : dialect == 'mssql'
+        ? '@p' + number
+        : '?';
+
+// Both of the server dialects store Cells and Values JSON-encoded.
+export const usesJsonValues = (dialect?: DatabaseDialect) =>
+  dialect != undefined;
 
 export const getStoreContentWaiter =
   (pauseMilliseconds: number) =>
@@ -113,6 +163,7 @@ export const getStoreContentWaiter =
     );
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+const escapeString = (str: string) => `'${str.replace(/'/g, `''`)}'`;
 
 const getPowerSyncDatabase = async (
   dbFilename: string,
@@ -513,7 +564,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
     },
     20,
     undefined,
-    true,
+    'postgresql',
     true,
   ],
   pg: [
@@ -565,7 +616,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
     },
     20,
     undefined,
-    true,
+    'postgresql',
     true,
   ],
   pglite: [
@@ -601,7 +652,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
     async () => {},
     undefined,
     undefined,
-    true,
+    'postgresql',
   ],
 };
 
@@ -632,6 +683,64 @@ export const BUN_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
+export const NODE_MSSQL_VARIANTS: Variants = {
+  mssql: [
+    async (
+      msSqlPoolsAndName?: MsSqlPoolsAndName,
+    ): Promise<MsSqlPoolsAndName> => {
+      const existingName = msSqlPoolsAndName?.[3];
+      const name = existingName ?? 'tinybase_' + getUniqueId();
+      if (!existingName) {
+        await msSqlAdmin('CREATE DATABASE ' + escapeId(name));
+      }
+      const pool = await new ConnectionPool(getMsSqlConfig(name)).connect();
+      // Commands are issued as transactions, so they need one stable
+      // connection rather than an arbitrary one from the pool each time.
+      const cmdPool = await new ConnectionPool({
+        ...getMsSqlConfig(name),
+        pool: {min: 1, max: 1},
+      }).connect();
+      return [pool, cmdPool, new Mutex(), name];
+    },
+    ['getMsSql', ([pool]: MsSqlPoolsAndName) => pool],
+    (store, [pool], storeTableOrConfig, onSqlCommand, onIgnoredError) =>
+      (createMsSqlPersister as any)(
+        store,
+        pool,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    (
+      [, cmdPool, cmdMutex]: MsSqlPoolsAndName,
+      sqlStr: string,
+      args: any[] = [],
+    ) =>
+      cmdMutex.runExclusive(async () => {
+        const request = cmdPool.request();
+        args.forEach((arg, index) => request.input('p' + (index + 1), arg));
+        return (await request.query(sqlStr)).recordset ?? [];
+      }),
+    async ([pool, cmdPool, , name]: MsSqlPoolsAndName) => {
+      await Promise.race([pool.close().catch(noop), pause(100)]);
+      await Promise.race([cmdPool.close().catch(noop), pause(100)]);
+      // Both handles of a two-connection test name the same database, so
+      // the second close finds it already gone. Remaining connections also
+      // have to be booted before the drop can proceed.
+      await msSqlAdmin(
+        `IF DB_ID(${escapeString(name)}) IS NOT NULL BEGIN ` +
+          `ALTER DATABASE ${escapeId(name)} ` +
+          'SET SINGLE_USER WITH ROLLBACK IMMEDIATE;' +
+          `DROP DATABASE ${escapeId(name)};END`,
+      );
+    },
+    20,
+    undefined,
+    'mssql',
+    true,
+  ],
+};
+
 export const NODE_SQLITE_VARIANTS: Variants = {
   ...NODE_SQLITE_MERGEABLE_VARIANTS,
   ...NODE_SQLITE_NON_MERGEABLE_VARIANTS,
@@ -640,11 +749,19 @@ export const NODE_SQLITE_VARIANTS: Variants = {
 export const NODE_MERGEABLE_VARIANTS: Variants = {
   ...NODE_SQLITE_MERGEABLE_VARIANTS,
   ...NODE_POSTGRESQL_VARIANTS,
+  ...NODE_MSSQL_VARIANTS,
 };
 
 export const ALL_NODE_VARIANTS: Variants = {
   ...NODE_SQLITE_VARIANTS,
   ...NODE_POSTGRESQL_VARIANTS,
+};
+
+// The SQL Server Persister only supports JSON serialization so far, so it
+// joins the JSON suites but not the tabular one.
+export const ALL_NODE_JSON_VARIANTS: Variants = {
+  ...ALL_NODE_VARIANTS,
+  ...NODE_MSSQL_VARIANTS,
 };
 
 export const ALL_BUN_VARIANTS: Variants = {
@@ -657,6 +774,10 @@ export const MERGEABLE_VARIANTS = isBun
 
 export const ALL_VARIANTS = isBun ? ALL_BUN_VARIANTS : ALL_NODE_VARIANTS;
 
+export const ALL_JSON_VARIANTS = isBun
+  ? ALL_BUN_VARIANTS
+  : ALL_NODE_JSON_VARIANTS;
+
 export const ADHOC_VARIANTS: Variants = {
   adhoc: NODE_SQLITE_NON_MERGEABLE_VARIANTS.crSqliteWasm,
 };
@@ -667,27 +788,36 @@ export const getDatabaseFunctions = <Database>(
     sql: string,
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
-  isPostgres = false,
+  dialect?: DatabaseDialect,
   jsonValues = false,
 ): [
   (db: Database) => Promise<DumpOut>,
   (db: Database, dump: DumpIn) => Promise<void>,
   (db: Database, dump: DumpOut) => Promise<void>,
 ] => {
-  const placeholder = (number: number) => (isPostgres ? '$' + number : '?');
+  const placeholder = getPlaceholder(dialect);
 
   const getDatabase = async (db: Database): Promise<DumpOut> => {
     const dump: DumpOut = {};
     (
       await cmd(
         db,
-        isPostgres
+        dialect == 'postgresql'
           ? 'SELECT table_name tn, column_name cn, data_type ty ' +
               'FROM information_schema.columns ' +
               `WHERE table_schema='public' ` +
               `AND table_name NOT LIKE ${placeholder(1)} ` +
               `AND table_name NOT LIKE ${placeholder(2)}`
-          : 'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
+          : dialect == 'mssql'
+            ? // The rowversion column that the Persister maintains for
+              // auto-loading is excluded, since it is not part of the schema
+              // that TinyBase itself manages.
+              'SELECT TABLE_NAME tn, COLUMN_NAME cn, DATA_TYPE ty ' +
+              'FROM INFORMATION_SCHEMA.COLUMNS ' +
+              `WHERE TABLE_SCHEMA=SCHEMA_NAME() AND DATA_TYPE<>'timestamp' ` +
+              `AND TABLE_NAME NOT LIKE ${placeholder(1)} ` +
+              `AND TABLE_NAME NOT LIKE ${placeholder(2)}`
+            : 'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
               'FROM pragma_table_list() t, ' +
               'pragma_table_info(t.name) c ' +
               `WHERE t.schema='main' AND t.type = 'table' ` +
@@ -723,7 +853,13 @@ export const getDatabaseFunctions = <Database>(
   };
 
   const setDatabase = async (db: Database, dump: DumpIn) => {
-    await cmd(db, 'BEGIN');
+    // The mssql module drives transactions through its own Transaction
+    // object, so raw statements issued on pooled connections leave the
+    // transaction count unbalanced. Seeding does not need to be atomic.
+    const transactional = dialect != 'mssql';
+    if (transactional) {
+      await cmd(db, 'BEGIN');
+    }
     await Promise.all(
       Object.entries(dump).map(async ([name, [sql, rows]]) => {
         await cmd(db, sql);
@@ -755,7 +891,9 @@ export const getDatabaseFunctions = <Database>(
         );
       }),
     );
-    await cmd(db, 'END');
+    if (transactional) {
+      await cmd(db, 'END');
+    }
   };
 
   const expectDatabaseContent = (db: Database, dump: DumpOut): Promise<void> =>
