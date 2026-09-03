@@ -11,6 +11,7 @@ import 'fake-indexeddb/auto';
 import * as fs from 'fs';
 import {readFileSync, readdirSync} from 'fs';
 import {createRequire} from 'module';
+import * as mssql from 'mssql';
 import {dirname, extname, join, resolve} from 'path';
 import * as pg from 'pg';
 import postgres from 'postgres';
@@ -30,6 +31,7 @@ import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser
 import * as TinyBasePersisterCrSqliteWasm from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
+import * as TinyBasePersisterMsSql from 'tinybase/persisters/persister-mssql';
 import * as TinyBasePersisterPartyKitClient from 'tinybase/persisters/persister-partykit-client';
 import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-partykit-server';
 import * as TinyBasePersisterPg from 'tinybase/persisters/persister-pg';
@@ -132,6 +134,7 @@ const TinyBaseForTest = {
   '@vlcn.io/crsqlite-wasm': initWasm,
   arktype,
   fs,
+  mssql,
   pg,
   postgres,
   react: React,
@@ -159,6 +162,7 @@ const TinyBaseForTest = {
   'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,
   'tinybase/persisters/persister-file': TinyBasePersisterFile,
   'tinybase/persisters/persister-indexed-db': TinyBasePersisterIndexedDb,
+  'tinybase/persisters/persister-mssql': TinyBasePersisterMsSql,
   'tinybase/persisters/persister-partykit-client':
     TinyBasePersisterPartyKitClient,
   'tinybase/persisters/persister-partykit-server':
