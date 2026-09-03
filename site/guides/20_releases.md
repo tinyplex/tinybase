@@ -5,6 +5,58 @@ highlighted features.
 
 ---
 
+# v9.8
+
+## SQL Server and Azure SQL, via `mssql`
+
+The new persister-mssql module provides the MsSqlPersister, which binds to a
+SQL Server database with the
+[`mssql`](https://github.com/tediousjs/node-mssql) module. Since Azure SQL
+Database and Azure SQL Managed Instance speak the same protocol, the same
+Persister works against all three:
+
+```js
+import {connect} from 'mssql';
+import {createStore} from 'tinybase';
+import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
+
+const msSqlPool = await connect(process.env.TINYBASE_MSSQL);
+const msSqlStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const msSqlPersister = await createMsSqlPersister(
+  msSqlStore,
+  msSqlPool,
+  'my_tinybase',
+);
+
+await msSqlPersister.save();
+console.log(
+  (await msSqlPool.request().query('SELECT * FROM my_tinybase;')).recordset,
+);
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+await msSqlPersister.destroy();
+await msSqlPool.request().query('DROP TABLE IF EXISTS my_tinybase;');
+await msSqlPool.close();
+```
+
+The Persister takes a connection pool that you have already configured, so it
+stays out of the way of how you authenticate. That matters most on Azure, where
+Microsoft recommends passwordless access for hosted applications: build the
+pool with an `azure-active-directory-default` authentication type and the
+Persister needs to know nothing about it.
+
+This release supports the JSON serialization mode, for both a Store and a
+MergeableStore. Tabular mapping may follow.
+
+Automatic loading works differently here than it does for PostgreSQL. There is
+no equivalent of LISTEN and NOTIFY that is available on every flavor of SQL
+Server, so the Persister adds a `rowversion` column to its table and polls it.
+SQL Server maintains that column itself on every insert and update, so changes
+made by other writers are still picked up, without needing Service Broker,
+Change Tracking, or triggers.
+
+---
+
 # v9.7
 
 ## SQLite, via `node:sqlite`
