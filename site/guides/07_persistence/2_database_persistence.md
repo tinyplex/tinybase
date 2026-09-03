@@ -3,8 +3,8 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently twelve SQLite-based persistence options, and four for
-PostgreSQL:
+There are currently twelve SQLite-based persistence options, four for
+PostgreSQL, and one for SQL Server:
 
 | Persister                  | Storage                                                                                                          |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -20,6 +20,7 @@ PostgreSQL:
 | ElectricSqlPersister       | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                           |
 | LibSqlPersister            | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                         |
 | PowerSyncPersister         | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                                     |
+| MsSqlPersister             | SQL Server and Azure SQL, via [mssql](https://github.com/tediousjs/node-mssql)                                   |
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
@@ -38,6 +39,21 @@ it. [Neon](https://neon.com/), for example, has a serverless driver whose `Pool`
 and `Client` objects can be passed straight to the createPgPersister function,
 which means you can persist a Store to PostgreSQL from an edge runtime that
 cannot open a regular TCP connection.
+
+The MsSqlPersister covers the SQL Server family, and since Azure SQL Database
+and Azure SQL Managed Instance both speak the same protocol, the same
+createMsSqlPersister function works against all three. It takes a `mssql`
+connection pool that you have configured yourself, so the passwordless
+authentication that Microsoft recommends for applications hosted in Azure is a
+matter of how you build that pool rather than anything TinyBase needs to know
+about. Only the JSON mode described below is available to it so far.
+
+It also differs in how it notices changes made by other writers. The PostgreSQL
+Persisters use LISTEN and NOTIFY, which has no equivalent that works across
+every flavor of SQL Server, so the MsSqlPersister adds a `rowversion` column to
+its table and polls that instead. SQL Server maintains that column itself on
+every insert and update, which keeps external changes detectable without
+requiring Service Broker, Change Tracking, or triggers.
 
 The SupabasePersister is the odd one out, since it talks to Supabase's REST API
 rather than to the database directly. That means it runs in a browser or edge
