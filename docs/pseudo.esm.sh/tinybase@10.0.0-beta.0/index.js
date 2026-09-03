@@ -780,7 +780,7 @@ var createCheckpoints = getCreateFunction(
               const row = mapEnsure(table, rowId, mapNew);
               const oldNew = mapEnsure(row, cellId, () => [oldCell, void 0]);
               oldNew[1] = newCell;
-              if (cellOrValueIsEqual(oldNew[0], newCell) && collIsEmpty(mapSet(row, cellId)) && collIsEmpty(mapSet(table, rowId)) && collIsEmpty(mapSet(cellsDelta, tableId)) && collIsEmpty(valuesDelta)) {
+              if (cellOrValueIsEqual(oldNew[0], newCell) && collIsEmpty(mapSet(row, cellId)) && collIsEmpty(mapSet(table, rowId)) && collIsEmpty(mapSet(cellsDelta, tableId))) {
                 storeUnchanged();
               }
               callListenersIfChanged();
@@ -797,7 +797,7 @@ var createCheckpoints = getCreateFunction(
                 void 0
               ]);
               oldNew[1] = newValue;
-              if (cellOrValueIsEqual(oldNew[0], newValue) && collIsEmpty(mapSet(valuesDelta, valueId)) && collIsEmpty(cellsDelta)) {
+              if (cellOrValueIsEqual(oldNew[0], newValue) && collIsEmpty(mapSet(valuesDelta, valueId))) {
                 storeUnchanged();
               }
               callListenersIfChanged();
@@ -3517,7 +3517,7 @@ var numericAggregators = mapNew([
     [
       (numbers, length) => arraySum(numbers) / length,
       (metric, add, length) => metric + (add - metric) / (length + 1),
-      (metric, remove, length) => length > 1 ? metric + (metric - remove) / (length - 1) : void 0,
+      (metric, remove, length) => metric + (metric - remove) / (length - 1),
       (metric, add, remove, length) => metric + (add - remove) / length
     ]
   ],
@@ -4845,15 +4845,11 @@ var createRelationships = getCreateFunction((store) => {
     ([, , linkedRowsCache]) => mapSet(linkedRowsCache, firstRowId)
   );
   const setRelationshipDefinition = (relationshipId, localTableId, remoteTableId, getRemoteRowId2) => {
-    mapForEach(
-      mapGet(linkedRowIdsListeners, relationshipId),
-      (firstRowId) => getLinkedRowIdsCache(relationshipId, firstRowId)
-    );
     mapSet(remoteTableIds, relationshipId, remoteTableId);
     setDefinitionAndListen(
       relationshipId,
       localTableId,
-      (change, changedRemoteRowIds, _changedSortKeys, _rowValues, _sortKeys, force) => {
+      (change, changedRemoteRowIds) => {
         const changedLocalRows = setNew();
         const changedRemoteRows = setNew();
         const changedLinkedRows = setNew();
@@ -4896,24 +4892,6 @@ var createRelationships = getCreateFunction((store) => {
           }
         );
         change();
-        if (force) {
-          mapForEach(
-            mapGet(linkedRowIdsListeners, relationshipId),
-            (firstRowId) => {
-              const oldLinkedRowIds = getLinkedRowIds(
-                relationshipId,
-                firstRowId
-              );
-              delLinkedRowIdsCache(relationshipId, firstRowId);
-              if (!arrayIsEqual(
-                oldLinkedRowIds,
-                getLinkedRowIds(relationshipId, firstRowId)
-              )) {
-                setAdd(changedLinkedRows, firstRowId);
-              }
-            }
-          );
-        }
         collForEach(
           changedLocalRows,
           (localRowId) => callListeners(remoteRowIdListeners, [relationshipId, localRowId])
