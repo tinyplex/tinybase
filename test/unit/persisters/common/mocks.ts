@@ -39,7 +39,7 @@ import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local'
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import tmp from 'tmp';
 import {Doc as YDoc, Map as YMap} from 'yjs';
-import {Variants} from './databases.ts';
+import {DatabaseDialect, getPlaceholder, Variants} from './databases.ts';
 import {GetLocationMethod, Persistable} from './other.ts';
 
 tmp.setGracefulCleanup();
@@ -237,11 +237,12 @@ const getMockedDatabase = <Location>(
   close: (location: Location) => Promise<void>,
   autoLoadPause = 2,
   autoLoadIntervalSeconds = 0.001,
-  isPostgres = false,
+  dialect: DatabaseDialect | undefined = undefined,
   _supportsMultipleConnections = false,
   _skipSqlChecks = false,
 ): Persistable<Location> => {
-  const placeholder = (number: number) => (isPostgres ? '$' + number : '?');
+  const placeholder = getPlaceholder(dialect);
+  const isMsSql = dialect == 'mssql';
   const mockDatabase = {
     getLocation,
     getLocationMethod,
@@ -263,16 +264,27 @@ const getMockedDatabase = <Location>(
     set: async (location: Location, rawContent: any): Promise<void> =>
       await mockDatabase.write(location, JSON.stringify(rawContent)),
     write: async (location: Location, rawContent: any): Promise<void> => {
+      // SQL Server has neither IF NOT EXISTS nor ON CONFLICT.
       await cmd(
         location,
-        'CREATE TABLE IF NOT EXISTS tinybase ' +
-          '(_id text PRIMARY KEY, store text);',
+        isMsSql
+          ? `IF OBJECT_ID('tinybase','U') IS NULL CREATE TABLE tinybase ` +
+              '(_id nvarchar(450) PRIMARY KEY, store nvarchar(max));'
+          : 'CREATE TABLE IF NOT EXISTS tinybase ' +
+              '(_id text PRIMARY KEY, store text);',
       );
       await cmd(
         location,
-        `INSERT INTO tinybase (_id, store) VALUES (${placeholder(1)}, ` +
-          `${placeholder(2)}) ` +
-          'ON CONFLICT (_id) DO UPDATE SET store=excluded.store',
+        isMsSql
+          ? 'MERGE INTO tinybase WITH(HOLDLOCK) AS t USING(VALUES(' +
+              `${placeholder(1)},${placeholder(2)})) AS s(_id, store) ` +
+              'ON t._id=s._id ' +
+              'WHEN MATCHED THEN UPDATE SET t.store=s.store ' +
+              'WHEN NOT MATCHED THEN INSERT(_id, store) ' +
+              'VALUES(s._id, s.store);'
+          : `INSERT INTO tinybase (_id, store) VALUES (${placeholder(1)}, ` +
+              `${placeholder(2)}) ` +
+              'ON CONFLICT (_id) DO UPDATE SET store=excluded.store',
         ['_', rawContent],
       );
     },
