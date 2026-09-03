@@ -390,6 +390,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-file/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-indexed-db/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-libsql/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-mssql/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-partykit-client/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-partykit-server/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-pg/index.d.ts')
