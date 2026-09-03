@@ -38,6 +38,7 @@ import {
   ALTER_TABLE,
   CREATE_TABLE,
   DELETE_FROM,
+  type Dialect,
   escapeColumnNames,
   escapeId,
   GetPlaceholder,
@@ -66,6 +67,7 @@ export const getCommandFunctions = (
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
   executeTransaction?: DatabaseTransaction,
+  dialect: Dialect = [],
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (
@@ -92,6 +94,7 @@ export const getCommandFunctions = (
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
+  const [rowIdColumnType = columnType, dropColumn = 'DROP'] = dialect;
   const schemaMap: Schema = mapNew();
   const uniqueSchemaMap: Schema = mapNew();
   let executeCommand = databaseExecuteCommand;
@@ -221,7 +224,8 @@ export const getCommandFunctions = (
         await executeCommand(
           CREATE_TABLE +
             escapeId(tableName) +
-            `(${escapeId(rowIdColumnName)}${columnType} PRIMARY KEY${arrayJoin(
+            `(${escapeId(rowIdColumnName)}${rowIdColumnType} PRIMARY KEY` +
+            `${arrayJoin(
               arrayMap(
                 settingColumnNames,
                 (settingColumnName) =>
@@ -286,7 +290,7 @@ export const getCommandFunctions = (
                 await executeCommand(
                   ALTER_TABLE +
                     escapeId(tableName) +
-                    'DROP' +
+                    dropColumn +
                     escapeId(unaccountedColumnName),
                 );
                 collDel(currentColumnNames, unaccountedColumnName);

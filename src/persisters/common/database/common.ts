@@ -79,6 +79,16 @@ export const escapeColumnNames = (...columnNames: string[]) =>
 
 export type GetPlaceholder = (offset: number[]) => string;
 
+// Where dialects disagree on syntax that is otherwise shared. Each part is
+// optional and falls back to the SQLite and PostgreSQL spelling.
+export type Dialect = [
+  // SQL Server cannot index its unbounded text type, so the row Id column
+  // needs a narrower type than the other columns.
+  rowIdColumnType?: string,
+  // SQL Server spells this 'DROP COLUMN' rather than 'DROP'.
+  dropColumn?: string,
+];
+
 // PostgreSQL needs numbered placeholders; SQLite drivers only agree on
 // anonymous ones.
 export const numberedPlaceholder: GetPlaceholder = (offset) =>
