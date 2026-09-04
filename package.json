@@ -301,7 +301,7 @@
     "svelte": "^5.57.0",
     "svelte-check": "^4.7.6",
     "tinybase": "file:./dist",
-    "tinydocs": "^0.1.72",
+    "tinydocs": "^0.1.73",
     "tmp": "^0.2.7",
     "ts-unused-exports": "^11.0.1",
     "typescript": "~6.0.3",

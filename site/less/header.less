@@ -85,10 +85,25 @@ body > header {
       }
     }
   }
+  a[aria-current='page'] {
+    color: @accentColor;
+    font-weight: 720;
+  }
+
   > #dark {
+    appearance: none;
+    background: transparent center / contain no-repeat;
+    border: 0;
+    padding: 0;
     vertical-align: text-bottom;
     height: 1rem;
     cursor: pointer;
     user-select: none;
+
+    &:focus-visible {
+      outline: 0.125rem solid @accentColor;
+      outline-offset: 0.25rem;
+      border-radius: 50%;
+    }
   }
 }

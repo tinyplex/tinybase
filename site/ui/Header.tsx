@@ -20,7 +20,7 @@ export const Header: NoPropComponent = () => {
           )}
         </span>
       </a>
-      <nav>
+      <nav aria-label="Primary">
         <ul>
           <NodeChildren node={rootNode} />
           <li>
@@ -28,7 +28,11 @@ export const Header: NoPropComponent = () => {
           </li>
         </ul>
       </nav>
-      <span id="dark" />
+      <button
+        id="dark"
+        type="button"
+        aria-label="Color theme: automatic; activate for dark"
+      />
     </header>
   );
 };

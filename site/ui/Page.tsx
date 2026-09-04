@@ -118,6 +118,9 @@ export const Page: NoPropComponent = () => {
           />
         </head>
         <body>
+          <a className="skip" href={isHome ? '#home' : '#content'}>
+            Skip to content
+          </a>
           <Header />
           <Main />
           <Footer />

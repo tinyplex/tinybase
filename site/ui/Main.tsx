@@ -15,15 +15,15 @@ export const Main: NoPropComponent = () => {
         <Home />
       ) : (
         <>
-          <nav>
+          <nav aria-label="Documentation">
             <ul>
               <NodeNavigation node={isSingle ? pageNode : rootNode} />
             </ul>
           </nav>
-          <article>
+          <article id="content" tabIndex={-1}>
             <ArticleInner />
           </article>
-          <aside />
+          <aside aria-hidden="true" />
         </>
       )}
     </main>

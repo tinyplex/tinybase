@@ -74,6 +74,23 @@ body {
   }
 }
 
+.skip {
+  background: @accentColor;
+  color: @backColor;
+  left: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  position: fixed;
+  top: 0.5rem;
+  transform: translateY(-4rem);
+  transition: transform 0.1s;
+  z-index: 3;
+
+  &:focus {
+    color: @backColor;
+    transform: translateY(0);
+  }
+}
+
 hr {
   width: 100%;
   border-width: 1px 0 0;
