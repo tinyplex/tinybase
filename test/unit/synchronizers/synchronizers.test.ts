@@ -282,6 +282,44 @@ test('Local Synchronizer cancels scheduled messages on destroy', async () => {
   await receiver.destroy();
 });
 
+test('Local Synchronizer tolerates delayed timer delivery', async () => {
+  vi.useFakeTimers();
+  const setTimeoutImpl = globalThis.setTimeout;
+  const timerSpy = vi
+    .spyOn(globalThis, 'setTimeout')
+    .mockImplementation(((
+      callback: (...args: any[]) => void,
+      delay = 0,
+      ...args: any[]
+    ) =>
+      setTimeoutImpl(
+        callback,
+        delay === 0 ? 15 : delay,
+        ...args,
+      )) as typeof setTimeout);
+  const errors: Error[] = [];
+  const source = createLocalSynchronizer(
+    createMergeableStore().setValue('v1', 'value'),
+  );
+  const store = createMergeableStore();
+  const target = createLocalSynchronizer(store, undefined, undefined, (error) =>
+    errors.push(error),
+  );
+  try {
+    await source.startAutoSave();
+    const loading = target.load();
+    await vi.advanceTimersByTimeAsync(200);
+    await loading;
+    expect(store.getValue('v1')).toBe('value');
+    expect(errors).toEqual([]);
+  } finally {
+    await target.destroy();
+    await source.destroy();
+    timerSpy.mockRestore();
+    vi.useRealTimers();
+  }
+});
+
 test('Local Synchronizer excludes late recipients', async () => {
   const receive = vi.fn();
   const sender = createLocalSynchronizer(createMergeableStore());
@@ -435,6 +473,11 @@ describe.each([
         await synchronizer1.startSync();
         await synchronizer2.startSync();
         await pause(synchronizable.pauseMilliseconds);
+        await vi.waitFor(() =>
+          expect(store1.getMergeableContent()).toEqual(
+            store2.getMergeableContent(),
+          ),
+        );
       };
 
       beforeEach(() => {

@@ -65,7 +65,7 @@ export const createLocalSynchronizer = ((
     send,
     registerReceive,
     destroy,
-    0.01,
+    0.05,
     onSend,
     onReceive,
     onIgnoredError,
