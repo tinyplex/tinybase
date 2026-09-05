@@ -1,4 +1,4 @@
-import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import type {Id, IdOrNull, Ids, SortKey} from '../@types/common/index.d.ts';
 import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
@@ -9,6 +9,7 @@ import type {
   createRelationships as createRelationshipsDecl,
 } from '../@types/relationships/index.d.ts';
 import type {GetCell, Store} from '../@types/store/index.d.ts';
+import {arrayIsEqual} from '../common/array.ts';
 import {
   collDel,
   collForEach,
@@ -105,6 +106,9 @@ export const createRelationships = getCreateFunction(
       remoteTableId: Id,
       getRemoteRowId: Id | ((getCell: GetCell, localRowId: Id) => Id),
     ): Relationships => {
+      mapForEach(mapGet(linkedRowIdsListeners, relationshipId), (firstRowId) =>
+        getLinkedRowIdsCache(relationshipId, firstRowId),
+      );
       mapSet(remoteTableIds, relationshipId, remoteTableId);
 
       setDefinitionAndListen(
@@ -113,6 +117,10 @@ export const createRelationships = getCreateFunction(
         (
           change: () => void,
           changedRemoteRowIds: IdMap<[Id | undefined, Id | undefined]>,
+          _changedSortKeys: IdMap<SortKey>,
+          _rowValues: IdMap<Id | undefined>,
+          _sortKeys?: IdMap<SortKey>,
+          force?: boolean,
         ) => {
           const changedLocalRows: IdSet = setNew();
           const changedRemoteRows: IdSet = setNew();
@@ -162,6 +170,27 @@ export const createRelationships = getCreateFunction(
           );
 
           change();
+
+          if (force) {
+            mapForEach(
+              mapGet(linkedRowIdsListeners, relationshipId),
+              (firstRowId) => {
+                const oldLinkedRowIds = getLinkedRowIds(
+                  relationshipId,
+                  firstRowId,
+                );
+                delLinkedRowIdsCache(relationshipId, firstRowId);
+                if (
+                  !arrayIsEqual(
+                    oldLinkedRowIds,
+                    getLinkedRowIds(relationshipId, firstRowId),
+                  )
+                ) {
+                  setAdd(changedLinkedRows, firstRowId);
+                }
+              },
+            );
+          }
 
           collForEach(changedLocalRows, (localRowId) =>
             callListeners(remoteRowIdListeners, [relationshipId, localRowId]),
