@@ -259,6 +259,37 @@ describe('Basics', () => {
     expect(checkpoints.getCheckpointIds()).toEqual([['0'], checkpointId, []]);
   });
 
+  test.each([true, false])(
+    'retain mixed changes when cancelling tabular changes: %s',
+    (cancelTabular) => {
+      const id0 = checkpoints.getCheckpointIds()[1];
+      store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+      expectChanges(listener, '/', [[id0], undefined, []]);
+      if (cancelTabular) {
+        store.delCell('t1', 'r1', 'c1');
+      } else {
+        store.delValue('v1');
+      }
+      expect(checkpoints.getCheckpointIds()).toEqual([[id0], undefined, []]);
+      expectNoChanges(listener);
+
+      const id1 = checkpoints.addCheckpoint();
+      expect(id1).not.toEqual(id0);
+      expectChanges(listener, '/', [[id0], id1, []]);
+      checkpoints.goBackward();
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+      expectChanges(listener, '/', [[], id0, [id1]]);
+      checkpoints.goForward();
+      expect(store.getTables()).toEqual(
+        cancelTabular ? {} : {t1: {r1: {c1: 1}}},
+      );
+      expect(store.getValues()).toEqual(cancelTabular ? {v1: 1} : {});
+      expectChanges(listener, '/', [[id0], id1, []]);
+      expectNoChanges(listener);
+    },
+  );
+
   test('listener stats', () => {
     listener.listenToCheckpoint('/c0', '0');
     expect(checkpoints.getListenerStats()).toEqual({
