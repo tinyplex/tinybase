@@ -663,6 +663,83 @@ describe('Listens to LocalRowIds when sets', () => {
 });
 
 describe('Linked lists', () => {
+  test('keeps linked listeners working after redefining tables', () => {
+    store.setTable('t1', {r1: {c1: 'r2'}, r2: {c1: 'r3'}});
+    relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
+    const changes: string[][] = [];
+    const listener = () =>
+      changes.push(relationships.getLinkedRowIds('r1', 'r1'));
+    const first = relationships.addLinkedRowIdsListener('r1', 'r1', listener);
+    const second = relationships.addLinkedRowIdsListener('r1', 'r1', listener);
+    const unchanged = vi.fn();
+    relationships.addLinkedRowIdsListener('r1', 'missing', unchanged);
+
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    expect(changes).toEqual([
+      ['r1', 'r2', 'r3'],
+      ['r1', 'r2', 'r3'],
+    ]);
+    expect(unchanged).not.toHaveBeenCalled();
+    changes.length = 0;
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    expect(changes).toEqual([]);
+    store.setCell('t1', 'r2', 'c1', 'r4');
+    expect(changes).toEqual([
+      ['r1', 'r2', 'r4'],
+      ['r1', 'r2', 'r4'],
+    ]);
+
+    relationships.delListener(first);
+    changes.length = 0;
+    relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
+    expect(changes).toEqual([['r1']]);
+    changes.length = 0;
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    expect(changes).toEqual([['r1', 'r2', 'r4']]);
+    changes.length = 0;
+    store.delRow('t1', 'r2');
+    expect(changes).toEqual([['r1', 'r2']]);
+    expect(unchanged).not.toHaveBeenCalled();
+    relationships.delListener(second);
+    store.setCell('t1', 'r1', 'c1', 'r5');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(['r1', 'r5']);
+    relationships.delRelationshipDefinition('r1');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(['r1']);
+  });
+
+  test.each([
+    ['t1', 't1', 't1', 't2'],
+    ['t1', 't2', 't1', 't1'],
+    ['t1', 't1', 't2', 't1'],
+    ['t2', 't1', 't1', 't1'],
+    ['t1', 't1', 't1', 't1'],
+    ['t1', 't2', 't1', 't2'],
+  ])(
+    'redefines linked tables from %s/%s to %s/%s',
+    (oldLocal, oldRemote, newLocal, newRemote) => {
+      const table = {r1: {c1: 'r2'}, r2: {c1: 'r3'}};
+      store.setTables({t1: table, t2: table});
+      relationships.setRelationshipDefinition('r1', oldLocal, oldRemote, 'c1');
+      const before = oldLocal == oldRemote ? ['r1', 'r2', 'r3'] : ['r1'];
+      const after = newLocal == newRemote ? ['r1', 'r2', 'r3'] : ['r1'];
+      const listener = vi.fn((current: Relationships) => {
+        expect(current.getLinkedRowIds('r1', 'r1')).toEqual(after);
+      });
+      const listenerId = relationships.addLinkedRowIdsListener(
+        'r1',
+        'r1',
+        listener,
+      );
+      expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(before);
+      relationships.setRelationshipDefinition('r1', newLocal, newRemote, 'c1');
+      expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(after);
+      expect(listener).toHaveBeenCalledTimes(
+        before.length == after.length ? 0 : 1,
+      );
+      relationships.delListener(listenerId);
+    },
+  );
+
   const setLinkedCells = (): void => {
     store.setTables({
       t1: {r1: {c1: 'r2'}, r2: {c1: ''}},
