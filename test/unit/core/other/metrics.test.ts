@@ -65,6 +65,24 @@ describe('Sets', () => {
     expect(metrics.getMetric('m1')).toBeUndefined();
   });
 
+  test('avg after replacing all rows in a transaction', () => {
+    store.setCell('t1', 'r1', 'c1', 1);
+    metrics.setMetricDefinition('m1', 't1', 'avg', 'c1');
+    const listener = vi.fn();
+    metrics.addMetricListener('m1', listener);
+
+    store.transaction(() => {
+      store.delRow('t1', 'r1');
+      store.setCell('t1', 'r2', 'c1', 2);
+      store.setCell('t1', 'r3', 'c1', 4);
+    });
+
+    expect(metrics.getMetric('m1')).toBe(3);
+    expect(listener).toHaveBeenCalledExactlyOnceWith(metrics, 'm1', 3, 1);
+    store.setCell('t1', 'r3', 'c1', 6);
+    expect(metrics.getMetric('m1')).toBe(4);
+  });
+
   test('min', () => {
     setCells();
     metrics.setMetricDefinition('m1', 't1', 'min', 'c1');
