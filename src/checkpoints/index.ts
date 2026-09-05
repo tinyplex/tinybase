@@ -320,7 +320,8 @@ export const createCheckpoints = getCreateFunction(
                 cellOrValueIsEqual(oldNew[0], newCell) &&
                 collIsEmpty(mapSet(row, cellId)) &&
                 collIsEmpty(mapSet(table, rowId)) &&
-                collIsEmpty(mapSet(cellsDelta, tableId))
+                collIsEmpty(mapSet(cellsDelta, tableId)) &&
+                collIsEmpty(valuesDelta)
               ) {
                 storeUnchanged();
               }
@@ -342,7 +343,8 @@ export const createCheckpoints = getCreateFunction(
               oldNew[1] = newValue;
               if (
                 cellOrValueIsEqual(oldNew[0], newValue) &&
-                collIsEmpty(mapSet(valuesDelta, valueId))
+                collIsEmpty(mapSet(valuesDelta, valueId)) &&
+                collIsEmpty(cellsDelta)
               ) {
                 storeUnchanged();
               }
