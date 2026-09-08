@@ -511,9 +511,9 @@
    * Slice in a specified Index.
    *
    * This method is useful for iterating over the Slice structure of the Index
-   * in a functional style. The `rowCallback` parameter is a RowCallback
-   * function that will be called with the Id and value of each Row in the
-   * Slice.
+   * in a functional style. The `sliceCallback` parameter is a SliceCallback
+   * function that will be called with the Id of each Slice and a function for
+   * iterating over its Rows.
    * @param indexId The Id of the Index to iterate over.
    * @param sliceCallback The function that should be called for every Slice.
    * @example
