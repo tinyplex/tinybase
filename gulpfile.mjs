@@ -241,10 +241,12 @@ const copyPackageFiles = async (forProd = false) => {
   await promises.copyFile('agents.md', join(DIST_DIR, 'agents.md'));
 };
 
-let labelBlocks;
-const getLabelBlocks = async () => {
-  if (labelBlocks == null) {
-    labelBlocks = new Map();
+// The promise is memoized rather than the Map, since callers run concurrently
+// and would otherwise be handed the Map before it has been filled.
+let labelBlocksPromise;
+const getLabelBlocks = () =>
+  (labelBlocksPromise ??= (async () => {
+    const labelBlocks = new Map();
     await allModules(async (module) => {
       [
         ...(
@@ -257,9 +259,8 @@ const getLabelBlocks = async () => {
         labelBlocks.set(label, block);
       });
     });
-  }
-  return labelBlocks;
-};
+    return labelBlocks;
+  })());
 
 const copyDefinition = async (dir, module) => {
   const labelBlocks = await getLabelBlocks();
