@@ -3,12 +3,12 @@ import {expect} from 'vitest';
 import type {Id} from 'tinybase';
 import {Listener} from './types.ts';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toEqualWithOrder(expected: any): R;
-    }
+declare module 'vitest' {
+  interface Matchers<
+    R extends void | Promise<void> = void | Promise<void>,
+    T = unknown,
+  > {
+    toEqualWithOrder(expected: T): R;
   }
 }
 
