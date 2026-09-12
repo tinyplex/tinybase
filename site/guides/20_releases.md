@@ -5,6 +5,28 @@ highlighted features.
 
 ---
 
+# v10.0
+
+## libSQL, With Pooled Connections
+
+The LibSqlPersister now expects v0.18 of the `@libsql/client` module, which
+changed the way a local database is opened. A client now keeps a pool of
+connections rather than a single one, and every command borrows a connection for
+its duration and returns it afterwards - rolling back any transaction still open
+on it.
+
+A `BEGIN` statement issued on its own therefore no longer survives the command
+that sent it, and so the Persister now runs each write as a transaction session
+for local file and in-memory databases, just as it always has for remote ones.
+It previously avoided them, because a session used to open a second connection -
+and, for an in-memory database, that meant a second and empty database. In v0.18
+such a client has a single connection, so that is no longer a concern.
+
+Your own code does not need to change, but your `@libsql/client` dependency
+should be v0.18 or later.
+
+---
+
 # v9.7
 
 ## SQLite, via `node:sqlite`
