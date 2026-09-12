@@ -1,7 +1,7 @@
 import {PGlite} from '@electric-sql/pglite';
 import * as SQLite from '@journeyapps/wa-sqlite';
 import SQLiteESMFactory from '@journeyapps/wa-sqlite/dist/wa-sqlite.mjs';
-import {Client, createClient} from '@libsql/client';
+import {Client, Transaction, createClient} from '@libsql/client';
 import type {
   QueryResult,
   SQLWatchOptions,
@@ -351,13 +351,17 @@ export const NODE_SQLITE_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
+type LibSqlClientAndTransaction = [client: Client, transaction?: Transaction];
+
 export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   libSql: [
-    async (): Promise<Client> => createClient({url: 'file::memory:'}),
-    ['getClient', (client: Client) => client],
+    async (): Promise<LibSqlClientAndTransaction> => [
+      createClient({url: 'file::memory:'}),
+    ],
+    ['getClient', ([client]: LibSqlClientAndTransaction) => client],
     (
       store: Store,
-      client: Client,
+      [client]: LibSqlClientAndTransaction,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
@@ -369,13 +373,28 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
         onSqlCommand,
         onIgnoredError,
       ),
+    // A libSQL command borrows one of the client's connections for its
+    // duration, so the commands here are held open as a transaction session
+    // rather than issued as BEGIN and END statements.
     async (
-      client: Client,
+      clientAndTransaction: LibSqlClientAndTransaction,
       sql: string,
       args: any[] = [],
-    ): Promise<{[id: string]: any}[]> =>
-      (await client.execute({sql, args})).rows,
-    async (client: Client) => client.close(),
+    ): Promise<{[id: string]: any}[]> => {
+      const [client, transaction] = clientAndTransaction;
+      if (sql == 'BEGIN') {
+        clientAndTransaction[1] = await client.transaction('write');
+        return [];
+      }
+      if (sql == 'END') {
+        clientAndTransaction[1] = undefined;
+        await transaction!.commit();
+        transaction!.close();
+        return [];
+      }
+      return (await (transaction ?? client).execute({sql, args})).rows;
+    },
+    async ([client]: LibSqlClientAndTransaction) => client.close(),
   ],
   electricSql: [
     (): Promise<Electric> =>

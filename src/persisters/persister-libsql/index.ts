@@ -33,33 +33,29 @@ export const createLibSqlPersister = ((
     client,
     'getClient',
     undefined,
-    (client as Client & {protocol?: string}).protocol == 'file'
-      ? undefined
-      : async (actions) => {
-          onSqlCommand?.('BEGIN');
-          const transaction = await client.transaction('write');
-          return await tryFinallyAsync(
-            async () => {
-              try {
-                const result = await actions(
-                  async (
-                    sql: string,
-                    args: any[] = [],
-                  ): Promise<IdObj<any>[]> => {
-                    onSqlCommand?.(sql, args);
-                    return (await transaction.execute({sql, args})).rows;
-                  },
-                );
-                await transaction.commit();
-                onSqlCommand?.('END');
-                return result;
-              } catch (error) {
-                await tryCatch(() => transaction.rollback());
-                onSqlCommand?.('ROLLBACK');
-                throw error;
-              }
-            },
-            () => transaction.close(),
-          );
+    async (actions) => {
+      onSqlCommand?.('BEGIN');
+      const transaction = await client.transaction('write');
+      return await tryFinallyAsync(
+        async () => {
+          try {
+            const result = await actions(
+              async (sql: string, args?: any[]): Promise<IdObj<any>[]> => {
+                onSqlCommand?.(sql, args);
+                return (await transaction.execute({sql, args: args ?? []}))
+                  .rows;
+              },
+            );
+            await transaction.commit();
+            onSqlCommand?.('END');
+            return result;
+          } catch (error) {
+            await tryCatch(() => transaction.rollback());
+            onSqlCommand?.('ROLLBACK');
+            throw error;
+          }
         },
+        () => transaction.close(),
+      );
+    },
   ) as LibSqlPersister) as typeof createLibSqlPersisterDecl;
