@@ -211,6 +211,7 @@
    * See the [PartyKit server API
    * documentation](https://docs.partykit.io/reference/partyserver-api/) for
    * more details.
+   * @returns A Promise containing the Response to the request.
    * @category Connection
    * @since v4.3.0
    */
@@ -238,6 +239,8 @@
    * server, or `true` to allow them (subject to subsequent canSetRow method,
    * canDelRow method, canSetCell method, and canDelCell method checks). The
    * default implementation returns `true` to allow all changes.
+   * @returns A promised boolean indicating whether to allow the changes to the
+   * Table.
    * @example
    * The following implementation will strip out any attempts by the client to
    * update any 'user' tabular data after the initial save:
@@ -272,6 +275,8 @@
    * Return `false` from this method to disallow this Table from being deleted
    * on the server, or `true` to allow it. The default implementation returns
    * `true` to allow deletion.
+   * @returns A promised boolean indicating whether to allow the deletion of the
+   * Table.
    * @example
    * The following implementation will strip out any attempts by the client to
    * delete the 'user' Table:
@@ -312,6 +317,8 @@
    * server, or `true` to allow them (subject to subsequent canSetCell method
    * and canDelCell method checks). The default implementation returns `true` to
    * allow all changes.
+   * @returns A promised boolean indicating whether to allow the changes to the
+   * Row.
    * @example
    * The following implementation will strip out any attempts by the client to
    * update the 'me' Row of the 'user' Table after the initial save:
@@ -347,6 +354,8 @@
    * Return `false` from this method to disallow this Row from being deleted
    * on the server, or `true` to allow it. The default implementation returns
    * `true` to allow deletion.
+   * @returns A promised boolean indicating whether to allow the deletion of the
+   * Row.
    * @example
    * The following implementation will strip out any attempts by the client to
    * delete the 'me' Row of the 'user' Table:
@@ -391,6 +400,8 @@
    * Return `false` from this method to disallow changes to this Cell on the
    * server, or `true` to allow them. The default implementation returns `true`
    * to allow all changes.
+   * @returns A promised boolean indicating whether to allow the changes to the
+   * Cell.
    * @example
    * The following implementation will strip out any attempts by the client to
    * update the 'name' Cell of the 'me' Row of the 'user' Table after the
@@ -429,6 +440,8 @@
    * Return `false` from this method to disallow this Cell from being deleted on
    * the server, or `true` to allow it. The default implementation returns
    * `true` to allow deletion.
+   * @returns A promised boolean indicating whether to allow the deletion of the
+   * Cell.
    * @example
    * The following implementation will strip out any attempts by the client to
    * delete the 'name' Cell of the 'me' Row of the 'user' Table:
@@ -472,6 +485,8 @@
    * Return `false` from this method to disallow changes to this Value on the
    * server, or `true` to allow them. The default implementation returns `true`
    * to allow all changes.
+   * @returns A promised boolean indicating whether to allow the changes to the
+   * Value.
    * @example
    * The following implementation will strip out any attempts by the client to
    * update the 'userId' Value after the initial save:
@@ -506,6 +521,8 @@
    * Return `false` from this method to disallow this Value from being deleted
    * on the server, or `true` to allow it. The default implementation returns
    * `true` to allow deletion.
+   * @returns A promised boolean indicating whether to allow the deletion of the
+   * Value.
    * @example
    * The following implementation will strip out any attempts by the client to
    * delete the 'userId' Value:

@@ -3049,6 +3049,7 @@
    * with a reference to the Queries object.
    * @param listener The function that will be called whenever a Query
    * definition is added or removed.
+   * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example creates a Store, a Queries object, and then registers a
    * listener that responds to the addition and the removal of a Query
@@ -3097,6 +3098,7 @@
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the param values
    * of the query change.
+   * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers two listeners that respond to changes to the param
    * values of a specific query, or any query respectively.
@@ -3167,6 +3169,7 @@
    * @param paramId The Id of the param to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the specific
    * param value of the query changes.
+   * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers two listeners that respond to changes to a specific
    * param value of a specific query, or any param value of any query

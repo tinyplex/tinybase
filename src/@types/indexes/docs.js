@@ -699,6 +699,7 @@
    * with a reference to the Indexes object.
    * @param listener The function that will be called whenever an Index
    * definition is added or removed.
+   * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example creates a Store, an Indexes object, and then registers a
    * listener that responds to the addition and the removal of an Index

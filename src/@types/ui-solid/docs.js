@@ -213,6 +213,7 @@
  * useSetTableCallback primitive or useSetRowCallback primitive - so that the Id
  * arguments of the object to set can also be dependent on the event or
  * parameter provided (as well as the object itself being set).
+ * @returns The Id, determined from the parameter and Store.
  * @category Identity
  * @since v8.3.0
  */
@@ -253,6 +254,7 @@
 /// ui-solid.useCreateStore
 /**
  * The useCreateMergeableStore primitive.
+ * @returns A reference to the MergeableStore.
  * @category Store primitives
  * @since v8.3.0
  */

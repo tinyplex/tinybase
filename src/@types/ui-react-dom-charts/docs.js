@@ -442,6 +442,7 @@
  * The series children declare their own xCellId and yCellId bindings. The
  * optional XAxis component and YAxis component children can be used to
  * configure axis titles, bounds, ticks, and tick formatting.
+ * @returns A rendering of the chart frame and its series.
  * @category Store components
  * @since v8.5.0
  * @example
@@ -493,6 +494,7 @@
  *
  * ![XAxis component example](/shots/axis-overrides-react-demo.png
  * "XAxis component example")
+ * @returns Nothing, since this component only configures the x axis.
  * @category Store components
  * @since v8.5.0
  */
@@ -508,6 +510,7 @@
  *
  * ![YAxis component example](/shots/axis-overrides-react-demo.png
  * "YAxis component example")
+ * @returns Nothing, since this component only configures the y axis.
  * @category Store components
  * @since v8.5.0
  */
@@ -523,6 +526,7 @@
  *
  * ![LineSeries component example](/shots/composing-charts-react-demo.png
  * "LineSeries component example")
+ * @returns A rendering of the line series.
  * @category Store components
  * @since v8.5.0
  */
@@ -538,6 +542,7 @@
  *
  * ![BarSeries component example](/shots/composing-charts-react-demo.png
  * "BarSeries component example")
+ * @returns A rendering of the bar series.
  * @category Store components
  * @since v8.5.0
  */
@@ -554,6 +559,7 @@
  *
  * ![LineChart component example](/shots/basic-chart-react-demo.png "LineChart
  * component example")
+ * @returns A rendering of the line chart.
  * @category Store components
  * @since v8.5.0
  * @example
@@ -602,6 +608,7 @@
  *
  * ![BarChart component example](/shots/sorting-and-types-react-demo.png
  * "BarChart component example")
+ * @returns A rendering of the bar chart.
  * @category Store components
  * @since v8.5.0
  * @example

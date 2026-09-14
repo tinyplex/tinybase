@@ -1253,6 +1253,7 @@
  * defaults and named instances remain visible unless a nearer Provider replaces
  * them.
  * @param props The props for this component.
+ * @returns A rendering of the child components.
  * @example
  * This example creates a Provider context with a default Store.
  *

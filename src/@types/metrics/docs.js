@@ -612,6 +612,7 @@
    * with a reference to the Metrics object.
    * @param listener The function that will be called whenever a Metric
    * definition is added or removed.
+   * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example creates a Store, a Metrics object, and then registers a
    * listener that responds to the addition and the removal of a Metric

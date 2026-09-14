@@ -572,6 +572,7 @@
  * new one, such as when incrementing a number. See that method for specific
  * examples.
  * @param cell The current value of the Cell to map to a new value.
+ * @returns The new value of the Cell.
  * @category Callback
  * @since v1.0.0
  */
@@ -584,6 +585,7 @@
  * a new one, such as when incrementing a number. See that method for specific
  * examples.
  * @param value The current Value to map to a new Value.
+ * @returns The new Value.
  * @category Callback
  * @since v3.0.0
  */
@@ -596,6 +598,7 @@
  * setMetricDefinition method of a Metrics object, or the setIndexDefinition
  * method of an Indexes object. See those methods for specific examples.
  * @param cellId The Id of the Cell to fetch the value for.
+ * @returns The value of the Cell, or `undefined`.
  * @category Callback
  * @since v1.0.0
  */
@@ -693,6 +696,7 @@
  * can use the getTransactionChanges method and getTransactionLog method of the
  * Store directly to decide whether to do the rollback.
  * @param store A reference to the Store that is completing a transaction.
+ * @returns Whether to rollback the transaction.
  * @category Callback
  * @since v1.0.0
  */

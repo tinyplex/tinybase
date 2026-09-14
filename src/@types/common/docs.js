@@ -109,6 +109,7 @@
  * This is used internally within the mergeable-store module, but is used for
  * the createMergeableStore function's second optional argument to allow
  * applications to override the clock used to generate timestamps.
+ * @returns The current time, in milliseconds.
  * @category Stamps
  * @since v6.2.0
  */
