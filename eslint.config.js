@@ -37,7 +37,9 @@ export default tsLint.config(
       'import/core-modules': ['@powersync/node', 'expo-sqlite', 'svelte'],
     },
 
-    languageOptions: {globals: {...globals.node, ...globals.browser}},
+    languageOptions: {
+      globals: {...globals.node, ...globals.browser, globalThis: 'readonly'},
+    },
 
     rules: {
       'no-var': 2,
