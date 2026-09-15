@@ -48,6 +48,7 @@ const ALL_MODULES = [
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-supabase',
+  'persisters/persister-tinyjoin',
   'persisters/persister-yjs',
   'queries',
   'relationships',

@@ -406,6 +406,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-sqlite-wasm/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite3/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-supabase/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-tinyjoin/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-yjs/index.d.ts')
     .addApiFile('dist/@types/queries/index.d.ts')
     .addApiFile('dist/@types/relationships/index.d.ts')
