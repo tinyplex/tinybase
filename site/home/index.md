@@ -173,6 +173,11 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/tinyjoin.svg?asImg" /> TinyJoin
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/neon.svg?asImg" /> Neon
   </a>
 </div>

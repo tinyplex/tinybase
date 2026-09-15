@@ -23,6 +23,7 @@ PostgreSQL:
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
 | PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
+| TinyJoinPersister          | PostgreSQL-shaped SQL in a browser, via [TinyJoin](https://tinyjoin.org)                                         |
 | SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                             |
 
 Two of those are deprecated as of v9.7 and will be removed in v10.0. The
@@ -60,6 +61,20 @@ services built on LibSQL hand you an ordinary client. That includes Turso -
 and, for projects on Astro 6 or earlier, Astro DB. See the
 createLibSqlPersister function for the cast that TypeScript needs to reach the
 underlying client in an Astro project.
+
+The TinyJoinPersister is new in v10.0, and is the way to get a relational
+database in the browser without a server or a native dependency:
+[TinyJoin](https://tinyjoin.org) runs a small PostgreSQL-shaped SQL engine in a
+Worker, either in memory or - with an `opfs://` data directory - saved across
+reloads.
+
+TinyJoin's SQL dialect is deliberately bounded, and two of its boundaries show
+up here. It has no `ALTER TABLE ... DROP COLUMN`, so the `deleteEmptyColumns`
+setting described below should be left off, and the table used for the JSON mode
+should not have columns other than its Id and store columns. It also has no SQL
+transaction statements, and rejects schema changes inside its own callback
+transactions, so each of the Persister's commands is atomic on its own rather
+than a save being atomic as a whole.
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store

@@ -7,6 +7,34 @@ highlighted features.
 
 # v10.0
 
+## A Relational Database In The Browser, With TinyJoin
+
+The new persister-tinyjoin module provides the TinyJoinPersister, which saves and
+loads a Store to and from a [TinyJoin](https://tinyjoin.org) database - a tiny,
+worker-first relational database that runs entirely in the browser:
+
+```js ignore
+import {createStore} from 'tinybase';
+import {createTinyJoinPersister} from 'tinybase/persisters/persister-tinyjoin';
+import {create} from 'tinyjoin';
+
+const tinyJoin = await create('opfs://my-app');
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createTinyJoinPersister(store, tinyJoin, 'my_tinybase');
+
+await persister.save();
+console.log((await tinyJoin.query('SELECT * FROM my_tinybase')).rows);
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+await persister.destroy();
+await tinyJoin.close();
+```
+
+Like the other database Persisters, it supports both the JSON and tabular modes,
+and it follows TinyJoin's own table subscriptions rather than polling for
+changes. TinyJoin's SQL dialect is deliberately bounded, so read the
+createTinyJoinPersister function for the two boundaries worth knowing about.
+
 ## libSQL, With Pooled Connections
 
 The LibSqlPersister now expects v0.18 of the `@libsql/client` module, which
