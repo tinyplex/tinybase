@@ -28,6 +28,7 @@
  * |ReactNativeSqlitePersister|SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage)|Yes|Yes*
  * |PostgresPersister|PostgreSQL, via [postgres](https://github.com/porsager/postgres)|Yes|Yes*
  * |PglitePersister|PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)|Yes|Yes*
+ * |TinyJoinPersister|PostgreSQL-shaped SQL in a browser, via [TinyJoin](https://tinyjoin.org)|Yes|Yes*
  * |CrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
  * |ElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
  * |LibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
