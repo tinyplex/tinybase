@@ -818,6 +818,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Store components
  * @since v4.1.0
  */
@@ -1005,6 +1006,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Store components
  * @since v4.1.0
  */
@@ -1145,6 +1147,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Store components
  * @since v4.1.0
  */
@@ -1313,6 +1316,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Other components
  * @since v4.1.0
  */
@@ -1498,6 +1502,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Other components
  * @since v4.1.0
  */
@@ -1664,6 +1669,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Queries components
  * @since v4.1.0
  */
@@ -1853,6 +1859,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Queries components
  * @since v4.1.0
  */
@@ -1923,6 +1930,7 @@
  * </div>
  * `;
  * ```
+ * @function
  * @category Store components
  * @since v4.1.0
  */
@@ -1993,6 +2001,7 @@
  * </div>
  * `;
  * ```
+ * @function
  * @category Store components
  * @since v4.1.0
  */
@@ -2082,6 +2091,7 @@
  * </table>
  * `;
  * ```
+ * @function
  * @category Store components
  * @since v4.1.0
  */

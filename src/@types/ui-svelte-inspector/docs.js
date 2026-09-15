@@ -68,6 +68,7 @@
  * console.log(typeof Inspector);
  * // -> 'function'
  * ```
+ * @function
  * @category Development components
  * @essential Using Svelte
  * @since v8.2.0

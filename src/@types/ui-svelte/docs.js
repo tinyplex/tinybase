@@ -1263,6 +1263,7 @@
  * //   <App />
  * // </Provider>
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1309,6 +1310,7 @@
  * console.log(app.textContent);
  * // -> ''
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1352,6 +1354,7 @@
  * console.log(app.textContent);
  * // -> 'dog'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1396,6 +1399,7 @@
  * console.log(app.textContent);
  * // -> ''
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1442,6 +1446,7 @@
  * console.log(app.textContent);
  * // -> '0'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1488,6 +1493,7 @@
  * console.log(app.textContent);
  * // -> ''
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1538,6 +1544,7 @@
  * console.log(app.textContent);
  * // -> 'dog cat'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1595,6 +1602,7 @@
  * console.log(app.textContent);
  * // -> 'fido felix'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1646,6 +1654,7 @@
  * console.log(app.textContent);
  * // -> 'fido'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1694,6 +1703,7 @@
  * console.log(app.textContent);
  * // -> '2'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1745,6 +1755,7 @@
  * console.log(app.textContent);
  * // -> 'dog'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1793,6 +1804,7 @@
  * console.log(app.textContent);
  * // -> 'brown'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1843,6 +1855,7 @@
  * console.log(app.textContent);
  * // -> 'color'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1899,6 +1912,7 @@
  * console.log(app.textContent);
  * // -> 'felix fido'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1950,6 +1964,7 @@
  * console.log(app.textContent);
  * // -> 'fido felix'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -1993,6 +2008,7 @@
  * console.log(app.textContent);
  * // -> 'dog'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -2043,6 +2059,7 @@
  * console.log(app.textContent);
  * // -> 'fido'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -2089,6 +2106,7 @@
  * console.log(app.textContent);
  * // -> 'fido felix'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -2134,6 +2152,7 @@
  * console.log(app.textContent);
  * // -> 'fido felix'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -2180,6 +2199,7 @@
  * console.log(app.textContent);
  * // -> 'pets species'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -2223,6 +2243,7 @@
  * console.log(app.textContent);
  * // -> 'true'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
@@ -2268,6 +2289,7 @@
  * console.log(app.textContent);
  * // -> 'open employees'
  * ```
+ * @function
  * @category Component
  * @since v8.1.0
  */
