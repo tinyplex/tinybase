@@ -71,7 +71,7 @@ reloads.
 TinyJoin's SQL dialect is deliberately bounded, and two of its boundaries show
 up here. It has no `ALTER TABLE ... DROP COLUMN`, so the `deleteEmptyColumns`
 setting described below should be left off, and the table used for the JSON mode
-should not have columns other than its Id and store columns. It also has no SQL
+should not have columns beyond the two it manages. It also has no SQL
 transaction statements, and rejects schema changes inside its own callback
 transactions, so each of the Persister's commands is atomic on its own rather
 than a save being atomic as a whole.

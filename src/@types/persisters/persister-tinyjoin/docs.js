@@ -58,7 +58,9 @@
  * TinyJoin is a tiny, worker-first relational database that runs entirely in
  * the browser, either in memory or - with an `opfs://` data directory - saved
  * across reloads. This Persister therefore gives you a SQL-shaped local
- * database to keep a Store in, without a server or a native dependency.
+ * database to keep a Store in, without a server or a native dependency. Its
+ * `tinyjoin/node` entry point opens an ephemeral in-memory database in a Node
+ * worker thread, which makes this Persister testable outside a browser.
  *
  * A TinyJoinPersister supports regular Store objects, and can also be used to
  * persist the metadata of a MergeableStore when using the JSON serialization
@@ -86,9 +88,9 @@
  *
  * TinyJoin implements a deliberately bounded SQL dialect, and two of its
  * boundaries are worth knowing about. It has no `ALTER TABLE ... DROP COLUMN`,
- * so the table used for the JSON serialization should not have columns other
- * than the Id and store columns, and tabular mode should be left with its
- * default of not deleting empty columns. It also has no SQL transaction
+ * so the table used for the JSON serialization should not have columns beyond
+ * the two it manages, and tabular mode should be left with its default of not
+ * deleting empty columns. It also has no SQL transaction
  * statements, and rejects schema changes inside its own callback transactions,
  * so each of the Persister's commands is atomic on its own rather than a save
  * being atomic as a whole.
