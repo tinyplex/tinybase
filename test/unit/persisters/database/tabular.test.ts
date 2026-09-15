@@ -1437,13 +1437,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
             ['r1', encodedValue(1)],
           ],
           [
-            `DELETE FROM"t1"WHERE(true)AND"_id"NOT IN(${placeholders(1, 2)})`,
+            `DELETE FROM"t1"WHERE"_id"NOT IN(${placeholders(1, 2)})`,
             ['r1', 'r2'],
           ],
-          [
-            `DELETE FROM"t2"WHERE(true)AND"_id"NOT IN(${placeholders(1)})`,
-            ['r1'],
-          ],
+          [`DELETE FROM"t2"WHERE"_id"NOT IN(${placeholders(1)})`, ['r1']],
           [
             'CREATE TABLE"tinybase_values"("_id"' +
               columnType +
@@ -1459,7 +1456,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             ['_', encodedValue(1), encodedValue(2)],
           ],
           [
-            `DELETE FROM"tinybase_values"WHERE(true)AND"_id"NOT IN(${placeholders(1)})`,
+            `DELETE FROM"tinybase_values"WHERE"_id"NOT IN(${placeholders(1)})`,
             ['_'],
           ],
           ['END', undefined],
@@ -1730,7 +1727,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           });
           await sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
-            [`DELETE FROM"t1"WHERE(true)AND("_id"=${placeholders(1)})`, ['r1']],
+            [`DELETE FROM"t1"WHERE("_id"=${placeholders(1)})`, ['r1']],
             ['END', undefined],
           ]);
         });
@@ -1822,7 +1819,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           });
           await sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
-            ['DELETE FROM"t2"WHERE(true)', undefined],
+            ['DELETE FROM"t2"', undefined],
             ['END', undefined],
           ]);
         });
@@ -1839,8 +1836,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
           });
           await sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
-            ['DELETE FROM"t1"WHERE(true)', undefined],
-            ['DELETE FROM"t2"WHERE(true)', undefined],
+            ['DELETE FROM"t1"', undefined],
+            ['DELETE FROM"t2"', undefined],
             ['END', undefined],
           ]);
         });

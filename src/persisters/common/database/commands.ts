@@ -42,7 +42,7 @@ import {
   escapeId,
   GetPlaceholder,
   getPlaceholders,
-  getWhereCondition,
+  getWhere,
   INSERT,
   QuerySchema,
   SELECT_STAR_FROM,
@@ -131,7 +131,7 @@ export const getCommandFunctions = (
               await executeCommand(
                 SELECT_STAR_FROM +
                   escapeId(tableName) +
-                  getWhereCondition(tableName, condition),
+                  getWhere(tableName, condition),
               ),
               (row): [Id | undefined, Row] => {
                 const rowId = row[rowIdColumnName];
@@ -301,9 +301,7 @@ export const getCommandFunctions = (
         // Delete all rows (partial)
         if (isUndefined(contentSubIdSet)) {
           await executeCommand(
-            DELETE_FROM +
-              escapeId(tableName) +
-              getWhereCondition(tableName, condition),
+            DELETE_FROM + escapeId(tableName) + getWhere(tableName, condition),
           );
         }
       } else {
@@ -314,8 +312,11 @@ export const getCommandFunctions = (
               await executeCommand(
                 DELETE_FROM +
                   escapeId(tableName) +
-                  getWhereCondition(tableName, condition) +
-                  `AND(${escapeId(rowIdColumnName)}=${getPlaceholder([1])})`,
+                  getWhere(
+                    tableName,
+                    condition,
+                    `(${escapeId(rowIdColumnName)}=${getPlaceholder([1])})`,
+                  ),
                 [rowId],
               );
             } else if (!isEmpty(settingColumnNames)) {
@@ -377,9 +378,12 @@ export const getCommandFunctions = (
         await executeCommand(
           DELETE_FROM +
             escapeId(tableName) +
-            getWhereCondition(tableName, condition) +
-            // eslint-disable-next-line max-len
-            `AND${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds, getPlaceholder)})`,
+            getWhere(
+              tableName,
+              condition,
+              // eslint-disable-next-line max-len
+              `${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds, getPlaceholder)})`,
+            ),
           deleteRowIds,
         );
       } else if (
@@ -388,9 +392,7 @@ export const getCommandFunctions = (
       ) {
         // Delete all rows
         await executeCommand(
-          DELETE_FROM +
-            escapeId(tableName) +
-            getWhereCondition(tableName, condition),
+          DELETE_FROM + escapeId(tableName) + getWhere(tableName, condition),
         );
       }
     }

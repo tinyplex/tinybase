@@ -3,11 +3,13 @@ import type {
   DatabaseExecuteCommand,
   DpcTabularCondition,
 } from '../../../@types/persisters/index.d.ts';
-import {arrayJoin, arrayMap} from '../../../common/array.ts';
+import {arrayFilter, arrayJoin, arrayMap} from '../../../common/array.ts';
+import {isEmpty, isUndefined} from '../../../common/other.ts';
 import {IdSet} from '../../../common/set.ts';
 import {
   COMMA,
   DOT,
+  EMPTY_STRING,
   strReplace,
   strSplit,
   TRUE,
@@ -92,10 +94,25 @@ export const getPlaceholders = (
     COMMA,
   );
 
-export const getWhereCondition = (
+// A `true` condition is omitted; narrow SQL dialects reject a bare boolean.
+export const getWhere = (
   tableName: string,
   condition: DpcTabularCondition = TRUE,
-) => WHERE + `(${replaceTableName(condition, escapeId(tableName))})`;
+  extraCondition?: string,
+): string => {
+  const conditions = arrayFilter(
+    [
+      condition == TRUE
+        ? undefined
+        : `(${replaceTableName(condition, escapeId(tableName))})`,
+      extraCondition,
+    ],
+    (condition) => !isUndefined(condition),
+  );
+  return isEmpty(conditions)
+    ? EMPTY_STRING
+    : WHERE + arrayJoin(conditions as string[], 'AND');
+};
 
 export const replaceTableName = (
   condition: DpcTabularCondition,
