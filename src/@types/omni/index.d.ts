@@ -36,6 +36,7 @@ export * from '../persisters/persister-sqlite-node/index.d.ts';
 export * from '../persisters/persister-sqlite-wasm/index.d.ts';
 export * from '../persisters/persister-sqlite3/index.d.ts';
 export * from '../persisters/persister-supabase/index.d.ts';
+export * from '../persisters/persister-tinyjoin/index.d.ts';
 export * from '../persisters/persister-yjs/index.d.ts';
 export * from '../queries/index.d.ts';
 export * from '../relationships/index.d.ts';
