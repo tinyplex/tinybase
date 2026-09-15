@@ -817,6 +817,15 @@ console.log(store.getCell('pets', 'felix', 'sold'));
   <p>TinyBase is part of a group of small libraries designed to help make rich client and local-first apps easier to build. Check out the others!</p>
 
   <p>
+    <a href='https://tinyjoin.org' target='_blank'>
+      <img width="48" src="https://tinyjoin.org/favicon.svg?asImg" />
+      <br />
+      <b>TinyJoin</b>
+    </a>
+    <br />A tiny, worker-first relational database for browser apps.
+  </p>
+
+  <p>
     <a href='https://synclets.org' target='_blank'>
       <img width="48" src="https://synclets.org/favicon.svg?asImg" />
       <br/>
