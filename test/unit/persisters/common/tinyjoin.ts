@@ -1,5 +1,4 @@
-import type {Client} from 'tinyjoin';
-import {create} from 'tinyjoin/node';
+import {type Client, create} from 'tinyjoin/node';
 
 // Storage is always in-memory: OPFS needs a real browser.
 export const getTinyJoinClient = async (): Promise<
