@@ -11,9 +11,9 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v9-7'><em>NEW!</em> v9.7 release</a>
+<a href='/guides/releases/#v10-0'><em>NEW!</em> v10.0 release</a>
 
-<span id="one-with">"The one with `node:sqlite`!"</span>
+<span id="one-with">"The one with TinyJoin!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
