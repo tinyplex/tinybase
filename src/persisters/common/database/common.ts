@@ -4,6 +4,7 @@ import type {
   DpcTabularCondition,
 } from '../../../@types/persisters/index.d.ts';
 import {arrayFilter, arrayJoin, arrayMap} from '../../../common/array.ts';
+import {objToArray} from '../../../common/obj.ts';
 import {isEmpty, isUndefined} from '../../../common/other.ts';
 import {IdSet} from '../../../common/set.ts';
 import {
@@ -118,3 +119,61 @@ export const replaceTableName = (
   condition: DpcTabularCondition,
   tableName: string,
 ) => strReplace(condition, TABLE_NAME_PLACEHOLDER_REGEX, tableName);
+
+// For databases without ON CONFLICT; PowerSync also prefers this order, so that
+// an existing row becomes a PATCH rather than a PUT in its upload queue.
+export const updateThenInsertUpsert: Upsert = async (
+  executeCommand: DatabaseExecuteCommand,
+  tableName: string,
+  rowIdColumnName: string,
+  changingColumnNames: string[],
+  rows: {[id: string]: any[]},
+  getPlaceholder: GetPlaceholder,
+) => {
+  const updateOffset = [1];
+  const assignments = arrayJoin(
+    arrayMap(
+      changingColumnNames,
+      (columnName) => escapeId(columnName) + '=' + getPlaceholder(updateOffset),
+    ),
+    COMMA,
+  );
+  const rowIdPlaceholder = getPlaceholder(updateOffset);
+  for (const [id, row] of objToArray(rows, (row, id): [string, any[]] => [
+    id,
+    row,
+  ])) {
+    const rowParams = arrayMap(row, (value) => value ?? null);
+    if (
+      isEmpty(
+        await executeCommand(
+          UPDATE +
+            escapeId(tableName) +
+            ' SET' +
+            assignments +
+            ' ' +
+            WHERE +
+            escapeId(rowIdColumnName) +
+            '=' +
+            rowIdPlaceholder +
+            ' RETURNING' +
+            escapeId(rowIdColumnName),
+          [...rowParams, id],
+        ),
+      )
+    ) {
+      const offset = [1];
+      await executeCommand(
+        INSERT +
+          ' INTO' +
+          escapeId(tableName) +
+          '(' +
+          escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
+          ')VALUES(' +
+          getPlaceholders([id, ...row], getPlaceholder, offset) +
+          ')',
+        [id, ...rowParams],
+      );
+    }
+  }
+};

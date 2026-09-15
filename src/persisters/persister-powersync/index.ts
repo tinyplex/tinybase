@@ -1,7 +1,6 @@
 import {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {
   DatabaseChangeListener,
-  DatabaseExecuteCommand,
   DatabasePersisterConfig,
 } from '../../@types/persisters/index.d.ts';
 import type {
@@ -9,21 +8,11 @@ import type {
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {arrayForEach, arrayJoin, arrayMap} from '../../common/array.ts';
+import {arrayForEach} from '../../common/array.ts';
 import {tryCatchIgnore} from '../../common/error.ts';
-import {IdObj, objToArray} from '../../common/obj.ts';
-import {isEmpty, noop} from '../../common/other.ts';
-import {COMMA} from '../../common/strings.ts';
-import {
-  GetPlaceholder,
-  INSERT,
-  UPDATE,
-  Upsert,
-  WHERE,
-  escapeColumnNames,
-  escapeId,
-  getPlaceholders,
-} from '../common/database/common.ts';
+import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
+import {updateThenInsertUpsert} from '../common/database/common.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createPowerSyncPersister = ((
@@ -66,65 +55,6 @@ export const createPowerSyncPersister = ((
     1, // StoreOnly,
     powerSync,
     'getPowerSync',
-    powerSyncUpdateThenInsert,
+    updateThenInsertUpsert,
   ) as PowerSyncPersister;
 }) as typeof createPowerSyncPersisterDecl;
-
-// PowerSync records INSERT/REPLACE statements as PUTs and UPDATE statements as
-// PATCHes. Update first so existing rows avoid replacement writes in the upload
-// queue, then insert only when RETURNING shows that no row existed.
-const powerSyncUpdateThenInsert: Upsert = async (
-  executeCommand: DatabaseExecuteCommand,
-  tableName: string,
-  rowIdColumnName: string,
-  changingColumnNames: string[],
-  rows: {[id: string]: any[]},
-  getPlaceholder: GetPlaceholder,
-) => {
-  const updateOffset = [1];
-  const assignments = arrayJoin(
-    arrayMap(
-      changingColumnNames,
-      (columnName) => escapeId(columnName) + '=' + getPlaceholder(updateOffset),
-    ),
-    COMMA,
-  );
-  const rowIdPlaceholder = getPlaceholder(updateOffset);
-  for (const [id, row] of objToArray(rows, (row, id): [string, any[]] => [
-    id,
-    row,
-  ])) {
-    const rowParams = arrayMap(row, (value) => value ?? null);
-    if (
-      isEmpty(
-        await executeCommand(
-          UPDATE +
-            escapeId(tableName) +
-            ' SET' +
-            assignments +
-            ' ' +
-            WHERE +
-            escapeId(rowIdColumnName) +
-            '=' +
-            rowIdPlaceholder +
-            ' RETURNING' +
-            escapeId(rowIdColumnName),
-          [...rowParams, id],
-        ),
-      )
-    ) {
-      const offset = [1];
-      await executeCommand(
-        INSERT +
-          ' INTO' +
-          escapeId(tableName) +
-          '(' +
-          escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
-          ')VALUES(' +
-          getPlaceholders([id, ...row], getPlaceholder, offset) +
-          ')',
-        [id, ...rowParams],
-      );
-    }
-  }
-};
