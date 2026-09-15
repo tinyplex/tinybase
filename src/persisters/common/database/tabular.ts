@@ -22,6 +22,7 @@ import {createCustomPersister} from '../create.ts';
 import {DatabaseTransaction, getCommandFunctions} from './commands.ts';
 import {
   DEFAULT_ROW_ID_COLUMN_NAME,
+  type Dialect,
   GetPlaceholder,
   QuerySchema,
   SINGLE_ROW_ID,
@@ -65,6 +66,7 @@ export const createTabularPersister = <
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
   executeTransaction?: DatabaseTransaction,
+  dialect?: Dialect,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
@@ -77,6 +79,7 @@ export const createTabularPersister = <
       encode,
       decode,
       executeTransaction,
+      dialect,
     );
 
   const saveTables = (

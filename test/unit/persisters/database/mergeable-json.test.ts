@@ -8,7 +8,10 @@ import {getTimeFunctions} from '../../common/mergeable.ts';
 import {waitFor} from '../../common/other.ts';
 import {
   MERGEABLE_VARIANTS,
+  getColumnType,
   getDatabaseFunctions,
+  getDdlColumnType,
+  getPlaceholder,
   getStoreContentWaiter,
 } from '../common/databases.ts';
 
@@ -30,16 +33,17 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       close,
       autoLoadPause = 3,
       autoLoadIntervalSeconds = 0.001,
-      isPostgres,
+      dialect,
       supportsMultipleConnections,
     ],
   ) => {
-    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
+    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, dialect);
     const expectStoreContent = getStoreContentWaiter(autoLoadPause);
 
-    const columnType = isPostgres ? 'text' : '';
+    const columnType = getColumnType(dialect);
+    const ddlColumnType = getDdlColumnType(dialect);
     const placeholders = (...numbers: number[]) =>
-      numbers.map((number) => (isPostgres ? '$' + number : '?')).join(',');
+      numbers.map(getPlaceholder(dialect)).join(',');
 
     let db: any;
     let store: MergeableStore;
@@ -231,9 +235,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await setDatabase(db, {
           tinybase: [
             'CREATE TABLE "tinybase" ("_id" ' +
-              columnType +
+              ddlColumnType +
               ' PRIMARY KEY, "store" ' +
-              columnType +
+              ddlColumnType +
               ')',
             [{_id: '_', store: '[{"t1":1}]'}],
           ],
@@ -246,9 +250,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await setDatabase(db, {
           tinybase: [
             'CREATE TABLE "tinybase" ("_id" ' +
-              columnType +
+              ddlColumnType +
               ' PRIMARY KEY, "store" ' +
-              columnType +
+              ddlColumnType +
               ')',
             [{_id: '_', store: '[{"t1":}]'}],
           ],
@@ -261,9 +265,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await setDatabase(db, {
           tinybase: [
             'CREATE TABLE "tinybase" ("_id" ' +
-              columnType +
+              ddlColumnType +
               ' PRIMARY KEY, "store" ' +
-              columnType +
+              ddlColumnType +
               ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
@@ -276,9 +280,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await setDatabase(db, {
           tinybase: [
             'CREATE TABLE "tinybase" ("_id" ' +
-              columnType +
+              ddlColumnType +
               ' PRIMARY KEY, "store" ' +
-              columnType +
+              ddlColumnType +
               ')',
             [{_id: '_', store: '[{}, {"v1":1}]'}],
           ],
@@ -292,9 +296,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
           await setDatabase(db, {
             tinybase: [
               'CREATE TABLE "tinybase" ("_id" ' +
-                columnType +
+                ddlColumnType +
                 ' PRIMARY KEY, "store" ' +
-                columnType +
+                ddlColumnType +
                 ')',
               [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
             ],
@@ -322,9 +326,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await setDatabase(db, {
           tinybase: [
             'CREATE TABLE "tinybase" ("_id" ' +
-              columnType +
+              ddlColumnType +
               ' PRIMARY KEY, "store" ' +
-              columnType +
+              ddlColumnType +
               ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],

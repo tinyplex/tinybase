@@ -10,6 +10,7 @@ import {
   ALL_VARIANTS,
   getDatabaseFunctions,
   getStoreContentWaiter,
+  usesJsonValues,
 } from '../common/databases.ts';
 
 describe.each(Object.entries(ALL_VARIANTS))(
@@ -24,13 +25,16 @@ describe.each(Object.entries(ALL_VARIANTS))(
       close,
       autoLoadPause = 3,
       autoLoadIntervalSeconds = 0.001,
-      isPostgres,
+      dialect,
       supportsMultipleConnections,
       skipSqlChecks,
     ],
   ) => {
     const [getDatabase, setDatabase, expectDatabaseContent] =
-      getDatabaseFunctions(cmd, isPostgres, isPostgres);
+      getDatabaseFunctions(cmd, dialect, usesJsonValues(dialect));
+    // Tabular persistence is not yet supported for SQL Server, so this suite
+    // still only sees the SQLite and PostgreSQL variants.
+    const isPostgres = dialect == 'postgresql';
     const expectStoreContent = getStoreContentWaiter(autoLoadPause);
 
     const columnType = isPostgres ? 'text' : '';
