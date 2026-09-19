@@ -242,6 +242,17 @@ const copyPackageFiles = async (forProd = false) => {
   await promises.copyFile('site/guides/19_agents.md', 'agents.md');
   await promises.copyFile('agents.md', join(DIST_DIR, 'agents.md'));
 
+  // The plugin manifest tracks the package version, so that Claude Code can
+  // detect updates to the skills that the plugin exposes.
+  const pluginJsonFile = join('.claude-plugin', 'plugin.json');
+  const pluginJson = JSON.parse(await promises.readFile(pluginJsonFile, UTF8));
+  pluginJson.version = json.version;
+  await promises.writeFile(
+    pluginJsonFile,
+    JSON.stringify(pluginJson, undefined, 2) + '\n',
+    UTF8,
+  );
+
   cpSync('skills', join(DIST_DIR, 'skills'), {recursive: true});
 };
 
