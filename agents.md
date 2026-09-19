@@ -39,6 +39,19 @@ Start with these resources:
 - **Agent skill**:
   https://tinybase.org/skills/build-with-tinybase/SKILL.md
 
+The skill also ships inside the npm package at
+`node_modules/tinybase/skills/build-with-tinybase/`, so it can be read locally
+without a network fetch. Its reference files cover import paths for every
+integration, Persister and Synchronizer lifecycle, and Cloudflare Durable
+Object synchronization.
+
+Claude Code users can install it as a plugin:
+
+```sh
+/plugin marketplace add tinyplex/tinybase
+/plugin install tinybase@tinybase
+```
+
 Use a regular Store for ordinary reactive in-memory state. Add a Persister when
 data must survive beyond the current JavaScript process. Use a MergeableStore
 when changes must be merged or synchronized, and add a Synchronizer to exchange

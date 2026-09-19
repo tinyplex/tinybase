@@ -1,5 +1,6 @@
 // All other imports are lazy so that single tasks start up fast.
 import {
+  cpSync,
   existsSync,
   promises,
   readFileSync,
@@ -240,6 +241,8 @@ const copyPackageFiles = async (forProd = false) => {
   await promises.copyFile('releases.md', join(DIST_DIR, 'releases.md'));
   await promises.copyFile('site/guides/19_agents.md', 'agents.md');
   await promises.copyFile('agents.md', join(DIST_DIR, 'agents.md'));
+
+  cpSync('skills', join(DIST_DIR, 'skills'), {recursive: true});
 };
 
 // The promise is memoized rather than the Map, since callers run concurrently

@@ -1,0 +1,8 @@
+{
+  "name": "tinybase",
+  "description": "Official TinyBase skills for scaffolding, extending, persisting, and synchronizing local-first applications.",
+  "author": {"name": "James Pearce"},
+  "homepage": "https://tinybase.org",
+  "repository": "https://github.com/tinyplex/tinybase",
+  "license": "MIT"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "tinybase",
+  "owner": {
+    "name": "James Pearce",
+    "url": "https://github.com/tinyplex/tinybase"
+  },
+  "plugins": [
+    {
+      "name": "tinybase",
+      "source": "./",
+      "description": "Official TinyBase skills for scaffolding, extending, persisting, and synchronizing local-first applications.",
+      "author": {"name": "James Pearce"},
+      "homepage": "https://tinybase.org",
+      "license": "MIT",
+      "keywords": [
+        "tinybase",
+        "local-first",
+        "crdt",
+        "sync",
+        "persistence",
+        "store"
+      ]
+    }
+  ]
+}
