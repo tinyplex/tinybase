@@ -27,7 +27,9 @@ started](https://tinybase.org/guides/the-basics/getting-started/) -
 reference](https://tinybase.org/api/) - [Demos](https://tinybase.org/demos/) -
 [create-tinybase scaffolding tool](https://github.com/tinyplex/create-tinybase)
 - [Official build-with-tinybase agent
-skill](https://tinybase.org/skills/build-with-tinybase/SKILL.md)
+skill](https://tinybase.org/skills/build-with-tinybase/SKILL.md), also shipped
+in the npm package at `node_modules/tinybase/skills/build-with-tinybase/`, and
+installable in Claude Code with `/plugin marketplace add tinyplex/tinybase`
 - [Full agent guide](https://tinybase.org/llms-full.txt) - [GitHub
 repository](https://github.com/tinyplex/tinybase)
 

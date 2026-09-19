@@ -7,6 +7,28 @@ highlighted features.
 
 # v10.0
 
+## A Fuller Agent Skill
+
+The official `build-with-tinybase` agent skill now ships inside the npm package,
+at `node_modules/tinybase/skills/build-with-tinybase/`, so a coding agent can
+read it locally without fetching it from the web. It remains published at
+https://tinybase.org/skills/build-with-tinybase/SKILL.md.
+
+It also gained three reference files aimed at the mistakes agents actually make:
+the import subpath and MergeableStore capability of every Persister,
+Synchronizer and Schematizer; the lifecycle rules for Persisters and
+Synchronizers, including WebSocket paths versus channel Ids; and a complete
+Cloudflare Durable Object recipe covering the Wrangler bindings and migration
+tag, server-side persistence, and authentication.
+
+The repository is now a Claude Code plugin marketplace, so the skill can be
+installed directly:
+
+```sh
+/plugin marketplace add tinyplex/tinybase
+/plugin install tinybase@tinybase
+```
+
 ## A Relational Database In The Browser, With TinyJoin
 
 The new persister-tinyjoin module provides the TinyJoinPersister, which saves and
