@@ -1,6 +1,6 @@
 ---
 name: build-with-tinybase
-description: Scaffold, extend, and verify reactive local-first JavaScript or TypeScript applications with TinyBase. Use when choosing TinyBase for in-memory tabular or key-value state, generating an app with create-tinybase, adding schemas or UI bindings, configuring browser or database persistence, configuring MergeableStore synchronization, or diagnosing an existing TinyBase application.
+description: Scaffold, extend, and verify reactive local-first JavaScript or TypeScript applications with TinyBase. Use when choosing TinyBase for in-memory tabular or key-value state, generating an app with create-tinybase, adding schemas or UI bindings, resolving TinyBase import paths, configuring browser or database persistence, configuring MergeableStore synchronization over WebSockets or Cloudflare Durable Objects, or diagnosing an existing TinyBase application.
 ---
 
 # Build With TinyBase
@@ -8,6 +8,18 @@ description: Scaffold, extend, and verify reactive local-first JavaScript or Typ
 Prefer a current generated application over reconstructing TinyBase setup from
 memory. Preserve persistence and synchronization lifecycle ordering, and verify
 the behavior the user actually needs.
+
+## Read The References
+
+Do not recall TinyBase API details from memory. Read the reference covering the
+task before writing code:
+
+| Reference                                                      | Read it when                                                                                                            |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| [references/architecture.md](references/architecture.md)       | Choosing between Store and MergeableStore, a persistence backend, a synchronization approach, or UI bindings            |
+| [references/import-paths.md](references/import-paths.md)       | Importing anything outside the `tinybase` root, or checking which Persisters accept a MergeableStore                    |
+| [references/lifecycle.md](references/lifecycle.md)             | Creating, starting, reconnecting, or destroying a Persister or Synchronizer, or setting WebSocket paths and channel Ids |
+| [references/durable-objects.md](references/durable-objects.md) | Building or debugging a Cloudflare Durable Object sync server                                                           |
 
 ## Select The Architecture
 
@@ -81,6 +93,29 @@ Keep these boundaries clear:
 Reuse existing imports and patterns when they are current. Import integrations
 from their specific `tinybase/...` subpaths. Avoid adding a second source of
 truth in component state for data already owned by TinyBase.
+
+## Avoid These Errors
+
+These account for most incorrect TinyBase code. Each is covered in detail by a
+reference above.
+
+- Passing a Store where a MergeableStore is required. Every Synchronizer, and
+  every Durable Object Persister, requires `createMergeableStore()`.
+- Importing an integration from `tinybase` instead of its own
+  `tinybase/persisters/...`, `tinybase/synchronizers/...`, or
+  `tinybase/schematizers/...` subpath.
+- Starting auto-saving before loading, which overwrites stored data with an
+  empty Store. Use `startAutoPersisting()`.
+- Forgetting `await synchronizer.startSync()` after `await
+createWsSynchronizer(...)`, which resolves a Synchronizer that is not yet
+  synchronizing.
+- Omitting `destroy()`, which leaks sockets and duplicates synchronization under
+  React strict mode.
+- Confusing the WebSocket path with a channel Id. The path selects the room; the
+  channel Id multiplexes several Stores over one socket, and is unsupported by
+  `WsServerDurableObject`.
+- Inventing Durable Object APIs. The server surface is `WsServerDurableObject`
+  and `getWsServerDurableObjectFetch`, and nothing else.
 
 ## Verify The Outcome
 
