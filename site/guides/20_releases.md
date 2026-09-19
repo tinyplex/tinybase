@@ -75,6 +75,34 @@ such a client has a single connection, so that is no longer a concern.
 Your own code does not need to change, but your `@libsql/client` dependency
 should be v0.18 or later.
 
+## A Site You Can Navigate Without A Mouse
+
+The documentation site is now keyboard-navigable throughout. Every page starts
+with a 'Skip to content' link that becomes visible once focused, the navigation
+and main content are marked up as labelled landmarks, and focus is now visibly
+styled wherever it lands.
+
+The color theme toggle cycles automatic, dark, and light as before, but it now
+announces which mode is active and which one activating it will select, so it
+is usable from a screen reader rather than by its icon alone.
+
+## Breaking Changes in v10.0
+
+There is only one, and it affects you only if you use the LibSqlPersister.
+
+### libSQL Client v0.18
+
+The persister-libsql module now requires v0.18 or later of the `@libsql/client`
+module, up from v0.17. Update that dependency when you upgrade. The 'libSQL,
+With Pooled Connections' section above describes what changed and why, and no
+TinyBase code of your own needs to change.
+
+### Everything Else
+
+Nothing has been removed or renamed, and no existing signature has changed. The
+TinyBase API surface in v10.0 is v9.7 plus the TinyJoinPersister, so upgrading
+is otherwise a version bump.
+
 ---
 
 # v9.7
