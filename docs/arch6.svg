@@ -23,20 +23,11 @@
   </g>
 
   <g transform="translate(560,600) scale(0.6)">
-    <g transform="translate(340,64) skewY(10)">
-      <use xlink:href="common.svg?a#storage" />
-      <text x="850" y="120" fill="#fff" text-anchor="end">Synchronizer</text>
-    </g>
-
-    <g transform="translate(340,-161) skewY(10)">
-      <use xlink:href="common.svg?a#storage" />
-      <text x="850" y="120" fill="#fff" text-anchor="end">ElectricSQL</text>
-    </g>
-    <g transform="translate(340,64) skewY(10)">
+    <g transform="translate(340,-48) skewY(10)">
       <use xlink:href="common.svg?a#storage" />
       <text x="850" y="120" fill="#fff" text-anchor="end">PowerSync</text>
     </g>
-    <g transform="translate(340,289) skewY(10)">
+    <g transform="translate(340,177) skewY(10)">
       <use xlink:href="common.svg?a#storage" />
       <text x="850" y="120" fill="#fff" text-anchor="end">LibSql/Turso</text>
     </g>
@@ -50,15 +41,11 @@
     </g>
   </g>
   <g transform="translate(2040,600) scale(0.6)">
-    <g transform="translate(-560,0) skewY(-10)">
-      <use xlink:href="common.svg?a#storage" />
-      <text x="50" y="120" fill="#fff">ElectricSQL</text>
-    </g>
-    <g transform="translate(-560,225) skewY(-10)">
+    <g transform="translate(-560,113) skewY(-10)">
       <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">PowerSync</text>
     </g>
-    <g transform="translate(-560,450) skewY(-10)">
+    <g transform="translate(-560,338) skewY(-10)">
       <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">LibSql/Turso</text>
     </g>
