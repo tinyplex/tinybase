@@ -88,7 +88,21 @@ is usable from a screen reader rather than by its icon alone.
 
 ## Breaking Changes in v10.0
 
-There is only one, and it affects you only if you use the LibSqlPersister.
+There are two, and each affects a single Persister.
+
+### The ElectricSQL Persister Has Been Removed
+
+The persister-electric-sql module has been removed, as the v9.7 deprecation
+said it would be. The `electric-sql` module that it bound to was deprecated by
+its authors, has not been published since 2024, and has been superseded by a
+rebuilt sync engine with a different architecture that does not map onto the
+Persister interface.
+
+If you are working with PostgreSQL, the PgPersister, PostgresPersister and
+PglitePersister are all actively supported, and the last of those runs in a
+browser. The `electric-sql` package is no longer an optional peer dependency of
+TinyBase, so you can drop it - and its own `wa-sqlite` requirement - from your
+project when you upgrade.
 
 ### libSQL Client v0.18
 
@@ -99,9 +113,9 @@ TinyBase code of your own needs to change.
 
 ### Everything Else
 
-Nothing has been removed or renamed, and no existing signature has changed. The
-TinyBase API surface in v10.0 is v9.7 plus the TinyJoinPersister, so upgrading
-is otherwise a version bump.
+Nothing else has been removed or renamed, and no existing signature has
+changed. Setting the one removed Persister aside, the TinyBase API surface in
+v10.0 is v9.7 plus the TinyJoinPersister.
 
 ---
 

@@ -186,10 +186,10 @@ AutomergePersister interfaces respectively.)
 - **Cons**: This approach adds additional moving parts, other libraries, and
   possible fees for commercial services, based on usage.
 
-For more details on these interfaces, see the ElectricSqlPersister,
-PowerSyncPersister, and LibSqlPersister (Turso) interfaces. The APIs, consistent
-with the other SQLite- and PostgreSQL-based persisters, are described in the
-Database Persistence guide.
+For more details on these interfaces, see the PowerSyncPersister and
+LibSqlPersister (Turso) interfaces. The APIs, consistent with the other SQLite-
+and PostgreSQL-based persisters, are described in the Database Persistence
+guide.
 
 ## Mix It Up!
 

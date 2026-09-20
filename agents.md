@@ -136,7 +136,7 @@ Multiple storage backends supported via Persisters:
 
 - **Browser**: LocalStorage, SessionStorage, IndexedDB, OPFS
 - **Databases**: SQLite (Bun, WASM, sqlite3), PostgreSQL, PGlite, Turso (libSQL)
-- **Third-party**: ElectricSQL, PowerSync, CR-SQLite
+- **Third-party**: PowerSync, CR-SQLite
 - **Cloud**: PartyKit, Cloudflare Durable Objects
 - **Files**: Node.js file system
 - **CRDT**: Yjs, Automerge integration

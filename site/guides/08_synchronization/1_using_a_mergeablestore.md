@@ -139,7 +139,6 @@ persist a MergeableStore:
 | --------------------- | ---------------------------------------------------------------------------------------- |
 | RemotePersister       | Remote server                                                                            |
 | CrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                 |
-| ElectricSqlPersister  | Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)               |
 | LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts) |
 | PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)             |
 | YjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                         |

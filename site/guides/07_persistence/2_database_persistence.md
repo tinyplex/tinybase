@@ -3,7 +3,7 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently twelve SQLite-based persistence options, and four for
+There are currently eleven SQLite-based persistence options, and four for
 PostgreSQL:
 
 | Persister                  | Storage                                                                                                          |
@@ -17,7 +17,6 @@ PostgreSQL:
 | ReactNativeSqlitePersister | SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) |
 | CapacitorSqlitePersister   | SQLite in Capacitor, via [capacitor-sqlite](https://github.com/capacitor-community/sqlite)                       |
 | CrSqliteWasmPersister      | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                                         |
-| ElectricSqlPersister       | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                           |
 | LibSqlPersister            | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                         |
 | PowerSyncPersister         | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                                     |
 | PgPersister                | PostgreSQL, via [pg](https://github.com/brianc/node-postgres)                                                    |
@@ -26,11 +25,9 @@ PostgreSQL:
 | TinyJoinPersister          | PostgreSQL-shaped SQL in a browser, via [TinyJoin](https://tinyjoin.org)                                         |
 | SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                             |
 
-Two of those are deprecated as of v9.7 and will be removed in v10.0. The
+One of those is deprecated as of v9.7 and will be removed in v10.0: the
 Sqlite3Persister is superseded by the SqliteNodePersister, since the `sqlite3`
-module is no longer maintained and SQLite is now built into Node.js. The
-ElectricSqlPersister is deprecated because the `electric-sql` module it binds to
-was deprecated by its authors and has not been published since 2024.
+module is no longer maintained and SQLite is now built into Node.js.
 
 Of those, the PgPersister is the one to reach for if you are using a hosted
 service. Because [pg](https://github.com/brianc/node-postgres) is the de facto

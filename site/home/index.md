@@ -153,11 +153,6 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/electric.svg?asImg" /> ElectricSQL
-  </a>
-</div>
-<div>
-  <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/powersync.svg?asImg" /> PowerSync
   </a>
 </div>
