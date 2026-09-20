@@ -135,7 +135,7 @@ clients and servers using Hybrid Logical Clocks for causality tracking.
 Multiple storage backends supported via Persisters:
 
 - **Browser**: LocalStorage, SessionStorage, IndexedDB, OPFS
-- **Databases**: SQLite (Bun, WASM, sqlite3), PostgreSQL, PGlite, Turso (libSQL)
+- **Databases**: SQLite (Node, Bun, WASM), PostgreSQL, PGlite, Turso (libSQL)
 - **Third-party**: PowerSync, CR-SQLite
 - **Cloud**: PartyKit, Cloudflare Durable Objects
 - **Files**: Node.js file system
