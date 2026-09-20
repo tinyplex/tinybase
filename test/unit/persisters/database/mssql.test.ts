@@ -112,7 +112,11 @@ test('generates T-SQL rather than the shared PostgreSQL and SQLite spellings', a
   expect(sql).toContain('BEGIN TRANSACTION');
   expect(sql).toContain('COMMIT');
   expect(sql.join('\n')).not.toMatch(/\btrue\b/);
-  expect(fake.sqlMatching(/^DELETE FROM/)[0]).toContain('WHERE(1=1)');
+  // A redundant `true` predicate is now omitted outright rather than being
+  // respelled, so there is no bare boolean for SQL Server to reject.
+  expect(fake.sqlMatching(/^DELETE FROM/)[0]).toBe(
+    'DELETE FROM"tinybase"WHERE"_id"NOT IN(@p1)',
+  );
   // nvarchar(max) cannot be a primary key, so the row Id column is narrower.
   expect(fake.sqlMatching(/^CREATE TABLE/)[0]).toBe(
     'CREATE TABLE"tinybase"("_id"nvarchar(450) PRIMARY KEY,' +

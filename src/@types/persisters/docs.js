@@ -1926,7 +1926,7 @@
  * the database or connection from the Persister, defaulting to `getDb`.
  * @returns A reference to the new Persister object.
  * @category Creation
- * @since 9.8.0
+ * @since 10.0.0
  */
 /// createCustomMsSqlPersister
 /**

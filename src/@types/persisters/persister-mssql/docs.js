@@ -38,7 +38,7 @@
  * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-mssql
- * @since 9.8.0
+ * @since 10.0.0
  */
 /// persister-mssql
 /**
@@ -52,7 +52,7 @@
  * extra getMsSql method for accessing a reference to the database connection
  * the Store is being persisted to.
  * @category Persister
- * @since 9.8.0
+ * @since 10.0.0
  */
 /// MsSqlPersister
 {
@@ -80,7 +80,7 @@
    * await pool.close();
    * ```
    * @category Getter
-   * @since 9.8.0
+   * @since 10.0.0
    */
   /// MsSqlPersister.getMsSql
 }
@@ -161,6 +161,6 @@
  * await pool.close();
  * ```
  * @category Creation
- * @since 9.8.0
+ * @since 10.0.0
  */
 /// createMsSqlPersister

@@ -219,7 +219,6 @@ binds to a local SQLite database with the
 
 ```js
 import {DatabaseSync} from 'node:sqlite';
-import {createStore} from 'tinybase';
 import {createSqliteNodePersister} from 'tinybase/persisters/persister-sqlite-node';
 
 const nodeDb = new DatabaseSync(':memory:');
