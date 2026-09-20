@@ -13,13 +13,13 @@ import {Mutex} from 'async-mutex';
 import BetterSqlite3, {
   type Database as BetterSqlite3Database,
 } from 'better-sqlite3';
+import type {Database as BunDatabase} from 'bun:sqlite';
 import 'fake-indexeddb/auto';
 import {DatabaseSync} from 'node:sqlite';
 import type {PoolClient} from 'pg';
 import {Pool} from 'pg';
 import type {ReservedSql, Sql} from 'postgres';
 import postgres from 'postgres';
-import sqlite3, {Database} from 'sqlite3';
 import {type Content, type Store, getUniqueId} from 'tinybase';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better-sqlite3';
@@ -32,7 +32,6 @@ import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync'
 import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun';
 import {createSqliteNodePersister} from 'tinybase/persisters/persister-sqlite-node';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
-import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
 import {afterAll, expect} from 'vitest';
 import {
@@ -269,45 +268,6 @@ export const NODE_SQLITE_MERGEABLE_VARIANTS: Variants = {
     async ([db]: [DatabaseSync, string]) => {
       db.close();
     },
-    20,
-    undefined,
-    undefined,
-    true,
-  ],
-  sqlite3: [
-    async (dbAndName?: [Database, string]): Promise<[Database, string]> => {
-      const existingName = dbAndName?.[1];
-      const name = existingName ?? tmp.tmpNameSync();
-      return [new sqlite3.Database(name), name];
-    },
-    ['getDb', ([db]: [Database, string]) => db],
-    (
-      store: Store,
-      [db]: [Database, string],
-      storeTableOrConfig?: string | DatabasePersisterConfig,
-      onSqlCommand?: (sql: string, args?: any[]) => void,
-      onIgnoredError?: (error: any) => void,
-    ) =>
-      (createSqlite3Persister as any)(
-        store,
-        db,
-        storeTableOrConfig,
-        onSqlCommand,
-        onIgnoredError,
-      ),
-    (
-      [db]: [Database, string],
-      sql: string,
-      args: any[] = [],
-    ): Promise<{[id: string]: any}[]> =>
-      new Promise((resolve, reject) =>
-        db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
-          error
-            ? reject(error)
-            : resolve(rows.map((row: {[id: string]: any}) => ({...row}))),
-        ),
-      ),
-    async ([db]: [Database, string]) => db.close(),
     20,
     undefined,
     undefined,
@@ -595,10 +555,10 @@ export const BUN_MERGEABLE_VARIANTS: Variants = {
       const {Database} = await importBunSqlite();
       return new Database(':memory:');
     },
-    ['getDb', (db: typeof Database) => db],
+    ['getDb', (db: BunDatabase) => db],
     (
       store: Store,
-      db: typeof Database,
+      db: BunDatabase,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,

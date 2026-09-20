@@ -18,7 +18,6 @@ import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as Solid from 'solid-js';
 import type * as SolidWebTypes from 'solid-js/web';
-import * as sqlite3 from 'sqlite3';
 import * as Svelte from 'svelte';
 import {compileModule, compile as compileSvelte} from 'svelte/compiler';
 import type {Id} from 'tinybase';
@@ -39,7 +38,6 @@ import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
 import * as TinyBasePersisterBun from 'tinybase/persisters/persister-sqlite-bun';
 import * as TinyBasePersisterSqliteNode from 'tinybase/persisters/persister-sqlite-node';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
-import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
 import * as TinyBaseSchematizers from 'tinybase/schematizers';
 import * as TinyBaseSchematizersArkType from 'tinybase/schematizers/schematizer-arktype';
@@ -139,7 +137,6 @@ const TinyBaseForTest = {
   'solid-js': SolidBrowser,
   'solid-js/web': SolidWeb,
   svelte: Svelte,
-  sqlite3,
   tinybase: TinyBaseForTest,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
@@ -167,7 +164,6 @@ const TinyBaseForTest = {
   'tinybase/persisters/persister-pglite': TinyBasePersisterPglite,
   'tinybase/persisters/persister-postgres': TinyBasePersisterPostgres,
   'tinybase/persisters/persister-remote': TinyBasePersisterRemote,
-  'tinybase/persisters/persister-sqlite3': TinyBasePersisterSqlite3,
   'tinybase/persisters/persister-sqlite-bun': TinyBasePersisterBun,
   'node:sqlite': nodeSqlite,
   'tinybase/persisters/persister-sqlite-node': TinyBasePersisterSqliteNode,

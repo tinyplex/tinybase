@@ -1,8 +1,8 @@
 import {createRequire} from 'module';
-import sqlite3 from 'sqlite3';
+import {DatabaseSync} from 'node:sqlite';
 import {createMergeableStore, createStore} from 'tinybase';
 import {createCustomSqlitePersister, Persists} from 'tinybase/persisters';
-import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
+import {createSqliteNodePersister} from 'tinybase/persisters/persister-sqlite-node';
 import {afterEach, expect, test, vi} from 'vitest';
 import {isBun, waitFor} from '../../common/other.ts';
 
@@ -11,16 +11,13 @@ const Database = createRequire(import.meta.url)('better-sqlite3');
 afterEach(() => vi.useRealTimers());
 
 test('replaces every table name placeholder', async () => {
-  const db = new sqlite3.Database(':memory:');
-  await new Promise<void>((resolve, reject) =>
-    db.exec(
-      'CREATE TABLE pets (id TEXT PRIMARY KEY, species TEXT);' +
-        `INSERT INTO pets VALUES ('fido', 'dog'), ('felix', 'cat');`,
-      (error) => (error ? reject(error) : resolve()),
-    ),
+  const db = new DatabaseSync(':memory:');
+  db.exec(
+    'CREATE TABLE pets (id TEXT PRIMARY KEY, species TEXT);' +
+      `INSERT INTO pets VALUES ('fido', 'dog'), ('felix', 'cat');`,
   );
   const store = createStore();
-  const persister = createSqlite3Persister(store, db, {
+  const persister = createSqliteNodePersister(store, db, {
     mode: 'tabular',
     tables: {
       load: {
@@ -43,17 +40,12 @@ test('replaces every table name placeholder', async () => {
 });
 
 test('rolls back failed database transactions', async () => {
-  const db = new sqlite3.Database(':memory:');
+  const db = new DatabaseSync(':memory:');
   const ignoredError = vi.fn();
   const executeCommand = async (
     sql: string,
     params: any[] = [],
-  ): Promise<any[]> =>
-    await new Promise((resolve, reject) =>
-      db.all(sql, params, (error, rows) =>
-        error ? reject(error) : resolve(rows),
-      ),
-    );
+  ): Promise<any[]> => db.prepare(sql).all(...params) as any[];
   const persister = createCustomSqlitePersister(
     createStore().setValue('species', 'dog'),
     undefined,
@@ -370,18 +362,15 @@ test('contains SQLite ignored-error handler failures', async () => {
 });
 
 test('adds collision-safe unique row ID indexes', async () => {
-  const db = new sqlite3.Database(':memory:');
-  await new Promise<void>((resolve, reject) =>
-    db.exec(
-      'CREATE TABLE pets (id TEXT, species TEXT);' +
-        'CREATE TABLE owners (id TEXT, name TEXT);',
-      (error) => (error ? reject(error) : resolve()),
-    ),
+  const db = new DatabaseSync(':memory:');
+  db.exec(
+    'CREATE TABLE pets (id TEXT, species TEXT);' +
+      'CREATE TABLE owners (id TEXT, name TEXT);',
   );
   const store = createStore()
     .setTable('pets', {fido: {species: 'dog'}})
     .setTable('owners', {alice: {name: 'Alice'}});
-  const persister = createSqlite3Persister(store, db, {
+  const persister = createSqliteNodePersister(store, db, {
     mode: 'tabular',
     tables: {
       save: {
@@ -392,13 +381,11 @@ test('adds collision-safe unique row ID indexes', async () => {
   });
   await persister.save();
 
-  const indexes = await new Promise<{name: string}[]>((resolve, reject) =>
-    db.all(
+  const indexes = db
+    .prepare(
       `SELECT name FROM sqlite_master WHERE type='index'AND sql IS NOT NULL`,
-      (error, rows: {name: string}[]) =>
-        error ? reject(error) : resolve(rows),
-    ),
-  );
+    )
+    .all() as {name: string}[];
   expect(indexes).toHaveLength(2);
   expect(new Set(indexes.map(({name}) => name)).size).toBe(2);
   expect(indexes.every(({name}) => name.startsWith('tinybase_pk_'))).toBe(true);

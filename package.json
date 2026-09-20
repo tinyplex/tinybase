@@ -58,7 +58,6 @@
     "react-native-mmkv": "^4.3.2",
     "react-native-sqlite-storage": "^6.0.1",
     "solid-js": "^1.9.15",
-    "sqlite3": "^6.0.1",
     "svelte": "^5.57.1",
     "tinyjoin": "^0.2.0",
     "valibot": "^1.5.0",
@@ -140,9 +139,6 @@
       "optional": true
     },
     "solid-js": {
-      "optional": true
-    },
-    "sqlite3": {
       "optional": true
     },
     "svelte": {
@@ -296,7 +292,6 @@
     "rollup-plugin-prettier": "^4.2.0",
     "rollup-plugin-svelte": "^7.2.3",
     "solid-js": "^1.9.15",
-    "sqlite3": "^6.0.1",
     "svelte": "^5.57.1",
     "svelte-check": "^4.7.6",
     "tinybase": "file:./dist",

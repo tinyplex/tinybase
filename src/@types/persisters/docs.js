@@ -21,7 +21,6 @@
  * |ReactNativeMmkvPersister|MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv)|Yes|Yes
  * |DurableObjectStoragePersister|Cloudflare Durable Object (KV)|No|Yes
  * |DurableObjectSqlStoragePersister|Cloudflare Durable Object (SQLite)|No|Yes
- * |Sqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
  * |SqliteBunPersister| SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)|Yes|Yes*
  * |SqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
  * |ExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*

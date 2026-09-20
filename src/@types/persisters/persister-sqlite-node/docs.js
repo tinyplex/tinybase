@@ -82,9 +82,7 @@
  *
  * Note that `node:sqlite` does not signal when the database changes, so if you
  * enable automatic loading with the startAutoLoad method, it polls the database
- * for changes. The Sqlite3Persister, which uses the asynchronous `sqlite3`
- * module, is notified of changes as they happen, and may suit you better if
- * that matters.
+ * for changes, just as the BetterSqlite3Persister does.
  * @param store The Store or MergeableStore to persist.
  * @param db The database that was returned from `new DatabaseSync(...)`.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the

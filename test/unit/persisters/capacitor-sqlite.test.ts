@@ -1,5 +1,5 @@
 import type {SQLiteDBConnection} from '@capacitor-community/sqlite';
-import sqlite3 from 'sqlite3';
+import {DatabaseSync} from 'node:sqlite';
 import {createMergeableStore, createStore} from 'tinybase';
 import {createCapacitorSqlitePersister} from 'tinybase/persisters/persister-capacitor-sqlite';
 import {expect, test, vi} from 'vitest';
@@ -7,13 +7,9 @@ import {expect, test, vi} from 'vitest';
 // The plugin needs a native runtime, so stand its two SQL methods on an
 // in-process SQLite database instead, and record how each one is used.
 const createMockConnection = () => {
-  const database = new sqlite3.Database(':memory:');
-  const all = (sql: string, params: any[] = []): Promise<any[]> =>
-    new Promise((resolve, reject) =>
-      database.all(sql, params, (error, rows) =>
-        error ? reject(error) : resolve(rows),
-      ),
-    );
+  const database = new DatabaseSync(':memory:');
+  const all = async (sql: string, params: any[] = []): Promise<any[]> =>
+    database.prepare(sql).all(...params) as any[];
   const queries: string[] = [];
   const runs: [sql: string, transaction: boolean | undefined][] = [];
   const db = {
