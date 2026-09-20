@@ -12,7 +12,6 @@ export * from '../persisters/persister-capacitor-sqlite/index.ts';
 export * from '../persisters/persister-cr-sqlite-wasm/index.ts';
 export * from '../persisters/persister-durable-object-sql-storage/index.ts';
 export * from '../persisters/persister-durable-object-storage/index.ts';
-export * from '../persisters/persister-electric-sql/index.ts';
 export * from '../persisters/persister-expo-sqlite/index.ts';
 export * from '../persisters/persister-file/index.ts';
 export * from '../persisters/persister-indexed-db/index.ts';

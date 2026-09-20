@@ -30,7 +30,6 @@ const ALL_MODULES = [
   'persisters/persister-cr-sqlite-wasm',
   'persisters/persister-durable-object-storage',
   'persisters/persister-durable-object-sql-storage',
-  'persisters/persister-electric-sql',
   'persisters/persister-expo-sqlite',
   'persisters/persister-file',
   'persisters/persister-indexed-db',

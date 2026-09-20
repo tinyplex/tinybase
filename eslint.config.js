@@ -78,7 +78,6 @@ export default tsLint.config(
             '^\\./generated/client$',
             '^custom-remote-handlers$',
             '^@powersync/common$',
-            '^electric-sql/(client/model|notifiers|wa-sqlite)$',
             '^cloudflare:workers$',
             '^svelte/reactivity$',
             '@sveltejs/vite-plugin-svelte',

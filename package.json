@@ -47,7 +47,6 @@
     "better-sqlite3": "^13.0.3",
     "bun": "^1.4.2",
     "effect": "^3.22.2",
-    "electric-sql": "^0.12.1",
     "expo": "^57.0.24",
     "expo-sqlite": "^57.0.3",
     "partykit": "^0.0.115",
@@ -108,9 +107,6 @@
       "optional": true
     },
     "effect": {
-      "optional": true
-    },
-    "electric-sql": {
       "optional": true
     },
     "expo": {
@@ -266,7 +262,6 @@
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^10.3.3",
     "effect": "^3.22.2",
-    "electric-sql": "^0.12.1",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "eslint-plugin-import": "^2.32.0",
@@ -316,7 +311,6 @@
     "vite-plugin-solid": "^2.11.14",
     "vitest": "^5.0.0",
     "vitest-fetch-mock": "^0.4.5",
-    "wa-sqlite": "github:rhashimoto/wa-sqlite#semver:^0.9.8",
     "ws": "^8.21.3",
     "yjs": "^13.6.32",
     "yup": "^1.7.1",

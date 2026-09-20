@@ -30,7 +30,6 @@
  * |PglitePersister|PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)|Yes|Yes*
  * |TinyJoinPersister|PostgreSQL-shaped SQL in a browser, via [TinyJoin](https://tinyjoin.org)|Yes|Yes*
  * |CrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
- * |ElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
  * |LibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
  * |PowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|Yes|No
  * |YjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|Yes|No

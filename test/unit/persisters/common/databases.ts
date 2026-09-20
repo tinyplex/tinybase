@@ -13,9 +13,6 @@ import {Mutex} from 'async-mutex';
 import BetterSqlite3, {
   type Database as BetterSqlite3Database,
 } from 'better-sqlite3';
-import type {ElectricClient} from 'electric-sql/client/model';
-import {DbSchema} from 'electric-sql/client/model';
-import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import 'fake-indexeddb/auto';
 import {DatabaseSync} from 'node:sqlite';
 import type {PoolClient} from 'pg';
@@ -27,7 +24,6 @@ import {type Content, type Store, getUniqueId} from 'tinybase';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better-sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
-import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
 import {createPgPersister} from 'tinybase/persisters/persister-pg';
 import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
@@ -67,9 +63,6 @@ const pgAdmin = async (sql: string) => {
   await adminPool.query(sql);
   await adminPool.end();
 };
-
-const electricSchema = new DbSchema({}, [], []);
-type Electric = ElectricClient<typeof electricSchema>;
 
 type AbstractPowerSyncDatabase = {
   execute(sql: string, args: any[]): Promise<QueryResult>;
@@ -396,34 +389,6 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
     },
     async ([client]: LibSqlClientAndTransaction) => client.close(),
   ],
-  electricSql: [
-    (): Promise<Electric> =>
-      suppressWarnings(
-        async () =>
-          await electrify(
-            await ElectricDatabase.init(':memory:'),
-            electricSchema,
-          ),
-      ),
-    ['getElectricClient', (electricClient: Electric) => electricClient],
-    (
-      store: Store,
-      electric: Electric,
-      storeTableOrConfig?: string | DatabasePersisterConfig,
-      onSqlCommand?: (sql: string, args?: any[]) => void,
-      onIgnoredError?: (error: any) => void,
-    ) =>
-      (createElectricSqlPersister as any)(
-        store,
-        electric,
-        storeTableOrConfig,
-        onSqlCommand,
-        onIgnoredError,
-      ),
-    (electricClient: Electric, sql: string, args: any[] = []) =>
-      electricClient.db.raw({sql, args}),
-    (electricClient: Electric) => electricClient.close(),
-  ],
   powerSync: [
     async (): Promise<AbstractPowerSyncDatabase> =>
       await getPowerSyncDatabase(':memory:'),
@@ -704,15 +669,13 @@ export const getDatabaseFunctions = <Database>(
           ? 'SELECT table_name tn, column_name cn, data_type ty ' +
               'FROM information_schema.columns ' +
               `WHERE table_schema='public' ` +
-              `AND table_name NOT LIKE ${placeholder(1)} ` +
-              `AND table_name NOT LIKE ${placeholder(2)}`
+              `AND table_name NOT LIKE ${placeholder(1)}`
           : 'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
               'FROM pragma_table_list() t, ' +
               'pragma_table_info(t.name) c ' +
               `WHERE t.schema='main' AND t.type = 'table' ` +
-              `AND t.name NOT LIKE ${placeholder(1)} ` +
-              `AND t.name NOT LIKE ${placeholder(2)}`,
-        ['%sql%', '%electric%'],
+              `AND t.name NOT LIKE ${placeholder(1)}`,
+        ['%sql%'],
       )
     ).forEach(({tn, cn, ty}) => {
       if (!dump[tn]) {
