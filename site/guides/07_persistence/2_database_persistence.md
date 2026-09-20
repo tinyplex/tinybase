@@ -3,12 +3,11 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently eleven SQLite-based persistence options, and four for
+There are currently ten SQLite-based persistence options, and four for
 PostgreSQL:
 
 | Persister                  | Storage                                                                                                          |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Sqlite3Persister           | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                          |
 | BetterSqlite3Persister     | SQLite in Node, via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)                                 |
 | SqliteNodePersister        | SQLite in Node, via [node:sqlite](https://nodejs.org/api/sqlite.html)                                            |
 | SqliteBunPersister         | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                                  |
@@ -24,10 +23,6 @@ PostgreSQL:
 | PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
 | TinyJoinPersister          | PostgreSQL-shaped SQL in a browser, via [TinyJoin](https://tinyjoin.org)                                         |
 | SupabasePersister          | Supabase, via [supabase-js](https://github.com/supabase/supabase-js)                                             |
-
-One of those is deprecated as of v9.7 and will be removed in v10.0: the
-Sqlite3Persister is superseded by the SqliteNodePersister, since the `sqlite3`
-module is no longer maintained and SQLite is now built into Node.js.
 
 Of those, the PgPersister is the one to reach for if you are using a hosted
 service. Because [pg](https://github.com/brianc/node-postgres) is the de facto

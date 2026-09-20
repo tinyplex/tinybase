@@ -118,7 +118,6 @@ MergeableStore, but _only_ in the 'JSON-serialization' mode:
 
 | Persister                  | Storage                                                                                                          |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Sqlite3Persister           | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                          |
 | BetterSqlite3Persister     | SQLite in Node, via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)                                 |
 | SqliteNodePersister        | SQLite in Node, via [node:sqlite](https://nodejs.org/api/sqlite.html)                                            |
 | SqliteBunPersister         | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                                  |

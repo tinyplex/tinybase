@@ -159,7 +159,7 @@ PostgreSQL, the file system, or a Cloudflare Durable Object.
   it in and out from the persisted storage when clients connect or disconnect.
 
 See the createWsServer function for details of how to create a persister for the
-synchronization server, such as Sqlite3Persister or PostgresPersister.
+synchronization server, such as SqliteNodePersister or PostgresPersister.
 
 A reliable all-in-one solution is to run both synchronization and storage on
 Cloudflare. Check out the Cloudflare Durable Objects guide and/or try the

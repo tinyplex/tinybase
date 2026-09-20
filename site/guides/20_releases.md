@@ -88,7 +88,49 @@ is usable from a screen reader rather than by its icon alone.
 
 ## Breaking Changes in v10.0
 
-There are two, and each affects a single Persister.
+There are three, and each affects a single Persister. Two are the removals
+that v9.7 said were coming.
+
+### The `sqlite3` Persister Has Been Removed
+
+The persister-sqlite3 module has been removed. The `sqlite3` module that it
+bound to is no longer maintained - its own v6 release marks the repository as
+such - and SQLite now ships inside Node.js.
+
+The SqliteNodePersister replaces it directly, and the move is close to a rename:
+
+```js ignore
+// Before
+import {Database} from 'sqlite3';
+import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
+
+const persister = createSqlite3Persister(
+  store,
+  new Database(':memory:'),
+  'my_tinybase',
+);
+```
+
+```js ignore
+// After
+import {DatabaseSync} from 'node:sqlite';
+import {createSqliteNodePersister} from 'tinybase/persisters/persister-sqlite-node';
+
+const persister = createSqliteNodePersister(
+  store,
+  new DatabaseSync(':memory:'),
+  'my_tinybase',
+);
+```
+
+Both modes and MergeableStore support carry over unchanged. The one behavioral
+difference is automatic loading: `sqlite3` reported changes as they happened,
+whereas `node:sqlite` does not signal them, so the SqliteNodePersister polls
+instead. If you need Node.js versions that predate the built-in `node:sqlite`
+module, reach for the BetterSqlite3Persister, which polls in the same way.
+
+The `sqlite3` package is no longer an optional peer dependency of TinyBase, so
+you can drop it from your project when you upgrade.
 
 ### The ElectricSQL Persister Has Been Removed
 
@@ -114,7 +156,7 @@ TinyBase code of your own needs to change.
 ### Everything Else
 
 Nothing else has been removed or renamed, and no existing signature has
-changed. Setting the one removed Persister aside, the TinyBase API surface in
+changed. Setting the two removed Persisters aside, the TinyBase API surface in
 v10.0 is v9.7 plus the TinyJoinPersister.
 
 ---

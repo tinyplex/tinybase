@@ -56,7 +56,6 @@ one.
 | `tinybase/persisters/persister-sqlite-bun`                 | `createSqliteBunPersister`                                                                | Store or MergeableStore |
 | `tinybase/persisters/persister-sqlite-node`                | `createSqliteNodePersister`                                                               | Store or MergeableStore |
 | `tinybase/persisters/persister-sqlite-wasm`                | `createSqliteWasmPersister`                                                               | Store or MergeableStore |
-| `tinybase/persisters/persister-sqlite3`                    | `createSqlite3Persister`                                                                  | Store or MergeableStore |
 | `tinybase/persisters/persister-supabase`                   | `createSupabasePersister`                                                                 | Store or MergeableStore |
 | `tinybase/persisters/persister-tinyjoin`                   | `createTinyJoinPersister`                                                                 | Store or MergeableStore |
 | `tinybase/persisters/persister-yjs`                        | `createYjsPersister`                                                                      | Store only              |
