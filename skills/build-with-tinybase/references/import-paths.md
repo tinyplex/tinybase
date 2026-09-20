@@ -44,6 +44,7 @@ one.
 | `tinybase/persisters/persister-file`                       | `createFilePersister`                                                                     | Store or MergeableStore |
 | `tinybase/persisters/persister-indexed-db`                 | `createIndexedDbPersister`                                                                | Store or MergeableStore |
 | `tinybase/persisters/persister-libsql`                     | `createLibSqlPersister`                                                                   | Store only              |
+| `tinybase/persisters/persister-mssql`                      | `createMsSqlPersister`                                                                    | Store or MergeableStore |
 | `tinybase/persisters/persister-partykit-client`            | `createPartyKitPersister`                                                                 | Store only              |
 | `tinybase/persisters/persister-partykit-server`            | `TinyBasePartyKitServer`, `hasStoreInStorage`, `loadStoreFromStorage`, `broadcastChanges` | Store only              |
 | `tinybase/persisters/persister-pg`                         | `createPgPersister`                                                                       | Store or MergeableStore |
