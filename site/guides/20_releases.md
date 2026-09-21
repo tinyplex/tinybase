@@ -70,7 +70,7 @@ import {connect} from 'mssql';
 import {createStore} from 'tinybase';
 import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
 
-const msSqlPool = await connect(process.env.TINYBASE_MSSQL);
+const msSqlPool = await connect('Server=localhost,1433;Database=tinybase');
 const msSqlStore = createStore().setTables({pets: {fido: {species: 'dog'}}});
 const msSqlPersister = await createMsSqlPersister(
   msSqlStore,

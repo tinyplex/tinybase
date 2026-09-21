@@ -32,9 +32,9 @@
  *
  * This module currently supports the JSON serialization mode only.
  *
- * The examples in this documentation connect with the `TINYBASE_MSSQL`
- * environment variable, which should be set to a connection string for a
- * scratch database.
+ * The examples below connect to a local `tinybase` database. A real
+ * connection string also carries the login, or the authentication type that
+ * stands in for one on Azure.
  * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-mssql
@@ -69,7 +69,7 @@
    * import {createStore} from 'tinybase';
    * import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
    *
-   * const pool = await connect(process.env.TINYBASE_MSSQL);
+   * const pool = await connect('Server=localhost,1433;Database=tinybase');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = await createMsSqlPersister(store, pool, 'my_tinybase');
    *
@@ -134,7 +134,7 @@
  * import {createStore} from 'tinybase';
  * import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
  *
- * const pool = await connect(process.env.TINYBASE_MSSQL);
+ * const pool = await connect('Server=localhost,1433;Database=tinybase');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = await createMsSqlPersister(store, pool, 'my_tinybase');
  *

@@ -67,10 +67,11 @@ import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './c
 import {getTimeFunctions} from './common/mergeable.ts';
 import {
   AsyncFunction,
+  getMsSqlConnectionString,
   importBunSqlite,
   isBun,
-  MSSQL_CONNECTION_STRING,
   pause,
+  POSTGRES_URL,
   suppressWarnings,
   withServers,
 } from './common/other.ts';
@@ -333,8 +334,21 @@ const transformSolidJsx = (source: string, loader: 'jsx' | 'tsx'): string =>
     {presets: [['solid', {delegateEvents: false}]]},
   )?.code ?? '';
 
+// The examples spell out a plain local database, which is what a reader should
+// see, so they say nothing about credentials. Point them at whatever this run
+// is configured against, which for SQL Server means adding the login that
+// PostgreSQL does not need. Bun has no inject and runs none of these.
+const replaceDatabaseUrls = (source: string): string =>
+  POSTGRES_URL == undefined
+    ? source
+    : source
+        .replace(/postgres:\/\/localhost:5432/g, POSTGRES_URL)
+        .replace(/Server=localhost,1433;Database=(\w+)/g, (_, database) =>
+          getMsSqlConnectionString(database),
+        );
+
 const prepareRunnableCode = (source: string, replaceImports: boolean): string =>
-  (replaceImports ? replaceRunnableImports(source) : source)
+  replaceDatabaseUrls(replaceImports ? replaceRunnableImports(source) : source)
     .replace(
       /console\.log\((.+?)\.innerHTML\);$/gm,
       '_actual.push(getHtml($1));',
@@ -769,11 +783,6 @@ ${body
   }
   expect(problem).toBeUndefined();
 };
-
-// The mssql examples deliberately read their connection string from the
-// environment rather than spelling out credentials a reader might copy. Point
-// it at the local instance when nothing else has, so the suite needs no setup.
-process.env.TINYBASE_MSSQL ??= MSSQL_CONNECTION_STRING;
 
 describe('Documentation tests', () => {
   beforeAll(async () => {

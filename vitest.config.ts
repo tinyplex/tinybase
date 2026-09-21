@@ -33,10 +33,35 @@ export default defineConfig({
       reporter: ['text-summary', 'json-summary', 'html'],
     },
 
-    // Which half of the database work a project runs. The '-servers' projects
-    // below override this; everything else leaves those variants and
-    // documentation examples alone, so the suite needs no database server.
-    provide: {servers: false},
+    provide: {
+      // Which half of the database work a project runs. The '-servers'
+      // projects below override this; everything else leaves those variants
+      // and documentation examples alone, so the suite needs no database
+      // server. A project's provide merges over these, rather than replacing
+      // them, so the two databases below reach every project.
+      servers: false,
+
+      // The two database servers the suite expects, in the one place they are
+      // configured. The tests read them from here, and the documentation
+      // examples - which spell out a plain local database, as a reader should
+      // see - are rewritten to match before they run.
+      //
+      // PostgreSQL uses trust authentication and so needs no password. SQL
+      // Server cannot, so a password is here; it belongs to a throwaway
+      // container holding nothing but test data, never a real instance:
+      //
+      //   docker run -d --name tinybase-mssql -p 1433:1433 \
+      //     -e ACCEPT_EULA=Y -e MSSQL_PID=Developer \
+      //     -e MSSQL_SA_PASSWORD='TinyBase!Passw0rd' \
+      //     mcr.microsoft.com/mssql/server:2022-latest
+      postgres: 'postgres://localhost:5432',
+      mssql: {
+        server: 'localhost',
+        port: 1433,
+        user: 'sa',
+        password: 'TinyBase!Passw0rd',
+      },
+    },
 
     onUnhandledError: ({message}) =>
       message !== 'Invariant: worker WS endpoint not found',

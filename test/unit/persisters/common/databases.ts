@@ -35,10 +35,8 @@ import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wa
 import tmp from 'tmp';
 import {afterAll, expect} from 'vitest';
 import {
-  MSSQL_PASSWORD,
-  MSSQL_PORT,
-  MSSQL_SERVER,
-  MSSQL_USER,
+  MSSQL_CONFIG,
+  POSTGRES_URL,
   importBunSqlite,
   isBun,
   noop,
@@ -68,7 +66,7 @@ export type SqlClientsAndName = [Sql, ReservedSql, string];
 export type PgClientsAndName = [Pool, PoolClient, Mutex, string];
 export type MsSqlPoolsAndName = [ConnectionPool, ConnectionPool, Mutex, string];
 
-const PG_ADMIN_URL = 'postgres://localhost:5432/postgres';
+const PG_ADMIN_URL = POSTGRES_URL + '/postgres';
 const PG_OPTIONS = '-c client_min_messages=warning';
 
 const pgAdmin = async (sql: string) => {
@@ -80,13 +78,9 @@ const pgAdmin = async (sql: string) => {
   await adminPool.end();
 };
 
-// As with the PostgreSQL URL above, this is the local instance the tests
-// expect; see the constants in other.ts for what it is and how to override it.
+// Both servers are configured in vitest.config.ts; see `provide` there.
 const getMsSqlConfig = (database: string) => ({
-  server: MSSQL_SERVER,
-  port: MSSQL_PORT,
-  user: MSSQL_USER,
-  password: MSSQL_PASSWORD,
+  ...MSSQL_CONFIG,
   database,
   pool: {max: 20},
   options: {encrypt: false, trustServerCertificate: true},
@@ -464,12 +458,12 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       const existingName = sqlClientsAndName?.[2];
       const name = existingName ?? 'tinybase_' + getUniqueId();
       if (!existingName) {
-        const adminSql = postgres('postgres://localhost:5432/postgres');
+        const adminSql = postgres(PG_ADMIN_URL);
         await adminSql`CREATE DATABASE ${adminSql(name)}`;
         await adminSql.end({timeout: 0.1});
       }
 
-      const sql = postgres('postgres://localhost:5432/' + name, {
+      const sql = postgres(POSTGRES_URL + '/' + name, {
         connection: {client_min_messages: 'warning'},
       });
       const cmdSql = await sql.reserve();
@@ -496,7 +490,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       cmdSql.release();
       await sql.end({timeout: 0.1});
 
-      const adminSql = postgres('postgres://localhost:5432/postgres', {
+      const adminSql = postgres(PG_ADMIN_URL, {
         connection: {client_min_messages: 'warning'},
       });
       await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)} WITH (FORCE)`;
@@ -516,7 +510,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       }
 
       const pool = new Pool({
-        connectionString: 'postgres://localhost:5432/' + name,
+        connectionString: POSTGRES_URL + '/' + name,
         options: PG_OPTIONS,
         max: 20,
       });
