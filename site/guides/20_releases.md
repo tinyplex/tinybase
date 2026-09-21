@@ -105,6 +105,11 @@ SQL Server maintains that column itself on every insert and update, so changes
 made by other writers are still picked up, without needing Service Broker,
 Change Tracking, or triggers.
 
+A huge thank you to Peter Skoglund
+([@nltgpeterskoglund](https://github.com/nltgpeterskoglund)) for building all
+of this - the Persister, the T-SQL dialect handling, the polling, and its
+tests.
+
 ## libSQL, With Pooled Connections
 
 The LibSqlPersister now expects v0.18 of the `@libsql/client` module, which
