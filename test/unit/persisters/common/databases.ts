@@ -35,6 +35,10 @@ import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wa
 import tmp from 'tmp';
 import {afterAll, expect} from 'vitest';
 import {
+  MSSQL_PASSWORD,
+  MSSQL_PORT,
+  MSSQL_SERVER,
+  MSSQL_USER,
   importBunSqlite,
   isBun,
   noop,
@@ -76,14 +80,13 @@ const pgAdmin = async (sql: string) => {
   await adminPool.end();
 };
 
-// SQL Server needs credentials, so unlike the trust-authenticated PostgreSQL
-// above, these come from the environment rather than being hard-coded. Point
-// them at a scratch instance holding nothing but test data.
+// As with the PostgreSQL URL above, this is the local instance the tests
+// expect; see the constants in other.ts for what it is and how to override it.
 const getMsSqlConfig = (database: string) => ({
-  server: process.env.TINYBASE_MSSQL_SERVER ?? 'localhost',
-  port: Number(process.env.TINYBASE_MSSQL_PORT ?? 1433),
-  user: process.env.TINYBASE_MSSQL_USER ?? 'sa',
-  password: process.env.TINYBASE_MSSQL_PASSWORD ?? '',
+  server: MSSQL_SERVER,
+  port: MSSQL_PORT,
+  user: MSSQL_USER,
+  password: MSSQL_PASSWORD,
   database,
   pool: {max: 20},
   options: {encrypt: false, trustServerCertificate: true},

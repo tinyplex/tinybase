@@ -8,7 +8,7 @@ import * as effectSchema from 'effect/Schema';
 import {build, transformSync} from 'esbuild';
 import 'fake-indexeddb/auto';
 import * as fs from 'fs';
-import {readFileSync, readdirSync} from 'fs';
+import {readdirSync, readFileSync} from 'fs';
 import {createRequire} from 'module';
 import * as mssql from 'mssql';
 import {dirname, extname, join, resolve} from 'path';
@@ -69,6 +69,7 @@ import {
   AsyncFunction,
   importBunSqlite,
   isBun,
+  MSSQL_CONNECTION_STRING,
   pause,
   suppressWarnings,
   withServers,
@@ -768,6 +769,11 @@ ${body
   }
   expect(problem).toBeUndefined();
 };
+
+// The mssql examples deliberately read their connection string from the
+// environment rather than spelling out credentials a reader might copy. Point
+// it at the local instance when nothing else has, so the suite needs no setup.
+process.env.TINYBASE_MSSQL ??= MSSQL_CONNECTION_STRING;
 
 describe('Documentation tests', () => {
   beforeAll(async () => {

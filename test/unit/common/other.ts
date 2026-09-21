@@ -15,6 +15,28 @@ export const withServers: boolean = isBun
   : (vitest as {inject?: (key: 'servers') => boolean}).inject?.('servers') ==
     true;
 
+// The local SQL Server these tests expect, given the same treatment as the
+// PostgreSQL URL in databases.ts. PostgreSQL can use trust authentication and
+// so needs no password; SQL Server cannot, so one is spelled out here. It is
+// the password of a throwaway container holding nothing but test data, never
+// a real instance:
+//
+//   docker run -d --name tinybase-mssql -p 1433:1433 \
+//     -e ACCEPT_EULA=Y -e MSSQL_PID=Developer \
+//     -e MSSQL_SA_PASSWORD='TinyBase!Passw0rd' \
+//     mcr.microsoft.com/mssql/server:2022-latest
+//
+// Point any part of it somewhere else with the matching variable.
+export const MSSQL_SERVER = process.env.TINYBASE_MSSQL_SERVER ?? 'localhost';
+export const MSSQL_PORT = Number(process.env.TINYBASE_MSSQL_PORT ?? 1433);
+export const MSSQL_USER = process.env.TINYBASE_MSSQL_USER ?? 'sa';
+export const MSSQL_PASSWORD =
+  process.env.TINYBASE_MSSQL_PASSWORD ?? 'TinyBase!Passw0rd';
+export const MSSQL_CONNECTION_STRING =
+  `Server=${MSSQL_SERVER},${MSSQL_PORT};Database=tinybase;` +
+  `User Id=${MSSQL_USER};Password=${MSSQL_PASSWORD};` +
+  `Encrypt=false;TrustServerCertificate=true`;
+
 export const AsyncFunction = Object.getPrototypeOf(
   async () => null,
 ).constructor;
