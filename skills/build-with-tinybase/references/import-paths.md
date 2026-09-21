@@ -37,7 +37,6 @@ one.
 | `tinybase/persisters/persister-better-sqlite3`             | `createBetterSqlite3Persister`                                                            | Store or MergeableStore |
 | `tinybase/persisters/persister-browser`                    | `createLocalPersister`, `createSessionPersister`, `createOpfsPersister`                   | Store or MergeableStore |
 | `tinybase/persisters/persister-capacitor-sqlite`           | `createCapacitorSqlitePersister`                                                          | Store or MergeableStore |
-| `tinybase/persisters/persister-cr-sqlite-wasm`             | `createCrSqliteWasmPersister`                                                             | Store only              |
 | `tinybase/persisters/persister-durable-object-sql-storage` | `createDurableObjectSqlStoragePersister`                                                  | MergeableStore only     |
 | `tinybase/persisters/persister-durable-object-storage`     | `createDurableObjectStoragePersister`                                                     | MergeableStore only     |
 | `tinybase/persisters/persister-expo-sqlite`                | `createExpoSqlitePersister`                                                               | Store or MergeableStore |

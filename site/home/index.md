@@ -147,11 +147,6 @@
   </a>
 </div>
 <div>
-  <a href='/api/persister-cr-sqlite-wasm'>
-    <img width="48" src="/crsqlite.png" /> CR-SQLite
-  </a>
-</div>
-<div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/powersync.svg?asImg" /> PowerSync
   </a>
@@ -164,6 +159,11 @@
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/pglite.svg?asImg" /> PGlite
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/mssql.svg?asImg" /> SQL Server
   </a>
 </div>
 <div>

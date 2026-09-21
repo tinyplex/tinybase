@@ -4,8 +4,8 @@ Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
 <<<<<<< HEAD
-There are currently ten SQLite-based persistence options, and four for
-PostgreSQL:
+There are currently nine SQLite-based persistence options, four for
+PostgreSQL, and one for SQL Server:
 =======
 There are currently twelve SQLite-based persistence options, four for
 PostgreSQL, and one for SQL Server:
@@ -20,7 +20,6 @@ PostgreSQL, and one for SQL Server:
 | ExpoSqlitePersister        | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)           |
 | ReactNativeSqlitePersister | SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) |
 | CapacitorSqlitePersister   | SQLite in Capacitor, via [capacitor-sqlite](https://github.com/capacitor-community/sqlite)                       |
-| CrSqliteWasmPersister      | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                                         |
 | LibSqlPersister            | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                         |
 | PowerSyncPersister         | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                                     |
 | MsSqlPersister             | SQL Server and Azure SQL, via [mssql](https://github.com/tediousjs/node-mssql)                                   |

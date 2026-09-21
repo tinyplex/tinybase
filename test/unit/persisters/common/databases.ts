@@ -8,7 +8,6 @@ import type {
   WatchOnChangeEvent,
 } from '@powersync/common';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
-import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import {Mutex} from 'async-mutex';
 import BetterSqlite3, {
   type Database as BetterSqlite3Database,
@@ -24,7 +23,6 @@ import postgres from 'postgres';
 import {type Content, type Store, getUniqueId} from 'tinybase';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {createBetterSqlite3Persister} from 'tinybase/persisters/persister-better-sqlite3';
-import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
 import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
 import {createPgPersister} from 'tinybase/persisters/persister-pg';
@@ -246,8 +244,12 @@ const getPowerSyncDatabase = async (
         while (!signal?.aborted) {
           const nextChange = await new Promise<WatchOnChangeEvent>(
             (resolve) => {
-              const observer = (_1: any, _2: any, tableName: string) => {
-                resolve({changedTables: [tableName]});
+              const observer = (
+                _1: number,
+                _2: string | null,
+                tableName: string | null,
+              ) => {
+                resolve({changedTables: tableName == null ? [] : [tableName]});
               };
               sqlite3.update_hook(db, observer);
             },
@@ -438,27 +440,6 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
     undefined,
     undefined,
     true,
-  ],
-  crSqliteWasm: [
-    (): Promise<DB> =>
-      suppressWarnings(async () => await (await initWasm()).open()),
-    ['getDb', (db: DB) => db],
-    (
-      store: Store,
-      db: DB,
-      storeTableOrConfig?: string | DatabasePersisterConfig,
-      onSqlCommand?: (sql: string, args?: any[]) => void,
-      onIgnoredError?: (error: any) => void,
-    ) =>
-      (createCrSqliteWasmPersister as any)(
-        store,
-        db,
-        storeTableOrConfig,
-        onSqlCommand,
-        onIgnoredError,
-      ),
-    (db: DB, sql: string, args: any[] = []) => db.execO(sql, args),
-    (db: DB) => db.close(),
   ],
 };
 
@@ -735,10 +716,6 @@ export const ALL_VARIANTS = forProject(
 export const ALL_JSON_VARIANTS = forProject(
   isBun ? ALL_BUN_VARIANTS : ALL_NODE_JSON_VARIANTS,
 );
-
-export const ADHOC_VARIANTS: Variants = {
-  adhoc: NODE_SQLITE_NON_MERGEABLE_VARIANTS.crSqliteWasm,
-};
 
 export const getDatabaseFunctions = <Database>(
   cmd: (

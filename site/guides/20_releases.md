@@ -136,8 +136,26 @@ is usable from a screen reader rather than by its icon alone.
 
 ## Breaking Changes in v10.0
 
-There are three, and each affects a single Persister. Two are the removals
-that v9.7 said were coming.
+There are four, and each affects a single Persister. Three are removals, two
+of which v9.7 said were coming.
+
+### The CR-SQLite Persister Has Been Removed
+
+The persister-cr-sqlite-wasm module has been removed. Unlike the two below, it
+was not deprecated in v9.7, so this one arrives without notice. The
+[cr-sqlite](https://github.com/vlcn-io/cr-sqlite) project it bound to has not
+had a release since 2024.
+
+It was the odd one out among the Persisters in any case, since it could only
+ever save a Store and not a MergeableStore, so it could not back a synchronized
+setup. If you want CRDT-backed sync, TinyBase's own MergeableStore does it
+natively - see the Using A MergeableStore guide - and the YjsPersister and
+AutomergePersister remain for the two other external CRDT libraries. For SQLite
+in a browser, the SqliteWasmPersister and the TinyJoinPersister are both
+actively supported.
+
+The `@vlcn.io/crsqlite-wasm` package is no longer an optional peer dependency
+of TinyBase, so you can drop it from your project when you upgrade.
 
 ### The `sqlite3` Persister Has Been Removed
 
@@ -204,8 +222,8 @@ TinyBase code of your own needs to change.
 ### Everything Else
 
 Nothing else has been removed or renamed, and no existing signature has
-changed. Setting the two removed Persisters aside, the TinyBase API surface in
-v10.0 is v9.7 plus the TinyJoinPersister.
+changed. Setting the three removed Persisters aside, the TinyBase API surface
+in v10.0 is v9.7 plus the TinyJoinPersister and the MsSqlPersister.
 
 ---
 

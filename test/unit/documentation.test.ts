@@ -3,7 +3,6 @@ import {transformSync as babelTransformSync} from '@babel/core';
 import * as pglite from '@electric-sql/pglite';
 import * as typeBox from '@sinclair/typebox';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
-import initWasm from '@vlcn.io/crsqlite-wasm';
 import * as arktype from 'arktype';
 import * as effectSchema from 'effect/Schema';
 import {build, transformSync} from 'esbuild';
@@ -27,7 +26,6 @@ import * as TinyBasePersisters from 'tinybase/persisters';
 import * as TinyBasePersisterAutomerge from 'tinybase/persisters/persister-automerge';
 import * as TinyBasePersisterBetterSqlite3 from 'tinybase/persisters/persister-better-sqlite3';
 import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser';
-import * as TinyBasePersisterCrSqliteWasm from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
 import * as TinyBasePersisterMsSql from 'tinybase/persisters/persister-mssql';
@@ -130,7 +128,6 @@ const TinyBaseForTest = {
   '@electric-sql/pglite': pglite,
   '@sinclair/typebox': typeBox,
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
-  '@vlcn.io/crsqlite-wasm': initWasm,
   arktype,
   fs,
   mssql,
@@ -157,7 +154,6 @@ const TinyBaseForTest = {
   'tinybase/persisters/persister-better-sqlite3':
     TinyBasePersisterBetterSqlite3,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
-  'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,
   'tinybase/persisters/persister-file': TinyBasePersisterFile,
   'tinybase/persisters/persister-indexed-db': TinyBasePersisterIndexedDb,
   'tinybase/persisters/persister-mssql': TinyBasePersisterMsSql,

@@ -42,7 +42,6 @@
     "@sinclair/typebox": "^0.34.52",
     "@sqlite.org/sqlite-wasm": "^3.53.4-build1",
     "@supabase/supabase-js": "^2.116.0",
-    "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "arktype": "^2.2.3",
     "better-sqlite3": "^13.0.3",
     "bun": "^1.4.2",
@@ -92,9 +91,6 @@
       "optional": true
     },
     "@sqlite.org/sqlite-wasm": {
-      "optional": true
-    },
-    "@vlcn.io/crsqlite-wasm": {
       "optional": true
     },
     "arktype": {
@@ -253,7 +249,6 @@
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-istanbul": "^5.0.0",
-    "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "arktype": "^2.2.3",
     "asciichart": "^1.5.25",
     "async-mutex": "^0.5.0",
