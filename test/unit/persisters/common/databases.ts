@@ -43,12 +43,26 @@ import {
   pause,
   suppressWarnings,
   waitFor,
+  withoutServers,
 } from '../../common/other.ts';
 
 tmp.setGracefulCleanup();
 const statementMutex = new Mutex();
 
 export type Variants = {[name: string]: DatabaseVariant<any>};
+
+// These variants each talk to a database server that has to be running
+// locally. Everything else, PGlite and the SQLite engines included, runs
+// in-process, so only these are dropped for a run without servers.
+const SERVER_VARIANT_NAMES = ['postgres', 'pg', 'mssql'];
+const whenAvailable = (variants: Variants): Variants =>
+  withoutServers
+    ? Object.fromEntries(
+        Object.entries(variants).filter(
+          ([name]) => !SERVER_VARIANT_NAMES.includes(name),
+        ),
+      )
+    : variants;
 export type SqliteWasmDb = [sqlite3: any, db: any];
 export type SqlClientsAndName = [Sql, ReservedSql, string];
 export type PgClientsAndName = [Pool, PoolClient, Mutex, string];
@@ -460,7 +474,7 @@ afterAll(async () => {
   }
 });
 
-export const NODE_POSTGRESQL_VARIANTS: Variants = {
+export const NODE_POSTGRESQL_VARIANTS: Variants = whenAvailable({
   postgres: [
     async (
       sqlClientsAndName?: SqlClientsAndName,
@@ -598,7 +612,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
     undefined,
     'postgresql',
   ],
-};
+});
 
 export const BUN_MERGEABLE_VARIANTS: Variants = {
   bunSqlite: [
@@ -627,7 +641,7 @@ export const BUN_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
-export const NODE_MSSQL_VARIANTS: Variants = {
+export const NODE_MSSQL_VARIANTS: Variants = whenAvailable({
   mssql: [
     async (
       msSqlPoolsAndName?: MsSqlPoolsAndName,
@@ -683,7 +697,7 @@ export const NODE_MSSQL_VARIANTS: Variants = {
     'mssql',
     true,
   ],
-};
+});
 
 export const NODE_SQLITE_VARIANTS: Variants = {
   ...NODE_SQLITE_MERGEABLE_VARIANTS,

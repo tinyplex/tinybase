@@ -73,6 +73,7 @@ import {
   isBun,
   pause,
   suppressWarnings,
+  withoutServers,
 } from './common/other.ts';
 
 const [reset, getNow] = getTimeFunctions();
@@ -634,7 +635,15 @@ export const mount = (component, options = {}) => {
   return getResults(nodeRequire) as Promise<Results>;
 };
 
+const SERVER_BLOCK = /```[tj]sx?[^\n]* server\n/;
+
 const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
+  // Examples marked 'server' connect to a local PostgreSQL or SQL Server. The
+  // blocks in one example share a scope, so the whole example is left out
+  // rather than just the block that needs the database.
+  if (withoutServers && SERVER_BLOCK.test(block)) {
+    return;
+  }
   const name = prefix + ' - ' + (block.match(/(?<=^).*?(?=\n)/) ?? '');
   let count = 1;
   let suffixedName = name;
@@ -724,7 +733,9 @@ ${body
   const tsx = block
     .match(
       new RegExp(
-        '(?<=```[tj]sx?' + (isBun ? ' bun' : '') + '\\n).*?(?=```)',
+        '(?<=```[tj]sx?' +
+          (isBun ? ' bun' : withoutServers ? '' : '( server)?') +
+          '\\n).*?(?=```)',
         'gms',
       ),
     )

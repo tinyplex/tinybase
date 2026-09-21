@@ -180,6 +180,7 @@
     "testUnit": "gulp testUnit",
     "compileAndTestUnit": "gulp compileAndTestUnit",
     "testUnitFast": "gulp testUnitFast",
+    "testUnitNoServers": "gulp testUnitNoServers",
     "compileAndTestUnitFast": "gulp compileAndTestUnitFast",
     "testDocs": "gulp testDocs",
     "compileAndTestDocs": "gulp compileAndTestDocs",

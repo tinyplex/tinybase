@@ -34,7 +34,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the database connection back out again.
    *
-   * ```js
+   * ```js server
    * import {Pool} from 'pg';
    * import {createStore} from 'tinybase';
    * import {createPgPersister} from 'tinybase/persisters/persister-pg';
@@ -108,7 +108,7 @@
  * makes a change to the database directly and then reloads it back into the
  * Store.
  *
- * ```js
+ * ```js server
  * import {Pool} from 'pg';
  * import {createStore} from 'tinybase';
  * import {createPgPersister} from 'tinybase/persisters/persister-pg';
@@ -142,7 +142,7 @@
  * This example creates a PgPersister object and persists the Store to a local
  * PostgreSQL database with tabular mapping.
  *
- * ```js
+ * ```js server
  * import {Pool} from 'pg';
  * import {createStore} from 'tinybase';
  * import {createPgPersister} from 'tinybase/persisters/persister-pg';

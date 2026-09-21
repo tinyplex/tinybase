@@ -65,7 +65,7 @@ SQL Server database with the
 Database and Azure SQL Managed Instance speak the same protocol, the same
 Persister works against all three:
 
-```js
+```js server
 import {connect} from 'mssql';
 import {createStore} from 'tinybase';
 import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
@@ -298,7 +298,7 @@ reach for with hosted services that offer a `pg`-compatible driver.
 `Client` objects can be passed straight to the createPgPersister function, so
 you can persist a Store from an edge runtime that cannot open a TCP connection.
 
-```js
+```js server
 import {Pool} from 'pg';
 import {createPgPersister} from 'tinybase/persisters/persister-pg';
 
@@ -2602,7 +2602,7 @@ Conceptually, things behave in the same way as they do for the various SQLite
 persisters. Simply use the createPostgresPersister function (or the similar
 createPglitePersister function) to persist your TinyBase data:
 
-```js
+```js server
 import postgres from 'postgres';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 

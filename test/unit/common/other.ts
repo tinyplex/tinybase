@@ -4,6 +4,11 @@ import {IdObj, IdObj2} from './types.ts';
 
 export const isBun = process.versions.bun != null;
 
+// Set by the testUnitNoServers task. The database variants and documentation
+// examples that need a local PostgreSQL or SQL Server are left out, so the
+// suite runs on a machine that has neither.
+export const withoutServers = process.env.TINYBASE_TEST_NO_SERVERS == '1';
+
 export const AsyncFunction = Object.getPrototypeOf(
   async () => null,
 ).constructor;

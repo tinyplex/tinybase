@@ -64,7 +64,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the database connection back out again.
    *
-   * ```js
+   * ```js server
    * import {connect} from 'mssql';
    * import {createStore} from 'tinybase';
    * import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
@@ -129,7 +129,7 @@
  * table. It makes a change to the database directly and then reloads it back
  * into the Store.
  *
- * ```js
+ * ```js server
  * import {connect} from 'mssql';
  * import {createStore} from 'tinybase';
  * import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
