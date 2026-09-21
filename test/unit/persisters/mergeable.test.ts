@@ -10,7 +10,7 @@ import type {Persister, PersisterListener} from 'tinybase/persisters';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions, time} from '../common/mergeable.ts';
-import {noop, waitFor} from '../common/other.ts';
+import {noop, waitFor, withServers} from '../common/other.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
@@ -39,20 +39,24 @@ beforeEach(() => {
   reset();
 });
 
-describe.each([
-  ['mockMergeableNoContentListener', mockMergeableNoContentListener],
-  ['mockMergeableContentListener', mockMergeableContentListener],
-  ['mockMergeableChangesListener', mockMergeableChangesListener],
-  ['file', mockFile],
-  ['opfs', mockOpfs],
-  ['localStorage', mockLocalStorage],
-  ['sessionStorage', mockSessionStorage],
-  ['indexedDb', mockIndexedDb],
-  ['durableObjectStorage', mockDurableObjectStorage],
-  ['localSynchronizer', mockLocalSynchronizer],
-  ['customSynchronizer', mockCustomSynchronizer],
-  ...getMockDatabases(MERGEABLE_VARIANTS),
-])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
+describe.each(
+  withServers
+    ? getMockDatabases(MERGEABLE_VARIANTS)
+    : [
+        ['mockMergeableNoContentListener', mockMergeableNoContentListener],
+        ['mockMergeableContentListener', mockMergeableContentListener],
+        ['mockMergeableChangesListener', mockMergeableChangesListener],
+        ['file', mockFile],
+        ['opfs', mockOpfs],
+        ['localStorage', mockLocalStorage],
+        ['sessionStorage', mockSessionStorage],
+        ['indexedDb', mockIndexedDb],
+        ['durableObjectStorage', mockDurableObjectStorage],
+        ['localSynchronizer', mockLocalSynchronizer],
+        ['customSynchronizer', mockCustomSynchronizer],
+        ...getMockDatabases(MERGEABLE_VARIANTS),
+      ],
+)('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   const expectPersistedContent = getPersistedContentWaiter(persistable);
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
@@ -442,177 +446,11 @@ describe.each([
   });
 });
 
-test('Supported, Store', async () => {
-  const store = createStore();
-  let persisted = '';
-  const persister = createCustomPersister(
-    store,
-    async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
-    async (getContent: () => any) => {
-      persisted = JSON.stringify(getContent());
-    },
-    noop,
-    noop,
-    noop,
-    3,
-  );
-  await persister.load();
-  await persister.save();
-  await persister.destroy();
-  expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
-});
-
-test('Not supported, MergeableStore', async () => {
-  const store = createMergeableStore('s1', getNow);
-  let persisted = '';
-  const persister = createCustomPersister(
-    store,
-    async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
-    async (getContent: () => any) => {
-      persisted = JSON.stringify(getContent());
-    },
-    noop,
-    noop,
-  );
-  await persister.load();
-  await persister.save();
-  await persister.destroy();
-  expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
-});
-
-describe('Supported, MergeableStore', () => {
-  test('does not error when custom persister has no content', async () => {
-    const ignoredErrors: any[] = [];
-    const store = createMergeableStore('s1', getNow);
-    store.setTables({t1: {r1: {c1: 1}}});
-    const persister = createCustomPersister(
-      store,
-      asyncNoop,
-      asyncNoop,
-      noop,
-      noop,
-      (error) => ignoredErrors.push(error),
-      Persists.MergeableStoreOnly,
-    );
-    await persister.load();
-    await persister.destroy();
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    expect(ignoredErrors).toEqual([]);
-  });
-
-  test('Content in setPersisted', async () => {
-    const store = createMergeableStore('s1', getNow);
-    const content: MergeableContent = [
-      [
-        {
-          t1: [
-            {r1: [{c1: [1, time(0, 0), 4065945599]}, '', 1279994494]},
-            '',
-            1293085726,
-          ],
-        },
-        '',
-        4033596827,
-      ],
-      [{v1: [1, time(0, 0), 4065945599]}, '', 2304392760],
-    ];
-    let persisted = '';
-    const persister = createCustomPersister(
-      store,
-      async () => content,
-      async (getContent: () => MergeableContent) => {
-        persisted = JSON.stringify(getContent());
-      },
-      noop,
-      noop,
-      noop,
-      Persists.MergeableStoreOnly,
-    );
-    await persister.load();
-    await persister.save();
-    await persister.destroy();
-    expect(persisted).toMatchSnapshot();
-  });
-
-  test('Changes in setPersisted', async () => {
-    const store = createMergeableStore('s1', getNow);
-    const persisted: string[] = [];
-    const persister = createCustomPersister(
-      store,
-      async () => [{}, {}],
-      async (
-        _getContent: () => Content | MergeableContent,
-        changes?: Changes | MergeableChanges,
-      ) => {
-        if (changes != undefined) {
-          persisted.push(JSON.stringify(changes));
-        }
-      },
-      noop,
-      noop,
-      noop,
-      3,
-    );
-    await persister.startAutoSave();
-    store.setCell('t1', 'r1', 'c1', 1);
-    store.setValue('v1', 1);
-    await pause(1);
-    await persister.destroy();
-    expect(persisted).toMatchSnapshot();
-  });
-
-  test('applies loaded changes synchronously without re-saving', async () => {
-    const store = createMergeableStore('target', getNow);
-    const getChanges = (
-      storeId: string,
-      tableId: string,
-      rowId: string,
-      cellId: string,
-      cell: number,
-    ): MergeableChanges => {
-      const source = createMergeableStore(storeId, getNow).startTransaction();
-      source.setCell(tableId, rowId, cellId, cell);
-      const changes = source.getTransactionMergeableChanges();
-      source.finishTransaction();
-      return changes;
-    };
-    const changes1 = getChanges('source1', 't1', 'r1', 'c1', 1);
-    const changes2 = getChanges('source2', 't2', 'r2', 'c2', 2);
-    const changes3 = getChanges('source3', 't3', 'r3', 'c3', 3);
-    let listener: PersisterListener<Persists.MergeableStoreOnly> = noop;
-    let saves = 0;
-    const persister = (createCustomPersister as any)(
-      store,
-      asyncNoop,
-      async () => {
-        saves++;
-      },
-      (newListener: typeof listener) => (listener = newListener),
-      noop,
-      noop,
-      Persists.MergeableStoreOnly,
-      {},
-      1,
-    ) as Persister;
-    await persister.startAutoPersisting();
-    saves = 0;
-
-    const loading1 = listener(undefined, changes1);
-    const loading2 = listener(undefined, changes2);
-    const loading3 = listener(undefined, changes3);
-
-    expect(store.getTables()).toEqual({
-      t1: {r1: {c1: 1}},
-      t2: {r2: {c2: 2}},
-      t3: {r3: {c3: 3}},
-    });
-    await Promise.all([loading1, loading2, loading3]);
-    expect(saves).toBe(0);
-    await persister.destroy();
-  });
-
-  test('loading from legacy', async () => {
-    const store = createMergeableStore('s1', getNow);
+// These touch no database, so they run in the project that also has the
+// mock persistables above, rather than again in the one for servers.
+if (!withServers) {
+  test('Supported, Store', async () => {
+    const store = createStore();
     let persisted = '';
     const persister = createCustomPersister(
       store,
@@ -628,24 +466,194 @@ describe('Supported, MergeableStore', () => {
     await persister.load();
     await persister.save();
     await persister.destroy();
-    expect(persisted).toMatchSnapshot();
+    expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
   });
-});
 
-test('Not supported, Store', async () => {
-  expect(() =>
-    createCustomPersister(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      createStore(),
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+  test('Not supported, MergeableStore', async () => {
+    const store = createMergeableStore('s1', getNow);
+    let persisted = '';
+    const persister = createCustomPersister(
+      store,
       async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
-      asyncNoop,
+      async (getContent: () => any) => {
+        persisted = JSON.stringify(getContent());
+      },
       noop,
       noop,
-      noop,
-      Persists.MergeableStoreOnly,
-    ),
-  ).toThrow();
-});
+    );
+    await persister.load();
+    await persister.save();
+    await persister.destroy();
+    expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
+  });
+
+  describe('Supported, MergeableStore', () => {
+    test('does not error when custom persister has no content', async () => {
+      const ignoredErrors: any[] = [];
+      const store = createMergeableStore('s1', getNow);
+      store.setTables({t1: {r1: {c1: 1}}});
+      const persister = createCustomPersister(
+        store,
+        asyncNoop,
+        asyncNoop,
+        noop,
+        noop,
+        (error) => ignoredErrors.push(error),
+        Persists.MergeableStoreOnly,
+      );
+      await persister.load();
+      await persister.destroy();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      expect(ignoredErrors).toEqual([]);
+    });
+
+    test('Content in setPersisted', async () => {
+      const store = createMergeableStore('s1', getNow);
+      const content: MergeableContent = [
+        [
+          {
+            t1: [
+              {r1: [{c1: [1, time(0, 0), 4065945599]}, '', 1279994494]},
+              '',
+              1293085726,
+            ],
+          },
+          '',
+          4033596827,
+        ],
+        [{v1: [1, time(0, 0), 4065945599]}, '', 2304392760],
+      ];
+      let persisted = '';
+      const persister = createCustomPersister(
+        store,
+        async () => content,
+        async (getContent: () => MergeableContent) => {
+          persisted = JSON.stringify(getContent());
+        },
+        noop,
+        noop,
+        noop,
+        Persists.MergeableStoreOnly,
+      );
+      await persister.load();
+      await persister.save();
+      await persister.destroy();
+      expect(persisted).toMatchSnapshot();
+    });
+
+    test('Changes in setPersisted', async () => {
+      const store = createMergeableStore('s1', getNow);
+      const persisted: string[] = [];
+      const persister = createCustomPersister(
+        store,
+        async () => [{}, {}],
+        async (
+          _getContent: () => Content | MergeableContent,
+          changes?: Changes | MergeableChanges,
+        ) => {
+          if (changes != undefined) {
+            persisted.push(JSON.stringify(changes));
+          }
+        },
+        noop,
+        noop,
+        noop,
+        3,
+      );
+      await persister.startAutoSave();
+      store.setCell('t1', 'r1', 'c1', 1);
+      store.setValue('v1', 1);
+      await pause(1);
+      await persister.destroy();
+      expect(persisted).toMatchSnapshot();
+    });
+
+    test('applies loaded changes synchronously without re-saving', async () => {
+      const store = createMergeableStore('target', getNow);
+      const getChanges = (
+        storeId: string,
+        tableId: string,
+        rowId: string,
+        cellId: string,
+        cell: number,
+      ): MergeableChanges => {
+        const source = createMergeableStore(storeId, getNow).startTransaction();
+        source.setCell(tableId, rowId, cellId, cell);
+        const changes = source.getTransactionMergeableChanges();
+        source.finishTransaction();
+        return changes;
+      };
+      const changes1 = getChanges('source1', 't1', 'r1', 'c1', 1);
+      const changes2 = getChanges('source2', 't2', 'r2', 'c2', 2);
+      const changes3 = getChanges('source3', 't3', 'r3', 'c3', 3);
+      let listener: PersisterListener<Persists.MergeableStoreOnly> = noop;
+      let saves = 0;
+      const persister = (createCustomPersister as any)(
+        store,
+        asyncNoop,
+        async () => {
+          saves++;
+        },
+        (newListener: typeof listener) => (listener = newListener),
+        noop,
+        noop,
+        Persists.MergeableStoreOnly,
+        {},
+        1,
+      ) as Persister;
+      await persister.startAutoPersisting();
+      saves = 0;
+
+      const loading1 = listener(undefined, changes1);
+      const loading2 = listener(undefined, changes2);
+      const loading3 = listener(undefined, changes3);
+
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 1}},
+        t2: {r2: {c2: 2}},
+        t3: {r3: {c3: 3}},
+      });
+      await Promise.all([loading1, loading2, loading3]);
+      expect(saves).toBe(0);
+      await persister.destroy();
+    });
+
+    test('loading from legacy', async () => {
+      const store = createMergeableStore('s1', getNow);
+      let persisted = '';
+      const persister = createCustomPersister(
+        store,
+        async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+        async (getContent: () => any) => {
+          persisted = JSON.stringify(getContent());
+        },
+        noop,
+        noop,
+        noop,
+        3,
+      );
+      await persister.load();
+      await persister.save();
+      await persister.destroy();
+      expect(persisted).toMatchSnapshot();
+    });
+  });
+
+  test('Not supported, Store', async () => {
+    expect(() =>
+      createCustomPersister(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        createStore(),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+        asyncNoop,
+        noop,
+        noop,
+        noop,
+        Persists.MergeableStoreOnly,
+      ),
+    ).toThrow();
+  });
+}

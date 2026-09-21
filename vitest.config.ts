@@ -33,6 +33,11 @@ export default defineConfig({
       reporter: ['text-summary', 'json-summary', 'html'],
     },
 
+    // Which half of the database work a project runs. The '-servers' projects
+    // below override this; everything else leaves those variants and
+    // documentation examples alone, so the suite needs no database server.
+    provide: {servers: false},
+
     onUnhandledError: ({message}) =>
       message !== 'Invariant: worker WS endpoint not found',
 
@@ -95,6 +100,32 @@ export default defineConfig({
           maxWorkers: 2,
           // Opening a database (PGlite in particular) can be slow under load.
           hookTimeout: 30000,
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit-persisters-servers',
+          include: [
+            'test/unit/persisters/persisters.test.ts',
+            'test/unit/persisters/mergeable.test.ts',
+            'test/unit/persisters/database/json.test.ts',
+            'test/unit/persisters/database/tabular.test.ts',
+            'test/unit/persisters/database/mergeable-json.test.ts',
+          ],
+          sequence: {groupOrder: 6},
+          maxWorkers: 2,
+          hookTimeout: 30000,
+          provide: {servers: true},
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit-documentation-servers',
+          include: ['test/unit/documentation.test.ts'],
+          sequence: {groupOrder: 7},
+          provide: {servers: true},
         },
       },
       {

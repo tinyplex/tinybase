@@ -73,7 +73,7 @@ import {
   isBun,
   pause,
   suppressWarnings,
-  withoutServers,
+  withServers,
 } from './common/other.ts';
 
 const [reset, getNow] = getTimeFunctions();
@@ -638,10 +638,12 @@ export const mount = (component, options = {}) => {
 const SERVER_BLOCK = /```[tj]sx?[^\n]* server\n/;
 
 const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
-  // Examples marked 'server' connect to a local PostgreSQL or SQL Server. The
-  // blocks in one example share a scope, so the whole example is left out
-  // rather than just the block that needs the database.
-  if (withoutServers && SERVER_BLOCK.test(block)) {
+  // Examples marked 'server' connect to a local PostgreSQL or SQL Server, and
+  // belong to the '-servers' project. The blocks in one example share a scope,
+  // so a whole example goes one way or the other, never a single block. Bun
+  // matches only its own ' bun' blocks, so a server block never runs there and
+  // its example does not need leaving out.
+  if (!isBun && SERVER_BLOCK.test(block) != withServers) {
     return;
   }
   const name = prefix + ' - ' + (block.match(/(?<=^).*?(?=\n)/) ?? '');
@@ -734,7 +736,7 @@ ${body
     .match(
       new RegExp(
         '(?<=```[tj]sx?' +
-          (isBun ? ' bun' : withoutServers ? '' : '( server)?') +
+          (isBun ? ' bun' : withServers ? '( server)?' : '') +
           '\\n).*?(?=```)',
         'gms',
       ),

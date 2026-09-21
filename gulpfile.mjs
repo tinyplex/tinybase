@@ -725,14 +725,18 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   }
 };
 
-const test = async (dirs, coverage) => {
+const test = async (dirs, coverage, project) => {
   const {startVitest} = await import('vitest/node');
 
   await clearDir(TMP_DIR);
   const vitest = await startVitest(
     'test',
     [...dirs],
-    {watch: false, coverage: {enabled: coverage}},
+    {
+      watch: false,
+      coverage: {enabled: coverage},
+      ...(project ? {project} : {}),
+    },
     {},
     {watch: false},
   );
@@ -883,16 +887,11 @@ export const testUnitFast = async () => {
   await test(['test/unit/core'], true);
 };
 
-// The same suite as testUnit, without the database variants and documentation
-// examples that need a local PostgreSQL or SQL Server. Coverage is off, since
-// skipping those leaves it short of the 100% that testUnit reports.
+// The same suite as testUnit, minus the two projects that need a local
+// PostgreSQL or SQL Server. Coverage is off, since leaving those out puts it
+// short of the 100% that testUnit reports.
 export const testUnitNoServers = async () => {
-  process.env.TINYBASE_TEST_NO_SERVERS = '1';
-  try {
-    await test(['test/unit'], false);
-  } finally {
-    delete process.env.TINYBASE_TEST_NO_SERVERS;
-  }
+  await test(['test/unit'], false, ['!*-servers']);
 };
 
 export const compileAndTestUnitFast = series(compileForTest, testUnitFast);

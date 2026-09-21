@@ -1,13 +1,19 @@
 import type {Database} from 'bun:sqlite';
 import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase';
+import * as vitest from 'vitest';
 import {IdObj, IdObj2} from './types.ts';
 
 export const isBun = process.versions.bun != null;
 
-// Set by the testUnitNoServers task. The database variants and documentation
-// examples that need a local PostgreSQL or SQL Server are left out, so the
-// suite runs on a machine that has neither.
-export const withoutServers = process.env.TINYBASE_TEST_NO_SERVERS == '1';
+// Provided by each vitest project: the '-servers' projects run the database
+// variants and documentation examples that need a local PostgreSQL or SQL
+// Server, and every other project leaves them out. Bun aliases 'vitest' to
+// 'bun:test', which has no inject, so it is reached through the namespace
+// rather than a named import - and it never runs those variants anyway.
+export const withServers: boolean = isBun
+  ? false
+  : (vitest as {inject?: (key: 'servers') => boolean}).inject?.('servers') ==
+    true;
 
 export const AsyncFunction = Object.getPrototypeOf(
   async () => null,
