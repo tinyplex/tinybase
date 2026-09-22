@@ -912,13 +912,17 @@ export const compileDocsAssetsOnly = () => compileDocsAndAssets(false, false);
 
 export const compileDocs = () => compileDocsAndAssets();
 
-export const compileForProdAndDocs = series(compileForProd, compileDocs);
+export const preparePackageForProd = () => copyPackageFiles(true);
+
+export const compileForProdAndDocs = series(
+  compileForProd,
+  compileDocs,
+  preparePackageForProd,
+);
 
 export const testE2e = () => execute('npx playwright test', true);
 
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
-
-export const preparePackageForProd = () => copyPackageFiles(true);
 
 export const testProd = async () => {
   await execute('attw --pack dist --format table-flipped --profile esm-only');
