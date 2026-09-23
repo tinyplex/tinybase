@@ -1,7 +1,8 @@
 @accentColor: #d81b60;
 
 html {
-  --glow: #ccc;
+  --glow: #d81b6030;
+  --selection: #d81b6029;
   --text: #555;
   --text2: #111;
   --back: #fff;
@@ -10,6 +11,8 @@ html {
   --border: #ddd;
   --link: #ddd;
   --shadow: #0002;
+  --shadow-near: #0000000f;
+  --shadow-far: #00000014;
   --plus: #fdd;
   --minus: #dfd;
   --mono-1: hsl(230, 8%, 51%);
@@ -30,9 +33,12 @@ html.dark {
   --back: #111;
   --back2: #151515;
   --back3: #222;
-  --border: #555;
+  --border: #333;
   --link: #555;
   --shadow: #000;
+  --shadow-near: #0008;
+  --shadow-far: #0006;
+  --selection: #d81b6066;
   --plus: #311;
   --minus: #131;
   --mono-1: hsl(220, 14%, 71%);
@@ -47,6 +53,7 @@ html.dark {
 }
 
 @glowColor: var(--glow);
+@selectionColor: var(--selection);
 @textColor: var(--text);
 @text2Color: var(--text2);
 @backColor: var(--back);
@@ -57,7 +64,14 @@ html.dark {
 @plusColor: var(--plus);
 @minusColor: var(--minus);
 
-@shadow: 0 0 0.5rem var(--shadow);
+@shadow:
+  0 1px 2px var(--shadow-near),
+  0 4px 12px var(--shadow-far);
+@shadowUp:
+  0 -1px 2px var(--shadow-near),
+  0 -4px 12px var(--shadow-far);
+
+@radius: 0.375rem;
 
 @import 'layout.less';
 @import 'header.less';

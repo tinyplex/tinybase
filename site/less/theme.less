@@ -7,6 +7,10 @@ html {
   color: @textColor;
 }
 
+::selection {
+  background: @selectionColor;
+}
+
 ::-webkit-scrollbar {
   background-color: @back3Color;
 }
@@ -36,13 +40,14 @@ body {
   > header,
   > footer {
     z-index: 1;
-    box-shadow: @shadow;
   }
   > header {
     border-bottom: 1px solid @borderColor;
+    box-shadow: @shadow;
   }
   > footer {
     border-top: 1px solid @borderColor;
+    box-shadow: @shadowUp;
   }
   > main {
     > nav {

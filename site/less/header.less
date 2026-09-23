@@ -13,6 +13,7 @@ body > header {
     span {
       font-weight: 800;
       font-size: 2.8rem;
+      letter-spacing: -0.02em;
       line-height: 1em;
       color: @text2Color;
       em {
@@ -40,7 +41,7 @@ body > header {
         border: 1px solid @borderColor;
         padding: 0.5rem;
         font-size: 1rem;
-        border-radius: 0.25rem;
+        border-radius: @radius;
       }
       ol {
         display: none;
@@ -57,7 +58,7 @@ body > header {
         background: @back2Color;
         border: 1px solid @borderColor;
         box-shadow: @shadow;
-        border-radius: 0.25rem;
+        border-radius: @radius;
         &.show {
           display: block;
         }
