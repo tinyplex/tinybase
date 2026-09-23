@@ -201,6 +201,14 @@ body:not(.home) > header {
     > nav > ul {
       display: none;
     }
+    // Keep the search results on the screen, now the search is at the right.
+    > nav > #search > ol {
+      right: 0;
+    }
+    // The menu and the search results would overlap, so only show one.
+    > #menustate:checked ~ nav > #search > ol {
+      display: none;
+    }
     > #menustate:checked ~ nav > ul {
       .dropdown();
       display: block;
@@ -226,9 +234,13 @@ body:not(.home) > header {
         width: 100%;
         max-width: unset;
       }
+      > ol.show {
+        display: block;
+      }
     }
     > ul {
       position: static;
+      z-index: auto;
       width: auto;
       padding: 0;
       border: 0;

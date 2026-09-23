@@ -113,7 +113,13 @@ export const searchLoad = (isHome = false) => {
       nav.prepend(search);
       const showResults = () =>
         (input.value ? addClass : delClass)(results, 'show');
-      input.addEventListener('focus', showResults);
+      input.addEventListener('focus', () => {
+        // The search box sits beside the menu here, so close the menu.
+        if (matchMedia('(min-width: 38rem)').matches) {
+          (doc.getElementById('menustate') as HTMLInputElement).checked = false;
+        }
+        showResults();
+      });
       input.addEventListener('input', () => {
         showResults();
         populateResults();
