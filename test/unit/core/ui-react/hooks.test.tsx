@@ -191,7 +191,7 @@ import {
 } from 'tinybase/ui-react';
 import tmp from 'tmp';
 import {type Mock, beforeEach, describe, expect, test, vi} from 'vitest';
-import {pause} from '../../common/other.ts';
+import {pause, waitFor} from '../../common/other.ts';
 import {
   testCheckpointCallbackFunctions,
   testCheckpointInformationFunctions,
@@ -1672,10 +1672,12 @@ describe('React-specific', () => {
       );
 
       rerender(<Test id={2} />);
-      await act(pause);
-      expect(container.textContent).toEqual(
-        JSON.stringify([2, {loads: 1, saves: 0}, 1]),
-      );
+      await waitFor(async () => {
+        await act(pause);
+        expect(container.textContent).toEqual(
+          JSON.stringify([2, {loads: 1, saves: 0}, 1]),
+        );
+      });
       expect(initStore).toHaveBeenCalledTimes(1);
       expect(createSynchronizer).toHaveBeenCalledTimes(2);
       expect(didRender).toHaveBeenCalledTimes(5);
@@ -1717,10 +1719,12 @@ describe('React-specific', () => {
       );
 
       rerender(<Test id={2} />);
-      await act(pause);
-      expect(container.textContent).toEqual(
-        JSON.stringify([2, {loads: 1, saves: 0}]),
-      );
+      await waitFor(async () => {
+        await act(pause);
+        expect(container.textContent).toEqual(
+          JSON.stringify([2, {loads: 1, saves: 0}]),
+        );
+      });
       expect(initStore).toHaveBeenCalledTimes(1);
       expect(createSynchronizer).toHaveBeenCalledTimes(2);
       expect(destroySynchronizer).toHaveBeenCalledTimes(1);
