@@ -106,3 +106,39 @@ body > main {
     }
   }
 }
+
+body > main > aside {
+  font-size: 0.88rem;
+  padding: 1rem 0 0 1rem;
+  p {
+    margin: 0 0 0.5rem;
+    font-weight: 720;
+    color: @text2Color;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid @borderColor;
+  }
+  li {
+    line-height: 1.5rem;
+    a {
+      display: block;
+      margin-left: -1px;
+      padding: 0.1rem 0 0.1rem 0.75rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: @textColor;
+      border-left: 1px solid transparent;
+    }
+    &.h3 a {
+      padding-left: 1.5rem;
+    }
+    &.current a {
+      color: @accentColor;
+      border-left-color: @accentColor;
+    }
+  }
+}

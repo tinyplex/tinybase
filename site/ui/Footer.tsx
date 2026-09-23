@@ -25,7 +25,7 @@ export const Footer: NoPropComponent = () => (
       <a href="/">
         TinyBase <span id="version" />
       </a>{' '}
-      © 2022-
+      © 2022-{new Date().getFullYear()}
     </nav>
   </footer>
 );

@@ -84,6 +84,7 @@ export const go = (href: string, updateUrl = true): void => {
       article.scrollTo(0, 0);
       addStackblitz();
       addCopyButtons();
+      updateToc();
     });
 
   if (updateUrl) {
@@ -120,6 +121,49 @@ export const addCopyButtons = () =>
           setTimeout(() => (button.innerText = 'Copy'), 1500);
         });
     });
+
+let tocHeadings: HTMLElement[] = [];
+
+export const updateToc = () => {
+  const aside = query('body > main > aside');
+  if (aside == null) {
+    return;
+  }
+  aside.replaceChildren();
+  tocHeadings = Array.from(getArticle().querySelectorAll('h2[id], h3[id]'));
+  if (tocHeadings.length < 2) {
+    return;
+  }
+  createElement('p', aside, {}, 'On this page');
+  const ul = createElement('ul', aside);
+  tocHeadings.forEach((heading) => {
+    const li = createElement('li', ul, {class: heading.tagName.toLowerCase()});
+    const text = heading.innerText;
+    createElement('a', li, {href: '#' + heading.id, title: text}, text);
+  });
+  highlightToc();
+};
+
+// The current heading is the last to have scrolled near the top of the
+// article, or the very last one if the article cannot scroll any further.
+export const highlightToc = () => {
+  const article = getArticle();
+  const items = query('body > main > aside')?.querySelectorAll('li') ?? [];
+  const top = article.getBoundingClientRect().top + 96;
+  let current = 0;
+  if (article.scrollTop + article.clientHeight >= article.scrollHeight - 1) {
+    current = tocHeadings.length - 1;
+  } else {
+    tocHeadings.forEach((heading, index) => {
+      if (heading.getBoundingClientRect().top <= top) {
+        current = index;
+      }
+    });
+  }
+  items.forEach((item, index) =>
+    item.classList.toggle('current', index == current),
+  );
+};
 
 export const addNavTitles = () =>
   getNav()

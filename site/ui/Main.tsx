@@ -23,7 +23,7 @@ export const Main: NoPropComponent = () => {
           <article id="content" tabIndex={-1}>
             <ArticleInner />
           </article>
-          <aside aria-hidden="true" />
+          <aside aria-label="On this page" />
         </>
       )}
     </main>
