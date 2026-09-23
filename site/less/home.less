@@ -51,7 +51,7 @@ body > main > article#home {
       opacity: 0;
       text-align: center;
       transform: translate3d(0, 0.8rem, 0);
-      will-change: opacity, transform;
+      will-change: opacity, transform, filter;
       &:nth-of-type(2) {
         animation-delay: -4s;
       }
@@ -94,11 +94,22 @@ body > main > article#home {
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s,
+      transform 0.15s;
     &:hover {
       border-color: @accentColor;
+      box-shadow: @shadow;
+      transform: translateY(-1px);
+    }
+    &:focus-visible {
+      outline: 0.125rem solid @accentColor;
+      outline-offset: 0.2rem;
     }
     &.start {
       background: @accentColor;
+      border-color: @accentColor;
       color: @backColor;
     }
   }
@@ -198,28 +209,40 @@ body > main > article#home {
   }
 }
 
+// Each heading fades out completely before the next fades in, so that two
+// are never visible, overlapping, at the same time.
 @keyframes heroHeading {
   0%,
   25% {
     opacity: 1;
+    filter: blur(0);
     transform: translate3d(0, 0, 0);
   }
-  33.333%,
-  91.666% {
+  29.166% {
     opacity: 0;
+    filter: blur(0.25rem);
     transform: translate3d(0, -0.8rem, 0);
   }
-  91.667% {
+  29.167%,
+  95.833% {
     opacity: 0;
+    filter: blur(0.25rem);
     transform: translate3d(0, 0.8rem, 0);
   }
   100% {
     opacity: 1;
+    filter: blur(0);
     transform: translate3d(0, 0, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body > main > article#home > p > a {
+    transition: none;
+    &:hover {
+      transform: none;
+    }
+  }
   body > main > article#home > section#hero {
     h2 {
       animation: none;
@@ -280,7 +303,7 @@ body > main > article#home {
     > section:nth-of-type(2n + 3) {
       grid-column-start: 4;
     }
-    > section:nth-of-type(2n + 2) {
+    > section:nth-of-type(2n + 2) > h2 {
       text-align: right;
     }
     > section#hero {

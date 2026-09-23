@@ -48,10 +48,15 @@ export const searchLoad = (isHome = false) => {
     const search = createElement('div', null, {id: 'search'});
     const input = createElement('input', search, {
       type: 'text',
-      placeholder:
-        (navigator.platform.startsWith('Mac') ? '⌘' : 'cmd-') + 'K Search',
+      placeholder: 'Search',
     }) as HTMLInputElement;
     const results = createElement('ol', search);
+    createElement(
+      'kbd',
+      search,
+      {},
+      navigator.platform.startsWith('Mac') ? '⌘K' : 'Ctrl K',
+    );
     const noResults = createElement('li', results, {}, 'No results found');
 
     // Create search store
@@ -187,7 +192,7 @@ export const searchLoad = (isHome = false) => {
             case 'Enter':
               return hovered?.dispatchEvent(new MouseEvent('mousedown'));
           }
-        } else if (event.code == 'KeyK' && event.metaKey) {
+        } else if (event.code == 'KeyK' && (event.metaKey || event.ctrlKey)) {
           input.focus();
           preventDefault(event);
         }

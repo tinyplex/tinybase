@@ -83,12 +83,48 @@ export const go = (href: string, updateUrl = true): void => {
       article.innerHTML = html;
       article.scrollTo(0, 0);
       addStackblitz();
+      addCopyButtons();
     });
 
   if (updateUrl) {
     history.pushState(null, '', href);
   }
 };
+
+// Terminal examples mark their commands with a '> ' prompt; copy just those.
+const getCopyText = (code: HTMLElement): string => {
+  const lines = code.innerText.trimEnd().split('\n');
+  const commands = lines.filter((line) => line.startsWith('> '));
+  return commands.length > 0
+    ? commands.map((line) => line.substring(2)).join('\n')
+    : lines.join('\n');
+};
+
+export const addCopyButtons = () =>
+  getArticle()
+    .querySelectorAll('pre')
+    .forEach((pre) => {
+      const code = queryElement(pre, ':scope > code');
+      if (code == null || queryElement(pre, ':scope > button') != null) {
+        return;
+      }
+      const button = createElement(
+        'button',
+        pre,
+        {type: 'button', class: 'copy'},
+        'Copy',
+      );
+      button.onclick = () =>
+        navigator.clipboard.writeText(getCopyText(code)).then(() => {
+          button.innerText = 'Copied';
+          setTimeout(() => (button.innerText = 'Copy'), 1500);
+        });
+    });
+
+export const addNavTitles = () =>
+  getNav()
+    ?.querySelectorAll('li > a')
+    .forEach((a) => a.setAttribute('title', (a as HTMLElement).innerText));
 
 type ExecutableProject = {
   title: string;
@@ -180,7 +216,7 @@ const updateNav = (
   if (li == null) {
     li = createElement('li', ul, {id});
     createElement('span', li);
-    const a = createElement('a', li, {href: url});
+    const a = createElement('a', li, {href: url, title: name});
     if (reflection) {
       createElement('code', a, {}, name);
     } else {

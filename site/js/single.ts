@@ -1,5 +1,6 @@
 import {
   addClass,
+  addCopyButtons,
   delClass,
   getArticle,
   queryById,
@@ -11,6 +12,7 @@ versionLoad();
 darkLoad();
 
 addEventListener('load', () => {
+  addCopyButtons();
   const visibleElementsByLevel = new Map<number, Set<HTMLElement>>();
 
   const titleObserver = new IntersectionObserver((entries) => {

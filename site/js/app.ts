@@ -1,4 +1,6 @@
 import {
+  addCopyButtons,
+  addNavTitles,
   addStackblitz,
   doc,
   go,
@@ -16,6 +18,8 @@ searchLoad();
 
 addEventListener('load', () => {
   addStackblitz();
+  addCopyButtons();
+  addNavTitles();
 
   doc.body.addEventListener('click', (event: MouseEvent) => {
     if (event.button != 0) {

@@ -52,7 +52,15 @@ body > main {
       border-color: transparent;
       line-height: 1.5rem;
       > a {
+        display: inline-block;
+        max-width: calc(100% - 1rem);
         height: 1.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        > code {
+          display: inline;
+        }
       }
       > span {
         vertical-align: text-bottom;
@@ -91,6 +99,9 @@ body > main {
         content: ' / ';
         width: 1rem;
         margin-left: 0;
+      }
+      &:first-child:before {
+        content: none;
       }
     }
   }

@@ -30,6 +30,9 @@ body > header {
         display: inline;
         margin-right: 2rem;
       }
+      a {
+        font-weight: 500;
+      }
     }
     > #search {
       margin-right: 2rem;
@@ -42,6 +45,28 @@ body > header {
         padding: 0.5rem;
         font-size: 1rem;
         border-radius: @radius;
+        &:focus ~ kbd,
+        &:not(:placeholder-shown) ~ kbd {
+          display: none;
+        }
+      }
+      kbd {
+        position: absolute;
+        top: 50%;
+        right: 0.5rem;
+        transform: translateY(-50%);
+        padding: 0 0.3rem;
+        font-family: inherit;
+        font-size: 0.75rem;
+        line-height: 1.25rem;
+        color: @textColor;
+        background: @backColor;
+        border: 1px solid @borderColor;
+        border-radius: 0.25rem;
+        pointer-events: none;
+        @media (hover: none) {
+          display: none;
+        }
       }
       ol {
         display: none;
@@ -145,8 +170,22 @@ body > header {
   box-shadow: @shadow;
 }
 
+body:not(.home) > header {
+  height: 4rem;
+  > a {
+    img {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    span {
+      font-size: 2.3rem;
+    }
+  }
+}
+
 @media not all and (min-width: 25rem) {
-  body > header > a {
+  body > header > a,
+  body:not(.home) > header > a {
     img {
       width: 2.4rem;
       height: 2.4rem;

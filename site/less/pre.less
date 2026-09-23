@@ -1,8 +1,18 @@
 .preFile {
-  color: var(--link);
+  display: table;
+  margin: 1.5rem 0 0;
+  padding: 0.2rem 0.75rem;
+  font-family: Inconsolata, menlo, monospace;
   font-size: 0.85rem;
-  line-height: 1rem;
-  margin: -0.75rem 0 -1.25rem;
+  color: @textColor;
+  background: @back3Color;
+  border: 1px solid @borderColor;
+  border-bottom: 0;
+  border-radius: @radius @radius 0 0;
+  + pre {
+    margin-top: 0;
+    border-top-left-radius: 0;
+  }
 }
 
 pre {
@@ -13,6 +23,39 @@ pre {
   margin: 1.5rem 0;
   overflow-x: auto;
   padding: 0.9rem 1rem;
+  position: relative;
+
+  > button.copy {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.1rem 0.5rem;
+    font: inherit;
+    font-family: Inter, sans-serif;
+    font-size: 0.75rem;
+    color: @textColor;
+    background: @backColor;
+    border: 1px solid @borderColor;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+    &:hover {
+      color: @accentColor;
+      border-color: @accentColor;
+    }
+    &:focus-visible {
+      opacity: 1;
+    }
+  }
+  &:hover > button.copy {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    > button.copy {
+      opacity: 1;
+    }
+  }
 
   code {
     background: none;

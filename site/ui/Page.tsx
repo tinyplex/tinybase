@@ -117,7 +117,7 @@ export const Page: NoPropComponent = () => {
             src={`/js/${isHome ? 'home' : isSingle ? 'single' : 'app'}.js`}
           />
         </head>
-        <body>
+        <body className={isHome ? 'home' : undefined}>
           <a className="skip" href={isHome ? '#home' : '#content'}>
             Skip to content
           </a>

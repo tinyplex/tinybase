@@ -88,11 +88,15 @@ p {
 
 p code,
 article ul code {
-  background: @back2Color;
-  border: 1px solid @borderColor;
+  background: @back3Color;
   padding: 0.05em 0.3em;
   border-radius: 0.25rem;
   text-decoration-color: transparent;
+}
+p a > code,
+article ul a > code {
+  background: none;
+  padding: 0;
 }
 
 .table {
