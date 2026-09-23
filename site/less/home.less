@@ -246,6 +246,10 @@ body > main > article#home {
       margin: 0;
       text-align: left;
       transform: rotate(-5deg) translate3d(-3rem, -1rem, 0);
+      @media (max-width: 64rem) {
+        font-size: 0.9rem;
+        transform: rotate(-5deg) translate3d(-4rem, -1rem, 0);
+      }
       &:before {
         content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 200 100" stroke-width="10" stroke="rgb(216,27,96)" fill="rgb(216,27,96)"><path fill="none" d="M25 70a120 120 0 00160-50"/><path d="M30.26 54.095l-18.91 6.512 6.511 18.91z"/></svg>');
         top: 0.9rem;
@@ -295,6 +299,15 @@ body > main > article#home {
     > section#family,
     > section#follow {
       grid-column: 1/7;
+    }
+    > section#friends {
+      max-width: 48rem;
+      margin-left: auto;
+      margin-right: auto;
+      h2 {
+        margin-left: -8rem;
+        margin-right: -8rem;
+      }
     }
     > section#sponsors {
       grid-column-start: 1;

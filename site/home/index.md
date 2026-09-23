@@ -13,7 +13,7 @@
 
 <a href='/guides/releases/#v10-0'><em>NEW!</em> v10.0 release</a>
 
-<span id="one-with">"The one with TinyJoin!"</span>
+<span id="one-with">"The one with SQL Server & TinyJoin!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
