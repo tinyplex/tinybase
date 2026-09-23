@@ -2108,10 +2108,15 @@
    *   select('color');
    *   where('species', 'dog');
    * });
-   * queries.setQueryDefinition('blackDogs', true, 'dogs', ({select, where}) => {
-   *   select((_, rowId) => rowId).as('petId');
-   *   where('color', 'black');
-   * });
+   * queries.setQueryDefinition(
+   *   'blackDogs',
+   *   true,
+   *   'dogs',
+   *   ({select, where}) => {
+   *     select((_, rowId) => rowId).as('petId');
+   *     where('color', 'black');
+   *   },
+   * );
    *
    * console.log(queries.getResultTable('blackDogs'));
    * // -> {cujo: {petId: 'cujo'}}
