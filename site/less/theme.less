@@ -111,9 +111,42 @@ iframe {
   box-shadow: 0 0 0.5rem #0002 inset;
 }
 
+@property --preAngle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 135deg;
+}
+
 pre {
-  background: @back2Color;
-  border: 1px solid @borderColor;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(@back2Color, @back2Color) padding-box,
+    conic-gradient(
+        from var(--preAngle),
+        @borderColor,
+        @accentColor 12%,
+        @borderColor 30%,
+        @borderColor 50%,
+        @accentColor 62%,
+        @borderColor 80%
+      )
+      border-box;
+  animation: preShimmer 6s linear infinite paused;
+  &:hover {
+    animation-play-state: running;
+  }
+}
+
+@keyframes preShimmer {
+  to {
+    --preAngle: 495deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  pre {
+    animation: none;
+  }
 }
 
 .table {
