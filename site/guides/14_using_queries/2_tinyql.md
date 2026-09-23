@@ -606,7 +606,7 @@ another query - in other words, selecting or joining from a query instead of an
 underlying table. This allows you to build more complex queries out of simpler
 ones and pipe them together.
 
-To do this, overload the setQueryDefinition method with a `isQuery` parameter
+To do this, overload the setQueryDefinition method with an `asQuery` parameter
 set to `true` before you specify the query Id. (Similar overloads are available
 in the query clauses themselves.)
 
