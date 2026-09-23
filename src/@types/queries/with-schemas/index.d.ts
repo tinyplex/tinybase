@@ -463,6 +463,8 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
     }) => void,
     paramValues?: ParamValues,
   ): Queries<Schemas>;
+
+  /// Queries.setQueryDefinition.2
   setQueryDefinition(
     queryId: Id,
     asQuery: true,

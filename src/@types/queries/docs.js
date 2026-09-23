@@ -2075,6 +2075,52 @@
    */
   /// Queries.setQueryDefinition
   /**
+   * When called with `true` as its second parameter, the setQueryDefinition
+   * method lets you define a query whose root is the result of another query,
+   * rather than an underlying Table.
+   *
+   * This allows you to build more complex queries out of simpler ones and pipe
+   * them together. The same clause types are supported as when the query is
+   * based on a Table.
+   * @param queryId The Id of the query to define.
+   * @param asQuery A flag indicating that the next Id is a query Id.
+   * @param rootQueryId The Id of the root query the query will be based on.
+   * @param query A callback which can take a `keywords` object and which uses
+     the functions it contains to define the query.
+   * @param paramValues An optional object containing the param Ids and values
+   * to use for a parameterized query.
+   * @returns A reference to the Queries object.
+   * @example
+   * This example creates a Store, creates a Queries object, and defines a
+   * query that selects from the result of another one.
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store);
+   * queries.setQueryDefinition('dogs', 'pets', ({select, where}) => {
+   *   select('color');
+   *   where('species', 'dog');
+   * });
+   * queries.setQueryDefinition('blackDogs', true, 'dogs', ({select, where}) => {
+   *   select((_, rowId) => rowId).as('petId');
+   *   where('color', 'black');
+   * });
+   *
+   * console.log(queries.getResultTable('blackDogs'));
+   * // -> {cujo: {petId: 'cujo'}}
+   * ```
+   * @category Configuration
+   * @since v8.3.0
+   */
+  /// Queries.setQueryDefinition.2
+  /**
    * The delQueryDefinition method removes an existing query definition.
    * @param queryId The Id of the query to remove.
    * @returns A reference to the Queries object.

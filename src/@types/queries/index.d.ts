@@ -348,6 +348,8 @@ export interface Queries {
     }) => void,
     paramValues?: ParamValues,
   ): Queries;
+
+  /// Queries.setQueryDefinition.2
   setQueryDefinition(
     queryId: Id,
     asQuery: true,
