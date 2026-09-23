@@ -64,6 +64,7 @@ export const toggleClass = (
 
 export const go = (href: string, updateUrl = true): void => {
   const nav = getNav();
+  (queryById('menustate') as HTMLInputElement).checked = false;
   ['?', '#'].forEach((separator) => {
     if (href.includes(separator)) {
       href = href.substring(0, href.indexOf(separator));

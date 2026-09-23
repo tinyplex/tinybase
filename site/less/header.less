@@ -107,4 +107,94 @@ body > header {
       border-radius: 50%;
     }
   }
+
+  > #menustate {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    &:focus-visible + #hamburger {
+      outline: 0.125rem solid @accentColor;
+      outline-offset: 0.25rem;
+      border-radius: 0.125rem;
+    }
+    &:checked + #hamburger {
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke-width="8" stroke="grey" stroke-linecap="round"><path d="M22 22l56 56M78 22l-56 56"/></svg>');
+    }
+  }
+
+  > #hamburger {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke-width="8" stroke="grey" stroke-linecap="round"><path d="M12 24h76M12 50h76M12 76h76"/></svg>')
+      center / contain no-repeat;
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.dropdown() {
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 1rem;
+  z-index: 2;
+  width: min(18rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  background: @backColor;
+  border: 1px solid @borderColor;
+  border-top: 0;
+  border-radius: 0 0 @radius @radius;
+  box-shadow: @shadow;
+}
+
+@media not all and (min-width: 25rem) {
+  body > header > a {
+    img {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
+    span {
+      font-size: 2.1rem;
+    }
+  }
+}
+
+@media not all and (min-width: 55rem) {
+  body > header {
+    > nav > ul {
+      display: none;
+    }
+    > #menustate:checked ~ nav > ul {
+      .dropdown();
+      display: block;
+      li {
+        display: block;
+        margin: 0;
+        line-height: 2.5rem;
+      }
+    }
+  }
+}
+
+@media not all and (min-width: 38rem) {
+  body > header > #menustate:checked ~ nav {
+    .dropdown();
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    > #search {
+      margin: 0 0 0.5rem;
+      input,
+      ol {
+        width: 100%;
+        max-width: unset;
+      }
+    }
+    > ul {
+      position: static;
+      width: auto;
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+      background: none;
+    }
+  }
 }

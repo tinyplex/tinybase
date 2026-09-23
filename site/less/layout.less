@@ -13,8 +13,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
     > a {
-      min-width: 21rem;
       margin-left: 1rem;
     }
     > nav {
@@ -23,7 +23,18 @@ body {
       max-width: 60rem;
       margin: 0;
     }
+    > #hamburger,
     > #dark {
+      flex-shrink: 0;
+    }
+    > #hamburger {
+      order: 1;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin: 0 1.5rem 0 auto;
+    }
+    > #dark {
+      order: 2;
       width: 1rem;
       margin-right: 1rem;
     }
@@ -108,10 +119,12 @@ body {
   }
 }
 
-@media (min-width: 38rem) and (max-width: 55rem) {
-  body > header > a {
-    min-width: unset;
-    span {
+@media (min-width: 55rem) {
+  body > header {
+    > a {
+      min-width: 21rem;
+    }
+    > #hamburger {
       display: none;
     }
   }
