@@ -957,4 +957,11 @@ export const prePublishPackage = series(
   testE2e,
 );
 
+export const prePublishPackageFast = series(
+  npmInstall,
+  compileForProd,
+  compileDocs,
+  preparePackageForProd,
+);
+
 export const publishPackage = series(prePublishPackage, npmPublish);
