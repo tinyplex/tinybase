@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "description": "Official TinyBase skills for scaffolding, extending, persisting, and synchronizing local-first applications.",
   "author": {
     "name": "James Pearce"
