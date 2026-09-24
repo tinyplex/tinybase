@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "10.0.0",
+  "version": "10.1.0-beta.0",
   "author": "jamesgpearce",
   "repository": {
     "type": "git",
@@ -193,6 +193,7 @@
     "serveDocs": "gulp serveDocs",
     "preCommit": "gulp preCommit",
     "prePublishPackage": "gulp prePublishPackage",
+    "prePublishPackageFast": "gulp prePublishPackageFast",
     "publishPackage": "gulp publishPackage"
   },
   "devEngines": {
