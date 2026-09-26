@@ -1,9 +1,13 @@
 <!doctype html>
 <!--
-  Launch card for social posts, first made for v10.0. Edit the headline, version
-  and tiles, then render it to launch-card.png with:
+  The launch card for the newest release. The docs build publishes it as
+  /launch-card.html, filling in the release from the latest heading in the
+  release notes, and the headline from the home page's "The one with..." line.
+  The doc-shots E2E suite captures it as an image, which the docs build then
+  publishes with the other doc shots.
 
-    node support/launch-card/render.mjs
+  The subtitle and tiles are written by hand. For each release, update them and
+  the data-release attribute on the body tag, then refresh the doc shot.
 -->
 <html lang="en">
   <head>
@@ -12,11 +16,11 @@
     <style>
       @font-face {
         font-family: Inter;
-        src: url(../../site/fonts/inter.woff2);
+        src: url(/fonts/inter.woff2);
       }
       @font-face {
         font-family: Inconsolata;
-        src: url(../../site/fonts/inconsolata.woff2);
+        src: url(/fonts/inconsolata.woff2);
       }
       * {
         box-sizing: border-box;
@@ -127,7 +131,7 @@
       }
     </style>
   </head>
-  <body>
+  <body data-release="v10.0">
     <div class="glow"></div>
     <div class="wrap">
       <div class="brand">
@@ -157,28 +161,28 @@
             />
           </g>
         </svg>
-        <div class="ver">v10.0</div>
+        <div class="ver">{{release}}</div>
       </div>
-      <h1>The one with<br /><em>SQL Server</em> &amp; <em>TinyJoin</em>.</h1>
+      <h1>{{headline}}</h1>
       <div class="sub">
         The reactive store &amp; sync engine for local-first apps, now with two
         new databases.
       </div>
       <div class="tiles">
         <div class="tile">
-          <img src="../../site/extras/tinyjoin.svg" alt="" />
+          <img src="/tinyjoin.svg" alt="" />
           <div>
             <b>TinyJoin</b><span>A relational database in the browser</span>
           </div>
         </div>
         <div class="tile">
-          <img src="../../site/extras/mssql.svg" alt="" />
+          <img src="/mssql.svg" alt="" />
           <div>
             <b>SQL Server</b><span>Plus Azure SQL, with passwordless auth</span>
           </div>
         </div>
         <div class="tile">
-          <img src="../../site/extras/favicon.svg" alt="" />
+          <img src="/favicon.svg" alt="" />
           <div>
             <b>Agent skill</b
             ><span>Bundled in the package, and a Claude Code plugin</span>

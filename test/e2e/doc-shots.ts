@@ -36,6 +36,16 @@ const INSPECTOR_DOC_SHOT_STYLE = [
 
 export const DOC_SHOTS: readonly DocShot[] = [
   {
+    asset: 'launch-card.png',
+    framed: false,
+    marginRem: 0,
+    page: '/launch-card.html',
+    selector: 'body',
+    // The card is laid out at 1600x900, so halve it to come out at that size
+    // with the doubled device scale factor of the doc shots.
+    style: 'html{zoom:0.5}',
+  },
+  {
     asset: 'hello-world-vanilla-demo.png',
     framed: false,
     marginRem: 0,

@@ -1,0 +1,87 @@
+<!doctype html>
+<!--
+  TinyBase showreel: a 15-second motion piece, drawn frame by frame in canvas
+  and composited in WebGL2, with a soundtrack synthesized in Web Audio. Render
+  it to MP4 (1080p60, H.264 and AAC) with:
+
+    node support/showreel/render.mjs
+
+  To watch it live in a browser instead, bundle the fonts and logos once with
+  `node support/showreel/build-assets.mjs` and then open this file. Add ?t=7.5
+  to the URL to hold on a single frame.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TinyBase Showreel</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #000;
+      }
+      body {
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      #out {
+        display: block;
+        width: min(100vw, 177.78vh);
+        height: min(56.25vw, 100vh);
+      }
+      #play {
+        position: fixed;
+        inset: 0;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        font:
+          600 18px system-ui,
+          sans-serif;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      #play span {
+        display: inline-block;
+        padding: 14px 26px;
+        border: 2px solid #d81b60;
+        border-radius: 999px;
+        background: #0009;
+        box-shadow: 0 0 40px #d81b6066;
+      }
+      #play[hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="out" width="1920" height="1080"></canvas>
+    <button id="play" hidden><span>Play with sound</span></button>
+    <script src="src/assets.js"></script>
+    <script src="src/engine.js"></script>
+    <script src="src/post.js"></script>
+    <script src="src/scenes.js"></script>
+    <script src="src/audio.js"></script>
+    <script src="src/main.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      SR.init().then(() => {
+        if (!params.has('render')) {
+          SR.renderTime(params.has('t') ? +params.get('t') : 14.4, 4);
+          SR.prepareAudio();
+          const button = document.getElementById('play');
+          button.hidden = false;
+          button.onclick = () => {
+            button.hidden = true;
+            SR.play();
+          };
+        }
+        window.READY = true;
+      });
+    </script>
+  </body>
+</html>

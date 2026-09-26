@@ -243,6 +243,7 @@ export const build = async (
   }
   if (pages) {
     addPages(docs);
+    addLaunchCard(docs);
   }
   if (api || pages) {
     await docs.generateNodes({
@@ -446,3 +447,44 @@ const addPages = (docs: Docs): Docs =>
     .addRootMarkdownFile('site/home/index.md')
     .addMarkdownDir('site/guides')
     .addMarkdownDir('site/demos', true);
+
+const escapeHtml = (text: string): string =>
+  text.replace(/[&<>"]/g, (char) => `&#${char.charCodeAt(0)};`);
+
+// The launch card for the newest release, which a doc shot captures. Its
+// release and headline come from the release notes and the home page, with
+// each feature in "The one with X & Y!" emphasized. Its subtitle and tiles are
+// written by hand for the release named in its data-release attribute.
+const addLaunchCard = (docs: Docs): Docs => {
+  const card = readFileSync('site/launch-card.html', 'utf-8');
+  const release =
+    /^# (v\d+\.\d+)\s*$/m.exec(
+      readFileSync('site/guides/20_releases.md', 'utf-8'),
+    )?.[1] ?? '';
+  const oneWith =
+    /<span id="one-with">"?(.+?)"?<\/span>/.exec(
+      readFileSync('site/home/index.md', 'utf-8'),
+    )?.[1] ?? '';
+  const cardRelease = /data-release="([^"]*)"/.exec(card)?.[1];
+  if (cardRelease != release) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `site/launch-card.html describes ${cardRelease}, ` +
+        `but the newest release is ${release}`,
+    );
+  }
+  const features = /^The one with (.+?)!?$/.exec(oneWith)?.[1];
+  const headline =
+    features == null
+      ? escapeHtml(oneWith)
+      : 'The one with<br />' +
+        features
+          .split(' & ')
+          .map((feature) => `<em>${escapeHtml(feature)}</em>`)
+          .join(' &amp; ') +
+        '.';
+  return docs.addStringFile(
+    card.replace('{{release}}', release).replace('{{headline}}', headline),
+    'launch-card.html',
+  );
+};
