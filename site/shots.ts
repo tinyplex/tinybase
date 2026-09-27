@@ -11,7 +11,7 @@ import {join, relative, resolve} from 'path';
 const UTF8 = 'utf-8';
 const DOC_SHOT_DIR = 'shots';
 const DOC_SHOT_SNAPSHOTS_DIR = 'test/e2e/doc-shots.test.ts-snapshots';
-const DOC_SHOT_REFS = /\/shots\/[^\s)"']+/g;
+const DOC_SHOT_REFS = /\/shots\/[^\s)"'<`]+/g;
 const DOC_SHOT_OUTPUT_PATHS = ['.html', '.json', '.md'];
 const escapeRegExp = (value: string): string =>
   value.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&');
