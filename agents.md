@@ -263,6 +263,26 @@ Never pipe a long gulp task through `tail`: the pipeline reports `tail`'s exit
 code rather than gulp's, so a failed `preCommit` or `prePublishPackage` looks
 like a success. Redirect to a file and check `$?`.
 
+Tests import `tinybase` from `dist`, so run `npm run compileForTest` after
+changing `src` before running any test.
+
+`test/unit/synchronizers/efficiency.test.ts` holds each synchronization scenario
+to a budget of messages and bytes crossing the WebSocket server. When the
+protocol gets cheaper, lower the budgets there; run it with `MEASURE=1` to print
+what each scenario used. The `unit-synchronizers` project aliases
+`cloudflare:workers` to a stub, so that `WsServerDurableObject` can be tested in
+Node.
+
+### Synchronization Protocol
+
+Every Synchronizer and server validates each message strictly, and disconnects
+a peer that sends a message number or body shape it does not know. So a new
+message can never be probed for: it may only be sent to a peer that has shown it
+understands it. Synchronizers since v10.1 start their transaction Ids with `~`,
+and newer servers greet each client with a marked, empty ContentDiff; use those
+marks to gate any addition to the protocol, and never change the shape of an
+existing message.
+
 ### Dependencies
 
 - Lift the version for **both** the devDependency and the peerDependency

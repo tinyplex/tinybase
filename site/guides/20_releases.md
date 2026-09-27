@@ -5,6 +5,98 @@ highlighted features.
 
 ---
 
+# v10.1
+
+## Authorizing Synchronization
+
+A WsServer can now decide which clients may use a path, and what each of them
+may write - which, until now, was left to whatever sat in front of it. Pass an
+options object to the createWsServer function with an `authorize` function, and
+optionally `canWriteCell` and `canWriteValue` functions:
+
+```js
+import {createMergeableStore} from 'tinybase';
+import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {WebSocket, WebSocketServer} from 'ws';
+
+const getRole = (request) =>
+  new URL(request.url, 'http://localhost').searchParams.get('role');
+
+const shopServer = createWsServer(new WebSocketServer({port: 8053}), {
+  authorize: (pathId, request) =>
+    getRole(request) == 'staff' || getRole(request) == 'customer'
+      ? {context: {role: getRole(request)}}
+      : undefined,
+  canWriteCell: (pathId, tableId, rowId, cellId, cell, {role}) =>
+    role == 'staff' || tableId == 'orders',
+});
+
+const staffStore = createMergeableStore();
+staffStore.setCell('pets', 'fido', 'price', 5);
+const staffSynchronizer = await createWsSynchronizer(
+  staffStore,
+  new WebSocket('ws://localhost:8053/petShop?role=staff'),
+);
+await staffSynchronizer.startSync();
+
+const customerStore = createMergeableStore();
+const customerSynchronizer = await createWsSynchronizer(
+  customerStore,
+  new WebSocket('ws://localhost:8053/petShop?role=customer'),
+);
+await customerSynchronizer.startSync();
+
+customerStore.setCell('orders', 'order1', 'pet', 'fido');
+customerStore.setCell('pets', 'fido', 'price', 1);
+// ...
+
+console.log(customerStore.getTables());
+// -> {pets: {fido: {price: 5}}, orders: {order1: {pet: 'fido'}}}
+
+await customerSynchronizer.destroy();
+await staffSynchronizer.destroy();
+await shopServer.destroy();
+```
+
+The `authorize` function receives the request that opened the client's
+WebSocket, and returns a ClientAccess object - which can make the client
+read-only, and carry a context for the other two functions - or `undefined` to
+refuse it. A change that a client may not make is neither merged nor passed on,
+and if it was newer than the server's own data, the server brings that client
+back into line rather than letting it silently drift. The WsServerDurableObject
+class has the same features, as `authorize`, `canWriteCell`, and
+`canWriteValue` methods to override.
+
+Once a server authorizes its clients, each path's MergeableStore becomes the
+only peer they synchronize with, since clients can no longer be trusted to
+answer each other directly. Clients themselves need no changes. There is more
+in the Authorizing Clients section of the Using A Synchronizer guide.
+
+## Cheaper Synchronization
+
+Synchronization now sends much less. Compared with v10.0, over the WebSocket
+server, in the scenarios that TinyBase now measures in its tests:
+
+- A client reconnecting to a 10,000-Row Table that has one changed Row
+  exchanges about 8kB rather than about 620kB. Peers now compare a large
+  Table's Rows in buckets before comparing them one by one, and so only the
+  buckets that differ are examined.
+- The first client on a path is served straight away, rather than waiting up to
+  a whole request timeout (a second, by default) for the server's MergeableStore
+  to hear back from it.
+- A synchronizer that is asked to fetch the same changes from a peer it is
+  already fetching from now shares that work, which, for example, halves the
+  traffic when the first client joins a path.
+- In a room of 20 clients, a server that authorizes its clients handles a new
+  client with 6 messages rather than 82, since the other clients no longer
+  answer it too.
+
+Newer peers only use the new bucket messages with each other, so older clients
+and servers keep working as before.
+
+---
+
 # v10.0
 
 ## A Relational Database In The Browser, With TinyJoin
@@ -658,11 +750,6 @@ Create the WebSocket with the `tinybase` subprotocol and provide a channel Id as
 the third argument to each createWsSynchronizer call:
 
 ```js
-import {createMergeableStore} from 'tinybase';
-import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {WebSocket, WebSocketServer} from 'ws';
-
 const multistoreServer = createWsServer(new WebSocketServer({port: 8052}));
 const multistoreWebSocket = new WebSocket(
   'ws://localhost:8052/petShop',

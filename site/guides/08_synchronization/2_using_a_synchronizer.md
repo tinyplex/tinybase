@@ -193,11 +193,10 @@ Fragment reassembly limits and WsServer traffic buffered while paths start are
 shared across the physical WebSocket, rather than being multiplied by its
 number of channels.
 
-WsServer and WsServerSimple do not authenticate or authorize channel Ids. Once
-a client WebSocket is accepted on a base path, it can subscribe to any valid
-channel beneath it. For untrusted clients, authenticate the upgrade request and
-either grant access to every descendant path or use a separate authenticated
-WebSocket for each authorized path.
+By default, WsServer and WsServerSimple do not authenticate or authorize channel
+Ids: once a client WebSocket is accepted on a base path, it can subscribe to any
+valid channel beneath it. A WsServer can instead authorize each channel it
+serves, as described in the Authorizing Clients section below.
 
 The client Ids exposed by WsServer are connection metadata derived from the
 `Sec-WebSocket-Key` header. They change across reconnections and are not
@@ -254,6 +253,80 @@ you will want to explore using a database-oriented Persister instead of simply
 using raw files.
 
 See the createWsServer function documentation for more details.
+
+### Authorizing Clients
+
+New in TinyBase v10.1, a WsServer can decide which clients may use a path, and
+what each of them may write. Instead of a Persister creation function, pass an
+options object as the second argument, with an `authorize` function and,
+optionally, `canWriteCell` and `canWriteValue` functions.
+
+The `authorize` function is called whenever a client joins a path, with the Id
+of the path and the HTTP request that opened the WebSocket. It returns a
+ClientAccess object to let the client join, or `undefined` to refuse it. Since a
+browser cannot add headers to a WebSocket request, a token in the URL's query
+string is a common way for a client to identify itself - and the query string is
+not part of the path. The ClientAccess object can mark a client as read-only,
+and carry a context, such as the user's role, for the other two functions:
+
+```js
+const getRole = (request) =>
+  new URL(request.url, 'http://localhost').searchParams.get('role');
+
+const authorizingServer = createWsServer(new WebSocketServer({port: 8051}), {
+  authorize: (pathId, request) =>
+    getRole(request) == 'staff' || getRole(request) == 'customer'
+      ? {context: {role: getRole(request)}}
+      : undefined,
+  canWriteCell: (pathId, tableId, rowId, cellId, cell, {role}) =>
+    role == 'staff' || tableId == 'orders',
+});
+
+const staffStore = createMergeableStore();
+staffStore.setCell('pets', 'fido', 'price', 5);
+const staffSynchronizer = await createWsSynchronizer(
+  staffStore,
+  new WebSocket('ws://localhost:8051/petShop?role=staff'),
+);
+await staffSynchronizer.startSync();
+
+const customerStore = createMergeableStore();
+const customerSynchronizer = await createWsSynchronizer(
+  customerStore,
+  new WebSocket('ws://localhost:8051/petShop?role=customer'),
+);
+await customerSynchronizer.startSync();
+```
+
+Here, a customer may place an order, but may not change the price of a pet. The
+change it is not allowed to make is not passed on, and the server brings the
+customer back into line with its own data:
+
+```js
+customerStore.setCell('orders', 'order1', 'pet', 'fido');
+customerStore.setCell('pets', 'fido', 'price', 1);
+// ...
+
+console.log(staffStore.getTables());
+// -> {pets: {fido: {price: 5}}, orders: {order1: {pet: 'fido'}}}
+console.log(customerStore.getTables());
+// -> {pets: {fido: {price: 5}}, orders: {order1: {pet: 'fido'}}}
+
+await customerSynchronizer.destroy();
+await staffSynchronizer.destroy();
+await authorizingServer.destroy();
+```
+
+Once a server authorizes its clients, each path's MergeableStore becomes the
+only peer that they synchronize with, so that everything they read and write
+passes through it. If no Persister is provided for a path, the server gives it
+an in-memory MergeableStore for as long as it has clients.
+
+The WsServerDurableObject class offers the same features, through its
+`authorize`, `canWriteCell`, and `canWriteValue` methods, which you can
+override. The WsServerSimple has no MergeableStore of its own, so it cannot
+decide what a client writes; to accept or refuse its connections, use the
+`verifyClient` option of the WebSocketServer that you pass to it.
 
 Also note that there is a synchronizer-ws-server-simple module that contains a
 simple server implementation called WsServerSimple. Without the complications of

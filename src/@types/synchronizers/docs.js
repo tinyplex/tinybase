@@ -75,10 +75,10 @@
    * buckets of large Tables from another MergeableStore.
    *
    * Rather than sending one hash for every Row of a Table that differs, a
-   * Synchronizer groups a large Table's Rows into buckets by their Id, and first
-   * compares the hash of each bucket. Only the Rows in the buckets that differ
-   * are then compared. A Synchronizer only sends this message to a peer that
-   * has shown it understands it.
+   * Synchronizer groups a large Table's Rows into buckets by their Id, and
+   * first compares the hash of each bucket. Only the Rows in the buckets that
+   * differ are then compared. A Synchronizer only sends this message to a peer
+   * that has shown it understands it.
    * @category Enum
    * @since v10.1.0
    */

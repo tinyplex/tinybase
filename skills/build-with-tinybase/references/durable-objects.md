@@ -141,17 +141,20 @@ several Stores must multiplex over one socket.
 
 Override only what is needed. Every method has a working default.
 
-| Method                                           | Purpose                                                  |
-| ------------------------------------------------ | -------------------------------------------------------- |
-| `createPersister()`                              | Return a server-side Persister, or nothing               |
-| `getPathId()`                                    | The path this instance serves                            |
-| `getClientIds()`                                 | Currently connected client Ids                           |
-| `getFragmentSize()`                              | Message fragment size, or `undefined` for no fragmenting |
-| `getRequestTimeoutSeconds()`                     | Synchronization request timeout                          |
-| `onPathId(pathId, addedOrRemoved)`               | A path started or stopped being served                   |
-| `onClientId(pathId, clientId, addedOrRemoved)`   | A client joined or left                                  |
-| `onMessage(fromClientId, toClientId, remainder)` | Observe relayed messages                                 |
-| `onIgnoredError(error)`                          | Observe errors that are otherwise swallowed              |
+| Method                                                        | Purpose                                                  |
+| ------------------------------------------------------------- | -------------------------------------------------------- |
+| `createPersister()`                                           | Return a server-side Persister, or nothing               |
+| `getPathId()`                                                 | The path this instance serves                            |
+| `getClientIds()`                                              | Currently connected client Ids                           |
+| `getFragmentSize()`                                           | Message fragment size, or `undefined` for no fragmenting |
+| `getRequestTimeoutSeconds()`                                  | Synchronization request timeout                          |
+| `onPathId(pathId, addedOrRemoved)`                            | A path started or stopped being served                   |
+| `onClientId(pathId, clientId, addedOrRemoved)`                | A client joined or left                                  |
+| `onMessage(fromClientId, toClientId, remainder)`              | Observe relayed messages                                 |
+| `onIgnoredError(error)`                                       | Observe errors that are otherwise swallowed              |
+| `authorize(pathId, request)`                                  | Accept or refuse a client, and how it may write          |
+| `canWriteCell(pathId, tableId, rowId, cellId, cell, context)` | Whether a client may write a Cell                        |
+| `canWriteValue(pathId, valueId, value, context)`              | Whether a client may write a Value                       |
 
 `addedOrRemoved` is `1` for added and `-1` for removed.
 
@@ -161,10 +164,21 @@ Override only what is needed. Every method has a working default.
 WebSocket `Upgrade` request carrying a `sec-websocket-key` header, and routes on
 the request path alone.
 
-For authenticated deployments, write the worker's `fetch` handler directly:
-validate the request, then forward a request of your own to the Durable Object
-stub. Rewriting the path at that point is the supported way to scope a client to
-a verified user or tenant, rather than trusting a path the client chose.
+Since v10.1, the Durable Object itself can authorize clients. Override
+`authorize(pathId, request)` to return a `ClientAccess` object - `{readOnly?,
+context?}` - or `undefined`, which refuses the upgrade with a `403`. Override
+`canWriteCell(pathId, tableId, rowId, cellId, cell, context)` and
+`canWriteValue(pathId, valueId, value, context)` to decide what a writable
+client may change. The `ClientAccess` object is kept with the WebSocket, so it
+survives hibernation; keep it within Cloudflare's 2,048-byte attachment limit.
+Overriding any of these makes `fetch` asynchronous, so await `super.fetch()` if
+you override that too, and override `createPersister` as well, since otherwise
+the Durable Object keeps an in-memory MergeableStore that eviction discards.
+
+To scope a client to a verified user or tenant by path, write the worker's
+`fetch` handler directly: validate the request, then forward a request of your
+own to the Durable Object stub, rewriting the path rather than trusting one the
+client chose.
 
 Client Ids are derived from the `Sec-WebSocket-Key` header. They change across
 reconnections and are not identities. Do not authorize on them.

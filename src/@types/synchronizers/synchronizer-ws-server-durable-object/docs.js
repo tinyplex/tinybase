@@ -311,11 +311,12 @@
    * The authorize method is used to decide whether a client may join the path
    * that the Durable Object serves, and if so, how.
    *
-   * It is called with the Id of the path and the WebSocket upgrade request, from
-   * which you can read a token (from the URL query string, for example) or a
-   * cookie. Return a ClientAccess object to let the client join, or `undefined`
-   * to refuse it, in which case the upgrade request receives a `403` response.
-   * It can be asynchronous. If it throws, the client is refused.
+   * It is called with the Id of the path and the WebSocket upgrade request,
+   * from which you can read a token (from the URL query string, for example)
+   * or a cookie. Return a ClientAccess object to let the client join, or
+   * `undefined` to refuse it, in which case the upgrade request receives a
+   * `403` response. It can be asynchronous. If it throws, the client is
+   * refused.
    *
    * The ClientAccess object is kept with the client's WebSocket, so it
    * survives the Durable Object hibernating, and its serialized form should be

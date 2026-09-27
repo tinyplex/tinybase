@@ -102,6 +102,11 @@
  * reassembly limits are shared across the physical WebSocket. For untrusted
  * clients, use a separate authenticated WebSocket for each authorized path
  * unless access to all descendants is acceptable.
+ *
+ * A WsServerSimple has no MergeableStore of its own, so it cannot decide what a
+ * client may write. To accept or refuse connections, use the `verifyClient`
+ * option of the WebSocketServer you pass to it, or use a WsServer, which can
+ * authorize clients and filter what they write, since v10.1.
  * @param webSocketServer A WebSocketServer object from your server environment.
  * @returns A reference to the new WsServerSimple object.
  * @example
