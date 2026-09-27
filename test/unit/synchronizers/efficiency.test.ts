@@ -20,18 +20,18 @@ import {createTestWebSocketServer} from '../common/websocket.ts';
 type Traffic = {[direction: string]: {[message: string]: number}};
 
 const BUDGETS: {[scenario: string]: [messages: number, bytes: number]} = {
-  'relay: joining a room of 1 client(s) with 1,000 rows': [14, 163_400],
-  'relay: joining a room of 5 client(s) with 1,000 rows': [23, 82_700],
-  'relay: joining a room of 20 client(s) with 1,000 rows': [83, 86_200],
-  'relay: reconnecting after 1 change(s) to 10,000 rows': [26, 632_500],
-  'relay: reconnecting after 100 change(s) to 10,000 rows': [26, 667_300],
-  'relay: a burst of 100 writes in a room of 5 clients': [502, 52_600],
-  'hub: joining a room of 1 client(s) with 1,000 rows': [14, 163_400],
-  'hub: joining a room of 5 client(s) with 1,000 rows': [7, 81_700],
-  'hub: joining a room of 20 client(s) with 1,000 rows': [7, 81_700],
-  'hub: reconnecting after 1 change(s) to 10,000 rows': [26, 632_500],
-  'hub: reconnecting after 100 change(s) to 10,000 rows': [26, 667_300],
-  'hub: a burst of 100 writes in a room of 5 clients': [502, 43_200],
+  'relay: joining a room of 1 client(s) with 1,000 rows': [13, 81_900],
+  'relay: joining a room of 5 client(s) with 1,000 rows': [24, 82_700],
+  'relay: joining a room of 20 client(s) with 1,000 rows': [84, 86_300],
+  'relay: reconnecting after 1 change(s) to 10,000 rows': [21, 8_300],
+  'relay: reconnecting after 100 change(s) to 10,000 rows': [21, 170_700],
+  'relay: a burst of 100 writes in a room of 5 clients': [502, 53_100],
+  'hub: joining a room of 1 client(s) with 1,000 rows': [13, 81_900],
+  'hub: joining a room of 5 client(s) with 1,000 rows': [8, 81_700],
+  'hub: joining a room of 20 client(s) with 1,000 rows': [8, 81_700],
+  'hub: reconnecting after 1 change(s) to 10,000 rows': [21, 8_300],
+  'hub: reconnecting after 100 change(s) to 10,000 rows': [21, 170_700],
+  'hub: a burst of 100 writes in a room of 5 clients': [502, 43_800],
 };
 
 const expectWithinBudget = (traffic: Traffic) => {

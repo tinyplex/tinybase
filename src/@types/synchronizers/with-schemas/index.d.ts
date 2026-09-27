@@ -28,6 +28,8 @@ export const enum Message {
   GetCellDiff = 6,
   /// Message.GetValueDiff
   GetValueDiff = 7,
+  /// Message.GetBucketDiff
+  GetBucketDiff = 8,
 }
 
 /// Send

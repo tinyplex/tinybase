@@ -2064,12 +2064,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional > store2 mis
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > conflicting cell at same time > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -2110,12 +2110,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -2156,12 +2156,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -2207,12 +2207,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 6,
+    "sends": 7,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 7,
+    "sends": 6,
   },
 ]
 `;
@@ -2264,12 +2264,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 4,
+    "sends": 5,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 5,
+    "sends": 4,
   },
 ]
 `;
@@ -2327,12 +2327,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -6481,12 +6481,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional > tracking messages >
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > conflicting cell at same time > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -6527,12 +6527,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -6573,12 +6573,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -6624,12 +6624,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 6,
+    "sends": 7,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 7,
+    "sends": 6,
   },
 ]
 `;
@@ -6681,12 +6681,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 4,
+    "sends": 5,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 5,
+    "sends": 4,
   },
 ]
 `;
@@ -6744,12 +6744,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -10336,12 +10336,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional > store2 missing values
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > conflicting cell at same time > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -10382,12 +10382,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -10428,12 +10428,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -10479,12 +10479,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 6,
+    "sends": 7,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 7,
+    "sends": 6,
   },
 ]
 `;
@@ -10536,12 +10536,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 4,
+    "sends": 5,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 5,
+    "sends": 4,
   },
 ]
 `;
@@ -10599,12 +10599,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -12130,11 +12130,11 @@ exports[`Syncs to/from LocalSynchronizer > Unidirectional > save1 but not autoLo
 exports[`Syncs to/from WsSynchronizer > Bidirectional > Both empty > stats 1`] = `
 [
   {
-    "receives": 2,
+    "receives": 3,
     "sends": 3,
   },
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 2,
   },
 ]
@@ -12158,11 +12158,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > Both empty 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > Both match > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12248,11 +12248,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > Both match 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > Both match, different times > stats 1`] = `
 [
   {
-    "receives": 2,
+    "receives": 3,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 2,
   },
 ]
@@ -12338,11 +12338,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > Both match, different ti
 exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted cell > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12428,11 +12428,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted cell 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted row > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12518,11 +12518,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted row 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted table > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12608,11 +12608,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted table 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted tables > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12698,11 +12698,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted tables 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted value > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12788,11 +12788,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted value 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted values > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12878,11 +12878,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > deleted values 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > different cell > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12924,11 +12924,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > different cell 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > different row > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -12975,11 +12975,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > different row 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > different table > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13037,11 +13037,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > different table 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > different tables > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13116,11 +13116,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > different tables 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > different value > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13150,11 +13150,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > different value 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > different values > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13189,11 +13189,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > different values 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 empty > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 3,
   },
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 3,
   },
 ]
@@ -13279,11 +13279,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 empty 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing cell > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13330,11 +13330,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing cell 1`] 
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing row > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13392,11 +13392,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing row 1`] =
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing table > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13471,11 +13471,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing table 1`]
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing tables > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13561,11 +13561,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing tables 1`
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing value > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13600,11 +13600,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing value 1`]
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing values > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13690,11 +13690,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store1 missing values 1`
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 empty > stats 1`] = `
 [
   {
-    "receives": 2,
+    "receives": 3,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 2,
   },
 ]
@@ -13780,11 +13780,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 empty 1`] = `
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing cell > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13831,11 +13831,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing cell 1`] 
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing row > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13893,11 +13893,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing row 1`] =
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing table > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -13972,11 +13972,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing table 1`]
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing tables > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -14062,11 +14062,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing tables 1`
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing value > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -14101,11 +14101,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing value 1`]
 exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing values > stats 1`] = `
 [
   {
-    "receives": 3,
+    "receives": 4,
     "sends": 4,
   },
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 3,
   },
 ]
@@ -14191,12 +14191,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional > store2 missing values 1`
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > conflicting cell at same time > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 6,
+    "sends": 6,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 7,
+    "sends": 5,
   },
 ]
 `;
@@ -14237,12 +14237,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > co
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 9,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 10,
+    "sends": 8,
   },
 ]
 `;
@@ -14283,12 +14283,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > co
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 9,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 10,
+    "sends": 8,
   },
 ]
 `;
@@ -14334,12 +14334,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 7,
+    "sends": 7,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 8,
+    "sends": 6,
   },
 ]
 `;
@@ -14392,11 +14392,11 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
 [
   {
     "receives": 5,
-    "sends": 6,
+    "sends": 5,
   },
   {
     "receives": 6,
-    "sends": 5,
+    "sends": 4,
   },
 ]
 `;
@@ -14454,12 +14454,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 11,
-    "sends": 12,
+    "receives": 9,
+    "sends": 9,
   },
   {
-    "receives": 12,
-    "sends": 11,
+    "receives": 10,
+    "sends": 8,
   },
 ]
 `;
@@ -14510,7 +14510,7 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > ob
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > All but first empty > stats 1`] = `
 {
-  "receives": 279,
+  "receives": 289,
   "sends": 111,
 }
 `;
@@ -14594,7 +14594,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > All but first empty 1
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > All but last empty > stats 1`] = `
 {
-  "receives": 279,
+  "receives": 289,
   "sends": 111,
 }
 `;
@@ -14678,7 +14678,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > All but last empty 1`
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > All empty > stats 1`] = `
 {
-  "receives": 270,
+  "receives": 280,
   "sends": 110,
 }
 `;
@@ -14700,7 +14700,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > All empty 1`] = `
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > All match > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
@@ -14784,21 +14784,21 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > All match 1`] = `
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting cells > stats 1`] = `
 {
-  "receives": 270,
+  "receives": 280,
   "sends": 110,
 }
 `;
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting cells > stats 2`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting cells > stats 3`] = `
 {
-  "receives": 369,
+  "receives": 379,
   "sends": 121,
 }
 `;
@@ -14886,14 +14886,14 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting cells
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting values > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting values > stats 2`] = `
 {
-  "receives": 369,
+  "receives": 379,
   "sends": 121,
 }
 `;
@@ -14942,7 +14942,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > all conflicting value
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all different cells > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
@@ -15027,7 +15027,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > all different cells 1
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all different rows > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
@@ -15166,7 +15166,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > all different rows 1`
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all different tables > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
@@ -15359,7 +15359,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > all different tables 
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > all different values > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
@@ -15432,7 +15432,7 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > all different values 
 
 exports[`Syncs to/from WsSynchronizer > Multidirectional > half tables, half values > stats 1`] = `
 {
-  "receives": 360,
+  "receives": 370,
   "sends": 120,
 }
 `;
@@ -15517,11 +15517,11 @@ exports[`Syncs to/from WsSynchronizer > Multidirectional > half tables, half val
 exports[`Syncs to/from WsSynchronizer > Unidirectional > autoLoad1 but not autoSave2, defaults > stats 1`] = `
 [
   {
-    "receives": 0,
+    "receives": 1,
     "sends": 1,
   },
   {
-    "receives": 1,
+    "receives": 2,
     "sends": 0,
   },
 ]
@@ -15646,11 +15646,11 @@ exports[`Syncs to/from WsSynchronizer > Unidirectional > autoLoad1 but not autoS
 exports[`Syncs to/from WsSynchronizer > Unidirectional > autoSave1 but not autoLoad2 > stats 1`] = `
 [
   {
-    "receives": 0,
+    "receives": 1,
     "sends": 2,
   },
   {
-    "receives": 2,
+    "receives": 3,
     "sends": 0,
   },
 ]
@@ -15751,11 +15751,11 @@ exports[`Syncs to/from WsSynchronizer > Unidirectional > autoSave1 but not autoL
 exports[`Syncs to/from WsSynchronizer > Unidirectional > load1 but not autoSave2, defaults > stats 1`] = `
 [
   {
-    "receives": 0,
+    "receives": 1,
     "sends": 1,
   },
   {
-    "receives": 1,
+    "receives": 2,
     "sends": 0,
   },
 ]
@@ -15880,11 +15880,11 @@ exports[`Syncs to/from WsSynchronizer > Unidirectional > load1 but not autoSave2
 exports[`Syncs to/from WsSynchronizer > Unidirectional > save1 but not autoLoad2 > stats 1`] = `
 [
   {
-    "receives": 0,
+    "receives": 1,
     "sends": 1,
   },
   {
-    "receives": 1,
+    "receives": 2,
     "sends": 0,
   },
 ]

@@ -13,7 +13,6 @@ import type {
 import type {Receive} from '../../@types/synchronizers/index.d.ts';
 import type {ClientAccess} from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
 import {arrayForEach, arrayMap} from '../../common/array.ts';
-import {getUniqueId} from '../../common/codec.ts';
 import {
   ERROR_SYNC_UNAUTHORIZED,
   errorNew,
@@ -34,13 +33,14 @@ import {createMergeableStore} from '../../mergeable-store/index.ts';
 import {createCustomPersister} from '../../persisters/common/create.ts';
 import {
   type PayloadDecoder,
+  createHelloPayload,
   createInvalidPayloadHandler,
-  createPayload,
   createPayloadDecoder,
   createPayloadReceiver,
   createPayloads,
   createRawPayload,
   createServerChangesReceiver,
+  getTransactionId,
   ifPayloadValid,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
@@ -190,7 +190,7 @@ export class WsServerDurableObject<Env = unknown>
             client.serializeAttachment(access);
           }
           this.onClientId(pathId, clientId, 1);
-          client.send(createPayload(SERVER_CLIENT_ID, null, 1, EMPTY_STRING));
+          client.send(createHelloPayload());
           return createResponse(101, webSocket);
         };
         if (this.#hub) {
@@ -277,7 +277,7 @@ export class WsServerDurableObject<Env = unknown>
   #relayToClients(fromClientId: Id, changes: MergeableChanges) {
     const payloads = createPayloads(
       SERVER_CLIENT_ID,
-      getUniqueId(11),
+      getTransactionId(),
       CONTENT_DIFF,
       changes,
       this.getFragmentSize(),

@@ -132,6 +132,26 @@ export const isWebSocketPayloadTooLarge = (payloadSize: number): boolean =>
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
 
+// Synchronizers since v10.1 start their transaction Ids with a character that
+// earlier ones never use, which tells a peer that they understand the newer
+// messages. Earlier peers accept any string as an Id, and disconnect on any
+// message they do not know, so a newer message is only ever sent to a peer
+// that has marked itself this way. A newer server greets each client with a
+// marked, empty ContentDiff - which needs no answer - so that clients can tell
+// that it too is newer.
+const MARK = '~';
+
+export const getTransactionId = (): Id => MARK + getUniqueId(11);
+
+export const isMarked = (id: any): boolean => isString(id) && id[0] == MARK;
+
+export const createHelloPayload = (): string =>
+  createPayload(SERVER_CLIENT_ID, getTransactionId(), 3, [
+    stampNewObj(),
+    stampNewObj(),
+    1,
+  ]);
+
 const MULTIPLE_CLIENT_ID = 'M';
 const MULTIPLE_MESSAGE = -1;
 
@@ -221,12 +241,25 @@ const isMergeableContentOrChanges = (body: any): boolean =>
 
 const isResponse = (body: any): boolean =>
   isContentHashes(body) ||
+  isHashTree(body, 1) ||
   isStamp(body, 3) ||
   isStamp(body, 1) ||
   (isArray(body) &&
     size(body) == 2 &&
     isStamp(body[0], 3) &&
     (isHashTree(body[1], 0) || isHashTree(body[1], 1)));
+
+export const BUCKET_COUNT = 256;
+
+const isBucketHashes = (body: any): boolean =>
+  isObject(body) &&
+  objEvery(
+    body,
+    (hashes) =>
+      isArray(hashes) &&
+      size(hashes) == BUCKET_COUNT &&
+      arrayEvery(hashes, isHash),
+  );
 
 const isBodyValid = (message: number, body: any): boolean =>
   message == 0
@@ -245,7 +278,9 @@ const isBodyValid = (message: number, body: any): boolean =>
                 ? isHashTree(body, 2)
                 : message == 7
                   ? isHashTree(body, 0)
-                  : false;
+                  : message == 8
+                    ? isBucketHashes(body)
+                    : false;
 
 export const isProtocolMessageValid = (
   requestId: any,

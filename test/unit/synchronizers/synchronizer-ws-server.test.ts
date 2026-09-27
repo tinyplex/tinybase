@@ -79,6 +79,11 @@ const getFragmentGroup = (
   );
 };
 
+// A server greets each client with an empty ContentDiff that marks it as
+// understanding the newer protocol messages.
+const isHello = (payload: any) =>
+  /^S\n\["~[^"]{11}",3,\[\[\{\}\],\[\{\}\],1\]\]$/.test(payload.toString());
+
 const getPayloadFromClient = (clientId: string, payload: string) =>
   clientId + payload.slice(payload.indexOf('\n'));
 
@@ -240,7 +245,9 @@ test('malformed websocket traffic is not relayed', async () => {
   const attacker = new WebSocket(`ws://localhost:${port}`);
   const otherClient = new WebSocket(`ws://localhost:${port}`);
   const received: any[] = [];
-  otherClient.on('message', (message) => received.push(message));
+  otherClient.on('message', (message) =>
+    isHello(message) ? 0 : received.push(message),
+  );
   await Promise.all(
     [attacker, otherClient].map(
       (webSocket) =>
@@ -273,7 +280,9 @@ test('oversized websocket traffic is disconnected before relay', async () => {
   const attacker = new WebSocket(`ws://localhost:${port}`);
   const otherClient = new WebSocket(`ws://localhost:${port}`);
   const received: any[] = [];
-  otherClient.on('message', (message) => received.push(message));
+  otherClient.on('message', (message) =>
+    isHello(message) ? 0 : received.push(message),
+  );
   await Promise.all(
     [attacker, otherClient].map(
       (webSocket) =>
@@ -1118,7 +1127,9 @@ describe('Lifecycle', () => {
     const webSocket1 = await openWebSocket('path', port);
     const webSocket2 = await openWebSocket('path', port);
     const received: string[] = [];
-    webSocket2.on('message', (message) => received.push(message.toString()));
+    webSocket2.on('message', (message) =>
+      isHello(message) ? 0 : received.push(message.toString()),
+    );
 
     webSocket1.send('\n["one",2,[1,1]]');
     webSocket1.send('\n["two",2,[2,2]]');

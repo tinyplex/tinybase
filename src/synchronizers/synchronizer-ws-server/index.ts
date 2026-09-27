@@ -28,7 +28,6 @@ import {
   arrayPush,
   arrayReduce,
 } from '../../common/array.ts';
-import {getUniqueId} from '../../common/codec.ts';
 import {
   collClear,
   collDel,
@@ -88,6 +87,7 @@ import {
   MAX_WEBSOCKET_QUEUE_SIZE,
   SERVER_CLIENT_ID,
   WS_SYNCHRONIZER_PROTOCOL,
+  createHelloPayload,
   createInvalidPayloadHandler,
   createMultiplePayload,
   createMultipleServerClient,
@@ -97,6 +97,7 @@ import {
   createRawPayload,
   createServerChangesReceiver,
   getPayloadCoalesceKey,
+  getTransactionId,
   getWebSocketPayloadSize,
   ifPayloadValid,
   isWebSocketBackpressured,
@@ -248,7 +249,7 @@ export const createWsServer = (<
   ) => {
     const payloads = createPayloads(
       SERVER_CLIENT_ID,
-      getUniqueId(11),
+      getTransactionId(),
       CONTENT_DIFF,
       changes,
       fragmentSize,
@@ -635,6 +636,7 @@ export const createWsServer = (<
         ? createPath(pathId, !!existingPath)
         : existingPath;
     mapSet(path[Path.Clients], clientId, client);
+    sendToClient(client, createHelloPayload());
     callListeners(clientIdListeners, [pathId], clientId, 1);
     return [
       path,

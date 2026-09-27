@@ -1,5 +1,6 @@
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {
+  CellHashes,
   CellStamp,
   ContentHashes,
   MergeableChanges,
@@ -22,17 +23,29 @@ import type {
   Send,
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
+import {arrayIsEqual, arrayNew} from '../common/array.ts';
 import {getUniqueId} from '../common/codec.ts';
-import {collDel, collSize} from '../common/coll.ts';
+import {collDel, collHas, collSize} from '../common/coll.ts';
 import {
   ERROR_SYNC_MESSAGE,
   ERROR_SYNC_OVERFLOW,
   ERROR_SYNC_RESPONSE,
   errorNew,
   tryCatch,
+  tryFinallyAsync,
 } from '../common/error.ts';
+import {getHash, getRowInTableHash} from '../common/hash.ts';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
-import {objEnsure, objForEach, objIsEmpty, objSet} from '../common/obj.ts';
+import {
+  IdObj,
+  objEnsure,
+  objForEach,
+  objIsEmpty,
+  objMap,
+  objNew,
+  objSet,
+  objSize,
+} from '../common/obj.ts';
 import {
   ifNotUndefined,
   isNull,
@@ -42,10 +55,18 @@ import {
   startTimeout,
   stopTimeout,
 } from '../common/other.ts';
+import {setAdd, setNew} from '../common/set.ts';
 import {getLatestHlc, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
 import {createCustomPersister} from '../persisters/index.ts';
-import {MAX_PENDING_REQUESTS, isProtocolMessageValid} from './common.ts';
+import {
+  BUCKET_COUNT,
+  MAX_PENDING_REQUESTS,
+  SERVER_CLIENT_ID,
+  getTransactionId,
+  isMarked,
+  isProtocolMessageValid,
+} from './common.ts';
 
 const enum MessageValues {
   Response = 0,
@@ -56,6 +77,7 @@ const enum MessageValues {
   GetRowDiff = 5,
   GetCellDiff = 6,
   GetValueDiff = 7,
+  GetBucketDiff = 8,
 }
 
 export const Message = {
@@ -67,6 +89,25 @@ export const Message = {
   GetRowDiff: MessageValues.GetRowDiff,
   GetCellDiff: MessageValues.GetCellDiff,
   GetValueDiff: MessageValues.GetValueDiff,
+  GetBucketDiff: MessageValues.GetBucketDiff,
+};
+
+type BucketHashes = {[tableId: Id]: number[]};
+type Pull = [hashes: ContentHashes, changes: Promise<MergeableChanges>];
+
+const getBucket = (rowId: Id): number => getHash(rowId) % BUCKET_COUNT;
+
+// Groups a Table's Rows into buckets by their Id, and combines the hashes of
+// the Rows in each, so that two peers can find which Rows differ without
+// exchanging a hash for every one of them.
+const getBucketHashes = (rowHashes: IdObj<number>): number[] => {
+  const bucketHashes = arrayNew(BUCKET_COUNT, () => 0);
+  objForEach(rowHashes, (rowHash, rowId) => {
+    const bucket = getBucket(rowId);
+    bucketHashes[bucket] =
+      (bucketHashes[bucket] ^ getRowInTableHash(rowId, rowHash)) >>> 0;
+  });
+  return bucketHashes;
 };
 
 export const createCustomSynchronizer = (
@@ -103,7 +144,9 @@ export const createCustomSynchronizer = (
     ]
   > = mapNew();
 
-  const getTransactionId = () => getUniqueId(11);
+  // The peers known to understand the newer protocol messages.
+  const markedClientIds = setNew<Id>();
+  const pulling: IdMap<Pull> = mapNew();
 
   const rejectPendingRequests = (error: Error) =>
     mapForEach(pendingRequests, (requestId, [, , reject, timeout]) => {
@@ -212,61 +255,161 @@ export const createCustomSynchronizer = (
             transactionId,
           );
       }
-      const [otherTablesHash, otherValuesHash] = otherContentHashes;
-      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
+      // Pulling the same hashes from the same peer again would only fetch the
+      // same changes, so a pull already under way is shared instead.
+      const pull = mapGet(pulling, otherClientId as Id);
+      if (pull && arrayIsEqual(pull[0], otherContentHashes)) {
+        return await pull[1];
+      }
+      const newPull: Pull = [
+        otherContentHashes,
+        pullChanges(otherClientId as Id, otherContentHashes, transactionId),
+      ];
+      mapSet(pulling, otherClientId as Id, newPull);
+      return await tryFinallyAsync(
+        () => newPull[1],
+        () => {
+          if (mapGet(pulling, otherClientId as Id) === newPull) {
+            collDel(pulling, otherClientId as Id);
+          }
+        },
+      );
+    }, onIgnoredError);
 
-      let tablesChanges: TablesStamp = stampNewObj();
-      if (tablesHash != otherTablesHash) {
-        const [newTables, differentTableHashes] = (
-          await request<[TablesStamp, TableHashes]>(
-            otherClientId,
-            MessageValues.GetTableDiff,
-            store.getMergeableTableHashes(),
-            transactionId,
-          )
-        )[0];
-        tablesChanges = newTables;
+  const pullChanges = async (
+    otherClientId: Id,
+    [otherTablesHash, otherValuesHash]: ContentHashes,
+    transactionId: Id,
+  ): Promise<MergeableChanges> => {
+    const [tablesHash, valuesHash] = store.getMergeableContentHashes();
 
-        if (!objIsEmpty(differentTableHashes)) {
-          const [newRows, differentRowHashes] = (
+    let tablesChanges: TablesStamp = stampNewObj();
+    if (tablesHash != otherTablesHash) {
+      const [newTables, differentTableHashes] = (
+        await request<[TablesStamp, TableHashes]>(
+          otherClientId,
+          MessageValues.GetTableDiff,
+          store.getMergeableTableHashes(),
+          transactionId,
+        )
+      )[0];
+      tablesChanges = newTables;
+
+      if (!objIsEmpty(differentTableHashes)) {
+        const rowHashes = store.getMergeableRowHashes(differentTableHashes);
+        const bucketed =
+          collHas(markedClientIds, otherClientId) &&
+          (isServer || collHas(markedClientIds, SERVER_CLIENT_ID));
+        const bucketHashes: BucketHashes = objNew();
+        const plainRowHashes: RowHashes = objNew();
+        objForEach(rowHashes, (tableRowHashes, tableId) =>
+          bucketed && objSize(tableRowHashes) >= BUCKET_COUNT
+            ? objSet(bucketHashes, tableId, getBucketHashes(tableRowHashes))
+            : objSet(plainRowHashes, tableId, tableRowHashes),
+        );
+        let differentRowHashes: RowHashes = objNew();
+        const missingRows: CellHashes = objNew();
+
+        if (!objIsEmpty(plainRowHashes)) {
+          const [newRows, differentPlainRowHashes] = (
             await request<[TablesStamp, RowHashes]>(
               otherClientId,
               MessageValues.GetRowDiff,
-              store.getMergeableRowHashes(differentTableHashes),
+              plainRowHashes,
               transactionId,
             )
           )[0];
           mergeTablesStamps(tablesChanges, newRows);
-
-          if (!objIsEmpty(differentRowHashes)) {
-            const newCells = (
-              await request<TablesStamp>(
-                otherClientId,
-                MessageValues.GetCellDiff,
-                store.getMergeableCellHashes(differentRowHashes),
-                transactionId,
-              )
-            )[0];
-            mergeTablesStamps(tablesChanges, newCells);
-          }
+          differentRowHashes = differentPlainRowHashes;
         }
-      }
 
-      return receiveChangesFrom(otherClientId as Id, [
-        tablesChanges,
-        valuesHash == otherValuesHash
-          ? stampNewObj()
-          : (
-              await request<ValuesStamp>(
+        if (!objIsEmpty(bucketHashes)) {
+          objForEach(
+            (
+              await request<RowHashes>(
                 otherClientId,
-                MessageValues.GetValueDiff,
-                store.getMergeableValueHashes(),
+                MessageValues.GetBucketDiff,
+                bucketHashes,
                 transactionId,
               )
             )[0],
-        1,
-      ]);
-    }, onIgnoredError);
+            (otherRowHashes, tableId) =>
+              objForEach(otherRowHashes, (otherRowHash, rowId) =>
+                isUndefined(rowHashes[tableId]?.[rowId])
+                  ? objEnsure(
+                      objEnsure(missingRows, tableId, objNew),
+                      rowId,
+                      objNew,
+                    )
+                  : otherRowHash !== rowHashes[tableId][rowId]
+                    ? objSet(
+                        objEnsure(differentRowHashes, tableId, objNew),
+                        rowId,
+                        otherRowHash,
+                      )
+                    : 0,
+              ),
+          );
+        }
+
+        const cellHashes = store.getMergeableCellHashes(differentRowHashes);
+        objForEach(missingRows, (rows, tableId) =>
+          objForEach(rows, (cells, rowId) =>
+            objSet(objEnsure(cellHashes, tableId, objNew), rowId, cells),
+          ),
+        );
+        if (!objIsEmpty(cellHashes)) {
+          const newCells = (
+            await request<TablesStamp>(
+              otherClientId,
+              MessageValues.GetCellDiff,
+              cellHashes,
+              transactionId,
+            )
+          )[0];
+          mergeTablesStamps(tablesChanges, newCells);
+        }
+      }
+    }
+
+    return receiveChangesFrom(otherClientId as Id, [
+      tablesChanges,
+      valuesHash == otherValuesHash
+        ? stampNewObj()
+        : (
+            await request<ValuesStamp>(
+              otherClientId,
+              MessageValues.GetValueDiff,
+              store.getMergeableValueHashes(),
+              transactionId,
+            )
+          )[0],
+      1,
+    ]);
+  };
+
+  // Returns the hashes of this Store's Rows in each bucket whose hash differs
+  // from the other peer's.
+  const getMergeableBucketDiff = (otherBucketHashes: BucketHashes) => {
+    const differentRowHashes: RowHashes = objNew();
+    objForEach(
+      store.getMergeableRowHashes(objMap(otherBucketHashes, () => -1)),
+      (tableRowHashes, tableId) => {
+        const bucketHashes = getBucketHashes(tableRowHashes);
+        objForEach(tableRowHashes, (rowHash, rowId) => {
+          const bucket = getBucket(rowId);
+          if (bucketHashes[bucket] !== otherBucketHashes[tableId][bucket]) {
+            objSet(
+              objEnsure(differentRowHashes, tableId, objNew),
+              rowId,
+              rowHash,
+            );
+          }
+        });
+      },
+    );
+    return differentRowHashes;
+  };
 
   const getPersisted = async (): Promise<MergeableContent | undefined> => {
     if (isServer) {
@@ -354,6 +497,12 @@ export const createCustomSynchronizer = (
         return;
       }
       const isAutoLoading = syncing || persister.isAutoLoading();
+      if (
+        message != MessageValues.Response &&
+        isMarked(transactionOrRequestId)
+      ) {
+        setAdd(markedClientIds, fromClientId);
+      }
       receives++;
       onReceive?.(fromClientId, transactionOrRequestId, message, body);
       if (message == MessageValues.Response) {
@@ -365,7 +514,11 @@ export const createCustomSynchronizer = (
               : /*! istanbul ignore next */
                 0,
         );
-      } else if (message == MessageValues.ContentHashes && isAutoLoading) {
+      } else if (
+        message == MessageValues.ContentHashes &&
+        isAutoLoading &&
+        !arrayIsEqual(mapGet(pulling, fromClientId)?.[0] ?? [], body)
+      ) {
         getChangesFromOtherStore(
           fromClientId,
           body,
@@ -376,7 +529,12 @@ export const createCustomSynchronizer = (
           })
           .catch(onIgnoredError);
       } else if (message == MessageValues.ContentDiff && isAutoLoading) {
-        persisterListener?.(undefined, receiveChangesFrom(fromClientId, body));
+        if (!objIsEmpty(body[0][0]) || !objIsEmpty(body[1][0])) {
+          persisterListener?.(
+            undefined,
+            receiveChangesFrom(fromClientId, body),
+          );
+        }
       } else {
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
@@ -390,7 +548,9 @@ export const createCustomSynchronizer = (
                   ? store.getMergeableCellDiff(body)
                   : message == MessageValues.GetValueDiff
                     ? store.getMergeableValueDiff(body)
-                    : undefined,
+                    : message == MessageValues.GetBucketDiff
+                      ? getMergeableBucketDiff(body)
+                      : undefined,
           (response) => {
             sendImpl(
               fromClientId,
