@@ -307,6 +307,141 @@
    * @since v5.4.0
    */
   /// WsServerDurableObject.onMessage
+  /**
+   * The authorize method is used to decide whether a client may join the path
+   * that the Durable Object serves, and if so, how.
+   *
+   * It is called with the Id of the path and the WebSocket upgrade request, from
+   * which you can read a token (from the URL query string, for example) or a
+   * cookie. Return a ClientAccess object to let the client join, or `undefined`
+   * to refuse it, in which case the upgrade request receives a `403` response.
+   * It can be asynchronous. If it throws, the client is refused.
+   *
+   * The ClientAccess object is kept with the client's WebSocket, so it
+   * survives the Durable Object hibernating, and its serialized form should be
+   * no larger than Cloudflare's 2,048-byte attachment limit.
+   *
+   * Overriding this method, or either of the canWriteCell and canWriteValue
+   * methods, makes the Durable Object's MergeableStore the only peer that its
+   * clients synchronize with, so that everything they read and write passes
+   * through it. If you do not also override the createPersister method, the
+   * Durable Object uses an in-memory MergeableStore, which does not survive
+   * the Durable Object being evicted.
+   *
+   * Since this makes the `fetch` method asynchronous, remember to await the
+   * `super` implementation if you further override that too.
+   * @param pathId The Id of the path the client wishes to join.
+   * @param request The WebSocket upgrade request.
+   * @returns A ClientAccess object, or `undefined` to refuse the client, or a
+   * Promise of either.
+   * @example
+   * This example lets staff write to the Durable Object's path, lets customers
+   * only read it, and refuses anyone else.
+   *
+   * ```js ignore
+   * import {createMergeableStore} from 'tinybase';
+   * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+   *
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   createPersister() {
+   *     return createDurableObjectSqlStoragePersister(
+   *       createMergeableStore(),
+   *       this.ctx.storage.sql,
+   *     );
+   *   }
+   *
+   *   authorize(pathId, request) {
+   *     const token = new URL(request.url).searchParams.get('token');
+   *     return token == 'staff'
+   *       ? {}
+   *       : token == 'customer'
+   *         ? {readOnly: true}
+   *         : undefined;
+   *   }
+   * }
+   * ```
+   * @category Authorization
+   * @since v10.1.0
+   */
+  /// WsServerDurableObject.authorize
+  /**
+   * The canWriteCell method is used to decide whether a client may write a
+   * given Cell.
+   *
+   * It is called for each Cell in the changes that a writable client sends,
+   * including deletions, where the `cell` parameter is `undefined`. It must be
+   * synchronous. Cells for which it returns `false` are neither merged into the
+   * Durable Object's MergeableStore nor relayed to other clients, and a client
+   * that wrote a newer version is brought back into line with the server.
+   * @param pathId The Id of the path.
+   * @param tableId The Id of the Table.
+   * @param rowId The Id of the Row.
+   * @param cellId The Id of the Cell.
+   * @param cell The new value of the Cell, or `undefined` if it is being
+   * deleted.
+   * @param context The context from the client's ClientAccess.
+   * @returns Whether the client may write the Cell.
+   * @example
+   * This example lets staff write anything, but lets customers write only to
+   * the `orders` Table.
+   *
+   * ```js ignore
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+   *
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   authorize(pathId, request) {
+   *     return {
+   *       context: {role: new URL(request.url).searchParams.get('role')},
+   *     };
+   *   }
+   *
+   *   canWriteCell(pathId, tableId, rowId, cellId, cell, {role}) {
+   *     return role == 'staff' || tableId == 'orders';
+   *   }
+   * }
+   * ```
+   * @category Authorization
+   * @since v10.1.0
+   */
+  /// WsServerDurableObject.canWriteCell
+  /**
+   * The canWriteValue method is used to decide whether a client may write a
+   * given Value.
+   *
+   * It is called for each Value in the changes that a writable client sends,
+   * including deletions, where the `value` parameter is `undefined`. It must be
+   * synchronous. Values for which it returns `false` are neither merged into
+   * the Durable Object's MergeableStore nor relayed to other clients, and a
+   * client that wrote a newer version is brought back into line with the
+   * server.
+   * @param pathId The Id of the path.
+   * @param valueId The Id of the Value.
+   * @param value The new Value, or `undefined` if it is being deleted.
+   * @param context The context from the client's ClientAccess.
+   * @returns Whether the client may write the Value.
+   * @example
+   * This example lets only staff change the shop's opening hours.
+   *
+   * ```js ignore
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+   *
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   authorize(pathId, request) {
+   *     return {
+   *       context: {role: new URL(request.url).searchParams.get('role')},
+   *     };
+   *   }
+   *
+   *   canWriteValue(pathId, valueId, value, {role}) {
+   *     return role == 'staff' || valueId != 'openingHours';
+   *   }
+   * }
+   * ```
+   * @category Authorization
+   * @since v10.1.0
+   */
+  /// WsServerDurableObject.canWriteValue
 }
 
 /**

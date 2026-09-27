@@ -94,6 +94,13 @@ export default defineConfig({
       },
       {
         extends: true,
+        resolve: {
+          alias: {
+            'cloudflare:workers': resolve(
+              'test/unit/common/cloudflare-workers.ts',
+            ),
+          },
+        },
         test: {
           name: 'unit-synchronizers',
           include: ['test/unit/synchronizers/**/*.test.ts'],

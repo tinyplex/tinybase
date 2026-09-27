@@ -5,11 +5,16 @@ import type {
   Persists,
 } from '../../../persisters/with-schemas/index.d.ts';
 import type {
+  CellOrUndefined,
+  ValueOrUndefined,
+} from '../../../store/index.d.ts';
+import type {
   Id,
   IdAddedOrRemoved,
   Ids,
   OptionalSchemas,
 } from '../../../with-schemas/index.d.ts';
+import type {ClientAccess} from '../../synchronizer-ws-server/with-schemas/index.d.ts';
 
 /// WsServerDurableObject
 export class WsServerDurableObject<
@@ -48,6 +53,30 @@ export class WsServerDurableObject<
 
   /// WsServerDurableObject.onMessage
   onMessage(fromClientId: Id, toClientId: Id, remainder: string): void;
+
+  /// WsServerDurableObject.authorize
+  authorize(
+    pathId: Id,
+    request: Request,
+  ): ClientAccess | undefined | Promise<ClientAccess | undefined>;
+
+  /// WsServerDurableObject.canWriteCell
+  canWriteCell(
+    pathId: Id,
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    cell: CellOrUndefined,
+    context: {[key: string]: any} | undefined,
+  ): boolean;
+
+  /// WsServerDurableObject.canWriteValue
+  canWriteValue(
+    pathId: Id,
+    valueId: Id,
+    value: ValueOrUndefined,
+    context: {[key: string]: any} | undefined,
+  ): boolean;
 }
 
 /// getWsServerDurableObjectFetch

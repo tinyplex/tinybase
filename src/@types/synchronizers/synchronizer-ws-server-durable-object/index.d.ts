@@ -2,6 +2,8 @@
 import {DurableObject} from 'cloudflare:workers';
 import type {Id, IdAddedOrRemoved, Ids} from '../../index.d.ts';
 import type {Persister, Persists} from '../../persisters/index.d.ts';
+import type {CellOrUndefined, ValueOrUndefined} from '../../store/index.d.ts';
+import type {ClientAccess} from '../synchronizer-ws-server/index.d.ts';
 
 /// WsServerDurableObject
 export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
@@ -37,6 +39,30 @@ export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
 
   /// WsServerDurableObject.onMessage
   onMessage(fromClientId: Id, toClientId: Id, remainder: string): void;
+
+  /// WsServerDurableObject.authorize
+  authorize(
+    pathId: Id,
+    request: Request,
+  ): ClientAccess | undefined | Promise<ClientAccess | undefined>;
+
+  /// WsServerDurableObject.canWriteCell
+  canWriteCell(
+    pathId: Id,
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    cell: CellOrUndefined,
+    context: {[key: string]: any} | undefined,
+  ): boolean;
+
+  /// WsServerDurableObject.canWriteValue
+  canWriteValue(
+    pathId: Id,
+    valueId: Id,
+    value: ValueOrUndefined,
+    context: {[key: string]: any} | undefined,
+  ): boolean;
 }
 
 /// getWsServerDurableObjectFetch
