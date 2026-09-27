@@ -696,7 +696,17 @@ href='/guides/releases/#v7-1'>`
    - Update the tagline: `<span id="one-with">"The one with
 Schematizers!"</span>`
 
-3. **Generated files update automatically** during build process
+3. **Update `/site/launch-card.html`**:
+   - Rewrite the subtitle and the three tiles for the new release
+   - Set `data-release` on the body tag to the new version, as in `v7.1`
+   - The docs build publishes it as `/launch-card.html`, taking the version and
+     headline from the two steps above, and warns while `data-release` names
+     an older release
+   - It is a doc shot, so after a docs build refresh its image with
+     `UPDATE_DOC_SHOTS=1 npx playwright test doc-shots -g launch-card`, then
+     rebuild the docs to publish it as `/shots/launch-card.png`
+
+4. **Generated files update automatically** during build process
 
 ## Demo Development Workflow
 
