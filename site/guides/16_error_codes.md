@@ -23,3 +23,4 @@ through from platforms or third-party libraries retain their original format.
 | 14   | A Synchronizer protocol message was invalid.                     |
 | 15   | A synchronization capacity limit was exceeded.                   |
 | 16   | A query `selectAll` cycle could expand Cell Ids indefinitely.    |
+| 17   | A synchronization server refused a client access to a path.      |

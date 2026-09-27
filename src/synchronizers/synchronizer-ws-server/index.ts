@@ -1,15 +1,21 @@
+import type {IncomingMessage} from 'http';
 import type {WebSocket, WebSocketServer} from 'ws';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {
+  MergeableChanges,
+  MergeableStore,
+} from '../../@types/mergeable-store/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
 import type {
   Receive,
   Synchronizer,
 } from '../../@types/synchronizers/index.d.ts';
 import type {
+  ClientAccess,
   ClientIdsListener,
   PathIdsListener,
   WsServer,
+  WsServerOptions,
   WsServerStats,
   createWsServer as createWsServerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
@@ -22,6 +28,7 @@ import {
   arrayPush,
   arrayReduce,
 } from '../../common/array.ts';
+import {getUniqueId} from '../../common/codec.ts';
 import {
   collClear,
   collDel,
@@ -32,6 +39,7 @@ import {
 } from '../../common/coll.ts';
 import {
   ERROR_SYNC_OVERFLOW,
+  ERROR_SYNC_UNAUTHORIZED,
   errorNew,
   tryCatch,
   tryCatchSync,
@@ -54,6 +62,7 @@ import {
   addEmitterListener,
   ifNotUndefined,
   isArray,
+  isFunction,
   isUndefined,
   noop,
   promiseAll,
@@ -72,6 +81,8 @@ import {
   UTF8,
   strMatch,
 } from '../../common/strings.ts';
+import {createMergeableStore} from '../../mergeable-store/index.ts';
+import {createCustomPersister} from '../../persisters/common/create.ts';
 import {
   MAX_WEBSOCKET_BUFFER_SIZE,
   MAX_WEBSOCKET_QUEUE_SIZE,
@@ -84,6 +95,7 @@ import {
   createPayloadReceiver,
   createPayloads,
   createRawPayload,
+  createServerChangesReceiver,
   getPayloadCoalesceKey,
   getWebSocketPayloadSize,
   ifPayloadValid,
@@ -118,6 +130,9 @@ enum Path {
 }
 
 const PATH_REGEX = /\/([^?]*)/;
+const CONTENT_DIFF = 3;
+const POLICY_VIOLATION = 1008;
+const WRITABLE: ClientAccess = {};
 
 export const createWsServer = (<
   PathPersister extends Persister<
@@ -125,19 +140,38 @@ export const createWsServer = (<
   >,
 >(
   webSocketServer: WebSocketServer,
-  createPersisterForPath?: (
-    pathId: Id,
-  ) =>
-    | PathPersister
-    | [PathPersister, (store: MergeableStore) => void]
-    | Promise<PathPersister>
-    | Promise<[PathPersister, (store: MergeableStore) => void]>
-    | undefined,
-  onIgnoredError?: (error: any) => void,
-  requestTimeoutSeconds: number = 1,
-  fragmentSize?: number,
+  createPersisterForPathOrOptions?:
+    | WsServerOptions<PathPersister>['createPersisterForPath']
+    | WsServerOptions<PathPersister>,
+  onIgnoredErrorArg?: (error: any) => void,
+  requestTimeoutSecondsArg?: number,
+  fragmentSizeArg?: number,
 ) => {
-  type Client = [webSocket: WebSocket, channelId?: Id];
+  const {
+    createPersisterForPath,
+    authorize,
+    canWriteCell,
+    canWriteValue,
+    onIgnoredError,
+    requestTimeoutSeconds = 1,
+    fragmentSize,
+  }: WsServerOptions<PathPersister> = isFunction(
+    createPersisterForPathOrOptions,
+  ) || isUndefined(createPersisterForPathOrOptions)
+    ? {
+        createPersisterForPath: createPersisterForPathOrOptions,
+        onIgnoredError: onIgnoredErrorArg,
+        requestTimeoutSeconds: requestTimeoutSecondsArg,
+        fragmentSize: fragmentSizeArg,
+      }
+    : createPersisterForPathOrOptions;
+
+  // When the server authorizes clients, each path's MergeableStore becomes
+  // the only peer its clients synchronize with, so that everything a client
+  // reads and writes passes through it.
+  const hub = !!(authorize || canWriteCell || canWriteValue);
+
+  type Client = [webSocket: WebSocket, channelId?: Id, access?: ClientAccess];
   type Buffered = [
     clientId: Id,
     payload: string,
@@ -162,7 +196,7 @@ export const createWsServer = (<
     ready?: Promise<void>,
     stopping?: Promise<void>,
   ];
-  type PathClient = [pathId: Id, path: Path];
+  type ClientGate = ReturnType<typeof createClientGate>;
 
   const pathIdListeners: IdSet2 = mapNew();
   const clientIdListeners: IdSet2 = mapNew();
@@ -207,9 +241,40 @@ export const createWsServer = (<
     collDel(removeListenersByWebSocket, webSocket);
   };
 
+  const relayToClients = (
+    path: Path,
+    fromClientId: Id,
+    changes: MergeableChanges,
+  ) => {
+    const payloads = createPayloads(
+      SERVER_CLIENT_ID,
+      getUniqueId(11),
+      CONTENT_DIFF,
+      changes,
+      fragmentSize,
+    );
+    mapForEach(path[Path.Clients], (clientId, client) =>
+      clientId !== fromClientId
+        ? arrayForEach(payloads, (payload) => sendToClient(client, payload))
+        : 0,
+    );
+  };
+
   const configureServerClient = async (path: Path, pathId: Id) => {
     const serverClient = path[Path.ServerClient];
-    const persisterMaybeThen = await createPersisterForPath?.(pathId);
+    const persisterMaybeThen =
+      (await createPersisterForPath?.(pathId)) ??
+      (hub
+        ? (createCustomPersister(
+            createMergeableStore(),
+            async () => undefined,
+            async () => {},
+            noop,
+            noop,
+            onIgnoredError,
+            2, // MergeableStoreOnly
+          ) as PathPersister)
+        : undefined);
     if (isUndefined(persisterMaybeThen)) {
       serverClient[ServerClient.State] = State.Ready;
       return;
@@ -218,8 +283,11 @@ export const createWsServer = (<
     serverClient[ServerClient.Persister] = isArray(persisterMaybeThen)
       ? persisterMaybeThen[0]
       : persisterMaybeThen;
+    const store = serverClient[
+      ServerClient.Persister
+    ].getStore() as MergeableStore;
     serverClient[ServerClient.Synchronizer] = createCustomSynchronizer(
-      serverClient[ServerClient.Persister].getStore() as MergeableStore,
+      store,
       (toClientId, requestId, message, body) =>
         arrayForEach(
           createPayloads(toClientId, requestId, message, body, fragmentSize),
@@ -236,6 +304,22 @@ export const createWsServer = (<
       undefined,
       undefined,
       handleError,
+      undefined,
+      undefined,
+      hub
+        ? createServerChangesReceiver(
+            store,
+            (clientId) => mapGet(path[Path.Clients], clientId)?.[2],
+            canWriteCell &&
+              ((tableId, rowId, cellId, cell, context) =>
+                canWriteCell(pathId, tableId, rowId, cellId, cell, context)),
+            canWriteValue &&
+              ((valueId, value, context) =>
+                canWriteValue(pathId, valueId, value, context)),
+            (fromClientId, changes) =>
+              relayToClients(path, fromClientId, changes),
+          )
+        : undefined,
     );
     serverClient[ServerClient.Then] = isArray(persisterMaybeThen)
       ? persisterMaybeThen[1]
@@ -419,7 +503,11 @@ export const createWsServer = (<
     const serverClient = path[Path.ServerClient];
     ifPayloadValid(payload, (toClientId, remainder) => {
       const forwardedPayload = createRawPayload(clientId, remainder);
-      if (toClientId === EMPTY_STRING) {
+      if (hub && clientId !== SERVER_CLIENT_ID) {
+        if (toClientId === EMPTY_STRING || toClientId === SERVER_CLIENT_ID) {
+          serverClient?.[ServerClient.Send]?.(forwardedPayload);
+        }
+      } else if (toClientId === EMPTY_STRING) {
         if (clientId !== SERVER_CLIENT_ID) {
           serverClient?.[ServerClient.Send]?.(forwardedPayload);
         }
@@ -575,15 +663,109 @@ export const createWsServer = (<
     ];
   };
 
+  const refuseClient = (client: WebSocket, pathId: Id) => {
+    const error = errorNew(ERROR_SYNC_UNAUTHORIZED, pathId);
+    tryFinally(
+      () => handleError(error),
+      () => client.close(POLICY_VIOLATION, error.message),
+    );
+  };
+
+  // Resolves how a client may use a path, holding its messages (within the
+  // usual limits) until it does, and then either joins it to the path or
+  // refuses it. Without an authorize function, this all happens at once.
+  const createClientGate = (
+    client: WebSocket,
+    clientId: Id,
+    pathId: Id,
+    request: IncomingMessage,
+    addClient: (access: ClientAccess) => [Path, Promise<void>],
+    delClient: (path: Path) => Promise<void> | void,
+  ) => {
+    let path: Path | undefined;
+    let pending: [toClientId: Id, remainders: string[]][] | undefined = [];
+    let pendingCount = 0;
+    let pendingSize = 0;
+    let closed = false;
+
+    const receive = (toClientId: Id, remainders: string[]) => {
+      if (path) {
+        handleDecodedMessage(path, clientId, toClientId, remainders);
+      } else if (pending) {
+        pendingCount += size(remainders);
+        pendingSize += arrayReduce(
+          remainders,
+          (total, remainder) => total + getWebSocketPayloadSize(remainder),
+          0,
+        );
+        if (
+          pendingCount > MAX_WEBSOCKET_QUEUE_SIZE ||
+          pendingSize > MAX_WEBSOCKET_BUFFER_SIZE
+        ) {
+          pending = undefined;
+          overflowClient(client, 'server');
+        } else {
+          arrayPush(pending, [toClientId, remainders]);
+        }
+      }
+    };
+
+    const join = (access: ClientAccess | undefined): Promise<void> | void => {
+      const held = pending;
+      pending = undefined;
+      if (!closed && held) {
+        if (isUndefined(access)) {
+          refuseClient(client, pathId);
+        } else {
+          const [joinedPath, ready] = addClient(access);
+          path = joinedPath;
+          arrayForEach(held, ([toClientId, remainders]) =>
+            handleDecodedMessage(joinedPath, clientId, toClientId, remainders),
+          );
+          return ready;
+        }
+      }
+    };
+
+    const open = async (): Promise<void> => {
+      if (authorize) {
+        let access: ClientAccess | undefined;
+        await tryCatch(
+          async () => (access = await authorize(pathId, request)),
+          handleError,
+        );
+        await join(access);
+      } else {
+        await join(WRITABLE);
+      }
+    };
+
+    const close = () => {
+      closed = true;
+      pending = undefined;
+      return path ? delClient(path) : undefined;
+    };
+
+    return [receive, open, close] as const;
+  };
+
   const addLegacyClient = async (
     client: WebSocket,
     clientId: Id,
     pathId: Id,
+    request: IncomingMessage,
   ) => {
-    const [path, ready] = addClientToPath(pathId, clientId, [client]);
+    const [receive, open, close] = createClientGate(
+      client,
+      clientId,
+      pathId,
+      request,
+      (access) =>
+        addClientToPath(pathId, clientId, [client, undefined, access]),
+      (path) => delClientFromPath(pathId, path, clientId),
+    );
     const [decode, clearDecoder] = createPayloadDecoder(
-      (toClientId, remainders) =>
-        handleDecodedMessage(path, clientId, toClientId, remainders),
+      receive,
       requestTimeoutSeconds,
       createInvalidPayloadHandler(client, handleError),
     );
@@ -592,29 +774,34 @@ export const createWsServer = (<
     );
     addWebSocketListener(client, CLOSE, () => {
       clearDecoder();
-      delClientFromPath(pathId, path, clientId).catch(handleError);
+      close()?.catch(handleError);
     });
-    await ready;
+    await open();
   };
 
   const addMultipleClient = (
     client: WebSocket,
     clientId: Id,
     basePathId: Id,
+    request: IncomingMessage,
   ) => {
     const invalid = createInvalidPayloadHandler(client, handleError);
-    const [handlePayload, destroy] = createMultipleServerClient<PathClient>(
+    const [handlePayload, destroy] = createMultipleServerClient<ClientGate>(
       basePathId,
       (pathId, channelId) => {
-        const [path, ready] = addClientToPath(pathId, clientId, [
+        const gate = createClientGate(
           client,
-          channelId,
-        ]);
-        return [[pathId, path], ready];
+          clientId,
+          pathId,
+          request,
+          (access) =>
+            addClientToPath(pathId, clientId, [client, channelId, access]),
+          (path) => delClientFromPath(pathId, path, clientId),
+        );
+        return [gate, gate[1]()];
       },
-      ([pathId, path]) => delClientFromPath(pathId, path, clientId),
-      ([, path], toClientId, remainders) =>
-        handleDecodedMessage(path, clientId, toClientId, remainders),
+      ([, , close]) => close(),
+      ([receive], toClientId, remainders) => receive(toClientId, remainders),
       (payload) => {
         const payloadSize = getWebSocketPayloadSize(payload);
         if (
@@ -650,9 +837,11 @@ export const createWsServer = (<
         ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
           ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
             if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
-              addMultipleClient(client, clientId, pathId);
+              addMultipleClient(client, clientId, pathId, request);
             } else {
-              addLegacyClient(client, clientId, pathId).catch(handleError);
+              addLegacyClient(client, clientId, pathId, request).catch(
+                handleError,
+              );
             }
           }),
         );

@@ -57,6 +57,103 @@
  */
 /// ClientIdsListener
 /**
+ * The ClientAccess type describes how a client may use a path on a WsServer,
+ * as decided by the Authorize function when the client joins that path.
+ *
+ * A client with ClientAccess can read everything on the path. Unless it is
+ * read-only, it can also write whatever the CanWriteCell and CanWriteValue
+ * functions allow.
+ * @category Authorization
+ * @since v10.1.0
+ */
+/// ClientAccess
+{
+  /**
+   * The readOnly property, when `true`, prevents the client from writing
+   * anything to the path. Changes it sends are not merged into the path's
+   * MergeableStore, nor relayed to other clients.
+   * @category Property
+   * @since v10.1.0
+   */
+  /// ClientAccess.readOnly
+  /**
+   * The context property is any information about the client that the
+   * CanWriteCell and CanWriteValue functions will need, such as the Id of the
+   * authenticated user.
+   * @category Property
+   * @since v10.1.0
+   */
+  /// ClientAccess.context
+}
+/**
+ * The Authorize type describes a function that decides whether a client may
+ * join a path on a WsServer, and if so, how.
+ *
+ * It is called with the Id of the path and the HTTP request that opened the
+ * client's WebSocket, from which you can read a token (from the URL query
+ * string, for example) or a cookie. It should return a ClientAccess object to
+ * let the client join, or `undefined` to refuse it. It can be asynchronous, and
+ * messages from the client are held until it has resolved. If it throws, the
+ * client is refused.
+ *
+ * A refused client's WebSocket is closed with the code `1008`. For a WebSocket
+ * that multiplexes several paths, it is called for each path the client
+ * subscribes to, and refusing any one of them closes the whole WebSocket.
+ * @param pathId The Id of the path the client wishes to join.
+ * @param request The HTTP request that opened the client's WebSocket.
+ * @returns A ClientAccess object, or `undefined` to refuse the client, or a
+ * Promise of either.
+ * @category Authorization
+ * @since v10.1.0
+ */
+/// Authorize
+/**
+ * The CanWriteCell type describes a function that decides whether a client may
+ * write a given Cell on a path of a WsServer.
+ *
+ * It is called for each Cell in the changes that a writable client sends to the
+ * server, including deletions, where the `cell` parameter is `undefined`. It
+ * must be synchronous. Cells for which it returns `false` are neither merged
+ * into the path's MergeableStore nor relayed to other clients.
+ *
+ * If the rejected change was newer than the server's own version of that Cell,
+ * the server re-stamps its version so that the client that sent the change is
+ * brought back into line with the server, rather than silently diverging from
+ * it.
+ * @param pathId The Id of the path.
+ * @param tableId The Id of the Table.
+ * @param rowId The Id of the Row.
+ * @param cellId The Id of the Cell.
+ * @param cell The new value of the Cell, or `undefined` if it is being deleted.
+ * @param context The context from the client's ClientAccess.
+ * @returns Whether the client may write the Cell.
+ * @category Authorization
+ * @since v10.1.0
+ */
+/// CanWriteCell
+/**
+ * The CanWriteValue type describes a function that decides whether a client
+ * may write a given Value on a path of a WsServer.
+ *
+ * It is called for each Value in the changes that a writable client sends to
+ * the server, including deletions, where the `value` parameter is `undefined`.
+ * It must be synchronous. Values for which it returns `false` are neither
+ * merged into the path's MergeableStore nor relayed to other clients.
+ *
+ * If the rejected change was newer than the server's own version of that
+ * Value, the server re-stamps its version so that the client that sent the
+ * change is brought back into line with the server, rather than silently
+ * diverging from it.
+ * @param pathId The Id of the path.
+ * @param valueId The Id of the Value.
+ * @param value The new Value, or `undefined` if it is being deleted.
+ * @param context The context from the client's ClientAccess.
+ * @returns Whether the client may write the Value.
+ * @category Authorization
+ * @since v10.1.0
+ */
+/// CanWriteValue
+/**
  * The WsServerStats type describes the number of paths and clients that are
  * active on the WsServer.
  *
@@ -484,6 +581,74 @@
   /// WsServer.destroy
 }
 /**
+ * The WsServerOptions type describes the options that can be passed to the
+ * createWsServer function when using its options object form.
+ *
+ * Setting any of the `authorize`, `canWriteCell`, or `canWriteValue` options
+ * makes each path's MergeableStore the only peer that its clients synchronize
+ * with. Clients no longer answer each other directly, so that everything they
+ * read and write passes through the server. A path gets an in-memory
+ * MergeableStore if the `createPersisterForPath` option does not provide one.
+ * @category Configuration
+ * @since v10.1.0
+ */
+/// WsServerOptions
+{
+  /**
+   * The createPersisterForPath property is an optional function that will
+   * create a Persister to synchronize with the clients on a given path (or a
+   * two-item array of Persister and callback that lets you handle data after
+   * persistence has started).
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.createPersisterForPath
+  /**
+   * The authorize property is an optional Authorize function that decides
+   * whether each client may join a path, and how.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.authorize
+  /**
+   * The canWriteCell property is an optional CanWriteCell function that
+   * decides whether a client may write a given Cell.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.canWriteCell
+  /**
+   * The canWriteValue property is an optional CanWriteValue function that
+   * decides whether a client may write a given Value.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.canWriteValue
+  /**
+   * The onIgnoredError property is an optional handler for the errors that the
+   * server would otherwise ignore when trying to sync data. This is suitable
+   * for debugging issues in a development environment.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.onIgnoredError
+  /**
+   * The requestTimeoutSeconds property is an optional time in seconds that the
+   * server will wait for responses to synchronization requests and incomplete
+   * fragments, defaulting to `1`.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.requestTimeoutSeconds
+  /**
+   * The fragmentSize property is an optional target maximum UTF-8 byte size
+   * for each WebSocket message fragment sent by the server.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.fragmentSize
+}
+/**
  * The createWsServer function creates a WsServer that facilitates
  * synchronization between clients that are using WsSynchronizer instances.
  *
@@ -509,11 +674,11 @@
  * teardown resources are also bounded. Fragment reassembly and traffic
  * buffered while paths start share limits across the physical WebSocket.
  *
- * The WsServer does not authenticate or authorize URL paths or channel Ids.
- * Once a client WebSocket is accepted on a base path, it can subscribe to any
- * valid channel beneath that path. For untrusted clients, authenticate the
- * upgrade request and either grant access to all descendant paths or use a
- * separate authenticated WebSocket for each authorized path.
+ * By default, the WsServer does not authenticate or authorize URL paths or
+ * channel Ids, and any client can read and write any path. For untrusted
+ * clients, use the second form of this function, which takes a WsServerOptions
+ * object, to provide an Authorize function and, optionally, CanWriteCell and
+ * CanWriteValue functions.
  *
  * You are responsible for creating a MergeableStore to pass to this Persister,
  * but starting and stopping its automatic saving and loading is taken care of
@@ -739,3 +904,143 @@
  * @since v5.0.0
  */
 /// createWsServer
+/**
+ * The createWsServer function creates a WsServer that facilitates
+ * synchronization between clients that are using WsSynchronizer instances,
+ * configured with a WsServerOptions object.
+ *
+ * This form of the function takes the same options as the first, plus an
+ * optional Authorize function that decides whether each client may join a path
+ * (and whether it is read-only), and optional CanWriteCell and CanWriteValue
+ * functions that decide what a writable client may change.
+ *
+ * Providing any of these three functions makes each path's MergeableStore the
+ * only peer that its clients synchronize with, since clients can no longer be
+ * trusted to answer each other directly. The server merges what each client
+ * may write, relays it to the other clients, and brings a client that tried to
+ * write something it may not back into line with the server's own data. If you
+ * do not provide a `createPersisterForPath` function, each path gets an
+ * in-memory MergeableStore for as long as it has clients.
+ *
+ * Clients do not need to change, except to identify themselves. Since a
+ * browser cannot add headers to a WebSocket request, a common approach is to
+ * put a token in the URL's query string, which is not part of the path.
+ * @param webSocketServer A WebSocketServer object from your server environment.
+ * @param options A WsServerOptions object.
+ * @returns A reference to the new WsServer object.
+ * @example
+ * This example creates a WsServer that lets staff write to a path, lets
+ * customers only read it, and refuses anyone else. A customer's attempt to
+ * write is undone.
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocket, WebSocketServer} from 'ws';
+ *
+ * const getToken = (request) =>
+ *   new URL(request.url, 'http://localhost').searchParams.get('token');
+ *
+ * const server = createWsServer(new WebSocketServer({port: 8047}), {
+ *   authorize: (pathId, request) => {
+ *     const token = getToken(request);
+ *     return token == 'staff'
+ *       ? {}
+ *       : token == 'customer'
+ *         ? {readOnly: true}
+ *         : undefined;
+ *   },
+ * });
+ *
+ * const staffStore = createMergeableStore();
+ * staffStore.setCell('pets', 'fido', 'species', 'dog');
+ * const staffSynchronizer = await createWsSynchronizer(
+ *   staffStore,
+ *   new WebSocket('ws://localhost:8047/petShop?token=staff'),
+ * );
+ * await staffSynchronizer.startSync();
+ *
+ * const customerStore = createMergeableStore();
+ * const customerSynchronizer = await createWsSynchronizer(
+ *   customerStore,
+ *   new WebSocket('ws://localhost:8047/petShop?token=customer'),
+ * );
+ * await customerSynchronizer.startSync();
+ * // ...
+ *
+ * console.log(customerStore.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
+ *
+ * customerStore.setCell('pets', 'fido', 'species', 'cat');
+ * // ...
+ *
+ * console.log(staffStore.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
+ * console.log(customerStore.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
+ *
+ * const strangerWebSocket = new WebSocket('ws://localhost:8047/petShop');
+ * strangerWebSocket.on('close', (code) => console.log(code));
+ * // ...
+ * // -> 1008
+ *
+ * await customerSynchronizer.destroy();
+ * await staffSynchronizer.destroy();
+ * await server.destroy();
+ * ```
+ * @example
+ * This example creates a WsServer that lets staff write anything, but lets
+ * customers write only to the `orders` Table.
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocket, WebSocketServer} from 'ws';
+ *
+ * const server = createWsServer(new WebSocketServer({port: 8047}), {
+ *   authorize: (pathId, request) => ({
+ *     context: {
+ *       role: new URL(request.url, 'http://localhost').searchParams.get(
+ *         'role',
+ *       ),
+ *     },
+ *   }),
+ *   canWriteCell: (pathId, tableId, rowId, cellId, cell, {role}) =>
+ *     role == 'staff' || tableId == 'orders',
+ * });
+ *
+ * const staffStore = createMergeableStore();
+ * staffStore.setCell('pets', 'fido', 'price', 5);
+ * const staffSynchronizer = await createWsSynchronizer(
+ *   staffStore,
+ *   new WebSocket('ws://localhost:8047/petShop?role=staff'),
+ * );
+ * await staffSynchronizer.startSync();
+ *
+ * const customerStore = createMergeableStore();
+ * const customerSynchronizer = await createWsSynchronizer(
+ *   customerStore,
+ *   new WebSocket('ws://localhost:8047/petShop?role=customer'),
+ * );
+ * await customerSynchronizer.startSync();
+ * // ...
+ *
+ * customerStore.setCell('orders', 'order1', 'pet', 'fido');
+ * customerStore.setCell('pets', 'fido', 'price', 1);
+ * // ...
+ *
+ * console.log(staffStore.getTables());
+ * // -> {pets: {fido: {price: 5}}, orders: {order1: {pet: 'fido'}}}
+ * console.log(customerStore.getTables());
+ * // -> {pets: {fido: {price: 5}}, orders: {order1: {pet: 'fido'}}}
+ *
+ * await customerSynchronizer.destroy();
+ * await staffSynchronizer.destroy();
+ * await server.destroy();
+ * ```
+ * @category Creation
+ * @since v10.1.0
+ */
+/// createWsServer.2

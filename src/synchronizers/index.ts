@@ -81,6 +81,10 @@ export const createCustomSynchronizer = (
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
   preDestroy: () => void = noop,
+  receiveChanges?: (
+    fromClientId: Id,
+    changes: MergeableChanges | MergeableContent,
+  ) => MergeableChanges,
 ): Synchronizer => {
   let syncing: 0 | 1 = 0;
   let persisterListener:
@@ -184,6 +188,14 @@ export const createCustomSynchronizer = (
     tablesStamp[1] = getLatestHlc(tablesStamp[1], tablesTime2);
   };
 
+  const receiveChangesFrom = (
+    fromClientId: Id,
+    changes: MergeableChanges | MergeableContent,
+  ): MergeableChanges =>
+    (receiveChanges
+      ? receiveChanges(fromClientId, changes)
+      : changes) as MergeableChanges;
+
   const getChangesFromOtherStore = (
     otherClientId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
@@ -239,7 +251,7 @@ export const createCustomSynchronizer = (
         }
       }
 
-      return [
+      return receiveChangesFrom(otherClientId as Id, [
         tablesChanges,
         valuesHash == otherValuesHash
           ? stampNewObj()
@@ -252,7 +264,7 @@ export const createCustomSynchronizer = (
               )
             )[0],
         1,
-      ];
+      ]);
     }, onIgnoredError);
 
   const getPersisted = async (): Promise<MergeableContent | undefined> => {
@@ -352,7 +364,7 @@ export const createCustomSynchronizer = (
           })
           .catch(onIgnoredError);
       } else if (message == MessageValues.ContentDiff && isAutoLoading) {
-        persisterListener?.(undefined, body);
+        persisterListener?.(undefined, receiveChangesFrom(fromClientId, body));
       } else {
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
