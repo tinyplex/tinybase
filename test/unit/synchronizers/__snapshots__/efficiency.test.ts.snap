@@ -1,0 +1,108 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`a burst of 100 writes in a room of 5 clients 1`] = `
+{
+  "in": {
+    "ContentDiff": 100,
+    "bytes": 8390,
+  },
+  "out": {
+    "ContentDiff": 400,
+    "bytes": 43160,
+  },
+}
+`;
+
+exports[`joining a room of 1 client(s) with 1,000 rows 1`] = `
+{
+  "in": {
+    "ContentHashes": 1,
+    "GetContentHashes": 1,
+    "GetTableDiff": 2,
+    "Response": 1,
+    "bytes": 143,
+  },
+  "out": {
+    "ContentHashes": 1,
+    "GetContentHashes": 1,
+    "Response": 3,
+    "bytes": 159968,
+  },
+}
+`;
+
+exports[`joining a room of 5 client(s) with 1,000 rows 1`] = `
+{
+  "in": {
+    "ContentHashes": 1,
+    "GetContentHashes": 1,
+    "GetTableDiff": 1,
+    "Response": 4,
+    "bytes": 334,
+  },
+  "out": {
+    "ContentHashes": 4,
+    "GetContentHashes": 4,
+    "Response": 6,
+    "bytes": 80649,
+  },
+}
+`;
+
+exports[`joining a room of 20 client(s) with 1,000 rows 1`] = `
+{
+  "in": {
+    "ContentHashes": 1,
+    "GetContentHashes": 1,
+    "GetTableDiff": 1,
+    "Response": 19,
+    "bytes": 1264,
+  },
+  "out": {
+    "ContentHashes": 19,
+    "GetContentHashes": 19,
+    "Response": 21,
+    "bytes": 83184,
+  },
+}
+`;
+
+exports[`reconnecting after 1 change(s) to 10,000 rows 1`] = `
+{
+  "in": {
+    "ContentHashes": 1,
+    "GetCellDiff": 2,
+    "GetContentHashes": 1,
+    "GetRowDiff": 2,
+    "GetTableDiff": 2,
+    "Response": 1,
+    "bytes": 412935,
+  },
+  "out": {
+    "ContentHashes": 1,
+    "GetContentHashes": 1,
+    "Response": 7,
+    "bytes": 480,
+  },
+}
+`;
+
+exports[`reconnecting after 100 change(s) to 10,000 rows 1`] = `
+{
+  "in": {
+    "ContentHashes": 1,
+    "GetCellDiff": 2,
+    "GetContentHashes": 1,
+    "GetRowDiff": 2,
+    "GetTableDiff": 2,
+    "Response": 1,
+    "bytes": 422930,
+  },
+  "out": {
+    "ContentHashes": 1,
+    "GetContentHashes": 1,
+    "Response": 7,
+    "bytes": 13272,
+  },
+}
+`;
