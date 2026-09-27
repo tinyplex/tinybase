@@ -85,6 +85,7 @@ export const createCustomSynchronizer = (
     fromClientId: Id,
     changes: MergeableChanges | MergeableContent,
   ) => MergeableChanges,
+  isServer: 0 | 1 = 0,
 ): Synchronizer => {
   let syncing: 0 | 1 = 0;
   let persisterListener:
@@ -268,6 +269,17 @@ export const createCustomSynchronizer = (
     }, onIgnoredError);
 
   const getPersisted = async (): Promise<MergeableContent | undefined> => {
+    if (isServer) {
+      // A server's Store does not wait to hear from its clients before it
+      // starts, since a client could take a whole request timeout to answer,
+      // and until then the server would not merge what the others send it.
+      getChangesFromOtherStore()
+        .then((changes) =>
+          changes ? persisterListener?.(undefined, changes) : 0,
+        )
+        .catch(onIgnoredError);
+      return;
+    }
     const changes = (await getChangesFromOtherStore()) as any;
     return changes && (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0]))
       ? changes

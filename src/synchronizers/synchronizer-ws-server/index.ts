@@ -320,6 +320,7 @@ export const createWsServer = (<
               relayToClients(path, fromClientId, changes),
           )
         : undefined,
+      1,
     );
     serverClient[ServerClient.Then] = isArray(persisterMaybeThen)
       ? persisterMaybeThen[1]
