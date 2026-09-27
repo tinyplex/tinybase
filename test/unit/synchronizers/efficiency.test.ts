@@ -5,7 +5,7 @@ import type {Synchronizer} from 'tinybase/synchronizers';
 import {Message} from 'tinybase/synchronizers';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {beforeEach, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test} from 'vitest';
 import {WebSocket} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 import {pause} from '../common/other.ts';
@@ -68,7 +68,12 @@ const recordPayload = (
   counts.bytes = (counts.bytes ?? 0) + Buffer.byteLength(payload);
 };
 
-const createRoom = async (serverRows: number) => {
+// A relay server lets clients answer each other; a hub server - one that
+// authorizes its clients - makes its own MergeableStore their only peer.
+const MODES = ['relay', 'hub'] as const;
+type Mode = (typeof MODES)[number];
+
+const createRoom = async (mode: Mode, serverRows: number) => {
   const [webSocketServer, port] = await createTestWebSocketServer();
   let traffic: Traffic = {};
   let lastTraffic = 0;
@@ -91,10 +96,16 @@ const createRoom = async (serverRows: number) => {
   // The pause stands in for loading the path's data, and makes sure that a
   // joining client has started synchronizing before the server's store asks
   // it for its content hashes, which it otherwise races.
-  const wsServer = createWsServer(webSocketServer, async () => {
+  const createPersisterForPath = async () => {
     await pause(100);
     return createMemoryPersister(serverStore);
-  });
+  };
+  const wsServer = createWsServer(
+    webSocketServer,
+    mode == 'hub'
+      ? {createPersisterForPath, authorize: () => ({})}
+      : createPersisterForPath,
+  );
 
   const synchronizers: Synchronizer[] = [];
 
@@ -147,64 +158,66 @@ beforeEach(() => {
   reset();
 });
 
-test.each([1, 5, 20])(
-  'joining a room of %i client(s) with 1,000 rows',
-  async (roomSize) => {
-    const room = await createRoom(1_000);
-    for (let client = 1; client < roomSize; client++) {
-      await room.addClient();
+describe.each(MODES)('%s', (mode) => {
+  test.each([1, 5, 20])(
+    'joining a room of %i client(s) with 1,000 rows',
+    async (roomSize) => {
+      const room = await createRoom(mode, 1_000);
+      for (let client = 1; client < roomSize; client++) {
+        await room.addClient();
+      }
+
+      let joiner: MergeableStore | undefined;
+      const traffic = await room.measure(async () => {
+        [joiner] = await room.addClient();
+      });
+
+      expect(joiner!.getTables()).toEqual(room.serverStore.getTables());
+      expect(traffic).toMatchSnapshot();
+      await room.destroy();
+    },
+  );
+
+  test.each([1, 100])(
+    'reconnecting after %i change(s) to 10,000 rows',
+    async (changes) => {
+      const room = await createRoom(mode, 10_000);
+      const [store, synchronizer] = await room.addClient();
+      await room.measure(() => 0);
+      await synchronizer.destroy();
+
+      room.serverStore.transaction(() => {
+        for (let change = 0; change < changes; change++) {
+          room.serverStore.setCell('pets', 'pet' + change * 97, 'legs', 3);
+        }
+      });
+
+      const traffic = await room.measure(() => room.addClient(store));
+
+      expect(store.getTables()).toEqual(room.serverStore.getTables());
+      expect(traffic).toMatchSnapshot();
+      await room.destroy();
+    },
+  );
+
+  test('a burst of 100 writes in a room of 5 clients', async () => {
+    const room = await createRoom(mode, 100);
+    const [writer] = await room.addClient();
+    const stores = [writer];
+    for (let client = 1; client < 5; client++) {
+      stores.push((await room.addClient())[0]);
     }
 
-    let joiner: MergeableStore | undefined;
-    const traffic = await room.measure(async () => {
-      [joiner] = await room.addClient();
-    });
-
-    expect(joiner!.getTables()).toEqual(room.serverStore.getTables());
-    expect(traffic).toMatchSnapshot();
-    await room.destroy();
-  },
-);
-
-test.each([1, 100])(
-  'reconnecting after %i change(s) to 10,000 rows',
-  async (changes) => {
-    const room = await createRoom(10_000);
-    const [store, synchronizer] = await room.addClient();
-    await room.measure(() => 0);
-    await synchronizer.destroy();
-
-    room.serverStore.transaction(() => {
-      for (let change = 0; change < changes; change++) {
-        room.serverStore.setCell('pets', 'pet' + change * 97, 'legs', 3);
+    const traffic = await room.measure(() => {
+      for (let write = 0; write < 100; write++) {
+        writer.setCell('pets', 'pet' + write, 'legs', 3);
       }
     });
 
-    const traffic = await room.measure(() => room.addClient(store));
-
-    expect(store.getTables()).toEqual(room.serverStore.getTables());
+    stores.forEach((store) =>
+      expect(store.getTables()).toEqual(room.serverStore.getTables()),
+    );
     expect(traffic).toMatchSnapshot();
     await room.destroy();
-  },
-);
-
-test('a burst of 100 writes in a room of 5 clients', async () => {
-  const room = await createRoom(100);
-  const [writer] = await room.addClient();
-  const stores = [writer];
-  for (let client = 1; client < 5; client++) {
-    stores.push((await room.addClient())[0]);
-  }
-
-  const traffic = await room.measure(() => {
-    for (let write = 0; write < 100; write++) {
-      writer.setCell('pets', 'pet' + write, 'legs', 3);
-    }
   });
-
-  stores.forEach((store) =>
-    expect(store.getTables()).toEqual(room.serverStore.getTables()),
-  );
-  expect(traffic).toMatchSnapshot();
-  await room.destroy();
 });
