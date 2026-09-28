@@ -1,5 +1,6 @@
 import {createMergeableStore, createStore} from 'tinybase';
 import {createCustomMsSqlPersister, Persists} from 'tinybase/persisters';
+import {createMsSqlPersister} from 'tinybase/persisters/persister-mssql';
 import {expect, test, vi} from 'vitest';
 import {pause} from '../../common/other.ts';
 
@@ -321,5 +322,57 @@ test('returns the thing it was given', async () => {
   const fake = getFakeMsSql();
   const persister = getPersister(fake, createStore());
   expect((persister as any).getMsSql()).toBe(fake);
+  await persister.destroy();
+});
+
+// A stand-in for the driver's ConnectionPool, built on the fake above, so that
+// the real entry point rather than the shared code is under test.
+const getFakePool = (fake: FakeMsSql) => {
+  const getRequest = () => {
+    const params: any[] = [];
+    const request: any = {
+      input: (name: string, param: any) => {
+        params[Number(name.slice(1)) - 1] = param;
+        return request;
+      },
+      query: async (sql: string) => ({
+        recordset: await fake.executeCommand(sql, params),
+      }),
+    };
+    return request;
+  };
+  return {
+    request: getRequest,
+    transaction: () => ({
+      begin: async () => {},
+      commit: async () => {},
+      rollback: async () => {},
+      request: getRequest,
+    }),
+  };
+};
+
+test('reports the SQL it runs in a transaction to onSqlCommand', async () => {
+  const fake = getFakeMsSql();
+  const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+  const sql: string[] = [];
+  const persister = await createMsSqlPersister(
+    store,
+    getFakePool(fake) as any,
+    {mode: 'json', storeTableName: STORE_TABLE_NAME},
+    (oneSql) => sql.push(oneSql),
+  );
+
+  await persister.save();
+
+  // Saving runs in a Transaction, which takes its own connection, so its
+  // statements would otherwise never reach the callback.
+  expect(
+    sql.filter((oneSql) => oneSql.startsWith('CREATE TABLE')),
+  ).toHaveLength(1);
+  expect(sql.filter((oneSql) => oneSql.startsWith('MERGE INTO'))).toHaveLength(
+    1,
+  );
+
   await persister.destroy();
 });
