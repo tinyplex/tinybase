@@ -12,6 +12,7 @@ import type {Store} from '../../@types/store/index.d.ts';
 import {arrayForEach} from '../../common/array.ts';
 import {IdObj} from '../../common/obj.ts';
 import {noop} from '../../common/other.ts';
+import {getWrappedCommand} from '../common/database/common.ts';
 import {createCustomMsSqlPersister} from '../common/database/mssql.ts';
 
 // The shared code emits positional parameters as @p1, @p2, and so on, which
@@ -49,8 +50,13 @@ export const createMsSqlPersister = (async (
       const transaction = mssql.transaction();
       await transaction.begin();
       try {
+        // The command is wrapped here too, since the statements inside the
+        // transaction would otherwise never reach onSqlCommand.
         const result = await actions(
-          getExecuteCommand(() => transaction.request()),
+          getWrappedCommand(
+            getExecuteCommand(() => transaction.request()),
+            onSqlCommand,
+          ),
         );
         await transaction.commit();
         return result;
