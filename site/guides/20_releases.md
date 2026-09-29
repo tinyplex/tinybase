@@ -75,8 +75,8 @@ in the Authorizing Clients section of the Using A Synchronizer guide.
 
 ## Cheaper Synchronization
 
-Synchronization now sends much less. Compared with v10.0, over the WebSocket
-server, in the scenarios that TinyBase now measures in its tests:
+Synchronization now sends much less data. Compared with v10.0, over the
+WebSocket server, in the scenarios that TinyBase now measures in its tests:
 
 - A client reconnecting to a 10,000-Row Table that has one changed Row
   exchanges about 8kB rather than about 620kB. Peers now compare a large
