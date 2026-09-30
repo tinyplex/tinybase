@@ -170,22 +170,8 @@ body > header {
   box-shadow: @shadow;
 }
 
-body:not(.home) > header {
-  height: 4rem;
-  > a {
-    img {
-      width: 2.5rem;
-      height: 2.5rem;
-    }
-    span {
-      font-size: 2.3rem;
-    }
-  }
-}
-
 @media not all and (min-width: 25rem) {
-  body > header > a,
-  body:not(.home) > header > a {
+  body > header > a {
     img {
       width: 2.4rem;
       height: 2.4rem;
