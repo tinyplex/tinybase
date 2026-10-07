@@ -16,6 +16,7 @@ import type {
   createMergeableStore as createMergeableStoreDecl,
 } from '../@types/mergeable-store/index.d.ts';
 import type {
+  Cell,
   CellOrUndefined,
   Changes,
   Content,
@@ -25,11 +26,12 @@ import type {
 import {arrayClear, arrayPop, arrayPush} from '../common/array.ts';
 import {
   decodeIfJson,
+  encodeIfJson,
   isCellOrValueOrUndefined,
   isReservedString,
 } from '../common/cell.ts';
 import {collClear, collForEach, collHas} from '../common/coll.ts';
-import {ERROR_HLC, errorThrow, tryFinally} from '../common/error.ts';
+import {ERROR_HLC, errorThrow, tryFinally, tryReturn} from '../common/error.ts';
 import {
   addOrRemoveHash,
   getValueHash,
@@ -367,13 +369,21 @@ export const createMergeableStore = ((
         const [, oldThingHlc, oldThingHash] = thingStampMap;
 
         if (!oldThingHlc || thingHlc > oldThingHlc) {
+          // An object or array is kept, and hashed, as it is in the Store,
+          // whether or not it was already encoded when it arrived.
+          const encodedThing = tryReturn(
+            () => encodeIfJson(thing as Cell),
+            thing,
+          ) as Thing;
           saveStamp(thingStampMap);
           stampUpdate(
             thingStampMap,
             thingHlc,
-            isContent ? incomingThingHash : getValueHash(thing, thingHlc),
+            isContent
+              ? incomingThingHash
+              : getValueHash(encodedThing, thingHlc),
           );
-          thingStampMap[0] = thing;
+          thingStampMap[0] = encodedThing;
           objSet(thingsChanges, thingId, thing);
           thingsHash ^= isContent
             ? 0

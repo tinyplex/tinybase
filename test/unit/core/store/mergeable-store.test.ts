@@ -649,6 +649,32 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
+  test('hashes objects and arrays alike, however they arrive', () => {
+    const store1 = createMergeableStore('s1', getNow)
+      .setCell('t1', 'r1', 'c1', ['a', {b: 1}])
+      .setCell('t1', 'r1', 'c2', {a: [1]})
+      .setValue('v1', ['a', {b: 1}])
+      .setValue('v2', {a: [1]});
+    const content = store1.getMergeableContent();
+    const hashes = store1.getMergeableContentHashes();
+
+    const store2 = createMergeableStore('s2', getNow);
+    store2.applyMergeableChanges(content);
+    const store3 = createMergeableStore('s3', getNow);
+    store3.merge(store1);
+    const store4 = createMergeableStore('s4', getNow);
+    store4.setMergeableContent(content);
+    const store5 = createMergeableStore('s5', getNow);
+    store5.applyMergeableChanges(store4.getMergeableContent());
+
+    [store2, store3, store4, store5].forEach((store) => {
+      expect(store.getContent()).toEqual(store1.getContent());
+      expect(store.getMergeableContent()).toEqual(content);
+      expect(store.getMergeableContentHashes()).toEqual(hashes);
+    });
+    expect(store1.getMergeableContent()).toEqual(content);
+  });
+
   test('restores raw change listening after apply error', () => {
     const error = new Error('listener error');
     const listenerId = store.addValueListener('v1', () => {
