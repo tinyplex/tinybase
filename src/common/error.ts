@@ -19,6 +19,7 @@ export const ERROR_SYNC_MESSAGE = 14;
 export const ERROR_SYNC_OVERFLOW = 15;
 export const ERROR_QUERY_SELECT_ALL_CYCLE = 16;
 export const ERROR_SYNC_UNAUTHORIZED = 17;
+export const ERROR_MERGEABLE = 18;
 
 export const errorNew = (code: number, details?: any): Error =>
   new Error(

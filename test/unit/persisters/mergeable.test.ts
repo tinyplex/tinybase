@@ -639,6 +639,74 @@ if (!withServers) {
     });
   });
 
+  describe('Clocks', () => {
+    const getPersister = (
+      store: MergeableStore,
+      storage: {content?: any},
+      errors: Error[] = [],
+    ) =>
+      createCustomPersister(
+        store,
+        async () => storage.content,
+        async (getContent: () => any) => {
+          storage.content = JSON.parse(JSON.stringify(getContent()));
+        },
+        noop,
+        noop,
+        (error) => errors.push(error),
+        Persists.MergeableStoreOnly,
+      );
+
+    test('keeps content that is ahead of a clock put back', async () => {
+      const storage = {};
+      const errors: Error[] = [];
+      let ahead = 3600000;
+      const getSkewedNow = () => getNow() + ahead;
+
+      const store1 = createMergeableStore('s1', getSkewedNow);
+      const persister1 = getPersister(store1, storage, errors);
+      await persister1.startAutoPersisting();
+      store1.setCell('t1', 'r1', 'c1', 1);
+      await pause();
+      await persister1.destroy();
+
+      ahead = 0;
+      const store2 = createMergeableStore('s1', getSkewedNow);
+      const persister2 = getPersister(store2, storage, errors);
+      await persister2.startAutoPersisting();
+      expect(store2.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      store2.setCell('t1', 'r2', 'c1', 2);
+      await pause();
+      await persister2.destroy();
+
+      const store3 = createMergeableStore('s1', getSkewedNow);
+      const persister3 = getPersister(store3, storage, errors);
+      await persister3.load();
+      await persister3.destroy();
+      expect(store3.getTables()).toEqual({t1: {r1: {c1: 1}, r2: {c1: 2}}});
+      expect(errors).toEqual([]);
+    });
+
+    test('reports content that the store refuses', async () => {
+      const errors: Error[] = [];
+      const store = createMergeableStore('s1', getNow);
+      const persister = getPersister(
+        store,
+        {
+          content: [
+            [{t1: 1}, '', 0],
+            [{}, '', 0],
+          ],
+        },
+        errors,
+      );
+      await persister.load();
+      await persister.destroy();
+      expect(store.getContent()).toEqual([{}, {}]);
+      expect(errors.map(({message}) => message)).toEqual(['tinybase:18']);
+    });
+  });
+
   test('Not supported, Store', async () => {
     expect(() =>
       createCustomPersister(

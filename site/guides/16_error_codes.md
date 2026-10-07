@@ -24,3 +24,4 @@ through from platforms or third-party libraries retain their original format.
 | 15   | A synchronization capacity limit was exceeded.                   |
 | 16   | A query `selectAll` cycle could expand Cell Ids indefinitely.    |
 | 17   | A synchronization server refused a client access to a path.      |
+| 18   | A MergeableStore refused mergeable content or changes.           |

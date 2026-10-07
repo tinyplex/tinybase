@@ -56,7 +56,13 @@ import {
   objNew,
   objSet,
 } from '../common/obj.ts';
-import {ifNotUndefined, isArray, size, slice} from '../common/other.ts';
+import {
+  ifNotUndefined,
+  infinity,
+  isArray,
+  size,
+  slice,
+} from '../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {
   RowStampMap,
@@ -97,10 +103,14 @@ type ProtectedMethods = [
   getEncodedTransactionMergeableChanges: (
     withHashes: boolean,
   ) => MergeableChanges<typeof withHashes>,
-  setEncodedMergeableContent: (content: MergeableContent) => MergeableStore,
+  setEncodedMergeableContent: (
+    content: MergeableContent,
+    trusted?: boolean,
+  ) => boolean,
   applyEncodedMergeableChanges: (
     changes: MergeableChanges | MergeableContent,
-  ) => MergeableStore,
+    trusted?: boolean,
+  ) => boolean,
 ];
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -728,35 +738,54 @@ export const createMergeableStore = ((
     return stampNew(values, valuesHlc);
   };
 
+  // Content and changes from elsewhere may not be far ahead of this clock. But
+  // those that a Persister kept were taken by a MergeableStore once already,
+  // and are trusted: to refuse them is to lose them when it next saves.
+  const isValid = (
+    mergeable: MergeableChanges | MergeableContent,
+    hasHashes: 0 | 1,
+    encoded?: boolean,
+    trusted?: boolean,
+  ): boolean =>
+    validateMergeable(
+      mergeable,
+      trusted ? infinity : getNow() + HLC_MAX_FUTURE_OFFSET,
+      hasHashes,
+      encoded ? 1 : 0,
+    );
+
   const setMergeableContentImpl = (
     mergeableContent: MergeableContent,
     encoded?: boolean,
-  ): MergeableStore =>
-    validateMergeable(
-      mergeableContent,
-      getNow() + HLC_MAX_FUTURE_OFFSET,
-      1,
-      encoded ? 1 : 0,
-    )
-      ? disableListeningToRawStoreChanges(() =>
-          store.transaction(() => {
-            store.delTables().delValues();
-            contentStampMap = newContentStampMap();
-            const changes = mergeContentOrChanges(mergeableContent, 1);
-            (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
-              changes,
-            );
-          }),
-        )
-      : (mergeableStore as MergeableStore);
+    trusted?: boolean,
+  ): boolean => {
+    const valid = isValid(mergeableContent, 1, encoded, trusted);
+    if (valid) {
+      disableListeningToRawStoreChanges(() =>
+        store.transaction(() => {
+          store.delTables().delValues();
+          contentStampMap = newContentStampMap();
+          const changes = mergeContentOrChanges(mergeableContent, 1);
+          (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
+            changes,
+          );
+        }),
+      );
+    }
+    return valid;
+  };
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
-  ): MergeableStore => setMergeableContentImpl(mergeableContent);
+  ): MergeableStore => {
+    setMergeableContentImpl(mergeableContent);
+    return mergeableStore as MergeableStore;
+  };
 
   const setEncodedMergeableContent = (
     mergeableContent: MergeableContent,
-  ): MergeableStore => setMergeableContentImpl(mergeableContent, true);
+    trusted?: boolean,
+  ): boolean => setMergeableContentImpl(mergeableContent, true, trusted);
 
   const setDefaultContent = (
     content: Content | (() => Content),
@@ -784,29 +813,32 @@ export const createMergeableStore = ((
   const applyMergeableChangesImpl = (
     mergeableChanges: MergeableChanges | MergeableContent,
     encoded?: boolean,
-  ): MergeableStore =>
-    validateMergeable(
-      mergeableChanges,
-      getNow() + HLC_MAX_FUTURE_OFFSET,
-      0,
-      encoded ? 1 : 0,
-    )
-      ? disableListeningToRawStoreChanges(() =>
-          store.transaction(() =>
-            (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
-              mergeContentOrChanges(mergeableChanges),
-            ),
+    trusted?: boolean,
+  ): boolean => {
+    const valid = isValid(mergeableChanges, 0, encoded, trusted);
+    if (valid) {
+      disableListeningToRawStoreChanges(() =>
+        store.transaction(() =>
+          (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
+            mergeContentOrChanges(mergeableChanges),
           ),
-        )
-      : (mergeableStore as MergeableStore);
+        ),
+      );
+    }
+    return valid;
+  };
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore => applyMergeableChangesImpl(mergeableChanges);
+  ): MergeableStore => {
+    applyMergeableChangesImpl(mergeableChanges);
+    return mergeableStore as MergeableStore;
+  };
 
   const applyEncodedMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore => applyMergeableChangesImpl(mergeableChanges, true);
+    trusted?: boolean,
+  ): boolean => applyMergeableChangesImpl(mergeableChanges, true, trusted);
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();

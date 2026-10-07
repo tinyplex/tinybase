@@ -320,6 +320,36 @@ test('Local Synchronizer tolerates delayed timer delivery', async () => {
   }
 });
 
+test('Synchronizer reports changes too far ahead of its clock', async () => {
+  const errors: Error[] = [];
+  const store1 = createMergeableStore('s1', () => getNow() + 600000);
+  const store2 = createMergeableStore('s2', getNow);
+  const synchronizer1 = createLocalSynchronizer(store1);
+  const synchronizer2 = createLocalSynchronizer(
+    store2,
+    undefined,
+    undefined,
+    (error) => errors.push(error),
+  );
+  await synchronizer1.startSync();
+  await synchronizer2.startSync();
+
+  store2.setValue('v2', 2);
+  await pause();
+  expect(store1.getValues()).toEqual({v2: 2});
+  expect(errors).toEqual([]);
+
+  store1.setValue('v1', 1);
+  await pause();
+  expect(store2.getValues()).toEqual({v2: 2});
+  expect(new Set(errors.map(({message}) => message))).toEqual(
+    new Set(['tinybase:18']),
+  );
+
+  await synchronizer1.destroy();
+  await synchronizer2.destroy();
+});
+
 test('Local Synchronizer excludes late recipients', async () => {
   const receive = vi.fn();
   const sender = createLocalSynchronizer(createMergeableStore());

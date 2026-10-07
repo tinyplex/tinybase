@@ -23,7 +23,9 @@ import {
 } from '../../common/array.ts';
 import {
   ERROR_CONTENT,
+  ERROR_MERGEABLE,
   ERROR_STORE_TYPE,
+  errorNew,
   errorThrow,
   tryCatch,
   tryCatchIgnore,
@@ -238,18 +240,27 @@ export const createCustomPersister = <
     contentOrChanges:
       Content | Changes | MergeableContent | MergeableChanges | undefined,
   ): void => {
-    (isMergeableStore && isArray(contentOrChanges?.[0])
-      ? contentOrChanges?.[2] === 1
-        ? (store as ProtectedMergeableStore).__[4]
-        : (store as ProtectedMergeableStore).__[3]
-      : contentOrChanges?.[2] === 1
+    if (isMergeableStore && isArray(contentOrChanges?.[0])) {
+      // What a Persister kept is trusted, but not what a peer has sent.
+      if (
+        !(
+          contentOrChanges?.[2] === 1
+            ? (store as ProtectedMergeableStore).__[4]
+            : (store as ProtectedMergeableStore).__[3]
+        )(
+          contentOrChanges as MergeableContent & MergeableChanges,
+          !isSynchronizer,
+        )
+      ) {
+        onIgnoredError?.(errorNew(ERROR_MERGEABLE));
+      }
+    } else {
+      (contentOrChanges?.[2] === 1
         ? (store as ProtectedStore)._[10]
         : (store as ProtectedStore)._[9])(
-      contentOrChanges as Content &
-        MergeableContent &
-        Changes &
-        MergeableChanges,
-    );
+        contentOrChanges as Content & Changes,
+      );
+    }
   };
 
   const saveAfterMutated = async (): Promise<void> => {
