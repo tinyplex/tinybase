@@ -124,10 +124,22 @@ export const createRelationships = getCreateFunction(
         ) => {
           const changedLocalRows: IdSet = setNew();
           const changedRemoteRows: IdSet = setNew();
+          const linkedRows: IdSet = setNew();
           const changedLinkedRows: IdSet = setNew();
           const [localRows, remoteRows] = getRelationship(
             relationshipId,
           ) as Relationship;
+          const linkedRowListeners = mapGet(
+            linkedRowIdsListeners,
+            relationshipId,
+          );
+
+          mapForEach(linkedRowListeners, (firstRowId) => {
+            getLinkedRowIdsCache(relationshipId, firstRowId);
+            if (force) {
+              setAdd(linkedRows, firstRowId);
+            }
+          });
 
           collForEach(
             changedRemoteRowIds,
@@ -153,44 +165,33 @@ export const createRelationships = getCreateFunction(
               }
               setAdd(changedLocalRows, localRowId);
               mapSet(localRows, localRowId, newRemoteRowId);
-              mapForEach(
-                mapGet(linkedRowIdsListeners, relationshipId),
-                (firstRowId) => {
-                  if (
-                    collHas(
-                      getLinkedRowIdsCache(relationshipId, firstRowId),
-                      localRowId,
-                    )
-                  ) {
-                    setAdd(changedLinkedRows, firstRowId);
-                  }
-                },
-              );
+              mapForEach(linkedRowListeners, (firstRowId) => {
+                if (
+                  collHas(
+                    getLinkedRowIdsCache(relationshipId, firstRowId),
+                    localRowId,
+                  )
+                ) {
+                  setAdd(linkedRows, firstRowId);
+                }
+              });
             },
           );
 
           change();
 
-          if (force) {
-            mapForEach(
-              mapGet(linkedRowIdsListeners, relationshipId),
-              (firstRowId) => {
-                const oldLinkedRowIds = getLinkedRowIds(
-                  relationshipId,
-                  firstRowId,
-                );
-                delLinkedRowIdsCache(relationshipId, firstRowId);
-                if (
-                  !arrayIsEqual(
-                    oldLinkedRowIds,
-                    getLinkedRowIds(relationshipId, firstRowId),
-                  )
-                ) {
-                  setAdd(changedLinkedRows, firstRowId);
-                }
-              },
-            );
-          }
+          collForEach(linkedRows, (firstRowId) => {
+            const oldLinkedRowIds = getLinkedRowIds(relationshipId, firstRowId);
+            delLinkedRowIdsCache(relationshipId, firstRowId);
+            if (
+              !arrayIsEqual(
+                oldLinkedRowIds,
+                collValues(getLinkedRowIdsCache(relationshipId, firstRowId)),
+              )
+            ) {
+              setAdd(changedLinkedRows, firstRowId);
+            }
+          });
 
           collForEach(changedLocalRows, (localRowId) =>
             callListeners(remoteRowIdListeners, [relationshipId, localRowId]),
@@ -198,10 +199,9 @@ export const createRelationships = getCreateFunction(
           collForEach(changedRemoteRows, (remoteRowId) =>
             callListeners(localRowIdsListeners, [relationshipId, remoteRowId]),
           );
-          collForEach(changedLinkedRows, (firstRowId) => {
-            delLinkedRowIdsCache(relationshipId, firstRowId);
-            callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]);
-          });
+          collForEach(changedLinkedRows, (firstRowId) =>
+            callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]),
+          );
         },
         getRowCellFunction(getRemoteRowId),
       );

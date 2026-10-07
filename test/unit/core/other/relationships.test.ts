@@ -802,6 +802,70 @@ describe('Linked lists', () => {
     );
     expectNoChanges(listener);
   });
+
+  test('Reads current linked lists within other listeners', () => {
+    store.setTable('t1', {r1: {c1: 'r2'}, r2: {c1: 'r3'}});
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    relationships.addLinkedRowIdsListener('r1', 'r1', vi.fn());
+    const linkedRowIds: Id[][] = [];
+    relationships.addRemoteRowIdListener('r1', 'r2', () =>
+      linkedRowIds.push(relationships.getLinkedRowIds('r1', 'r1')),
+    );
+    store.setCell('t1', 'r2', 'c1', 'r4');
+    expect(linkedRowIds).toEqual([['r1', 'r2', 'r4']]);
+  });
+
+  test('Only tells of linked lists that change', () => {
+    store.setTable('t1', {r1: {c1: 'r2'}, r2: {c2: 'R1'}});
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    relationships.setRelationshipDefinition('r2', 't1', 'T1', 'c2');
+    const listener = vi.fn();
+    relationships.addLinkedRowIdsListener('r1', 'r1', listener);
+    relationships.addLinkedRowIdsListener('r2', 'r2', listener);
+
+    store.setCell('t1', 'r2', 'c1', 'r1');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(['r1', 'r2']);
+    store.setCell('t1', 'r2', 'c2', 'R2');
+    expect(relationships.getLinkedRowIds('r2', 'r2')).toEqual(['r2']);
+    expect(listener).not.toHaveBeenCalled();
+
+    store.setCell('t1', 'r2', 'c1', 'r3');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual([
+      'r1',
+      'r2',
+      'r3',
+    ]);
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    store.setCell('t1', 'r2', 'c1', 'r4');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual([
+      'r1',
+      'r2',
+      'r4',
+    ]);
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  test('Tells one listener of a linked list after another has gone', () => {
+    store.setTable('t1', {r1: {c1: 'r2'}});
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    const listener = vi.fn();
+    const listenerId = relationships.addLinkedRowIdsListener(
+      'r1',
+      'r1',
+      vi.fn(),
+    );
+    relationships.addLinkedRowIdsListener('r1', 'r1', listener);
+    relationships.delListener(listenerId);
+
+    store.setCell('t1', 'r2', 'c1', 'r3');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual([
+      'r1',
+      'r2',
+      'r3',
+    ]);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('Miscellaneous', () => {
@@ -908,6 +972,13 @@ describe('Miscellaneous', () => {
 
   test('getStore', () => {
     expect(relationships.getStore()).toEqual(store);
+  });
+
+  test('removes missing relationship definition', () => {
+    const listener = vi.fn();
+    relationships.addRelationshipIdsListener(listener);
+    expect(relationships.delRelationshipDefinition('r1')).toBe(relationships);
+    expect(listener).not.toHaveBeenCalled();
   });
 
   test('removes relationship definition', () => {
