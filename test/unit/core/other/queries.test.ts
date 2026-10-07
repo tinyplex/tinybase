@@ -738,6 +738,52 @@ describe('Queries tables', () => {
       queries.delQueryDefinition('q1');
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
+    test('double-joined table by intermediate row id', () => {
+      store
+        .setTable('t1', {r1: {c1: 'r2'}})
+        .setTable('t2', {r2: {c1: 'two'}})
+        .setTable('t3', {r1: {c1: 'root'}, r2: {c1: 'intermediate'}});
+      queries.setQueryDefinition('q1', 't1', ({select, join}) => {
+        select('t3', 'c1');
+        join('t2', 'c1');
+        join('t3', 't2', (_getCell, rowId) => rowId);
+      });
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'intermediate'}});
+    });
+
+    test('double-joined table as the intermediate join changes', () => {
+      store
+        .setTable('t1', {r1: {c0: 0, c1: 'r2'}})
+        .setTable('t2', {r2: {c1: 'r3'}, r4: {c1: 'r5'}})
+        .setTable('t3', {r3: {c1: 'three'}, r5: {c1: 'five'}});
+      queries.setQueryDefinition('q1', 't1', ({select, join}) => {
+        select('c0');
+        select('t3', 'c1');
+        join('t2', 'c1');
+        join('t3', 't2', 'c1');
+      });
+      expect(queries.getResultTable('q1')).toEqual({r1: {c0: 0, c1: 'three'}});
+
+      store.setCell('t1', 'r1', 'c1', 'r4');
+      expect(queries.getResultTable('q1')).toEqual({r1: {c0: 0, c1: 'five'}});
+
+      store.setCell('t1', 'r1', 'c1', 'r6');
+      expect(queries.getResultTable('q1')).toEqual({r1: {c0: 0}});
+
+      store.setRow('t2', 'r6', {c1: 'r3'});
+      expect(queries.getResultTable('q1')).toEqual({r1: {c0: 0, c1: 'three'}});
+
+      store.delCell('t1', 'r1', 'c1');
+      expect(queries.getResultTable('q1')).toEqual({r1: {c0: 0}});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+
+      store.setCell('t3', 'r3', 'c1', 'THREE').setCell('t1', 'r1', 'c1', 'r2');
+      expect(queries.getResultTable('q1')).toEqual({r1: {c0: 0, c1: 'THREE'}});
+      expect(queries.getStore().getListenerStats().row).toEqual(3);
+
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
   });
 
   describe('Wheres', () => {
@@ -1452,6 +1498,30 @@ describe('Queries tables', () => {
       queries.delQueryDefinition('q1');
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
+    test('aggregate that stops being a cell', () => {
+      store.setTable('t1', {r1: {c1: 'a', c2: 5}});
+      const lowestOverTwo = (cells: (number | string | boolean | null)[]) =>
+        Math.min(...(cells as number[]).filter((cell) => cell > 2));
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        group('c2', lowestOverTwo).as('low');
+      });
+      queries.setQueryDefinition('q2', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        group('c2', lowestOverTwo).as('low');
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {low: 5}});
+      expect(queries.getResultTable('q2')).toEqual({0: {c1: 'a', low: 5}});
+
+      store.setCell('t1', 'r1', 'c2', 1);
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getResultTable('q2')).toEqual({0: {c1: 'a'}});
+
+      store.setCell('t1', 'r1', 'c2', 3);
+      expect(queries.getResultTable('q1')).toEqual({0: {low: 3}});
+      expect(queries.getResultTable('q2')).toEqual({0: {c1: 'a', low: 3}});
+    });
   });
 
   describe('Havings', () => {
@@ -1526,6 +1596,28 @@ describe('Queries tables', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(1);
       queries.delQueryDefinition('q1');
       expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+    test('group that leaves and returns', () => {
+      store.setTable('t1', {r1: {c1: 'a', c2: 5}});
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c1');
+        select('c2');
+        group('c2', 'max').as('max');
+        having((getCell) => (getCell('max') as number) > 3);
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {c1: 'a', max: 5}});
+
+      store.setCell('t1', 'r1', 'c2', 1);
+      expect(queries.getResultTable('q1')).toEqual({});
+
+      store.setRow('t1', 'r2', {c1: 'b', c2: 4});
+      expect(queries.getResultTable('q1')).toEqual({0: {c1: 'b', max: 4}});
+
+      store.setCell('t1', 'r1', 'c2', 6);
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: 'b', max: 4},
+        1: {c1: 'a', max: 6},
+      });
     });
   });
 });
@@ -3540,42 +3632,42 @@ describe('Listens to Queries when sets', () => {
         expectChanges(
           listener,
           listenerId,
-          {q1: {r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'}}},
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'}}},
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
               r4: {'t1.c1': 'four', 't2.c2': 'undefined.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r3: {'t1.c1': 'three', 't2.c2': 'odd.j.d', 't2.c1': 'three.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j', 't2.c2': 'odd.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't2.c2': 'even.j.d', 't2.c1': 'two.j'},
-              r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'},
+              r2: {'t1.c1': 'two', 't2.c1': 'two.j', 't2.c2': 'even.j.d'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'},
             },
           },
-          {q1: {r1: {'t1.c1': 'one', 't2.c2': 'odd.j.d', 't2.c1': 'one.j'}}},
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j', 't2.c2': 'odd.j.d'}}},
           {q1: {}},
         ),
       );
@@ -4223,62 +4315,62 @@ describe('Listens to Queries when sets', () => {
           listenerId,
           {
             q1: {
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r3: {'t1.c1': 'three', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r3: {'t1.c1': 'three', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r3: {'t1.c1': 'three', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
               r4: {'t1.c1': 'four'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r3: {'t1.c1': 'three', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
-              r4: {'t1.c1': 'four', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
+              r4: {'t1.c1': 'four', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r3: {'t1.c1': 'three', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
               r4: {'t1.c1': 'four'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r3: {'t1.c1': 'three', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
             },
           },
           {
             q1: {
-              r2: {'t1.c1': 'two', 't3.c1': 'two.j2', 't2.c1': 'four.j1'},
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r2: {'t1.c1': 'two', 't2.c1': 'four.j1', 't3.c1': 'two.j2'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
             },
           },
           {
             q1: {
-              r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
+              r1: {'t1.c1': 'one', 't2.c1': 'three.j1', 't3.c1': 'three.j2'},
             },
           },
           {q1: {}},

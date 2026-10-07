@@ -309,16 +309,12 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const addSourceStoreListeners = (
     sourceStore: Store,
     storeListenerIds: StoreListenerIds,
-    andCall: 0 | 1,
     ...listenerIds: Ids
   ): Ids => {
     const listenerIdSet = mapEnsure(storeListenerIds, sourceStore, setNew);
-    arrayForEach(listenerIds, (listenerId) => {
-      setAdd(listenerIdSet, listenerId);
-      if (andCall) {
-        sourceStore.callListener(listenerId);
-      }
-    });
+    arrayForEach(listenerIds, (listenerId) =>
+      setAdd(listenerIdSet, listenerId),
+    );
     return listenerIds;
   };
 
@@ -842,7 +838,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
               isUndefined(cell) ? undefined : encodeIfJson(cell);
 
             const writeGroupRow = (
-              leaf: [IdMap2<Cell>, IdSet, Id, Row],
+              leaf: [IdMap2<Cell>, IdSet, Id | undefined, Row],
               changedGroupedSelectedCells: IdMap<[Cell]>,
               selectedRowId: Id,
               forceRemove?: 1,
@@ -874,29 +870,39 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                               oldNewSet as Set<ChangedCell>,
                               aggregators,
                             );
-                            objSet(
-                              groupRow,
-                              groupedCellId,
-                              (isUndefined(getCellOrValueType(aggregateValue))
-                                ? undefined
-                                : aggregateValue) as Cell,
-                            );
+                            if (
+                              isUndefined(getCellOrValueType(aggregateValue))
+                            ) {
+                              objDel(groupRow, groupedCellId);
+                            } else {
+                              objSet(
+                                groupRow,
+                                groupedCellId,
+                                aggregateValue as Cell,
+                              );
+                            }
                           },
                         );
                       }
                     },
                   );
+                  const resultRow = objNew<Cell>();
+                  objForEach(groupRow, (cell, cellId) =>
+                    isUndefined(cell) ? 0 : objSet(resultRow, cellId, cell),
+                  );
                   if (
                     collIsEmpty(selectedRowIds) ||
+                    objIsEmpty(resultRow) ||
                     !arrayEvery(havings, (having) =>
                       having((cellId) => groupRow[cellId] as any),
                     )
                   ) {
                     resultStore.delRow(queryId, groupRowId);
+                    leaf[2] = undefined;
                   } else if (isUndefined(groupRowId)) {
-                    leaf[2] = resultStore.addRow(queryId, {...groupRow}) as Id;
+                    leaf[2] = resultStore.addRow(queryId, resultRow);
                   } else {
-                    resultStore.setRow(queryId, groupRowId, {...groupRow});
+                    resultStore.setRow(queryId, groupRowId, resultRow);
                   }
                 },
               );
@@ -1093,15 +1099,15 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             });
           };
 
-          const listenToTable = (
+          const updateJoins = (
             rootRowId: Id,
             sourceStore: Store,
             tableId: Id,
-            rowId: Id,
+            rowId: Id | undefined,
             toJoinAliases: Ids,
           ) => {
             const getCell = (cellId: Id) =>
-              sourceStore.getCell(tableId, rowId, cellId);
+              sourceStore.getCell(tableId, rowId as Id, cellId);
             arrayForEach(toJoinAliases, (joinAlias) => {
               const [
                 realJoinedTableId,
@@ -1111,7 +1117,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                 remoteIdPairs,
                 remoteSourceStore,
               ] = mapGet(joins, joinAlias) as JoinClause;
-              const remoteRowId = on?.(getCell as any, rootRowId);
+              const remoteRowId = isUndefined(rowId)
+                ? undefined
+                : on?.(getCell as any, rowId);
               const previousRemote = mapGet(remoteIdPairs, rootRowId);
               const previousRemoteRowId = previousRemote?.[0];
               if (remoteRowId != previousRemoteRowId) {
@@ -1135,7 +1143,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                         ...addSourceStoreListeners(
                           remoteSourceStore,
                           nextSourceStoreListenerIds,
-                          1,
                           remoteSourceStore.addRowListener(
                             realJoinedTableId,
                             remoteRowId,
@@ -1151,8 +1158,25 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                         ),
                       ],
                 );
+                updateJoins(
+                  rootRowId,
+                  remoteSourceStore,
+                  realJoinedTableId,
+                  remoteRowId,
+                  nextJoinAliases,
+                );
               }
             });
+          };
+
+          const listenToTable = (
+            rootRowId: Id,
+            sourceStore: Store,
+            tableId: Id,
+            rowId: Id,
+            toJoinAliases: Ids,
+          ) => {
+            updateJoins(rootRowId, sourceStore, tableId, rowId, toJoinAliases);
             writeSelectRow(rootRowId);
           };
 
@@ -1195,7 +1219,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             addSourceStoreListeners(
               rootStore,
               nextSourceStoreListenerIds,
-              0,
               rootStore.addRowListener(tableId, null, rootRowChanged),
             );
           });
