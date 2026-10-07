@@ -731,33 +731,50 @@ export const createWsServer = (<
     let pending: [toClientId: Id, remainders: string[]][] | undefined = [];
     let pendingCount = 0;
     let pendingSize = 0;
+    let opening: Promise<void> | undefined;
     let closed = false;
+
+    // What is held counts against the limits of the whole WebSocket, however
+    // many of its channels are waiting.
+    const release = () => {
+      pending = undefined;
+      if (pendingCount) {
+        updateWebSocketBuffer(client, -pendingCount, -pendingSize);
+        pendingCount = pendingSize = 0;
+      }
+    };
 
     const receive = (toClientId: Id, remainders: string[]) => {
       if (path) {
         handleDecodedMessage(path, clientId, toClientId, remainders);
       } else if (pending) {
-        pendingCount += size(remainders);
-        pendingSize += arrayReduce(
+        const count = size(remainders);
+        const payloadsSize = arrayReduce(
           remainders,
           (total, remainder) => total + getWebSocketPayloadSize(remainder),
           0,
         );
+        const [heldCount, heldSize] = mapGet(buffersByWebSocket, client) ?? [
+          0, 0,
+        ];
         if (
-          pendingCount > MAX_WEBSOCKET_QUEUE_SIZE ||
-          pendingSize > MAX_WEBSOCKET_BUFFER_SIZE
+          heldCount + count > MAX_WEBSOCKET_QUEUE_SIZE ||
+          heldSize + payloadsSize > MAX_WEBSOCKET_BUFFER_SIZE
         ) {
-          pending = undefined;
+          release();
           overflowClient(client, 'server');
         } else {
           arrayPush(pending, [toClientId, remainders]);
+          pendingCount += count;
+          pendingSize += payloadsSize;
+          updateWebSocketBuffer(client, count, payloadsSize);
         }
       }
     };
 
     const join = (access: ClientAccess | undefined): Promise<void> | void => {
       const held = pending;
-      pending = undefined;
+      release();
       if (!closed && held) {
         // Two connections must never share an Id on a path, since a client's
         // access is found by its Id.
@@ -777,23 +794,27 @@ export const createWsServer = (<
       }
     };
 
-    const open = async (): Promise<void> => {
-      if (authorize) {
-        let access: ClientAccess | undefined;
-        await tryCatch(
-          async () => (access = await authorize(pathId, request)),
-          handleError,
-        );
-        await join(access);
-      } else {
-        await join(WRITABLE);
-      }
-    };
+    const open = (): Promise<void> =>
+      (opening = (async () => {
+        if (authorize) {
+          let access: ClientAccess | undefined;
+          await tryCatch(
+            async () => (access = await authorize(pathId, request)),
+            handleError,
+          );
+          await join(access);
+        } else {
+          await join(WRITABLE);
+        }
+      })());
 
+    // A client that leaves while it is being authorized is only finished with
+    // once that has settled, so that it cannot have any number of
+    // authorizations running at once.
     const close = () => {
       closed = true;
-      pending = undefined;
-      return path ? delClient(path) : undefined;
+      release();
+      return path ? delClient(path) : opening;
     };
 
     return [receive, open, close] as const;

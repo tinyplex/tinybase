@@ -78,6 +78,38 @@ const getClose = async (webSocket: WebSocket): Promise<[number, string]> => {
   return [code, reason.toString()];
 };
 
+// A server driven by hand-made connections, for what a real client cannot do.
+const createFabricatedServer = (options: WsServerOptions<any>) => {
+  const webSocketServer = new EventEmitter() as any;
+  webSocketServer.close = (callback: () => void) => callback();
+  const wsServer = createWsServer(webSocketServer, options);
+  cleanups.push(() => wsServer.destroy());
+  const connect = (clientId: string, pathId = 'shop', protocol = '') => {
+    const client = new EventEmitter() as any;
+    Object.assign(client, {
+      OPEN: 1,
+      CLOSED: 3,
+      readyState: 1,
+      bufferedAmount: 0,
+      protocol,
+      closed: undefined,
+      sent: [] as string[],
+      send: (payload: string) => client.sent.push(payload),
+      close: (code?: number, reason?: string) => {
+        client.closed ??= [code, reason];
+        client.readyState = 3;
+        client.emit('close');
+      },
+    });
+    webSocketServer.emit('connection', client, {
+      headers: {'sec-websocket-key': clientId},
+      url: '/' + pathId,
+    });
+    return client;
+  };
+  return [wsServer, connect] as const;
+};
+
 describe('options', () => {
   test('the options form behaves like the positional form', async () => {
     const serverStore = createMergeableStore('server', getNow);
@@ -707,36 +739,6 @@ describe('client ids', () => {
     ],
   ];
 
-  const createFabricatedServer = (options: WsServerOptions<any>) => {
-    const webSocketServer = new EventEmitter() as any;
-    webSocketServer.close = (callback: () => void) => callback();
-    const wsServer = createWsServer(webSocketServer, options);
-    cleanups.push(() => wsServer.destroy());
-    const connect = (clientId: string, pathId = 'shop', protocol = '') => {
-      const client = new EventEmitter() as any;
-      Object.assign(client, {
-        OPEN: 1,
-        CLOSED: 3,
-        readyState: 1,
-        bufferedAmount: 0,
-        protocol,
-        closed: undefined,
-        send: () => 0,
-        close: (code?: number, reason?: string) => {
-          client.closed ??= [code, reason];
-          client.readyState = 3;
-          client.emit('close');
-        },
-      });
-      webSocketServer.emit('connection', client, {
-        headers: {'sec-websocket-key': clientId},
-        url: '/' + pathId,
-      });
-      return client;
-    };
-    return [wsServer, connect] as const;
-  };
-
   test.each(MODES)('%s: unusable client ids are refused', async (_, mode) => {
     const [wsServer, connect] = createFabricatedServer(mode);
     const clients = ['S', 'M', '', 'a\nb'].map((clientId) => connect(clientId));
@@ -788,4 +790,52 @@ describe('client ids', () => {
       expect(wsServer.getClientIds('office/desk')).toEqual(['same']);
     },
   );
+});
+
+describe('limits', () => {
+  const subscribe = (client: any, channelId: string) =>
+    client.emit('message', 'S\n["subscribe",-1,[1,"' + channelId + '"]]');
+
+  test('one WebSocket cannot have many authorizations running', async () => {
+    let authorizing = 0;
+    const errors: string[] = [];
+    const [, connect] = createFabricatedServer({
+      authorize: () => {
+        authorizing++;
+        return new Promise(() => 0);
+      },
+      onIgnoredError: (error) => errors.push(error.message),
+    });
+    const client = connect('client', 'office', 'tinybase');
+    client.emit('message', 'S\n["hello",-1,[0,1]]');
+    for (let attempt = 0; attempt < 300 && !client.closed; attempt++) {
+      subscribe(client, 'desk');
+      client.emit('message', 'S\n[null,-1,[2,"desk"]]');
+    }
+    await pause();
+    expect(authorizing).toBe(200);
+    expect(client.closed).toEqual([1013, 'tinybase:15:channels']);
+    expect(errors).toEqual(['tinybase:15:channels']);
+  });
+
+  test('messages held for every channel share one limit', async () => {
+    const errors: string[] = [];
+    const [, connect] = createFabricatedServer({
+      authorize: () => new Promise(() => 0),
+      onIgnoredError: (error) => errors.push(error.message),
+    });
+    const client = connect('client', 'office', 'tinybase');
+    client.emit('message', 'S\n["hello",-1,[0,1]]');
+    subscribe(client, 'desk');
+    subscribe(client, 'shelf');
+    for (let message = 0; message < 600; message++) {
+      client.emit('message', 'M\ndesk\n\n[null,1,""]');
+    }
+    expect(client.closed).toBeUndefined();
+    for (let message = 0; message < 401; message++) {
+      client.emit('message', 'M\nshelf\n\n[null,1,""]');
+    }
+    expect(client.closed).toEqual([1013, 'tinybase:15:server']);
+    expect(errors).toEqual(['tinybase:15:server']);
+  });
 });

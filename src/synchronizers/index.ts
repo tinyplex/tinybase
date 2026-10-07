@@ -25,7 +25,7 @@ import type {
 } from '../@types/synchronizers/index.d.ts';
 import {arrayIsEqual, arrayNew} from '../common/array.ts';
 import {getUniqueId} from '../common/codec.ts';
-import {collDel, collHas, collSize} from '../common/coll.ts';
+import {collClear, collDel, collHas, collSize} from '../common/coll.ts';
 import {
   ERROR_SYNC_MESSAGE,
   ERROR_SYNC_OVERFLOW,
@@ -91,6 +91,8 @@ export const Message = {
   GetValueDiff: MessageValues.GetValueDiff,
   GetBucketDiff: MessageValues.GetBucketDiff,
 };
+
+const MAX_MARKED_CLIENT_IDS = 10_000;
 
 type BucketHashes = {[tableId: Id]: number[]};
 type Pull = [hashes: ContentHashes, changes: Promise<MergeableChanges>];
@@ -501,6 +503,11 @@ export const createCustomSynchronizer = (
         message != MessageValues.Response &&
         isMarked(transactionOrRequestId)
       ) {
+        // A peer that is forgotten here marks itself again with its next
+        // message, so the set can simply be emptied if it ever grows large.
+        if (collSize(markedClientIds) >= MAX_MARKED_CLIENT_IDS) {
+          collClear(markedClientIds);
+        }
         setAdd(markedClientIds, fromClientId);
       }
       receives++;
