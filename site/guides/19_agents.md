@@ -264,7 +264,18 @@ code rather than gulp's, so a failed `preCommit` or `prePublishPackage` looks
 like a success. Redirect to a file and check `$?`.
 
 Tests import `tinybase` from `dist`, so run `npm run compileForTest` after
-changing `src` before running any test.
+changing `src` before running any test. That build does not check types, so
+also run `npx gulp ts` before committing: a change can pass every test and
+still not compile for a release.
+
+Seeded fuzz suites live in `test/unit/core/fuzz`, and in
+`test/unit/synchronizers/convergence.fuzz.test.ts`, built on the helpers in
+`test/unit/common/fuzz.ts`. Each applies random operations and checks an
+invariant after every one. A failure names its seed and lists the operations
+that led to it, and `FUZZ_RUNS` and `FUZZ_SEED` lengthen a hunt or replay one
+seed. A bug that a suite finds, but that is not yet fixed, is kept as a
+`test.fails` case, and what the suite generates is narrowed at a place marked
+`KNOWN BUG`. Remove both along with the bug.
 
 `test/unit/synchronizers/efficiency.test.ts` holds each synchronization scenario
 to a budget of messages and bytes crossing the WebSocket server. When the
