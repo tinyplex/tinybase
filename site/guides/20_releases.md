@@ -108,6 +108,14 @@ and servers keep working as before.
   that is made while it is loading, once it has loaded. Until now, that change
   was not saved until the next one was made, and so a Synchronizer could leave
   it unsent.
+- A Persister or Synchronizer now runs a load or save that is asked of it just
+  as another finishes. Until now, it could be left waiting, with its promise
+  unresolved, until the next one was asked for.
+- A MergeableStore now hashes an object or array Cell or Value in the same way
+  whether it arrives through a Synchronizer or through the
+  applyMergeableChanges method or merge method. Until now, two MergeableStore
+  objects with the same content could have different hashes, and so would go
+  on comparing it whenever they synchronized.
 - A WsServer that authorizes its clients now changes nothing, on the server or
   for other clients, when it refuses a change: the client that made it is alone
   in being sent the server's version. It also refuses a client whose Id is
