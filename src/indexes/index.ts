@@ -146,13 +146,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
             collForEach(oldSliceIds, (oldSliceId) => {
               setHadSlice(oldSliceId);
               setAdd(changedSlices, oldSliceId);
-              ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
-                collDel(oldSlice, rowId);
-                if (collIsEmpty(oldSlice)) {
-                  mapSet(index, oldSliceId);
-                  sliceIdsChanged = 1;
-                }
-              });
+              collDel(mapGet(index, oldSliceId), rowId);
             });
 
             collForEach(newSliceIds, (newSliceId) => {
@@ -168,6 +162,14 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
               }
             });
           },
+        );
+        collForEach(changedSlices, (sliceId) =>
+          ifNotUndefined(mapGet(index, sliceId), (slice) => {
+            if (collIsEmpty(slice)) {
+              mapSet(index, sliceId);
+              sliceIdsChanged = 1;
+            }
+          }),
         );
 
         change();

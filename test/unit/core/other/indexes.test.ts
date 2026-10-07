@@ -2097,6 +2097,31 @@ describe('Miscellaneous', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
+  test('keeps a slice that empties and refills in one transaction', () => {
+    store.setTable('t1', {r1: {c1: 'a'}, r2: {c1: 'b'}});
+    indexes.setIndexDefinition('i1', 't1', 'c1');
+    const sliceIdsListener = vi.fn();
+    const hasSliceListener = vi.fn();
+    const sliceRowIdsListener = vi.fn();
+    indexes.addSliceIdsListener('i1', sliceIdsListener);
+    indexes.addHasSliceListener('i1', 'a', hasSliceListener);
+    indexes.addSliceRowIdsListener('i1', 'a', sliceRowIdsListener);
+
+    store.transaction(() =>
+      store.delRow('t1', 'r1').setRow('t1', 'r3', {c1: 'a'}),
+    );
+    expect(indexes.getSliceIds('i1')).toEqual(['a', 'b']);
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r3']);
+    expect(sliceIdsListener).not.toHaveBeenCalled();
+    expect(hasSliceListener).not.toHaveBeenCalled();
+    expect(sliceRowIdsListener).toHaveBeenCalledTimes(1);
+
+    store.delRow('t1', 'r3');
+    expect(indexes.getSliceIds('i1')).toEqual(['b']);
+    expect(sliceIdsListener).toHaveBeenCalledTimes(1);
+    expect(hasSliceListener).toHaveBeenCalledTimes(1);
+  });
+
   test('only tells of tied sort keys when their rows move', () => {
     store.setTable('t1', {
       r1: {c1: 'a', c2: 5},
