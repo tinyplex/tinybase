@@ -1601,6 +1601,75 @@ describe.each([
           );
           expect(store.getTables()).toEqual(originalTables);
         });
+
+        describe('with objects and arrays', () => {
+          const tables = {t1: {r1: {c1: 1, c2: {a: [1]}, c3: [{a: 1}]}}};
+          const values = {v1: 1, v2: {a: [1]}, v3: [{a: 1}]};
+          const changeAll = () =>
+            store
+              .setCell('t1', 'r1', 'c2', {b: 2})
+              .delCell('t1', 'r1', 'c3')
+              .setValue('v2', [2])
+              .delValue('v3');
+
+          beforeEach(() => {
+            store.setTables(tables).setValues(values);
+          });
+
+          test('when doRollback returns true', () => {
+            store.transaction(changeAll, () => true);
+            expect(store.getTables()).toEqual(tables);
+            expect(store.getValues()).toEqual(values);
+          });
+
+          test('when the actions throw', () => {
+            expect(() =>
+              store.transaction(() => {
+                changeAll();
+                throw new Error('action error');
+              }),
+            ).toThrow('action error');
+            expect(store.getTables()).toEqual(tables);
+            expect(store.getValues()).toEqual(values);
+          });
+
+          test('when they replace other types', () => {
+            store.transaction(
+              () => store.setCell('t1', 'r1', 'c2', 2).setValue('v3', 'three'),
+              () => true,
+            );
+            expect(store.getTables()).toEqual(tables);
+            expect(store.getValues()).toEqual(values);
+          });
+
+          test('with a schema', () => {
+            store.setSchema(
+              {
+                t1: {
+                  c1: {type: 'number'},
+                  c2: {type: 'object'},
+                  c3: {type: 'array'},
+                },
+              },
+              {
+                v1: {type: 'number'},
+                v2: {type: ['object', 'array']},
+                v3: {type: 'array'},
+              },
+            );
+            store.transaction(changeAll, () => true);
+            expect(store.getTables()).toEqual(tables);
+            expect(store.getValues()).toEqual(values);
+          });
+
+          test('without telling listeners of any change', () => {
+            const listener = vi.fn();
+            store.addTablesListener(listener);
+            store.addValuesListener(listener);
+            store.transaction(changeAll, () => true);
+            expect(listener).not.toHaveBeenCalled();
+          });
+        });
       });
     });
 

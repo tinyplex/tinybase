@@ -2261,18 +2261,20 @@ export const createStore: typeof createStoreDecl = (): Store => {
       setValidValuesSchema(schema);
       hasValuesSchema = hasSchema;
     });
-    collForEach(changedCells, (table, tableId) =>
-      collForEach(table, (row, rowId) =>
-        collForEach(row, ([oldCell], cellId) =>
-          setOrDelCell(tableId, rowId, cellId, oldCell, true),
+    whileAcceptingEncodedData(() => {
+      collForEach(changedCells, (table, tableId) =>
+        collForEach(table, (row, rowId) =>
+          collForEach(row, ([oldCell], cellId) =>
+            setOrDelCell(tableId, rowId, cellId, oldCell, true),
+          ),
         ),
-      ),
-    );
-    collClear(changedCells);
-    collForEach(changedValues, ([oldValue], valueId) =>
-      setOrDelValue(valueId, oldValue, true),
-    );
-    collClear(changedValues);
+      );
+      collClear(changedCells);
+      collForEach(changedValues, ([oldValue], valueId) =>
+        setOrDelValue(valueId, oldValue, true),
+      );
+      collClear(changedValues);
+    });
   };
 
   const resetTransaction = (): void => {
