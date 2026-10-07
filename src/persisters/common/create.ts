@@ -163,6 +163,8 @@ export const createCustomPersister = <
   let autoLoadAfterSaveGeneration = 0;
   let autoSaveListenerId: Id | undefined;
   let autoSaveGeneration = 0;
+  let applying = 0;
+  let saveSkipped = 0;
   let destroyed = 0;
   let destroying: Promise<void> | undefined;
   let activeAction: Promise<void> | undefined;
@@ -239,32 +241,45 @@ export const createCustomPersister = <
   const setContentOrChanges = (
     contentOrChanges:
       Content | Changes | MergeableContent | MergeableChanges | undefined,
-  ): void => {
-    if (isMergeableStore && isArray(contentOrChanges?.[0])) {
-      // What a Persister kept is trusted, but not what a peer has sent.
-      if (
-        !(
-          contentOrChanges?.[2] === 1
-            ? (store as ProtectedMergeableStore).__[4]
-            : (store as ProtectedMergeableStore).__[3]
-        )(
-          contentOrChanges as MergeableContent & MergeableChanges,
-          !isSynchronizer,
-        )
-      ) {
-        onIgnoredError?.(errorNew(ERROR_MERGEABLE));
+  ): void =>
+    whileApplying(() => {
+      if (isMergeableStore && isArray(contentOrChanges?.[0])) {
+        // What a Persister kept is trusted, but not what a peer has sent.
+        if (
+          !(
+            contentOrChanges?.[2] === 1
+              ? (store as ProtectedMergeableStore).__[4]
+              : (store as ProtectedMergeableStore).__[3]
+          )(
+            contentOrChanges as MergeableContent & MergeableChanges,
+            !isSynchronizer,
+          )
+        ) {
+          onIgnoredError?.(errorNew(ERROR_MERGEABLE));
+        }
+      } else {
+        (contentOrChanges?.[2] === 1
+          ? (store as ProtectedStore)._[10]
+          : (store as ProtectedStore)._[9])(
+          contentOrChanges as Content & Changes,
+        );
       }
-    } else {
-      (contentOrChanges?.[2] === 1
-        ? (store as ProtectedStore)._[10]
-        : (store as ProtectedStore)._[9])(
-        contentOrChanges as Content & Changes,
-      );
-    }
+    });
+
+  // Applying what has been loaded changes the Store, but is not to be saved
+  // again. A change made at any other time while loading is, once loaded.
+  const whileApplying = (action: () => void): void => {
+    applying++;
+    tryFinally(action, () => applying--);
   };
 
-  const saveAfterMutated = async (): Promise<void> => {
-    if (isAutoSaving() && (store as ProtectedMergeableStore).__?.[0]?.()) {
+  const saveAfterLoading = async (): Promise<void> => {
+    const wasSaveSkipped = saveSkipped;
+    saveSkipped = 0;
+    if (
+      isAutoSaving() &&
+      ((store as ProtectedMergeableStore).__?.[0]?.() || wasSaveSkipped)
+    ) {
       await save();
     }
   };
@@ -299,7 +314,7 @@ export const createCustomPersister = <
                 if (isArray(content)) {
                   setContentOrChanges(content);
                 } else if (isUndefined(content) && initialContent) {
-                  setDefaultContent(initialContent);
+                  whileApplying(() => setDefaultContent(initialContent));
                 } else if (!isUndefined(content)) {
                   errorThrow(ERROR_CONTENT, content);
                 }
@@ -307,7 +322,7 @@ export const createCustomPersister = <
               (error) => {
                 onIgnoredError?.(error);
                 if (initialContent) {
-                  setDefaultContent(initialContent);
+                  whileApplying(() => setDefaultContent(initialContent));
                 }
               },
             ),
@@ -315,7 +330,7 @@ export const createCustomPersister = <
         },
         () => setStatus(StatusValues.Idle),
       );
-      await saveAfterMutated();
+      await saveAfterLoading();
     }
     return persister;
   };
@@ -372,7 +387,7 @@ export const createCustomPersister = <
                 },
               );
               if (!pendingAutoLoads) {
-                await saveAfterMutated();
+                await saveAfterLoading();
               }
             } else if (status == StatusValues.Saving) {
               autoLoadAfterSaveGeneration = generation;
@@ -466,6 +481,9 @@ export const createCustomPersister = <
           if (generation == autoSaveGeneration && !destroyed) {
             const changes = getChanges() as any;
             if (hasChanges(changes)) {
+              if (status == StatusValues.Loading && !applying) {
+                saveSkipped = 1;
+              }
               void tryCatch(() => save(changes));
             }
           }
@@ -483,6 +501,7 @@ export const createCustomPersister = <
     }
     const listenerId = autoSaveListenerId;
     autoSaveListenerId = undefined;
+    saveSkipped = 0;
     if (!isUndefined(listenerId)) {
       store.delListener(listenerId);
     }

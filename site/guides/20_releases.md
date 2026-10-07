@@ -104,6 +104,10 @@ and servers keep working as before.
   changes that its MergeableStore refuses, with the new error code 18, through
   its `onIgnoredError` handler. That is how to learn of a peer whose clock is
   more than five minutes ahead.
+- A Persister or Synchronizer that is saving automatically now saves a change
+  that is made while it is loading, once it has loaded. Until now, that change
+  was not saved until the next one was made, and so a Synchronizer could leave
+  it unsent.
 - A WsServer that authorizes its clients now changes nothing, on the server or
   for other clients, when it refuses a change: the client that made it is alone
   in being sent the server's version. It also refuses a client whose Id is

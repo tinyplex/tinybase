@@ -465,6 +465,61 @@ if (!withServers) {
     expect(ignoredErrors).toEqual([]);
   });
 
+  test('saves a change that is made while loading', async () => {
+    let persisted: Content | undefined;
+    let finishLoading: (changes?: any) => void = noop;
+    const store = createStore();
+    const persister = createCustomPersister(
+      store,
+      () => new Promise<any>((resolve) => (finishLoading = resolve)),
+      async (getContent) => {
+        persisted = getContent();
+      },
+      noop,
+      noop,
+    );
+    const starting = persister.startAutoPersisting();
+    await pause(5);
+    finishLoading();
+    await starting;
+    expect(persisted).toEqual([{}, {}]);
+
+    const loading = persister.load();
+    await pause(5);
+    expect(persister.getStatus()).toEqual(Status.Loading);
+    store.setCell('t1', 'r1', 'c1', 1);
+    finishLoading([{t1: {r2: {c1: 2}}}, {}, 1]);
+    await loading;
+    await persister.destroy();
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}, r2: {c1: 2}}});
+    expect(persisted).toEqual([{t1: {r1: {c1: 1}, r2: {c1: 2}}}, {}]);
+    expect(persister.getStats()).toEqual({loads: 2, saves: 2});
+  });
+
+  test('does not save what it has only loaded', async () => {
+    let finishLoading: (changes?: any) => void = noop;
+    const store = createStore();
+    const persister = createCustomPersister(
+      store,
+      () => new Promise<any>((resolve) => (finishLoading = resolve)),
+      asyncNoop,
+      noop,
+      noop,
+    );
+    const starting = persister.startAutoPersisting();
+    await pause(5);
+    finishLoading();
+    await starting;
+
+    const loading = persister.load();
+    await pause(5);
+    finishLoading([{t1: {r2: {c1: 2}}}, {}, 1]);
+    await loading;
+    await persister.destroy();
+    expect(store.getTables()).toEqual({t1: {r2: {c1: 2}}});
+    expect(persister.getStats()).toEqual({loads: 2, saves: 1});
+  });
+
   test('errors when custom persister returns invalid content', async () => {
     const ignoredErrors: any[] = [];
     const store = createStore();
