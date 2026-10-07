@@ -100,6 +100,7 @@ import {
   getTransactionId,
   getWebSocketPayloadSize,
   ifPayloadValid,
+  isClientIdValid,
   isWebSocketBackpressured,
   isWebSocketPayloadTooLarge,
 } from '../common.ts';
@@ -717,7 +718,12 @@ export const createWsServer = (<
       const held = pending;
       pending = undefined;
       if (!closed && held) {
-        if (isUndefined(access)) {
+        // Two connections must never share an Id on a path, since a client's
+        // access is found by its Id.
+        if (
+          isUndefined(access) ||
+          collHas(mapGet(paths, pathId)?.[Path.Clients], clientId)
+        ) {
           refuseClient(client, pathId);
         } else {
           const [joinedPath, ready] = addClient(access);
@@ -839,7 +845,9 @@ export const createWsServer = (<
       } else {
         ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
           ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
-            if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
+            if (!isClientIdValid(clientId)) {
+              refuseClient(client, pathId);
+            } else if (client.protocol == WS_SYNCHRONIZER_PROTOCOL) {
               addMultipleClient(client, clientId, pathId, request);
             } else {
               addLegacyClient(client, clientId, pathId, request).catch(

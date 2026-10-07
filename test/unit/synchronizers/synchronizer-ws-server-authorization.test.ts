@@ -1,4 +1,4 @@
-import {once} from 'events';
+import {EventEmitter, once} from 'events';
 import type {IncomingMessage} from 'http';
 import type {Id, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
@@ -494,4 +494,102 @@ describe('multiple channels', () => {
     await pause(200);
     expect(wsServer.getPathIds()).toEqual([]);
   });
+});
+
+describe('client ids', () => {
+  const MODES: [string, WsServerOptions<any>][] = [
+    ['relaying', {}],
+    ['authorizing', {authorize: () => ({})}],
+    [
+      'slowly authorizing',
+      {
+        authorize: async () => {
+          await pause(20);
+          return {};
+        },
+      },
+    ],
+  ];
+
+  const createFabricatedServer = (options: WsServerOptions<any>) => {
+    const webSocketServer = new EventEmitter() as any;
+    webSocketServer.close = (callback: () => void) => callback();
+    const wsServer = createWsServer(webSocketServer, options);
+    cleanups.push(() => wsServer.destroy());
+    const connect = (clientId: string, pathId = 'shop', protocol = '') => {
+      const client = new EventEmitter() as any;
+      Object.assign(client, {
+        OPEN: 1,
+        CLOSED: 3,
+        readyState: 1,
+        bufferedAmount: 0,
+        protocol,
+        closed: undefined,
+        send: () => 0,
+        close: (code?: number, reason?: string) => {
+          client.closed ??= [code, reason];
+          client.readyState = 3;
+          client.emit('close');
+        },
+      });
+      webSocketServer.emit('connection', client, {
+        headers: {'sec-websocket-key': clientId},
+        url: '/' + pathId,
+      });
+      return client;
+    };
+    return [wsServer, connect] as const;
+  };
+
+  test.each(MODES)('%s: unusable client ids are refused', async (_, mode) => {
+    const [wsServer, connect] = createFabricatedServer(mode);
+    const clients = ['S', 'M', '', 'a\nb'].map((clientId) => connect(clientId));
+    await pause();
+    clients.forEach((client) =>
+      expect(client.closed).toEqual([1008, 'tinybase:17:shop']),
+    );
+    expect(wsServer.getPathIds()).toEqual([]);
+  });
+
+  test.each(MODES)(
+    '%s: a client id already in use on a path is refused',
+    async (_, mode) => {
+      const [wsServer, connect] = createFabricatedServer(mode);
+      const first = connect('same');
+      const second = connect('same');
+      const elsewhere = connect('same', 'office');
+      await pause();
+      expect(first.closed).toBeUndefined();
+      expect(elsewhere.closed).toBeUndefined();
+      expect(second.closed).toEqual([1008, 'tinybase:17:shop']);
+      expect(wsServer.getClientIds('shop')).toEqual(['same']);
+      expect(wsServer.getClientIds('office')).toEqual(['same']);
+
+      first.close();
+      await pause();
+      const third = connect('same');
+      await pause();
+      expect(third.closed).toBeUndefined();
+      expect(wsServer.getClientIds('shop')).toEqual(['same']);
+    },
+  );
+
+  test.each(MODES)(
+    '%s: a channel cannot be joined twice under one client id',
+    async (_, mode) => {
+      const [wsServer, connect] = createFabricatedServer(mode);
+      const subscribe = (client: any) => {
+        client.emit('message', 'S\n["hello",-1,[0,1]]');
+        client.emit('message', 'S\n["subscribe",-1,[1,"desk"]]');
+      };
+      const first = connect('same', 'office', 'tinybase');
+      subscribe(first);
+      const second = connect('same', 'office', 'tinybase');
+      subscribe(second);
+      await pause();
+      expect(first.closed).toBeUndefined();
+      expect(second.closed).toEqual([1008, 'tinybase:17:office/desk']);
+      expect(wsServer.getClientIds('office/desk')).toEqual(['same']);
+    },
+  );
 });

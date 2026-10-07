@@ -155,6 +155,16 @@ export const createHelloPayload = (): string =>
 const MULTIPLE_CLIENT_ID = 'M';
 const MULTIPLE_MESSAGE = -1;
 
+// A client's Id comes from a header that the client itself chooses. So one
+// that could be mistaken for the server or for the multiplexing prefix, or
+// that would break the framing of a payload, is never accepted.
+export const isClientIdValid = (clientId: unknown): clientId is Id =>
+  isString(clientId) &&
+  !isEmpty(clientId) &&
+  clientId != SERVER_CLIENT_ID &&
+  clientId != MULTIPLE_CLIENT_ID &&
+  isNull(strMatch(clientId, /\n/));
+
 export const enum MultipleControl {
   Hello,
   Subscribe,

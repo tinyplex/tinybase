@@ -42,6 +42,7 @@ import {
   createServerChangesReceiver,
   getTransactionId,
   ifPayloadValid,
+  isClientIdValid,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
@@ -133,12 +134,8 @@ export class WsServerDurableObject<Env = unknown>
                 ? createServerChangesReceiver(
                     store,
                     (clientId) =>
-                      ifNotUndefined(
-                        this.#getClients(clientId)[0],
-                        (client) =>
-                          (client.deserializeAttachment() ??
-                            WRITABLE) as ClientAccess,
-                      ),
+                      (this.#getClients(clientId)[0]?.deserializeAttachment() ??
+                        undefined) as ClientAccess | undefined,
                     (tableId, rowId, cellId, cell, context) =>
                       this.canWriteCell(
                         this.getPathId(),
@@ -173,10 +170,17 @@ export class WsServerDurableObject<Env = unknown>
   fetch(request: Request): Response | Promise<Response> {
     const pathId = getPathId(request);
     return ifNotUndefined(
-      getClientId(request),
+      getClientId(request) ?? undefined,
       (clientId) => {
+        // The Id is refused if it is not a usable one, or if it is already
+        // taken here: two connections must never share one, since a client's
+        // access is found by its Id.
         const accept = (access: ClientAccess | undefined): Response => {
-          if (isUndefined(access)) {
+          if (
+            isUndefined(access) ||
+            !isClientIdValid(clientId) ||
+            !isEmpty(this.#getClients(clientId))
+          ) {
             const error = errorNew(ERROR_SYNC_UNAUTHORIZED, pathId);
             this.onIgnoredError(error);
             return createResponse(403, null, error.message);
@@ -193,7 +197,7 @@ export class WsServerDurableObject<Env = unknown>
           client.send(createHelloPayload());
           return createResponse(101, webSocket);
         };
-        if (this.#hub) {
+        if (this.#hub && isClientIdValid(clientId)) {
           return (async () => {
             let access: ClientAccess | undefined;
             await tryCatch(
@@ -249,12 +253,14 @@ export class WsServerDurableObject<Env = unknown>
     ifPayloadValid(message.toString(), (toClientId, remainder) => {
       const forwardedPayload = createRawPayload(fromClientId, remainder);
       this.onMessage(fromClientId, toClientId, remainder);
-      if (this.#hub && fromClientId != SERVER_CLIENT_ID) {
+      // Only a message with no client WebSocket behind it is the server's
+      // own, whatever Id it claims.
+      if (this.#hub && fromClient) {
         if (toClientId == EMPTY_STRING || toClientId == SERVER_CLIENT_ID) {
           this.#serverClientSend?.(forwardedPayload);
         }
       } else if (toClientId == EMPTY_STRING) {
-        if (fromClientId != SERVER_CLIENT_ID) {
+        if (fromClient) {
           this.#serverClientSend?.(forwardedPayload);
         }
         arrayForEach(this.#getClients(), (otherClient) => {

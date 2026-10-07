@@ -139,17 +139,14 @@ const connect = async (
   durableObject: WsServerDurableObject,
   state: ReturnType<typeof createState>,
   url: string,
+  key: string | null = 'key' + nextKey++,
+  upgrade: string | null = 'websocket',
 ): Promise<[status: number, socket?: MockClientSocket]> => {
-  const key = 'key' + nextKey++;
   const request = {
     url,
     headers: {
       get: (name: string) =>
-        name == 'upgrade'
-          ? 'websocket'
-          : name == 'sec-websocket-key'
-            ? key
-            : null,
+        name == 'upgrade' ? upgrade : name == 'sec-websocket-key' ? key : null,
     },
   };
   const response = await durableObject.fetch!(request as any);
@@ -381,4 +378,84 @@ test('clients cannot reach each other directly', async () => {
   await pause();
   expect(received).toEqual([]);
   expect(store1.getTables()).toEqual({});
+});
+
+describe('client ids', () => {
+  test.each([RelayDurableObject, HubDurableObject])(
+    'unusable client ids are refused',
+    async (DurableObjectClass) => {
+      const [durableObject, state] =
+        await createDurableObject(DurableObjectClass);
+      const url = URL_BASE + '?role=staff';
+      for (const key of ['S', 'M', '', 'a\nb']) {
+        expect(await connect(durableObject, state, url, key)).toEqual([403]);
+      }
+      expect(state.sockets).toEqual([]);
+    },
+  );
+
+  test.each([RelayDurableObject, HubDurableObject])(
+    'a client id already in use is refused',
+    async (DurableObjectClass) => {
+      const [durableObject, state] =
+        await createDurableObject(DurableObjectClass);
+      const url = URL_BASE + '?role=staff';
+      expect((await connect(durableObject, state, url, 'same'))[0]).toBe(101);
+      expect(await connect(durableObject, state, url, 'same')).toEqual([403]);
+      expect(durableObject.getClientIds()).toEqual(['same']);
+
+      state.sockets[0][0].peer!.close();
+      expect((await connect(durableObject, state, url, 'same'))[0]).toBe(101);
+    },
+  );
+
+  test('requests that are not WebSocket upgrades are turned away', async () => {
+    const [durableObject, state] = await createDurableObject(HubDurableObject);
+    const url = URL_BASE + '?role=staff';
+    expect(await connect(durableObject, state, url, 'key', null)).toEqual([
+      426,
+    ]);
+    expect(await connect(durableObject, state, url, null)).toEqual([426]);
+    expect(state.sockets).toEqual([]);
+  });
+
+  test('a client is never taken for the server, whatever its id', async () => {
+    const [durableObject, state] = await createDurableObject(HubDurableObject);
+    const [staffStore] = await openClient(
+      durableObject,
+      state,
+      URL_BASE + '?role=staff',
+    );
+
+    // Even were a read-only client somehow to hold the server's own id, what
+    // it sends is filtered like anything else from a client.
+    const impostor = new MockServerSocket();
+    impostor.serializeAttachment({readOnly: true});
+    state.acceptWebSocket(impostor, ['S', 'shop']);
+    durableObject.webSocketMessage!(
+      impostor as any,
+      '\n["~impostor000",3,[[{}],[{"open":[true,"' + 'Nn1JUF-----7JQY8"]}],1]]',
+    );
+    await pause();
+    expect(staffStore.getValues()).toEqual({});
+  });
+
+  test('a client without recorded access can write nothing', async () => {
+    const [durableObject, state] = await createDurableObject(HubDurableObject);
+    const [staffStore] = await openClient(
+      durableObject,
+      state,
+      URL_BASE + '?role=staff',
+    );
+    const [otherStore] = await openClient(
+      durableObject,
+      state,
+      URL_BASE + '?role=staff',
+    );
+    state.sockets[1][0].attachment = undefined;
+
+    otherStore.setValue('open', true);
+    await pause();
+    expect(staffStore.getValues()).toEqual({});
+  });
 });

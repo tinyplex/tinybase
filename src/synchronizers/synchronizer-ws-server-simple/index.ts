@@ -8,6 +8,7 @@ import {arrayForEach, arrayMap, arrayPush} from '../../common/array.ts';
 import {collClear, collDel, collHas, collIsEmpty} from '../../common/coll.ts';
 import {
   ERROR_SYNC_OVERFLOW,
+  ERROR_SYNC_UNAUTHORIZED,
   errorNew,
   tryFinallyAsync,
   tryReturn,
@@ -48,6 +49,7 @@ import {
   createRawPayload,
   getWebSocketPayloadSize,
   ifPayloadValid,
+  isClientIdValid,
   isWebSocketBackpressured,
   isWebSocketPayloadTooLarge,
 } from '../common.ts';
@@ -150,12 +152,27 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       handleMessage(pathId, clientId, createRawPayload(toClientId, remainder)),
     );
 
-  const addClientToPath = (pathId: Id, clientId: Id, client: Client) =>
+  const refuseClient = (client: WebSocket, pathId: Id) =>
+    client.close(1008, errorNew(ERROR_SYNC_UNAUTHORIZED, pathId).message);
+
+  // Two connections must never share an Id on a path, so the second is
+  // refused rather than taking over the messages of the first.
+  const addClientToPath = (
+    pathId: Id,
+    clientId: Id,
+    client: Client,
+  ): boolean => {
+    if (collHas(mapGet(clientsByPath, pathId), clientId)) {
+      refuseClient(client[0], pathId);
+      return false;
+    }
     mapSet(
       mapEnsure(clientsByPath, pathId, mapNew<Id, Client>),
       clientId,
       client,
     );
+    return true;
+  };
 
   const delClientFromPath = (pathId: Id, clientId: Id) => {
     const clients = mapGet(clientsByPath, pathId);
@@ -168,7 +185,9 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
   };
 
   const addLegacyClient = (client: WebSocket, clientId: Id, pathId: Id) => {
-    addClientToPath(pathId, clientId, [client]);
+    if (!addClientToPath(pathId, clientId, [client])) {
+      return;
+    }
     const [decode, clearDecoder] = createPayloadDecoder(
       (toClientId, remainders) =>
         handleDecodedMessage(pathId, clientId, toClientId, remainders),
@@ -190,15 +209,19 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
     basePathId: Id,
   ) => {
     const invalid = createInvalidPayloadHandler(client);
-    const [handlePayload, destroy] = createMultipleServerClient<Id>(
+    const [handlePayload, destroy] = createMultipleServerClient<Id | undefined>(
       basePathId,
-      (pathId, channelId) => {
-        addClientToPath(pathId, clientId, [client, channelId]);
-        return [pathId];
-      },
-      (pathId) => delClientFromPath(pathId, clientId),
+      (pathId, channelId) => [
+        addClientToPath(pathId, clientId, [client, channelId])
+          ? pathId
+          : undefined,
+      ],
+      (pathId) =>
+        isUndefined(pathId) ? undefined : delClientFromPath(pathId, clientId),
       (pathId, toClientId, remainders) =>
-        handleDecodedMessage(pathId, clientId, toClientId, remainders),
+        isUndefined(pathId)
+          ? undefined
+          : handleDecodedMessage(pathId, clientId, toClientId, remainders),
       (payload) => sendPayload(client, payload),
       1,
       invalid,
@@ -220,9 +243,11 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
       );
       ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
         ifNotUndefined(request.headers['sec-websocket-key'], (clientId) =>
-          client.protocol == WS_SYNCHRONIZER_PROTOCOL
-            ? addMultipleClient(client, clientId, pathId)
-            : addLegacyClient(client, clientId, pathId),
+          !isClientIdValid(clientId)
+            ? refuseClient(client, pathId)
+            : client.protocol == WS_SYNCHRONIZER_PROTOCOL
+              ? addMultipleClient(client, clientId, pathId)
+              : addLegacyClient(client, clientId, pathId),
         ),
       );
     },

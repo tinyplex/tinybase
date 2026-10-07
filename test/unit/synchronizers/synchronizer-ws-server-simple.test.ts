@@ -220,6 +220,59 @@ test('Outbound traffic is bounded for every client mode', async () => {
   await server.destroy();
 });
 
+test('Unusable and repeated client ids are refused', async () => {
+  const webSocketServer = new EventEmitter() as any;
+  webSocketServer.close = (callback: () => void) => callback();
+  const server = createWsServerSimple(webSocketServer);
+  const connect = (clientId: string, pathId: string, protocol = '') => {
+    const client = new MockWebSocket();
+    client.protocol = protocol;
+    webSocketServer.emit('connection', client, {
+      headers: {'sec-websocket-key': clientId},
+      url: '/' + pathId,
+    });
+    return client;
+  };
+
+  ['S', 'M', '', 'a\nb'].forEach((clientId) => {
+    const client = connect(clientId, 'shop');
+    expect([client.closeCode, client.closeReason]).toEqual([
+      1008,
+      'tinybase:17:shop',
+    ]);
+  });
+
+  const first = connect('same', 'shop');
+  const second = connect('same', 'shop');
+  const elsewhere = connect('same', 'office');
+  expect(first.closeCalls).toBe(0);
+  expect(elsewhere.closeCalls).toBe(0);
+  expect([second.closeCode, second.closeReason]).toEqual([
+    1008,
+    'tinybase:17:shop',
+  ]);
+
+  // The refused connection has not displaced the first, nor taken it away.
+  const other = connect('other', 'shop');
+  other.emit('message', 'same\n[null,1,""]');
+  expect(first.sentPayloads).toEqual(['other\n[null,1,""]']);
+
+  first.close();
+  expect(connect('same', 'shop').closeCalls).toBe(0);
+
+  const multiplexed = connect('other', 'office', 'tinybase');
+  multiplexed.emit('message', 'S\n["hello",-1,[0,1]]');
+  multiplexed.emit('message', 'S\n["subscribe",-1,[1,"desk"]]');
+  expect(multiplexed.closeCalls).toBe(0);
+  const repeated = connect('other', 'office', 'tinybase');
+  repeated.emit('message', 'S\n["hello",-1,[0,1]]');
+  repeated.emit('message', 'S\n["subscribe",-1,[1,"desk"]]');
+  expect(repeated.closeCode).toBe(1008);
+  expect(multiplexed.closeCalls).toBe(0);
+
+  await server.destroy();
+});
+
 test('Multiplexed channel resources are bounded', async () => {
   const webSocketServer = new EventEmitter() as any;
   webSocketServer.close = (callback: () => void) => callback();
