@@ -897,8 +897,10 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                       having((cellId) => groupRow[cellId] as any),
                     )
                   ) {
-                    resultStore.delRow(queryId, groupRowId);
-                    leaf[2] = undefined;
+                    if (!isUndefined(groupRowId)) {
+                      resultStore.delRow(queryId, groupRowId);
+                      leaf[2] = undefined;
+                    }
                   } else if (isUndefined(groupRowId)) {
                     leaf[2] = resultStore.addRow(queryId, resultRow);
                   } else {

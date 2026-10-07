@@ -1500,8 +1500,8 @@ describe('Queries tables', () => {
     });
     test('aggregate that stops being a cell', () => {
       store.setTable('t1', {r1: {c1: 'a', c2: 5}});
-      const lowestOverTwo = (cells: (number | string | boolean | null)[]) =>
-        Math.min(...(cells as number[]).filter((cell) => cell > 2));
+      const lowestOverTwo = (cells: any[]) =>
+        Math.min(...cells.filter((cell) => cell > 2));
       queries.setQueryDefinition('q1', 't1', ({select, group}) => {
         select('c2');
         group('c2', lowestOverTwo).as('low');

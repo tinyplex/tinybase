@@ -523,7 +523,7 @@ const randomDefinition = (
     aggregate,
     random.pick(getNumbers),
     ...shortcuts.map((shortcut) => (random.bool(0.6) ? shortcut : undefined)),
-  ] as DefinitionArgs;
+  ] as any;
   return definitionOf(metricId, tableId, args);
 };
 

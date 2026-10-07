@@ -140,7 +140,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
     const rowValues = mapGet(allRowValues, id);
     const sortKeys = mapGet(allSortKeys, id);
     if (isUndefined(getSortKey)) {
-      collClear(sortKeys);
+      collClear(sortKeys as IdMap<SortKey>);
     }
 
     const processRow = (rowId: Id) => {
