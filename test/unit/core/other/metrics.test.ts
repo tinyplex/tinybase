@@ -83,6 +83,32 @@ describe('Sets', () => {
     expect(metrics.getMetric('m1')).toBe(4);
   });
 
+  test('avg of numbers too great to sum', () => {
+    const max = Number.MAX_VALUE;
+    store.setCell('t1', 'r1', 'c1', max);
+    metrics.setMetricDefinition('m1', 't1', 'avg', 'c1');
+    const listener = vi.fn();
+    metrics.addMetricListener('m1', listener);
+    expect(metrics.getMetric('m1')).toBe(max);
+
+    store.setCell('t1', 'r1', 'c1', -max);
+    expect(metrics.getMetric('m1')).toBe(-max);
+    expect(listener).toHaveBeenLastCalledWith(metrics, 'm1', -max, max);
+
+    store.setCell('t1', 'r2', 'c1', max);
+    expect(metrics.getMetric('m1')).toBe(0);
+
+    store.setCell('t1', 'r3', 'c1', max);
+    expect(metrics.getMetric('m1')).toBe(max / 3);
+
+    store.delRow('t1', 'r1');
+    expect(metrics.getMetric('m1')).toBe(max);
+    expect(listener).toHaveBeenCalledTimes(4);
+
+    metrics.setMetricDefinition('m2', 't1', 'avg', 'c1');
+    expect(metrics.getMetric('m2')).toBe(max);
+  });
+
   test('min', () => {
     setCells();
     metrics.setMetricDefinition('m1', 't1', 'min', 'c1');

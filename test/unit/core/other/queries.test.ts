@@ -1363,6 +1363,28 @@ describe('Queries tables', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
 
+    test('avg of numbers too great to sum', () => {
+      const max = Number.MAX_VALUE;
+      store.setRow('t1', 'r1', {c1: max});
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        group('c1', 'avg').as('avg');
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {avg: max}});
+
+      store.setCell('t1', 'r1', 'c1', -max);
+      expect(queries.getResultTable('q1')).toEqual({0: {avg: -max}});
+
+      store.setCell('t1', 'r2', 'c1', max);
+      expect(queries.getResultTable('q1')).toEqual({0: {avg: 0}});
+
+      store.setCell('t1', 'r3', 'c1', max);
+      expect(queries.getResultTable('q1')).toEqual({0: {avg: max / 3}});
+
+      store.delRow('t1', 'r1');
+      expect(queries.getResultTable('q1')).toEqual({0: {avg: max}});
+    });
+
     test('multiple groupBys, multiple grouped, multiple changes', () => {
       store
         .setRow('t1', 'r1', {c1: 'A', c2: 'a', c3: 1, c4: 12})

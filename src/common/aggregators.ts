@@ -1,7 +1,7 @@
-import {arrayMax, arrayMin, arraySum} from './array.ts';
+import {arrayMap, arrayMax, arrayMin, arraySum} from './array.ts';
 import {Coll, collForEach, collIsEmpty, collSize, collValues} from './coll.ts';
 import {IdMap, mapNew} from './map.ts';
-import {isUndefined, mathMax, mathMin} from './other.ts';
+import {isFiniteNumber, isUndefined, mathMax, mathMin} from './other.ts';
 import {AVG, MAX, MIN, SUM} from './strings.ts';
 
 type Aggregators<Value, AggregateValue> = [
@@ -24,17 +24,32 @@ type Aggregators<Value, AggregateValue> = [
   ) => AggregateValue | undefined)?,
 ];
 
+// An average of finite numbers is finite, even when working it out overflows
+// on the way. So an incremental result that is not finite is discarded, to have
+// the average worked out afresh, where a sum that overflows is instead taken of
+// numbers that have already been divided.
+const ifFinite = (number: number): number | undefined =>
+  isFiniteNumber(number) ? number : undefined;
+
 export const numericAggregators: IdMap<Aggregators<number, number>> = mapNew([
   [
     AVG,
     [
-      (numbers: number[], length: number): number => arraySum(numbers) / length,
-      (metric: number, add: number, length: number): number =>
-        metric + (add - metric) / (length + 1),
+      (numbers: number[], length: number): number =>
+        ifFinite(arraySum(numbers) / length) ??
+        arraySum(arrayMap(numbers, (number) => number / length)),
+      (metric: number, add: number, length: number): number | undefined =>
+        ifFinite(metric + (add - metric) / (length + 1)),
       (metric: number, remove: number, length: number): number | undefined =>
-        length > 1 ? metric + (metric - remove) / (length - 1) : undefined,
-      (metric: number, add: number, remove: number, length: number): number =>
-        metric + (add - remove) / length,
+        length > 1
+          ? ifFinite(metric + (metric - remove) / (length - 1))
+          : undefined,
+      (
+        metric: number,
+        add: number,
+        remove: number,
+        length: number,
+      ): number | undefined => ifFinite(metric + (add - remove) / length),
     ],
   ],
   [
