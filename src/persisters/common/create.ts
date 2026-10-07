@@ -223,6 +223,11 @@ export const createCustomPersister = <
           pruneSchedule();
         },
       );
+      // An action that is scheduled just as the last one finishes arrives too
+      // late to be run with it, and would otherwise wait for the next.
+      if (!isEmpty(scheduledActions)) {
+        await run();
+      }
     }
   };
 

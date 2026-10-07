@@ -496,6 +496,33 @@ if (!withServers) {
     expect(persister.getStats()).toEqual({loads: 2, saves: 2});
   });
 
+  test('saves again, whenever it is asked to as it finishes', async () => {
+    for (let ticks = 0; ticks < 30; ticks++) {
+      let saves = 0;
+      let completed = false;
+      const persister = createCustomPersister(
+        createStore(),
+        asyncNoop,
+        async () => {
+          saves++;
+        },
+        noop,
+        noop,
+      );
+      void persister.save();
+      for (let tick = 0; tick < ticks; tick++) {
+        await Promise.resolve();
+      }
+      void persister
+        .load()
+        .then(() => persister.save())
+        .then(() => (completed = true));
+      await pause(5);
+      expect([ticks, completed, saves]).toEqual([ticks, true, 2]);
+      await persister.destroy();
+    }
+  });
+
   test('does not save what it has only loaded', async () => {
     let finishLoading: (changes?: any) => void = noop;
     const store = createStore();
