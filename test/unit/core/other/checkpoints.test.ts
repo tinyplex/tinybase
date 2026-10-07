@@ -1,6 +1,13 @@
-import {beforeEach, describe, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import type {Checkpoints, Id, Store, Tables, Values} from 'tinybase';
+import type {
+  CheckpointIds,
+  Checkpoints,
+  Id,
+  Store,
+  Tables,
+  Values,
+} from 'tinybase';
 import {createCheckpoints, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createCheckpointsListener} from '../../common/listeners.ts';
@@ -653,6 +660,66 @@ describe('Miscellaneous', () => {
     expect(backwardIds).toHaveLength(10);
     expect(backwardIds[0]).toEqual('10');
     expect(backwardIds[9]).toEqual('19');
+  });
+
+  test('tells of the checkpoints that a smaller size forgets', () => {
+    for (let i = 1; i <= 3; i++) {
+      store.setCell('t1', 'r1', 'c1', i);
+      checkpoints.addCheckpoint();
+    }
+    const listener = vi.fn();
+    checkpoints.addCheckpointIdsListener(listener);
+    checkpoints.setSize(3);
+    expect(listener).not.toHaveBeenCalled();
+    checkpoints.setSize(1);
+    expect(checkpoints.getCheckpointIds()).toEqual([['2'], '3', []]);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  test('keeps its Ids when a size of zero leaves nothing to return to', () => {
+    checkpoints.setSize(0);
+    store.setCell('t1', 'r1', 'c1', 1);
+    expect(checkpoints.getCheckpointIds()).toEqual([[], undefined, []]);
+    const listener = vi.fn();
+    checkpoints.addCheckpointIdsListener(listener);
+    store.delCell('t1', 'r1', 'c1');
+    expect(checkpoints.getCheckpointIds()).toEqual([[], undefined, []]);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  test('clears a label that is left undefined', () => {
+    store.setCell('t1', 'r1', 'c1', 1);
+    const checkpointId = checkpoints.addCheckpoint('one');
+    checkpoints.setCheckpoint(checkpointId);
+    expect(checkpoints.getCheckpoint(checkpointId)).toEqual('');
+    const labels: {[checkpointId: Id]: string | undefined} = {};
+    checkpoints.forEachCheckpoint(
+      (checkpointId, label) => (labels[checkpointId] = label),
+    );
+    expect(labels).toEqual({0: '', 1: ''});
+  });
+
+  test('has consistent Ids whenever listeners are called', () => {
+    store.setCell('t1', 'r1', 'c1', 1);
+    checkpoints.addCheckpoint();
+    store.setCell('t1', 'r1', 'c1', 2);
+    checkpoints.addCheckpoint();
+    const checkpointIds: CheckpointIds[] = [];
+    const listenerId = store.addCellListener('t1', 'r1', 'c1', () =>
+      checkpointIds.push(checkpoints.getCheckpointIds()),
+    );
+    checkpoints.goBackward().goForward().goBackward();
+    store.delListener(listenerId);
+    checkpoints.addCheckpointListener('2', () =>
+      checkpointIds.push(checkpoints.getCheckpointIds()),
+    );
+    store.setCell('t1', 'r1', 'c1', 3);
+    expect(checkpointIds).toEqual([
+      [['0'], '1', ['2']],
+      [['0', '1'], '2', []],
+      [['0'], '1', ['2']],
+      [['0', '1'], undefined, []],
+    ]);
   });
 
   test('with schema defaults', () => {

@@ -36,7 +36,7 @@ export interface Checkpoints<in out Schemas extends OptionalSchemas> {
   addCheckpoint(label?: string): Id;
 
   /// Checkpoints.setCheckpoint
-  setCheckpoint(checkpointId: Id, label: string): Checkpoints<Schemas>;
+  setCheckpoint(checkpointId: Id, label?: string): Checkpoints<Schemas>;
 
   /// Checkpoints.getStore
   getStore(): Store<Schemas>;

@@ -35,7 +35,7 @@ export interface Checkpoints {
   addCheckpoint(label?: string): Id;
 
   /// Checkpoints.setCheckpoint
-  setCheckpoint(checkpointId: Id, label: string): Checkpoints;
+  setCheckpoint(checkpointId: Id, label?: string): Checkpoints;
 
   /// Checkpoints.getStore
   getStore(): Store;

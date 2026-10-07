@@ -124,21 +124,27 @@ export const createCheckpoints = getCreateFunction(
         clearCheckpointId,
       );
 
-    const trimBackwardsIds = (): void =>
-      clearCheckpointIds(backwardIds, size(backwardIds) - backwardIdsSize);
+    const trimBackwardsIds = (): void => {
+      if (size(backwardIds) > backwardIdsSize) {
+        clearCheckpointIds(backwardIds, size(backwardIds) - backwardIdsSize);
+        checkpointsChanged = 1;
+      }
+    };
 
     const storeChanged = () =>
-      ifNotUndefined(currentId, () => {
-        arrayPush(backwardIds, currentId as Id);
-        trimBackwardsIds();
-        clearCheckpointIds(forwardIds);
+      ifNotUndefined(currentId, (checkpointId) => {
+        arrayPush(backwardIds, checkpointId);
         currentId = undefined;
         checkpointsChanged = 1;
+        trimBackwardsIds();
+        clearCheckpointIds(forwardIds);
       });
 
     const storeUnchanged = () => {
-      currentId = arrayPop(backwardIds);
-      checkpointsChanged = 1;
+      if (!isEmpty(backwardIds)) {
+        currentId = arrayPop(backwardIds);
+        checkpointsChanged = 1;
+      }
     };
 
     let cellListenerId: string;
@@ -158,10 +164,11 @@ export const createCheckpoints = getCreateFunction(
 
     const goBackwardImpl = () => {
       if (!isEmpty(backwardIds)) {
-        arrayUnshift(forwardIds, addCheckpointImpl());
-        updateStore(0, currentId as Id);
+        const checkpointId = addCheckpointImpl();
+        arrayUnshift(forwardIds, checkpointId);
         currentId = arrayPop(backwardIds);
         checkpointsChanged = 1;
+        updateStore(0, checkpointId);
       }
     };
 
@@ -169,8 +176,8 @@ export const createCheckpoints = getCreateFunction(
       if (!isEmpty(forwardIds)) {
         arrayPush(backwardIds, currentId as Id);
         currentId = arrayShift(forwardIds);
-        updateStore(1, currentId as Id);
         checkpointsChanged = 1;
+        updateStore(1, currentId as Id);
       }
     };
 
@@ -184,6 +191,7 @@ export const createCheckpoints = getCreateFunction(
     const setSize = (size: number): Checkpoints => {
       backwardIdsSize = size;
       trimBackwardsIds();
+      callListenersIfChanged();
       return checkpoints;
     };
 
@@ -193,7 +201,7 @@ export const createCheckpoints = getCreateFunction(
       return id;
     };
 
-    const setCheckpoint = (checkpointId: Id, label: string) => {
+    const setCheckpoint = (checkpointId: Id, label = EMPTY_STRING) => {
       if (
         hasCheckpoint(checkpointId) &&
         mapGet(labels, checkpointId) !== label
