@@ -95,6 +95,42 @@ WebSocket server, in the scenarios that TinyBase now measures in its tests:
 Newer peers only use the new bucket messages with each other, so older clients
 and servers keep working as before.
 
+## Reliability And Hardening
+
+- A MergeableStore now keeps the content that its Persister saved while the
+  device's clock was ahead, once that clock has been put back. Until now, it
+  refused the whole of that content when it next loaded it, and then saved over
+  it. A Persister or Synchronizer also now reports any mergeable content or
+  changes that its MergeableStore refuses, with the new error code 18, through
+  its `onIgnoredError` handler. That is how to learn of a peer whose clock is
+  more than five minutes ahead.
+- A WsServer that authorizes its clients now changes nothing, on the server or
+  for other clients, when it refuses a change: the client that made it is alone
+  in being sent the server's version. It also refuses a client whose Id is
+  unusable or already in use on its path, and bounds what one WebSocket can
+  hold or have awaiting authorization.
+- A transaction that is rolled back now restores the object and array Cells and
+  Values that it changed or deleted.
+- An average, as a Metric or in a query group, is no longer lost when working
+  it out overflows but the average itself would not.
+- Indexes now sort a Row again when it loses its sort key, forget the sort keys
+  of a previous definition, keep a Slice in place when it empties and refills in
+  one transaction, and only tell listeners of tied Rows that have moved.
+- Relationships now give every listener current linked lists, only tell
+  listeners of the linked lists that have changed, and forget their remote
+  Tables when destroyed.
+- Queries now undo a join that was made through another, once that one finds
+  no Row. They pass the intermediate Row Id to the function of such a join, as
+  documented, keep the result Rows of other groups when one group stops and
+  starts meeting a `having` condition, and remove a group's aggregate when it
+  is no longer a valid Cell. Result Cells also now keep the order in which they
+  were selected, however their Rows arrived.
+- Checkpoints now have consistent Ids whenever a listener is called, tell
+  listeners of the checkpoints that the setSize method forgets, and clear a
+  label that the setCheckpoint method is given as `undefined`.
+- Deleting an Index, Metric, or Relationship that does not exist no longer
+  tells the listeners to their Ids.
+
 ---
 
 # v10.0
