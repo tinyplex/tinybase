@@ -13,6 +13,7 @@ import type {
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
 import {
   arrayForEach,
+  arrayIsEqual,
   arrayIsSorted,
   arrayMap,
   arraySort,
@@ -116,7 +117,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
       (
         change: () => void,
         changedSliceIds: IdMap<[Id | Ids | undefined, Id | Ids | undefined]>,
-        changedSortKeys: IdMap<SortKey>,
+        changedSortKeys: IdMap<[SortKey]>,
         sliceIdOrIdsByRowId?: IdMap<Id | Ids>,
         sortKeys?: IdMap<SortKey>,
         force?: boolean,
@@ -201,12 +202,11 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
               );
             const sliceArray = [...(mapGet(index, sliceId) as IdSet)];
             if (!arrayIsSorted(sliceArray, rowIdArraySorter)) {
-              mapSet(
-                index,
-                sliceId,
-                setNew(arraySort(sliceArray, rowIdArraySorter)),
-              );
-              setAdd(changedSlices, sliceId);
+              const sortedArray = arraySort([...sliceArray], rowIdArraySorter);
+              if (!arrayIsEqual(sliceArray, sortedArray)) {
+                mapSet(index, sliceId, setNew(sortedArray));
+                setAdd(changedSlices, sliceId);
+              }
             }
           });
         }

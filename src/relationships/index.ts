@@ -117,7 +117,7 @@ export const createRelationships = getCreateFunction(
         (
           change: () => void,
           changedRemoteRowIds: IdMap<[Id | undefined, Id | undefined]>,
-          _changedSortKeys: IdMap<SortKey>,
+          _changedSortKeys: IdMap<[SortKey]>,
           _rowValues: IdMap<Id | undefined>,
           _sortKeys?: IdMap<SortKey>,
           force?: boolean,

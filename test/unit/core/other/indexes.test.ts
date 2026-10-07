@@ -2067,8 +2067,53 @@ describe('Miscellaneous', () => {
   });
 
   test('removes missing index definition', () => {
+    const listener = vi.fn();
+    indexes.addIndexIdsListener(listener);
     expect(indexes.delIndexDefinition('i1')).toBe(indexes);
     expect(indexes.getIndexIds()).toEqual([]);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  test('re-sorts a row that loses its sort key', () => {
+    store.setTable('t1', {r1: {c1: 'a', c2: 5}, r2: {c1: 'a', c2: 3}});
+    indexes.setIndexDefinition('i1', 't1', 'c1', 'c2');
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r2', 'r1']);
+    store.delCell('t1', 'r1', 'c2');
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r1', 'r2']);
+  });
+
+  test('forgets sort keys when redefined without them', () => {
+    store.setTable('t1', {r1: {c1: 'a', c2: 5}, r2: {c1: 'a', c2: 3}});
+    indexes.setIndexDefinition('i1', 't1', 'c1', 'c2');
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r2', 'r1']);
+    indexes.setIndexDefinition('i1', 't1', 'c1');
+    store.setRow('t1', 'r3', {c1: 'a', c2: 1});
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r2', 'r1', 'r3']);
+
+    const listener = vi.fn();
+    indexes.addSliceRowIdsListener('i1', 'a', listener);
+    indexes.setIndexDefinition('i1', 't1', 'c1');
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r2', 'r1', 'r3']);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  test('only tells of tied sort keys when their rows move', () => {
+    store.setTable('t1', {
+      r1: {c1: 'a', c2: 5},
+      r2: {c1: 'a', c2: 5},
+      r3: {c1: 'a', c2: 7},
+    });
+    indexes.setIndexDefinition('i1', 't1', 'c1', 'c2');
+    const listener = vi.fn();
+    indexes.addSliceRowIdsListener('i1', 'a', listener);
+
+    store.setCell('t1', 'r3', 'c2', 8);
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r1', 'r2', 'r3']);
+    expect(listener).not.toHaveBeenCalled();
+
+    store.setCell('t1', 'r3', 'c2', 1);
+    expect(indexes.getSliceRowIds('i1', 'a')).toEqual(['r3', 'r1', 'r2']);
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 
   test('destroys', () => {

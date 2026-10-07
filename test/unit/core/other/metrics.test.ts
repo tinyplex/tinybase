@@ -759,6 +759,23 @@ describe('Miscellaneous', () => {
     expect(metrics.getMetric('m1')).toBeUndefined();
   });
 
+  test('redefines a metric that has no value', () => {
+    const listener = vi.fn();
+    metrics.setMetricDefinition('m1', 't1', 'avg', 'c1');
+    metrics.addMetricIdsListener(listener);
+    metrics.setMetricDefinition('m1', 't1', 'sum', 'c1');
+    expect(listener).not.toHaveBeenCalled();
+    setCells();
+    expect(metrics.getMetric('m1')).toBe(11);
+  });
+
+  test('removes missing metric definition', () => {
+    const listener = vi.fn();
+    metrics.addMetricIdsListener(listener);
+    expect(metrics.delMetricDefinition('m1')).toBe(metrics);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
   test('destroys', () => {
     expect(metrics.getStore().getListenerStats().table).toEqual(0);
     expect(metrics.getStore().getListenerStats().row).toEqual(0);
