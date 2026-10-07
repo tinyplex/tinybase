@@ -1003,5 +1003,8 @@ describe('Miscellaneous', () => {
     relationships.destroy();
     expect(relationships.getStore().getListenerStats().table).toEqual(0);
     expect(relationships.getStore().getListenerStats().row).toEqual(0);
+    expect(relationships.getRelationshipIds()).toEqual([]);
+    expect(relationships.getLocalTableId('r1')).toBeUndefined();
+    expect(relationships.getRemoteTableId('r1')).toBeUndefined();
   });
 });

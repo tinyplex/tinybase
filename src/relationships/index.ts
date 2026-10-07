@@ -11,6 +11,7 @@ import type {
 import type {GetCell, Store} from '../@types/store/index.d.ts';
 import {arrayIsEqual} from '../common/array.ts';
 import {
+  collClear,
   collDel,
   collForEach,
   collHas,
@@ -54,7 +55,7 @@ export const createRelationships = getCreateFunction(
       setDefinitionAndListen,
       delDefinition,
       addRelationshipIdsListener,
-      destroy,
+      destroyImpl,
     ] = getDefinableFunctions<Relationship, Id | undefined>(
       store,
       () => [mapNew(), mapNew(), mapNew(), mapNew()],
@@ -277,6 +278,11 @@ export const createRelationships = getCreateFunction(
         ...((delListenerImpl(listenerId) ?? []) as [Id, Id]),
       );
       return relationships;
+    };
+
+    const destroy = (): void => {
+      destroyImpl();
+      collClear(remoteTableIds);
     };
 
     const getListenerStats = (): RelationshipsListenerStats => ({
