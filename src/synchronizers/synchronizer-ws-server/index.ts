@@ -62,6 +62,7 @@ import {
   ifNotUndefined,
   isArray,
   isFunction,
+  isNull,
   isUndefined,
   noop,
   promiseAll,
@@ -116,6 +117,7 @@ enum ServerClient {
   Then = 5,
   BufferSize = 6,
   BufferTimeout = 7,
+  ForgetClient = 8,
 }
 enum State {
   Configuring,
@@ -190,6 +192,7 @@ export const createWsServer = (<
     then: (store: MergeableStore) => void,
     bufferSize: number,
     bufferTimeout?: ReturnType<typeof startTimeout>,
+    forgetClient?: (clientId: Id) => void,
   ];
   type Path = [
     clients: IdMap<Client>,
@@ -243,25 +246,6 @@ export const createWsServer = (<
     collDel(removeListenersByWebSocket, webSocket);
   };
 
-  const relayToClients = (
-    path: Path,
-    fromClientId: Id,
-    changes: MergeableChanges,
-  ) => {
-    const payloads = createPayloads(
-      SERVER_CLIENT_ID,
-      getTransactionId(),
-      CONTENT_DIFF,
-      changes,
-      fragmentSize,
-    );
-    mapForEach(path[Path.Clients], (clientId, client) =>
-      clientId !== fromClientId
-        ? arrayForEach(payloads, (payload) => sendToClient(client, payload))
-        : 0,
-    );
-  };
-
   const configureServerClient = async (path: Path, pathId: Id) => {
     const serverClient = path[Path.ServerClient];
     const persisterMaybeThen =
@@ -288,13 +272,82 @@ export const createWsServer = (<
     const store = serverClient[
       ServerClient.Persister
     ].getStore() as MergeableStore;
+
+    const getChangesPayloads = (
+      changes: MergeableChanges,
+      requestId: IdOrNull,
+    ): string[] =>
+      createPayloads(
+        SERVER_CLIENT_ID,
+        requestId,
+        CONTENT_DIFF,
+        changes,
+        fragmentSize,
+      );
+
+    const sendPayloadsToClient = (client: Client, payloads: string[]) =>
+      arrayForEach(payloads, (payload) => sendToClient(client, payload));
+
+    // Each client is sent the changes as they need to be stamped for it, which
+    // is as they are (and so serialized just once) unless it has had a write
+    // refused.
+    const sendChangesToClients = (
+      changes: MergeableChanges,
+      requestId: IdOrNull = getTransactionId(),
+      exceptClientId?: Id,
+    ) => {
+      let payloads: string[] | undefined;
+      mapForEach(path[Path.Clients], (clientId, client) => {
+        if (clientId !== exceptClientId) {
+          const clientChanges = getChangesForClient!(clientId, changes);
+          sendPayloadsToClient(
+            client,
+            clientChanges === changes
+              ? (payloads ??= getChangesPayloads(changes, requestId))
+              : getChangesPayloads(clientChanges, requestId),
+          );
+        }
+      });
+    };
+
+    const [receiveChanges, getChangesForClient, forgetClient] = hub
+      ? createServerChangesReceiver(
+          store,
+          (clientId) => mapGet(path[Path.Clients], clientId)?.[2],
+          canWriteCell &&
+            ((tableId, rowId, cellId, cell, context) =>
+              canWriteCell(pathId, tableId, rowId, cellId, cell, context)),
+          canWriteValue &&
+            ((valueId, value, context) =>
+              canWriteValue(pathId, valueId, value, context)),
+          (fromClientId, changes) =>
+            sendChangesToClients(changes, undefined, fromClientId),
+          (clientId, changes) =>
+            ifNotUndefined(mapGet(path[Path.Clients], clientId), (client) =>
+              sendPayloadsToClient(
+                client,
+                getChangesPayloads(changes, getTransactionId()),
+              ),
+            ),
+        )
+      : [];
+    serverClient[ServerClient.ForgetClient] = forgetClient;
+
     serverClient[ServerClient.Synchronizer] = createCustomSynchronizer(
       store,
       (toClientId, requestId, message, body) =>
-        arrayForEach(
-          createPayloads(toClientId, requestId, message, body, fragmentSize),
-          (payload) => handleMessage(path, SERVER_CLIENT_ID, payload),
-        ),
+        hub && message == CONTENT_DIFF && isNull(toClientId)
+          ? sendChangesToClients(body, requestId)
+          : arrayForEach(
+              createPayloads(
+                toClientId,
+                requestId,
+                message,
+                body,
+                fragmentSize,
+              ),
+              (payload) => handleMessage(path, SERVER_CLIENT_ID, payload),
+            ),
       (receive: Receive) => {
         serverClient[ServerClient.Send] = createPayloadReceiver(
           receive,
@@ -308,20 +361,7 @@ export const createWsServer = (<
       handleError,
       undefined,
       undefined,
-      hub
-        ? createServerChangesReceiver(
-            store,
-            (clientId) => mapGet(path[Path.Clients], clientId)?.[2],
-            canWriteCell &&
-              ((tableId, rowId, cellId, cell, context) =>
-                canWriteCell(pathId, tableId, rowId, cellId, cell, context)),
-            canWriteValue &&
-              ((valueId, value, context) =>
-                canWriteValue(pathId, valueId, value, context)),
-            (fromClientId, changes) =>
-              relayToClients(path, fromClientId, changes),
-          )
-        : undefined,
+      receiveChanges,
       1,
     );
     serverClient[ServerClient.Then] = isArray(persisterMaybeThen)
@@ -619,6 +659,7 @@ export const createWsServer = (<
     if (collHas(clients, clientId)) {
       delBufferedClient(path[Path.ServerClient], clientId);
       collDel(clients, clientId);
+      path[Path.ServerClient][ServerClient.ForgetClient]?.(clientId);
       callListeners(clientIdListeners, [pathId], clientId, -1);
       if (collIsEmpty(clients)) {
         await stopPath(pathId, path);

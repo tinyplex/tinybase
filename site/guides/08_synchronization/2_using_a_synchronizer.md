@@ -322,6 +322,17 @@ only peer that they synchronize with, so that everything they read and write
 passes through it. If no Persister is provided for a path, the server gives it
 an in-memory MergeableStore for as long as it has clients.
 
+A change that a client may not make alters nothing on the server, nor for any
+other client: the server sends that client alone its own version of the data.
+That also removes anything in the client's MergeableStore that it may not write
+and that the server does not have, so keep data that is only for that client in
+a separate Store.
+
+Each of the three functions does one job. The `authorize` function decides who
+may join, and without it every client is admitted. The `canWriteCell` function
+decides only about Cells, and the `canWriteValue` function only about Values:
+provide both if both need protecting.
+
 The WsServerDurableObject class offers the same features, through its
 `authorize`, `canWriteCell`, and `canWriteValue` methods, which you can
 override. The WsServerSimple has no MergeableStore of its own, so it cannot

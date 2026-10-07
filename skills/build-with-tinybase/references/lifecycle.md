@@ -143,13 +143,18 @@ object - `{readOnly?, context?}` - or `undefined` to refuse the client, which is
 closed with code `1008`. Optional `canWriteCell(pathId, tableId, rowId, cellId,
 cell, context)` and `canWriteValue(pathId, valueId, value, context)` options
 decide what a writable client may change; they must be synchronous. Rejected
-changes are neither merged nor relayed, and the server re-stamps its own value
-so the client converges back to it.
+changes are neither merged nor relayed, and alter nothing on the server or for
+other clients: the server sends the client that made them its own value, so
+that it converges back.
 
 - Pass a token in the WebSocket URL's query string. Browsers cannot set headers
   on a WebSocket request, and the query string is not part of the path.
 - Configuring any of the three makes each path's MergeableStore the only peer
   its clients sync with. Without `createPersisterForPath`, it is in memory.
+- Each does one job: without `authorize` every client is admitted; with only
+  `canWriteCell`, any client may still write any Value, and vice versa.
+- Converging back removes data in the client's synced MergeableStore that it
+  may not write and the server lacks. Keep client-only data in another Store.
 - `WsServerSimple` has no store, so it cannot filter writes. Use the
   `WebSocketServer`'s own `verifyClient` option to accept or refuse connections.
 

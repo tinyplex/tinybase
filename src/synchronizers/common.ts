@@ -26,6 +26,7 @@ import {
   collClear,
   collDel,
   collHas,
+  collIsEmpty,
   collSize,
   collValues,
 } from '../common/coll.ts';
@@ -40,6 +41,7 @@ import {
 import {getHlcFunctions, isHlc} from '../common/hlc.ts';
 import {
   jsonParseWithUndefined,
+  jsonString,
   jsonStringWithUndefined,
 } from '../common/json.ts';
 import {
@@ -56,6 +58,7 @@ import {
   objEvery,
   objForEach,
   objIsEmpty,
+  objMap,
   objNew,
   objSet,
 } from '../common/obj.ts';
@@ -87,7 +90,6 @@ import {
   strStartsWith,
   TINYBASE,
 } from '../common/strings.ts';
-import type {ProtectedMergeableStore} from '../mergeable-store/index.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 const FRAGMENT = /^([-0-9A-Z_a-z]{16})\n(\d+)\n(\d+)\n([\s\S]*)$/;
@@ -898,59 +900,110 @@ type CanWriteValueForPath = (
   context: ClientAccess['context'],
 ) => boolean;
 
+const MAX_LATER_STAMPS_PER_CLIENT = 1_000;
+const MAX_HLC_COUNTER = 16_777_215;
+
+type Refused<Address extends Id[], Thing> = [
+  address: Address,
+  thing: Thing,
+  hlc: string,
+];
+
 // Used by the servers when they authorize clients: everything a client sends
 // towards the server's MergeableStore passes through here first. The parts the
 // client may write are relayed to the other clients and returned to be merged,
-// without their hashes, so that the Store recomputes its own. Where a client
-// wrote something newer than the Store holds but was not allowed to, the Store
-// re-stamps its own value and sends it to every client, so that the client
-// converges back to it rather than silently drifting. An unknown client - one
-// that has already left - writes nothing.
+// without their hashes, so that the Store recomputes its own.
+//
+// A part that the client may not write changes nothing on the server, nor for
+// any other client. If it is newer than what the Store holds, and different,
+// that client alone is sent the Store's own value, stamped just after the
+// refused change, so that it converges back rather than silently drifting.
+//
+// That client then holds a later stamp than the Store does, and would ignore
+// an earlier one. So those stamps are remembered (up to a limit, and only
+// while the server runs), and anything sent to that client later for the same
+// Cell or Value is stamped later still. Otherwise it is put right the next
+// time it synchronizes from scratch. An unknown client - one that has already
+// left - writes nothing.
 export const createServerChangesReceiver = (
   store: MergeableStore,
   getAccess: (clientId: Id) => ClientAccess | undefined,
   canWriteCell: CanWriteCellForPath | undefined,
   canWriteValue: CanWriteValueForPath | undefined,
   relay: (fromClientId: Id, changes: MergeableChanges) => void,
-): ((
-  fromClientId: Id,
-  changes: MergeableChanges | MergeableContent,
-) => MergeableChanges) => {
-  // A correction is stamped just after the change it undoes, rather than at
-  // the server's own time, so that it never runs ahead of the clients' clocks.
-  let now = 0;
-  const [getNextHlc, seenHlc, , decodeHlc] = getHlcFunctions(
-    getUniqueId(),
-    () => now,
-  );
+  correct: (clientId: Id, changes: MergeableChanges) => void,
+): [
+  receiveChanges: (
+    fromClientId: Id,
+    changes: MergeableChanges | MergeableContent,
+  ) => MergeableChanges,
+  getChangesForClient: (
+    clientId: Id,
+    changes: MergeableChanges,
+  ) => MergeableChanges,
+  forgetClient: (clientId: Id) => void,
+] => {
+  const [, , encodeHlc, decodeHlc] = getHlcFunctions(getUniqueId());
+  const laterStampsByClient: IdMap<IdMap<string>> = mapNew();
 
-  const correct = (
-    rejectedCells: [tableId: Id, rowId: Id, cellId: Id, hlc: string][],
-    rejectedValues: [valueId: Id, hlc: string][],
+  // A stamp just after another, whatever any clock says, so that it is never
+  // further ahead of a client's clock than that client's own stamp was.
+  const getLaterHlc = (hlc: string): string => {
+    const [logicalTime, counter] = decodeHlc(hlc);
+    return counter < MAX_HLC_COUNTER
+      ? encodeHlc(logicalTime, counter + 1)
+      : encodeHlc(logicalTime + 1, 0);
+  };
+
+  const setLaterHlc = (clientId: Id, key: string, hlc: string) => {
+    const laterStamps = mapEnsure(
+      laterStampsByClient,
+      clientId,
+      mapNew<Id, string>,
+    );
+    collDel(laterStamps, key);
+    mapSet(laterStamps, key, hlc);
+    if (collSize(laterStamps) > MAX_LATER_STAMPS_PER_CLIENT) {
+      collDel(laterStamps, laterStamps.keys().next().value);
+    }
+  };
+
+  const refuse = (
+    clientId: Id,
+    refusedCells: Refused<[Id, Id, Id], CellOrUndefined>[],
+    refusedValues: Refused<[Id], ValueOrUndefined>[],
   ) => {
     const rows: CellHashes = objNew();
-    arrayForEach(rejectedCells, ([tableId, rowId]) =>
+    arrayForEach(refusedCells, ([[tableId, rowId]]) =>
       objEnsure(objEnsure(rows, tableId, objNew), rowId, objNew),
     );
-    const [serverTables] = store.getMergeableCellDiff(rows);
-    const [serverValues] = store.getMergeableValueDiff({});
+    const [storeTables] = store.getMergeableCellDiff(rows);
+    const [storeValues] = store.getMergeableValueDiff({});
     const tables: TablesStamp[0] = objNew();
     const values: ValuesStamp[0] = objNew();
-    let corrected = false;
+
     const getCorrection = (
-      serverStamp: [thing?: any, hlc?: string] | undefined,
+      address: Id[],
+      thing: unknown,
       hlc: string,
+      [storeThing, storeHlc = EMPTY_STRING]: [thing?: any, hlc?: string] = [],
     ): [any, string] | undefined => {
-      if (hlc > (serverStamp?.[1] ?? EMPTY_STRING)) {
-        now = decodeHlc(hlc)[0];
-        seenHlc(hlc);
-        corrected = true;
-        return [serverStamp?.[0], getNextHlc()];
+      if (hlc > storeHlc) {
+        const laterHlc = thing === storeThing ? hlc : getLaterHlc(hlc);
+        setLaterHlc(clientId, jsonString(address), laterHlc);
+        return thing === storeThing ? undefined : [storeThing, laterHlc];
       }
     };
-    arrayForEach(rejectedCells, ([tableId, rowId, cellId, hlc]) =>
+
+    arrayForEach(refusedCells, ([address, cell, hlc]) => {
+      const [tableId, rowId, cellId] = address;
       ifNotUndefined(
-        getCorrection(serverTables[tableId]?.[0]?.[rowId]?.[0]?.[cellId], hlc),
+        getCorrection(
+          address,
+          cell,
+          hlc,
+          storeTables[tableId]?.[0]?.[rowId]?.[0]?.[cellId],
+        ),
         (stamp: [any, string]) =>
           objSet(
             objEnsure<TablesStamp[0][Id][0][Id]>(
@@ -961,36 +1014,36 @@ export const createServerChangesReceiver = (
             cellId,
             stamp,
           ),
-      ),
-    );
-    arrayForEach(rejectedValues, ([valueId, hlc]) =>
+      );
+    });
+    arrayForEach(refusedValues, ([address, value, hlc]) =>
       ifNotUndefined(
-        getCorrection(serverValues[valueId], hlc),
-        (stamp: [any, string]) => objSet(values, valueId, stamp),
+        getCorrection(address, value, hlc, storeValues[address[0]]),
+        (stamp: [any, string]) => objSet(values, address[0], stamp),
       ),
     );
-    if (corrected) {
-      const correction: MergeableChanges = [
+
+    if (!objIsEmpty(tables) || !objIsEmpty(values)) {
+      correct(clientId, [
         stampNew(tables, EMPTY_STRING),
         stampNew(values, EMPTY_STRING),
         1,
-      ];
-      (store as unknown as ProtectedMergeableStore).__[4](correction);
-      // Only the stamps changed, which a Store does not report as a change, so
-      // this is relayed to every client explicitly.
-      relay(SERVER_CLIENT_ID, correction);
+      ]);
     }
   };
 
-  return (fromClientId, changes) => {
+  const receiveChanges = (
+    fromClientId: Id,
+    changes: MergeableChanges | MergeableContent,
+  ): MergeableChanges => {
     const [[tableStamps], [valueStamps]] = changes as MergeableChanges;
     const access = getAccess(fromClientId);
     const context = access?.context;
     const writable = !isUndefined(access) && !access.readOnly;
     const tables: TablesStamp[0] = objNew();
     const values: ValuesStamp[0] = objNew();
-    const rejectedCells: [Id, Id, Id, string][] = [];
-    const rejectedValues: [Id, string][] = [];
+    const refusedCells: Refused<[Id, Id, Id], CellOrUndefined>[] = [];
+    const refusedValues: Refused<[Id], ValueOrUndefined>[] = [];
 
     objForEach(tableStamps, ([rowStamps, tableHlc], tableId) => {
       const rows: TablesStamp[0][Id][0] = objNew();
@@ -1008,7 +1061,7 @@ export const createServerChangesReceiver = (
             true)
             ? objSet(cells, cellId, stampNew(cell, hlc))
             : access
-              ? arrayPush(rejectedCells, [tableId, rowId, cellId, hlc])
+              ? arrayPush(refusedCells, [[tableId, rowId, cellId], cell, hlc])
               : 0,
         );
         if (!objIsEmpty(cells)) {
@@ -1024,7 +1077,7 @@ export const createServerChangesReceiver = (
       (canWriteValue?.(valueId, decodeIfJson(value), context) ?? true)
         ? objSet(values, valueId, stampNew(value, hlc))
         : access
-          ? arrayPush(rejectedValues, [valueId, hlc])
+          ? arrayPush(refusedValues, [[valueId], value, hlc])
           : 0,
     );
 
@@ -1036,9 +1089,62 @@ export const createServerChangesReceiver = (
     if (!objIsEmpty(tables) || !objIsEmpty(values)) {
       relay(fromClientId, accepted);
     }
-    if (size(rejectedCells) || size(rejectedValues)) {
-      correct(rejectedCells, rejectedValues);
+    if (size(refusedCells) || size(refusedValues)) {
+      refuse(fromClientId, refusedCells, refusedValues);
     }
     return accepted;
   };
+
+  const getChangesForClient = (
+    clientId: Id,
+    changes: MergeableChanges,
+  ): MergeableChanges => {
+    const laterStamps = mapGet(laterStampsByClient, clientId);
+    if (isUndefined(laterStamps) || collIsEmpty(laterStamps)) {
+      return changes;
+    }
+    let restamped = false;
+    const getStamp = <Thing>(
+      address: Id[],
+      stamp: [thing: Thing, hlc?: string],
+    ): [thing: Thing, hlc?: string] => {
+      const key = jsonString(address);
+      const laterHlc = mapGet(laterStamps, key);
+      if (isUndefined(laterHlc)) {
+        return stamp;
+      }
+      if ((stamp[1] ?? EMPTY_STRING) > laterHlc) {
+        collDel(laterStamps, key);
+        return stamp;
+      }
+      restamped = true;
+      const newHlc = getLaterHlc(laterHlc);
+      mapSet(laterStamps, key, newHlc);
+      return [stamp[0], newHlc];
+    };
+    const [[tableStamps, tablesHlc], [valueStamps, valuesHlc]] = changes;
+    const tables = objMap(tableStamps, ([rowStamps, tableHlc], tableId) =>
+      stampNew(
+        objMap(rowStamps, ([cellStamps, rowHlc], rowId) =>
+          stampNew(
+            objMap(cellStamps, (cellStamp, cellId) =>
+              getStamp([tableId, rowId, cellId], cellStamp),
+            ),
+            rowHlc,
+          ),
+        ),
+        tableHlc,
+      ),
+    );
+    const values = objMap(valueStamps, (valueStamp, valueId) =>
+      getStamp([valueId], valueStamp),
+    );
+    return restamped
+      ? [stampNew(tables, tablesHlc), stampNew(values, valuesHlc), 1]
+      : changes;
+  };
+
+  const forgetClient = (clientId: Id) => collDel(laterStampsByClient, clientId);
+
+  return [receiveChanges, getChangesForClient, forgetClient];
 };

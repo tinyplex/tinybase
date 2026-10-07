@@ -386,6 +386,202 @@ describe('canWriteCell and canWriteValue', () => {
   });
 });
 
+describe('refused writes', () => {
+  const canWriteCell = (
+    _pathId: Id,
+    tableId: Id,
+    _rowId: Id,
+    _cellId: Id,
+    _cell: unknown,
+    context: any,
+  ) => context?.role == 'staff' || tableId == 'orders';
+
+  const createObservedServer = async () => {
+    const serverStore = createMergeableStore('server', getNow);
+    const [, port] = await createServer({
+      authorize: authorizeByRole,
+      canWriteCell,
+      createPersisterForPath: () =>
+        createCustomPersister(
+          serverStore,
+          async () => undefined,
+          async () => {},
+          () => 0,
+          () => {},
+          undefined,
+          2,
+        ),
+    });
+    return [serverStore, port] as const;
+  };
+
+  // A store whose clock runs ahead, so that its stamps are later than those
+  // that the other stores go on to make.
+  const createAheadStore = () =>
+    createMergeableStore('ahead', () => getNow() + 10_000);
+
+  const isChanges = ([, , message, body]: any[]) =>
+    message == 3 &&
+    (Object.keys(body[0][0]).length > 0 || Object.keys(body[1][0]).length > 0);
+
+  test('change nothing on the server or for other clients', async () => {
+    const [serverStore, port] = await createObservedServer();
+    const staffReceives: any[] = [];
+    const [staffStore] = await openClient(
+      port,
+      '/shop?role=staff',
+      undefined,
+      (...args) => staffReceives.push(args),
+    );
+    staffStore.setCell('pets', 'fido', 'price', 5);
+    const [customerStore] = await openClient(port, '/shop?role=customer');
+    const [viewerStore] = await openClient(port, '/shop?role=viewer');
+    await pause();
+    const serverBefore = serverStore.getMergeableContent();
+    const staffBefore = staffStore.getMergeableContent();
+    staffReceives.length = 0;
+
+    customerStore.setCell('pets', 'fido', 'price', 1);
+    customerStore.setCell('pets', 'felix', 'price', 2);
+    viewerStore.delRow('pets', 'fido');
+    viewerStore.setValue('open', true);
+    await pause();
+
+    expect(serverStore.getMergeableContent()).toEqual(serverBefore);
+    expect(staffStore.getMergeableContent()).toEqual(staffBefore);
+    expect(staffReceives.filter(isChanges)).toEqual([]);
+    expect(customerStore.getContent()).toEqual(serverStore.getContent());
+    expect(viewerStore.getContent()).toEqual(serverStore.getContent());
+    expect(serverStore.getContent()).toEqual([{pets: {fido: {price: 5}}}, {}]);
+  });
+
+  test('do not undo a permitted write made at the same time', async () => {
+    const [serverStore, port] = await createObservedServer();
+    const [staffStore] = await openClient(port, '/shop?role=staff');
+    staffStore.setCell('pets', 'fido', 'price', 5);
+    const customerStore = createAheadStore();
+    await openClient(port, '/shop?role=customer', customerStore);
+    await pause();
+
+    // The refused write has the later stamp of the two.
+    customerStore.setCell('pets', 'fido', 'price', 1);
+    staffStore.setCell('pets', 'fido', 'price', 6);
+    await pause();
+    expect(serverStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+    expect(staffStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+    expect(customerStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+  });
+
+  test('do not leave the client behind afterwards', async () => {
+    const [serverStore, port] = await createObservedServer();
+    const [staffStore] = await openClient(port, '/shop?role=staff');
+    staffStore.setCell('pets', 'fido', 'price', 5);
+    const customerStore = createAheadStore();
+    await openClient(port, '/shop?role=customer', customerStore);
+    await pause();
+
+    customerStore.setCell('pets', 'fido', 'price', 1);
+    await pause();
+    expect(customerStore.getTables()).toEqual({pets: {fido: {price: 5}}});
+
+    // These stamps are earlier than the one the customer now holds.
+    staffStore.setCell('pets', 'fido', 'price', 6);
+    await pause();
+    expect(serverStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+    expect(customerStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+
+    serverStore.setCell('pets', 'fido', 'price', 7);
+    await pause();
+    expect(staffStore.getTables()).toEqual({pets: {fido: {price: 7}}});
+    expect(customerStore.getTables()).toEqual({pets: {fido: {price: 7}}});
+
+    staffStore.delCell('pets', 'fido', 'price');
+    await pause();
+    expect(customerStore.getTables()).toEqual({});
+  });
+
+  test('are undone again when the client next synchronizes', async () => {
+    const [serverStore, port] = await createObservedServer();
+    const [staffStore] = await openClient(port, '/shop?role=staff');
+    staffStore.setCell('pets', 'fido', 'price', 5);
+    const customerStore = createAheadStore();
+    const [, customerSynchronizer] = await openClient(
+      port,
+      '/shop?role=customer',
+      customerStore,
+    );
+    await pause();
+    customerStore.setCell('pets', 'fido', 'price', 1);
+    await pause();
+    await customerSynchronizer.destroy();
+
+    staffStore.setCell('pets', 'fido', 'price', 6);
+    await pause();
+    const customerReceives: any[] = [];
+    await openClient(port, '/shop?role=customer', customerStore, (...args) =>
+      customerReceives.push(args),
+    );
+    await pause();
+    expect(customerStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+    expect(serverStore.getTables()).toEqual({pets: {fido: {price: 6}}});
+    expect(customerReceives.filter(isChanges)).toHaveLength(1);
+  });
+
+  test('leave nothing behind for what the server never had', async () => {
+    const [serverStore, port] = await createObservedServer();
+    await openClient(port, '/shop?role=staff');
+    const viewerStore = createMergeableStore('viewer', getNow);
+    viewerStore.setCell('pets', 'felix', 'species', 'cat');
+    const [, viewerSynchronizer] = await openClient(
+      port,
+      '/shop?role=viewer',
+      viewerStore,
+    );
+    viewerStore.setValue('open', true);
+    await pause();
+    expect(viewerStore.getContent()).toEqual([{}, {}]);
+    expect(serverStore.getMergeableContent()).toEqual(
+      createMergeableStore('server', getNow).getMergeableContent(),
+    );
+
+    await viewerSynchronizer.destroy();
+    const viewerReceives: any[] = [];
+    await openClient(port, '/shop?role=viewer', viewerStore, (...args) =>
+      viewerReceives.push(args),
+    );
+    await pause();
+    expect(viewerReceives.filter(isChanges)).toEqual([]);
+    expect(viewerStore.getContent()).toEqual([{}, {}]);
+  });
+
+  test('can be made in great numbers', async () => {
+    const [serverStore, port] = await createObservedServer();
+    const [staffStore] = await openClient(port, '/shop?role=staff');
+    const viewerStore = createAheadStore();
+    await openClient(port, '/shop?role=viewer', viewerStore);
+    staffStore.transaction(() => {
+      for (let pet = 0; pet < 1_100; pet++) {
+        staffStore.setCell('pets', 'pet' + pet, 'price', 5);
+      }
+    });
+    await pause(200);
+
+    viewerStore.transaction(() => {
+      for (let pet = 0; pet < 1_100; pet++) {
+        viewerStore.setCell('pets', 'pet' + pet, 'price', 1);
+      }
+    });
+    await pause(200);
+    expect(viewerStore.getContent()).toEqual(serverStore.getContent());
+
+    // The newest of those stamps are still remembered.
+    staffStore.setCell('pets', 'pet1099', 'price', 6);
+    await pause();
+    expect(viewerStore.getCell('pets', 'pet1099', 'price')).toEqual(6);
+    expect(viewerStore.getContent()).toEqual(serverStore.getContent());
+  });
+});
+
 describe('hub', () => {
   test('clients do not answer or reach each other directly', async () => {
     const [wsServer, port] = await createServer({authorize: authorizeByRole});

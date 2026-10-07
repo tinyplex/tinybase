@@ -44,7 +44,8 @@
  *
  * The client Id is connection metadata derived from the `Sec-WebSocket-Key`
  * header. It is not stable across reconnections or an authenticated user or
- * session identity, and must not be used for authorization.
+ * session identity, and must not be used for authorization. A connection whose
+ * Id is already in use on the path is refused.
  *
  * A ClientIdsListener is provided when using the addClientIdsListener method.
  * See that method for specific examples.
@@ -117,9 +118,16 @@
  * into the path's MergeableStore nor relayed to other clients.
  *
  * If the rejected change was newer than the server's own version of that Cell,
- * the server re-stamps its version so that the client that sent the change is
- * brought back into line with the server, rather than silently diverging from
- * it.
+ * and different from it, the server sends that client alone its own version
+ * (or a deletion, if it has none), stamped just after the rejected change. The
+ * client is brought back into line with the server, rather than silently
+ * diverging from it, and nothing changes on the server or for any other
+ * client.
+ *
+ * This function decides only about Cells. Unless you also provide a
+ * CanWriteValue function, every writable client may write any Value. And
+ * unless you provide an Authorize function, every client is admitted as
+ * writable, with an undefined context.
  * @param pathId The Id of the path.
  * @param tableId The Id of the Table.
  * @param rowId The Id of the Row.
@@ -141,9 +149,16 @@
  * merged into the path's MergeableStore nor relayed to other clients.
  *
  * If the rejected change was newer than the server's own version of that
- * Value, the server re-stamps its version so that the client that sent the
- * change is brought back into line with the server, rather than silently
- * diverging from it.
+ * Value, and different from it, the server sends that client alone its own
+ * version (or a deletion, if it has none), stamped just after the rejected
+ * change. The client is brought back into line with the server, rather than
+ * silently diverging from it, and nothing changes on the server or for any
+ * other client.
+ *
+ * This function decides only about Values. Unless you also provide a
+ * CanWriteCell function, every writable client may write any Cell. And unless
+ * you provide an Authorize function, every client is admitted as writable,
+ * with an undefined context.
  * @param pathId The Id of the path.
  * @param valueId The Id of the Value.
  * @param value The new Value, or `undefined` if it is being deleted.
@@ -921,6 +936,11 @@
  * write something it may not back into line with the server's own data. If you
  * do not provide a `createPersisterForPath` function, each path gets an
  * in-memory MergeableStore for as long as it has clients.
+ *
+ * Bringing a client back into line removes anything in its MergeableStore
+ * that it may not write and that the server does not have. So keep data that
+ * is only for that client in a separate Store, rather than in the one it
+ * synchronizes.
  *
  * Clients do not need to change, except to identify themselves. Since a
  * browser cannot add headers to a WebSocket request, a common approach is to

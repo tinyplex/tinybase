@@ -329,6 +329,48 @@ describe('canWriteCell and canWriteValue', () => {
     expect(customerStore.getContent()).toEqual(expected);
   });
 
+  test('refused writes change nothing for other clients', async () => {
+    const [durableObject, state] = await createDurableObject(HubDurableObject);
+    const [staffStore] = await openClient(
+      durableObject,
+      state,
+      URL_BASE + '?role=staff',
+    );
+    staffStore.setCell('pets', 'fido', 'price', 5);
+    const customerStore = createMergeableStore(
+      'ahead',
+      () => getNow() + 10_000,
+    );
+    await openClient(
+      durableObject,
+      state,
+      URL_BASE + '?role=customer',
+      customerStore,
+    );
+    const staffBefore = staffStore.getMergeableContent();
+
+    customerStore.transaction(() =>
+      customerStore
+        .setCell('pets', 'fido', 'price', 1)
+        .setCell('pets', 'felix', 'price', 2)
+        .setValue('open', false),
+    );
+    await pause();
+    expect(staffStore.getMergeableContent()).toEqual(staffBefore);
+    expect(customerStore.getContent()).toEqual([
+      {pets: {fido: {price: 5}}},
+      {},
+    ]);
+
+    // These stamps are earlier than those the customer now holds.
+    staffStore.setCell('pets', 'fido', 'price', 6).setValue('open', true);
+    await pause();
+    expect(customerStore.getContent()).toEqual([
+      {pets: {fido: {price: 6}}},
+      {open: true},
+    ]);
+  });
+
   test('access survives hibernation', async () => {
     const [durableObject, state] = await createDurableObject(HubDurableObject);
     const [staffStore] = await openClient(

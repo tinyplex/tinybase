@@ -1,5 +1,5 @@
 import {DurableObject} from 'cloudflare:workers';
-import type {Id, Ids} from '../../@types/common/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import type {
   MergeableChanges,
   MergeableStore,
@@ -23,6 +23,7 @@ import {objValues} from '../../common/obj.ts';
 import {
   ifNotUndefined,
   isEmpty,
+  isNull,
   isUndefined,
   noop,
   size,
@@ -79,6 +80,11 @@ export class WsServerDurableObject<Env = unknown>
   // peer that its clients synchronize with, so that everything they read and
   // write passes through it.
   #hub: boolean;
+  #getChangesForClient?: (
+    clientId: Id,
+    changes: MergeableChanges,
+  ) => MergeableChanges;
+  #forgetClient?: (clientId: Id) => void;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -105,19 +111,62 @@ export class WsServerDurableObject<Env = unknown>
           async (persister) => {
             const requestTimeoutSeconds = this.getRequestTimeoutSeconds();
             const store = persister.getStore() as MergeableStore;
+            const [receiveChanges, getChangesForClient, forgetClient] = this
+              .#hub
+              ? createServerChangesReceiver(
+                  store,
+                  (clientId) =>
+                    (this.#getClients(clientId)[0]?.deserializeAttachment() ??
+                      undefined) as ClientAccess | undefined,
+                  (tableId, rowId, cellId, cell, context) =>
+                    this.canWriteCell(
+                      this.getPathId(),
+                      tableId,
+                      rowId,
+                      cellId,
+                      cell,
+                      context,
+                    ),
+                  (valueId, value, context) =>
+                    this.canWriteValue(
+                      this.getPathId(),
+                      valueId,
+                      value,
+                      context,
+                    ),
+                  (fromClientId, changes) =>
+                    this.#sendChangesToClients(
+                      changes,
+                      getTransactionId(),
+                      fromClientId,
+                    ),
+                  (clientId, changes) =>
+                    ifNotUndefined(this.#getClients(clientId)[0], (client) =>
+                      this.#sendPayloadsToClient(
+                        client,
+                        this.#getChangesPayloads(changes, getTransactionId()),
+                      ),
+                    ),
+                )
+              : [];
+            this.#getChangesForClient = getChangesForClient;
+            this.#forgetClient = forgetClient;
             const synchronizer = createCustomSynchronizer(
               store,
               (toClientId, requestId, message, body) =>
-                arrayForEach(
-                  createPayloads(
-                    toClientId,
-                    requestId,
-                    message,
-                    body,
-                    this.getFragmentSize(),
-                  ),
-                  (payload) => this.#handleMessage(SERVER_CLIENT_ID, payload),
-                ),
+                this.#hub && message == CONTENT_DIFF && isNull(toClientId)
+                  ? this.#sendChangesToClients(body, requestId)
+                  : arrayForEach(
+                      createPayloads(
+                        toClientId,
+                        requestId,
+                        message,
+                        body,
+                        this.getFragmentSize(),
+                      ),
+                      (payload) =>
+                        this.#handleMessage(SERVER_CLIENT_ID, payload),
+                    ),
               (receive: Receive) =>
                 (this.#serverClientSend = createPayloadReceiver(
                   receive,
@@ -130,32 +179,7 @@ export class WsServerDurableObject<Env = unknown>
               undefined,
               undefined,
               undefined,
-              this.#hub
-                ? createServerChangesReceiver(
-                    store,
-                    (clientId) =>
-                      (this.#getClients(clientId)[0]?.deserializeAttachment() ??
-                        undefined) as ClientAccess | undefined,
-                    (tableId, rowId, cellId, cell, context) =>
-                      this.canWriteCell(
-                        this.getPathId(),
-                        tableId,
-                        rowId,
-                        cellId,
-                        cell,
-                        context,
-                      ),
-                    (valueId, value, context) =>
-                      this.canWriteValue(
-                        this.getPathId(),
-                        valueId,
-                        value,
-                        context,
-                      ),
-                    (fromClientId, changes) =>
-                      this.#relayToClients(fromClientId, changes),
-                  )
-                : undefined,
+              receiveChanges,
               1,
             );
             await persister.load();
@@ -241,6 +265,7 @@ export class WsServerDurableObject<Env = unknown>
     this.#payloadDecoders.get(client)?.[1]();
     this.#payloadDecoders.delete(client);
     const [clientId, pathId] = this.ctx.getTags(client);
+    this.#forgetClient?.(clientId);
     this.onClientId(pathId, clientId, -1);
     if (size(this.#getClients()) == 1) {
       this.onPathId(pathId, -1);
@@ -280,19 +305,44 @@ export class WsServerDurableObject<Env = unknown>
     return this.ctx.getWebSockets(tag);
   }
 
-  #relayToClients(fromClientId: Id, changes: MergeableChanges) {
-    const payloads = createPayloads(
+  #getChangesPayloads(
+    changes: MergeableChanges,
+    requestId: IdOrNull,
+  ): string[] {
+    return createPayloads(
       SERVER_CLIENT_ID,
-      getTransactionId(),
+      requestId,
       CONTENT_DIFF,
       changes,
       this.getFragmentSize(),
     );
-    arrayForEach(this.#getClients(), (client) =>
-      this.ctx.getTags(client)[0] != fromClientId
-        ? arrayForEach(payloads, (payload) => client.send(payload))
-        : 0,
-    );
+  }
+
+  #sendPayloadsToClient(client: WebSocket, payloads: string[]) {
+    arrayForEach(payloads, (payload) => client.send(payload));
+  }
+
+  // Each client is sent the changes as they need to be stamped for it, which
+  // is as they are (and so serialized just once) unless it has had a write
+  // refused.
+  #sendChangesToClients(
+    changes: MergeableChanges,
+    requestId: IdOrNull,
+    exceptClientId?: Id,
+  ) {
+    let payloads: string[] | undefined;
+    arrayForEach(this.#getClients(), (client) => {
+      const clientId = this.ctx.getTags(client)[0];
+      if (clientId != exceptClientId) {
+        const clientChanges = this.#getChangesForClient!(clientId, changes);
+        this.#sendPayloadsToClient(
+          client,
+          clientChanges === changes
+            ? (payloads ??= this.#getChangesPayloads(changes, requestId))
+            : this.#getChangesPayloads(clientChanges, requestId),
+        );
+      }
+    });
   }
 
   // --
