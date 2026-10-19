@@ -51,6 +51,7 @@ export function getUniqueId(length?: number): Id;
 export function getHlcFunctions(
   uniqueId?: Id,
   getNow?: GetNow,
+  maxClockSkewSeconds?: number,
 ): [
   getNextHlc: () => Hlc,
   seenHlc: (remoteHlc: Hlc) => void,

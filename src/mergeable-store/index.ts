@@ -37,7 +37,7 @@ import {
   getValueHash,
   getValueInValuesHash,
 } from '../common/hash.ts';
-import {HLC_MAX_FUTURE_OFFSET, getHlcFunctions, isHlc} from '../common/hlc.ts';
+import {MAX_CLOCK_SKEW_SECONDS, getHlcFunctions, isHlc} from '../common/hlc.ts';
 import {
   mapEnsure,
   mapForEach,
@@ -55,6 +55,7 @@ import {
   objFreeze,
   objGet,
   objHas,
+  objMap,
   objNew,
   objSet,
 } from '../common/obj.ts';
@@ -209,6 +210,7 @@ const validateMergeable = (
 export const createMergeableStore = ((
   uniqueId?: Id,
   getNow: GetNow = Date.now,
+  maxClockSkewSeconds = MAX_CLOCK_SKEW_SECONDS,
 ): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
@@ -219,7 +221,11 @@ export const createMergeableStore = ((
   const rollbackStampActions: (() => void)[] = [];
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
-  const [getNextHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
+  const [getNextHlc, seenHlc] = getHlcFunctions(
+    uniqueId,
+    getNow,
+    maxClockSkewSeconds,
+  );
   const store = createStore();
 
   const disableListeningToRawStoreChanges = (
@@ -751,6 +757,9 @@ export const createMergeableStore = ((
   // Content and changes from elsewhere may not be far ahead of this clock. But
   // those that a Persister kept were taken by a MergeableStore once already,
   // and are trusted: to refuse them is to lose them when it next saves.
+  const getMaxLogicalTime = (trusted?: boolean): number =>
+    trusted ? infinity : getNow() + maxClockSkewSeconds * 1000;
+
   const isValid = (
     mergeable: MergeableChanges | MergeableContent,
     hasHashes: 0 | 1,
@@ -759,10 +768,51 @@ export const createMergeableStore = ((
   ): boolean =>
     validateMergeable(
       mergeable,
-      trusted ? infinity : getNow() + HLC_MAX_FUTURE_OFFSET,
+      getMaxLogicalTime(trusted),
       hasHashes,
       encoded ? 1 : 0,
     );
+
+  // Changes from elsewhere that are stamped too far ahead of this clock are
+  // left out, so that the rest of what they were sent with can be applied.
+  const getChangesInTime = (
+    mergeableChanges: MergeableChanges | MergeableContent,
+  ): MergeableChanges => {
+    const maxLogicalTime = getMaxLogicalTime();
+    const inTime = <Thing>(
+      stamp: any[],
+      getThing: (thing: any) => Thing,
+    ): any[] => {
+      const newStamp = [...stamp];
+      newStamp[0] = getThing(stamp[0]);
+      if (!isHlc(stamp[1] ?? EMPTY_STRING, maxLogicalTime)) {
+        newStamp[1] = EMPTY_STRING;
+      }
+      return newStamp;
+    };
+    const getThingsInTime = (things: IdObj<any[]>) => {
+      const thingsInTime = objNew<any[]>();
+      objForEach(things, (thingStamp, thingId) =>
+        isHlc(thingStamp[1] ?? EMPTY_STRING, maxLogicalTime)
+          ? objSet(thingsInTime, thingId, thingStamp)
+          : 0,
+      );
+      return thingsInTime;
+    };
+    return [
+      inTime(mergeableChanges[0], (tables) =>
+        objMap(tables, (tableStamp: any[]) =>
+          inTime(tableStamp, (rows) =>
+            objMap(rows, (rowStamp: any[]) =>
+              inTime(rowStamp, getThingsInTime),
+            ),
+          ),
+        ),
+      ),
+      inTime(mergeableChanges[1], getThingsInTime),
+      1,
+    ] as any as MergeableChanges;
+  };
 
   const setMergeableContentImpl = (
     mergeableContent: MergeableContent,
@@ -825,17 +875,19 @@ export const createMergeableStore = ((
     encoded?: boolean,
     trusted?: boolean,
   ): boolean => {
-    const valid = isValid(mergeableChanges, 0, encoded, trusted);
-    if (valid) {
+    const whole = isValid(mergeableChanges, 0, encoded, trusted);
+    if (whole || isValid(mergeableChanges, 0, encoded, true)) {
       disableListeningToRawStoreChanges(() =>
         store.transaction(() =>
           (encoded ? (store as ProtectedStore)._[10] : store.applyChanges)(
-            mergeContentOrChanges(mergeableChanges),
+            mergeContentOrChanges(
+              whole ? mergeableChanges : getChangesInTime(mergeableChanges),
+            ),
           ),
         ),
       );
     }
-    return valid;
+    return whole;
   };
 
   const applyMergeableChanges = (

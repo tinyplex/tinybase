@@ -298,4 +298,5 @@ export interface MergeableStore<
 export function createMergeableStore(
   uniqueId?: Id,
   getNow?: GetNow,
+  maxClockSkewSeconds?: number,
 ): MergeableStore<NoSchemas>;

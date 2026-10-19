@@ -16,7 +16,7 @@ import {
 } from './other.ts';
 import {EMPTY_STRING} from './strings.ts';
 
-export const HLC_MAX_FUTURE_OFFSET = 5 * 60 * 1000;
+export const MAX_CLOCK_SKEW_SECONDS = 300;
 
 const SHIFT36 = 2 ** 36;
 const SHIFT30 = 2 ** 30;
@@ -53,6 +53,7 @@ export const isHlc = (hlc: unknown, maxLogicalTime: number): hlc is Hlc =>
 export const getHlcFunctions: typeof getHlcFunctionsDecl = (
   uniqueId?: Id,
   getNow: GetNow = Date.now,
+  maxClockSkewSeconds = MAX_CLOCK_SKEW_SECONDS,
 ): [
   getNextHlc: () => Hlc,
   seenHlc: (remoteHlc: Hlc) => void,
@@ -80,7 +81,7 @@ export const getHlcFunctions: typeof getHlcFunctionsDecl = (
 
   const seenHlc = (hlc?: Hlc): void => {
     const now = getNow();
-    if (!isUndefined(hlc) && !isHlc(hlc, now + HLC_MAX_FUTURE_OFFSET)) {
+    if (!isUndefined(hlc) && !isHlc(hlc, now + maxClockSkewSeconds * 1000)) {
       return;
     }
     const previousLogicalTime = lastLogicalTime;

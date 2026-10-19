@@ -244,6 +244,10 @@
  * milliseconds, which is useful for testing purposes where fully deterministic
  * HLCs are required, rather than the current time.
  *
+ * An HLC that is more than `maxClockSkewSeconds` ahead of the current time is
+ * not seen at all, so that one client with a fast clock cannot pull every
+ * other's clock along with it.
+ *
  * The stateful functions returned by this function are as follows.
  *
  * - `getNextHlc`: a function that returns the next HLC for this client based on
@@ -264,6 +268,9 @@
  * @param uniqueId An optional unique Id for the client.
  * @param getNow An optional function that generates millisecond timestamps,
  * defaulting to `Date.now`.
+ * @param maxClockSkewSeconds An optional number of seconds by which an HLC
+ * passed to `seenHlc` may be ahead of the current time and still be seen,
+ * since v10.1.0, defaulting to 300.
  * @returns An array of seven stateful functions as described above.
  * @category Stamps
  * @since v6.2.0

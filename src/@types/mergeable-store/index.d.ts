@@ -140,4 +140,5 @@ export interface MergeableStore extends Store {
 export function createMergeableStore(
   uniqueId?: Id,
   getNow?: GetNow,
+  maxClockSkewSeconds?: number,
 ): MergeableStore;

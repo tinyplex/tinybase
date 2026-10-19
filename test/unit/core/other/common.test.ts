@@ -82,6 +82,27 @@ test('getHlcFunctions validates and carries', () => {
   expect(getLastCounter()).toEqual(0);
 });
 
+test('getHlcFunctions takes a clock skew to allow', () => {
+  const now = 1704067200000;
+  const [, seenHlc, encodeHlc, , getLastLogicalTime] = getHlcFunctions(
+    's1',
+    getNow,
+    3600,
+  );
+  seenHlc(encodeHlc(now + 3600001, 0, 's2'));
+  expect(getLastLogicalTime()).toEqual(0);
+  seenHlc(encodeHlc(now + 3600000, 0, 's2'));
+  expect(getLastLogicalTime()).toEqual(now + 3600000);
+
+  const [, seenAnyHlc, , , getLastAnyLogicalTime] = getHlcFunctions(
+    's1',
+    getNow,
+    Infinity,
+  );
+  seenAnyHlc(encodeHlc(now + 10 ** 10, 0, 's2'));
+  expect(getLastAnyLogicalTime()).toEqual(now + 10 ** 10);
+});
+
 describe('hash functions', () => {
   test('getHash', () => {
     expect(getHash('Hello, world!')).toEqual(3985698964);

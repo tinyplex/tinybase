@@ -756,6 +756,56 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     expect(store.getMergeableContent()).toEqual(content);
   });
 
+  test('apply what is in time, and leave what is too far ahead', () => {
+    store.applyMergeableChanges([
+      [
+        {
+          t1: [
+            {
+              r1: [
+                {
+                  c1: [1, time(1, 0, 's2')],
+                  c2: [2, time(300001, 0, 's2')],
+                },
+              ],
+              r2: [{c1: [3, time(300001, 0, 's2')]}],
+            },
+          ],
+        },
+      ],
+      [{v1: [1, time(1, 0, 's2')], v2: [2, time(300001, 0, 's2')]}],
+      1,
+    ] as MergeableChanges);
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
+
+  test('take a clock skew to allow', () => {
+    const changes = [
+      [{t1: [{r1: [{c1: [1, time(3600000, 0, 's2')]}]}]}],
+      [{v1: [1, time(3600001, 0, 's2')]}],
+      1,
+    ] as MergeableChanges;
+    expect(
+      createMergeableStore('s1', getNow, 3600)
+        .applyMergeableChanges(changes)
+        .getContent(),
+    ).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+    expect(
+      createMergeableStore('s1', getNow, Infinity)
+        .applyMergeableChanges(changes)
+        .getContent(),
+    ).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(
+      createMergeableStore('s1', getNow, 3600)
+        .setMergeableContent(
+          createMergeableStore('s2', () => getNow() + 3600001)
+            .setCell('t1', 'r1', 'c1', 1)
+            .getMergeableContent(),
+        )
+        .getContent(),
+    ).toEqual([{}, {}]);
+  });
+
   test('reject reserved strings before changing mergeable state', () => {
     store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     const content = store.getMergeableContent();

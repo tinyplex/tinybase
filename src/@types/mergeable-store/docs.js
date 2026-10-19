@@ -927,7 +927,7 @@
  * The createMergeableStore function creates a MergeableStore, and is the main
  * entry point into the mergeable-store module.
  *
- * There are two optional parameters which are only for testing and advanced
+ * There are three optional parameters which are only for testing and advanced
  * usage.
  *
  * The first is a uniqueId for the MergeableStore, used to distinguish
@@ -940,9 +940,19 @@
  * Since v6.1.0, the second is a function that can be used to replace the way
  * the timestamp is generated for HLCs (by default JavaScript's `Date.now()`
  * method).
+ *
+ * Since v10.1.0, the third is the number of seconds by which a stamp made
+ * elsewhere may be ahead of this MergeableStore's clock, defaulting to 300.
+ * Changes stamped further ahead than that are left out when the rest of what
+ * they arrive with is applied, so that one device with a fast clock cannot
+ * pull every other's clock along with it. Pass `Infinity` to accept them all.
+ * Content that a Persister kept is always loaded, however far ahead it is.
  * @param uniqueId An optional unique Id for the MergeableStore.
  * @param getNow An optional function that generates millisecond timestamps,
  * since v6.1.0, defaulting to `Date.now`.
+ * @param maxClockSkewSeconds An optional number of seconds by which a stamp
+ * from elsewhere may be ahead of this MergeableStore's clock, since v10.1.0,
+ * defaulting to 300.
  * @returns A reference to the new MergeableStore.
  * @example
  * This example creates a MergeableStore.
