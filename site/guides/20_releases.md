@@ -104,6 +104,17 @@ and servers keep working as before.
   changes that its MergeableStore refuses, with the new error code 18, through
   its `onIgnoredError` handler. That is how to learn of a peer whose clock is
   more than five minutes ahead.
+- Peers now converge after any of them come back online. A peer that loads
+  takes what it lacks from whichever peer answers first, which may itself be
+  behind. So a peer that is sent another's hashes and finds that it has
+  changes the other lacks now tells it, once, so that it takes them too. Older
+  peers understand this, though they do not do it themselves.
+- A Persister or Synchronizer that is asked to load while it is saving now
+  loads once the saving has finished, where until now it did not load at all.
+  This is what the guides tell a client to do when its WebSocket reconnects.
+- A WsServer that authorizes its clients now only passes on the changes that
+  are newer than its own data. Until now, it could pass on an older value that
+  it had not taken itself, which a client it had corrected would take.
 - A WsSynchronizer for a single MergeableStore now goes on receiving changes
   after its WebSocket reconnects in place, as a ReconnectingWebSocket does.
   Since v10.0, it stopped listening to the WebSocket when it first closed, so
