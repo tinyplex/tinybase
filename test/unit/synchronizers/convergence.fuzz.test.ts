@@ -6,25 +6,22 @@ import {afterEach, beforeEach, expect, test, vi} from 'vitest';
 import type {Random, Trace} from '../common/fuzz.ts';
 import {check, code, expectSame, forEachSeed} from '../common/fuzz.ts';
 
-// Seeded fuzz tests of synchronization. Each one has several peers make random
-// changes to their own MergeableStores, over a simulated network that delays
-// messages, delivers those of different connections in any order, and drops
-// those of a peer that goes offline. A peer that comes back online does as the
-// guides tell it to: it loads, and then it saves.
+// Seeded fuzz tests of synchronization between peers in a mesh, as they are
+// over a BroadcastChannel, or a WsServer that does not authorize its clients.
+// Each one has several peers make random changes to their own MergeableStores,
+// over a simulated network that delivers messages within a tick of being sent,
+// but those of different connections in any order, and that drops those of a
+// peer that goes offline. A peer that comes back online does as the guides
+// tell it to: it loads, and then it saves.
 //
 // Once every peer is online and the network is quiet, every peer must have the
 // same content, with the same stamps and hashes. That content must also be what
 // a MergeableStore gets by being given every change that any peer ever made,
 // in an order that has nothing to do with the order in which they were made.
 //
-// Peers here are a mesh, as they are over a BroadcastChannel, or a WsServer
-// that does not authorize its clients. A peer that loads takes what it lacks
-// from whichever peer answers it first, and a peer that saves has every other
-// peer take what they lack from it. So a peer that comes back online can be
-// answered by another that is itself behind, and then be left without changes
-// that neither of them has. The first test has every peer save once all are
-// online, after which they must agree. The second does not, and records that
-// they then might not.
+// A peer that loads takes what it lacks from whichever peer answers first,
+// which may itself be behind. That is enough because a peer that saves is told
+// in turn of what the others have that it lacks.
 //
 //   FUZZ_RUNS=500 npx vitest run --project unit-synchronizers \
 //     test/unit/synchronizers/convergence.fuzz.test.ts
@@ -36,6 +33,9 @@ const STEPS = 60;
 const REQUEST_TIMEOUT_SECONDS = 0.5;
 const MAX_PACKETS_IN_ROUND = 1000;
 const MAX_ROUNDS_TO_SETTLE = 20;
+const TICK = 50;
+const QUIET_MS = REQUEST_TIMEOUT_SECONDS * 2000 + 100;
+const MAX_TICKS_TO_SETTLE = 2000;
 const START_TIME = Date.UTC(2026, 0, 1);
 
 // The clocks of the peers disagree, but by less than the five minutes beyond
@@ -165,16 +165,26 @@ const fuzz = async (
     }
   };
 
-  // Delivers everything, and lets every request be answered or time out,
-  // until there is nothing more to deliver.
+  // Lets time pass on a network that works, which delivers what is sent
+  // within a tick.
+  const pass = async (ms: number): Promise<void> => {
+    for (let passed = 0; passed < ms; passed += TICK) {
+      await deliver(MAX_PACKETS_IN_ROUND);
+      await vi.advanceTimersByTimeAsync(Math.min(TICK, ms - passed));
+    }
+    await deliver(MAX_PACKETS_IN_ROUND);
+  };
+
+  // Lets time pass until nothing has been sent for long enough that every
+  // request has been answered or has timed out.
   const settle = async (): Promise<void> => {
-    for (let quiet = 0, rounds = 0; quiet < 2; rounds++) {
-      if (rounds == MAX_ROUNDS_TO_SETTLE) {
+    for (let quiet = 0, ticks = 0; quiet < QUIET_MS; ticks++) {
+      if (ticks == MAX_TICKS_TO_SETTLE) {
         throw new Error('The network never settles');
       }
-      await deliver(MAX_PACKETS_IN_ROUND);
-      await vi.advanceTimersByTimeAsync(REQUEST_TIMEOUT_SECONDS * 1000 + 100);
-      quiet = packets.length == 0 ? quiet + 1 : 0;
+      const sent = packets.length;
+      await pass(TICK);
+      quiet = sent == 0 && packets.length == 0 ? quiet + TICK : 0;
     }
   };
 
@@ -249,7 +259,7 @@ const fuzz = async (
         () => {
           const ms = random.pick([1, 10, 1000, 60000]);
           trace(`${ms}ms pass`);
-          return vi.advanceTimersByTimeAsync(ms);
+          return pass(ms);
         },
       ],
     ])();
@@ -326,7 +336,7 @@ test(
   TIMEOUT,
 );
 
-test.fails(
+test(
   'peers converge when only those that come back online save',
   async () => {
     await forEachSeed(RUNS, (random, trace) => fuzz(random, trace, false));
