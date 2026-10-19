@@ -366,9 +366,9 @@
    * // ...
    *
    * console.log(synchronizer1.getSynchronizerStats());
-   * // -> {receives: 4, sends: 5}
+   * // -> {receives: 4, sends: 6}
    * console.log(synchronizer2.getSynchronizerStats());
-   * // -> {receives: 5, sends: 4}
+   * // -> {receives: 6, sends: 4}
    *
    * await synchronizer1.destroy();
    * await synchronizer2.destroy();
