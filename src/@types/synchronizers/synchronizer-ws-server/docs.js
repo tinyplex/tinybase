@@ -662,6 +662,19 @@
    * @since v10.1.0
    */
   /// WsServerOptions.fragmentSize
+  /**
+   * The maxBufferSize property is an optional number of UTF-8 bytes that each
+   * WebSocket may hold, defaulting to 16 MiB (`16777216`).
+   *
+   * It is the largest message that the server sends or receives, whether whole
+   * or reassembled from fragments, and the most that it lets wait to be sent
+   * to a client before closing that client's connection as overloaded. Raise
+   * it, on both the server and its clients, if a path holds so much content
+   * that a client that is new to it cannot be sent it in one message.
+   * @category Option
+   * @since v10.1.0
+   */
+  /// WsServerOptions.maxBufferSize
 }
 /**
  * The createWsServer function creates a WsServer that facilitates

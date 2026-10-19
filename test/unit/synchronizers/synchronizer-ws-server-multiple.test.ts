@@ -794,6 +794,52 @@ test('a single store keeps synchronizing after reconnecting', async () => {
   expect(errors).toContain('tinybase:15:socket');
 });
 
+test('a client can choose its buffer size', async () => {
+  const errors: string[] = [];
+  const webSocket = new MockWebSocket();
+  const store = createMergeableStore();
+  const synchronizer = await createWsSynchronizer(
+    store,
+    webSocket as any,
+    0.01,
+    undefined,
+    undefined,
+    (error) => errors.push(error.message),
+    undefined,
+    1_000,
+  );
+  await synchronizer.startAutoSave();
+  store.setValue('v', 'x'.repeat(100));
+  await new Promise((resolve) => setTimeout(resolve));
+  expect(webSocket.closeCode).toBeUndefined();
+  store.setValue('v', 'x'.repeat(1_000));
+  await new Promise((resolve) => setTimeout(resolve));
+  expect(webSocket.closeCode).toBe(1013);
+  expect(errors).toContain('tinybase:15:socket');
+  await synchronizer.destroy();
+
+  const largeWebSocket = new MockWebSocket();
+  const largeErrors: string[] = [];
+  const largeStore = createMergeableStore();
+  const largeSynchronizer = await createWsSynchronizer(
+    largeStore,
+    largeWebSocket as any,
+    'files',
+    0.01,
+    undefined,
+    undefined,
+    (error) => largeErrors.push(error.message),
+    undefined,
+    20_000_000,
+  );
+  await largeSynchronizer.startAutoSave();
+  largeStore.setValue('v', 'x'.repeat(17_000_000));
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  expect(largeWebSocket.closeCode).toBeUndefined();
+  expect(largeErrors).not.toContain('tinybase:15:socket');
+  await largeSynchronizer.destroy();
+});
+
 test('a stale opening handshake does not consume a reconnect', async () => {
   const webSocket = new MockWebSocket();
   const synchronizer = await createWsSynchronizer(

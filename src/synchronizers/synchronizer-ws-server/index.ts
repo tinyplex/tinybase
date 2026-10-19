@@ -159,6 +159,7 @@ export const createWsServer = (<
     onIgnoredError,
     requestTimeoutSeconds = 1,
     fragmentSize,
+    maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
   }: WsServerOptions<PathPersister> = isFunction(
     createPersisterForPathOrOptions,
   ) || isUndefined(createPersisterForPathOrOptions)
@@ -352,6 +353,9 @@ export const createWsServer = (<
         serverClient[ServerClient.Send] = createPayloadReceiver(
           receive,
           requestTimeoutSeconds,
+          undefined,
+          undefined,
+          maxBufferSize,
         )[0];
       },
       noop,
@@ -418,8 +422,8 @@ export const createWsServer = (<
       : createMultiplePayload(channelId, payload);
     const outgoingPayloadSize = getWebSocketPayloadSize(outgoingPayload);
     if (
-      isWebSocketPayloadTooLarge(outgoingPayloadSize) ||
-      isWebSocketBackpressured(client, outgoingPayloadSize)
+      isWebSocketPayloadTooLarge(outgoingPayloadSize, maxBufferSize) ||
+      isWebSocketBackpressured(client, outgoingPayloadSize, maxBufferSize)
     ) {
       overflowClient(client, 'socket');
     } else if (client.readyState == client.OPEN) {
@@ -512,13 +516,13 @@ export const createWsServer = (<
     if (
       (coalesceIndex < 0 && size(buffer) >= MAX_WEBSOCKET_QUEUE_SIZE) ||
       serverClient[ServerClient.BufferSize] + payloadSize - replacedSize >
-        MAX_WEBSOCKET_BUFFER_SIZE ||
+        maxBufferSize ||
       (!sameWebSocket &&
         (webSocketBuffer?.[0] ?? 0) >= MAX_WEBSOCKET_QUEUE_SIZE) ||
       (webSocketBuffer?.[1] ?? 0) +
         payloadSize -
         (sameWebSocket ? replacedSize : 0) >
-        MAX_WEBSOCKET_BUFFER_SIZE
+        maxBufferSize
     ) {
       delBufferedClient(serverClient, clientId);
       ifNotUndefined(mapGet(path[Path.Clients], clientId), ([client]) =>
@@ -759,7 +763,7 @@ export const createWsServer = (<
         ];
         if (
           heldCount + count > MAX_WEBSOCKET_QUEUE_SIZE ||
-          heldSize + payloadsSize > MAX_WEBSOCKET_BUFFER_SIZE
+          heldSize + payloadsSize > maxBufferSize
         ) {
           release();
           overflowClient(client, 'server');
@@ -839,6 +843,8 @@ export const createWsServer = (<
       receive,
       requestTimeoutSeconds,
       createInvalidPayloadHandler(client, handleError),
+      undefined,
+      maxBufferSize,
     );
     addWebSocketListener(client, MESSAGE, (data) =>
       decode(data.toString(UTF8)),
@@ -876,8 +882,8 @@ export const createWsServer = (<
       (payload) => {
         const payloadSize = getWebSocketPayloadSize(payload);
         if (
-          isWebSocketPayloadTooLarge(payloadSize) ||
-          isWebSocketBackpressured(client, payloadSize)
+          isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) ||
+          isWebSocketBackpressured(client, payloadSize, maxBufferSize)
         ) {
           overflowClient(client, 'socket');
         } else if (client.readyState == client.OPEN) {
@@ -887,6 +893,7 @@ export const createWsServer = (<
       requestTimeoutSeconds,
       invalid,
       handleError,
+      maxBufferSize,
     );
 
     addWebSocketListener(client, MESSAGE, (data) =>

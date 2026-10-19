@@ -150,6 +150,7 @@ type MultipleState = {
   delChannel: (channelId: Id) => void;
   destroyIfEmpty: () => void;
   invalid: (error: Error) => void;
+  maxBufferSize: number;
   payloadBuffer: PayloadBuffer;
   registerReceive: (
     channelId: Id,
@@ -175,6 +176,7 @@ const createConnection = (): Connection => {
 
 const createMultipleState = <WebSocketType extends WebSocketTypes>(
   webSocket: WebSocketType,
+  maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
 ) => {
   const channels: IdMap<Channel> = mapNew();
   const pendingControls: IdMap<PendingControl> = mapNew();
@@ -335,8 +337,8 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       const payload = createMultipleControlPayload(requestId, control, body);
       const payloadSize = getWebSocketPayloadSize(payload);
       if (
-        isWebSocketPayloadTooLarge(payloadSize) ||
-        isWebSocketBackpressured(webSocket, payloadSize)
+        isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) ||
+        isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)
       ) {
         reject(overflow('socket'));
         return;
@@ -388,7 +390,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     const payloadSize = getWebSocketPayloadSize(payload);
     if (
       queuedCount >= MAX_WEBSOCKET_QUEUE_SIZE ||
-      queuedSize + payloadSize > MAX_WEBSOCKET_BUFFER_SIZE
+      queuedSize + payloadSize > maxBufferSize
     ) {
       overflow('client');
       return;
@@ -426,7 +428,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     const payloadsSize = getPayloadsSize(payloads);
     if (
       queuedCount + size(payloads) > MAX_WEBSOCKET_QUEUE_SIZE ||
-      queuedSize + payloadsSize > MAX_WEBSOCKET_BUFFER_SIZE
+      queuedSize + payloadsSize > maxBufferSize
     ) {
       overflow('client');
       return false;
@@ -471,11 +473,11 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     for (let index = 0; index < size(payloads); index++) {
       const payload = createMultiplePayload(channelId, payloads[index]);
       const payloadSize = getWebSocketPayloadSize(payload);
-      if (isWebSocketPayloadTooLarge(payloadSize)) {
+      if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize)) {
         overflow('client');
         return false;
       }
-      if (isWebSocketBackpressured(webSocket, payloadSize)) {
+      if (isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
         if (coalesce) {
           channel[ChannelValue.Dirty] = coalesce;
         } else if (!queueOutgoing(channel, slice(payloads, index))) {
@@ -513,12 +515,12 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
         const queuedPayload = payloads[payloadIndex];
         const payload = createMultiplePayload(channelId, queuedPayload);
         const payloadSize = getWebSocketPayloadSize(payload);
-        if (isWebSocketPayloadTooLarge(payloadSize)) {
+        if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize)) {
           arrayClear(outgoingQueue, outgoingIndex);
           overflow('client');
           return;
         }
-        if (isWebSocketBackpressured(webSocket, payloadSize)) {
+        if (isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
           arrayClear(outgoingQueue, outgoingIndex);
           scheduleFlush();
           return;
@@ -680,7 +682,12 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
       return;
     }
     const payload = data.toString(UTF8);
-    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
+    if (
+      isWebSocketPayloadTooLarge(
+        getWebSocketPayloadSize(payload),
+        maxBufferSize,
+      )
+    ) {
       invalid(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
       return;
     }
@@ -877,8 +884,8 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
           );
           const payloadSize = getWebSocketPayloadSize(payload);
           if (
-            isWebSocketPayloadTooLarge(payloadSize) ||
-            isWebSocketBackpressured(webSocket, payloadSize)
+            isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) ||
+            isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)
           ) {
             overflow('socket');
           } else {
@@ -899,6 +906,7 @@ const createMultipleState = <WebSocketType extends WebSocketTypes>(
     delChannel,
     destroyIfEmpty,
     invalid,
+    maxBufferSize,
     payloadBuffer,
     registerReceive,
     send,
@@ -916,6 +924,7 @@ const createMultipleWsSynchronizer = async <
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
   fragmentSize?: number,
+  maxBufferSize?: number,
 ) => {
   if (legacyWebSockets.has(webSocket)) {
     errorThrow(ERROR_MULTIPLEX_LEGACY);
@@ -924,7 +933,7 @@ const createMultipleWsSynchronizer = async <
   const state =
     existingState ??
     (() => {
-      const newState = createMultipleState(webSocket);
+      const newState = createMultipleState(webSocket, maxBufferSize);
       multipleStates.set(webSocket, newState);
       return newState;
     })();
@@ -965,6 +974,7 @@ const createMultipleWsSynchronizer = async <
             requestTimeoutSeconds,
             state.invalid,
             state.payloadBuffer,
+            state.maxBufferSize,
           ),
           fail,
         ),
@@ -989,6 +999,7 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
   fragmentSize?: number,
+  maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
 ) => {
   if (multipleStates.has(webSocket)) {
     errorThrow(ERROR_LEGACY_MULTIPLEX);
@@ -1014,6 +1025,8 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
         receive,
         requestTimeoutSeconds,
         createInvalidPayloadHandler(webSocket, notifyIgnoredError),
+        undefined,
+        maxBufferSize,
       ));
     startReceiving();
     let removeListeners: (() => void)[] = [];
@@ -1067,8 +1080,8 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
         }
         const payloadSize = getWebSocketPayloadSize(payload);
         if (
-          isWebSocketPayloadTooLarge(payloadSize) ||
-          isWebSocketBackpressured(webSocket, payloadSize)
+          isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) ||
+          isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)
         ) {
           overflow();
         } else {
@@ -1153,6 +1166,7 @@ export const createWsSynchronizer = (async (
         args[2],
         args[3],
         args[4],
+        args[5],
       )
     : createLegacyWsSynchronizer(
         store,
@@ -1162,4 +1176,5 @@ export const createWsSynchronizer = (async (
         args[1],
         args[2],
         args[3],
+        args[4],
       )) as typeof createWsSynchronizerDecl;

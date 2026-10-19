@@ -108,6 +108,11 @@
    * increasing the target when needed. When set, larger synchronization
    * payloads are split into fragments and reassembled by the receiving
    * WsSynchronizer, since v9.0.
+   * @param maxBufferSize An optional number of UTF-8 bytes that the WebSocket
+   * may hold, defaulting to 16 MiB: the largest message sent or received,
+   * whole or in fragments, and the most that may wait to be sent, since
+   * v10.1.0. Raise it along with the server's if a path holds more content than
+   * can be sent to a new client in one message.
    * @returns A reference to the new WsSynchronizer object.
    * @example
    * This example creates two WsSynchronizer objects to synchronize one
@@ -193,6 +198,9 @@
    * WebSocket message fragment. Unicode code points are never split and can
    * exceed this size. TinyBase sends at most 1,000 fragments for one payload,
    * increasing the target when needed.
+   * @param maxBufferSize An optional number of UTF-8 bytes that the WebSocket
+   * may hold, defaulting to 16 MiB, since v10.1.0. Every WsSynchronizer that
+   * shares the WebSocket uses that of the first to be created on it.
    * @returns A reference to the new WsSynchronizer object.
    * @example
    * This example creates two WsSynchronizer objects for different

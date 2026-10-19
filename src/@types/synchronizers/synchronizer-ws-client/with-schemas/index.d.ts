@@ -29,6 +29,7 @@ export function createWsSynchronizer<
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
   fragmentSize?: number,
+  maxBufferSize?: number,
 ): Promise<WsSynchronizer<Schemas, WebSocketType>>;
 
 /// createWsSynchronizer.2
@@ -44,4 +45,5 @@ export function createWsSynchronizer<
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
   fragmentSize?: number,
+  maxBufferSize?: number,
 ): Promise<WsSynchronizer<Schemas, WebSocketType>>;

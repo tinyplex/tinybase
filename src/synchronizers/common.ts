@@ -128,8 +128,10 @@ export const getWebSocketPayloadSize = (value: string): number => {
   return byteSize;
 };
 
-export const isWebSocketPayloadTooLarge = (payloadSize: number): boolean =>
-  payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
+export const isWebSocketPayloadTooLarge = (
+  payloadSize: number,
+  maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
+): boolean => payloadSize > maxBufferSize;
 
 export const WS_SYNCHRONIZER_PROTOCOL = TINYBASE;
 export const SERVER_CLIENT_ID = 'S';
@@ -341,6 +343,7 @@ export const createPayloadDecoder = (
   fragmentTimeoutSeconds: number = 1,
   onInvalid?: (error: Error) => void,
   sharedBuffer?: PayloadBuffer,
+  maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
 ) => {
   const buffer: IdMap<Pending> = mapNew();
   const payloadBuffer: PayloadBuffer = sharedBuffer ?? [0, 0];
@@ -388,7 +391,12 @@ export const createPayloadDecoder = (
     if (!valid) {
       return;
     }
-    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
+    if (
+      isWebSocketPayloadTooLarge(
+        getWebSocketPayloadSize(payload),
+        maxBufferSize,
+      )
+    ) {
       invalid(
         errorNew(
           ERROR_SYNC_OVERFLOW,
@@ -429,7 +437,7 @@ export const createPayloadDecoder = (
               const retainedSize =
                 getWebSocketPayloadSize(remainder) +
                 (pending ? 0 : getWebSocketPayloadSize(bufferKey));
-              if (payloadBuffer[1] + retainedSize > MAX_WEBSOCKET_BUFFER_SIZE) {
+              if (payloadBuffer[1] + retainedSize > maxBufferSize) {
                 invalid(errorNew(ERROR_SYNC_OVERFLOW, 'fragments'));
                 return;
               }
@@ -494,14 +502,15 @@ export const getPayloadCoalesceKey = (
 export const isWebSocketBackpressured = (
   webSocket: {bufferedAmount?: number},
   payloadSize: number,
-): boolean =>
-  (webSocket.bufferedAmount ?? 0) + payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
+  maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
+): boolean => (webSocket.bufferedAmount ?? 0) + payloadSize > maxBufferSize;
 
 export const createPayloadReceiver = (
   receive: Receive,
   fragmentTimeoutSeconds: number = 1,
   onInvalid?: (error: Error) => void,
   sharedBuffer?: PayloadBuffer,
+  maxBufferSize?: number,
 ) =>
   createPayloadDecoder(
     (fromClientId, _remainders, requestId, message, body) =>
@@ -509,6 +518,7 @@ export const createPayloadReceiver = (
     fragmentTimeoutSeconds,
     onInvalid,
     sharedBuffer,
+    maxBufferSize,
   );
 
 export const createPayload = (
@@ -658,6 +668,7 @@ export const createMultipleServerClient = <Channel>(
   fragmentTimeoutSeconds: number,
   invalid: (error: Error) => void,
   onIgnoredError?: (error: any) => void,
+  maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE,
 ) => {
   type ServerChannel = MultipleServerChannel<Channel>;
   const channels: IdMap<ServerChannel> = mapNew();
@@ -780,7 +791,12 @@ export const createMultipleServerClient = <Channel>(
     if (!valid) {
       return;
     }
-    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
+    if (
+      isWebSocketPayloadTooLarge(
+        getWebSocketPayloadSize(payload),
+        maxBufferSize,
+      )
+    ) {
       invalidate(errorNew(ERROR_SYNC_OVERFLOW, 'socket'));
       return;
     }
@@ -809,6 +825,7 @@ export const createMultipleServerClient = <Channel>(
               fragmentTimeoutSeconds,
               invalidate,
               payloadBuffer,
+              maxBufferSize,
             ),
           )[0](channelPayload);
         }

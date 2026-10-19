@@ -850,6 +850,27 @@ describe('limits', () => {
     expect(errors).toEqual(['tinybase:15:channels']);
   });
 
+  test('the buffer size can be chosen', async () => {
+    const errors: string[] = [];
+    const [, connect] = createFabricatedServer({
+      onIgnoredError: (error) => errors.push(error.message),
+      maxBufferSize: 100,
+    });
+    const client = connect('client', 'office');
+    client.emit('message', '\n[null,1,""]');
+    expect(client.closed).toBeUndefined();
+    client.emit('message', '\n[null,1,"' + 'x'.repeat(100) + '"]');
+    expect(client.closed).toEqual([1013, 'tinybase:15:socket']);
+    expect(errors).toEqual(['tinybase:15:socket']);
+
+    const [, connectLarge] = createFabricatedServer({
+      maxBufferSize: 20_000_000,
+    });
+    const largeClient = connectLarge('client', 'office');
+    largeClient.emit('message', '\n[null,1,"' + 'x'.repeat(17_000_000) + '"]');
+    expect(largeClient.closed?.[0]).not.toEqual(1013);
+  });
+
   test('messages held for every channel share one limit', async () => {
     const errors: string[] = [];
     const [, connect] = createFabricatedServer({

@@ -112,6 +112,8 @@ export type WsServerOptions<
   readonly requestTimeoutSeconds?: number;
   /// WsServerOptions.fragmentSize
   readonly fragmentSize?: number;
+  /// WsServerOptions.maxBufferSize
+  readonly maxBufferSize?: number;
 };
 
 /// createWsServer
