@@ -11,9 +11,9 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v10-0'><em>NEW!</em> v10.0 release</a>
+<a href='/guides/releases/#v10-1'><em>NEW!</em> v10.1 release</a>
 
-<span id="one-with">"The one with SQL Server & TinyJoin!"</span>
+<span id="one-with">"The one with authorized sync!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
