@@ -104,6 +104,10 @@ and servers keep working as before.
   changes that its MergeableStore refuses, with the new error code 18, through
   its `onIgnoredError` handler. That is how to learn of a peer whose clock is
   more than five minutes ahead.
+- A WsSynchronizer for a single MergeableStore now goes on receiving changes
+  after its WebSocket reconnects in place, as a ReconnectingWebSocket does.
+  Since v10.0, it stopped listening to the WebSocket when it first closed, so
+  a client went on sending its own changes but never heard of anyone else's.
 - A Persister or Synchronizer that is saving automatically now saves a change
   that is made while it is loading, once it has loaded. Until now, that change
   was not saved until the next one was made, and so a Synchronizer could leave
