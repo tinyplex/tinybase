@@ -736,6 +736,64 @@ test('multiple stores resubscribe after reconnecting', async () => {
   expect(webSocket.closeCalls).toBe(1);
 });
 
+test('a single store keeps synchronizing after reconnecting', async () => {
+  const webSocket = new MockWebSocket();
+  const store = createMergeableStore();
+  const errors: string[] = [];
+  const synchronizer = await createWsSynchronizer(
+    store,
+    webSocket as any,
+    0.01,
+    undefined,
+    undefined,
+    (error) => errors.push(error.message),
+  );
+  await synchronizer.startSync();
+  const peer = createMergeableStore('peer');
+  let changes: any;
+  peer.addDidFinishTransactionListener(
+    () => (changes = peer.getTransactionMergeableChanges()),
+  );
+  const receive = (value: number) => {
+    peer.setValue('v', value);
+    webSocket.receive('peer\n' + JSON.stringify(['~' + value, 3, changes]));
+  };
+
+  receive(1);
+  expect(store.getValues()).toEqual({v: 1});
+
+  webSocket.disconnect();
+  webSocket.reconnect();
+  receive(2);
+  expect(store.getValues()).toEqual({v: 2});
+
+  webSocket.receive('peer\n[');
+  expect(webSocket.closeCode).toBe(1007);
+  webSocket.disconnect();
+  webSocket.reconnect();
+  receive(3);
+  expect(store.getValues()).toEqual({v: 3});
+
+  webSocket.bufferedAmount = 16_777_216;
+  store.setValue('w', 1);
+  expect(webSocket.closeCode).toBe(1013);
+  webSocket.disconnect();
+  webSocket.bufferedAmount = 0;
+  webSocket.reconnect();
+  const sentPayloadCount = webSocket.sentPayloads.length;
+  store.setValue('w', 2);
+  await new Promise((resolve) => setTimeout(resolve));
+  expect(webSocket.sentPayloads.length).toBeGreaterThan(sentPayloadCount);
+
+  await synchronizer.destroy();
+  expect(webSocket.listenerCount('message')).toBe(0);
+  expect(webSocket.listenerCount('open')).toBe(0);
+  expect(webSocket.listenerCount('close')).toBe(0);
+  expect(webSocket.listenerCount('error')).toBe(0);
+  expect(errors).toContain('tinybase:14');
+  expect(errors).toContain('tinybase:15:socket');
+});
+
 test('a stale opening handshake does not consume a reconnect', async () => {
   const webSocket = new MockWebSocket();
   const synchronizer = await createWsSynchronizer(

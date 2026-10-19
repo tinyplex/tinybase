@@ -1007,12 +1007,15 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
     }
   };
   const registerReceive = (receive: Receive, fail: (error: Error) => void) => {
-    const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
-    const [receivePayload, clearReceivePayload] = createPayloadReceiver(
-      receive,
-      requestTimeoutSeconds,
-      invalid,
-    );
+    let receivePayload: (payload: string) => void;
+    let clearReceivePayload: () => void;
+    const startReceiving = () =>
+      ([receivePayload, clearReceivePayload] = createPayloadReceiver(
+        receive,
+        requestTimeoutSeconds,
+        createInvalidPayloadHandler(webSocket, notifyIgnoredError),
+      ));
+    startReceiving();
     let removeListeners: (() => void)[] = [];
     removeTransportListeners = () => {
       clearReceivePayload();
@@ -1021,14 +1024,23 @@ const createLegacyWsSynchronizer = async <WebSocketType extends WebSocketTypes>(
       );
       arrayClear(removeListeners);
     };
+    // A WebSocket that closes may open again, as a ReconnectingWebSocket does,
+    // so it is still listened to, and each connection starts afresh.
     const failTransport = () => {
       tryReturn(() => fail(errorNew(ERROR_MULTIPLEX_SOCKET)));
-      removeTransportListeners();
+      clearReceivePayload();
     };
     removeListeners = [
       addEventListener(webSocket, MESSAGE, ({data}) =>
         receivePayload(data.toString(UTF8)),
       ),
+      addEventListener(webSocket, OPEN, () => {
+        if (!creating) {
+          clearReceivePayload();
+          startReceiving();
+          overflowing = false;
+        }
+      }),
       addEventListener(webSocket, CLOSE, () => {
         if (!creating) {
           failTransport();
