@@ -532,6 +532,38 @@ describe('refused writes', () => {
     expect(customerStore.getTables()).toEqual({});
   });
 
+  test('do not let the client take what the server did not', async () => {
+    const [serverStore, port] = await createObservedServer();
+    const [staffStore] = await openClient(port, '/shop?role=staff');
+    const [customerStore] = await openClient(
+      port,
+      '/shop?role=customer',
+      createAheadStore(),
+    );
+    customerStore.setCell('pets', 'fido', 'price', 1);
+    await pause();
+    expect(customerStore.getTables()).toEqual({});
+
+    const behindStore = createMergeableStore('behind', getNow).setCell(
+      'pets',
+      'fido',
+      'price',
+      3,
+    );
+    await pause();
+    staffStore.setCell('pets', 'fido', 'price', 2);
+    await pause();
+    const behindSynchronizer = await createWsSynchronizer(
+      behindStore,
+      new WebSocket(getTestWebSocketUrl(port, '/shop?role=staff')),
+    );
+    cleanups.push(() => behindSynchronizer.destroy());
+    await behindSynchronizer.startAutoSave();
+    await pause();
+    expect(serverStore.getTables()).toEqual({pets: {fido: {price: 2}}});
+    expect(customerStore.getTables()).toEqual({pets: {fido: {price: 2}}});
+  });
+
   test('are undone again when the client next synchronizes', async () => {
     const [serverStore, port] = await createObservedServer();
     const [staffStore] = await openClient(port, '/shop?role=staff');

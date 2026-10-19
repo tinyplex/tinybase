@@ -1032,6 +1032,61 @@ export const createServerChangesReceiver = (
     }
   };
 
+  // Only what is newer than the server's own data changes it, and so only
+  // that is passed on: a client that has been corrected takes whatever it is
+  // given, and so must not be given what the server has not taken itself.
+  const getNewer = (
+    tables: TablesStamp[0],
+    values: ValuesStamp[0],
+  ): MergeableChanges | undefined => {
+    const [storeTables] = store.getMergeableCellDiff(
+      objMap(tables, ([rowStamps]) => objMap(rowStamps, () => objNew())),
+    );
+    const [storeValues] = store.getMergeableValueDiff({});
+    const isNewer = (
+      hlc: string,
+      [, storeHlc = EMPTY_STRING]: [thing?: any, hlc?: string] = [],
+    ) => hlc > storeHlc;
+    const newerTables: TablesStamp[0] = objNew();
+    objForEach(tables, ([rowStamps], tableId) =>
+      objForEach(rowStamps, ([cellStamps], rowId) =>
+        objForEach(cellStamps, (cellStamp, cellId) =>
+          isNewer(
+            cellStamp[1] ?? EMPTY_STRING,
+            storeTables[tableId]?.[0]?.[rowId]?.[0]?.[cellId],
+          )
+            ? objSet(
+                objEnsure<TablesStamp[0][Id][0][Id]>(
+                  objEnsure<TablesStamp[0][Id]>(
+                    newerTables,
+                    tableId,
+                    stampNewObj,
+                  )[0],
+                  rowId,
+                  stampNewObj,
+                )[0],
+                cellId,
+                cellStamp,
+              )
+            : 0,
+        ),
+      ),
+    );
+    const newerValues: ValuesStamp[0] = objNew();
+    objForEach(values, (valueStamp, valueId) =>
+      isNewer(valueStamp[1] ?? EMPTY_STRING, storeValues[valueId])
+        ? objSet(newerValues, valueId, valueStamp)
+        : 0,
+    );
+    return objIsEmpty(newerTables) && objIsEmpty(newerValues)
+      ? undefined
+      : [
+          stampNew(newerTables, EMPTY_STRING),
+          stampNew(newerValues, EMPTY_STRING),
+          1,
+        ];
+  };
+
   const receiveChanges = (
     fromClientId: Id,
     changes: MergeableChanges | MergeableContent,
@@ -1086,9 +1141,9 @@ export const createServerChangesReceiver = (
       stampNew(values, EMPTY_STRING),
       1,
     ];
-    if (!objIsEmpty(tables) || !objIsEmpty(values)) {
-      relay(fromClientId, accepted);
-    }
+    ifNotUndefined(getNewer(tables, values), (newer) =>
+      relay(fromClientId, newer),
+    );
     if (size(refusedCells) || size(refusedValues)) {
       refuse(fromClientId, refusedCells, refusedValues);
     }
