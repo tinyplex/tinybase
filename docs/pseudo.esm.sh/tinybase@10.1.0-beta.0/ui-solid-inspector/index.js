@@ -1409,6 +1409,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   let autoLoadAfterSaveGeneration = 0;
   let autoSaveListenerId;
   let autoSaveGeneration = 0;
+  let applying = 0;
+  let saveSkipped = 0;
+  let savesInFlight = 0;
+  let saving;
   let destroyed = 0;
   let destroying;
   let activeAction;
@@ -1457,6 +1461,9 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           pruneSchedule();
         }
       );
+      if (!isEmpty2(scheduledActions)) {
+        await run();
+      }
     }
   };
   const pruneSchedule = () => {
@@ -1466,11 +1473,26 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       mapSet(scheduleReferences, scheduleId);
     }
   };
-  const setContentOrChanges = (contentOrChanges) => {
-    (isMergeableStore && isArray2(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3] : contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(contentOrChanges);
+  const setContentOrChanges = (contentOrChanges) => whileApplying(() => {
+    if (isMergeableStore && isArray2(contentOrChanges?.[0])) {
+      if (!(contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3])(
+        contentOrChanges,
+        !isSynchronizer
+      )) ;
+    } else {
+      (contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(
+        contentOrChanges
+      );
+    }
+  });
+  const whileApplying = (action) => {
+    applying++;
+    tryFinally(action, () => applying--);
   };
-  const saveAfterMutated = async () => {
-    if (isAutoSaving() && store.__?.[0]?.()) {
+  const saveAfterLoading = async () => {
+    const wasSaveSkipped = saveSkipped;
+    saveSkipped = 0;
+    if (isAutoSaving() && (store.__?.[0]?.() || wasSaveSkipped)) {
       await save();
     }
   };
@@ -1483,42 +1505,43 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     }
   );
   const load = async (initialContent) => {
-    if (status != 2) {
-      await tryFinallyAsync2(
-        async () => {
-          setStatus(
-            1
-            /* Loading */
-          );
-          loads++;
-          await schedule(
-            () => tryCatch2(
-              async () => {
-                const content = await getPersisted();
-                if (isArray2(content)) {
-                  setContentOrChanges(content);
-                } else if (isUndefined2(content) && initialContent) {
-                  setDefaultContent(initialContent);
-                } else if (!isUndefined2(content)) {
-                  errorThrow(ERROR_CONTENT, content);
-                }
-              },
-              (error) => {
-                onIgnoredError?.(error);
-                if (initialContent) {
-                  setDefaultContent(initialContent);
-                }
-              }
-            )
-          );
-        },
-        () => setStatus(
-          0
-          /* Idle */
-        )
-      );
-      await saveAfterMutated();
+    while (status == 2) {
+      await tryCatch2(() => saving);
     }
+    await tryFinallyAsync2(
+      async () => {
+        setStatus(
+          1
+          /* Loading */
+        );
+        loads++;
+        await schedule(
+          () => tryCatch2(
+            async () => {
+              const content = await getPersisted();
+              if (isArray2(content)) {
+                setContentOrChanges(content);
+              } else if (isUndefined2(content) && initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              } else if (!isUndefined2(content)) {
+                errorThrow(ERROR_CONTENT, content);
+              }
+            },
+            (error) => {
+              onIgnoredError?.(error);
+              if (initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              }
+            }
+          )
+        );
+      },
+      () => setStatus(
+        0
+        /* Idle */
+      )
+    );
+    await saveAfterLoading();
     return persister;
   };
   const runAutoLoadAfterSave = async () => {
@@ -1574,7 +1597,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 }
               );
               if (!pendingAutoLoads) {
-                await saveAfterMutated();
+                await saveAfterLoading();
               }
             } else if (status == 2) {
               autoLoadAfterSaveGeneration = generation;
@@ -1626,28 +1649,28 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const isAutoLoading = () => !isUndefined2(autoLoadHandle);
   const save = async (changes) => {
     if (status != 1) {
-      await tryFinallyAsync2(
-        () => tryFinallyAsync2(
-          async () => {
+      const thisSave = saving = tryFinallyAsync2(
+        async () => {
+          savesInFlight++;
+          setStatus(
+            2
+            /* Saving */
+          );
+          saves++;
+          await schedule(
+            () => tryCatch2(() => setPersisted(getContent, changes), onIgnoredError)
+          );
+        },
+        () => {
+          if (!--savesInFlight) {
             setStatus(
-              2
-              /* Saving */
+              0
+              /* Idle */
             );
-            saves++;
-            await schedule(
-              () => tryCatch2(
-                () => setPersisted(getContent, changes),
-                onIgnoredError
-              )
-            );
-          },
-          () => setStatus(
-            0
-            /* Idle */
-          )
-        ),
-        runAutoLoadAfterSave
+          }
+        }
       );
+      await tryFinallyAsync2(() => thisSave, runAutoLoadAfterSave);
     }
     return persister;
   };
@@ -1661,6 +1684,9 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           if (generation == autoSaveGeneration && !destroyed) {
             const changes = getChanges();
             if (hasChanges(changes)) {
+              if (status == 1 && !applying) {
+                saveSkipped = 1;
+              }
               void tryCatch2(() => save(changes));
             }
           }
@@ -1675,6 +1701,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     }
     const listenerId = autoSaveListenerId;
     autoSaveListenerId = void 0;
+    saveSkipped = 0;
     if (!isUndefined2(listenerId)) {
       store.delListener(listenerId);
     }
@@ -3220,22 +3247,24 @@ var createStore = () => {
       setValidValuesSchema(schema);
       hasValuesSchema = hasSchema;
     });
-    collForEach(
-      changedCells,
-      (table, tableId) => collForEach(
-        table,
-        (row, rowId) => collForEach(
-          row,
-          ([oldCell], cellId) => setOrDelCell(tableId, rowId, cellId, oldCell, true)
+    whileAcceptingEncodedData(() => {
+      collForEach(
+        changedCells,
+        (table, tableId) => collForEach(
+          table,
+          (row, rowId) => collForEach(
+            row,
+            ([oldCell], cellId) => setOrDelCell(tableId, rowId, cellId, oldCell, true)
+          )
         )
-      )
-    );
-    collClear(changedCells);
-    collForEach(
-      changedValues,
-      ([oldValue], valueId) => setOrDelValue(valueId, oldValue, true)
-    );
-    collClear(changedValues);
+      );
+      collClear(changedCells);
+      collForEach(
+        changedValues,
+        ([oldValue], valueId) => setOrDelValue(valueId, oldValue, true)
+      );
+      collClear(changedValues);
+    });
   };
   const resetTransaction = () => {
     transactions = 0;

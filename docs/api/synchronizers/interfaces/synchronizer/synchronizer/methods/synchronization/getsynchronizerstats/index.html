@@ -16,9 +16,9 @@ store2<span class="punctuation">.</span><span class="function"><a href="/api/the
 <span class="comment">// ...</span>
 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/synchronization/getsynchronizerstats/">getSynchronizerStats</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> {receives: 4, sends: 5}</span>
+<span class="comment">// -> {receives: 4, sends: 6}</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/synchronization/getsynchronizerstats/">getSynchronizerStats</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> {receives: 5, sends: 4}</span>
+<span class="comment">// -> {receives: 6, sends: 4}</span>
 
 <span class="keyword">await</span> synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">await</span> synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>

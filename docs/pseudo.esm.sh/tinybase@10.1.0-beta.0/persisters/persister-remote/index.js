@@ -24,6 +24,7 @@ var test = (regex, subject) => regex.test(subject);
 var promiseNew = (resolver) => new promise(resolver);
 var ERROR_STORE_TYPE = 0;
 var ERROR_CONTENT = 1;
+var ERROR_MERGEABLE = 18;
 var errorNew = (code, details) => new Error(
   TINYBASE + ":" + code + (isUndefined(details) ? EMPTY_STRING : (
     /* istanbul ignore next */
@@ -274,6 +275,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   let autoLoadAfterSaveGeneration = 0;
   let autoSaveListenerId;
   let autoSaveGeneration = 0;
+  let applying = 0;
+  let saveSkipped = 0;
+  let savesInFlight = 0;
+  let saving;
   let destroyed = 0;
   let destroying;
   let activeAction;
@@ -322,6 +327,9 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           pruneSchedule();
         }
       );
+      if (!isEmpty(scheduledActions)) {
+        await run();
+      }
     }
   };
   const pruneSchedule = () => {
@@ -331,11 +339,28 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       mapSet(scheduleReferences, scheduleId);
     }
   };
-  const setContentOrChanges = (contentOrChanges) => {
-    (isMergeableStore && isArray(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3] : contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(contentOrChanges);
+  const setContentOrChanges = (contentOrChanges) => whileApplying(() => {
+    if (isMergeableStore && isArray(contentOrChanges?.[0])) {
+      if (!(contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3])(
+        contentOrChanges,
+        !isSynchronizer
+      )) {
+        onIgnoredError?.(errorNew(ERROR_MERGEABLE));
+      }
+    } else {
+      (contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(
+        contentOrChanges
+      );
+    }
+  });
+  const whileApplying = (action) => {
+    applying++;
+    tryFinally(action, () => applying--);
   };
-  const saveAfterMutated = async () => {
-    if (isAutoSaving() && store.__?.[0]?.()) {
+  const saveAfterLoading = async () => {
+    const wasSaveSkipped = saveSkipped;
+    saveSkipped = 0;
+    if (isAutoSaving() && (store.__?.[0]?.() || wasSaveSkipped)) {
       await save();
     }
   };
@@ -348,42 +373,43 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     }
   );
   const load = async (initialContent) => {
-    if (status != 2) {
-      await tryFinallyAsync(
-        async () => {
-          setStatus(
-            1
-            /* Loading */
-          );
-          loads++;
-          await schedule(
-            () => tryCatch(
-              async () => {
-                const content = await getPersisted();
-                if (isArray(content)) {
-                  setContentOrChanges(content);
-                } else if (isUndefined(content) && initialContent) {
-                  setDefaultContent(initialContent);
-                } else if (!isUndefined(content)) {
-                  errorThrow(ERROR_CONTENT, content);
-                }
-              },
-              (error) => {
-                onIgnoredError?.(error);
-                if (initialContent) {
-                  setDefaultContent(initialContent);
-                }
-              }
-            )
-          );
-        },
-        () => setStatus(
-          0
-          /* Idle */
-        )
-      );
-      await saveAfterMutated();
+    while (status == 2) {
+      await tryCatch(() => saving);
     }
+    await tryFinallyAsync(
+      async () => {
+        setStatus(
+          1
+          /* Loading */
+        );
+        loads++;
+        await schedule(
+          () => tryCatch(
+            async () => {
+              const content = await getPersisted();
+              if (isArray(content)) {
+                setContentOrChanges(content);
+              } else if (isUndefined(content) && initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              } else if (!isUndefined(content)) {
+                errorThrow(ERROR_CONTENT, content);
+              }
+            },
+            (error) => {
+              onIgnoredError?.(error);
+              if (initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              }
+            }
+          )
+        );
+      },
+      () => setStatus(
+        0
+        /* Idle */
+      )
+    );
+    await saveAfterLoading();
     return persister;
   };
   const runAutoLoadAfterSave = async () => {
@@ -439,7 +465,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 }
               );
               if (!pendingAutoLoads) {
-                await saveAfterMutated();
+                await saveAfterLoading();
               }
             } else if (status == 2) {
               autoLoadAfterSaveGeneration = generation;
@@ -491,28 +517,28 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const isAutoLoading = () => !isUndefined(autoLoadHandle);
   const save = async (changes) => {
     if (status != 1) {
-      await tryFinallyAsync(
-        () => tryFinallyAsync(
-          async () => {
+      const thisSave = saving = tryFinallyAsync(
+        async () => {
+          savesInFlight++;
+          setStatus(
+            2
+            /* Saving */
+          );
+          saves++;
+          await schedule(
+            () => tryCatch(() => setPersisted(getContent, changes), onIgnoredError)
+          );
+        },
+        () => {
+          if (!--savesInFlight) {
             setStatus(
-              2
-              /* Saving */
+              0
+              /* Idle */
             );
-            saves++;
-            await schedule(
-              () => tryCatch(
-                () => setPersisted(getContent, changes),
-                onIgnoredError
-              )
-            );
-          },
-          () => setStatus(
-            0
-            /* Idle */
-          )
-        ),
-        runAutoLoadAfterSave
+          }
+        }
       );
+      await tryFinallyAsync(() => thisSave, runAutoLoadAfterSave);
     }
     return persister;
   };
@@ -526,6 +552,9 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           if (generation == autoSaveGeneration && !destroyed) {
             const changes = getChanges();
             if (hasChanges(changes)) {
+              if (status == 1 && !applying) {
+                saveSkipped = 1;
+              }
               void tryCatch(() => save(changes));
             }
           }
@@ -540,6 +569,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     }
     const listenerId = autoSaveListenerId;
     autoSaveListenerId = void 0;
+    saveSkipped = 0;
     if (!isUndefined(listenerId)) {
       store.delListener(listenerId);
     }

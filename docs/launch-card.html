@@ -99,10 +99,18 @@
         gap: 22px;
         align-items: center;
       }
-      .tile img {
+      .tile img,
+      .tile svg {
         width: 64px;
         height: 64px;
         flex: none;
+      }
+      .tile svg {
+        fill: none;
+        stroke: #d81b60;
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
       .tile b {
         display: block;
@@ -131,7 +139,7 @@
       }
     </style>
   </head>
-  <body data-release="v10.0">
+  <body data-release="v10.1">
     <div class="glow"></div>
     <div class="wrap">
       <div class="brand">
@@ -161,31 +169,39 @@
             />
           </g>
         </svg>
-        <div class="ver">v10.0</div>
+        <div class="ver">v10.1</div>
       </div>
-      <h1>The one with<br /><em>SQL Server</em> &amp; <em>TinyJoin</em>.</h1>
+      <h1>The one with<br /><em>authorized sync</em>.</h1>
       <div class="sub">
-        The reactive store &amp; sync engine for local-first apps, now with two
-        new databases.
+        The reactive store &amp; sync engine for local-first apps, now deciding
+        who may sync what.
       </div>
       <div class="tiles">
         <div class="tile">
-          <img src="/tinyjoin.svg" alt="" />
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="12" y="28" width="40" height="30" rx="5" />
+            <path d="M20 28V20a12 12 0 0 1 24 0v8M32 39v8" />
+          </svg>
           <div>
-            <b>TinyJoin</b><span>A relational database in the browser</span>
+            <b>Authorization</b
+            ><span>Decide who may read and write a path</span>
           </div>
         </div>
         <div class="tile">
-          <img src="/mssql.svg" alt="" />
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M10 54h44M16 54V14M28 54V26M40 54V36M52 54V46" />
+          </svg>
           <div>
-            <b>SQL Server</b><span>Plus Azure SQL, with passwordless auth</span>
+            <b>Cheaper sync</b><span>A changed row in 10,000 costs 8kB</span>
           </div>
         </div>
         <div class="tile">
-          <img src="/favicon.svg" alt="" />
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="24" />
+            <path d="M21 33l8 8 15-17" />
+          </svg>
           <div>
-            <b>Agent skill</b
-            ><span>Bundled in the package, and a Claude Code plugin</span>
+            <b>Battle-tested</b><span>Fuzzed until every peer converges</span>
           </div>
         </div>
       </div>

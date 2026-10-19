@@ -55,8 +55,11 @@ var test = (regex, subject) => regex.test(subject);
 var noop = () => {
 };
 var promiseNew = (resolver) => new promise(resolver);
+var arrayNew = (size2, cb) => arrayMap(new Array(size2).fill(0), (_, index) => cb(index));
+var arrayHas = (array, value) => array.includes(value);
 var arrayIndexOf = (array, value) => array.indexOf(value);
 var arrayEvery = (array, cb) => array.every(cb);
+var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
 var arrayForEach = (array, cb) => array.forEach(cb);
 var arrayJoin = (array, sep = EMPTY_STRING) => array.join(sep);
 var arrayMap = (array, cb) => array.map(cb);
@@ -181,6 +184,7 @@ var ERROR_MULTIPLEX_LEGACY = 9;
 var ERROR_LEGACY_MULTIPLEX = 10;
 var ERROR_SYNC_MESSAGE = 14;
 var ERROR_SYNC_OVERFLOW = 15;
+var ERROR_MERGEABLE = 18;
 var errorNew = (code, details) => new Error(
   TINYBASE + ":" + code + (isUndefined(details) ? EMPTY_STRING : (
     /* istanbul ignore next */
@@ -253,7 +257,17 @@ var getCellOrValueType = (cellOrValue) => {
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
 var isCellOrValueOrUndefined = (cellOrValue) => isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
-new GLOBAL.TextEncoder();
+var textEncoder = new GLOBAL.TextEncoder();
+var getHash = (string) => {
+  let hash = 2166136261;
+  arrayForEach(textEncoder.encode(string), (char) => {
+    hash ^= char;
+    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+  });
+  return hash >>> 0;
+};
+var getValueInValuesHash = (valueId, valueHash) => getHash(valueId + ":" + valueHash);
+var getRowInTableHash = getValueInValuesHash;
 var SHIFT36 = 2 ** 36;
 var SHIFT30 = 2 ** 30;
 var SHIFT24 = 2 ** 24;
@@ -263,6 +277,12 @@ var SHIFT6 = 2 ** 6;
 var HLC = /^[-0-9A-Z_a-z]{16}$/;
 var decodeHlcTime = (hlc) => decode(hlc, 0) * SHIFT36 + decode(hlc, 1) * SHIFT30 + decode(hlc, 2) * SHIFT24 + decode(hlc, 3) * SHIFT18 + decode(hlc, 4) * SHIFT12 + decode(hlc, 5) * SHIFT6 + decode(hlc, 6);
 var isHlc = (hlc, maxLogicalTime) => hlc == EMPTY_STRING || isString(hlc) && test(HLC, hlc) && decodeHlcTime(hlc) <= maxLogicalTime;
+var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
+var getLatestHlc = (hlc1, hlc2) => (
+  /* istanbul ignore next */
+  ((hlc1 ?? EMPTY_STRING) > (hlc2 ?? EMPTY_STRING) ? hlc1 : hlc2) ?? EMPTY_STRING
+);
+var stampNewObj = (hlc = EMPTY_STRING) => stampNew(objNew(), hlc);
 var MESSAGE_SEPARATOR = "\n";
 var FRAGMENT = /^([-0-9A-Z_a-z]{16})\n(\d+)\n(\d+)\n([\s\S]*)$/;
 var FRAGMENT_PAYLOAD = /^[^\n]*\n[-0-9A-Z_a-z]{16}\n\d+\n\d+\n/;
@@ -291,8 +311,11 @@ var getWebSocketPayloadSize = (value) => {
   }
   return byteSize;
 };
-var isWebSocketPayloadTooLarge = (payloadSize) => payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
+var isWebSocketPayloadTooLarge = (payloadSize, maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE) => payloadSize > maxBufferSize;
 var SERVER_CLIENT_ID = "S";
+var MARK = "~";
+var getTransactionId = () => MARK + getUniqueId(11);
+var isMarked = (id) => isString(id) && id[0] == MARK;
 var MULTIPLE_CLIENT_ID = "M";
 var MULTIPLE_MESSAGE = -1;
 var MultipleControl = /* @__PURE__ */ ((MultipleControl2) => {
@@ -325,8 +348,13 @@ var isHashTree = (tree, depth) => isObject(tree) && objEvery(
 var isStamp = (stamp, depth) => isArray(stamp) && (size(stamp) == 1 || size(stamp) == 2 && isString(stamp[1]) && isHlc(stamp[1], Infinity)) && (depth ? isObject(stamp[0]) && objEvery(stamp[0], (child) => isStamp(child, depth - 1)) : isCellOrValueOrUndefined(stamp[0]));
 var isContentHashes = (body) => isArray(body) && size(body) == 2 && isHash(body[0]) && isHash(body[1]);
 var isMergeableContentOrChanges = (body) => isArray(body) && (size(body) == 2 || size(body) == 3 && body[2] === 1) && isStamp(body[0], 3) && isStamp(body[1], 1);
-var isResponse = (body) => isContentHashes(body) || isStamp(body, 3) || isStamp(body, 1) || isArray(body) && size(body) == 2 && isStamp(body[0], 3) && (isHashTree(body[1], 0) || isHashTree(body[1], 1));
-var isBodyValid = (message, body) => message == 0 ? isResponse(body) : message == 1 ? body === EMPTY_STRING : message == 2 ? isContentHashes(body) : message == 3 ? isMergeableContentOrChanges(body) : message == 4 ? isHashTree(body, 0) : message == 5 ? isHashTree(body, 1) : message == 6 ? isHashTree(body, 2) : message == 7 ? isHashTree(body, 0) : false;
+var isResponse = (body) => isContentHashes(body) || isHashTree(body, 1) || isStamp(body, 3) || isStamp(body, 1) || isArray(body) && size(body) == 2 && isStamp(body[0], 3) && (isHashTree(body[1], 0) || isHashTree(body[1], 1));
+var BUCKET_COUNT = 256;
+var isBucketHashes = (body) => isObject(body) && objEvery(
+  body,
+  (hashes) => isArray(hashes) && size(hashes) == BUCKET_COUNT && arrayEvery(hashes, isHash)
+);
+var isBodyValid = (message, body) => message == 0 ? isResponse(body) : message == 1 ? body === EMPTY_STRING : message == 2 ? isContentHashes(body) : message == 3 ? isMergeableContentOrChanges(body) : message == 4 ? isHashTree(body, 0) : message == 5 ? isHashTree(body, 1) : message == 6 ? isHashTree(body, 2) : message == 7 ? isHashTree(body, 0) : message == 8 ? isBucketHashes(body) : false;
 var isProtocolMessageValid = (requestId, message, body) => (isNull(requestId) || isString(requestId)) && isNumber(message) && isFiniteNumber(message) && isInteger(message) && isBodyValid(message, body);
 var decodeProtocolMessage = (remainder, multipleControl = false) => tryReturn(() => {
   const message = jsonParseWithUndefined(remainder);
@@ -340,7 +368,7 @@ var ifPayloadValid = (payload, then) => {
   }
   return false;
 };
-var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid, sharedBuffer) => {
+var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid, sharedBuffer, maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE) => {
   const buffer = mapNew();
   const payloadBuffer = sharedBuffer ?? [0, 0];
   let bufferedSize = 0;
@@ -378,7 +406,10 @@ var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid, shar
     if (!valid) {
       return;
     }
-    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
+    if (isWebSocketPayloadTooLarge(
+      getWebSocketPayloadSize(payload),
+      maxBufferSize
+    )) {
       invalid(
         errorNew(
           ERROR_SYNC_OVERFLOW,
@@ -412,7 +443,7 @@ var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid, shar
           }
           if ((isUndefined(pending) || total == pending[3]) && isUndefined(pending?.[0][index])) {
             const retainedSize = getWebSocketPayloadSize(remainder) + (pending ? 0 : getWebSocketPayloadSize(bufferKey));
-            if (payloadBuffer[1] + retainedSize > MAX_WEBSOCKET_BUFFER_SIZE) {
+            if (payloadBuffer[1] + retainedSize > maxBufferSize) {
               invalid(errorNew(ERROR_SYNC_OVERFLOW, "fragments"));
               return;
             }
@@ -459,12 +490,13 @@ var createPayloadDecoder = (receive, fragmentTimeoutSeconds = 1, onInvalid, shar
   };
   return [decode2, clear];
 };
-var isWebSocketBackpressured = (webSocket, payloadSize) => (webSocket.bufferedAmount ?? 0) + payloadSize > MAX_WEBSOCKET_BUFFER_SIZE;
-var createPayloadReceiver = (receive, fragmentTimeoutSeconds = 1, onInvalid, sharedBuffer) => createPayloadDecoder(
+var isWebSocketBackpressured = (webSocket, payloadSize, maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE) => (webSocket.bufferedAmount ?? 0) + payloadSize > maxBufferSize;
+var createPayloadReceiver = (receive, fragmentTimeoutSeconds = 1, onInvalid, sharedBuffer, maxBufferSize) => createPayloadDecoder(
   (fromClientId, _remainders, requestId, message, body) => receive(fromClientId, requestId, message, body),
   fragmentTimeoutSeconds,
   onInvalid,
-  sharedBuffer
+  sharedBuffer,
+  maxBufferSize
 );
 var createRawPayload = (clientId, remainder) => clientId + MESSAGE_SEPARATOR + remainder;
 var getFragments = (remainder, maxFragmentSize) => {
@@ -559,12 +591,6 @@ var createPayloads = (toClientId, requestId, message, body, fragmentSize) => {
     )
   );
 };
-var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
-var getLatestHlc = (hlc1, hlc2) => (
-  /* istanbul ignore next */
-  ((hlc1 ?? EMPTY_STRING) > (hlc2 ?? EMPTY_STRING) ? hlc1 : hlc2) ?? EMPTY_STRING
-);
-var stampNewObj = (hlc = EMPTY_STRING) => stampNew(objNew(), hlc);
 var INTEGER = /^\d+$/;
 var getPoolFunctions = () => {
   const pool = [];
@@ -690,6 +716,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   let autoLoadAfterSaveGeneration = 0;
   let autoSaveListenerId;
   let autoSaveGeneration = 0;
+  let applying = 0;
+  let saveSkipped = 0;
+  let savesInFlight = 0;
+  let saving;
   let destroyed = 0;
   let destroying;
   let activeAction;
@@ -738,6 +768,9 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           pruneSchedule();
         }
       );
+      if (!isEmpty(scheduledActions)) {
+        await run();
+      }
     }
   };
   const pruneSchedule = () => {
@@ -747,11 +780,28 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       mapSet(scheduleReferences, scheduleId);
     }
   };
-  const setContentOrChanges = (contentOrChanges) => {
-    (isMergeableStore && isArray(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3] : contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(contentOrChanges);
+  const setContentOrChanges = (contentOrChanges) => whileApplying(() => {
+    if (isMergeableStore && isArray(contentOrChanges?.[0])) {
+      if (!(contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3])(
+        contentOrChanges,
+        !isSynchronizer
+      )) {
+        onIgnoredError?.(errorNew(ERROR_MERGEABLE));
+      }
+    } else {
+      (contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(
+        contentOrChanges
+      );
+    }
+  });
+  const whileApplying = (action) => {
+    applying++;
+    tryFinally(action, () => applying--);
   };
-  const saveAfterMutated = async () => {
-    if (isAutoSaving() && store.__?.[0]?.()) {
+  const saveAfterLoading = async () => {
+    const wasSaveSkipped = saveSkipped;
+    saveSkipped = 0;
+    if (isAutoSaving() && (store.__?.[0]?.() || wasSaveSkipped)) {
       await save();
     }
   };
@@ -764,42 +814,43 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     }
   );
   const load = async (initialContent) => {
-    if (status != 2) {
-      await tryFinallyAsync(
-        async () => {
-          setStatus(
-            1
-            /* Loading */
-          );
-          loads++;
-          await schedule(
-            () => tryCatch(
-              async () => {
-                const content = await getPersisted();
-                if (isArray(content)) {
-                  setContentOrChanges(content);
-                } else if (isUndefined(content) && initialContent) {
-                  setDefaultContent(initialContent);
-                } else if (!isUndefined(content)) {
-                  errorThrow(ERROR_CONTENT, content);
-                }
-              },
-              (error) => {
-                onIgnoredError?.(error);
-                if (initialContent) {
-                  setDefaultContent(initialContent);
-                }
-              }
-            )
-          );
-        },
-        () => setStatus(
-          0
-          /* Idle */
-        )
-      );
-      await saveAfterMutated();
+    while (status == 2) {
+      await tryCatch(() => saving);
     }
+    await tryFinallyAsync(
+      async () => {
+        setStatus(
+          1
+          /* Loading */
+        );
+        loads++;
+        await schedule(
+          () => tryCatch(
+            async () => {
+              const content = await getPersisted();
+              if (isArray(content)) {
+                setContentOrChanges(content);
+              } else if (isUndefined(content) && initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              } else if (!isUndefined(content)) {
+                errorThrow(ERROR_CONTENT, content);
+              }
+            },
+            (error) => {
+              onIgnoredError?.(error);
+              if (initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              }
+            }
+          )
+        );
+      },
+      () => setStatus(
+        0
+        /* Idle */
+      )
+    );
+    await saveAfterLoading();
     return persister;
   };
   const runAutoLoadAfterSave = async () => {
@@ -855,7 +906,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 }
               );
               if (!pendingAutoLoads) {
-                await saveAfterMutated();
+                await saveAfterLoading();
               }
             } else if (status == 2) {
               autoLoadAfterSaveGeneration = generation;
@@ -907,28 +958,28 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const isAutoLoading = () => !isUndefined(autoLoadHandle);
   const save = async (changes) => {
     if (status != 1) {
-      await tryFinallyAsync(
-        () => tryFinallyAsync(
-          async () => {
+      const thisSave = saving = tryFinallyAsync(
+        async () => {
+          savesInFlight++;
+          setStatus(
+            2
+            /* Saving */
+          );
+          saves++;
+          await schedule(
+            () => tryCatch(() => setPersisted(getContent, changes), onIgnoredError)
+          );
+        },
+        () => {
+          if (!--savesInFlight) {
             setStatus(
-              2
-              /* Saving */
+              0
+              /* Idle */
             );
-            saves++;
-            await schedule(
-              () => tryCatch(
-                () => setPersisted(getContent, changes),
-                onIgnoredError
-              )
-            );
-          },
-          () => setStatus(
-            0
-            /* Idle */
-          )
-        ),
-        runAutoLoadAfterSave
+          }
+        }
       );
+      await tryFinallyAsync(() => thisSave, runAutoLoadAfterSave);
     }
     return persister;
   };
@@ -942,6 +993,9 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           if (generation == autoSaveGeneration && !destroyed) {
             const changes = getChanges();
             if (hasChanges(changes)) {
+              if (status == 1 && !applying) {
+                saveSkipped = 1;
+              }
               void tryCatch(() => save(changes));
             }
           }
@@ -956,6 +1010,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     }
     const listenerId = autoSaveListenerId;
     autoSaveListenerId = void 0;
+    saveSkipped = 0;
     if (!isUndefined(listenerId)) {
       store.delListener(listenerId);
     }
@@ -1104,14 +1159,27 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   return objFreeze(persister);
 };
 mapNew();
-var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requestTimeoutSeconds, onSend, onReceive, onIgnoredError, extra = {}, preDestroy = noop) => {
+var MAX_MARKED_CLIENT_IDS = 1e4;
+var MAX_SAVED_TRANSACTION_IDS = 16;
+var getBucket = (rowId) => getHash(rowId) % BUCKET_COUNT;
+var getBucketHashes = (rowHashes) => {
+  const bucketHashes = arrayNew(BUCKET_COUNT, () => 0);
+  objForEach(rowHashes, (rowHash, rowId) => {
+    const bucket = getBucket(rowId);
+    bucketHashes[bucket] = (bucketHashes[bucket] ^ getRowInTableHash(rowId, rowHash)) >>> 0;
+  });
+  return bucketHashes;
+};
+var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requestTimeoutSeconds, onSend, onReceive, onIgnoredError, extra = {}, preDestroy = noop, receiveChanges, isServer = 0) => {
   let syncing = 0;
   let persisterListener;
   let sends = 0;
   let receives = 0;
   let destroyed = false;
   const pendingRequests = mapNew();
-  const getTransactionId = () => getUniqueId(11);
+  const markedClientIds = setNew();
+  const savedTransactionIds = [];
+  const pulling = mapNew();
   const rejectPendingRequests = (error) => mapForEach(pendingRequests, (requestId, [, , reject, timeout]) => {
     stopTimeout(timeout);
     collDel(pendingRequests, requestId);
@@ -1170,6 +1238,7 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
     });
     tablesStamp[1] = getLatestHlc(tablesStamp[1], tablesTime2);
   };
+  const receiveChangesFrom = (fromClientId, changes) => changes;
   const getChangesFromOtherStore = (otherClientId = null, otherContentHashes, transactionId = getTransactionId()) => tryCatch(async () => {
     if (isUndefined(otherContentHashes)) {
       [otherContentHashes, otherClientId, transactionId] = await request(
@@ -1179,7 +1248,25 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
         transactionId
       );
     }
-    const [otherTablesHash, otherValuesHash] = otherContentHashes;
+    const pull = mapGet(pulling, otherClientId);
+    if (pull && arrayIsEqual(pull[0], otherContentHashes)) {
+      return await pull[1];
+    }
+    const newPull = [
+      otherContentHashes,
+      pullChanges(otherClientId, otherContentHashes, transactionId)
+    ];
+    mapSet(pulling, otherClientId, newPull);
+    return await tryFinallyAsync(
+      () => newPull[1],
+      () => {
+        if (mapGet(pulling, otherClientId) === newPull) {
+          collDel(pulling, otherClientId);
+        }
+      }
+    );
+  }, onIgnoredError);
+  const pullChanges = async (otherClientId, [otherTablesHash, otherValuesHash], transactionId) => {
     const [tablesHash, valuesHash] = store.getMergeableContentHashes();
     let tablesChanges = stampNewObj();
     if (tablesHash != otherTablesHash) {
@@ -1191,25 +1278,68 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
       ))[0];
       tablesChanges = newTables;
       if (!objIsEmpty(differentTableHashes)) {
-        const [newRows, differentRowHashes] = (await request(
-          otherClientId,
-          5,
-          store.getMergeableRowHashes(differentTableHashes),
-          transactionId
-        ))[0];
-        mergeTablesStamps(tablesChanges, newRows);
-        if (!objIsEmpty(differentRowHashes)) {
+        const rowHashes = store.getMergeableRowHashes(differentTableHashes);
+        const bucketed = collHas(markedClientIds, otherClientId) && (isServer || collHas(markedClientIds, SERVER_CLIENT_ID));
+        const bucketHashes = objNew();
+        const plainRowHashes = objNew();
+        objForEach(
+          rowHashes,
+          (tableRowHashes, tableId) => bucketed && objSize(tableRowHashes) >= BUCKET_COUNT ? objSet(bucketHashes, tableId, getBucketHashes(tableRowHashes)) : objSet(plainRowHashes, tableId, tableRowHashes)
+        );
+        let differentRowHashes = objNew();
+        const missingRows = objNew();
+        if (!objIsEmpty(plainRowHashes)) {
+          const [newRows, differentPlainRowHashes] = (await request(
+            otherClientId,
+            5,
+            plainRowHashes,
+            transactionId
+          ))[0];
+          mergeTablesStamps(tablesChanges, newRows);
+          differentRowHashes = differentPlainRowHashes;
+        }
+        if (!objIsEmpty(bucketHashes)) {
+          objForEach(
+            (await request(
+              otherClientId,
+              8,
+              bucketHashes,
+              transactionId
+            ))[0],
+            (otherRowHashes, tableId) => objForEach(
+              otherRowHashes,
+              (otherRowHash, rowId) => isUndefined(rowHashes[tableId]?.[rowId]) ? objEnsure(
+                objEnsure(missingRows, tableId, objNew),
+                rowId,
+                objNew
+              ) : otherRowHash !== rowHashes[tableId][rowId] ? objSet(
+                objEnsure(differentRowHashes, tableId, objNew),
+                rowId,
+                otherRowHash
+              ) : 0
+            )
+          );
+        }
+        const cellHashes = store.getMergeableCellHashes(differentRowHashes);
+        objForEach(
+          missingRows,
+          (rows, tableId) => objForEach(
+            rows,
+            (cells, rowId) => objSet(objEnsure(cellHashes, tableId, objNew), rowId, cells)
+          )
+        );
+        if (!objIsEmpty(cellHashes)) {
           const newCells = (await request(
             otherClientId,
             6,
-            store.getMergeableCellHashes(differentRowHashes),
+            cellHashes,
             transactionId
           ))[0];
           mergeTablesStamps(tablesChanges, newCells);
         }
       }
     }
-    return [
+    return receiveChangesFrom(otherClientId, [
       tablesChanges,
       valuesHash == otherValuesHash ? stampNewObj() : (await request(
         otherClientId,
@@ -1218,18 +1348,54 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
         transactionId
       ))[0],
       1
-    ];
-  }, onIgnoredError);
+    ]);
+  };
+  const getMergeableBucketDiff = (otherBucketHashes) => {
+    const differentRowHashes = objNew();
+    objForEach(
+      store.getMergeableRowHashes(objMap(otherBucketHashes, () => -1)),
+      (tableRowHashes, tableId) => {
+        const bucketHashes = getBucketHashes(tableRowHashes);
+        objForEach(tableRowHashes, (rowHash, rowId) => {
+          const bucket = getBucket(rowId);
+          if (bucketHashes[bucket] !== otherBucketHashes[tableId][bucket]) {
+            objSet(
+              objEnsure(differentRowHashes, tableId, objNew),
+              rowId,
+              rowHash
+            );
+          }
+        });
+      }
+    );
+    return differentRowHashes;
+  };
   const getPersisted = async () => {
+    if (isServer) {
+      getChangesFromOtherStore().then(
+        (changes2) => changes2 ? persisterListener?.(void 0, changes2) : 0
+      ).catch(onIgnoredError);
+      return;
+    }
     const changes = await getChangesFromOtherStore();
     return changes && (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])) ? changes : void 0;
   };
-  const setPersisted = async (_getContent, changes) => changes ? sendImpl(null, getTransactionId(), 3, changes) : sendImpl(
-    null,
-    getTransactionId(),
-    2,
-    store.getMergeableContentHashes()
-  );
+  const setPersisted = async (_getContent, changes) => {
+    if (changes) {
+      sendImpl(null, getTransactionId(), 3, changes);
+    } else {
+      const transactionId = getTransactionId();
+      if (arrayPush(savedTransactionIds, transactionId) > MAX_SAVED_TRANSACTION_IDS) {
+        arrayShift(savedTransactionIds);
+      }
+      sendImpl(
+        null,
+        transactionId,
+        2,
+        store.getMergeableContentHashes()
+      );
+    }
+  };
   const addPersisterListener = (listener) => persisterListener = listener;
   const delPersisterListener = () => persisterListener = void 0;
   const startSync = async (initialContent) => {
@@ -1271,6 +1437,12 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
       return;
     }
     const isAutoLoading = syncing || persister.isAutoLoading();
+    if (message != 0 && isMarked(transactionOrRequestId)) {
+      if (collSize(markedClientIds) >= MAX_MARKED_CLIENT_IDS) {
+        collClear(markedClientIds);
+      }
+      setAdd(markedClientIds, fromClientId);
+    }
     receives++;
     onReceive?.(fromClientId, transactionOrRequestId, message, body);
     if (message == 0) {
@@ -1281,19 +1453,29 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
           0
         )
       );
-    } else if (message == 2 && isAutoLoading) {
+    } else if (message == 2 && isAutoLoading && !arrayIsEqual(mapGet(pulling, fromClientId)?.[0] ?? [], body)) {
       getChangesFromOtherStore(
         fromClientId,
         body,
         transactionOrRequestId ?? void 0
       ).then((changes) => {
         persisterListener?.(void 0, changes);
+        if (changes && !arrayHas(savedTransactionIds, transactionOrRequestId) && !arrayIsEqual(store.getMergeableContentHashes(), body)) {
+          sendImpl(
+            fromClientId,
+            transactionOrRequestId ?? getTransactionId(),
+            2,
+            store.getMergeableContentHashes()
+          );
+        }
       }).catch(onIgnoredError);
     } else if (message == 3 && isAutoLoading) {
-      persisterListener?.(void 0, body);
+      if (!objIsEmpty(body[0][0]) || !objIsEmpty(body[1][0])) {
+        persisterListener?.(void 0, receiveChangesFrom(fromClientId, body));
+      }
     } else {
       ifNotUndefined(
-        message == 1 && (syncing || persister.isAutoSaving()) ? store.getMergeableContentHashes() : message == 4 ? store.getMergeableTableDiff(body) : message == 5 ? store.getMergeableRowDiff(body) : message == 6 ? store.getMergeableCellDiff(body) : message == 7 ? store.getMergeableValueDiff(body) : void 0,
+        message == 1 && (syncing || persister.isAutoSaving()) ? store.getMergeableContentHashes() : message == 4 ? store.getMergeableTableDiff(body) : message == 5 ? store.getMergeableRowDiff(body) : message == 6 ? store.getMergeableCellDiff(body) : message == 7 ? store.getMergeableValueDiff(body) : message == 8 ? getMergeableBucketDiff(body) : void 0,
         (response) => {
           sendImpl(
             fromClientId,
@@ -1321,7 +1503,7 @@ var createConnection = () => {
   promise2.catch(() => 0);
   return [promise2, resolve, reject];
 };
-var createMultipleState = (webSocket) => {
+var createMultipleState = (webSocket, maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE) => {
   const channels = mapNew();
   const pendingControls = mapNew();
   const payloadBuffer = [0, 0];
@@ -1523,7 +1705,7 @@ var createMultipleState = (webSocket) => {
       }
       const payload = createMultipleControlPayload(requestId, control, body);
       const payloadSize = getWebSocketPayloadSize(payload);
-      if (isWebSocketPayloadTooLarge(payloadSize) || isWebSocketBackpressured(webSocket, payloadSize)) {
+      if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) || isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
         reject(overflow("socket"));
         return;
       }
@@ -1580,7 +1762,7 @@ var createMultipleState = (webSocket) => {
   };
   const queueIncoming = (channel, payload) => {
     const payloadSize = getWebSocketPayloadSize(payload);
-    if (queuedCount >= MAX_WEBSOCKET_QUEUE_SIZE || queuedSize + payloadSize > MAX_WEBSOCKET_BUFFER_SIZE) {
+    if (queuedCount >= MAX_WEBSOCKET_QUEUE_SIZE || queuedSize + payloadSize > maxBufferSize) {
       overflow("client");
       return;
     }
@@ -1637,7 +1819,7 @@ var createMultipleState = (webSocket) => {
   };
   const queueOutgoing = (channel, payloads) => {
     const payloadsSize = getPayloadsSize(payloads);
-    if (queuedCount + size(payloads) > MAX_WEBSOCKET_QUEUE_SIZE || queuedSize + payloadsSize > MAX_WEBSOCKET_BUFFER_SIZE) {
+    if (queuedCount + size(payloads) > MAX_WEBSOCKET_QUEUE_SIZE || queuedSize + payloadsSize > maxBufferSize) {
       overflow("client");
       return false;
     }
@@ -1689,11 +1871,11 @@ var createMultipleState = (webSocket) => {
     for (let index = 0; index < size(payloads); index++) {
       const payload = createMultiplePayload(channelId, payloads[index]);
       const payloadSize = getWebSocketPayloadSize(payload);
-      if (isWebSocketPayloadTooLarge(payloadSize)) {
+      if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize)) {
         overflow("client");
         return false;
       }
-      if (isWebSocketBackpressured(webSocket, payloadSize)) {
+      if (isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
         if (coalesce) {
           channel[
             7
@@ -1742,12 +1924,12 @@ var createMultipleState = (webSocket) => {
         const queuedPayload = payloads[payloadIndex];
         const payload = createMultiplePayload(channelId, queuedPayload);
         const payloadSize = getWebSocketPayloadSize(payload);
-        if (isWebSocketPayloadTooLarge(payloadSize)) {
+        if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize)) {
           arrayClear(outgoingQueue, outgoingIndex);
           overflow("client");
           return;
         }
-        if (isWebSocketBackpressured(webSocket, payloadSize)) {
+        if (isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
           arrayClear(outgoingQueue, outgoingIndex);
           scheduleFlush();
           return;
@@ -1932,7 +2114,10 @@ var createMultipleState = (webSocket) => {
       return;
     }
     const payload = data.toString(UTF8);
-    if (isWebSocketPayloadTooLarge(getWebSocketPayloadSize(payload))) {
+    if (isWebSocketPayloadTooLarge(
+      getWebSocketPayloadSize(payload),
+      maxBufferSize
+    )) {
       invalid(errorNew(ERROR_SYNC_OVERFLOW, "socket"));
       return;
     }
@@ -2129,7 +2314,7 @@ var createMultipleState = (webSocket) => {
             channelId
           );
           const payloadSize = getWebSocketPayloadSize(payload);
-          if (isWebSocketPayloadTooLarge(payloadSize) || isWebSocketBackpressured(webSocket, payloadSize)) {
+          if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) || isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
             overflow("socket");
           } else {
             webSocket.send(payload);
@@ -2148,18 +2333,19 @@ var createMultipleState = (webSocket) => {
     delChannel,
     destroyIfEmpty,
     invalid,
+    maxBufferSize,
     payloadBuffer,
     registerReceive,
     send
   };
 };
-var createMultipleWsSynchronizer = async (store, webSocket, channelId, requestTimeoutSeconds, onSend, onReceive, onIgnoredError, fragmentSize) => {
+var createMultipleWsSynchronizer = async (store, webSocket, channelId, requestTimeoutSeconds, onSend, onReceive, onIgnoredError, fragmentSize, maxBufferSize) => {
   if (legacyWebSockets.has(webSocket)) {
     errorThrow(ERROR_MULTIPLEX_LEGACY);
   }
   const existingState = multipleStates.get(webSocket);
   const state = existingState ?? (() => {
-    const newState = createMultipleState(webSocket);
+    const newState = createMultipleState(webSocket, maxBufferSize);
     multipleStates.set(webSocket, newState);
     return newState;
   })();
@@ -2191,7 +2377,8 @@ var createMultipleWsSynchronizer = async (store, webSocket, channelId, requestTi
           receive,
           requestTimeoutSeconds,
           state.invalid,
-          state.payloadBuffer
+          state.payloadBuffer,
+          state.maxBufferSize
         ),
         fail
       ),
@@ -2207,7 +2394,7 @@ var createMultipleWsSynchronizer = async (store, webSocket, channelId, requestTi
     throw error;
   }
 };
-var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds = 1, onSend, onReceive, onIgnoredError, fragmentSize) => {
+var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds = 1, onSend, onReceive, onIgnoredError, fragmentSize, maxBufferSize = MAX_WEBSOCKET_BUFFER_SIZE) => {
   if (multipleStates.has(webSocket)) {
     errorThrow(ERROR_LEGACY_MULTIPLEX);
   }
@@ -2225,12 +2412,16 @@ var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds 
     }
   };
   const registerReceive = (receive, fail) => {
-    const invalid = createInvalidPayloadHandler(webSocket, notifyIgnoredError);
-    const [receivePayload, clearReceivePayload] = createPayloadReceiver(
+    let receivePayload;
+    let clearReceivePayload;
+    const startReceiving = () => [receivePayload, clearReceivePayload] = createPayloadReceiver(
       receive,
       requestTimeoutSeconds,
-      invalid
+      createInvalidPayloadHandler(webSocket, notifyIgnoredError),
+      void 0,
+      maxBufferSize
     );
+    startReceiving();
     let removeListeners = [];
     removeTransportListeners = () => {
       clearReceivePayload();
@@ -2242,7 +2433,7 @@ var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds 
     };
     const failTransport = () => {
       tryReturn(() => fail(errorNew(ERROR_MULTIPLEX_SOCKET)));
-      removeTransportListeners();
+      clearReceivePayload();
     };
     removeListeners = [
       addEventListener(
@@ -2250,6 +2441,13 @@ var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds 
         MESSAGE,
         ({ data }) => receivePayload(data.toString(UTF8))
       ),
+      addEventListener(webSocket, OPEN, () => {
+        if (!creating) {
+          clearReceivePayload();
+          startReceiving();
+          overflowing = false;
+        }
+      }),
       addEventListener(webSocket, CLOSE, () => {
         if (!creating) {
           failTransport();
@@ -2271,7 +2469,7 @@ var createLegacyWsSynchronizer = async (store, webSocket, requestTimeoutSeconds 
           return;
         }
         const payloadSize = getWebSocketPayloadSize(payload);
-        if (isWebSocketPayloadTooLarge(payloadSize) || isWebSocketBackpressured(webSocket, payloadSize)) {
+        if (isWebSocketPayloadTooLarge(payloadSize, maxBufferSize) || isWebSocketBackpressured(webSocket, payloadSize, maxBufferSize)) {
           overflow();
         } else {
           webSocket.send(payload);
@@ -2349,7 +2547,8 @@ var createWsSynchronizer = async (store, webSocket, channelIdOrRequestTimeout = 
   args[1],
   args[2],
   args[3],
-  args[4]
+  args[4],
+  args[5]
 ) : createLegacyWsSynchronizer(
   store,
   webSocket,
@@ -2357,7 +2556,8 @@ var createWsSynchronizer = async (store, webSocket, channelIdOrRequestTimeout = 
   args[0],
   args[1],
   args[2],
-  args[3]
+  args[3],
+  args[4]
 );
 export {
   createWsSynchronizer

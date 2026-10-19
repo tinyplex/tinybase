@@ -133,10 +133,30 @@ Channel rules:
 - Shared WebSockets work with `WsServer` and `WsServerSimple`. They are **not**
   supported by `WsServerDurableObject`.
 
-Neither `WsServer` nor `WsServerSimple` authorizes channel Ids. A client
-accepted on a base path can subscribe to any channel beneath it. For untrusted
-clients, authenticate the upgrade request and either grant access to the whole
-subtree or use a separate authenticated WebSocket per authorized path.
+By default, neither `WsServer` nor `WsServerSimple` authorizes channel Ids: a
+client accepted on a base path can subscribe to any channel beneath it.
+
+Since v10.1, `createWsServer(webSocketServer, options)` authorizes clients. Its
+`authorize(pathId, request)` option runs whenever a client joins a path
+(including each channel of a shared WebSocket) and returns a `ClientAccess`
+object - `{readOnly?, context?}` - or `undefined` to refuse the client, which is
+closed with code `1008`. Optional `canWriteCell(pathId, tableId, rowId, cellId,
+cell, context)` and `canWriteValue(pathId, valueId, value, context)` options
+decide what a writable client may change; they must be synchronous. Rejected
+changes are neither merged nor relayed, and alter nothing on the server or for
+other clients: the server sends the client that made them its own value, so
+that it converges back.
+
+- Pass a token in the WebSocket URL's query string. Browsers cannot set headers
+  on a WebSocket request, and the query string is not part of the path.
+- Configuring any of the three makes each path's MergeableStore the only peer
+  its clients sync with. Without `createPersisterForPath`, it is in memory.
+- Each does one job: without `authorize` every client is admitted; with only
+  `canWriteCell`, any client may still write any Value, and vice versa.
+- Converging back removes data in the client's synced MergeableStore that it
+  may not write and the server lacks. Keep client-only data in another Store.
+- `WsServerSimple` has no store, so it cannot filter writes. Use the
+  `WebSocketServer`'s own `verifyClient` option to accept or refuse connections.
 
 The client Ids that `WsServer` exposes derive from the `Sec-WebSocket-Key`
 header. They change across reconnections and are not authenticated identities.
