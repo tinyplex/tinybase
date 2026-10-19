@@ -777,6 +777,22 @@ describe('applyMergeableChanges/setMergeableContent', () => {
       1,
     ] as MergeableChanges);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+
+    store.applyMergeableChanges([
+      [
+        {
+          t1: [
+            {r3: [{c1: [3, time(2, 0, 's2')], c2: [4]}, time(300001, 0, 's2')]},
+            time(300001, 0, 's2'),
+          ],
+        },
+      ],
+      [{}],
+      1,
+    ] as MergeableChanges);
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r3: {c1: 3, c2: 4}},
+    });
   });
 
   test('take a clock skew to allow', () => {
