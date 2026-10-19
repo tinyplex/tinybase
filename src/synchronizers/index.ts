@@ -1,4 +1,4 @@
-import type {Id, IdOrNull} from '../@types/common/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import type {
   CellHashes,
   CellStamp,
@@ -23,7 +23,13 @@ import type {
   Send,
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
-import {arrayIsEqual, arrayNew} from '../common/array.ts';
+import {
+  arrayHas,
+  arrayIsEqual,
+  arrayNew,
+  arrayPush,
+  arrayShift,
+} from '../common/array.ts';
 import {getUniqueId} from '../common/codec.ts';
 import {collClear, collDel, collHas, collSize} from '../common/coll.ts';
 import {
@@ -93,6 +99,7 @@ export const Message = {
 };
 
 const MAX_MARKED_CLIENT_IDS = 10_000;
+const MAX_SAVED_TRANSACTION_IDS = 16;
 
 type BucketHashes = {[tableId: Id]: number[]};
 type Pull = [hashes: ContentHashes, changes: Promise<MergeableChanges>];
@@ -148,6 +155,8 @@ export const createCustomSynchronizer = (
 
   // The peers known to understand the newer protocol messages.
   const markedClientIds = setNew<Id>();
+  // The transactions in which this peer last sent the hashes of its content.
+  const savedTransactionIds: Ids = [];
   const pulling: IdMap<Pull> = mapNew();
 
   const rejectPendingRequests = (error: Error) =>
@@ -434,15 +443,25 @@ export const createCustomSynchronizer = (
   const setPersisted = async (
     _getContent: () => MergeableContent,
     changes?: MergeableChanges<false>,
-  ): Promise<void> =>
-    changes
-      ? sendImpl(null, getTransactionId(), MessageValues.ContentDiff, changes)
-      : sendImpl(
-          null,
-          getTransactionId(),
-          MessageValues.ContentHashes,
-          store.getMergeableContentHashes(),
-        );
+  ): Promise<void> => {
+    if (changes) {
+      sendImpl(null, getTransactionId(), MessageValues.ContentDiff, changes);
+    } else {
+      const transactionId = getTransactionId();
+      if (
+        arrayPush(savedTransactionIds, transactionId) >
+        MAX_SAVED_TRANSACTION_IDS
+      ) {
+        arrayShift(savedTransactionIds);
+      }
+      sendImpl(
+        null,
+        transactionId,
+        MessageValues.ContentHashes,
+        store.getMergeableContentHashes(),
+      );
+    }
+  };
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsEnum.MergeableStoreOnly>,
@@ -533,6 +552,21 @@ export const createCustomSynchronizer = (
         )
           .then((changes: any) => {
             persisterListener?.(undefined, changes);
+            // A peer that sends its hashes takes nothing from those that have
+            // what it lacks, unless it is told: so it is told, once, but not
+            // in reply to a peer telling it the same.
+            if (
+              changes &&
+              !arrayHas(savedTransactionIds, transactionOrRequestId) &&
+              !arrayIsEqual(store.getMergeableContentHashes(), body)
+            ) {
+              sendImpl(
+                fromClientId,
+                transactionOrRequestId ?? getTransactionId(),
+                MessageValues.ContentHashes,
+                store.getMergeableContentHashes(),
+              );
+            }
           })
           .catch(onIgnoredError);
       } else if (message == MessageValues.ContentDiff && isAutoLoading) {

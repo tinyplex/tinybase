@@ -2110,12 +2110,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -2156,12 +2156,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -2207,12 +2207,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 6,
+    "receives": 7,
     "sends": 7,
   },
   {
     "receives": 7,
-    "sends": 6,
+    "sends": 7,
   },
 ]
 `;
@@ -2264,12 +2264,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 5,
   },
   {
     "receives": 5,
-    "sends": 4,
+    "sends": 5,
   },
 ]
 `;
@@ -2327,12 +2327,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -6527,12 +6527,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -6573,12 +6573,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -6624,12 +6624,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 6,
+    "receives": 7,
     "sends": 7,
   },
   {
     "receives": 7,
-    "sends": 6,
+    "sends": 7,
   },
 ]
 `;
@@ -6681,12 +6681,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 5,
   },
   {
     "receives": 5,
-    "sends": 4,
+    "sends": 5,
   },
 ]
 `;
@@ -6744,12 +6744,12 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -10382,12 +10382,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -10428,12 +10428,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -10479,12 +10479,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 6,
+    "receives": 7,
     "sends": 7,
   },
   {
     "receives": 7,
-    "sends": 6,
+    "sends": 7,
   },
 ]
 `;
@@ -10536,12 +10536,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 4,
+    "receives": 5,
     "sends": 5,
   },
   {
     "receives": 5,
-    "sends": 4,
+    "sends": 5,
   },
 ]
 `;
@@ -10599,12 +10599,12 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 8,
+    "receives": 9,
     "sends": 9,
   },
   {
     "receives": 9,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -14237,12 +14237,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > co
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > conflicting cell later > stats 1`] = `
 [
   {
-    "receives": 9,
+    "receives": 10,
     "sends": 9,
   },
   {
     "receives": 10,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -14283,12 +14283,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > co
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > different cell > stats 1`] = `
 [
   {
-    "receives": 9,
+    "receives": 10,
     "sends": 9,
   },
   {
     "receives": 10,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;
@@ -14334,12 +14334,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > different row > stats 1`] = `
 [
   {
-    "receives": 7,
+    "receives": 8,
     "sends": 7,
   },
   {
     "receives": 8,
-    "sends": 6,
+    "sends": 7,
   },
 ]
 `;
@@ -14391,12 +14391,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > different table > stats 1`] = `
 [
   {
-    "receives": 5,
+    "receives": 6,
     "sends": 5,
   },
   {
     "receives": 6,
-    "sends": 4,
+    "sends": 5,
   },
 ]
 `;
@@ -14454,12 +14454,12 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
 exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
 [
   {
-    "receives": 9,
+    "receives": 10,
     "sends": 9,
   },
   {
     "receives": 10,
-    "sends": 8,
+    "sends": 9,
   },
 ]
 `;

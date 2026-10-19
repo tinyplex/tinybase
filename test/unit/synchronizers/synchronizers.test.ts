@@ -320,6 +320,56 @@ test('Local Synchronizer tolerates delayed timer delivery', async () => {
   }
 });
 
+test('Synchronizer tells a peer that saves of what it lacks', async () => {
+  const receives = new Map<string, Receive>();
+  let dropping = false;
+  const getSynchronizer = (peerId: string, store: MergeableStore) =>
+    createCustomSynchronizer(
+      store,
+      (toPeerId, requestId, message, body) =>
+        dropping
+          ? 0
+          : setTimeout(() =>
+              (toPeerId == null
+                ? [...receives.keys()].filter((otherId) => otherId != peerId)
+                : [toPeerId]
+              ).forEach((otherId) =>
+                receives.get(otherId)?.(
+                  peerId,
+                  requestId,
+                  message,
+                  structuredClone(body),
+                ),
+              ),
+            ),
+      (receive) => receives.set(peerId, receive),
+      () => receives.delete(peerId),
+      0.1,
+    );
+  const store1 = createMergeableStore('s1');
+  const store2 = createMergeableStore('s2');
+  const synchronizer1 = getSynchronizer('s1', store1);
+  const synchronizer2 = getSynchronizer('s2', store2);
+  await synchronizer1.startSync();
+  await synchronizer2.startSync();
+
+  dropping = true;
+  store2.setValue('v2', 2);
+  await pause();
+  dropping = false;
+  store1.setValue('v1', 1);
+  await pause();
+  expect(store2.getValues()).toEqual({v1: 1, v2: 2});
+  expect(store1.getValues()).toEqual({v1: 1});
+
+  await synchronizer1.save();
+  await pause();
+  expect(store1.getValues()).toEqual({v1: 1, v2: 2});
+
+  await synchronizer1.destroy();
+  await synchronizer2.destroy();
+});
+
 test('Synchronizer reports changes too far ahead of its clock', async () => {
   const errors: Error[] = [];
   const store1 = createMergeableStore('s1', () => getNow() + 600000);
