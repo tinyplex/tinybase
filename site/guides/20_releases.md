@@ -104,6 +104,17 @@ and servers keep working as before.
   changes that its MergeableStore refuses, with the new error code 18, through
   its `onIgnoredError` handler. That is how to learn of a peer whose clock is
   more than five minutes ahead.
+- A MergeableStore now applies the changes that it is sent from elsewhere,
+  leaving out only those stamped too far ahead of its clock, where until now
+  one such stamp refused them all. How far ahead is too far can be chosen with
+  the new third parameter of the createMergeableStore function, which defaults
+  to 300 seconds and can be `Infinity`. The getHlcFunctions function takes the
+  same parameter.
+- The largest message that a WebSocket synchronizes, and the most that it lets
+  wait to be sent, can now be chosen, where it was fixed at 16 MiB. Set the
+  `maxBufferSize` option of the createWsServer function, and the new last
+  parameter of the createWsSynchronizer function, to synchronize a path whose
+  content is too large to send to a new client in one message.
 - Peers now converge after any of them come back online. A peer that loads
   takes what it lacks from whichever peer answers first, which may itself be
   behind. So a peer that is sent another's hashes and finds that it has
