@@ -165,6 +165,8 @@ export const createCustomPersister = <
   let autoSaveGeneration = 0;
   let applying = 0;
   let saveSkipped = 0;
+  let savesInFlight = 0;
+  let saving: Promise<void> | undefined;
   let destroyed = 0;
   let destroying: Promise<void> | undefined;
   let activeAction: Promise<void> | undefined;
@@ -306,37 +308,39 @@ export const createCustomPersister = <
   const load = async (
     initialContent?: Content | (() => Content),
   ): Promise<Persister> => {
-    /*! istanbul ignore else */
-    if (status != StatusValues.Saving) {
-      await tryFinallyAsync(
-        async () => {
-          setStatus(StatusValues.Loading);
-          loads++;
-          await schedule(() =>
-            tryCatch(
-              async () => {
-                const content = await getPersisted();
-                if (isArray(content)) {
-                  setContentOrChanges(content);
-                } else if (isUndefined(content) && initialContent) {
-                  whileApplying(() => setDefaultContent(initialContent));
-                } else if (!isUndefined(content)) {
-                  errorThrow(ERROR_CONTENT, content);
-                }
-              },
-              (error) => {
-                onIgnoredError?.(error);
-                if (initialContent) {
-                  whileApplying(() => setDefaultContent(initialContent));
-                }
-              },
-            ),
-          );
-        },
-        () => setStatus(StatusValues.Idle),
-      );
-      await saveAfterLoading();
+    // A load that is asked for while saving is not skipped, but waits for the
+    // saving to finish.
+    while (status == StatusValues.Saving) {
+      await tryCatch(() => saving);
     }
+    await tryFinallyAsync(
+      async () => {
+        setStatus(StatusValues.Loading);
+        loads++;
+        await schedule(() =>
+          tryCatch(
+            async () => {
+              const content = await getPersisted();
+              if (isArray(content)) {
+                setContentOrChanges(content);
+              } else if (isUndefined(content) && initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              } else if (!isUndefined(content)) {
+                errorThrow(ERROR_CONTENT, content);
+              }
+            },
+            (error) => {
+              onIgnoredError?.(error);
+              if (initialContent) {
+                whileApplying(() => setDefaultContent(initialContent));
+              }
+            },
+          ),
+        );
+      },
+      () => setStatus(StatusValues.Idle),
+    );
+    await saveAfterLoading();
     return persister;
   };
 
@@ -455,23 +459,26 @@ export const createCustomPersister = <
   ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Loading) {
-      await tryFinallyAsync(
-        () =>
-          tryFinallyAsync(
-            async () => {
-              setStatus(StatusValues.Saving);
-              saves++;
-              await schedule(() =>
-                tryCatch(
-                  () => setPersisted(getContent as any, changes),
-                  onIgnoredError,
-                ),
-              );
-            },
-            () => setStatus(StatusValues.Idle),
-          ),
-        runAutoLoadAfterSave,
-      );
+      // Saves can overlap, and it is still saving until the last has finished.
+      const thisSave = (saving = tryFinallyAsync(
+        async () => {
+          savesInFlight++;
+          setStatus(StatusValues.Saving);
+          saves++;
+          await schedule(() =>
+            tryCatch(
+              () => setPersisted(getContent as any, changes),
+              onIgnoredError,
+            ),
+          );
+        },
+        () => {
+          if (!--savesInFlight) {
+            setStatus(StatusValues.Idle);
+          }
+        },
+      ));
+      await tryFinallyAsync(() => thisSave, runAutoLoadAfterSave);
     }
     return persister;
   };

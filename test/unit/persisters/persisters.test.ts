@@ -496,6 +496,64 @@ if (!withServers) {
     expect(persister.getStats()).toEqual({loads: 2, saves: 2});
   });
 
+  test('loads once it has saved, when asked to load while saving', async () => {
+    let finishSaving: () => void = noop;
+    let loads = 0;
+    const store = createStore();
+    const persister = createCustomPersister(
+      store,
+      async () => {
+        loads++;
+        return [{t1: {r1: {c1: 1}}}, {}];
+      },
+      () => new Promise<void>((resolve) => (finishSaving = resolve)),
+      noop,
+      noop,
+    );
+    const saving = persister.save();
+    await pause(5);
+    expect(persister.getStatus()).toEqual(Status.Saving);
+    let loaded = false;
+    const loading = persister.load().then(() => (loaded = true));
+    await pause(5);
+    expect([loads, loaded]).toEqual([0, false]);
+
+    finishSaving();
+    await saving;
+    await loading;
+    expect(loads).toEqual(1);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    await persister.destroy();
+  });
+
+  test('is saving until the last of overlapping saves finishes', async () => {
+    for (let ticks = 0; ticks < 30; ticks++) {
+      let finishSecond: () => void = noop;
+      let saves = 0;
+      const persister = createCustomPersister(
+        createStore(),
+        asyncNoop,
+        () =>
+          ++saves == 1
+            ? Promise.resolve()
+            : new Promise<void>((resolve) => (finishSecond = resolve)),
+        noop,
+        noop,
+      );
+      const first = persister.save();
+      for (let tick = 0; tick < ticks; tick++) {
+        await Promise.resolve();
+      }
+      const second = persister.save();
+      await pause(5);
+      expect([ticks, persister.getStatus()]).toEqual([ticks, Status.Saving]);
+      finishSecond();
+      await Promise.all([first, second]);
+      expect(persister.getStatus()).toEqual(Status.Idle);
+      await persister.destroy();
+    }
+  });
+
   test('saves again, whenever it is asked to as it finishes', async () => {
     for (let ticks = 0; ticks < 30; ticks++) {
       let saves = 0;
@@ -1484,10 +1542,12 @@ if (!withServers) {
       const starting = persister.startAutoPersisting(undefined, startSaveFirst);
       await secondStarted;
 
-      await (startSaveFirst
+      // A newer load waits for the save that is under way.
+      const newer = startSaveFirst
         ? persister.startAutoSave()
-        : persister.startAutoLoad());
+        : persister.startAutoLoad();
       releaseSecond();
+      await newer;
       await expect(starting).rejects.toBe(startupError);
 
       expect(persister.isAutoLoading()).toBe(!startSaveFirst);
