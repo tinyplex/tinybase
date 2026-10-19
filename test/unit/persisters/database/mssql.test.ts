@@ -373,6 +373,40 @@ test('reports the SQL it runs in a transaction to onSqlCommand', async () => {
   expect(sql.filter((oneSql) => oneSql.startsWith('MERGE INTO'))).toHaveLength(
     1,
   );
+  expect(sql[0]).toEqual('BEGIN TRANSACTION');
+  expect(sql.at(-1)).toEqual('COMMIT');
+
+  await persister.destroy();
+});
+
+test('reports a transaction that it rolls back to onSqlCommand', async () => {
+  const fake = getFakeMsSql();
+  const pool = getFakePool(fake);
+  const sql: string[] = [];
+  const persister = await createMsSqlPersister(
+    createStore().setTables({pets: {fido: {species: 'dog'}}}),
+    {
+      ...pool,
+      transaction: () => ({
+        ...pool.transaction(),
+        request: () => ({
+          input: () => 0,
+          query: async () => {
+            throw new Error('query failed');
+          },
+        }),
+      }),
+    } as any,
+    {mode: 'json', storeTableName: STORE_TABLE_NAME},
+    (oneSql) => sql.push(oneSql),
+    () => 0,
+  );
+
+  await persister.save();
+
+  expect(sql[0]).toEqual('BEGIN TRANSACTION');
+  expect(sql.at(-1)).toEqual('ROLLBACK');
+  expect(sql).not.toContain('COMMIT');
 
   await persister.destroy();
 });

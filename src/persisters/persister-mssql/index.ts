@@ -46,8 +46,11 @@ export const createMsSqlPersister = (async (
     'getMsSql',
     // A Transaction takes its own connection from the pool, so unlike other
     // drivers there is no need to reserve one up front.
+    // The driver begins and ends it without SQL of its own, so that is
+    // reported as the shared transaction would run it.
     async (actions) => {
       const transaction = mssql.transaction();
+      onSqlCommand?.('BEGIN TRANSACTION');
       await transaction.begin();
       try {
         // The command is wrapped here too, since the statements inside the
@@ -58,9 +61,11 @@ export const createMsSqlPersister = (async (
             onSqlCommand,
           ),
         );
+        onSqlCommand?.('COMMIT');
         await transaction.commit();
         return result;
       } catch (error) {
+        onSqlCommand?.('ROLLBACK');
         await transaction.rollback();
         throw error;
       }
