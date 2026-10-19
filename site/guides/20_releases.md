@@ -142,6 +142,9 @@ and servers keep working as before.
   label that the setCheckpoint method is given as `undefined`.
 - Deleting an Index, Metric, or Relationship that does not exist no longer
   tells the listeners to their Ids.
+- The MsSqlPersister now reports the SQL that it runs inside a transaction to
+  its `onSqlCommand` callback, as the other database Persisters do, along with
+  the beginning and end of the transaction itself.
 
 ---
 
