@@ -80,6 +80,7 @@ export default tsLint.config(
             '^@powersync/common$',
             '^cloudflare:workers$',
             '^svelte/reactivity$',
+            '^effect/Schema$',
             '@sveltejs/vite-plugin-svelte',
             '@testing-library/svelte/vite',
             'eslint/config',

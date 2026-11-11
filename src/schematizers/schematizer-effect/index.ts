@@ -5,25 +5,20 @@ import {
   arrayFind,
   arrayForEach,
   arrayMap,
+  arrayPush,
 } from '../../common/array.ts';
 import {objNew, objSet} from '../../common/obj.ts';
-import {isNull} from '../../common/other.ts';
 import {
   ARRAY,
   BOOLEAN,
-  BOOLEAN_KEYWORD,
   EMPTY_STRING,
   ENUM,
   LITERAL,
   NUMBER,
-  NUMBER_KEYWORD,
   OBJECT,
   PROPERTY_SIGNATURES,
   STRING,
-  STRING_KEYWORD,
-  TUPLE_TYPE,
   TYPE,
-  TYPE_LITERAL,
   UNION,
   getTypeOf,
 } from '../../common/strings.ts';
@@ -32,7 +27,22 @@ import {createCustomSchematizer} from '../index.ts';
 
 type TypeNode = any;
 
-const UNDEFINED_KEYWORD = 'UndefinedKeyword';
+const STRING_TAG = 'String';
+const NUMBER_TAG = 'Number';
+const BOOLEAN_TAG = 'Boolean';
+const ARRAYS_TAG = 'Arrays';
+const OBJECTS_TAG = 'Objects';
+const NULL_TAG = 'Null';
+const UNDEFINED_TAG = 'Undefined';
+
+const getUnionTypes = (ast: TypeNode, types: TypeNode[] = []): TypeNode[] => {
+  if (ast._tag === UNION) {
+    arrayForEach(ast.types, (type: TypeNode) => getUnionTypes(type, types));
+  } else {
+    arrayPush(types, ast);
+  }
+  return types;
+};
 
 const unwrapSchema = (
   schema: TypeNode,
@@ -41,21 +51,15 @@ const unwrapSchema = (
   required = true,
 ): [any, any, boolean, boolean] => {
   const ast = schema.ast || schema;
-  const typeAst = ast.type || ast;
-  required = required && !ast.isOptional;
-  const type = typeAst._tag;
+  required = required && !ast.context?.isOptional;
+  const type = ast._tag;
   if (type === UNION) {
-    const types = typeAst.types;
+    const types = getUnionTypes(ast);
     const nonNullTypes = arrayFilter(
       types,
-      (t: TypeNode) =>
-        !(t._tag === LITERAL && isNull(t.literal)) &&
-        t._tag !== UNDEFINED_KEYWORD,
+      (t: TypeNode) => t._tag !== NULL_TAG && t._tag !== UNDEFINED_TAG,
     );
-    const hasNull = !!arrayFind(
-      types,
-      (t: TypeNode) => t._tag === LITERAL && isNull(t.literal),
-    );
+    const hasNull = !!arrayFind(types, (t: TypeNode) => t._tag === NULL_TAG);
     if (
       arrayEvery(
         nonNullTypes,
@@ -80,9 +84,9 @@ const unwrapSchema = (
     ];
   }
 
-  if (type === LITERAL && getSimpleType(typeAst) !== EMPTY_STRING) {
+  if (type === LITERAL && getSimpleType(ast) !== EMPTY_STRING) {
     return [
-      {[ENUM]: [typeAst.literal]},
+      {[ENUM]: [ast.literal]},
       defaultValue,
       allowNull || false,
       required,
@@ -90,7 +94,7 @@ const unwrapSchema = (
   }
 
   return [
-    {[TYPE]: getSimpleType(typeAst)},
+    {[TYPE]: getSimpleType(ast)},
     defaultValue,
     allowNull || false,
     required,
@@ -107,40 +111,29 @@ const getSimpleType = (ast: TypeNode): string => {
       literalType === BOOLEAN
       ? literalType
       : EMPTY_STRING
-    : tag === STRING_KEYWORD
+    : tag === STRING_TAG
       ? STRING
-      : tag === NUMBER_KEYWORD
+      : tag === NUMBER_TAG
         ? NUMBER
-        : tag === BOOLEAN_KEYWORD
+        : tag === BOOLEAN_TAG
           ? BOOLEAN
-          : tag === TUPLE_TYPE
+          : tag === ARRAYS_TAG
             ? ARRAY
-            : tag === TYPE_LITERAL
+            : tag === OBJECTS_TAG
               ? OBJECT
               : EMPTY_STRING;
 };
 
 const getProperties = (schema: any) => {
   const ast = schema.ast;
-  if (ast._tag === TYPE_LITERAL) {
-    const signatures = ast[PROPERTY_SIGNATURES];
-    if (signatures) {
-      const properties = objNew<any>();
-      arrayForEach(signatures, (sig: any) => {
-        objSet(properties, sig.name, sig.type);
-      });
-      return properties;
-    }
+  if (ast._tag === OBJECTS_TAG) {
+    const properties = objNew<any>();
+    arrayForEach(ast[PROPERTY_SIGNATURES], (sig: any) => {
+      objSet(properties, sig.name, sig.type);
+    });
+    return properties;
   }
 };
 
-const getPropertyRequired = (schema: any, propertyId: string) => {
-  const signatures = schema.ast?.[PROPERTY_SIGNATURES];
-  const signature = signatures
-    ? arrayFind(signatures, (sig: any) => sig.name === propertyId)
-    : undefined;
-  return signature ? !signature.isOptional : undefined;
-};
-
 export const createEffectSchematizer: typeof createEffectSchematizerDecl = () =>
-  createCustomSchematizer(unwrapSchema, getProperties, getPropertyRequired);
+  createCustomSchematizer(unwrapSchema, getProperties);

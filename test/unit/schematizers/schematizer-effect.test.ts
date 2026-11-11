@@ -53,7 +53,7 @@ describe('Effect Schematizer', () => {
         schematizer.toTablesSchema({
           ratings: S.Struct({
             direction: S.Literal('up'),
-            rating: S.Literal('up', 1, true),
+            rating: S.Literals(['up', 1, true]),
           }),
         }),
       ).toEqual({
@@ -68,10 +68,10 @@ describe('Effect Schematizer', () => {
       expect(
         schematizer.toTablesSchema({
           choices: S.Struct({
-            answer: S.Union(S.String, S.Number),
-            payload: S.Union(S.Array(S.String), S.Struct({key: S.String})),
-            score: S.Union(S.Number, S.Boolean, S.Null),
-            mode: S.Union(S.Literal('auto'), S.Number),
+            answer: S.Union([S.String, S.Number]),
+            payload: S.Union([S.Array(S.String), S.Struct({key: S.String})]),
+            score: S.Union([S.Number, S.Boolean, S.Null]),
+            mode: S.Union([S.Literal('auto'), S.Number]),
           }),
         }),
       ).toEqual({
@@ -104,6 +104,46 @@ describe('Effect Schematizer', () => {
       });
     });
 
+    test('converts Effect schema with optional keys and nullish fields', () => {
+      expect(
+        schematizer.toTablesSchema({
+          t1: S.Struct({
+            c1: S.optionalKey(S.Number),
+            c2: S.NullishOr(S.String),
+            c3: S.optional(S.NullOr(S.Boolean)),
+            c4: S.optional(S.Literals(['dog', 'cat'])),
+            c5: S.NullOr(S.Union([S.String, S.Number])),
+          }),
+        }),
+      ).toEqual({
+        t1: {
+          c1: {type: 'number'},
+          c2: {type: 'string', allowNull: true, required: true},
+          c3: {type: 'boolean', allowNull: true},
+          c4: {enum: ['dog', 'cat']},
+          c5: {type: ['string', 'number'], allowNull: true, required: true},
+        },
+      });
+    });
+
+    test('converts Effect schemas with checks and transformations', () => {
+      expect(
+        schematizer.toTablesSchema({
+          t1: S.Struct({
+            c1: S.String.check(S.isMinLength(1)),
+            c2: S.NumberFromString,
+            c3: S.String.pipe(S.brand('PetId')),
+          }),
+        }),
+      ).toEqual({
+        t1: {
+          c1: {type: 'string', required: true},
+          c2: {type: 'number', required: true},
+          c3: {type: 'string', required: true},
+        },
+      });
+    });
+
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
@@ -129,7 +169,7 @@ describe('Effect Schematizer', () => {
         schematizer.toTablesSchema({
           t1: S.Struct({
             c1: S.String,
-            c2: S.DateFromSelf,
+            c2: S.Date,
           }),
         }),
       ).toEqual({
@@ -177,7 +217,7 @@ describe('Effect Schematizer', () => {
     test('converts Effect type union values', () => {
       expect(
         schematizer.toValuesSchema({
-          answer: S.Union(S.String, S.Number),
+          answer: S.Union([S.String, S.Number]),
         }),
       ).toEqual({
         answer: {type: ['string', 'number'], required: true},
@@ -187,7 +227,7 @@ describe('Effect Schematizer', () => {
     test('converts Effect object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          v1: S.Record({key: S.String, value: S.String}),
+          v1: S.Record(S.String, S.String),
           v2: S.Array(S.String),
         }),
       ).toEqual({
@@ -214,7 +254,7 @@ describe('Effect Schematizer', () => {
       expect(
         schematizer.toValuesSchema({
           direction: S.Literal('up'),
-          rating: S.Literal('up', 1, true),
+          rating: S.Literals(['up', 1, true]),
         }),
       ).toEqual({
         direction: {enum: ['up'], required: true},
