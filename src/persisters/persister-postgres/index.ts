@@ -1,4 +1,4 @@
-import type {ListenMeta, Sql} from 'postgres';
+import type {Sql} from 'postgres';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
@@ -11,6 +11,8 @@ import type {
 import type {Store} from '../../@types/store/index.d.ts';
 import {tryCatch} from '../../common/error.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
+
+type ListenMeta = Awaited<ReturnType<Sql['listen']>>;
 
 export const createPostgresPersister = (async (
   store: Store | MergeableStore,
