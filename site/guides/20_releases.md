@@ -172,6 +172,24 @@ and servers keep working as before.
   its `onSqlCommand` callback, as the other database Persisters do, along with
   the beginning and end of the transaction itself.
 
+## Postgres.js v4 And Effect v4
+
+The persister-postgres module now requires v4 or later of the `postgres`
+module, up from v3. Update that dependency when you upgrade. No TinyBase code of
+your own needs to change, but Postgres.js v4 changes some of its own APIs: it
+removes `sql.array()`, for example, and leaves the type of each parameter to the
+server unless you set its `infer: true` option. So check any code of your own
+that uses the `sql` object directly.
+
+The schematizer-effect module now requires v4 or later of the `effect` module,
+up from v3. Effect v4 reshapes its Schema module, so a schema written for v3 may
+need to change: `Schema.Union` now takes an array of members, for example, and
+several literals are now declared with `Schema.Literals`. The
+createEffectSchematizer function itself is unchanged. With v4, a field with
+checks, such as `Schema.String.check(Schema.isMinLength(1))`, or with a
+transformation, such as `Schema.NumberFromString`, now converts to its
+underlying type, where with v3 it was left out.
+
 ---
 
 # v10.0
