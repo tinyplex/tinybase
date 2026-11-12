@@ -191,6 +191,7 @@ const copyPackageFiles = async (forProd = false) => {
   delete json.scripts;
   delete json.devEngines;
   delete json.devDependencies;
+  delete json.allowScripts;
 
   json.main = './index.js';
   json.types = './@types/index.d.ts';

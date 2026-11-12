@@ -311,6 +311,13 @@ existing message.
   is actually blocking each one every time, rather than carrying an exclusion
   list forward unexamined - and drop a name from the list as soon as its major
   has been taken.
+- npm 11.20 and later skip a dependency's install scripts unless the
+  `allowScripts` field in `package.json` approves them. Only `bun` needs its
+  postinstall here - without it, its binary is a stub that fails `testBun` -
+  and the rest are denied because they ship prebuilt binaries or JavaScript
+  shims. When `npm install-scripts ls` names a new package, check whether it
+  really needs its script before approving it. The published `package.json`
+  leaves the field out.
 
 ### Code Style
 

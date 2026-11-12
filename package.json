@@ -319,5 +319,13 @@
       "@babel/plugin-transform-runtime": "7.29.7"
     },
     "better-sqlite3": "$better-sqlite3"
+  },
+  "allowScripts": {
+    "bun": true,
+    "better-sqlite3": false,
+    "cbor-extract": false,
+    "esbuild": false,
+    "fsevents": false,
+    "workerd": false
   }
 }
