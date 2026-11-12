@@ -11,7 +11,7 @@ import type {
   Relationships,
   Store,
 } from 'tinybase';
-import {createStore} from 'tinybase';
+import {createMetrics, createStore} from 'tinybase';
 import type {AnyPersister} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import type {
@@ -955,4 +955,37 @@ test('ignores stale cleanup for a missing provider registration', () => {
 
   expect(container.textContent).toBe('[]');
   unmount();
+});
+
+test('MetricView follows metric deletion and recreation', async () => {
+  const store = createStore().setTable('pets', {fido: {price: 5}});
+  const metrics = createMetrics(store).setMetricDefinition(
+    'highestPrice',
+    'pets',
+    'max',
+    'price',
+  );
+  const {container, unmount} = componentHarness.render(MetricView, {
+    metricId: 'highestPrice',
+    metrics,
+  });
+  expect(container.textContent).toBe('5');
+
+  await componentHarness.act(() => metrics.delMetricDefinition('other'));
+  expect(container.textContent).toBe('5');
+  await componentHarness.act(() => metrics.delMetricDefinition('highestPrice'));
+  expect(metrics.getMetric('highestPrice')).toBeUndefined();
+  expect(container.textContent).toBe('');
+  await componentHarness.act(() => store.setCell('pets', 'fido', 'price', 7));
+  expect(container.textContent).toBe('');
+  await componentHarness.act(() =>
+    metrics.setMetricDefinition('highestPrice', 'pets', 'max', 'price'),
+  );
+  expect(container.textContent).toBe('7');
+  await componentHarness.act(() => store.delTable('pets'));
+  expect(container.textContent).toBe('');
+  await componentHarness.act(() => store.setCell('pets', 'fido', 'price', 9));
+  expect(container.textContent).toBe('9');
+  unmount();
+  expect(metrics.getListenerStats().metric).toBe(0);
 });
