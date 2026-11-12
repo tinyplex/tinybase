@@ -10,7 +10,7 @@ import {
   onCleanup as onCleanup2,
   untrack as untrack2,
   useContext as useContext2
-} from "https://esm.sh/solid-js@^1.9.17";
+} from "https://esm.sh/solid-js@^1.9.19";
 import {
   addEventListener as addEventListener$1,
   className,
@@ -24,7 +24,7 @@ import {
   setStyleProperty,
   template,
   use
-} from "https://esm.sh/solid-js@^1.9.17/web";
+} from "https://esm.sh/solid-js@^1.9.19/web";
 
 // dist/ui-solid/index.js
 import {
@@ -36,8 +36,8 @@ import {
   onCleanup,
   untrack,
   useContext
-} from "https://esm.sh/solid-js@^1.9.17";
-import { createComponent, isServer, memo, mergeProps } from "https://esm.sh/solid-js@^1.9.17/web";
+} from "https://esm.sh/solid-js@^1.9.19";
+import { createComponent, isServer, memo, mergeProps } from "https://esm.sh/solid-js@^1.9.19/web";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
