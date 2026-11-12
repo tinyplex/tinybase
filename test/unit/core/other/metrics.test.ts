@@ -626,6 +626,136 @@ describe('Listens to Metrics when sets', () => {
   });
 });
 
+describe('Listens to Metrics when deleting definitions', () => {
+  test.each([0, 5])('notifies with old value %s after removal', (value) => {
+    store.setCell('t1', 'r1', 'c1', value);
+    metrics
+      .setMetricDefinition('m1', 't1', 'max', 'c1')
+      .setMetricDefinition('m2', 't1', 'min', 'c1');
+    const specific = vi.fn((metrics, metricId) => {
+      expect(metrics.getMetric(metricId)).toBeUndefined();
+      expect(metrics.getMetricIds()).toEqual(['m2']);
+      expect(metrics.getTableId(metricId)).toBeUndefined();
+    });
+    const wildcard = vi.fn();
+    const other = vi.fn();
+    const ids = vi.fn();
+    metrics.addMetricListener('m1', specific);
+    metrics.addMetricListener(null, wildcard);
+    metrics.addMetricListener('m2', other);
+    metrics.addMetricIdsListener(ids);
+
+    expect(metrics.delMetricDefinition('m1')).toBe(metrics);
+    expect(specific).toHaveBeenCalledExactlyOnceWith(
+      metrics,
+      'm1',
+      undefined,
+      value,
+    );
+    expect(wildcard).toHaveBeenCalledExactlyOnceWith(
+      metrics,
+      'm1',
+      undefined,
+      value,
+    );
+    expect(other).not.toHaveBeenCalled();
+    expect(ids).toHaveBeenCalledExactlyOnceWith(metrics);
+    expect(metrics.getMetric('m2')).toBe(value);
+    expect(store.getListenerStats().table).toBe(1);
+    expect(store.getListenerStats().row).toBe(1);
+  });
+
+  test('does not notify for absent, empty or repeated deletion', () => {
+    metrics.setMetricDefinition('empty', 't1');
+    const listener = vi.fn();
+    metrics.addMetricListener(null, listener);
+    metrics.delMetricDefinition('absent').delMetricDefinition('empty');
+    expect(listener).not.toHaveBeenCalled();
+    expect(metrics.getMetricIds()).toEqual([]);
+
+    store.setCell('t1', 'r1', 'c1', 5);
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    listener.mockClear();
+    metrics.delMetricDefinition('m1').delMetricDefinition('m1');
+    expect(listener).toHaveBeenCalledExactlyOnceWith(
+      metrics,
+      'm1',
+      undefined,
+      5,
+    );
+    expect(store.getListenerStats().table).toBe(0);
+    expect(store.getListenerStats().row).toBe(0);
+  });
+
+  test('retains value subscriptions across deletion and recreation', () => {
+    store.setCell('t1', 'r1', 'c1', 5);
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    const listener = vi.fn();
+    const listenerId = metrics.addMetricListener('m1', listener);
+    metrics.delMetricDefinition('m1');
+    store.setCell('t1', 'r1', 'c1', 7);
+    expect(metrics.getMetric('m1')).toBeUndefined();
+    expect(listener).toHaveBeenCalledTimes(1);
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    store.setCell('t1', 'r1', 'c1', 9);
+    expect(listener.mock.calls).toEqual([
+      [metrics, 'm1', undefined, 5],
+      [metrics, 'm1', 7, undefined],
+      [metrics, 'm1', 9, 7],
+    ]);
+    expect(metrics.getListenerStats().metric).toBe(1);
+    metrics.delListener(listenerId).delMetricDefinition('m1');
+    expect(listener).toHaveBeenCalledTimes(3);
+    expect(metrics.getListenerStats().metric).toBe(0);
+  });
+
+  test('respects listener removal during the metric IDs notification', () => {
+    store.setCell('t1', 'r1', 'c1', 5);
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    const listener = vi.fn();
+    const listenerId = metrics.addMetricListener('m1', listener);
+    metrics.addMetricIdsListener(() => metrics.delListener(listenerId));
+    metrics.delMetricDefinition('m1');
+    expect(listener).not.toHaveBeenCalled();
+    expect(metrics.getListenerStats().metric).toBe(0);
+  });
+
+  test('does not report stale removal after an IDs listener recreates', () => {
+    store.setRow('t1', 'r1', {c1: 5, c2: 7});
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    const listener = vi.fn();
+    metrics.addMetricListener('m1', listener);
+    const listenerId = metrics.addMetricIdsListener(() => {
+      metrics.delListener(listenerId);
+      metrics.setMetricDefinition('m1', 't1', 'max', 'c2');
+    });
+    metrics.delMetricDefinition('m1');
+    expect(metrics.getMetric('m1')).toBe(7);
+    expect(listener).toHaveBeenCalledExactlyOnceWith(
+      metrics,
+      'm1',
+      7,
+      undefined,
+    );
+    expect(store.getListenerStats().table).toBe(1);
+    expect(store.getListenerStats().row).toBe(1);
+  });
+
+  test('preserves definition overwrite notifications', () => {
+    store.setTable('t1', {r1: {c1: 5}, r2: {c1: 7}});
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    const listener = vi.fn();
+    metrics.addMetricListener('m1', listener);
+    metrics
+      .setMetricDefinition('m1', 't1', 'max', 'c1')
+      .setMetricDefinition('m1', 't1', 'min', 'c1');
+    expect(listener).toHaveBeenCalledExactlyOnceWith(metrics, 'm1', 5, 7);
+    metrics.delMetricDefinition('m1');
+    expect(listener).toHaveBeenLastCalledWith(metrics, 'm1', undefined, 5);
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
     const listener = vi.fn(() => {

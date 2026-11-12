@@ -127,7 +127,11 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
   };
 
   const delMetricDefinition = (metricId: Id): Metrics => {
+    const oldMetric = getMetric(metricId);
     delDefinition(metricId);
+    if (!isUndefined(oldMetric) && isUndefined(getMetric(metricId))) {
+      callListeners(metricListeners, [metricId], undefined, oldMetric);
+    }
     return metrics;
   };
 
