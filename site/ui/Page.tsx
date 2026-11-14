@@ -16,6 +16,12 @@ const GTM_ID = 'G-D1MGR8VRWJ';
 
 const FONTS = ['inter', 'inconsolata', 'shantell'];
 
+// The release notes share the newest release's launch card, which is a doc
+// shot, 1600x900. Every other page shares the padded favicon.
+const RELEASES_URL = '/guides/releases/';
+const LAUNCH_CARD = 'shots/launch-card.png';
+const FAVICON = 'favicon_pad.png';
+
 export const Page: NoPropComponent = () => {
   const pageNode = usePageNode();
   const rootNode = useRootNode();
@@ -41,6 +47,8 @@ export const Page: NoPropComponent = () => {
       ? getSummaryMarkdown(pageNode).replace(/\s+/g, ' ')
       : (NodeSummary({node: pageNode, asText: true}) as unknown as string);
   const url = `${baseUrl}${pageNode.url}`;
+  const isReleases = pageNode.url == RELEASES_URL;
+  const image = `${baseUrl}/${isReleases ? LAUNCH_CARD : FAVICON}`;
 
   return (
     <BuildContext>
@@ -70,13 +78,22 @@ export const Page: NoPropComponent = () => {
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
           <meta property="og:url" content={url} />
-          <meta property="og:image" content={`${baseUrl}/favicon_pad.png`} />
+          <meta property="og:image" content={image} />
+          {isReleases ? (
+            <>
+              <meta property="og:image:width" content="1600" />
+              <meta property="og:image:height" content="900" />
+            </>
+          ) : null}
 
-          <meta name="twitter:card" content="summary" />
+          <meta
+            name="twitter:card"
+            content={isReleases ? 'summary_large_image' : 'summary'}
+          />
           <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:site" content="@tinybasejs" />
-          <meta name="twitter:image" content={`${baseUrl}/favicon_pad.png`} />
+          <meta name="twitter:image" content={image} />
 
           <meta
             name="viewport"
