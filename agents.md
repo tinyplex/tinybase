@@ -266,7 +266,15 @@ like a success. Redirect to a file and check `$?`.
 Tests import `tinybase` from `dist`, so run `npm run compileForTest` after
 changing `src` before running any test. That build does not check types, so
 also run `npx gulp ts` before committing: a change can pass every test and
-still not compile for a release.
+still not compile for a release. Part of that task is `svelte-check`, whose
+project includes `src/common` but not `src/store`, so a file in `src/common`
+cannot import from the store module, even for a type alone.
+
+The `unit-persisters` and `unit-persisters-servers` projects run the same test
+files, and so share their snapshot files. Running either with `-u`, even with a
+`-t` filter, deletes every snapshot that the other project wrote. To change
+some snapshots, run each project with `-u` against a copy of the original file,
+then carry across only the entries that should change.
 
 Seeded fuzz suites live in `test/unit/core/fuzz`, and in
 `test/unit/synchronizers/convergence.fuzz.test.ts`, built on the helpers in
@@ -275,7 +283,14 @@ invariant after every one. A failure names its seed and lists the operations
 that led to it, and `FUZZ_RUNS` and `FUZZ_SEED` lengthen a hunt or replay one
 seed. A bug that a suite finds, but that is not yet fixed, is kept as a
 `test.fails` case, and what the suite generates is narrowed at a place marked
-`KNOWN BUG`. Remove both along with the bug.
+`KNOWN BUG`. Remove both along with the bug. Before trusting a suite that was
+newly widened, revert the fix it is meant to cover and check that it fails.
+
+A module that derives data from a Store and must catch up after a transaction,
+however it ends (committed, rolled back, or thrown), can use the Store's
+protected `_[11]` method. It queues a callback for when the transaction under
+way has finished, and returns whether there was one. The Store's own
+DidFinishTransaction listeners are not called when a transaction throws.
 
 `test/unit/synchronizers/efficiency.test.ts` holds each synchronization scenario
 to a budget of messages and bytes crossing the WebSocket server. When the
