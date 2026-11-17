@@ -782,10 +782,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   const setContentOrChanges = (contentOrChanges) => whileApplying(() => {
     if (isMergeableStore && isArray(contentOrChanges?.[0])) {
-      if (!(contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3])(
-        contentOrChanges,
-        !isSynchronizer
-      )) {
+      if (!(contentOrChanges?.[2] === 1 || !arrayIsEqual(store.getMergeableContentHashes(), [0, 0]) ? store.__[4] : store.__[3])(contentOrChanges, !isSynchronizer)) {
         onIgnoredError?.(errorNew(ERROR_MERGEABLE));
       }
     } else {

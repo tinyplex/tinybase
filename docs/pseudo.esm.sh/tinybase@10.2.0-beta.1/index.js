@@ -91,6 +91,7 @@ var arraySum = (array) => arrayReduce(array, (i, j) => i + j, 0);
 var arrayMax = (array) => arrayReduce(array, (maximum, value) => mathMax(maximum, value), -infinity);
 var arrayMin = (array) => arrayReduce(array, (minimum, value) => mathMin(minimum, value), infinity);
 var arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
+var arrayFilter = (array, cb) => array.filter(cb);
 var arrayClear = (array, to = size(array)) => array.splice(0, to);
 var arrayPush = (array, ...values) => array.push(...values);
 var arrayPop = (array) => array.pop();
@@ -180,6 +181,12 @@ var jsonStringWithMap = (obj) => jsonString(
   obj,
   (_key, value) => isInstanceOf(value, Map) ? objNew([...value]) : value
 );
+var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined(value) ? UNDEFINED : value);
+var jsonParseWithUndefined = (str) => (
+  // JSON.parse reviver removes properties with undefined values
+  replaceUndefinedString(jsonParse(str))
+);
+var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray(obj) ? arrayMap(obj, replaceUndefinedString) : isObject(obj) ? objMap(obj, replaceUndefinedString) : obj;
 var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
     return NULL;
@@ -431,15 +438,18 @@ var getDefinableFunctions = (store, getDefaultThing, validateRowValue, addListen
       collClear(changedRowValues);
       collClear(changedSortKeys);
     };
-    mapForEach(rowValues, processRow);
-    if (store.hasTable(tableId)) {
-      arrayForEach(store.getRowIds(tableId), (rowId) => {
-        if (!collHas(rowValues, rowId)) {
-          processRow(rowId);
-        }
-      });
-    }
-    processTable(true);
+    const processAll = () => {
+      mapForEach(rowValues, processRow);
+      if (store.hasTable(tableId)) {
+        arrayForEach(store.getRowIds(tableId), (rowId) => {
+          if (!collHas(rowValues, rowId)) {
+            processRow(rowId);
+          }
+        });
+      }
+      processTable(true);
+    };
+    processAll();
     delStoreListeners(id2);
     addStoreListeners(
       id2,
@@ -449,6 +459,10 @@ var getDefinableFunctions = (store, getDefaultThing, validateRowValue, addListen
         (_store, _tableId, rowId) => processRow(rowId)
       ),
       store.addTableListener(tableId, () => processTable())
+    );
+    const listenerIds = mapGet(storeListenerIds, id2);
+    store._[11](
+      () => mapGet(storeListenerIds, id2) === listenerIds ? processAll() : 0
     );
   };
   const delDefinition = (id2) => {
@@ -605,12 +619,16 @@ var createCheckpoints = getCreateFunction(
     let listeningToStore = 0;
     let nextCheckpointId;
     let checkpointsChanged;
+    let idsBeforeStoreChanges;
+    let storeChangingInTransaction = false;
     const checkpointIdsListeners = mapNew();
     const checkpointListeners = mapNew();
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => checkpoints
     );
     const deltas = mapNew();
+    const visitedCells = mapNew();
+    const visitedValues = mapNew();
     const labels = mapNew();
     const backwardIds = [];
     const forwardIds = [];
@@ -623,16 +641,30 @@ var createCheckpoints = getCreateFunction(
             cellsDelta2,
             (table, tableId) => collForEach(
               table,
-              (row, rowId) => collForEach(
-                row,
-                (oldNew, cellId) => store._[5](tableId, rowId, cellId, oldNew[oldOrNew], true)
-              )
+              (row, rowId) => collForEach(row, (oldNew, cellId) => {
+                const cell = oldNew[oldOrNew];
+                mapSet(
+                  mapEnsure(
+                    mapEnsure(visitedCells, tableId, mapNew),
+                    rowId,
+                    mapNew
+                  ),
+                  cellId,
+                  [cell]
+                );
+                store._[5](tableId, rowId, cellId, cell, true);
+              })
             )
           );
-          collForEach(
-            valuesDelta2,
-            (oldNew, valueId) => store._[6](valueId, oldNew[oldOrNew], true)
-          );
+          collForEach(valuesDelta2, (oldNew, valueId) => {
+            const value = oldNew[oldOrNew];
+            mapSet(visitedValues, valueId, [value]);
+            store._[6](valueId, value, true);
+          });
+          store._[11](() => {
+            collClear(visitedCells);
+            collClear(visitedValues);
+          });
         }),
         () => listening = 1
       );
@@ -700,6 +732,21 @@ var createCheckpoints = getCreateFunction(
         callListeners(checkpointIdsListeners);
         checkpointsChanged = 0;
       }
+    };
+    const storeChanging = () => {
+      if (isUndefined(idsBeforeStoreChanges)) {
+        idsBeforeStoreChanges = getCheckpointIds();
+        storeChangingInTransaction = store._[11](storeChangesFinished);
+      }
+    };
+    const storeChangeHeard = () => storeChangingInTransaction ? void 0 : storeChangesFinished();
+    const storeChangesFinished = () => {
+      const [backwardIdsBefore, currentIdBefore, forwardIdsBefore] = idsBeforeStoreChanges;
+      idsBeforeStoreChanges = void 0;
+      if (arrayIsEqual(backwardIdsBefore, backwardIds) && currentIdBefore === currentId && arrayIsEqual(forwardIdsBefore, forwardIds)) {
+        checkpointsChanged = 0;
+      }
+      callListenersIfChanged();
     };
     const setSize = (size2) => {
       backwardIdsSize = size2;
@@ -789,33 +836,43 @@ var createCheckpoints = getCreateFunction(
           null,
           null,
           (_store, tableId, rowId, cellId, newCell, oldCell) => {
-            if (listening) {
+            const visited = mapGet(
+              mapGet(mapGet(visitedCells, tableId), rowId),
+              cellId
+            );
+            if (listening && !(visited && cellOrValueIsEqual(visited[0], newCell))) {
+              storeChanging();
               storeChanged();
               const table = mapEnsure(cellsDelta, tableId, mapNew);
               const row = mapEnsure(table, rowId, mapNew);
-              const oldNew = mapEnsure(row, cellId, () => [oldCell, void 0]);
+              const oldNew = mapEnsure(row, cellId, () => [
+                visited ? visited[0] : oldCell,
+                void 0
+              ]);
               oldNew[1] = newCell;
               if (cellOrValueIsEqual(oldNew[0], newCell) && collIsEmpty(mapSet(row, cellId)) && collIsEmpty(mapSet(table, rowId)) && collIsEmpty(mapSet(cellsDelta, tableId)) && collIsEmpty(valuesDelta)) {
                 storeUnchanged();
               }
-              callListenersIfChanged();
+              storeChangeHeard();
             }
           }
         );
         valueListenerId = store.addValueListener(
           null,
           (_store, valueId, newValue, oldValue) => {
-            if (listening) {
+            const visited = mapGet(visitedValues, valueId);
+            if (listening && !(visited && cellOrValueIsEqual(visited[0], newValue))) {
+              storeChanging();
               storeChanged();
               const oldNew = mapEnsure(valuesDelta, valueId, () => [
-                oldValue,
+                visited ? visited[0] : oldValue,
                 void 0
               ]);
               oldNew[1] = newValue;
               if (cellOrValueIsEqual(oldNew[0], newValue) && collIsEmpty(mapSet(valuesDelta, valueId)) && collIsEmpty(cellsDelta)) {
                 storeUnchanged();
               }
-              callListenersIfChanged();
+              storeChangeHeard();
             }
           }
         );
@@ -1238,6 +1295,7 @@ var createStore = () => {
   let oldValuesSchema;
   let rollbackRequested = 0;
   let transactions = 0;
+  const afterTransactionCallbacks = [];
   let middleware = [];
   let internalListeners = [];
   let acceptingEncodedData = 0;
@@ -2535,6 +2593,7 @@ var createStore = () => {
     }
     return store;
   };
+  const callAfterTransaction = (callback) => transactions ? !!arrayPush(afterTransactionCallbacks, callback) : false;
   const getTransactionChanges = () => getTransactionChangesImpl();
   const getEncodedTransactionChanges = () => getTransactionChangesImpl(true);
   const getTransactionLog = () => [
@@ -2684,7 +2743,13 @@ var createStore = () => {
           },
           () => tryFinally(
             () => internalPostFinished ? 0 : internalListeners[2]?.(rolledBack),
-            resetTransaction
+            () => {
+              resetTransaction();
+              arrayForEach(
+                arrayClear(afterTransactionCallbacks),
+                (callback) => callback()
+              );
+            }
           )
         );
       }
@@ -2889,7 +2954,8 @@ var createStore = () => {
       getEncodedContent,
       getEncodedTransactionChanges,
       setEncodedContent,
-      applyEncodedChanges
+      applyEncodedChanges,
+      callAfterTransaction
     ]
   };
   objForEach(
@@ -3694,7 +3760,11 @@ var createMetrics = getCreateFunction((store) => {
     return metrics;
   };
   const delMetricDefinition = (metricId) => {
+    const oldMetric = getMetric(metricId);
     delDefinition(metricId);
+    if (!isUndefined(oldMetric) && isUndefined(getMetric(metricId))) {
+      callListeners(metricListeners, [metricId], void 0, oldMetric);
+    }
     return metrics;
   };
   const addMetricListener = (metricId, listener) => addListener(listener, metricListeners, [metricId]);
@@ -4134,6 +4204,9 @@ var createQueries = getCreateFunction((store) => {
     const definition = [tableId, build, sourceIsQuery, paramValues];
     setQueryDefinitionImpl(queryId, definition);
     cleanStores();
+    store._[11](
+      () => hasQuery(queryId) ? setQueryDefinitionImpl(queryId) : 0
+    );
     return queries;
   };
   const runQueryDefinition = (queryId, stagedDefinition, definition, commit) => getResultStore(queryId).transaction(
@@ -5027,8 +5100,29 @@ var createRelationships = getCreateFunction((store) => {
     )
   );
   const delRelationshipDefinition = (relationshipId) => {
+    const relationship = getRelationship(relationshipId);
+    const changedLinkedRows = arrayFilter(
+      mapKeys(mapGet(linkedRowIdsListeners, relationshipId)),
+      (firstRowId) => size(getLinkedRowIds(relationshipId, firstRowId)) > 1
+    );
     mapSet(remoteTableIds, relationshipId);
     delDefinition(relationshipId);
+    ifNotUndefined(relationship, ([localRows, remoteRows]) => {
+      if (!hasRelationship(relationshipId)) {
+        collForEach(
+          localRows,
+          (_remoteRowId, localRowId) => callListeners(remoteRowIdListeners, [relationshipId, localRowId])
+        );
+        collForEach(
+          remoteRows,
+          (_localRowIds, remoteRowId) => callListeners(localRowIdsListeners, [relationshipId, remoteRowId])
+        );
+        arrayForEach(
+          changedLinkedRows,
+          (firstRowId) => callListeners(linkedRowIdsListeners, [relationshipId, firstRowId])
+        );
+      }
+    });
     return relationships;
   };
   const getRemoteTableId = (relationshipId) => mapGet(remoteTableIds, relationshipId);
@@ -5102,5 +5196,7 @@ export {
   getUniqueId,
   getValueHash,
   getValueInValuesHash,
-  getValuesHash
+  getValuesHash,
+  jsonParseWithUndefined,
+  jsonStringWithUndefined
 };

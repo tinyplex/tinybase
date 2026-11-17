@@ -139,7 +139,7 @@
       }
     </style>
   </head>
-  <body data-release="v10.1">
+  <body data-release="v10.2">
     <div class="glow"></div>
     <div class="wrap">
       <div class="brand">
@@ -169,39 +169,42 @@
             />
           </g>
         </svg>
-        <div class="ver">v10.1</div>
+        <div class="ver">v10.2</div>
       </div>
-      <h1>The one with<br /><em>authorized sync</em>.</h1>
+      <h1>The one with<br /><em>fewer surprises</em>.</h1>
       <div class="sub">
-        The reactive store &amp; sync engine for local-first apps, now deciding
-        who may sync what.
+        The reactive store &amp; sync engine for local-first apps, now keeping
+        what you change.
       </div>
       <div class="tiles">
         <div class="tile">
           <svg viewBox="0 0 64 64" aria-hidden="true">
-            <rect x="12" y="28" width="40" height="30" rx="5" />
-            <path d="M20 28V20a12 12 0 0 1 24 0v8M32 39v8" />
+            <path
+              d="M24 12c-5 0-8 3-8 8v6c0 4-2 6-6 6 4 0 6 2 6 6v6c0 5 3 8 8 8M40 12c5 0 8 3 8 8v6c0 4 2 6 6 6-4 0-6 2-6 6v6c0 5-3 8-8 8"
+            />
           </svg>
           <div>
-            <b>Authorization</b
-            ><span>Decide who may read and write a path</span>
+            <b>Deletions in JSON</b
+            ><span>Deleted Cells stay deleted when serialized</span>
           </div>
         </div>
         <div class="tile">
           <svg viewBox="0 0 64 64" aria-hidden="true">
-            <path d="M10 54h44M16 54V14M28 54V26M40 54V36M52 54V46" />
+            <path d="M16 10v12a10 10 0 0 0 10 10h12a10 10 0 0 0 10-10V10" />
+            <path d="M32 32v22M24 46l8 8 8-8" />
           </svg>
           <div>
-            <b>Cheaper sync</b><span>A changed row in 10,000 costs 8kB</span>
+            <b>Loads that merge</b
+            ><span>Changes made while loading are kept</span>
           </div>
         </div>
         <div class="tile">
           <svg viewBox="0 0 64 64" aria-hidden="true">
-            <circle cx="32" cy="32" r="24" />
-            <path d="M21 33l8 8 15-17" />
+            <path d="M20 22h22a12 12 0 0 1 0 24H24M28 14l-8 8 8 8" />
           </svg>
           <div>
-            <b>Battle-tested</b><span>Fuzzed until every peer converges</span>
+            <b>Steady transactions</b
+            ><span>Definitions and undo keep up with transactions</span>
           </div>
         </div>
       </div>

@@ -1070,10 +1070,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   const setContentOrChanges = (contentOrChanges) => whileApplying(() => {
     if (isMergeableStore && isArray(contentOrChanges?.[0])) {
-      if (!(contentOrChanges?.[2] === 1 ? store.__[4] : store.__[3])(
-        contentOrChanges,
-        !isSynchronizer
-      )) ;
+      if (!(contentOrChanges?.[2] === 1 || !arrayIsEqual(store.getMergeableContentHashes(), [0, 0]) ? store.__[4] : store.__[3])(contentOrChanges, !isSynchronizer)) ;
     } else {
       (contentOrChanges?.[2] === 1 ? store._[10] : store._[9])(
         contentOrChanges
@@ -1522,6 +1519,7 @@ var createStore = () => {
   let oldValuesSchema;
   let rollbackRequested = 0;
   let transactions = 0;
+  const afterTransactionCallbacks = [];
   let middleware = [];
   let internalListeners = [];
   let acceptingEncodedData = 0;
@@ -2819,6 +2817,7 @@ var createStore = () => {
     }
     return store;
   };
+  const callAfterTransaction = (callback) => transactions ? !!arrayPush(afterTransactionCallbacks, callback) : false;
   const getTransactionChanges = () => getTransactionChangesImpl();
   const getEncodedTransactionChanges = () => getTransactionChangesImpl(true);
   const getTransactionLog = () => [
@@ -2968,7 +2967,13 @@ var createStore = () => {
           },
           () => tryFinally(
             () => internalPostFinished ? 0 : internalListeners[2]?.(rolledBack),
-            resetTransaction
+            () => {
+              resetTransaction();
+              arrayForEach(
+                arrayClear(afterTransactionCallbacks),
+                (callback) => callback()
+              );
+            }
           )
         );
       }
@@ -3173,7 +3178,8 @@ var createStore = () => {
       getEncodedContent,
       getEncodedTransactionChanges,
       setEncodedContent,
-      applyEncodedChanges
+      applyEncodedChanges,
+      callAfterTransaction
     ]
   };
   objForEach(
