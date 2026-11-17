@@ -135,14 +135,20 @@ MergeableStore, but _only_ in the 'JSON-serialization' mode:
 The following database-oriented Persister types _cannot_ currently be used to
 persist a MergeableStore:
 
-| Persister             | Storage                                                                                  |
-| --------------------- | ---------------------------------------------------------------------------------------- |
-| RemotePersister       | Remote server                                                                            |
-| LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts) |
-| PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)             |
-| YjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                         |
-| AutomergePersister    | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)       |
-| PartyKitPersister     | [PartyKit](https://www.partykit.io/), via the persister-partykit-server module           |
+| Persister          | Storage                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| RemotePersister    | Remote server                                                                            |
+| LibSqlPersister    | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts) |
+| PowerSyncPersister | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)             |
+| YjsPersister       | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                         |
+| AutomergePersister | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)       |
+| PartyKitPersister  | [PartyKit](https://www.partykit.io/), via the persister-partykit-server module           |
+
+You can also persist a MergeableStore in your own way, with the
+createCustomPersister function. If you serialize its content to JSON as you do
+so, use the jsonStringWithUndefined function and the
+jsonParseWithUndefined function, so that the Cells and Values it has deleted
+stay deleted. The Custom Persistence guide shows how.
 
 Next, let's see how to synchronize MergeableStore objects together with the
 synchronizers module. Please continue on to the Using A Synchronizer guide.

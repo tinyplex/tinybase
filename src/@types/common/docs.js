@@ -240,9 +240,13 @@
  * `JSON.stringify` turns those into `null`, which is a valid Cell or Value, and
  * so the deleted Cell or Value comes back when the JSON is parsed and set or
  * merged. Use this function, and the jsonParseWithUndefined function, instead.
+ * The content of a regular Store never contains `undefined` values, so plain
+ * JSON is fine for that.
  *
- * Each `undefined` value is written as the reserved string `'￼'`, which is
- * how TinyBase's own Persisters and Synchronizers serialize them too.
+ * Each `undefined` value is written as a string holding just the Unicode
+ * object replacement character (U+FFFC), which is how TinyBase's own Persisters
+ * and Synchronizers serialize them too. It follows that a string Cell or Value
+ * holding just that character is read back as `undefined`, and so as deleted.
  * @param obj The object to serialize.
  * @returns The JSON serialization of the object.
  * @example
@@ -253,7 +257,7 @@
  * import {jsonStringWithUndefined} from 'tinybase';
  *
  * console.log(jsonStringWithUndefined({species: 'dog', color: undefined}));
- * // -> '{"species":"dog","color":"￼"}'
+ * // -> '{"species":"dog","color":"\uFFFC"}'
  *
  * console.log(JSON.stringify({species: 'dog', color: undefined}));
  * // -> '{"species":"dog"}'
@@ -297,6 +301,10 @@
  * Use it to read the MergeableContent or MergeableChanges of a MergeableStore
  * that were serialized with that function, so that the Cells and Values they
  * delete stay deleted.
+ *
+ * Any string that holds just the Unicode object replacement character (U+FFFC)
+ * is read as `undefined`, including one that was a string Cell or Value when it
+ * was serialized.
  * @param json The JSON to parse.
  * @returns The parsed object, with its `undefined` values restored.
  * @example
@@ -305,11 +313,35 @@
  * ```js
  * import {jsonParseWithUndefined} from 'tinybase';
  *
- * const pet = jsonParseWithUndefined('{"species":"dog","color":"￼"}');
+ * const pet = jsonParseWithUndefined('{"species":"dog","color":"\uFFFC"}');
  * console.log(pet);
  * // -> {species: 'dog', color: undefined}
  * console.log(Object.keys(pet));
  * // -> ['species', 'color']
+ * ```
+ * @example
+ * This example deletes a Cell in one MergeableStore, serializes its content,
+ * and then applies it to another MergeableStore that still has that Cell. The
+ * Cell is deleted there too.
+ *
+ * ```js
+ * import {
+ *   createMergeableStore,
+ *   jsonParseWithUndefined,
+ *   jsonStringWithUndefined,
+ * } from 'tinybase';
+ *
+ * const store = createMergeableStore();
+ * store.setRow('pets', 'fido', {species: 'dog', color: 'brown'});
+ * const otherStore = createMergeableStore();
+ * otherStore.merge(store);
+ *
+ * store.delCell('pets', 'fido', 'color');
+ * const json = jsonStringWithUndefined(store.getMergeableContent());
+ *
+ * otherStore.applyMergeableChanges(jsonParseWithUndefined(json));
+ * console.log(otherStore.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
  * ```
  * @category Convenience
  * @since v10.2.0

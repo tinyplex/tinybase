@@ -37,7 +37,8 @@ console.log(restoredPetStore.getTables());
 They serialize `undefined` in the same way that TinyBase's own Persisters and
 Synchronizers do. The example of a custom Persister in the documentation of the
 createCustomPersister function now uses them too, since following it with a
-MergeableStore had the same problem.
+MergeableStore had the same problem, and the Custom Persistence guide now shows
+how to persist a MergeableStore with them.
 
 ## Reliability And Hardening
 

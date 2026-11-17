@@ -73,6 +73,59 @@ console.log(store.getTables());
 await persister.destroy();
 ```
 
+## Persisting A MergeableStore
+
+A custom Persister supports only a regular Store unless you say otherwise. To
+persist a MergeableStore, pass a value from the Persists enum as the seventh
+parameter, after the optional `onIgnoredError` handler.
+
+The content of a MergeableStore records each Cell or Value that has been deleted
+as `undefined`. Plain JSON turns those into `null`, which would bring them back
+when the content is loaded. Instead, serialize the content with the
+jsonStringWithUndefined function, and parse it again with the
+jsonParseWithUndefined function:
+
+```js
+import {
+  createMergeableStore,
+  jsonParseWithUndefined,
+  jsonStringWithUndefined,
+} from 'tinybase';
+import {Persists} from 'tinybase/persisters';
+
+let mergeableStoreJson;
+const createJsonPersister = (mergeableStore) =>
+  createCustomPersister(
+    mergeableStore,
+    async () => {
+      try {
+        return jsonParseWithUndefined(mergeableStoreJson);
+      } catch {}
+    },
+    async (getContent) =>
+      (mergeableStoreJson = jsonStringWithUndefined(getContent())),
+    (listener) => setInterval(listener, 1000),
+    (interval) => clearInterval(interval),
+    undefined,
+    Persists.MergeableStoreOnly,
+  );
+
+const mergeableStore = createMergeableStore();
+mergeableStore.setRow('pets', 'fido', {species: 'dog', color: 'brown'});
+mergeableStore.delCell('pets', 'fido', 'color');
+const mergeablePersister = createJsonPersister(mergeableStore);
+await mergeablePersister.save();
+
+const reloadedStore = createMergeableStore();
+const reloadedPersister = createJsonPersister(reloadedStore);
+await reloadedPersister.load();
+console.log(reloadedStore.getTables());
+// -> {pets: {fido: {species: 'dog'}}}
+
+await mergeablePersister.destroy();
+await reloadedPersister.destroy();
+```
+
 Note that the other creation functions (such as the createSessionPersister
 function and createFilePersister function, for example) all use this function
 under the covers. See those implementations for ideas on how to implement your
