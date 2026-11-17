@@ -180,10 +180,6 @@ const getDifference = (from: Content, to: Content): Step[] => {
   return steps;
 };
 
-// The Cell or Value that such a step is for.
-const getPlace = ([method, ...args]: Step): string =>
-  method.slice(3) + ':' + args.slice(0, method.endsWith('Cell') ? 3 : 1);
-
 // -- A model of the checkpoints of a Store
 
 type Model = {
@@ -376,8 +372,6 @@ type Change = {steps: Step[]; how: 'alone' | 'commit' | 'rollback' | 'throw'};
 type Limits = {
   // Never forgets a checkpoint by clearing them or by setting the size.
   keepsHistory?: boolean;
-  // Leaves out what is known to call a CheckpointIdsListener wrongly.
-  exactIdsListeners?: boolean;
 };
 
 const createWorld = (random: Random, trace: Trace, limits: Limits = {}) => {
@@ -426,29 +420,12 @@ const createWorld = (random: Random, trace: Trace, limits: Limits = {}) => {
     );
   };
 
-  // Whether a change to the Store would undo every change pending since the
-  // last checkpoint, while making another.
-  const undoesPendingForAnother = (nextContent: Content): boolean => {
-    const pending = getDifference(model.base, model.content).map(getPlace);
-    const nextPending = getDifference(model.base, nextContent).map(getPlace);
-    return (
-      pending.length > 0 &&
-      nextPending.length > 0 &&
-      !pending.some((place) => nextPending.includes(place))
-    );
-  };
-
-  // Makes a change to the Store, unless it is one to be left out.
-  const change = ({steps, how}: Change): boolean => {
+  // Makes a change to the Store.
+  const change = ({steps, how}: Change): void => {
     const changedContent = clone(model.content);
     applySteps(changedContent, steps);
     const isUndone = how == 'rollback' || how == 'throw';
     const nextContent = isUndone ? model.content : changedContent;
-    // KNOWN BUG ids-listener-transient: remove this restriction once fixed.
-    if (limits.exactIdsListeners && undoesPendingForAnother(nextContent)) {
-      return false;
-    }
-
     const statements = steps
       .map(([method, ...args]) => `store.${method}(${args.map(code)});`)
       .join(' ');
@@ -486,7 +463,6 @@ const createWorld = (random: Random, trace: Trace, limits: Limits = {}) => {
     model.content = nextContent;
     modelStoreChanged(model);
     verify();
-    return true;
   };
 
   // Adds a Row to the Store, with whichever Id the Store gives it.
@@ -636,7 +612,7 @@ test('matches a model of the documented behaviour', async () => {
 // checkpoint Ids, or that clears them, and by nothing else.
 test('calls a CheckpointIdsListener when the Ids change', async () => {
   await forEachSeed(100, (random, trace) => {
-    const world = createWorld(random, trace, {exactIdsListeners: true});
+    const world = createWorld(random, trace);
     const {checkpoints} = world;
     let calls = 0;
     trace('checkpoints.addCheckpointIdsListener(() => calls++);');

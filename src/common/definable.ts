@@ -29,7 +29,7 @@ import {EMPTY_STRING} from './strings.ts';
 
 // The protected Store method that calls back once a transaction has finished.
 type StoreWithCallAfterTransaction = Store & {
-  _: {11: (callback: () => void) => void};
+  _: {11: (callback: () => void) => boolean};
 };
 
 type OnChangedDecl<RowValue> = (

@@ -19,6 +19,7 @@ import {
   arrayClear,
   arrayForEach,
   arrayHas,
+  arrayIsEqual,
   arrayPop,
   arrayPush,
   arrayShift,
@@ -74,6 +75,8 @@ export const createCheckpoints = getCreateFunction(
     let listeningToStore = 0;
     let nextCheckpointId: number;
     let checkpointsChanged: 0 | 1;
+    let idsBeforeStoreChanges: CheckpointIds | undefined;
+    let storeChangingInTransaction = false;
     const checkpointIdsListeners: IdSet2 = mapNew();
     const checkpointListeners: IdSet2 = mapNew();
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
@@ -214,6 +217,35 @@ export const createCheckpoints = getCreateFunction(
       }
     };
 
+    // The Store's changes in a transaction are heard one at a time, and may
+    // move the checkpoint Ids and then put them back, so their listeners are
+    // only told once the transaction has finished, and only if they moved.
+    const storeChanging = (): void => {
+      if (isUndefined(idsBeforeStoreChanges)) {
+        idsBeforeStoreChanges = getCheckpointIds();
+        storeChangingInTransaction = (store as ProtectedStore)._[11](
+          storeChangesFinished,
+        );
+      }
+    };
+
+    const storeChangeHeard = (): void =>
+      storeChangingInTransaction ? undefined : storeChangesFinished();
+
+    const storeChangesFinished = (): void => {
+      const [backwardIdsBefore, currentIdBefore, forwardIdsBefore] =
+        idsBeforeStoreChanges as CheckpointIds;
+      idsBeforeStoreChanges = undefined;
+      if (
+        arrayIsEqual(backwardIdsBefore, backwardIds) &&
+        currentIdBefore === currentId &&
+        arrayIsEqual(forwardIdsBefore, forwardIds)
+      ) {
+        checkpointsChanged = 0;
+      }
+      callListenersIfChanged();
+    };
+
     const setSize = (size: number): Checkpoints => {
       backwardIdsSize = size;
       trimBackwardsIds();
@@ -341,6 +373,7 @@ export const createCheckpoints = getCreateFunction(
               listening &&
               !(visited && cellOrValueIsEqual(visited[0], newCell))
             ) {
+              storeChanging();
               storeChanged();
               const table = mapEnsure<Id, IdMap2<ChangedCell>>(
                 cellsDelta,
@@ -366,7 +399,7 @@ export const createCheckpoints = getCreateFunction(
               ) {
                 storeUnchanged();
               }
-              callListenersIfChanged();
+              storeChangeHeard();
             }
           },
         );
@@ -379,6 +412,7 @@ export const createCheckpoints = getCreateFunction(
               listening &&
               !(visited && cellOrValueIsEqual(visited[0], newValue))
             ) {
+              storeChanging();
               storeChanged();
               const oldNew = mapEnsure<Id, ChangedValue>(
                 valuesDelta,
@@ -393,7 +427,7 @@ export const createCheckpoints = getCreateFunction(
               ) {
                 storeUnchanged();
               }
-              callListenersIfChanged();
+              storeChangeHeard();
             }
           },
         );

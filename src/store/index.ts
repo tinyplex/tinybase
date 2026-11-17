@@ -222,7 +222,7 @@ type ProtectedMethods = [
   getEncodedTransactionChanges: () => Changes,
   setEncodedContent: (content: Content) => Store,
   applyEncodedChanges: (changes: Changes) => Store,
-  callAfterTransaction: (callback: () => void) => void,
+  callAfterTransaction: (callback: () => void) => boolean,
 ];
 
 type TablesSchemaMap = IdMap2<CellSchema>;
@@ -2238,12 +2238,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   // Calls back once the transaction under way, if any, has finished, however
-  // it finishes.
-  const callAfterTransaction = (callback: () => void): void => {
-    if (transactions) {
-      arrayPush(afterTransactionCallbacks, callback);
-    }
-  };
+  // it finishes, and returns whether there is one.
+  const callAfterTransaction = (callback: () => void): boolean =>
+    transactions ? !!arrayPush(afterTransactionCallbacks, callback) : false;
 
   const getTransactionChanges = (): Changes => getTransactionChangesImpl();
 

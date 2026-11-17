@@ -602,6 +602,36 @@ describe('Moving around within transactions', () => {
   });
 });
 
+describe('Listens to checkpoint Ids after a transaction', () => {
+  test('not if it undoes what was pending while changing more', () => {
+    store.setCell('pets', 'fido', 'price', 1);
+    const listener = vi.fn();
+    checkpoints.addCheckpointIdsListener(listener);
+    store.transaction(() =>
+      store.delCell('pets', 'fido', 'price').setValue('open', true),
+    );
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], undefined, []]);
+    expect(listener).not.toHaveBeenCalled();
+    store.delValue('open');
+    expect(checkpoints.getCheckpointIds()).toEqual([[], '0', []]);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  test('when the Store calls a listener outside a transaction', () => {
+    store.setCell('pets', 'fido', 'price', 1);
+    checkpoints.addCheckpoint();
+    const listener = vi.fn();
+    checkpoints.addCheckpointIdsListener(listener);
+    // The listener to Cells that the Checkpoints object added to the Store.
+    store.callListener('0');
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', []]);
+    expect(listener).not.toHaveBeenCalled();
+    store.setCell('pets', 'fido', 'price', 2);
+    expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], undefined, []]);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('Miscellaneous', () => {
   test('clear', () => {
     expect(checkpoints.getCheckpointIds()).toEqual([[], '0', []]);
