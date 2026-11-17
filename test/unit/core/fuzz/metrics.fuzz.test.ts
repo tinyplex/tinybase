@@ -65,8 +65,6 @@ type World = {
 type Op = {
   code: string;
   run: (world: World) => void;
-  // The Ids of any definitions it removes.
-  removes?: Id[];
   // Whether it is one that should leave every metric as it was.
   inert?: boolean;
 };
@@ -376,7 +374,6 @@ const transactionOf = (
       () => ops.forEach((op) => op.run(world)),
       doRollback == null ? undefined : () => doRollback,
     ),
-  removes: ops.flatMap(({removes = []}) => removes),
   inert,
 });
 
@@ -549,7 +546,6 @@ const removalOf = (metricId: Id): Op => ({
     metrics.delMetricDefinition(metricId);
     definitions.delete(metricId);
   },
-  removes: [metricId],
 });
 
 // Any operation at all, with more definitions being set while there are few.
@@ -740,21 +736,17 @@ const expectAsModel: Oracle = ({store, metrics, definitions}, profile) => {
 };
 
 // The listener for each metric, and the one for all of them, has been called
-// once for each metric that has a different value, and for no other.
-//
-// Removing a definition is the exception. It takes the value of the metric
-// away without a call to any listener, and the documentation does not say
-// whether there should be one, so nothing is expected either way.
-const expectCalls: Oracle = ({metrics, calls}, _profile, op, before) => {
+// once for each metric that has a different value, and for no other. That
+// includes removing a definition, which takes the value of its metric away.
+const expectCalls: Oracle = ({metrics, calls}, _profile, _op, before) => {
   const after = getMetrics(metrics);
   const changedIds = METRIC_IDS.filter(
-    (metricId) =>
-      after[metricId] !== before[metricId] && !op.removes?.includes(metricId),
+    (metricId) => after[metricId] !== before[metricId],
   );
   const sorted = (rows: World['calls']): World['calls'] =>
     rows.sort((row1, row2) => (js(row1) < js(row2) ? -1 : 1));
   expectSame(
-    sorted(calls.filter(([, metricId]) => !op.removes?.includes(metricId))),
+    sorted(calls),
     sorted(
       [...METRIC_IDS, null].flatMap((listenedId) =>
         changedIds
