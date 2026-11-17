@@ -7,6 +7,8 @@ export {getUniqueId} from './codec.ts';
 
 export {getHlcFunctions} from './hlc.ts';
 
+export {jsonParseWithUndefined, jsonStringWithUndefined} from './json.ts';
+
 export * from './hash.ts';
 
 export const defaultSorter: typeof defaultSorterDecl = (

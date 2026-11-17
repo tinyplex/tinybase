@@ -1778,8 +1778,17 @@
  * It emits warnings to the console and explicitly supports either a Store or a
  * MergeableStore.
  *
+ * It serializes the content with the jsonStringWithUndefined function, rather
+ * than plain JSON, so that the Cells and Values that a MergeableStore has
+ * deleted stay deleted when it is loaded again.
+ *
  * ```js
- * import {createMergeableStore, createStore} from 'tinybase';
+ * import {
+ *   createMergeableStore,
+ *   createStore,
+ *   jsonParseWithUndefined,
+ *   jsonStringWithUndefined,
+ * } from 'tinybase';
  * import {Persists, createCustomPersister} from 'tinybase/persisters';
  *
  * let persistedJson;
@@ -1788,11 +1797,11 @@
  *     storeOrMergeableStore,
  *     async () => {
  *       // getPersisted
- *       return JSON.parse(persistedJson);
+ *       return jsonParseWithUndefined(persistedJson);
  *     },
  *     async (getContent) => {
  *       // setPersisted
- *       persistedJson = JSON.stringify(getContent());
+ *       persistedJson = jsonStringWithUndefined(getContent());
  *     },
  *     (listener) => setInterval(listener, 1000),
  *     (interval) => clearInterval(interval),
@@ -1812,7 +1821,7 @@
  * mergeableStore.setTables({pets: {fido: {species: 'dog'}}});
  * const mergeableStorePersister = createJsonPersister(mergeableStore);
  * await mergeableStorePersister.save();
- * console.log(JSON.parse(persistedJson));
+ * console.log(jsonParseWithUndefined(persistedJson));
  * // ->
  * [
  *   [

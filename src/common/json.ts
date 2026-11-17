@@ -1,3 +1,7 @@
+import type {
+  jsonParseWithUndefined as jsonParseWithUndefinedDecl,
+  jsonStringWithUndefined as jsonStringWithUndefinedDecl,
+} from '../@types/common/index.d.ts';
 import {arrayMap} from './array.ts';
 import {isObject, objMap, objNew} from './obj.ts';
 import {isArray, isInstanceOf, isUndefined} from './other.ts';
@@ -11,10 +15,14 @@ export const jsonStringWithMap = (obj: unknown): string =>
     isInstanceOf(value, Map) ? objNew([...value]) : value,
   );
 
-export const jsonStringWithUndefined = (obj: unknown): string =>
+export const jsonStringWithUndefined: typeof jsonStringWithUndefinedDecl = (
+  obj: unknown,
+): string =>
   jsonString(obj, (_key, value) => (isUndefined(value) ? UNDEFINED : value));
 
-export const jsonParseWithUndefined = (str: string): any =>
+export const jsonParseWithUndefined: typeof jsonParseWithUndefinedDecl = (
+  str: string,
+): any =>
   // JSON.parse reviver removes properties with undefined values
   replaceUndefinedString(jsonParse(str));
 

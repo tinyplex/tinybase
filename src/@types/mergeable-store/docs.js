@@ -167,6 +167,11 @@
  *
  * This type is mostly utilized internally within TinyBase itself and is
  * generally assumed to be opaque to applications that use it.
+ *
+ * A deleted Cell or Value has an `undefined` value, which plain JSON cannot
+ * represent, and so turns into `null`. Since v10.2, use the
+ * jsonStringWithUndefined function and the jsonParseWithUndefined function to
+ * serialize and parse it instead, so that deletions are kept.
  * @category Mergeable
  * @since v5.0.0
  */
@@ -182,6 +187,11 @@
  *
  * This type is mostly utilized internally within TinyBase itself and is
  * generally assumed to be opaque to applications that use it.
+ *
+ * A deleted Cell or Value has an `undefined` value, which plain JSON cannot
+ * represent, and so turns into `null`. Since v10.2, use the
+ * jsonStringWithUndefined function and the jsonParseWithUndefined function to
+ * serialize and parse it instead, so that deletions are kept.
  * @category Mergeable
  * @since v5.0.0
  */

@@ -16,6 +16,8 @@ import {
   getValueHash,
   getValueInValuesHash,
   getValuesHash,
+  jsonParseWithUndefined,
+  jsonStringWithUndefined,
 } from 'tinybase';
 import {getTimeFunctions} from '../../common/mergeable.ts';
 const [reset, getNow] = getTimeFunctions();
@@ -34,6 +36,23 @@ test('defaultSorter', () => {
   expect(defaultSorter('b', 'a')).toEqual(1);
   expect(defaultSorter('a', 'a')).toEqual(1);
   expect(defaultSorter(undefined, 0)).toEqual(1);
+});
+
+test('jsonStringWithUndefined and jsonParseWithUndefined', () => {
+  const obj = {a: undefined, b: null, c: [1, undefined, {d: undefined}]};
+  const json = jsonStringWithUndefined(obj);
+  expect(json).toEqual(
+    '{"a":"\uFFFC","b":null,"c":[1,"\uFFFC",{"d":"\uFFFC"}]}',
+  );
+  const parsed = jsonParseWithUndefined(json);
+  expect(parsed).toEqual(obj);
+  expect(Object.keys(parsed)).toEqual(['a', 'b', 'c']);
+  expect(parsed.b).toBeNull();
+  expect(parsed.c).toHaveLength(3);
+  expect(Object.keys(parsed.c[2])).toEqual(['d']);
+  expect(jsonParseWithUndefined(jsonStringWithUndefined(undefined))).toEqual(
+    undefined,
+  );
 });
 
 test('getHlcFunctions', () => {

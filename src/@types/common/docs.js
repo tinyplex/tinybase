@@ -231,6 +231,91 @@
  */
 /// getUniqueId
 /**
+ * The jsonStringWithUndefined function serializes an object to JSON, keeping
+ * any `undefined` values within it, which plain JSON would otherwise drop or
+ * turn into `null`.
+ *
+ * A MergeableStore records that a Cell or Value has been deleted by giving it
+ * an `undefined` value in its MergeableContent and MergeableChanges. Plain
+ * `JSON.stringify` turns those into `null`, which is a valid Cell or Value, and
+ * so the deleted Cell or Value comes back when the JSON is parsed and set or
+ * merged. Use this function, and the jsonParseWithUndefined function, instead.
+ *
+ * Each `undefined` value is written as the reserved string `'￼'`, which is
+ * how TinyBase's own Persisters and Synchronizers serialize them too.
+ * @param obj The object to serialize.
+ * @returns The JSON serialization of the object.
+ * @example
+ * This example serializes an object that has an `undefined` value, both with
+ * this function and with plain JSON.
+ *
+ * ```js
+ * import {jsonStringWithUndefined} from 'tinybase';
+ *
+ * console.log(jsonStringWithUndefined({species: 'dog', color: undefined}));
+ * // -> '{"species":"dog","color":"￼"}'
+ *
+ * console.log(JSON.stringify({species: 'dog', color: undefined}));
+ * // -> '{"species":"dog"}'
+ * ```
+ * @example
+ * This example serializes the content of a MergeableStore that has had a Row
+ * deleted, and then uses it to set the content of another. Plain JSON, by
+ * contrast, brings the deleted Row back with a `null` Cell.
+ *
+ * ```js
+ * import {
+ *   createMergeableStore,
+ *   jsonParseWithUndefined,
+ *   jsonStringWithUndefined,
+ * } from 'tinybase';
+ *
+ * const store = createMergeableStore();
+ * store.setRow('pets', 'fido', {species: 'dog'}).delRow('pets', 'fido');
+ * const content = store.getMergeableContent();
+ *
+ * const json = jsonStringWithUndefined(content);
+ * const restoredStore = createMergeableStore();
+ * restoredStore.setMergeableContent(jsonParseWithUndefined(json));
+ * console.log(restoredStore.getTables());
+ * // -> {}
+ *
+ * const plainJson = JSON.stringify(content);
+ * const wronglyRestoredStore = createMergeableStore();
+ * wronglyRestoredStore.setMergeableContent(JSON.parse(plainJson));
+ * console.log(wronglyRestoredStore.getTables());
+ * // -> {pets: {fido: {species: null}}}
+ * ```
+ * @category Convenience
+ * @since v10.2.0
+ */
+/// jsonStringWithUndefined
+/**
+ * The jsonParseWithUndefined function parses JSON that was serialized with the
+ * jsonStringWithUndefined function, restoring the `undefined` values within it.
+ *
+ * Use it to read the MergeableContent or MergeableChanges of a MergeableStore
+ * that were serialized with that function, so that the Cells and Values they
+ * delete stay deleted.
+ * @param json The JSON to parse.
+ * @returns The parsed object, with its `undefined` values restored.
+ * @example
+ * This example parses JSON that has an `undefined` value.
+ *
+ * ```js
+ * import {jsonParseWithUndefined} from 'tinybase';
+ *
+ * const pet = jsonParseWithUndefined('{"species":"dog","color":"￼"}');
+ * console.log(pet);
+ * // -> {species: 'dog', color: undefined}
+ * console.log(Object.keys(pet));
+ * // -> ['species', 'color']
+ * ```
+ * @category Convenience
+ * @since v10.2.0
+ */
+/// jsonParseWithUndefined
+/**
  * The getHlcFunctions function returns a set of utility functions for working
  * with the TinyBase Hybrid Logical Clock (HLC).
  *

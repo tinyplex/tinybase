@@ -47,6 +47,12 @@ export function defaultSorter(sortKey1: SortKey, sortKey2: SortKey): number;
 /// getUniqueId
 export function getUniqueId(length?: number): Id;
 
+/// jsonStringWithUndefined
+export function jsonStringWithUndefined(obj: unknown): Json;
+
+/// jsonParseWithUndefined
+export function jsonParseWithUndefined(json: Json): any;
+
 /// getHlcFunctions
 export function getHlcFunctions(
   uniqueId?: Id,

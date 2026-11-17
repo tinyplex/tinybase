@@ -6,7 +6,12 @@ import type {
   MergeableContent,
   MergeableStore,
 } from 'tinybase';
-import {createMergeableStore, createMiddleware} from 'tinybase';
+import {
+  createMergeableStore,
+  createMiddleware,
+  jsonParseWithUndefined,
+  jsonStringWithUndefined,
+} from 'tinybase';
 import {
   getTimeFunctions,
   nullStamped,
@@ -673,6 +678,31 @@ describe('applyMergeableChanges/setMergeableContent', () => {
       expect(store.getMergeableContentHashes()).toEqual(hashes);
     });
     expect(store1.getMergeableContent()).toEqual(content);
+  });
+
+  test('keeps deletions through JSON that keeps undefined', () => {
+    const store1 = createMergeableStore('s1', getNow)
+      .setRow('t1', 'r1', {c1: 1, c2: null})
+      .setValues({v1: 1, v2: null})
+      .delCell('t1', 'r1', 'c1')
+      .delValue('v1')
+      .setRow('t1', 'r2', {c1: 2})
+      .delRow('t1', 'r2');
+    const content = store1.getMergeableContent();
+    const json = jsonStringWithUndefined(content);
+
+    const store2 = createMergeableStore('s2', getNow);
+    store2.setMergeableContent(jsonParseWithUndefined(json));
+    const store3 = createMergeableStore('s3', getNow);
+    store3.applyMergeableChanges(jsonParseWithUndefined(json));
+
+    [store2, store3].forEach((store) => {
+      expect(store.getContent()).toEqual([{t1: {r1: {c2: null}}}, {v2: null}]);
+      expect(store.getMergeableContent()).toEqual(content);
+      expect(store.getMergeableContentHashes()).toEqual(
+        store1.getMergeableContentHashes(),
+      );
+    });
   });
 
   test('restores raw change listening after apply error', () => {
