@@ -193,6 +193,33 @@ describe.each(
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
 
+  test('keeps what changes while loading', async () => {
+    await persistable.set(location, [
+      [
+        {
+          t1: [
+            {r1: [{c1: [1, time(0, 0), 1003668370]}, '', 550994372]},
+            '',
+            1072852846,
+          ],
+        },
+        '',
+        1771939739,
+      ],
+      [{}, '', 0],
+    ]);
+    const loading = persister.load();
+    store.setCell('t1', 'r2', 'c1', 2);
+    await loading;
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}, r2: {c1: 2}}});
+
+    await persister.load();
+    const loadingAgain = persister.load();
+    store.delRow('t1', 'r1');
+    await loadingAgain;
+    expect(store.getTables()).toEqual({t1: {r2: {c1: 2}}});
+  });
+
   test('does not load from empty', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
     await persister.load();

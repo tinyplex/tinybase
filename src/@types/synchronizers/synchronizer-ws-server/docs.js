@@ -714,14 +714,15 @@
  * with the clients on that path, and in turn with whatever persistence layer
  * you have configured. See the example below.
  *
- * It is not safe to add or manipulate data in the MergeableStore during the
- * `createPersisterForPath` function, since changes will probably be overwritten
- * when the Persister starts. If you wish to modify data - or upgrade a schema,
- * for example - you can have that function instead return an array containing
- * the Persister _and_ a callback that takes the MergeableStore. That callback
- * will get called after the Persister has started, and is an appropriate place
- * to manipulate data in a way that will be transmitted to clients. Again, see
- * the example below.
+ * Data added to the MergeableStore during the `createPersisterForPath`
+ * function is merged with what the Persister then loads, since v10.2, rather
+ * than being overwritten. But that function cannot see what has been
+ * persisted. If you wish to modify data - or upgrade a schema, for example -
+ * you can have that function instead return an array containing the Persister
+ * _and_ a callback that takes the MergeableStore. That callback will get called
+ * after the Persister has started, and is an appropriate place to manipulate
+ * data in a way that will be transmitted to clients. Again, see the example
+ * below.
  * @param webSocketServer A WebSocketServer object from your server environment.
  * @param createPersisterForPath An optional function that will create a
  * Persister to synchronize with the clients on a given path (or a two-item

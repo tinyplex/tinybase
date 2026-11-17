@@ -18,6 +18,7 @@ import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {
   arrayClear,
   arrayFilter,
+  arrayIsEqual,
   arrayMap,
   arrayPush,
 } from '../../common/array.ts';
@@ -252,9 +253,15 @@ export const createCustomPersister = <
     whileApplying(() => {
       if (isMergeableStore && isArray(contentOrChanges?.[0])) {
         // What a Persister kept is trusted, but not what a peer has sent.
+        // Content replaces what the Store has only if it has nothing, even
+        // deletions. Otherwise it is merged, keeping what changed meanwhile.
         if (
           !(
-            contentOrChanges?.[2] === 1
+            contentOrChanges?.[2] === 1 ||
+              !arrayIsEqual(
+                (store as MergeableStore).getMergeableContentHashes(),
+                [0, 0],
+              )
               ? (store as ProtectedMergeableStore).__[4]
               : (store as ProtectedMergeableStore).__[3]
           )(

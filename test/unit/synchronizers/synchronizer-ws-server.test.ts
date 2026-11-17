@@ -1658,7 +1658,7 @@ describe('Persistence', () => {
       );
     });
 
-    test('alters data prematurely', async () => {
+    test('keeps data altered before loading', async () => {
       const [webSocketServer, port] = await createTestWebSocketServer();
       const wsServer = createWsServer(webSocketServer, (pathId) => {
         serverStore.setValue('p', pathId);
@@ -1675,7 +1675,14 @@ describe('Persistence', () => {
       await synchronizer.startSync();
 
       await pause();
-      expect(serverStore.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+      expect(serverStore.getContent()).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {p: 'p1'},
+      ]);
+      expect(clientStore.getContent()).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {p: 'p1'},
+      ]);
 
       await synchronizer.destroy();
       await wsServer.destroy();
@@ -1683,13 +1690,10 @@ describe('Persistence', () => {
 
     test('alters data after path first persisted', async () => {
       const [webSocketServer, port] = await createTestWebSocketServer();
-      const wsServer = createWsServer(webSocketServer, (pathId) => {
-        serverStore.setValue('p', pathId);
-        return [
-          createPersister(serverStore, pathId),
-          (store) => store.setValue('p', pathId),
-        ];
-      });
+      const wsServer = createWsServer(webSocketServer, (pathId) => [
+        createPersister(serverStore, pathId),
+        (store) => store.setValue('p', pathId),
+      ]);
       wsServerCleanups.push(() => wsServer.destroy());
 
       const clientStore = createMergeableStore('s1', getNow);

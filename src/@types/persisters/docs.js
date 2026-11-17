@@ -959,6 +959,11 @@
    * The load method gets persisted data from storage, and loads it into the
    * Store with which the Persister is associated, once.
    *
+   * The content that is loaded replaces that of a Store. Since v10.2, though,
+   * it is merged into a MergeableStore that already has content, so that a
+   * change made while it was loading, or any other change newer than what was
+   * persisted, is kept.
+   *
    * The optional parameter allows you to specify what the initial content for
    * the Store will be if there is nothing currently persisted or if the load
    * fails (for example when the Persister is remote and the environment is
