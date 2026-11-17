@@ -26,7 +26,13 @@ import {
 } from '../common/array.ts';
 
 import {encodeIfJson} from '../common/cell.ts';
-import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
+import {
+  collClear,
+  collForEach,
+  collHas,
+  collIsEmpty,
+  collSize2,
+} from '../common/coll.ts';
 import {getCreateFunction} from '../common/definable.ts';
 import {tryFinally} from '../common/error.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
@@ -74,6 +80,10 @@ export const createCheckpoints = getCreateFunction(
       () => checkpoints,
     );
     const deltas: IdMap<[CellsDelta, ValuesDelta]> = mapNew();
+    // What going backward or forward has set, during a transaction that has
+    // yet to tell the Store's listeners about it.
+    const visitedCells: IdMap3<[CellOrUndefined]> = mapNew();
+    const visitedValues: IdMap<[ValueOrUndefined]> = mapNew();
     const labels: IdMap<string> = mapNew();
     const backwardIds: Ids = [];
     const forwardIds: Ids = [];
@@ -89,24 +99,40 @@ export const createCheckpoints = getCreateFunction(
             ];
             collForEach(cellsDelta, (table, tableId) =>
               collForEach(table, (row, rowId) =>
-                collForEach(row, (oldNew, cellId) =>
+                collForEach(row, (oldNew, cellId) => {
+                  const cell = oldNew[oldOrNew] as CellOrUndefined;
+                  mapSet(
+                    mapEnsure(
+                      mapEnsure<Id, IdMap2<[CellOrUndefined]>>(
+                        visitedCells,
+                        tableId,
+                        mapNew,
+                      ),
+                      rowId,
+                      mapNew,
+                    ),
+                    cellId,
+                    [cell],
+                  );
                   (store as ProtectedStore)._[5](
                     tableId,
                     rowId,
                     cellId,
-                    oldNew[oldOrNew] as CellOrUndefined,
+                    cell,
                     true,
-                  ),
-                ),
+                  );
+                }),
               ),
             );
-            collForEach(valuesDelta, (oldNew, valueId) =>
-              (store as ProtectedStore)._[6](
-                valueId,
-                oldNew[oldOrNew] as ValueOrUndefined,
-                true,
-              ),
-            );
+            collForEach(valuesDelta, (oldNew, valueId) => {
+              const value = oldNew[oldOrNew] as ValueOrUndefined;
+              mapSet(visitedValues, valueId, [value]);
+              (store as ProtectedStore)._[6](valueId, value, true);
+            });
+            (store as ProtectedStore)._[11](() => {
+              collClear(visitedCells);
+              collClear(visitedValues);
+            });
           }),
         () => (listening = 1),
       );
@@ -307,7 +333,14 @@ export const createCheckpoints = getCreateFunction(
           null,
           null,
           (_store, tableId, rowId, cellId, newCell, oldCell) => {
-            if (listening) {
+            const visited = mapGet(
+              mapGet(mapGet(visitedCells, tableId), rowId),
+              cellId,
+            );
+            if (
+              listening &&
+              !(visited && cellOrValueIsEqual(visited[0], newCell))
+            ) {
               storeChanged();
               const table = mapEnsure<Id, IdMap2<ChangedCell>>(
                 cellsDelta,
@@ -320,7 +353,7 @@ export const createCheckpoints = getCreateFunction(
                 mapNew,
               );
               const oldNew = mapEnsure<Id, ChangedCell>(row, cellId, () => [
-                oldCell,
+                visited ? visited[0] : oldCell,
                 undefined,
               ]);
               oldNew[1] = newCell;
@@ -341,12 +374,16 @@ export const createCheckpoints = getCreateFunction(
         valueListenerId = store.addValueListener(
           null,
           (_store, valueId, newValue, oldValue) => {
-            if (listening) {
+            const visited = mapGet(visitedValues, valueId);
+            if (
+              listening &&
+              !(visited && cellOrValueIsEqual(visited[0], newValue))
+            ) {
               storeChanged();
               const oldNew = mapEnsure<Id, ChangedValue>(
                 valuesDelta,
                 valueId,
-                () => [oldValue, undefined],
+                () => [visited ? visited[0] : oldValue, undefined],
               );
               oldNew[1] = newValue;
               if (

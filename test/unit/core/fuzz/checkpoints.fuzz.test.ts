@@ -500,10 +500,19 @@ const createWorld = (random: Random, trace: Trace, limits: Limits = {}) => {
     verify();
   };
 
-  // Calls a method of the Checkpoints object.
+  // Calls a method of the Checkpoints object. One that moves around might be
+  // called inside a transaction, which should make no difference.
   const call = (method: string, ...args: unknown[]): void => {
-    trace(`checkpoints.${method}(${args.map(code)});`);
-    const returned = (checkpoints as any)[method](...args);
+    const statement = `checkpoints.${method}(${args.map(code)});`;
+    let returned: unknown;
+    const makeCall = () => (returned = (checkpoints as any)[method](...args));
+    if (method.startsWith('go') && random.bool(0.3)) {
+      trace(`store.transaction(() => ${statement.slice(0, -1)});`);
+      store.transaction(makeCall);
+    } else {
+      trace(statement);
+      makeCall();
+    }
     const expected = CALLS[method](model, ...args) ?? checkpoints;
     expectAlike(returned === expected, true, `what ${method} returns`);
     verify();

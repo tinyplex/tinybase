@@ -540,6 +540,68 @@ describe('Moving around', () => {
   });
 });
 
+describe('Moving around within transactions', () => {
+  beforeEach(() => {
+    store.setCell('pets', 'fido', 'price', 1).setValue('open', false);
+    store.setCell('pets', 'fido', 'price', 2).setValue('open', true);
+    checkpoints.addCheckpoint();
+    store.setCell('pets', 'fido', 'price', 3).delValue('open');
+    checkpoints.addCheckpoint();
+  });
+
+  test('goes backward and forward', () => {
+    store.transaction(() => checkpoints.goBackward());
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+    expect(store.getContent()).toEqual([
+      {pets: {fido: {price: 2}}},
+      {open: true},
+    ]);
+    store.transaction(() => checkpoints.goForward());
+    expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
+    expect(store.getContent()).toEqual([{pets: {fido: {price: 3}}}, {}]);
+    store.transaction(() => checkpoints.goTo('0'));
+    expect(checkpoints.getCheckpointIds()).toEqual([[], '0', ['1', '2']]);
+    store.transaction(() => {
+      checkpoints.goForward();
+      checkpoints.goForward();
+      checkpoints.goBackward();
+    });
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+    expect(store.getContent()).toEqual([
+      {pets: {fido: {price: 2}}},
+      {open: true},
+    ]);
+  });
+
+  test('records changes made after going backward', () => {
+    store.transaction(() => {
+      checkpoints.goBackward();
+      store.setCell('pets', 'fido', 'price', 4).setValue('open', false);
+      store.setCell('pets', 'felix', 'price', 5).setValue('employees', 3);
+    });
+    expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], undefined, []]);
+    checkpoints.goBackward();
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['3']]);
+    expect(store.getContent()).toEqual([
+      {pets: {fido: {price: 2}}},
+      {open: true},
+    ]);
+    checkpoints.goForward();
+    expect(store.getContent()).toEqual([
+      {pets: {fido: {price: 4}, felix: {price: 5}}},
+      {open: false, employees: 3},
+    ]);
+  });
+
+  test('listens again once the transaction has finished', () => {
+    store.transaction(() => checkpoints.goBackward());
+    store.setCell('pets', 'fido', 'price', 2).setValue('open', true);
+    expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+    store.setCell('pets', 'fido', 'price', 4);
+    expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], undefined, []]);
+  });
+});
+
 describe('Miscellaneous', () => {
   test('clear', () => {
     expect(checkpoints.getCheckpointIds()).toEqual([[], '0', []]);
