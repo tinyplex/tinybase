@@ -5,6 +5,66 @@ highlighted features.
 
 ---
 
+# v10.2
+
+## Keeping Deletions In JSON
+
+A MergeableStore marks a Cell or Value that has been deleted with an `undefined`
+value in its MergeableContent and MergeableChanges. Plain JSON turns that into
+`null`, which is a valid Cell or Value, and so content serialized with
+`JSON.stringify` alone brought deleted Cells and Values back as `null` ones when
+it was set or merged into another MergeableStore. The new
+jsonStringWithUndefined function and jsonParseWithUndefined function keep them
+deleted:
+
+```js
+import {
+  createMergeableStore,
+  jsonParseWithUndefined,
+  jsonStringWithUndefined,
+} from 'tinybase';
+
+const petStore = createMergeableStore();
+petStore.setRow('pets', 'fido', {species: 'dog'}).delRow('pets', 'fido');
+const petJson = jsonStringWithUndefined(petStore.getMergeableContent());
+
+const restoredPetStore = createMergeableStore();
+restoredPetStore.setMergeableContent(jsonParseWithUndefined(petJson));
+console.log(restoredPetStore.getTables());
+// -> {}
+```
+
+They serialize `undefined` in the same way that TinyBase's own Persisters and
+Synchronizers do. The example of a custom Persister in the documentation of the
+createCustomPersister function now uses them too, since following it with a
+MergeableStore had the same problem.
+
+## Reliability And Hardening
+
+- Deleting a Metric now tells its listeners that its value has gone, and
+  deleting a Relationship now tells the listeners of each remote Row Id, set of
+  local Row Ids, and linked list that it had. Until now, neither called them,
+  though deleting an Index did.
+- An Index, Metric, Relationship, or query that is defined during a transaction
+  now catches up with the Store once the transaction has finished. Until now,
+  it kept what it saw when it was defined, even if the rest of the transaction
+  then undid it - by changing it back, by being rolled back, or by throwing.
+- Going backward or forward through checkpoints during a transaction no longer
+  records the move as a new change to the Store. Any other change made in the
+  same transaction is still recorded, after the checkpoint moved to.
+- A CheckpointIdsListener is now called once a transaction has finished, and
+  only if the checkpoint Ids are then different. Until now, a transaction that
+  undid the changes pending since the last checkpoint while making another
+  called it twice, for Ids that had changed only for a moment.
+- A Persister that loads content into a MergeableStore that already has some
+  now merges the two, rather than replacing what the MergeableStore had. So a
+  change made while loading, or any other that is newer than what was
+  persisted, is kept. Likewise, data that the `createPersisterForPath` function
+  of the createWsServer function adds to a server's MergeableStore is now
+  merged with what is persisted, rather than overwritten.
+
+---
+
 # v10.1
 
 ## Authorizing Synchronization
@@ -15,7 +75,6 @@ options object to the createWsServer function with an `authorize` function, and
 optionally `canWriteCell` and `canWriteValue` functions:
 
 ```js
-import {createMergeableStore} from 'tinybase';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {WebSocket, WebSocketServer} from 'ws';
