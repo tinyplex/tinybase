@@ -868,6 +868,65 @@ describe('Linked lists', () => {
   });
 });
 
+describe('Listens when deleting definitions', () => {
+  test('calls each listener whose results change', () => {
+    store.setTable('t1', {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {}});
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    const remote = vi.fn(
+      (relationships: Relationships, relationshipId: Id, localRowId: Id) =>
+        expect(
+          relationships.getRemoteRowId(relationshipId, localRowId),
+        ).toBeUndefined(),
+    );
+    const local = vi.fn();
+    const linkedFromR1 = vi.fn();
+    const linkedFromR3 = vi.fn();
+    const ids = vi.fn();
+    relationships.addRemoteRowIdListener('r1', null, remote);
+    relationships.addLocalRowIdsListener('r1', null, local);
+    relationships.addLinkedRowIdsListener('r1', 'r1', linkedFromR1);
+    relationships.addLinkedRowIdsListener('r1', 'r3', linkedFromR3);
+    relationships.addRelationshipIdsListener(ids);
+
+    relationships.delRelationshipDefinition('r1');
+    expect(remote.mock.calls.map(([, , rowId]) => rowId).sort()).toEqual([
+      'r1',
+      'r2',
+    ]);
+    expect(local.mock.calls.map(([, , rowId]) => rowId).sort()).toEqual([
+      'r2',
+      'r3',
+    ]);
+    expect(linkedFromR1).toHaveBeenCalledExactlyOnceWith(
+      relationships,
+      'r1',
+      'r1',
+    );
+    expect(linkedFromR3).not.toHaveBeenCalled();
+    expect(ids).toHaveBeenCalledTimes(1);
+
+    vi.clearAllMocks();
+    relationships.delRelationshipDefinition('r1');
+    [remote, local, linkedFromR1, ids].forEach((listener) =>
+      expect(listener).not.toHaveBeenCalled(),
+    );
+  });
+
+  test('calls no listener twice if an Ids listener redefines it', () => {
+    store.setTable('t1', {r1: {c1: 'r2'}});
+    relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
+    const remote = vi.fn();
+    relationships.addRemoteRowIdListener('r1', 'r1', remote);
+    const listenerId = relationships.addRelationshipIdsListener(() => {
+      relationships.delListener(listenerId);
+      relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
+    });
+    relationships.delRelationshipDefinition('r1');
+    expect(relationships.getRemoteRowId('r1', 'r1')).toEqual('r2');
+    expect(remote).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
     const listener = vi.fn(() => {

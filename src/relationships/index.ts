@@ -9,7 +9,7 @@ import type {
   createRelationships as createRelationshipsDecl,
 } from '../@types/relationships/index.d.ts';
 import type {GetCell, Store} from '../@types/store/index.d.ts';
-import {arrayIsEqual} from '../common/array.ts';
+import {arrayFilter, arrayForEach, arrayIsEqual} from '../common/array.ts';
 import {
   collClear,
   collDel,
@@ -25,9 +25,16 @@ import {
   getRowCellFunction,
 } from '../common/definable.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {
+  IdMap,
+  mapForEach,
+  mapGet,
+  mapKeys,
+  mapNew,
+  mapSet,
+} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
-import {ifNotUndefined, isUndefined} from '../common/other.ts';
+import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 
@@ -217,8 +224,26 @@ export const createRelationships = getCreateFunction(
       );
 
     const delRelationshipDefinition = (relationshipId: Id): Relationships => {
+      const relationship = getRelationship(relationshipId);
+      const changedLinkedRows = arrayFilter(
+        mapKeys(mapGet(linkedRowIdsListeners, relationshipId)),
+        (firstRowId) => size(getLinkedRowIds(relationshipId, firstRowId)) > 1,
+      );
       mapSet(remoteTableIds, relationshipId);
       delDefinition(relationshipId);
+      ifNotUndefined(relationship, ([localRows, remoteRows]) => {
+        if (!hasRelationship(relationshipId)) {
+          collForEach(localRows, (_remoteRowId, localRowId) =>
+            callListeners(remoteRowIdListeners, [relationshipId, localRowId]),
+          );
+          collForEach(remoteRows, (_localRowIds, remoteRowId) =>
+            callListeners(localRowIdsListeners, [relationshipId, remoteRowId]),
+          );
+          arrayForEach(changedLinkedRows, (firstRowId) =>
+            callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]),
+          );
+        }
+      });
       return relationships;
     };
 

@@ -235,14 +235,6 @@ const getChanges = (
       .map((rowId): Call => [relationshipId, rowId]);
   });
 
-// KNOWN BUG silent-definition-removal: remove this restriction once fixed
-// (and with it every use of this function). Removing a Relationship changes
-// its results, but its listeners are not called, so those are not checked.
-const wasRemoved =
-  (before: Model, after: Model) =>
-  ([relationshipId]: Call): boolean =>
-    before.links.has(relationshipId) && !after.links.has(relationshipId);
-
 // A Store and its Relationships object, with a record of the definitions and
 // the listeners they have been given, and the operations to apply to them.
 // The salt keeps tests from repeating each other's sequences for a seed.
@@ -367,6 +359,7 @@ const createWorld = (
     () => {
       definitions.clear();
       relationships.destroy();
+      world.destroyed = true;
     },
   ];
 
@@ -416,6 +409,7 @@ const createWorld = (
   const run = ([statement, action]: Op): void => {
     trace(statement);
     listenings.forEach(({calls}) => (calls.length = 0));
+    world.destroyed = false;
     action();
   };
 
@@ -448,6 +442,8 @@ const createWorld = (
     listen,
     run,
     step,
+    // Whether the last operation destroyed the Relationships object.
+    destroyed: false,
     onCall: undefined as
       | ((listening: Listening, relationshipId: Id, rowId: Id) => void)
       | undefined,
@@ -458,27 +454,21 @@ const createWorld = (
 // Checks the calls that every listener of one kind had during the last
 // operation, given the results of that kind which the operation changed. No
 // listener of any kind is called twice for the same thing, nor once removed.
-const expectCalls = (
-  world: World,
-  kind: Kind,
-  changes: Call[],
-  ignore: (call: Call) => boolean = () => false,
-): void => {
+// Destroying the Relationships object calls no listener at all, though it
+// removes every Relationship.
+const expectCalls = (world: World, kind: Kind, changes: Call[]): void => {
+  changes = world.destroyed ? [] : changes;
   world.listenings.forEach(({name, relationshipId, rowId, calls, ...rest}) => {
     const called = calls.map(code).sort();
     expectEqual(called, [...new Set(called)], `repeated calls of ${name}`);
     if (rest.kind == kind) {
       expectEqual(
-        calls
-          .filter((call) => !ignore(call))
-          .map(code)
-          .sort(),
+        calls.map(code).sort(),
         changes
           .filter(
             (change) =>
               (relationshipId ?? change[0]) == change[0] &&
-              (rowId ?? change[1]) == change[1] &&
-              !ignore(change),
+              (rowId ?? change[1]) == change[1],
           )
           .map(code)
           .sort(),
@@ -599,7 +589,6 @@ test('RemoteRowIdListener', async () => {
         world,
         'RemoteRowId',
         getChanges(before, after, 'remoteRowIds'),
-        wasRemoved(before, after),
       );
     }
   });
@@ -621,7 +610,6 @@ test('LocalRowIdsListener', async () => {
         world,
         'LocalRowIds',
         getChanges(before, after, 'localRowIds'),
-        wasRemoved(before, after),
       );
     }
   });
@@ -642,14 +630,12 @@ test('LinkedRowIdsListener', async () => {
       const isSame = ([relationshipId, rowId]: Call): boolean =>
         code(before.getLinkedRowIds(relationshipId, rowId)) ==
         code(after.getLinkedRowIds(relationshipId, rowId));
-      const wasRemovedCall = wasRemoved(before, after);
       expectCalls(
         world,
         'LinkedRowIds',
         RELATIONSHIP_IDS.flatMap((relationshipId) =>
           ROW_IDS.map((rowId): Call => [relationshipId, rowId]),
         ).filter((call) => !isSame(call)),
-        wasRemovedCall,
       );
     }
   });
@@ -783,25 +769,21 @@ test('definitions within transactions', async () => {
   });
 });
 
-test.fails(
-  'listeners are called when their Relationship is removed ' +
-    '(bug: silent-definition-removal)',
-  () => {
-    const store = createStore().setTable('pets', {fido: {species: 'dog'}});
-    const relationships = createRelationships(store);
-    relationships.setRelationshipDefinition(
-      'petSpecies',
-      'pets',
-      'species',
-      'species',
-    );
-    const listener = vi.fn();
-    relationships.addRemoteRowIdListener('petSpecies', 'fido', listener);
-    relationships.delRelationshipDefinition('petSpecies');
-    expect(relationships.getRemoteRowId('petSpecies', 'fido')).toBeUndefined();
-    expect(listener).toHaveBeenCalledTimes(1);
-  },
-);
+test('listeners are called when their Relationship is removed', () => {
+  const store = createStore().setTable('pets', {fido: {species: 'dog'}});
+  const relationships = createRelationships(store);
+  relationships.setRelationshipDefinition(
+    'petSpecies',
+    'pets',
+    'species',
+    'species',
+  );
+  const listener = vi.fn();
+  relationships.addRemoteRowIdListener('petSpecies', 'fido', listener);
+  relationships.delRelationshipDefinition('petSpecies');
+  expect(relationships.getRemoteRowId('petSpecies', 'fido')).toBeUndefined();
+  expect(listener).toHaveBeenCalledTimes(1);
+});
 
 test.fails(
   'a Relationship defined during a transaction agrees with the Store ' +
