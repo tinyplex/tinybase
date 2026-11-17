@@ -538,6 +538,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     ];
     setQueryDefinitionImpl(queryId, definition);
     cleanStores();
+    // Defined during a transaction, this has seen changes that the transaction
+    // may then undo without telling its listeners, so it runs again after.
+    (store as ProtectedStore)._[11](() =>
+      hasQuery(queryId) ? setQueryDefinitionImpl(queryId) : 0,
+    );
     return queries;
   };
 

@@ -37,6 +37,7 @@ import type {
   createStore as createStoreDecl,
 } from '../@types/store/index.d.ts';
 import {
+  arrayClear,
   arrayEvery,
   arrayForEach,
   arrayHas,
@@ -221,6 +222,7 @@ type ProtectedMethods = [
   getEncodedTransactionChanges: () => Changes,
   setEncodedContent: (content: Content) => Store,
   applyEncodedChanges: (changes: Changes) => Store,
+  callAfterTransaction: (callback: () => void) => void,
 ];
 
 type TablesSchemaMap = IdMap2<CellSchema>;
@@ -272,6 +274,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let oldValuesSchema: [boolean, ValuesSchema] | undefined;
   let rollbackRequested: 0 | 1 = 0;
   let transactions = 0;
+  const afterTransactionCallbacks: (() => void)[] = [];
   let middleware: [
     willSetContent?: (content: Content, encoded?: 0 | 1) => Content | undefined,
     willSetTables?: (tables: Tables) => Tables | undefined,
@@ -2234,6 +2237,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
+  // Calls back once the transaction under way, if any, has finished, however
+  // it finishes.
+  const callAfterTransaction = (callback: () => void): void => {
+    if (transactions) {
+      arrayPush(afterTransactionCallbacks, callback);
+    }
+  };
+
   const getTransactionChanges = (): Changes => getTransactionChangesImpl();
 
   const getEncodedTransactionChanges = (): Changes =>
@@ -2397,7 +2408,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
             tryFinally(
               () =>
                 internalPostFinished ? 0 : internalListeners[2]?.(rolledBack),
-              resetTransaction,
+              () => {
+                resetTransaction();
+                arrayForEach(
+                  arrayClear(afterTransactionCallbacks),
+                  (callback) => callback(),
+                );
+              },
             ),
         );
       }
@@ -2694,6 +2711,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       getEncodedTransactionChanges,
       setEncodedContent,
       applyEncodedChanges,
+      callAfterTransaction,
     ] as ProtectedMethods,
   };
 

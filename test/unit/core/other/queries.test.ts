@@ -6146,6 +6146,42 @@ describe('Sorted Row Ids', () => {
   });
 });
 
+describe('Definitions within transactions', () => {
+  test.each([
+    ['undone', undefined, false],
+    ['rolled back', () => true, false],
+    ['thrown', undefined, true],
+  ])('follows the Store once a transaction is %s', (_, doRollback, throws) => {
+    store.setTable('pets', {fido: {species: 'dog'}});
+    try {
+      store.transaction(() => {
+        store.setCell('pets', 'fido', 'species', 'cat');
+        queries.setQueryDefinition('q1', 'pets', ({select}) =>
+          select('species'),
+        );
+        if (!doRollback && !throws) {
+          store.setCell('pets', 'fido', 'species', 'dog');
+        }
+        if (throws) {
+          throw new Error();
+        }
+      }, doRollback);
+    } catch {}
+    expect(store.getCell('pets', 'fido', 'species')).toEqual('dog');
+    expect(queries.getResultTable('q1')).toEqual({fido: {species: 'dog'}});
+  });
+
+  test('runs nothing for a query deleted during a transaction', () => {
+    store.setTable('pets', {fido: {species: 'dog'}});
+    store.transaction(() => {
+      queries.setQueryDefinition('q1', 'pets', ({select}) => select('species'));
+      queries.delQueryDefinition('q1');
+    });
+    expect(queries.getQueryIds()).toEqual([]);
+    expect(queries.getResultTable('q1')).toEqual({});
+  });
+});
+
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
     const listener = vi.fn(() => {

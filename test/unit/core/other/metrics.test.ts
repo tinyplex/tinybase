@@ -782,6 +782,66 @@ describe('Listens to Metrics when deleting definitions', () => {
   });
 });
 
+describe('Definitions within transactions', () => {
+  test.each([
+    ['undone', undefined, false],
+    ['rolled back', () => true, false],
+    ['thrown', undefined, true],
+  ])('follows the Store once a transaction is %s', (_, doRollback, throws) => {
+    store.setTable('t1', {r1: {c1: 1}});
+    const listener = vi.fn();
+    metrics.addMetricListener('m1', listener);
+    try {
+      store.transaction(() => {
+        store.setCell('t1', 'r1', 'c1', 2);
+        metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+        if (!doRollback && !throws) {
+          store.setCell('t1', 'r1', 'c1', 1);
+        }
+        if (throws) {
+          throw new Error();
+        }
+      }, doRollback);
+    } catch {}
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
+    expect(metrics.getMetric('m1')).toEqual(1);
+    expect(listener.mock.calls).toEqual([
+      [metrics, 'm1', 2, undefined],
+      [metrics, 'm1', 1, 2],
+    ]);
+  });
+
+  test('follows only the last definition made during a transaction', () => {
+    store.setTable('t1', {r1: {c1: 1}, r2: {c1: 3}});
+    store.transaction(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+      metrics.setMetricDefinition('m1', 't1', 'min', 'c1');
+      metrics.setMetricDefinition('m2', 't1', 'max', 'c1');
+      metrics.delMetricDefinition('m2');
+      store.setCell('t1', 'r1', 'c1', 1);
+    });
+    expect(metrics.getMetric('m1')).toEqual(1);
+    expect(metrics.getMetricIds()).toEqual(['m1']);
+  });
+
+  test('changes nothing once a transaction leaves the Store as it was', () => {
+    store.setTable('t1', {r1: {c1: 1}});
+    const listener = vi.fn();
+    metrics.addMetricListener('m1', listener);
+    store.transaction(() =>
+      metrics.setMetricDefinition('m1', 't1', 'max', 'c1'),
+    );
+    expect(metrics.getMetric('m1')).toEqual(1);
+    expect(listener).toHaveBeenCalledExactlyOnceWith(
+      metrics,
+      'm1',
+      1,
+      undefined,
+    );
+  });
+});
+
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
     const listener = vi.fn(() => {

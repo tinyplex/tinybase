@@ -27,6 +27,11 @@ import {ifNotUndefined, isArray, isString, isUndefined} from './other.ts';
 import {IdSet2, setAdd, setNew} from './set.ts';
 import {EMPTY_STRING} from './strings.ts';
 
+// The protected Store method that calls back once a transaction has finished.
+type StoreWithCallAfterTransaction = Store & {
+  _: {11: (callback: () => void) => void};
+};
+
 type OnChangedDecl<RowValue> = (
   change: () => void,
   changedRowValues: IdMap<[RowValue | undefined, RowValue | undefined]>,
@@ -190,16 +195,19 @@ export const getDefinableFunctions = <Thing, RowValue>(
       collClear(changedSortKeys);
     };
 
-    mapForEach(rowValues, processRow);
-    if (store.hasTable(tableId)) {
-      arrayForEach(store.getRowIds(tableId), (rowId) => {
-        if (!collHas(rowValues, rowId)) {
-          processRow(rowId);
-        }
-      });
-    }
-    processTable(true);
+    const processAll = () => {
+      mapForEach(rowValues, processRow);
+      if (store.hasTable(tableId)) {
+        arrayForEach(store.getRowIds(tableId), (rowId) => {
+          if (!collHas(rowValues, rowId)) {
+            processRow(rowId);
+          }
+        });
+      }
+      processTable(true);
+    };
 
+    processAll();
     delStoreListeners(id);
     addStoreListeners(
       id,
@@ -207,6 +215,13 @@ export const getDefinableFunctions = <Thing, RowValue>(
         processRow(rowId),
       ),
       store.addTableListener(tableId, () => processTable()),
+    );
+
+    // Defined during a transaction, this has seen changes that the transaction
+    // may then undo without telling its listeners, so it looks again after.
+    const listenerIds = mapGet(storeListenerIds, id);
+    (store as StoreWithCallAfterTransaction)._[11](() =>
+      mapGet(storeListenerIds, id) === listenerIds ? processAll() : 0,
     );
   };
 

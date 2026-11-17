@@ -758,10 +758,7 @@ test('definitions within transactions', async () => {
           ),
           ...Array.from({length: random.int(4)}, world.write),
         ];
-        // KNOWN BUG definition-in-transaction: remove this restriction once
-        // fixed, by shuffling these so that writes can come before the
-        // definitions that follow them in the same transaction.
-        world.run(world.transaction(ops, random.bool(0.3)));
+        world.run(world.transaction(random.shuffle(ops), random.bool(0.3)));
       }
       const model = world.getModel();
       expectResults(world.relationships, model, world.rowIds);
@@ -785,23 +782,19 @@ test('listeners are called when their Relationship is removed', () => {
   expect(listener).toHaveBeenCalledTimes(1);
 });
 
-test.fails(
-  'a Relationship defined during a transaction agrees with the Store ' +
-    'after it (bug: definition-in-transaction)',
-  () => {
-    const store = createStore().setTable('pets', {fido: {species: 'dog'}});
-    const relationships = createRelationships(store);
-    store.transaction(() => {
-      store.setCell('pets', 'fido', 'species', 'cat');
-      relationships.setRelationshipDefinition(
-        'petSpecies',
-        'pets',
-        'species',
-        'species',
-      );
-      store.setCell('pets', 'fido', 'species', 'dog');
-    });
-    expect(store.getCell('pets', 'fido', 'species')).toEqual('dog');
-    expect(relationships.getRemoteRowId('petSpecies', 'fido')).toEqual('dog');
-  },
-);
+test('a Relationship defined in a transaction follows the Store', () => {
+  const store = createStore().setTable('pets', {fido: {species: 'dog'}});
+  const relationships = createRelationships(store);
+  store.transaction(() => {
+    store.setCell('pets', 'fido', 'species', 'cat');
+    relationships.setRelationshipDefinition(
+      'petSpecies',
+      'pets',
+      'species',
+      'species',
+    );
+    store.setCell('pets', 'fido', 'species', 'dog');
+  });
+  expect(store.getCell('pets', 'fido', 'species')).toEqual('dog');
+  expect(relationships.getRemoteRowId('petSpecies', 'fido')).toEqual('dog');
+});

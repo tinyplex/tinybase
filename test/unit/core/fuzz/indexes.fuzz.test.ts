@@ -585,8 +585,7 @@ const expectInsertionOrder = (
 test('agrees with newly created Indexes', async () => {
   const options: Options = {
     destroys: true,
-    // KNOWN BUG definition-in-transaction: remove this restriction once fixed.
-    definesInTransactions: false,
+    definesInTransactions: true,
   };
   await forEachSeed(RUNS, (random, trace) => {
     const world = createWorld(trace);
@@ -640,8 +639,7 @@ test('agrees with newly created Indexes', async () => {
 test('groups the Rows of a Table into Slices', async () => {
   const options: Options = {
     destroys: true,
-    // KNOWN BUG definition-in-transaction: remove this restriction once fixed.
-    definesInTransactions: false,
+    definesInTransactions: true,
   };
   await forEachSeed(RUNS, (random, trace) => {
     const world = createWorld(trace);
@@ -1207,19 +1205,15 @@ test('groups and sorts Rows by object and array Cells', async () => {
 
 // -- Regressions
 
-test.fails(
-  'follows the Store when a transaction that defines an Index is rolled ' +
-    'back (bug: definition-in-transaction)',
-  () => {
-    const store = createStore().setTable('pets', {fido: {species: 'dog'}});
-    const indexes = createIndexes(store);
-    store.transaction(
-      () => {
-        store.setCell('pets', 'fido', 'species', 'cat');
-        indexes.setIndexDefinition('bySpecies', 'pets', 'species');
-      },
-      () => true,
-    );
-    expect(indexes.getSliceIds('bySpecies')).toEqual(['dog']);
-  },
-);
+test('follows the Store after a transaction that defines it rolls back', () => {
+  const store = createStore().setTable('pets', {fido: {species: 'dog'}});
+  const indexes = createIndexes(store);
+  store.transaction(
+    () => {
+      store.setCell('pets', 'fido', 'species', 'cat');
+      indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+    },
+    () => true,
+  );
+  expect(indexes.getSliceIds('bySpecies')).toEqual(['dog']);
+});
