@@ -221,6 +221,10 @@ export const createMergeableStore = ((
   const rollbackStampActions: (() => void)[] = [];
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
+  // What a Persister has to save: what was touched, and also anything merged
+  // that has a new stamp for the value it already had.
+  const stampedCells: IdSet3 = mapNew();
+  const stampedValues: IdSet = setNew();
   const [getNextHlc, seenHlc] = getHlcFunctions(
     uniqueId,
     getNow,
@@ -302,6 +306,7 @@ export const createMergeableStore = ((
               objNew,
             ),
             isContent,
+            (cellId) => addCell(stampedCells, tableId, rowId, cellId),
           );
 
           tableHash ^= isContent
@@ -340,6 +345,7 @@ export const createMergeableStore = ((
       valuesStampMap,
       valuesChanges,
       isContent,
+      (valueId) => setAdd(stampedValues, valueId),
     );
 
     seenHlc(getLatestHlc(tablesHlc, valuesHlc));
@@ -353,6 +359,7 @@ export const createMergeableStore = ((
     thingsStampMap: StampMap<Stamp<Thing, true>>,
     thingsChanges: {[thingId: Id]: Thing},
     isContent: 0 | 1,
+    stamped: (thingId: Id) => unknown,
   ): [thingsHlc: Hlc, oldThingsHash: number, newThingsHash: number] => {
     const [
       thingsObj,
@@ -391,6 +398,9 @@ export const createMergeableStore = ((
           );
           thingStampMap[0] = encodedThing;
           objSet(thingsChanges, thingId, thing);
+          if (!isContent && thingStampMap[2] != oldThingHash) {
+            stamped(thingId);
+          }
           thingsHash ^= isContent
             ? 0
             : addOrRemoveHash(
@@ -435,7 +445,19 @@ export const createMergeableStore = ((
     }
     collClear(touchedCells);
     collClear(touchedValues);
+    collClear(stampedCells);
+    collClear(stampedValues);
   };
+
+  const addCell = (cells: IdSet3, tableId: Id, rowId: Id, cellId: Id) =>
+    setAdd(
+      mapEnsure(
+        mapEnsure(cells, tableId, mapNew<Id, IdSet>),
+        rowId,
+        setNew<Id>,
+      ),
+      cellId,
+    );
 
   const cellChanged = (
     tableId: Id,
@@ -445,14 +467,8 @@ export const createMergeableStore = ((
     mutating: 0 | 1,
     defaulted: 0 | 1,
   ) => {
-    setAdd(
-      mapEnsure(
-        mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
-        rowId,
-        setNew<Id>,
-      ),
-      cellId,
-    );
+    addCell(touchedCells, tableId, rowId, cellId);
+    addCell(stampedCells, tableId, rowId, cellId);
     if (listeningToRawStoreChanges || mutating) {
       if (mutating) {
         mutated = 1;
@@ -490,6 +506,7 @@ export const createMergeableStore = ((
     defaulted: 0 | 1,
   ) => {
     setAdd(touchedValues, valueId);
+    setAdd(stampedValues, valueId);
     if (listeningToRawStoreChanges || mutating) {
       if (mutating) {
         mutated = 1;
@@ -538,9 +555,11 @@ export const createMergeableStore = ((
     ] = contentStampMap;
 
     const newStamp = withHashes ? stampNewWithHash : stampNew;
+    const changedCells = withHashes ? stampedCells : touchedCells;
+    const changedValues = withHashes ? stampedValues : touchedValues;
 
     const tablesObj: TablesStamp<typeof withHashes>[0] = objNew();
-    collForEach(touchedCells, (touchedTable, tableId) =>
+    collForEach(changedCells, (touchedTable, tableId) =>
       ifNotUndefined(
         mapGet(tableStampMaps, tableId),
         ([rowStampMaps, tableHlc, tableHash]) => {
@@ -575,7 +594,7 @@ export const createMergeableStore = ((
     );
 
     const valuesObj: ValuesStamp<typeof withHashes>[0] = objNew();
-    collForEach(touchedValues, (valueId) =>
+    collForEach(changedValues, (valueId) =>
       ifNotUndefined(mapGet(valueStampMaps, valueId), ([value, time, hash]) =>
         objSet(
           valuesObj,

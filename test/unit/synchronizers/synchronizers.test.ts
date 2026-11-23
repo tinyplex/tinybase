@@ -1394,3 +1394,56 @@ describe.each([
     });
   },
 );
+
+test('merging default content again does not echo around a ring', async () => {
+  const content: Content = [{t1: {r1: {c1: 1}}}, {v1: 1}];
+  const stores = ['s1', 's2', 's3'].map((id) =>
+    createMergeableStore(id, getNow).setDefaultContent(content),
+  );
+  const synchronizers: Synchronizer[] = [];
+  let sends = 0;
+
+  const link = async (store1: MergeableStore, store2: MergeableStore) => {
+    const receives: {[clientId: string]: Receive} = {};
+    const getSynchronizer = (store: MergeableStore, clientId: string) =>
+      createCustomSynchronizer(
+        store,
+        (_toClientId, requestId, message, body) => {
+          sends++;
+          setTimeout(
+            () =>
+              receives[clientId == 'c1' ? 'c2' : 'c1']?.(
+                clientId,
+                requestId,
+                message,
+                body,
+              ),
+            1,
+          );
+        },
+        (receive) => (receives[clientId] = receive),
+        () => delete receives[clientId],
+        0.1,
+      );
+    const pair = [getSynchronizer(store1, 'c1'), getSynchronizer(store2, 'c2')];
+    synchronizers.push(...pair);
+    await Promise.all(pair.map((synchronizer) => synchronizer.startSync()));
+  };
+  await link(stores[0], stores[1]);
+  await link(stores[1], stores[2]);
+  await link(stores[2], stores[0]);
+  await pause(300);
+
+  sends = 0;
+  stores[0].applyMergeableChanges(
+    createMergeableStore('s4', getNow)
+      .setDefaultContent(content)
+      .getMergeableContent(),
+  );
+  await pause(100);
+  expect(sends).toEqual(0);
+
+  await Promise.all(
+    synchronizers.map((synchronizer) => synchronizer.destroy()),
+  );
+});

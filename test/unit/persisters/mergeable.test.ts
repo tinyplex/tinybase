@@ -568,6 +568,41 @@ if (!withServers) {
       expect(persisted).toMatchSnapshot();
     });
 
+    test('autoSaves newer stamps merged for the same content', async () => {
+      const otherStore = createMergeableStore('s2', getNow);
+      const store = createMergeableStore('s1', getNow);
+      let persisted: MergeableContent | undefined;
+      let saves = 0;
+      const persister = createCustomPersister(
+        store,
+        async () => persisted as MergeableContent,
+        async (getContent: () => MergeableContent) => {
+          persisted = structuredClone(getContent());
+          saves++;
+        },
+        noop,
+        noop,
+        noop,
+        Persists.MergeableStoreOnly,
+      );
+      otherStore.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+      store.applyMergeableChanges(otherStore.getMergeableContent());
+      await persister.startAutoSave();
+      saves = 0;
+
+      otherStore.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r1', 'c1', 1);
+      otherStore.setValue('v1', 2).setValue('v1', 1);
+      store.applyMergeableChanges(otherStore.getMergeableContent());
+      await pause(1);
+      expect(persisted).toEqual(otherStore.getMergeableContent());
+      expect(saves).toEqual(1);
+
+      store.applyMergeableChanges(otherStore.getMergeableContent());
+      await pause(1);
+      expect(saves).toEqual(1);
+      await persister.destroy();
+    });
+
     test('applies loaded changes synchronously without re-saving', async () => {
       const store = createMergeableStore('target', getNow);
       const getChanges = (
