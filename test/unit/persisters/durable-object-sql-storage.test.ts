@@ -86,6 +86,41 @@ test('fragmented mode stores table rows as rows, not cells', async () => {
   await persister2.destroy();
 });
 
+test('fragmented mode autosaves stamps merged beside a change', async () => {
+  const store = createMergeableStore('s1', getNow);
+  const otherStore = createMergeableStore('s2', getNow);
+  const sqlStorage = createSqlStorage();
+  const persister = createDurableObjectSqlStoragePersister(store, sqlStorage, {
+    mode: 'fragmented',
+  });
+  otherStore.setTables({
+    pets: {fido: {species: 'dog'}},
+    species: {dog: {price: 5}},
+  });
+  store.applyMergeableChanges(otherStore.getMergeableContent());
+  await persister.startAutoSave();
+
+  otherStore.setCell('pets', 'fido', 'species', 'cat');
+  otherStore.setCell('pets', 'fido', 'species', 'dog');
+  otherStore.setCell('species', 'dog', 'price', 6);
+  store.applyMergeableChanges(otherStore.getMergeableContent());
+  await pause();
+
+  const store2 = createMergeableStore('s3', getNow);
+  const persister2 = createDurableObjectSqlStoragePersister(
+    store2,
+    sqlStorage,
+    {mode: 'fragmented'},
+  );
+  await persister2.load();
+  expect(store2.getMergeableContent()).toEqual(
+    otherStore.getMergeableContent(),
+  );
+
+  await persister.destroy();
+  await persister2.destroy();
+});
+
 test('fragmented mode autosaves full changed row records', async () => {
   const store = createMergeableStore('s1', getNow);
   const sqlStorage = createSqlStorage();

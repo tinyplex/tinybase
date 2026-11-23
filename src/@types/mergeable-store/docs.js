@@ -768,7 +768,8 @@
    * itself and the return type is assumed to be opaque to applications that use
    * it.
    * @param withHashes Whether to include hashes in the output, defaulting to
-   * false.
+   * false. When true, the output also includes anything that was merged with a
+   * newer stamp but the same content, since that needs to be persisted.
    * @returns A MergeableChanges object representing the changes, with hashes
    * if requested.
    * @example

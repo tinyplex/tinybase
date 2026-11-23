@@ -565,6 +565,32 @@ describe('getTransactionMergeableChanges', () => {
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 
+  test('Merging newer stamps for the same content', () => {
+    const otherStore = createMergeableStore('s2', getNow);
+    otherStore.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    store.applyMergeableChanges(otherStore.getMergeableContent());
+    otherStore.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r1', 'c1', 1);
+    otherStore.setValue('v1', 2).setValue('v1', 1);
+    const content = otherStore.getMergeableContent();
+
+    const changes: any[] = [];
+    store.addDidFinishTransactionListener(() =>
+      changes.push([
+        store.getTransactionMergeableChanges(true),
+        store.getTransactionMergeableChanges(),
+      ]),
+    );
+    store.applyMergeableChanges(content);
+    store.applyMergeableChanges(content);
+
+    expect(store.getMergeableContent()).toEqual(content);
+    const [[merged, mergedToSync], [again, againToSync]] = changes;
+    expect(merged).toEqual([...content, 1]);
+    expect([mergedToSync[0][0], mergedToSync[1][0]]).toEqual([{}, {}]);
+    expect([again[0][0], again[1][0]]).toEqual([{}, {}]);
+    expect([againToSync[0][0], againToSync[1][0]]).toEqual([{}, {}]);
+  });
+
   test('Inside noop transaction', () => {
     store.startTransaction();
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
